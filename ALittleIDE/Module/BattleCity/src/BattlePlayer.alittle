@@ -14,6 +14,7 @@ public class BattlePlayer : BattleRole
         this.x = col * g_GCenter.battle_scene.cell_size;
         this.y = row * g_GCenter.battle_scene.cell_size;
 
+        this._effect_explosion.visible = false;
         this._effect_born.visible = true;
         this._effect_born.Play();
 
@@ -36,6 +37,22 @@ public class BattlePlayer : BattleRole
         if (this._level >= 4) return;
         this._level += 1;
         this.UpdateWalk(0);
+    }
+
+    public get is_enemy() : bool { return false; }
+
+    // 返回值：是否需要爆炸
+    public fun BeAttack() : bool
+    {
+        if (this._effect_shield.visible) return false;
+
+        if (this._level <= 3)
+        {
+            this.StartExplosion();
+            return true;
+        }
+        this._level = 3;
+        return false;
     }
 
     private fun UpdateWalk(int frame_time)

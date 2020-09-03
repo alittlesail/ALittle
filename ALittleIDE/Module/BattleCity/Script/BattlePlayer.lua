@@ -19,6 +19,7 @@ function BattleCity.BattlePlayer:StartBorn(row, col, level, dir, speed)
 	self._speed = speed
 	self.x = col * g_GCenter.battle_scene.cell_size
 	self.y = row * g_GCenter.battle_scene.cell_size
+	self._effect_explosion.visible = false
 	self._effect_born.visible = true
 	self._effect_born:Play()
 	local loop = ALittle.LoopTimer(Lua.Bind(self.HandleBornEnd, self), 1000)
@@ -39,6 +40,22 @@ function BattleCity.BattlePlayer:LevelUp()
 	end
 	self._level = self._level + (1)
 	self:UpdateWalk(0)
+end
+
+function BattleCity.BattlePlayer.__getter:is_enemy()
+	return false
+end
+
+function BattleCity.BattlePlayer:BeAttack()
+	if self._effect_shield.visible then
+		return false
+	end
+	if self._level <= 3 then
+		self:StartExplosion()
+		return true
+	end
+	self._level = 3
+	return false
 end
 
 function BattleCity.BattlePlayer:UpdateWalk(frame_time)

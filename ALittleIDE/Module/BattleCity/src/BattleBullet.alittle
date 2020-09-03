@@ -29,6 +29,8 @@ public class BattleBullet : ALittle.DisplayLayout
         	this._bullet.col_index = 4;
     }
 
+    public get role() : BattleRole { return this._role; }
+
     public fun UpdateFrame(int frame_time)
     {
         var explosion = false;
@@ -39,66 +41,117 @@ public class BattleBullet : ALittle.DisplayLayout
             {
                 this.y -= 0.2 * frame_time;
 
-                var row = ALittle.Math_Floor(this.y / g_GCenter.battle_scene.cell_size);
-                var col_min = ALittle.Math_Floor(this.x / g_GCenter.battle_scene.cell_size);
-                var col_max = ALittle.Math_Floor((this.x + this.width - 1) / g_GCenter.battle_scene.cell_size);
+                var check_collision, check_explosion = g_GCenter.battle_scene.BulletCollisionByEntity(this, this.x, this.y, this.x + this.width, this.y + this.height);
+                if (check_collision)
+                {
+                    if (check_explosion)
+                    	explosion = true;
+                    else
+                    	this.BulletEnd();
+                }
+                else
+                {
+                    var row = ALittle.Math_Floor(this.y / g_GCenter.battle_scene.cell_size);
+                    var col_min = ALittle.Math_Floor(this.x / g_GCenter.battle_scene.cell_size);
+                    var col_max = ALittle.Math_Floor((this.x + this.width - 1) / g_GCenter.battle_scene.cell_size);
 
-                if (g_GCenter.battle_scene.BulletCollision(row, col_min, true, this._dir)) explosion = true;
-                if (g_GCenter.battle_scene.BulletCollision(row, col_max, false, this._dir)) explosion = true;
-                if (this.y <= 0) explosion = true;
+                    if (g_GCenter.battle_scene.BulletCollisionByMap(row, col_min, true, this._dir)) explosion = true;
+                    if (g_GCenter.battle_scene.BulletCollisionByMap(row, col_max, false, this._dir)) explosion = true;
+                    if (this.y <= 0) explosion = true;
+                }
+
             }
             elseif (this._dir == DirType.DT_RIGHT)
             {
                 this.x += 0.2 * frame_time;
 
-                var row_min = ALittle.Math_Floor(this.y / g_GCenter.battle_scene.cell_size);
-                var row_max = ALittle.Math_Floor((this.y + this.height - 1) / g_GCenter.battle_scene.cell_size);
-                var col = ALittle.Math_Floor((this.x + this.width) / g_GCenter.battle_scene.cell_size);
-
-                if (g_GCenter.battle_scene.BulletCollision(row_min, col, true, this._dir)) explosion = true;
-                if (g_GCenter.battle_scene.BulletCollision(row_max, col, false, this._dir)) explosion = true;
-                if (this.x + this.width >= g_GCenter.battle_scene.map_size) explosion = true;
+                var check_collision, check_explosion = g_GCenter.battle_scene.BulletCollisionByEntity(this, this.x, this.y, this.x + this.width, this.y + this.height);
+                if (check_collision)
+                {
+                    if (check_explosion)
+                    	explosion = true;
+                    else
+                    	this.BulletEnd();
+                }
+                else
+                {
+                    var row_min = ALittle.Math_Floor(this.y / g_GCenter.battle_scene.cell_size);
+                    var row_max = ALittle.Math_Floor((this.y + this.height - 1) / g_GCenter.battle_scene.cell_size);
+                    var col = ALittle.Math_Floor((this.x + this.width) / g_GCenter.battle_scene.cell_size);
+    
+                    if (g_GCenter.battle_scene.BulletCollisionByMap(row_min, col, true, this._dir)) explosion = true;
+                    if (g_GCenter.battle_scene.BulletCollisionByMap(row_max, col, false, this._dir)) explosion = true;
+                    if (this.x + this.width >= g_GCenter.battle_scene.map_size) explosion = true;
+                }
             }
             elseif (this._dir == DirType.DT_DOWN)
             {
                 this.y += 0.2 * frame_time;
 
-                var row = ALittle.Math_Floor((this.y + this.height) / g_GCenter.battle_scene.cell_size);
-                var col_min = ALittle.Math_Floor(this.x / g_GCenter.battle_scene.cell_size);
-                var col_max = ALittle.Math_Floor((this.x + this.width - 1) / g_GCenter.battle_scene.cell_size);
-
-                if (g_GCenter.battle_scene.BulletCollision(row, col_min, true, this._dir)) explosion = true;
-                if (g_GCenter.battle_scene.BulletCollision(row, col_max, false, this._dir)) explosion = true;
-                if (this.y + this.height >= g_GCenter.battle_scene.map_size) explosion = true;
+                var check_collision, check_explosion = g_GCenter.battle_scene.BulletCollisionByEntity(this, this.x, this.y, this.x + this.width, this.y + this.height);
+                if (check_collision)
+                {
+                    if (check_explosion)
+                    	explosion = true;
+                    else
+                    	this.BulletEnd();
+                }
+                else
+                {
+                    var row = ALittle.Math_Floor((this.y + this.height) / g_GCenter.battle_scene.cell_size);
+                    var col_min = ALittle.Math_Floor(this.x / g_GCenter.battle_scene.cell_size);
+                    var col_max = ALittle.Math_Floor((this.x + this.width - 1) / g_GCenter.battle_scene.cell_size);
+    
+                    if (g_GCenter.battle_scene.BulletCollisionByMap(row, col_min, true, this._dir)) explosion = true;
+                    if (g_GCenter.battle_scene.BulletCollisionByMap(row, col_max, false, this._dir)) explosion = true;
+                    if (this.y + this.height >= g_GCenter.battle_scene.map_size) explosion = true;
+                }
             }
             else
             {
                 this.x -= 0.2 * frame_time;
 
-                var row_min = ALittle.Math_Floor(this.y / g_GCenter.battle_scene.cell_size);
-                var row_max = ALittle.Math_Floor((this.y + this.height - 1) / g_GCenter.battle_scene.cell_size);
-                var col = ALittle.Math_Floor(this.x / g_GCenter.battle_scene.cell_size);
-
-                if (g_GCenter.battle_scene.BulletCollision(row_min, col, true, this._dir)) explosion = true;
-                if (g_GCenter.battle_scene.BulletCollision(row_max, col, false, this._dir)) explosion = true;
-                if (this.x <= 0) explosion = true;
+                var check_collision, check_explosion = g_GCenter.battle_scene.BulletCollisionByEntity(this, this.x, this.y, this.x + this.width, this.y + this.height);
+                if (check_collision)
+                {
+                    if (check_explosion)
+                    	explosion = true;
+                    else
+                    	this.BulletEnd();
+                }
+                else
+                {
+                    var row_min = ALittle.Math_Floor(this.y / g_GCenter.battle_scene.cell_size);
+                    var row_max = ALittle.Math_Floor((this.y + this.height - 1) / g_GCenter.battle_scene.cell_size);
+                    var col = ALittle.Math_Floor(this.x / g_GCenter.battle_scene.cell_size);
+    
+                    if (g_GCenter.battle_scene.BulletCollisionByMap(row_min, col, true, this._dir)) explosion = true;
+                    if (g_GCenter.battle_scene.BulletCollisionByMap(row_max, col, false, this._dir)) explosion = true;
+                    if (this.x <= 0) explosion = true;
+                }
             }
         }
         else
         {
-            if (!this._effect_explosion.IsPlaying())
-            {
-                this._role.AddBullet();
-                var loop = new ALittle.LoopTimer(bind(g_GCenter.battle_scene.BulletDeath, g_GCenter.battle_scene, this), 0);
-                loop.Start();
-            }
+            if (!this._effect_explosion.IsPlaying()) this.BulletEnd();
         }
 
-        if (explosion)
-        {
-            this._bullet.visible = false;
-            this._effect_explosion.visible = true;
-            this._effect_explosion.Play();
-        }
+        if (explosion) this.BulletExpision();
+    }
+
+    private fun BulletExpision()
+    {
+        this._bullet.visible = false;
+        this._effect_explosion.visible = true;
+        this._effect_explosion.Play();
+    }
+
+    private fun BulletEnd()
+    {
+        this._effect_explosion.Stop();
+        this._effect_explosion.visible = false;
+        this._role.AddBullet();
+        var loop = new ALittle.LoopTimer(bind(g_GCenter.battle_scene.BulletDeath, g_GCenter.battle_scene, this), 0);
+        loop.Start();
     }
 }

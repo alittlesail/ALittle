@@ -8,6 +8,8 @@ public class BattleScene : ALittle.DisplayLayout
 
 	private ALittle.TileTable _enemy_tiletable;
 
+    private ALittle.DisplayLayout _player1_contianer;
+    private ALittle.DisplayLayout _player2_contianer;
 	private ALittle.Text _player1_life;
 	private ALittle.Text _player2_life;
 	private ALittle.Text _stage_num;
@@ -101,6 +103,9 @@ public class BattleScene : ALittle.DisplayLayout
     
         this._player_1.RemoveFromParent();
         this._player_2.RemoveFromParent();
+
+        this._player1_contianer.visible = g_GCenter.player_count >= 1;
+        this._player2_contianer.visible = g_GCenter.player_count >= 2;
 
         this._quad_up.y = 0;
         this._quad_up.visible = true;
@@ -226,8 +231,29 @@ public class BattleScene : ALittle.DisplayLayout
         }
         return true;
     }
+    
+    // 返回值1：是否碰撞
+    // 返回值2：是否需要爆炸
+    public fun BulletCollisionByEntity(BattleBullet bullet, double left, double top, double right, double bottom) : bool, bool
+    {
+        if (bullet.role.is_enemy && this._player_1.parent != null && bullet.role != this._player_1 && this._player_1.alive && this.Collision(left, top, right, bottom, this._player_1))
+            return true, this._player_1.BeAttack();
 
-    public fun BulletCollision(int row, int col, bool min_or_max, int dir) : bool
+        if (bullet.role.is_enemy && this._player_2.parent != null && bullet.role != this._player_2 && this._player_1.alive && this.Collision(left, top, right, bottom, this._player_2))
+            return true, this._player_2.BeAttack();
+
+        if (!bullet.role.is_enemy)
+        {
+            for (var role, _ in this._enemy_map)
+            {
+                if (role != bullet.role && role.alive && this.Collision(left, top, right, bottom, role))
+                    return true, role.BeAttack();
+            }
+        }
+        return false, false;
+    }
+
+    public fun BulletCollisionByMap(int row, int col, bool min_or_max, int dir) : bool
     {
         var sub_map = this._sprite_map[row];
         if (sub_map == null) return false;
@@ -397,44 +423,44 @@ public class BattleScene : ALittle.DisplayLayout
 
         if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_A])
         {
-            if (this._player_1.parent != null && !this._player_1.alive) return;
-            this._player_1.Walk(DirType.DT_LEFT, frame_time);
+            if (this._player_1.parent != null && this._player_1.alive)
+            	this._player_1.Walk(DirType.DT_LEFT, frame_time);
         }
 		elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_W])
         {
-            if (this._player_1.parent != null && !this._player_1.alive) return;
-            this._player_1.Walk(DirType.DT_UP, frame_time);
+            if (this._player_1.parent != null && this._player_1.alive)
+            	this._player_1.Walk(DirType.DT_UP, frame_time);
         }
 		elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_S])
         {
-            if (this._player_1.parent != null && !this._player_1.alive) return;
-            this._player_1.Walk(DirType.DT_DOWN, frame_time);
+            if (this._player_1.parent != null && this._player_1.alive)
+            	this._player_1.Walk(DirType.DT_DOWN, frame_time);
         }
         elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_D])
         {
-            if (this._player_1.parent != null && !this._player_1.alive) return;
-            this._player_1.Walk(DirType.DT_RIGHT, frame_time);
+            if (this._player_1.parent != null && this._player_1.alive)
+            	this._player_1.Walk(DirType.DT_RIGHT, frame_time);
         }
 
         if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_LEFT])
         {
-            if (this._player_2.parent != null && !this._player_2.alive) return;
-            this._player_2.Walk(DirType.DT_LEFT, frame_time);
+            if (this._player_2.parent != null && this._player_2.alive)
+            	this._player_2.Walk(DirType.DT_LEFT, frame_time);
         }
 		elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_UP])
         {
-            if (this._player_2.parent != null && !this._player_2.alive) return;
-            this._player_2.Walk(DirType.DT_UP, frame_time);
+            if (this._player_2.parent != null && this._player_2.alive)
+            	this._player_2.Walk(DirType.DT_UP, frame_time);
         }
         elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_DOWN])
         {
-            if (this._player_2.parent != null && !this._player_2.alive) return;
-            this._player_2.Walk(DirType.DT_DOWN, frame_time);
+            if (this._player_2.parent != null && this._player_2.alive)
+            	this._player_2.Walk(DirType.DT_DOWN, frame_time);
         }
         elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_RIGHT])
         {
-            if (this._player_2.parent != null && !this._player_2.alive) return;
-            this._player_2.Walk(DirType.DT_RIGHT, frame_time);
+            if (this._player_2.parent != null && this._player_2.alive)
+            	this._player_2.Walk(DirType.DT_RIGHT, frame_time);
         }
 
         if (this._player_1.parent != null) this._player_1.UpdateFrame(frame_time);
@@ -458,9 +484,37 @@ public class BattleScene : ALittle.DisplayLayout
         }
     }
 
-    public fun RoleDeath(BattleRole player)
+    public fun RoleDeath(BattleRole role)
     {
+        this._entity_container.RemoveChild(role);
 
+        if (role == this._player_1)
+        {
+            if (g_GCenter.player_count >= 1 && g_GCenter.player1_data.life > 0)
+            {
+                g_GCenter.player1_data.life -= 1;
+                g_GCenter.player1_data.level = 1;
+                this._player1_life.text = g_GCenter.player1_data.life;
+                this._entity_container.AddChild(this._player_1);
+                this._player_1.StartBorn(12 * 4, 4* 4 + 2, g_GCenter.player1_data.level, DirType.DT_UP, 0.08);
+            }
+        }
+        elseif (role == this._player_2)
+        {
+            if (g_GCenter.player_count >= 2 && g_GCenter.player2_data.life > 0)
+            {
+                g_GCenter.player2_data.life -= 1;
+                g_GCenter.player2_data.level = 1;
+                this._player2_life.text = g_GCenter.player2_data.life;
+                this._entity_container.AddChild(this._player_2);
+                this._player_2.StartBorn(12 * 4, 4* 4 + 2, g_GCenter.player2_data.level, DirType.DT_UP, 0.08);
+            }
+        }
+        else
+        {
+            this._enemy_map[role] = null;
+            this._enemy_count -= 1;
+        }
     }
 
     public fun BulletDeath(BattleBullet bullet)

@@ -24,6 +24,10 @@ function BattleCity.BattleRole:TCtor()
 	self._effect_explosion.visible = false
 end
 
+function BattleCity.BattleRole.__getter:is_enemy()
+	return false
+end
+
 function BattleCity.BattleRole.__getter:alive()
 	if self._effect_born.visible then
 		return false
@@ -57,6 +61,10 @@ function BattleCity.BattleRole:UpdateFrame(frame_time)
 end
 
 function BattleCity.BattleRole:UpdateWalk(frame_time)
+end
+
+function BattleCity.BattleRole:BeAttack()
+	return true
 end
 
 function BattleCity.BattleRole:Fire()
@@ -241,7 +249,8 @@ function BattleCity.BattleRole:Walk(dir, frame_time)
 end
 
 function BattleCity.BattleRole:HandleExplosionEnd()
-	g_GCenter.battle_scene:RoleDeath(self)
+	local loop = ALittle.LoopTimer(Lua.Bind(g_GCenter.battle_scene.RoleDeath, g_GCenter.battle_scene, self), 0)
+	loop:Start()
 end
 
 function BattleCity.BattleRole:HandleShieldStop()

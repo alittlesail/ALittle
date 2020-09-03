@@ -43,6 +43,19 @@ function BattleCity.BattleEnemy:HandleBornEnd()
 	self:UpdateWalk(0)
 end
 
+function BattleCity.BattleEnemy:BeAttack()
+	if self._flash then
+		self._flash = false
+		return false
+	end
+	self:StartExplosion()
+	return true
+end
+
+function BattleCity.BattleEnemy.__getter:is_enemy()
+	return true
+end
+
 function BattleCity.BattleEnemy:UpdateFrame(frame_time)
 	if self.alive then
 		self._changed_frame = self._changed_frame + (frame_time * 0.001)
@@ -65,7 +78,6 @@ function BattleCity.BattleEnemy:UpdateFrame(frame_time)
 		end
 	end
 	self:UpdateSpriteCol(frame_time)
-	return true
 end
 
 function BattleCity.BattleEnemy:UpdateWalk(frame_time)

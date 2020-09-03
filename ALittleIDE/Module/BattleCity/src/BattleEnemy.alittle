@@ -41,6 +41,21 @@ public class BattleEnemy : BattleRole
         this.UpdateWalk(0);
     }
 
+    // 返回值：是否需要爆炸
+    public fun BeAttack() : bool
+    {
+        if (this._flash)
+        {
+            this._flash = false;
+            return false;
+        }
+
+        this.StartExplosion();
+        return true;
+    }
+
+    public get is_enemy() : bool { return true; }
+
     public fun UpdateFrame(int frame_time)
     {
         if (this.alive)

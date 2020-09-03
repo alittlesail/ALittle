@@ -67,6 +67,8 @@ function BattleCity.BattleScene:Show(stage)
 	self._entity_container:RemoveAllChild()
 	self._player_1:RemoveFromParent()
 	self._player_2:RemoveFromParent()
+	self._player1_contianer.visible = g_GCenter.player_count >= 1
+	self._player2_contianer.visible = g_GCenter.player_count >= 2
 	self._quad_up.y = 0
 	self._quad_up.visible = true
 	self._quad_down.y = 0
@@ -182,7 +184,24 @@ function BattleCity.BattleScene:CanWalkByEntity(entity, left, top, right, bottom
 	return true
 end
 
-function BattleCity.BattleScene:BulletCollision(row, col, min_or_max, dir)
+function BattleCity.BattleScene:BulletCollisionByEntity(bullet, left, top, right, bottom)
+	if bullet.role.is_enemy and self._player_1.parent ~= nil and bullet.role ~= self._player_1 and self._player_1.alive and self:Collision(left, top, right, bottom, self._player_1) then
+		return true, self._player_1:BeAttack()
+	end
+	if bullet.role.is_enemy and self._player_2.parent ~= nil and bullet.role ~= self._player_2 and self._player_1.alive and self:Collision(left, top, right, bottom, self._player_2) then
+		return true, self._player_2:BeAttack()
+	end
+	if not bullet.role.is_enemy then
+		for role, _ in ___pairs(self._enemy_map) do
+			if role ~= bullet.role and role.alive and self:Collision(left, top, right, bottom, role) then
+				return true, role:BeAttack()
+			end
+		end
+	end
+	return false, false
+end
+
+function BattleCity.BattleScene:BulletCollisionByMap(row, col, min_or_max, dir)
 	local sub_map = self._sprite_map[row]
 	if sub_map == nil then
 		return false
@@ -329,46 +348,38 @@ function BattleCity.BattleScene:HandleFrame(frame_time)
 		end
 	end
 	if A_UISystem.sym_map[97] then
-		if self._player_1.parent ~= nil and not self._player_1.alive then
-			return
+		if self._player_1.parent ~= nil and self._player_1.alive then
+			self._player_1:Walk(BattleCity.DirType.DT_LEFT, frame_time)
 		end
-		self._player_1:Walk(BattleCity.DirType.DT_LEFT, frame_time)
 	elseif A_UISystem.sym_map[119] then
-		if self._player_1.parent ~= nil and not self._player_1.alive then
-			return
+		if self._player_1.parent ~= nil and self._player_1.alive then
+			self._player_1:Walk(BattleCity.DirType.DT_UP, frame_time)
 		end
-		self._player_1:Walk(BattleCity.DirType.DT_UP, frame_time)
 	elseif A_UISystem.sym_map[115] then
-		if self._player_1.parent ~= nil and not self._player_1.alive then
-			return
+		if self._player_1.parent ~= nil and self._player_1.alive then
+			self._player_1:Walk(BattleCity.DirType.DT_DOWN, frame_time)
 		end
-		self._player_1:Walk(BattleCity.DirType.DT_DOWN, frame_time)
 	elseif A_UISystem.sym_map[100] then
-		if self._player_1.parent ~= nil and not self._player_1.alive then
-			return
+		if self._player_1.parent ~= nil and self._player_1.alive then
+			self._player_1:Walk(BattleCity.DirType.DT_RIGHT, frame_time)
 		end
-		self._player_1:Walk(BattleCity.DirType.DT_RIGHT, frame_time)
 	end
 	if A_UISystem.sym_map[1073741904] then
-		if self._player_2.parent ~= nil and not self._player_2.alive then
-			return
+		if self._player_2.parent ~= nil and self._player_2.alive then
+			self._player_2:Walk(BattleCity.DirType.DT_LEFT, frame_time)
 		end
-		self._player_2:Walk(BattleCity.DirType.DT_LEFT, frame_time)
 	elseif A_UISystem.sym_map[1073741906] then
-		if self._player_2.parent ~= nil and not self._player_2.alive then
-			return
+		if self._player_2.parent ~= nil and self._player_2.alive then
+			self._player_2:Walk(BattleCity.DirType.DT_UP, frame_time)
 		end
-		self._player_2:Walk(BattleCity.DirType.DT_UP, frame_time)
 	elseif A_UISystem.sym_map[1073741905] then
-		if self._player_2.parent ~= nil and not self._player_2.alive then
-			return
+		if self._player_2.parent ~= nil and self._player_2.alive then
+			self._player_2:Walk(BattleCity.DirType.DT_DOWN, frame_time)
 		end
-		self._player_2:Walk(BattleCity.DirType.DT_DOWN, frame_time)
 	elseif A_UISystem.sym_map[1073741903] then
-		if self._player_2.parent ~= nil and not self._player_2.alive then
-			return
+		if self._player_2.parent ~= nil and self._player_2.alive then
+			self._player_2:Walk(BattleCity.DirType.DT_RIGHT, frame_time)
 		end
-		self._player_2:Walk(BattleCity.DirType.DT_RIGHT, frame_time)
 	end
 	if self._player_1.parent ~= nil then
 		self._player_1:UpdateFrame(frame_time)
@@ -399,7 +410,28 @@ function BattleCity.BattleScene:HandleKeyDown(mod, sym, scancode)
 	end
 end
 
-function BattleCity.BattleScene:RoleDeath(player)
+function BattleCity.BattleScene:RoleDeath(role)
+	self._entity_container:RemoveChild(role)
+	if role == self._player_1 then
+		if g_GCenter.player_count >= 1 and g_GCenter.player1_data.life > 0 then
+			g_GCenter.player1_data.life = g_GCenter.player1_data.life - (1)
+			g_GCenter.player1_data.level = 1
+			self._player1_life.text = g_GCenter.player1_data.life
+			self._entity_container:AddChild(self._player_1)
+			self._player_1:StartBorn(12 * 4, 4 * 4 + 2, g_GCenter.player1_data.level, BattleCity.DirType.DT_UP, 0.08)
+		end
+	elseif role == self._player_2 then
+		if g_GCenter.player_count >= 2 and g_GCenter.player2_data.life > 0 then
+			g_GCenter.player2_data.life = g_GCenter.player2_data.life - (1)
+			g_GCenter.player2_data.level = 1
+			self._player2_life.text = g_GCenter.player2_data.life
+			self._entity_container:AddChild(self._player_2)
+			self._player_2:StartBorn(12 * 4, 4 * 4 + 2, g_GCenter.player2_data.level, BattleCity.DirType.DT_UP, 0.08)
+		end
+	else
+		self._enemy_map[role] = nil
+		self._enemy_count = self._enemy_count - (1)
+	end
 end
 
 function BattleCity.BattleScene:BulletDeath(bullet)

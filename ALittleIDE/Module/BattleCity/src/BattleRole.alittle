@@ -24,6 +24,8 @@ public class BattleRole : ALittle.DisplayLayout
         this._effect_explosion.visible = false;
     }
 
+    public get is_enemy() : bool { return false; }
+
     public get alive() : bool
     {
         if (this._effect_born.visible) return false;
@@ -59,6 +61,12 @@ public class BattleRole : ALittle.DisplayLayout
 
     private fun UpdateWalk(int frame_time)
     {
+    }
+
+    // 返回值：是否需要爆炸
+    public fun BeAttack() : bool
+    {
+        return true;
     }
 
     public fun Fire()
@@ -214,7 +222,8 @@ public class BattleRole : ALittle.DisplayLayout
 
     private fun HandleExplosionEnd()
     {
-        g_GCenter.battle_scene.RoleDeath(this);
+        var loop = new ALittle.LoopTimer(bind(g_GCenter.battle_scene.RoleDeath, g_GCenter.battle_scene, this), 0);
+        loop.Start();
     }
 
     private fun HandleShieldStop()

@@ -268,25 +268,20 @@ public class BattleScene : ALittle.DisplayLayout
         {
             if (dir == DirType.DT_UP || dir == DirType.DT_DOWN)
             {
-                this.TryRemoveWall(row, col - 1);
                 this.TryRemoveWall(row, col);
-                this.TryRemoveWall(row, col + 1);
-
                 if (min_or_max)
-                    this.TryRemoveWall(row, col - 2);
+                    this.TryRemoveWall(row, col - 1);
                 else
-                    this.TryRemoveWall(row, col + 2);
+                    this.TryRemoveWall(row, col + 1);
             }
             else
             {
-                this.TryRemoveWall(row - 1, col);
                 this.TryRemoveWall(row, col);
-                this.TryRemoveWall(row + 1, col);
 
                 if (min_or_max)
-                	this.TryRemoveWall(row - 2, col);
+                	this.TryRemoveWall(row - 1, col);
                 else
-                    this.TryRemoveWall(row + 2, col);
+                    this.TryRemoveWall(row + 1, col);
             }
             return true;
         }

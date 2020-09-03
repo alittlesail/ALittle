@@ -222,22 +222,18 @@ function BattleCity.BattleScene:BulletCollision(row, col, min_or_max, dir)
 	end
 	if sprite.col_index >= (BattleCity.BrushType.BT_WALL - 1) * 4 + 1 and sprite.col_index <= (BattleCity.BrushType.BT_WALL) * 4 then
 		if dir == BattleCity.DirType.DT_UP or dir == BattleCity.DirType.DT_DOWN then
-			self:TryRemoveWall(row, col - 1)
 			self:TryRemoveWall(row, col)
-			self:TryRemoveWall(row, col + 1)
 			if min_or_max then
-				self:TryRemoveWall(row, col - 2)
+				self:TryRemoveWall(row, col - 1)
 			else
-				self:TryRemoveWall(row, col + 2)
+				self:TryRemoveWall(row, col + 1)
 			end
 		else
-			self:TryRemoveWall(row - 1, col)
 			self:TryRemoveWall(row, col)
-			self:TryRemoveWall(row + 1, col)
 			if min_or_max then
-				self:TryRemoveWall(row - 2, col)
+				self:TryRemoveWall(row - 1, col)
 			else
-				self:TryRemoveWall(row + 2, col)
+				self:TryRemoveWall(row + 1, col)
 			end
 		end
 		return true

@@ -44,8 +44,8 @@ public class BattleBullet : ALittle.DisplayLayout
                 var col_max = ALittle.Math_Floor((this.x + this.width - 1) / g_GCenter.battle_scene.cell_size);
 
                 if (g_GCenter.battle_scene.BulletCollision(row, col_min, true, this._dir)) explosion = true;
-                elseif (g_GCenter.battle_scene.BulletCollision(row, col_max, false, this._dir)) explosion = true;
-                elseif (this.y <= 0) explosion = true;
+                if (g_GCenter.battle_scene.BulletCollision(row, col_max, false, this._dir)) explosion = true;
+                if (this.y <= 0) explosion = true;
             }
             elseif (this._dir == DirType.DT_RIGHT)
             {
@@ -56,8 +56,8 @@ public class BattleBullet : ALittle.DisplayLayout
                 var col = ALittle.Math_Floor((this.x + this.width) / g_GCenter.battle_scene.cell_size);
 
                 if (g_GCenter.battle_scene.BulletCollision(row_min, col, true, this._dir)) explosion = true;
-                elseif (g_GCenter.battle_scene.BulletCollision(row_max, col, false, this._dir)) explosion = true;
-                elseif (this.x + this.width >= g_GCenter.battle_scene.map_size) explosion = true;
+                if (g_GCenter.battle_scene.BulletCollision(row_max, col, false, this._dir)) explosion = true;
+                if (this.x + this.width >= g_GCenter.battle_scene.map_size) explosion = true;
             }
             elseif (this._dir == DirType.DT_DOWN)
             {
@@ -68,8 +68,8 @@ public class BattleBullet : ALittle.DisplayLayout
                 var col_max = ALittle.Math_Floor((this.x + this.width - 1) / g_GCenter.battle_scene.cell_size);
 
                 if (g_GCenter.battle_scene.BulletCollision(row, col_min, true, this._dir)) explosion = true;
-                elseif (g_GCenter.battle_scene.BulletCollision(row, col_max, false, this._dir)) explosion = true;
-                elseif (this.y + this.height >= g_GCenter.battle_scene.map_size) explosion = true;
+                if (g_GCenter.battle_scene.BulletCollision(row, col_max, false, this._dir)) explosion = true;
+                if (this.y + this.height >= g_GCenter.battle_scene.map_size) explosion = true;
             }
             else
             {
@@ -80,8 +80,8 @@ public class BattleBullet : ALittle.DisplayLayout
                 var col = ALittle.Math_Floor(this.x / g_GCenter.battle_scene.cell_size);
 
                 if (g_GCenter.battle_scene.BulletCollision(row_min, col, true, this._dir)) explosion = true;
-                elseif (g_GCenter.battle_scene.BulletCollision(row_max, col, false, this._dir)) explosion = true;
-                elseif (this.x <= 0) explosion = true;
+                if (g_GCenter.battle_scene.BulletCollision(row_max, col, false, this._dir)) explosion = true;
+                if (this.x <= 0) explosion = true;
             }
         }
         else

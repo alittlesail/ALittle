@@ -36,9 +36,11 @@ function BattleCity.BattleBullet:UpdateFrame(frame_time)
 			local col_max = ALittle.Math_Floor((self.x + self.width - 1) / g_GCenter.battle_scene.cell_size)
 			if g_GCenter.battle_scene:BulletCollision(row, col_min, true, self._dir) then
 				explosion = true
-			elseif g_GCenter.battle_scene:BulletCollision(row, col_max, false, self._dir) then
+			end
+			if g_GCenter.battle_scene:BulletCollision(row, col_max, false, self._dir) then
 				explosion = true
-			elseif self.y <= 0 then
+			end
+			if self.y <= 0 then
 				explosion = true
 			end
 		elseif self._dir == BattleCity.DirType.DT_RIGHT then
@@ -48,9 +50,11 @@ function BattleCity.BattleBullet:UpdateFrame(frame_time)
 			local col = ALittle.Math_Floor((self.x + self.width) / g_GCenter.battle_scene.cell_size)
 			if g_GCenter.battle_scene:BulletCollision(row_min, col, true, self._dir) then
 				explosion = true
-			elseif g_GCenter.battle_scene:BulletCollision(row_max, col, false, self._dir) then
+			end
+			if g_GCenter.battle_scene:BulletCollision(row_max, col, false, self._dir) then
 				explosion = true
-			elseif self.x + self.width >= g_GCenter.battle_scene.map_size then
+			end
+			if self.x + self.width >= g_GCenter.battle_scene.map_size then
 				explosion = true
 			end
 		elseif self._dir == BattleCity.DirType.DT_DOWN then
@@ -60,9 +64,11 @@ function BattleCity.BattleBullet:UpdateFrame(frame_time)
 			local col_max = ALittle.Math_Floor((self.x + self.width - 1) / g_GCenter.battle_scene.cell_size)
 			if g_GCenter.battle_scene:BulletCollision(row, col_min, true, self._dir) then
 				explosion = true
-			elseif g_GCenter.battle_scene:BulletCollision(row, col_max, false, self._dir) then
+			end
+			if g_GCenter.battle_scene:BulletCollision(row, col_max, false, self._dir) then
 				explosion = true
-			elseif self.y + self.height >= g_GCenter.battle_scene.map_size then
+			end
+			if self.y + self.height >= g_GCenter.battle_scene.map_size then
 				explosion = true
 			end
 		else
@@ -72,9 +78,11 @@ function BattleCity.BattleBullet:UpdateFrame(frame_time)
 			local col = ALittle.Math_Floor(self.x / g_GCenter.battle_scene.cell_size)
 			if g_GCenter.battle_scene:BulletCollision(row_min, col, true, self._dir) then
 				explosion = true
-			elseif g_GCenter.battle_scene:BulletCollision(row_max, col, false, self._dir) then
+			end
+			if g_GCenter.battle_scene:BulletCollision(row_max, col, false, self._dir) then
 				explosion = true
-			elseif self.x <= 0 then
+			end
+			if self.x <= 0 then
 				explosion = true
 			end
 		end

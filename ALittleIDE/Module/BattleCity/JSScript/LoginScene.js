@@ -13,7 +13,6 @@ BattleCity.LoginScene = JavaScript.Class(ALittle.DisplayLayout, {
 		this._last_score_2.text = BattleCity.g_GConfig.GetInt("last_score_2", 0);
 		this._cursor.Stop();
 		this.disabled = true;
-		this._edit_text.visible = A_ModuleSystem.GetDebugInfo() === "debug";
 	},
 	Show : function() {
 		this.visible = true;
@@ -48,14 +47,8 @@ BattleCity.LoginScene = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		if (sym === 103) {
 			this._select_option = this._select_option + (1);
-			if (A_ModuleSystem.GetDebugInfo() === "debug") {
-				if (this._select_option > 4) {
-					this._select_option = 1;
-				}
-			} else {
-				if (this._select_option > 3) {
-					this._select_option = 1;
-				}
+			if (this._select_option > 3) {
+				this._select_option = 1;
 			}
 			if (this._select_option === 1) {
 				this._cursor.y = this._1_player_text.y + this._1_player_text.height / 2 - this._cursor.height / 2;

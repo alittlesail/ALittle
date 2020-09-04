@@ -1836,7 +1836,8 @@ ALittle.IFileLoader = JavaScript.Class(undefined, {
 if (ALittle.IFileLoader === undefined) throw new Error(" extends class:ALittle.IFileLoader is undefined");
 ALittle.JFileLoader = JavaScript.Class(ALittle.IFileLoader, {
 	Load : function(file_path) {
-		return JavaScript.File_LoadFile(file_path);
+		let [content, buffer] = JavaScript.File_LoadFile(file_path);
+		return content;
 	},
 }, "ALittle.JFileLoader");
 
@@ -1849,7 +1850,7 @@ ALittle.IFileSaver = JavaScript.Class(undefined, {
 if (ALittle.IFileSaver === undefined) throw new Error(" extends class:ALittle.IFileSaver is undefined");
 ALittle.JFileSaver = JavaScript.Class(ALittle.IFileSaver, {
 	Save : function(file_path, content) {
-		return JavaScript.File_SaveFile(file_path, content);
+		return JavaScript.File_SaveFile(file_path, content, undefined);
 	},
 }, "ALittle.JFileSaver");
 
@@ -1974,7 +1975,7 @@ ALittle.File_GetJustFileNameByPath = function(file_path) {
 
 ALittle.File_ReadJsonFromStdFile = function(file_path) {
 	{
-		let content = JavaScript.File_LoadFile(file_path);
+		let [content] = JavaScript.File_LoadFile(file_path);
 		if (content === undefined) {
 			return [undefined, file_path + " load failed"];
 		}
@@ -1988,19 +1989,20 @@ ALittle.File_ReadJsonFromStdFile = function(file_path) {
 
 ALittle.File_WriteJsonFromStdFile = function(content, file_path) {
 	{
-		return JavaScript.File_SaveFile(file_path, JSON.stringify(content));
+		return JavaScript.File_SaveFile(file_path, JSON.stringify(content), undefined);
 	}
 }
 
 ALittle.File_ReadTextFromStdFile = function(file_path) {
 	{
-		return JavaScript.File_LoadFile(file_path);
+		let [content, buffer] = JavaScript.File_LoadFile(file_path);
+		return content;
 	}
 }
 
 ALittle.File_WriteTextFromStdFile = function(content, file_path) {
 	{
-		return JavaScript.File_SaveFile(file_path, content);
+		return JavaScript.File_SaveFile(file_path, content, undefined);
 	}
 }
 
@@ -2403,7 +2405,7 @@ ALittle.IHttpFileSenderNative = JavaScript.Class(undefined, {
 	GetID : function() {
 		return 0;
 	},
-	SetURL : function(url, file_path, download, start_size) {
+	SetURL : function(url, file_path, download, start_size, array_buffer) {
 	},
 	Start : function() {
 	},
@@ -2434,7 +2436,7 @@ ALittle.HttpFileSenderTemplate = JavaScript.Class(ALittle.IHttpFileSender, {
 		this._cur_size = 0;
 		this._total_size = 0;
 	},
-	SendDownloadRPC : function(thread, method, content) {
+	SendDownloadRPC : function(thread, method, content, array_buffer) {
 		this._thread = thread;
 		__HttpFileSenderMap.set(this._interface.GetID(), this);
 		if (this._start_size === undefined) {
@@ -2452,17 +2454,17 @@ ALittle.HttpFileSenderTemplate = JavaScript.Class(ALittle.IHttpFileSender, {
 				}
 			}
 		}
-		this._interface.SetURL(this.HttpUrlAppendParamMap(url, content), this._file_path, true, this._start_size);
+		this._interface.SetURL(this.HttpUrlAppendParamMap(url, content), this._file_path, true, this._start_size, array_buffer);
 		this._interface.Start();
 	},
-	SendUploadRPC : function(thread, method, content) {
+	SendUploadRPC : function(thread, method, content, array_buffer) {
 		this._thread = thread;
 		__HttpFileSenderMap.set(this._interface.GetID(), this);
 		if (this._start_size === undefined) {
 			this._start_size = 0;
 		}
 		let url = "http://" + this._ip + ":" + this._port + "/" + method;
-		this._interface.SetURL(this.HttpUrlAppendParamMap(url, content), this._file_path, false, this._start_size);
+		this._interface.SetURL(this.HttpUrlAppendParamMap(url, content), this._file_path, false, this._start_size, array_buffer);
 		this._interface.Start();
 	},
 	Stop : function() {
@@ -2544,19 +2546,19 @@ ALittle.__ALITTLEAPI_HttpFileProcess = function(id, cur_size, total_size) {
 	client.HandleProcess(cur_size, total_size);
 }
 
-ALittle.DownloadFile = function(ip, port, method, file_path) {
+ALittle.DownloadFile = function(ip, port, method, file_path, array_buffer) {
 	return new Promise(async function(___COROUTINE, ___) {
 		let sender = undefined;
 		sender = ALittle.NewObject(JavaScript.Template(ALittle.HttpFileSenderTemplate, "ALittle.HttpFileSenderTemplate<JavaScript.JHttpFileInterface>", JavaScript.JHttpFileInterface), ip, port, file_path, 0);
-		___COROUTINE(await ALittle.IHttpFileSender.InvokeDownload(method, sender, undefined)); return;
+		___COROUTINE(await ALittle.IHttpFileSender.InvokeDownload(method, sender, undefined, array_buffer)); return;
 	});
 }
 
-ALittle.UploadFile = function(ip, port, method, file_path) {
+ALittle.UploadFile = function(ip, port, method, file_path, array_buffer) {
 	return new Promise(async function(___COROUTINE, ___) {
 		let sender = undefined;
 		sender = ALittle.NewObject(JavaScript.Template(ALittle.HttpFileSenderTemplate, "ALittle.HttpFileSenderTemplate<JavaScript.JHttpFileInterface>", JavaScript.JHttpFileInterface), ip, port, file_path, 0);
-		let error = await ALittle.IHttpFileSender.InvokeUpload(method, sender, undefined);
+		let error = await ALittle.IHttpFileSender.InvokeUpload(method, sender, undefined, array_buffer);
 		___COROUTINE(error); return;
 	});
 }
@@ -3174,8 +3176,8 @@ if (typeof JavaScript === "undefined") window.JavaScript = {};
 
 ALittle.RegStruct(-1393456776, "JavaScript.FileInfo", {
 name : "JavaScript.FileInfo", ns_name : "JavaScript", rl_name : "FileInfo", hash_code : -1393456776,
-name_list : ["parent","name","content","is_directory","file"],
-type_list : ["JavaScript.FileInfo","string","string","bool","Map<string,JavaScript.FileInfo>"],
+name_list : ["parent","name","content","buffer","is_directory","file"],
+type_list : ["JavaScript.FileInfo","string","string","native javascript.ArrayBuffer","bool","Map<string,JavaScript.FileInfo>"],
 option_map : {}
 })
 
@@ -3334,7 +3336,11 @@ JavaScript.File_GetFileAttr = function(path) {
 	if (cur_file.is_directory) {
 		attr.mode = "directory";
 	} else {
-		attr.size = ALittle.String_Len(cur_file.content);
+		if (cur_file.buffer !== undefined) {
+			attr.size = cur_file.buffer.byteLength;
+		} else {
+			attr.size = ALittle.String_Len(cur_file.content);
+		}
 	}
 	return attr;
 }
@@ -3572,36 +3578,36 @@ JavaScript.File_LoadFile = function(path) {
 	let cur = root;
 	for (let i = 1; i <= list_len - 1; i += 1) {
 		if (cur.file === undefined) {
-			return undefined;
+			return [undefined, undefined];
 		}
 		let file = cur.file[list[i - 1]];
 		if (file === undefined) {
-			return undefined;
+			return [undefined, undefined];
 		}
 		if (!file.is_directory) {
-			return undefined;
+			return [undefined, undefined];
 		}
 		cur = file;
 	}
 	if (cur.file === undefined) {
-		return undefined;
+		return [undefined, undefined];
 	}
 	let cur_file = cur.file[list[list_len - 1]];
 	if (cur_file === undefined || cur_file.is_directory) {
-		return undefined;
+		return [undefined, undefined];
 	}
-	return cur_file.content;
+	return [cur_file.content, cur_file.buffer];
 }
 
 JavaScript.File_CopyFile = function(src_path, dst_path) {
-	let content = JavaScript.File_LoadFile(src_path);
-	if (content === undefined) {
+	let [content, buffer] = JavaScript.File_LoadFile(src_path);
+	if (content === undefined && buffer === undefined) {
 		return false;
 	}
-	return JavaScript.File_SaveFile(dst_path, content);
+	return JavaScript.File_SaveFile(dst_path, content, buffer);
 }
 
-JavaScript.File_SaveFile = function(path, content) {
+JavaScript.File_SaveFile = function(path, content, buffer) {
 	let list = Path_FilterEmpty(ALittle.String_SplitSepList(path, ["/", "\\"]));
 	let list_len = ALittle.List_MaxN(list);
 	let cur = root;
@@ -3623,6 +3629,7 @@ JavaScript.File_SaveFile = function(path, content) {
 	}
 	let file = {};
 	file.content = content;
+	file.buffer = buffer;
 	file.is_directory = false;
 	file.name = list[list_len - 1];
 	file.parent = cur;
@@ -3704,7 +3711,7 @@ JavaScript.JCsvFile = JavaScript.Class(ALittle.ICsvFile, {
 		return true;
 	},
 	Load : function(path) {
-		let content = JavaScript.File_LoadFile(path);
+		let [content] = JavaScript.File_LoadFile(path);
 		if (content === undefined) {
 			ALittle.Error("file load failed:" + path);
 			return false;
@@ -3874,16 +3881,18 @@ JavaScript.JHttpFileInterface = JavaScript.Class(ALittle.IHttpFileSenderNative, 
 	GetID : function() {
 		return this._id;
 	},
-	SetURL : function(url, file_path, download, start_size) {
+	SetURL : function(url, file_path, download, start_size, array_buffer) {
 		this._url = url;
 		this._file_path = file_path;
 		this._download = download;
+		this._array_buffer = array_buffer;
 	},
 	Start : function() {
 		let content = undefined;
+		let buffer = undefined;
 		if (!this._download) {
-			content = JavaScript.File_LoadFile(this._file_path);
-			if (content === undefined) {
+			[content, buffer] = JavaScript.File_LoadFile(this._file_path);
+			if (content === undefined && buffer === undefined) {
 				ALittle.__ALITTLEAPI_HttpFileFailed(this._id, "file is not exist:" + this._file_path);
 				return;
 			}
@@ -3894,6 +3903,9 @@ JavaScript.JHttpFileInterface = JavaScript.Class(ALittle.IHttpFileSenderNative, 
 		} else {
 			this._request.open("POST", this._url, true);
 		}
+		if (this._array_buffer) {
+			this._request.responseType = "arraybuffer";
+		}
 		let error_func = this.HandleError.bind(this);
 		this._request.onerror = error_func;
 		this._request.ontimeout = error_func;
@@ -3901,8 +3913,10 @@ JavaScript.JHttpFileInterface = JavaScript.Class(ALittle.IHttpFileSenderNative, 
 		this._request.onprogress = this.HandleOnProgress.bind(this);
 		if (this._download) {
 			this._request.send(undefined);
-		} else {
+		} else if (content !== undefined) {
 			this._request.send(content);
+		} else {
+			this._request.send(new Uint8Array(buffer));
 		}
 	},
 	Stop : function() {
@@ -3916,11 +3930,21 @@ JavaScript.JHttpFileInterface = JavaScript.Class(ALittle.IHttpFileSenderNative, 
 	GetContent : function() {
 		return this._request.responseText;
 	},
+	GetResponse : function() {
+		return this._request.response;
+	},
 	HandleError : function() {
 		ALittle.__ALITTLEAPI_HttpFileFailed(this._id, this._request.statusText);
 	},
 	HandleCompleted : function() {
-		if (this._download && !JavaScript.File_SaveFile(this._file_path, this._request.responseText)) {
+		let content = undefined;
+		let buffer = undefined;
+		if (this._array_buffer) {
+			buffer = this._request.response;
+		} else {
+			content = this._request.responseText;
+		}
+		if (this._download && !JavaScript.File_SaveFile(this._file_path, content, buffer)) {
 			ALittle.__ALITTLEAPI_HttpFileFailed(this._id, "file save failed:" + this._file_path);
 			return;
 		}
@@ -3946,16 +3970,18 @@ JavaScript.JHttpFileWxInterface = JavaScript.Class(ALittle.IHttpFileSenderNative
 	GetID : function() {
 		return this._id;
 	},
-	SetURL : function(url, file_path, download, start_size) {
+	SetURL : function(url, file_path, download, start_size, array_buffer) {
 		this._url = url;
 		this._file_path = file_path;
 		this._download = download;
+		this._array_buffer = array_buffer;
 	},
 	Start : function() {
 		let content = undefined;
+		let buffer = undefined;
 		if (!this._download) {
-			content = JavaScript.File_LoadFile(this._file_path);
-			if (content === undefined) {
+			[content, buffer] = JavaScript.File_LoadFile(this._file_path);
+			if (content === undefined && buffer === undefined) {
 				ALittle.__ALITTLEAPI_HttpFileFailed(this._id, "file is not exist:" + this._file_path);
 				return;
 			}
@@ -3968,9 +3994,15 @@ JavaScript.JHttpFileWxInterface = JavaScript.Class(ALittle.IHttpFileSenderNative
 			info.method = "POST";
 		}
 		if (content !== undefined) {
+			info.dataType = "text";
 			info.data = content;
+		} else if (buffer !== undefined) {
+			info.dataType = "arraybuffer";
+			info.data = buffer;
 		}
-		info.dataType = "text";
+		if (this._array_buffer === true) {
+			info.responseType = "arraybuffer";
+		}
 		info.success = this.HandleCompleted.bind(this);
 		info.fail = this.HandleError.bind(this);
 		this._request = window.wx.request(info);
@@ -3990,7 +4022,14 @@ JavaScript.JHttpFileWxInterface = JavaScript.Class(ALittle.IHttpFileSenderNative
 		ALittle.__ALITTLEAPI_HttpFileFailed(this._id, "wx.request failed");
 	},
 	HandleCompleted : function(info) {
-		if (this._download && !JavaScript.File_SaveFile(this._file_path, info.data)) {
+		let content = undefined;
+		let buffer = undefined;
+		if (this._array_buffer) {
+			buffer = info.data;
+		} else {
+			content = info.data;
+		}
+		if (this._download && !JavaScript.File_SaveFile(this._file_path, content, buffer)) {
 			ALittle.__ALITTLEAPI_HttpFileFailed(this._id, "file save failed:" + this._file_path);
 			return;
 		}
@@ -4195,6 +4234,10 @@ JavaScript.JMessageWriteFactory = JavaScript.Class(ALittle.IMessageWriteFactory,
 			new_view.setUint8(12 + i, this._memory.getUint8(i));
 		}
 		return new_data;
+	},
+	WriteToStdFile : function(file_path) {
+		let buffer = this.GetArrayBuffer();
+		return JavaScript.File_SaveFile(file_path, undefined, buffer);
 	},
 }, "JavaScript.JMessageWriteFactory");
 

@@ -3,6 +3,7 @@ namespace ALittle;
 
 public class IMessageWriteFactory
 {
+    public fun WriteToStdFile(string file_path) : bool { return false; }
     public fun SetID(int id) {}
     public fun SetRpcID(int id) {}
     public fun ResetOffset() {}

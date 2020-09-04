@@ -4,6 +4,26 @@ namespace JavaScript;
 
 private var __pixel_ratio = 1;
 
+private var KEY_CODE_MAP = new Map<int, int>();
+private var SCAN_CODE_MAP = new Map<int, int>();
+KEY_CODE_MAP[65] = 97; SCAN_CODE_MAP[65] = 4;	// A
+KEY_CODE_MAP[83] = 115; SCAN_CODE_MAP[83] = 22;	// S
+KEY_CODE_MAP[68] = 100; SCAN_CODE_MAP[68] = 7;	// D
+KEY_CODE_MAP[87] = 119; SCAN_CODE_MAP[87] = 26;	// W
+KEY_CODE_MAP[71] = 103; SCAN_CODE_MAP[71] = 10;	// G
+KEY_CODE_MAP[72] = 104; SCAN_CODE_MAP[72] = 11;	// H
+KEY_CODE_MAP[74] = 106; SCAN_CODE_MAP[74] = 13;	// J
+KEY_CODE_MAP[75] = 107; SCAN_CODE_MAP[75] = 14;	// K
+
+KEY_CODE_MAP[37] = 1073741904; SCAN_CODE_MAP[37] = 80;	// LEFT
+KEY_CODE_MAP[40] = 1073741905; SCAN_CODE_MAP[40] = 81;	// DOWN
+KEY_CODE_MAP[39] = 1073741903; SCAN_CODE_MAP[39] = 79;	// RIGHT
+KEY_CODE_MAP[38] = 1073741906; SCAN_CODE_MAP[38] = 82;	// UP
+KEY_CODE_MAP[97] = 1073741913; SCAN_CODE_MAP[97] = 89;	// 1
+KEY_CODE_MAP[98] = 1073741914; SCAN_CODE_MAP[98] = 90;	// 2
+KEY_CODE_MAP[100] = 1073741916; SCAN_CODE_MAP[100] = 92;	// 4
+KEY_CODE_MAP[101] = 1073741917; SCAN_CODE_MAP[101] = 93;	// 5
+
 public static JSystem_GetDeviceID() : string
 {
     // 先从cookie获取，如果没有就随机生成一个
@@ -153,14 +173,30 @@ private static JSystem_KeyDown(javascript.DomElementOnKeyEvent event)
 {
     var func = cast<Map<string, Functor<(int, int, int)>>>(window)["__ALITTLEAPI_KeyDown"];
     if (func == null) return;
-    func(0, event.keyCode, 0);
+    var mod = 0;
+    if (event.altKey) mod = javascript.bit.bor(ALittle.UIEnumTypes.KMOD_ALT, mod);
+    if (event.ctrlKey) mod = javascript.bit.bor(ALittle.UIEnumTypes.KMOD_CTRL, mod);
+    if (event.shiftKey) mod = javascript.bit.bor(ALittle.UIEnumTypes.KMOD_SHIFT, mod);
+    var key_code = KEY_CODE_MAP[event.keyCode];
+    if (key_code == null) key_code = 0;
+    var scan_code = SCAN_CODE_MAP[event.keyCode];
+    if (scan_code == null) scan_code = 0;
+    func(mod, key_code, scan_code);
 }
 
 private static JSystem_KeyUp(javascript.DomElementOnKeyEvent event)
 {
     var func = cast<Map<string, Functor<(int, int, int)>>>(window)["__ALITTLEAPI_KeyUp"];
     if (func == null) return;
-    func(0, event.keyCode, 0);
+    var mod = 0;
+    if (event.altKey) mod = javascript.bit.bor(ALittle.UIEnumTypes.KMOD_ALT, mod);
+    if (event.ctrlKey) mod = javascript.bit.bor(ALittle.UIEnumTypes.KMOD_CTRL, mod);
+    if (event.shiftKey) mod = javascript.bit.bor(ALittle.UIEnumTypes.KMOD_SHIFT, mod);
+    var key_code = KEY_CODE_MAP[event.keyCode];
+    if (key_code == null) key_code = 0;
+    var scan_code = SCAN_CODE_MAP[event.keyCode];
+    if (scan_code == null) scan_code = 0;
+    func(mod, key_code, scan_code);
 }
 
 public static JSystem_CreateView(string title, int width, int height, int flag, double scale) : bool
@@ -207,8 +243,8 @@ public static JSystem_CreateView(string title, int width, int height, int flag, 
 		A_PixiApp.view.onmouseup = JSystem_MouseUp;
 		A_PixiApp.view.onmousewheel = JSystem_MouseWheel;
 		A_PixiApp.view.onmouseout = JSystem_MouseOut;
-		A_PixiApp.view.onkeydown = JSystem_KeyDown;
-		A_PixiApp.view.onkeyup = JSystem_KeyUp;
+		document.onkeydown = JSystem_KeyDown;
+		document.onkeyup = JSystem_KeyUp;
 	}
     
     A_JDisplaySystem.AddToStage(A_PixiApp.stage);

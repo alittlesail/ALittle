@@ -111,6 +111,12 @@ public class JMessageWriteFactory : ALittle.IMessageWriteFactory
             new_view.setUint8(12 + i, this._memory.getUint8(i));
 		return new_data;
     }
+
+    public fun WriteToStdFile(string file_path) : bool
+    {
+        var buffer = this.GetArrayBuffer();
+        return JavaScript.File_SaveFile(file_path, null, buffer);
+    }
 }
 
 public class JMessageReadFactory : ALittle.IMessageReadFactory

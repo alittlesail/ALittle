@@ -92,6 +92,10 @@ JavaScript.JMessageWriteFactory = JavaScript.Class(ALittle.IMessageWriteFactory,
 		}
 		return new_data;
 	},
+	WriteToStdFile : function(file_path) {
+		let buffer = this.GetArrayBuffer();
+		return JavaScript.File_SaveFile(file_path, undefined, buffer);
+	},
 }, "JavaScript.JMessageWriteFactory");
 
 if (ALittle.IMessageReadFactory === undefined) throw new Error(" extends class:ALittle.IMessageReadFactory is undefined");

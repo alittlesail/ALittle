@@ -16,6 +16,16 @@ ALittle.List_Push = function(list, object) {
 	list.push(object);
 }
 
+ALittle.List_Shuffle = function(list) {
+	let len = ALittle.List_MaxN(list);
+	for (let i = 1; i <= len; i += 1) {
+		let index = ALittle.Math_RandomInt(i, len);
+		let temp = list[index - 1];
+		list[index - 1] = list[i - 1];
+		list[i - 1] = temp;
+	}
+}
+
 ALittle.List_PushList = function(list, other_list) {
 	let ___OBJECT_1 = other_list;
 	for (let index = 1; index <= ___OBJECT_1.length; ++index) {

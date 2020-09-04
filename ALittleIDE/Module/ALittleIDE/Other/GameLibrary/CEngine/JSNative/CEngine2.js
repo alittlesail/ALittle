@@ -9239,6 +9239,7 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		this._log_error = true;
 		this._use_plugin_class = true;
 		this._font_map = {};
+		this._plugin_map = {};
 		this._name_map_info = {};
 		this._name_map_info_cache = {};
 		this._module_name = module_name;
@@ -9286,6 +9287,12 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 	RegisterFont : function(src, dst) {
 		this._font_map[src] = dst;
 	},
+	RegisterPlugin : function(module_name, plugin) {
+		this._plugin_map[module_name] = plugin;
+	},
+	UnRegisterPlugin : function(module_name) {
+		delete this._plugin_map[module_name];
+	},
 	RegisterInfoByHttp : function() {
 		return new Promise((async function(___COROUTINE, ___) {
 			let path = this._ui_path + "../JSUI/ui_all_in_one.json";
@@ -9295,7 +9302,7 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 				ALittle.Error("ui load failed:" + error);
 				___COROUTINE(); return;
 			}
-			let content = JavaScript.File_LoadFile(path);
+			let [content] = JavaScript.File_LoadFile(path);
 			if (content === undefined) {
 				ALittle.Error("ui load failed:" + error);
 				___COROUTINE(); return;
@@ -9323,6 +9330,42 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 			___COROUTINE();
 		}).bind(this));
 	},
+	LoadMessageFromFile : function(T, path) {
+		return new Promise((async function(___COROUTINE, ___) {
+			let module_path = "Module/" + this._module_name + "/" + path;
+			let factory = undefined;
+			{
+				let [content, buffer] = JavaScript.File_LoadFile(module_path);
+				if (buffer === undefined) {
+					ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(module_path));
+					let error = await ALittle.HttpDownloadRequest(this._host, this._port, module_path, module_path, undefined, true);
+					if (error !== undefined) {
+						ALittle.Error(this._host, this._port, module_path, error);
+						___COROUTINE(undefined); return;
+					}
+					[content, buffer] = JavaScript.File_LoadFile(module_path);
+				}
+				if (buffer === undefined) {
+					ALittle.Error("FileLoad fialed:", module_path);
+					___COROUTINE(undefined); return;
+				}
+				ALittle.Log("buffer.byteLength", buffer.byteLength);
+				factory = ALittle.NewObject(JavaScript.JMessageReadFactory, new DataView(buffer), 0);
+			}
+			let rflct = T;
+			let invoke_info = ALittle.CreateMessageInfo(rflct.name);
+			if (invoke_info === undefined) {
+				ALittle.Error("CreateMessageInfo fialed:", module_path);
+				___COROUTINE(undefined); return;
+			}
+			let [data] = ALittle.PS_ReadMessage(factory, invoke_info, undefined, factory.GetDataSize());
+			if (data === undefined) {
+				ALittle.Error("PS_ReadMessage fialed:", module_path);
+				___COROUTINE(undefined); return;
+			}
+			___COROUTINE(data); return;
+		}).bind(this));
+	},
 	RegisterInfo : function(name, info) {
 		this._name_map_info[name] = info;
 		delete this._name_map_info_cache[name];
@@ -9336,6 +9379,14 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		this._name_map_info_cache = {};
 	},
 	CreateControlObject : function(info) {
+		if (info.__module !== undefined && info.__module !== this._module_name) {
+			let plugin = this._plugin_map[info.__module];
+			if (plugin === undefined) {
+				ALittle.Log("unknow module " + info.__module);
+				return undefined;
+			}
+			return plugin.CreateControlObject(info);
+		}
 		let target_class = info.__target_class;
 		if (this._use_plugin_class && target_class !== undefined) {
 			let class_func = info.__class_func;
@@ -9456,10 +9507,9 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		texture.Clear();
 		return result;
 	},
-	CreateControl : function(name, target_logic, parent) {
+	CreateControlImpl : function(name, target_logic, parent) {
 		let info = this.LoadInfo(name);
 		if (info === undefined) {
-			ALittle.Log("can't find control name:" + name);
 			return undefined;
 		}
 		let object = this.CreateControlObject(info);
@@ -9469,8 +9519,36 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		object.Deserialize(info, target_logic, parent);
 		return object;
 	},
+	CreateControl : function(name, target_logic, parent) {
+		let object = this.CreateControlImpl(name, target_logic, parent);
+		if (object !== undefined) {
+			return object;
+		}
+		let ___OBJECT_6 = this._plugin_map;
+		for (let module_name in ___OBJECT_6) {
+			let plugin = ___OBJECT_6[module_name];
+			if (plugin === undefined) continue;
+			object = plugin.CreateControlImpl(name, target_logic, parent);
+			if (object !== undefined) {
+				return object;
+			}
+		}
+		ALittle.Log("can't find control name:" + name);
+		return undefined;
+	},
 	CollectTextureName : function(name, map) {
 		let info = this.LoadInfo(name);
+		if (info === undefined) {
+			let ___OBJECT_7 = this._plugin_map;
+			for (let module_name in ___OBJECT_7) {
+				let plugin = ___OBJECT_7[module_name];
+				if (plugin === undefined) continue;
+				info = plugin.LoadInfo(name);
+				if (info !== undefined) {
+					break;
+				}
+			}
+		}
 		if (info === undefined) {
 			ALittle.Log("can't find control name:" + name);
 			return undefined;
@@ -9487,9 +9565,9 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 			if (json === undefined) {
 				return undefined;
 			}
-			let ___OBJECT_6 = json;
-			for (let key in ___OBJECT_6) {
-				let value = ___OBJECT_6[key];
+			let ___OBJECT_8 = json;
+			for (let key in ___OBJECT_8) {
+				let value = ___OBJECT_8[key];
 				if (value === undefined) continue;
 				this.RegisterInfo(key, value);
 			}
@@ -9504,26 +9582,47 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 			return undefined;
 		}
 		if (info.__include !== undefined) {
-			return this.LoadInfo(info.__include);
+			if (info.__module === undefined || info.__module === this._module_name) {
+				return this.LoadInfo(info.__include);
+			}
+			let plugin = this._plugin_map[info.__module];
+			if (plugin !== undefined) {
+				return plugin.LoadInfo(info.__include);
+			}
+			return undefined;
 		}
 		let extendsv = info.__extends;
 		if (extendsv !== undefined) {
 			if (info.__extends_included !== true) {
-				let control = this.LoadInfo(extendsv);
-				if (control === undefined) {
-					ALittle.Log("ControlSystem CreateInfo extends Failed:" + extendsv);
-					return undefined;
+				let control = undefined;
+				if (info.__module === undefined || info.__module === this._module_name) {
+					control = this.LoadInfo(extendsv);
+					if (control === undefined) {
+						ALittle.Log("ControlSystem CreateInfo extends Failed, can't find control. extends:" + extendsv + " module:" + this._module_name);
+						return undefined;
+					}
+				} else {
+					let plugin = this._plugin_map[info.__module];
+					if (plugin === undefined) {
+						ALittle.Log("ControlSystem CreateInfo extends Failed, can't find plugin. extends:" + extendsv + " module:" + info.__module);
+						return undefined;
+					}
+					control = plugin.LoadInfo(extendsv);
+					if (control === undefined) {
+						ALittle.Log("ControlSystem CreateInfo extends Failed, can't find control. extends:" + extendsv + " module:" + info.__module);
+						return undefined;
+					}
 				}
 				let copy = {};
-				let ___OBJECT_7 = control;
-				for (let key in ___OBJECT_7) {
-					let value = ___OBJECT_7[key];
+				let ___OBJECT_9 = control;
+				for (let key in ___OBJECT_9) {
+					let value = ___OBJECT_9[key];
 					if (value === undefined) continue;
 					copy[key] = value;
 				}
-				let ___OBJECT_8 = info;
-				for (let key in ___OBJECT_8) {
-					let value = ___OBJECT_8[key];
+				let ___OBJECT_10 = info;
+				for (let key in ___OBJECT_10) {
+					let value = ___OBJECT_10[key];
 					if (value === undefined) continue;
 					copy[key] = value;
 				}
@@ -9536,9 +9635,9 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 			}
 		}
 		if (info.__shows_included !== true) {
-			let ___OBJECT_9 = info;
-			for (let key in ___OBJECT_9) {
-				let value = ___OBJECT_9[key];
+			let ___OBJECT_11 = info;
+			for (let key in ___OBJECT_11) {
+				let value = ___OBJECT_11[key];
 				if (value === undefined) continue;
 				if (__byte(key, 1) !== 95 && __type(value) === "table" && (value.__include !== undefined || value.__extends !== undefined || value.__class !== undefined)) {
 					info[key] = this.CreateInfo(value);
@@ -9549,9 +9648,9 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		let childs = info.__childs;
 		if (childs !== undefined) {
 			if (info.__childs_included !== true) {
-				let ___OBJECT_10 = childs;
-				for (let index = 1; index <= ___OBJECT_10.length; ++index) {
-					let child = ___OBJECT_10[index - 1];
+				let ___OBJECT_12 = childs;
+				for (let index = 1; index <= ___OBJECT_12.length; ++index) {
+					let child = ___OBJECT_12[index - 1];
 					if (child === undefined) break;
 					childs[index - 1] = this.CreateInfo(childs[index - 1]);
 				}
@@ -9564,38 +9663,14 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		if (map === undefined) {
 			map = {};
 		}
-		let class_func = undefined;
-		let target_class = info.__target_class;
-		if (this._use_plugin_class && target_class !== undefined) {
-			class_func = window;
-			let ___OBJECT_11 = target_class;
-			for (let index = 1; index <= ___OBJECT_11.length; ++index) {
-				let value = ___OBJECT_11[index - 1];
-				if (value === undefined) break;
-				class_func = class_func[value];
-				if (class_func === undefined) {
-					break;
-				}
-			}
-			if (class_func === undefined) {
-				ALittle.Log("unknow target class." + ALittle.String_Join(target_class, "."));
-			}
-		}
-		if (class_func === undefined) {
-			class_func = ALittle[info.__class];
-		}
-		if (class_func === undefined) {
-			ALittle.Log("unknow class." + info.__class);
-			return map;
-		}
 		let texture_name = info.texture_name;
 		if (texture_name !== undefined && texture_name !== "") {
 			map[texture_name] = true;
 		}
 		let info_t = info;
-		let ___OBJECT_12 = info_t;
-		for (let key in ___OBJECT_12) {
-			let value = ___OBJECT_12[key];
+		let ___OBJECT_13 = info_t;
+		for (let key in ___OBJECT_13) {
+			let value = ___OBJECT_13[key];
 			if (value === undefined) continue;
 			if (__type(value) === "table" && value.__class !== undefined) {
 				this.CollectTextureNameImpl(value, map);
@@ -9603,9 +9678,9 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		}
 		let childs = info.__childs;
 		if (childs !== undefined) {
-			let ___OBJECT_13 = childs;
-			for (let index = 1; index <= ___OBJECT_13.length; ++index) {
-				let value = ___OBJECT_13[index - 1];
+			let ___OBJECT_14 = childs;
+			for (let index = 1; index <= ___OBJECT_14.length; ++index) {
+				let value = ___OBJECT_14[index - 1];
 				if (value === undefined) break;
 				this.CollectTextureNameImpl(value, map);
 			}

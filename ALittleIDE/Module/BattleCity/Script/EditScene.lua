@@ -52,9 +52,15 @@ function BattleCity.EditScene:Save()
 		return
 	end
 	local rflct = ___all_struct[-922796193]
-	local factory = __CPPAPIMessageWriteFactory()
+	local factory
+	factory = __CPPAPIMessageWriteFactory()
+	if factory == nil then
+		ALittle.Error("factory create failed")
+		return
+	end
 	local invoke_info = ALittle.CreateMessageInfo(rflct.name)
 	if invoke_info == nil then
+		ALittle.Error("create message info failed:" .. rflct.name)
 		return
 	end
 	ALittle.PS_WriteMessage(factory, invoke_info, nil, self._cur_data)
@@ -206,6 +212,12 @@ end
 
 function BattleCity.EditScene:HandleSaveClick(event)
 	self:Save()
+end
+
+function BattleCity.EditScene:HandleBackClick(event)
+	self:Save()
+	self.visible = false
+	g_GCenter:Restart()
 end
 
 function BattleCity.EditScene:HandleSizeInputChanged(event)

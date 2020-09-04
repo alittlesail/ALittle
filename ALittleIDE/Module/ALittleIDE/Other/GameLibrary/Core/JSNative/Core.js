@@ -305,6 +305,16 @@ ALittle.List_Push = function(list, object) {
 	list.push(object);
 }
 
+ALittle.List_Shuffle = function(list) {
+	let len = ALittle.List_MaxN(list);
+	for (let i = 1; i <= len; i += 1) {
+		let index = ALittle.Math_RandomInt(i, len);
+		let temp = list[index - 1];
+		list[index - 1] = list[i - 1];
+		list[i - 1] = temp;
+	}
+}
+
 ALittle.List_PushList = function(list, other_list) {
 	let ___OBJECT_1 = other_list;
 	for (let index = 1; index <= ___OBJECT_1.length; ++index) {
@@ -856,27 +866,27 @@ ALittle.IHttpFileSender = JavaScript.Class(undefined, {
 	GetCurSize : function() {
 		return 0;
 	},
-	SendDownloadRPC : function(thread, method, content) {
+	SendDownloadRPC : function(thread, method, content, array_buffer) {
 		throw new Error("not impl");
 	},
-	SendUploadRPC : function(thread, method, content) {
+	SendUploadRPC : function(thread, method, content, array_buffer) {
 		throw new Error("not impl");
 	},
-	InvokeDownload : function(method, client, content) {
+	InvokeDownload : function(method, client, content, array_buffer) {
 		return new Promise(function(___COROUTINE, ___) {
 			if (___COROUTINE === undefined) {
 				___COROUTINE("当前不是协程"); return;
 			}
-			client.SendDownloadRPC(___COROUTINE, method, content);
+			client.SendDownloadRPC(___COROUTINE, method, content, array_buffer);
 			return;
 		});
 	},
-	InvokeUpload : function(method, client, content) {
+	InvokeUpload : function(method, client, content, array_buffer) {
 		return new Promise(function(___COROUTINE, ___) {
 			if (___COROUTINE === undefined) {
 				___COROUTINE("当前不是协程"); return;
 			}
-			client.SendUploadRPC(___COROUTINE, method, content);
+			client.SendUploadRPC(___COROUTINE, method, content, array_buffer);
 			return;
 		});
 	},
@@ -948,6 +958,9 @@ if (typeof ALittle === "undefined") window.ALittle = {};
 
 
 ALittle.IMessageWriteFactory = JavaScript.Class(undefined, {
+	WriteToStdFile : function(file_path) {
+		return false;
+	},
 	SetID : function(id) {
 	},
 	SetRpcID : function(id) {

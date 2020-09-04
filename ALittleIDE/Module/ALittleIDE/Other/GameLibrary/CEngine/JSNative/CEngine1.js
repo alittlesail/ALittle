@@ -560,6 +560,40 @@ if (typeof JavaScript === "undefined") window.JavaScript = {};
 
 
 let __pixel_ratio = 1;
+let KEY_CODE_MAP = new Map();
+let SCAN_CODE_MAP = new Map();
+KEY_CODE_MAP.set(65, 97);
+SCAN_CODE_MAP.set(65, 4);
+KEY_CODE_MAP.set(83, 115);
+SCAN_CODE_MAP.set(83, 22);
+KEY_CODE_MAP.set(68, 100);
+SCAN_CODE_MAP.set(68, 7);
+KEY_CODE_MAP.set(87, 119);
+SCAN_CODE_MAP.set(87, 26);
+KEY_CODE_MAP.set(71, 103);
+SCAN_CODE_MAP.set(71, 10);
+KEY_CODE_MAP.set(72, 104);
+SCAN_CODE_MAP.set(72, 11);
+KEY_CODE_MAP.set(74, 106);
+SCAN_CODE_MAP.set(74, 13);
+KEY_CODE_MAP.set(75, 107);
+SCAN_CODE_MAP.set(75, 14);
+KEY_CODE_MAP.set(37, 1073741904);
+SCAN_CODE_MAP.set(37, 80);
+KEY_CODE_MAP.set(40, 1073741905);
+SCAN_CODE_MAP.set(40, 81);
+KEY_CODE_MAP.set(39, 1073741903);
+SCAN_CODE_MAP.set(39, 79);
+KEY_CODE_MAP.set(38, 1073741906);
+SCAN_CODE_MAP.set(38, 82);
+KEY_CODE_MAP.set(97, 1073741913);
+SCAN_CODE_MAP.set(97, 89);
+KEY_CODE_MAP.set(98, 1073741914);
+SCAN_CODE_MAP.set(98, 90);
+KEY_CODE_MAP.set(100, 1073741916);
+SCAN_CODE_MAP.set(100, 92);
+KEY_CODE_MAP.set(101, 1073741917);
+SCAN_CODE_MAP.set(101, 93);
 JavaScript.JSystem_GetDeviceID = function() {
 	let id = undefined;
 	let json = undefined;
@@ -711,7 +745,25 @@ let JSystem_KeyDown = function(event) {
 	if (func === undefined) {
 		return;
 	}
-	func(0, event.keyCode, 0);
+	let mod = 0;
+	if (event.altKey) {
+		mod = bit.bor(ALittle.UIEnumTypes.KMOD_ALT, mod);
+	}
+	if (event.ctrlKey) {
+		mod = bit.bor(ALittle.UIEnumTypes.KMOD_CTRL, mod);
+	}
+	if (event.shiftKey) {
+		mod = bit.bor(ALittle.UIEnumTypes.KMOD_SHIFT, mod);
+	}
+	let key_code = KEY_CODE_MAP.get(event.keyCode);
+	if (key_code === undefined) {
+		key_code = 0;
+	}
+	let scan_code = SCAN_CODE_MAP.get(event.keyCode);
+	if (scan_code === undefined) {
+		scan_code = 0;
+	}
+	func(mod, key_code, scan_code);
 }
 
 let JSystem_KeyUp = function(event) {
@@ -719,7 +771,25 @@ let JSystem_KeyUp = function(event) {
 	if (func === undefined) {
 		return;
 	}
-	func(0, event.keyCode, 0);
+	let mod = 0;
+	if (event.altKey) {
+		mod = bit.bor(ALittle.UIEnumTypes.KMOD_ALT, mod);
+	}
+	if (event.ctrlKey) {
+		mod = bit.bor(ALittle.UIEnumTypes.KMOD_CTRL, mod);
+	}
+	if (event.shiftKey) {
+		mod = bit.bor(ALittle.UIEnumTypes.KMOD_SHIFT, mod);
+	}
+	let key_code = KEY_CODE_MAP.get(event.keyCode);
+	if (key_code === undefined) {
+		key_code = 0;
+	}
+	let scan_code = SCAN_CODE_MAP.get(event.keyCode);
+	if (scan_code === undefined) {
+		scan_code = 0;
+	}
+	func(mod, key_code, scan_code);
 }
 
 JavaScript.JSystem_CreateView = function(title, width, height, flag, scale) {
@@ -755,8 +825,8 @@ JavaScript.JSystem_CreateView = function(title, width, height, flag, scale) {
 		A_PixiApp.view.onmouseup = JSystem_MouseUp;
 		A_PixiApp.view.onmousewheel = JSystem_MouseWheel;
 		A_PixiApp.view.onmouseout = JSystem_MouseOut;
-		A_PixiApp.view.onkeydown = JSystem_KeyDown;
-		A_PixiApp.view.onkeyup = JSystem_KeyUp;
+		document.onkeydown = JSystem_KeyDown;
+		document.onkeyup = JSystem_KeyUp;
 	}
 	A_JDisplaySystem.AddToStage(A_PixiApp.stage);
 	let func = window["__ALITTLEAPI_ViewResized"];
@@ -1616,6 +1686,9 @@ JavaScript.JTextInput = JavaScript.Class(JavaScript.JDisplayObject, {
 		let style = {};
 		this._native = new PIXI.TextInput(style);
 		this._native.disabled = true;
+		this.SetRed(1);
+		this.SetGreen(1);
+		this.SetBlue(1);
 	},
 	SetDisabled : function(value) {
 		this._native.disabled = value;
@@ -1982,11 +2055,11 @@ ALittle.File_CopyFileFromAsset = function(src_path, dst_path) {
 }
 
 ALittle.File_SaveFile = function(target_path, content, size) {
-	return JavaScript.File_SaveFile(target_path, content);
+	return JavaScript.File_SaveFile(target_path, content, undefined);
 }
 
 ALittle.File_MD5 = function(path) {
-	let content = JavaScript.File_LoadFile(path);
+	let [content] = JavaScript.File_LoadFile(path);
 	if (content === undefined) {
 		return "";
 	}
@@ -1998,7 +2071,10 @@ ALittle.File_CopyDeepDir = function(src_path, dest_path, ext, log) {
 }
 
 ALittle.File_ReadTextFromFile = function(file_path, crypt_mode) {
-	return JavaScript.File_LoadFile(file_path);
+	{
+		let [content, buffer] = JavaScript.File_LoadFile(file_path);
+		return content;
+	}
 }
 
 ALittle.File_WriteTextToFile = function(content, file_path) {
@@ -2412,13 +2488,13 @@ ALittle.CreateHttpFileSender = function(ip, port, file_path, start_size, callbac
 	}
 }
 
-ALittle.HttpDownloadRequest = function(ip, port, file_path, method, callback) {
+ALittle.HttpDownloadRequest = function(ip, port, file_path, method, callback, array_buffer) {
 	return new Promise(function(___COROUTINE, ___) {
 		let sender = ALittle.CreateHttpFileSender(ip, port, file_path, 0, callback);
 		if (___COROUTINE === undefined) {
 			___COROUTINE("当前不是协程"); return;
 		}
-		sender.SendDownloadRPC(___COROUTINE, method, undefined);
+		sender.SendDownloadRPC(___COROUTINE, method, undefined, array_buffer);
 		return;
 	});
 }
@@ -2926,6 +3002,7 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 			if (info.plugin_loaded) {
 				___COROUTINE(info.control); return;
 			}
+			this._main_module.control.RegisterPlugin(module_name, info.control);
 			let setup_func = info.plugin_setup;
 			if (setup_func === undefined) {
 				ALittle.Log("can't find Plugin_Setup funciton in Module:" + module_name);
@@ -3774,11 +3851,20 @@ ALittle.UIEnumTypes = {
 	KEY_S : 115,
 	KEY_N : 110,
 	KEY_X : 120,
+	KEY_W : 119,
+	KEY_Y : 121,
 	KEY_C : 99,
 	KEY_V : 118,
 	KEY_A : 97,
+	KEY_B : 98,
+	KEY_D : 100,
 	KEY_F : 102,
 	KEY_G : 103,
+	KEY_H : 104,
+	KEY_I : 105,
+	KEY_J : 106,
+	KEY_K : 107,
+	KEY_F2 : 1073741883,
 	KEY_F5 : 1073741886,
 	KEY_F12 : 1073741893,
 	KEY_CTRL : 1073742048,
@@ -3793,6 +3879,9 @@ ALittle.UIEnumTypes = {
 	KEY_ENTER : 13,
 	KEY_NUMBER_ENTER : 1073741912,
 	KEY_TAB : 9,
+	KEY_LSHIFT : 1073742049,
+	KEY_RSHIFT : 1073742053,
+	KEY_1 : 1073741913,
 	VIEW_FULLSCREEN : 0x00000001,
 	VIEW_OPENGL : 0x00000002,
 	VIEW_SHOWN : 0x00000004,
@@ -4350,8 +4439,8 @@ option_map : {}
 })
 ALittle.RegStruct(-4982446, "ALittle.DisplayInfo", {
 name : "ALittle.DisplayInfo", ns_name : "ALittle", rl_name : "DisplayInfo", hash_code : -4982446,
-name_list : ["__target_class","__class_func","__base_attr","__show_attr","loop_map","__class","__include","__extends","__childs","__event","__link","__shows_included","__childs_included","__extends_included","description","text","font_path","font_size","red","green","blue","alpha","bold","italic","underline","deleteline","x","y","x_type","x_value","y_type","y_value","width","height","width_type","width_value","height_type","height_value","scale_x","scale_y","center_x","center_y","angle","flip","hand_cursor","visible","disabled","left_size","right_size","top_size","bottom_size","texture_name","interval","play_loop_count","var_play","base_y","head_size","gap","up_size","down_size","cursor_red","cursor_green","cursor_blue","default_text_alpha","ims_padding","margin_left","margin_right","margin_top","margin_bottom","show_count","body_margin","screen_margin_left","screen_margin_right","screen_margin_top","screen_margin_bottom","start_degree","end_degree","line_spacing","max_line_count","font_red","font_green","font_blue","margin_halign","margin_valign","cursor_margin_up","cursor_margin_down","total_size","show_size","offset_rate","offset_step","grade","row_count","col_count","row_index","col_index","u1","v1","u2","v2","u3","v3","x1","y1","x2","y2","x3","y3","x_gap","y_gap","x_start_gap","y_start_gap","button_gap","button_start","button_margin","tab_index","view_margin","child_width_margin"],
-type_list : ["List<string>","any","Map<string,any>","Map<string,ALittle.DisplayInfo>","Map<string,ALittle.LoopGroupInfo>","string","string","string","List<ALittle.DisplayInfo>","List<ALittle.EventInfo>","string","bool","bool","bool","string","string","string","int","double","double","double","double","bool","bool","bool","bool","double","double","int","double","int","double","double","double","int","double","int","double","double","double","double","double","double","int","bool","bool","bool","double","double","double","double","string","int","int","bool","double","double","double","double","double","double","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","double","double","double","int","int","int","int","int","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double"],
+name_list : ["__target_class","__class_func","__base_attr","__show_attr","loop_map","__module","__class","__include","__extends","__childs","__event","__link","__shows_included","__childs_included","__extends_included","description","text","font_path","font_size","red","green","blue","alpha","bold","italic","underline","deleteline","x","y","x_type","x_value","y_type","y_value","width","height","width_type","width_value","height_type","height_value","scale_x","scale_y","center_x","center_y","angle","flip","hand_cursor","visible","disabled","left_size","right_size","top_size","bottom_size","texture_name","interval","play_loop_count","var_play","base_y","head_size","gap","up_size","down_size","cursor_red","cursor_green","cursor_blue","default_text_alpha","ims_padding","margin_left","margin_right","margin_top","margin_bottom","show_count","body_margin","screen_margin_left","screen_margin_right","screen_margin_top","screen_margin_bottom","start_degree","end_degree","line_spacing","max_line_count","font_red","font_green","font_blue","margin_halign","margin_valign","cursor_margin_up","cursor_margin_down","total_size","show_size","offset_rate","offset_step","grade","row_count","col_count","row_index","col_index","u1","v1","u2","v2","u3","v3","x1","y1","x2","y2","x3","y3","x_gap","y_gap","x_start_gap","y_start_gap","button_gap","button_start","button_margin","tab_index","view_margin","child_width_margin"],
+type_list : ["List<string>","any","Map<string,any>","Map<string,ALittle.DisplayInfo>","Map<string,ALittle.LoopGroupInfo>","string","string","string","string","List<ALittle.DisplayInfo>","List<ALittle.EventInfo>","string","bool","bool","bool","string","string","string","int","double","double","double","double","bool","bool","bool","bool","double","double","int","double","int","double","double","double","int","double","int","double","double","double","double","double","double","int","bool","bool","bool","double","double","double","double","string","int","int","bool","double","double","double","double","double","double","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","int","double","double","double","double","double","double","double","double","double","double","double","int","int","int","int","int","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double","double"],
 option_map : {}
 })
 
@@ -13400,6 +13489,9 @@ ALittle.FramePlay = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	get play_loop_count() {
 		return this._play_loop_count;
+	},
+	IsPlaying : function() {
+		return this._play_loop !== undefined;
 	},
 	Play : function() {
 		if (this._play_loop !== undefined) {

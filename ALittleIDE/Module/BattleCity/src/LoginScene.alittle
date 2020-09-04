@@ -23,8 +23,6 @@ public class LoginScene : ALittle.DisplayLayout
 
         this._cursor.Stop();
         this.disabled = true;
-
-        this._edit_text.visible = A_ModuleSystem.GetDebugInfo() == "debug";
     }
 
     public fun Show()
@@ -74,17 +72,7 @@ public class LoginScene : ALittle.DisplayLayout
         if (sym == ALittle.UIEnumTypes.KEY_G)
         {
             this._select_option += 1;
-
-            if (A_ModuleSystem.GetDebugInfo() == "debug")
-            {
-                if (this._select_option > 4)
-                	this._select_option = 1;
-            }
-            else
-            {
-                if (this._select_option > 3)
-                	this._select_option = 1;
-            }
+            if (this._select_option > 3) this._select_option = 1;
 
             if (this._select_option == 1)
             	this._cursor.y = this._1_player_text.y + this._1_player_text.height / 2 - this._cursor.height / 2;

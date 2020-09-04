@@ -873,6 +873,10 @@ public class JTextInput : JDisplayObject
         var style = new PIXI.TextInputStyle();
         this._native = new PIXI.TextInput(style);
         cast<PIXI.TextInput>(this._native).disabled = true;
+
+        this.SetRed(1);
+        this.SetGreen(1);
+        this.SetBlue(1);
     }
 
     public fun SetDisabled(bool value)

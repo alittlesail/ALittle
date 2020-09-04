@@ -6,7 +6,13 @@ local ___ipairs = ipairs
 
 
 function BattleCity.__Browser_Setup(layer_group, control, module_base_path, script_base_path, debug)
-	local window_width, window_height, flag, scale = ALittle.System_CalcLandscape(520, 450, 0x00000020)
+	local window_width, window_height, flag, scale = ALittle.System_CalcLandscape(520, 450, 0)
+	if ALittle.System_GetPlatform() == "Web" then
+		window_width = 520
+		window_height = 450
+		flag = 0
+		scale = 1
+	end
 	ALittle.System_CreateView("BattleCity", window_width, window_height, flag, scale)
 	ALittle.System_SetViewIcon(module_base_path .. "/Other/ic_launcher.png")
 	A_ModuleSystem:LoadModule(module_base_path, "BattleCity")

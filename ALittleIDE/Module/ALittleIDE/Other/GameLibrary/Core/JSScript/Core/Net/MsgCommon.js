@@ -3,6 +3,9 @@ if (typeof ALittle === "undefined") window.ALittle = {};
 
 
 ALittle.IMessageWriteFactory = JavaScript.Class(undefined, {
+	WriteToStdFile : function(file_path) {
+		return false;
+	},
 	SetID : function(id) {
 	},
 	SetRpcID : function(id) {

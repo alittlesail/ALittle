@@ -811,6 +811,9 @@ JavaScript.JTextInput = JavaScript.Class(JavaScript.JDisplayObject, {
 		let style = {};
 		this._native = new PIXI.TextInput(style);
 		this._native.disabled = true;
+		this.SetRed(1);
+		this.SetGreen(1);
+		this.SetBlue(1);
 	},
 	SetDisabled : function(value) {
 		this._native.disabled = value;

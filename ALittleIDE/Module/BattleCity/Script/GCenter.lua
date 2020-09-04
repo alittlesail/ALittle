@@ -38,11 +38,9 @@ function BattleCity.GCenter:Setup()
 	self._battle_settlement = BattleCity.g_Control:CreateControl("battle_settlement")
 	self._battle_settlement.visible = false
 	self._main_layer:AddChild(self._battle_settlement)
-	if A_ModuleSystem:GetDebugInfo() == "debug" then
-		self._edit_scene = BattleCity.g_Control:CreateControl("edit_scene")
-		self._edit_scene.visible = false
-		BattleCity.g_LayerGroup:AddChild(self._edit_scene)
-	end
+	self._edit_scene = BattleCity.g_Control:CreateControl("edit_scene")
+	self._edit_scene.visible = false
+	self._main_layer:AddChild(self._edit_scene)
 	self:Restart()
 end
 

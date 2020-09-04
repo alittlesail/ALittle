@@ -62,11 +62,26 @@ public class EditScene : ALittle.DisplayLayout
         if (this._cur_data == null) return;
 
         var rflct = reflect<BattleMap>;
+
         // 打开文件
-        var factory = new lua.__CPPAPIMessageWriteFactory();
+        var factory:ALittle.IMessageWriteFactory;
+        [Language(Lua)]
+        factory = new lua.__CPPAPIMessageWriteFactory();
+        [Language(JavaScript)]
+        factory = new JavaScript.JMessageWriteFactory(1024);
+        if (factory == null)
+        {
+            ALittle.Error("factory create failed");
+            return;
+        }
+
         // 获取反射信息
         var invoke_info = ALittle.CreateMessageInfo(rflct.name);
-        if (invoke_info == null) return;
+        if (invoke_info == null)
+        {
+            ALittle.Error("create message info failed:"..rflct.name);
+            return;
+        }
 
         // 反序列化
         ALittle.PS_WriteMessage(factory, invoke_info, null, this._cur_data);
@@ -219,6 +234,13 @@ public class EditScene : ALittle.DisplayLayout
     private fun HandleSaveClick(ALittle.UILButtonDownEvent event)
     {
         this.Save();
+    }
+
+    private fun HandleBackClick(ALittle.UILButtonDownEvent event)
+    {
+        this.Save();
+        this.visible = false;
+        g_GCenter.Restart();
     }
 
     private fun HandleSizeInputChanged(ALittle.UIChangedEvent event)

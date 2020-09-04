@@ -100,6 +100,42 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 			___COROUTINE();
 		}).bind(this));
 	},
+	LoadMessageFromFile : function(T, path) {
+		return new Promise((async function(___COROUTINE, ___) {
+			let module_path = "Module/" + this._module_name + "/" + path;
+			let factory = undefined;
+			{
+				let [content, buffer] = JavaScript.File_LoadFile(module_path);
+				if (buffer === undefined) {
+					ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(module_path));
+					let error = await ALittle.HttpDownloadRequest(this._host, this._port, module_path, module_path, undefined, true);
+					if (error !== undefined) {
+						ALittle.Error(this._host, this._port, module_path, error);
+						___COROUTINE(undefined); return;
+					}
+					[content, buffer] = JavaScript.File_LoadFile(module_path);
+				}
+				if (buffer === undefined) {
+					ALittle.Error("FileLoad fialed:", module_path);
+					___COROUTINE(undefined); return;
+				}
+				ALittle.Log("buffer.byteLength", buffer.byteLength);
+				factory = ALittle.NewObject(JavaScript.JMessageReadFactory, new DataView(buffer), 0);
+			}
+			let rflct = T;
+			let invoke_info = ALittle.CreateMessageInfo(rflct.name);
+			if (invoke_info === undefined) {
+				ALittle.Error("CreateMessageInfo fialed:", module_path);
+				___COROUTINE(undefined); return;
+			}
+			let [data] = ALittle.PS_ReadMessage(factory, invoke_info, undefined, factory.GetDataSize());
+			if (data === undefined) {
+				ALittle.Error("PS_ReadMessage fialed:", module_path);
+				___COROUTINE(undefined); return;
+			}
+			___COROUTINE(data); return;
+		}).bind(this));
+	},
 	RegisterInfo : function(name, info) {
 		this._name_map_info[name] = info;
 		delete this._name_map_info_cache[name];

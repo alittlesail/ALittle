@@ -14,6 +14,9 @@ public class Document
     public fun createElement(string type) : DomElement {}
 
     public get scripts() : List<ScriptElement> {}
+
+    public set onkeydown(Functor<(DomElementOnKeyEvent)> func) {}
+    public set onkeyup(Functor<(DomElementOnKeyEvent)> func) {}
 }
 
 public var document:Document;

@@ -32,11 +32,9 @@ BattleCity.GCenter = JavaScript.Class(undefined, {
 		this._battle_settlement = BattleCity.g_Control.CreateControl("battle_settlement");
 		this._battle_settlement.visible = false;
 		this._main_layer.AddChild(this._battle_settlement);
-		if (A_ModuleSystem.GetDebugInfo() === "debug") {
-			this._edit_scene = BattleCity.g_Control.CreateControl("edit_scene");
-			this._edit_scene.visible = false;
-			BattleCity.g_LayerGroup.AddChild(this._edit_scene);
-		}
+		this._edit_scene = BattleCity.g_Control.CreateControl("edit_scene");
+		this._edit_scene.visible = false;
+		this._main_layer.AddChild(this._edit_scene);
 		this.Restart();
 	},
 	Shutdown : function() {

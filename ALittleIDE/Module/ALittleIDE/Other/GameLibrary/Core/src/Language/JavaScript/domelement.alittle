@@ -36,6 +36,9 @@ public struct DomElementOnKeyEvent
 {
     DomElement srcElement;
     int keyCode;
+    bool altKey;
+    bool ctrlKey;
+    bool shiftKey;
 }
 
 [Native]

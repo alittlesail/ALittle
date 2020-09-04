@@ -137,7 +137,7 @@ function ALittleIDE.IDEVersionList:HandleRefreshVersionList(event)
 	local first_version_info = nil
 	for k, v in ___ipairs(version_list) do
 		local control_line = {}
-		local item = self._ctrl_sys:CreateControl("ide_version_item", control_line, self._version_list)
+		local item = ALittleIDE.g_Control:CreateControl("ide_version_item", control_line, self._version_list)
 		control_line._item_button.group = group
 		local user_data = {}
 		control_line._item_button._user_data = user_data

@@ -60,6 +60,9 @@ ALittle.FramePlay = JavaScript.Class(ALittle.DisplayLayout, {
 	get play_loop_count() {
 		return this._play_loop_count;
 	},
+	IsPlaying : function() {
+		return this._play_loop !== undefined;
+	},
 	Play : function() {
 		if (this._play_loop !== undefined) {
 			A_WeakLoopSystem.RemoveUpdater(this._play_loop);

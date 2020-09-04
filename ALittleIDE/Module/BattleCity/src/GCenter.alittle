@@ -54,13 +54,9 @@ class GCenter
         this._battle_settlement = g_Control.CreateControl{BattleSettlement}("battle_settlement");
         this._battle_settlement.visible = false;
         this._main_layer.AddChild(this._battle_settlement);
-
-        if (A_ModuleSystem.GetDebugInfo() == "debug")
-        {
-            this._edit_scene = g_Control.CreateControl{EditScene}("edit_scene");
-            this._edit_scene.visible = false;
-            g_LayerGroup.AddChild(this._edit_scene);
-        }
+        this._edit_scene = g_Control.CreateControl{EditScene}("edit_scene");
+        this._edit_scene.visible = false;
+        this._main_layer.AddChild(this._edit_scene);
 
         this.Restart();
     }

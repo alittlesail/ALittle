@@ -112,7 +112,7 @@ public class IDEVersionList : ALittle.DisplayLayout
 		{
 			// 创建子控件
 			var control_line = new IDEVersionInfoItem();
-			var item = this._ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_version_item", control_line, this._version_list);
+			var item = g_Control.CreateControl{ALittle.DisplayObject}("ide_version_item", control_line, this._version_list);
 			control_line._item_button.group = group;
 			var user_data = new IDEVersionInfoItemUserData();
 			control_line._item_button._user_data = user_data;

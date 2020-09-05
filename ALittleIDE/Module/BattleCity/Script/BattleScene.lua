@@ -230,14 +230,14 @@ function BattleCity.BattleScene:Collision2(target_1, target_2)
 end
 
 function BattleCity.BattleScene:CanWalkByEntity(entity, left, top, right, bottom)
-	if self._player_1.parent ~= nil and entity ~= self._player_1 and self:Collision(left, top, right, bottom, self._player_1) then
+	if self._player_1.parent ~= nil and entity ~= self._player_1 and not self._player_1.explosion and self:Collision(left, top, right, bottom, self._player_1) then
 		return false
 	end
-	if self._player_2.parent ~= nil and entity ~= self._player_2 and self:Collision(left, top, right, bottom, self._player_2) then
+	if self._player_2.parent ~= nil and entity ~= self._player_2 and not self._player_2.explosion and self:Collision(left, top, right, bottom, self._player_2) then
 		return false
 	end
 	for role, _ in ___pairs(self._enemy_map) do
-		if role ~= entity and self:Collision(left, top, right, bottom, role) then
+		if entity ~= role and not role.explosion and self:Collision(left, top, right, bottom, role) then
 			return false
 		end
 	end

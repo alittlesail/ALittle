@@ -36,6 +36,8 @@ public class BattleRole : ALittle.DisplayLayout
         return true;
     }
 
+    public get explosion() : bool { return this._effect_explosion.visible; }
+
     public get dir() : int { return this._dir; }
     public get level() : int { return this._level; }
 

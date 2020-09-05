@@ -219,15 +219,15 @@ BattleCity.BattleScene = JavaScript.Class(ALittle.DisplayLayout, {
 		return this.Collision(target_1.x, target_1.y, target_1.x + target_1.width, target_1.y + target_1.height, target_2);
 	},
 	CanWalkByEntity : function(entity, left, top, right, bottom) {
-		if (this._player_1.parent !== undefined && entity !== this._player_1 && this.Collision(left, top, right, bottom, this._player_1)) {
+		if (this._player_1.parent !== undefined && entity !== this._player_1 && !this._player_1.explosion && this.Collision(left, top, right, bottom, this._player_1)) {
 			return false;
 		}
-		if (this._player_2.parent !== undefined && entity !== this._player_2 && this.Collision(left, top, right, bottom, this._player_2)) {
+		if (this._player_2.parent !== undefined && entity !== this._player_2 && !this._player_2.explosion && this.Collision(left, top, right, bottom, this._player_2)) {
 			return false;
 		}
 		for (let [role, _] of this._enemy_map) {
 			if (_ === undefined) continue;
-			if (role !== entity && this.Collision(left, top, right, bottom, role)) {
+			if (entity !== role && !role.explosion && this.Collision(left, top, right, bottom, role)) {
 				return false;
 			}
 		}

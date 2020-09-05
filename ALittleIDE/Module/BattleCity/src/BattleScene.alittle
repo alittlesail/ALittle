@@ -310,11 +310,11 @@ public class BattleScene : ALittle.DisplayLayout
 
     public fun CanWalkByEntity(BattleRole entity, double left, double top, double right, double bottom) : bool
     {
-        if (this._player_1.parent != null && entity != this._player_1 && this.Collision(left, top, right, bottom, this._player_1)) return false;
-        if (this._player_2.parent != null && entity != this._player_2 && this.Collision(left, top, right, bottom, this._player_2)) return false;
+        if (this._player_1.parent != null && entity != this._player_1 && !this._player_1.explosion && this.Collision(left, top, right, bottom, this._player_1)) return false;
+        if (this._player_2.parent != null && entity != this._player_2 && !this._player_2.explosion && this.Collision(left, top, right, bottom, this._player_2)) return false;
         for (var role, _ in this._enemy_map)
         {
-            if (role != entity && this.Collision(left, top, right, bottom, role))
+            if (entity != role && !role.explosion && this.Collision(left, top, right, bottom, role))
             	return false;
         }
         return true;

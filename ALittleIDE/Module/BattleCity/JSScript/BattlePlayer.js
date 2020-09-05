@@ -14,6 +14,7 @@ BattleCity.BattlePlayer = JavaScript.Class(BattleCity.BattleRole, {
 		} else {
 			this._bullet_total = 1;
 		}
+		this._fire_count = 0;
 		if (this._level >= 2) {
 			this._bullet_speed = 0.4;
 		} else {

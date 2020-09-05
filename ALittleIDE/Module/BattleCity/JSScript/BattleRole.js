@@ -30,6 +30,9 @@ BattleCity.BattleRole = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		return true;
 	},
+	get explosion() {
+		return this._effect_explosion.visible;
+	},
 	get dir() {
 		return this._dir;
 	},

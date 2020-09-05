@@ -22,6 +22,7 @@ BattleCity.BattleEnemy = JavaScript.Class(BattleCity.BattleRole, {
 		} else {
 			this._speed = 0.06;
 		}
+		this._fire_count = 0;
 		this.x = col * g_GCenter.battle_scene.cell_size;
 		this.y = row * g_GCenter.battle_scene.cell_size;
 		this._sprite.visible = false;

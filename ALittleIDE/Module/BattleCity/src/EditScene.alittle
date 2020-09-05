@@ -14,7 +14,7 @@ public class EditScene : ALittle.DisplayLayout
     
     private BattleMap _cur_data;
     private string _path;
-    private int _size = 1;
+    private int _size = 4;
     private double _cell_size = 0;
 
     private fun TCtor()
@@ -29,6 +29,7 @@ public class EditScene : ALittle.DisplayLayout
         this.Load(1);
         ALittle.File_MakeDeepDir(g_ModuleBasePath.."Other/Map");
         this._cell_size = this._tile_container.width / (13 * 4);
+        this._size_input.text = this._size;
 
         this._tile_range.width = this._size * this._cell_size;
         this._tile_range.height = this._size * this._cell_size;

@@ -170,7 +170,7 @@ public class ControlSystem
                 return null;
             }
             ALittle.Log("buffer.byteLength", buffer.byteLength);
-            factory = new JavaScript.JMessageReadFactory(new javascript.DataView(buffer), 0);
+            factory = new JavaScript.JMessageReadFactory(new javascript.DataView(buffer), 0, false);
         }
 
         [Language(Lua)]

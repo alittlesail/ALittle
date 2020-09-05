@@ -39,6 +39,10 @@ function BattleCity.BattleRole.__getter:alive()
 	return true
 end
 
+function BattleCity.BattleRole.__getter:explosion()
+	return self._effect_explosion.visible
+end
+
 function BattleCity.BattleRole.__getter:dir()
 	return self._dir
 end

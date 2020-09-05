@@ -81,33 +81,48 @@ JavaScript.JMessageWriteFactory = JavaScript.Class(ALittle.IMessageWriteFactory,
 		this._size = this._size + (8);
 		return 8;
 	},
-	GetArrayBuffer : function() {
-		let new_data = new ArrayBuffer(this._size + 12);
-		let new_view = new DataView(new_data);
-		new_view.setInt32(0, this._size, true);
-		new_view.setInt32(4, this._id, true);
-		new_view.setInt32(8, this._rpc_id, true);
-		for (let i = 0; i < this._size; i += 1) {
-			new_view.setUint8(12 + i, this._memory.getUint8(i));
+	GetArrayBuffer : function(head) {
+		if (head) {
+			let new_data = new ArrayBuffer(this._size + 12);
+			let new_view = new DataView(new_data);
+			new_view.setInt32(0, this._size, true);
+			new_view.setInt32(4, this._id, true);
+			new_view.setInt32(8, this._rpc_id, true);
+			for (let i = 0; i < this._size; i += 1) {
+				new_view.setUint8(12 + i, this._memory.getUint8(i));
+			}
+			return new_data;
+		} else {
+			let new_data = new ArrayBuffer(this._size);
+			let new_view = new DataView(new_data);
+			for (let i = 0; i < this._size; i += 1) {
+				new_view.setUint8(i, this._memory.getUint8(i));
+			}
+			return new_data;
 		}
-		return new_data;
 	},
 	WriteToStdFile : function(file_path) {
-		let buffer = this.GetArrayBuffer();
+		let buffer = this.GetArrayBuffer(false);
 		return JavaScript.File_SaveFile(file_path, undefined, buffer);
 	},
 }, "JavaScript.JMessageWriteFactory");
 
 if (ALittle.IMessageReadFactory === undefined) throw new Error(" extends class:ALittle.IMessageReadFactory is undefined");
 JavaScript.JMessageReadFactory = JavaScript.Class(ALittle.IMessageReadFactory, {
-	Ctor : function(data, offset) {
+	Ctor : function(data, offset, head) {
 		this._memory = data;
 		this._offset = offset;
 		this._total_size = data.byteLength;
 		this._read_size = 0;
-		this._data_size = this.ReadInt();
-		this._id = this.ReadInt();
-		this._rpc_id = this.ReadInt();
+		if (head) {
+			this._data_size = this.ReadInt();
+			this._id = this.ReadInt();
+			this._rpc_id = this.ReadInt();
+		} else {
+			this._data_size = data.byteLength;
+			this._id = 0;
+			this._rpc_id = 0;
+		}
 		this._last_read_size = 0;
 	},
 	GetID : function() {

@@ -11,7 +11,7 @@ assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 BattleCity.EditScene = Lua.Class(ALittle.DisplayLayout, "BattleCity.EditScene")
 
 function BattleCity.EditScene:Ctor()
-	___rawset(self, "_size", 1)
+	___rawset(self, "_size", 4)
 	___rawset(self, "_cell_size", 0)
 end
 
@@ -24,6 +24,7 @@ function BattleCity.EditScene:Show()
 	self:Load(1)
 	ALittle.File_MakeDeepDir(BattleCity.g_ModuleBasePath .. "Other/Map")
 	self._cell_size = self._tile_container.width / (13 * 4)
+	self._size_input.text = self._size
 	self._tile_range.width = self._size * self._cell_size
 	self._tile_range.height = self._size * self._cell_size
 end

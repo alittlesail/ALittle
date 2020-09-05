@@ -144,7 +144,7 @@ public class JMsgInterface : ALittle.IMsgCommonNative
     }
     public fun SendFactory(ALittle.IMessageWriteFactory factory)
     {
-		this._net_system.send(cast<JMessageWriteFactory>(factory).GetArrayBuffer());
+		this._net_system.send(cast<JMessageWriteFactory>(factory).GetArrayBuffer(true));
     }
     public fun Close()
     {
@@ -194,7 +194,7 @@ public class JMsgInterface : ALittle.IMsgCommonNative
             var data, offset = this._net_buffer.Read();
             if (data == null) break;
             
-			var factory = new JMessageReadFactory(data, offset);
+			var factory = new JMessageReadFactory(data, offset, true);
             ALittle.__ALITTLEAPI_Message(this._id, factory.GetID(), factory.GetRpcID(), factory);
 		}
         

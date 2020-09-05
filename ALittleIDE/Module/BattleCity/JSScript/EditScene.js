@@ -6,7 +6,7 @@ let ___all_struct = ALittle.GetAllStruct();
 if (ALittle.DisplayLayout === undefined) throw new Error(" extends class:ALittle.DisplayLayout is undefined");
 BattleCity.EditScene = JavaScript.Class(ALittle.DisplayLayout, {
 	Ctor : function() {
-		this._size = 1;
+		this._size = 4;
 		this._cell_size = 0;
 	},
 	TCtor : function() {
@@ -17,6 +17,7 @@ BattleCity.EditScene = JavaScript.Class(ALittle.DisplayLayout, {
 		this.Load(1);
 		ALittle.File_MakeDeepDir(BattleCity.g_ModuleBasePath + "Other/Map");
 		this._cell_size = this._tile_container.width / (13 * 4);
+		this._size_input.text = this._size;
 		this._tile_range.width = this._size * this._cell_size;
 		this._tile_range.height = this._size * this._cell_size;
 	},

@@ -92,7 +92,7 @@ end
 
 function BattleCity.GCenter:NextStage()
 	self._stage = self._stage + (1)
-	if self._stage >= 100 then
+	if self._stage > 10 then
 		self._stage = 1
 	end
 	self._battle_select_scene:Show(self._stage)

@@ -28,6 +28,7 @@ function BattleCity.BattleEnemy:StartBorn(row, col, level, dir, flash)
 	else
 		self._speed = 0.06
 	end
+	self._fire_count = 0
 	self.x = col * g_GCenter.battle_scene.cell_size
 	self.y = row * g_GCenter.battle_scene.cell_size
 	self._sprite.visible = false

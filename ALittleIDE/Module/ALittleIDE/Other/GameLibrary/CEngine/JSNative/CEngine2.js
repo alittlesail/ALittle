@@ -9350,7 +9350,7 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 					___COROUTINE(undefined); return;
 				}
 				ALittle.Log("buffer.byteLength", buffer.byteLength);
-				factory = ALittle.NewObject(JavaScript.JMessageReadFactory, new DataView(buffer), 0);
+				factory = ALittle.NewObject(JavaScript.JMessageReadFactory, new DataView(buffer), 0, false);
 			}
 			let rflct = T;
 			let invoke_info = ALittle.CreateMessageInfo(rflct.name);

@@ -20,6 +20,7 @@ function BattleCity.BattlePlayer:StartBorn(row, col, level, dir, speed)
 	else
 		self._bullet_total = 1
 	end
+	self._fire_count = 0
 	if self._level >= 2 then
 		self._bullet_speed = 0.4
 	else

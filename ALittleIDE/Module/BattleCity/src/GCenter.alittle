@@ -100,7 +100,7 @@ class GCenter
     public fun NextStage()
     {
         this._stage += 1;
-        if (this._stage >= 100) this._stage = 1;
+        if (this._stage > 10) this._stage = 1;
         this._battle_select_scene.Show(this._stage);
     }
 }

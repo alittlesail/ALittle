@@ -76,7 +76,7 @@ BattleCity.GCenter = JavaScript.Class(undefined, {
 	},
 	NextStage : function() {
 		this._stage = this._stage + (1);
-		if (this._stage >= 100) {
+		if (this._stage > 10) {
 			this._stage = 1;
 		}
 		this._battle_select_scene.Show(this._stage);

@@ -40,6 +40,7 @@ BattleCity.BattleSettlement = JavaScript.Class(ALittle.DisplayLayout, {
 		this._2_enemy_3_score.text = 0;
 		this._2_enemy_total.text = "";
 		this._high_score.text = BattleCity.g_GConfig.GetInt("high_score", 2000);
+		this._stage_num.text = g_GCenter.stage;
 		let player1_data = g_GCenter.player1_data;
 		let player2_data = g_GCenter.player2_data;
 		this._player_1_score.text = player1_data.score;
@@ -94,7 +95,9 @@ BattleCity.BattleSettlement = JavaScript.Class(ALittle.DisplayLayout, {
 		player_score.text = player_data.score;
 		let high_score = BattleCity.g_GConfig.GetInt("high_score", 2000);
 		if (player_data.score >= high_score) {
+			high_score = player_data.score;
 			BattleCity.g_GConfig.SetConfig("high_score", high_score, true);
+			this._high_score.text = high_score;
 		}
 	},
 	HandlePlayerTotalScore : function(total, value) {

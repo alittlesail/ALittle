@@ -83,9 +83,8 @@ public class BattleRole : ALittle.DisplayLayout
         g_GCenter.battle_scene.FireBullet(this, this._bullet_speed);
     }
 
-    public fun Walk(int dir, int frame_time) : bool
+    public fun Walk(int dir, int frame_time, bool adjust) : bool
     {
-        var walk = (this._dir == dir);
         this._dir = dir;
         this.UpdateWalk(frame_time);
 
@@ -99,6 +98,7 @@ public class BattleRole : ALittle.DisplayLayout
             if (y <= 0) y = 0;
             var next_row = ALittle.Math_Floor(y / g_GCenter.battle_scene.cell_size);
             var target = this.y;
+            var break_row = cur_row;
             for (var row = cur_row; row >= next_row; -1)
             {
                 var failed = false;
@@ -106,6 +106,7 @@ public class BattleRole : ALittle.DisplayLayout
                 {
                     if (!g_GCenter.battle_scene.CanWalkByMap(row, col))
                     {
+                        break_row = row;
                         failed = true;
                         break;
                     }
@@ -118,7 +119,36 @@ public class BattleRole : ALittle.DisplayLayout
             if (!g_GCenter.battle_scene.CanWalkByEntity(this, this.x, target, this.x + this.width, target + this.height))
                 return false;
 
-            if (this.y == target) return false;
+            if (this.y == target)
+            {
+                if (!adjust) return false;
+
+                // 中间都是可以走的
+                for (var col = col_min + 1; col < col_max; 1)
+                {
+                    if (!g_GCenter.battle_scene.CanWalkByMap(break_row, col))
+                        return false;
+                }
+
+                // 判断是否可以修正
+                var left_check = g_GCenter.battle_scene.CanWalkByMap(break_row, col_min);
+                var right_check = g_GCenter.battle_scene.CanWalkByMap(break_row, col_max);
+                if (!left_check)
+                {
+                    if (this.Walk(DirType.DT_RIGHT, frame_time, false)) return true;
+                    this._dir = dir;
+                    this.UpdateWalk(0);
+                    return false;
+                } 
+                elseif (!right_check)
+                {
+                    if (this.Walk(DirType.DT_LEFT, frame_time, false)) return true;
+                    this._dir = dir;
+                    this.UpdateWalk(0);
+                    return false;
+                }
+                return false;
+            }
             this.y = target;
             return true;
         }
@@ -134,6 +164,7 @@ public class BattleRole : ALittle.DisplayLayout
             if (y >= g_GCenter.battle_scene.map_size) y = g_GCenter.battle_scene.map_size;
             var next_row = ALittle.Math_Floor(y / g_GCenter.battle_scene.cell_size);
             var target = bottom;
+            var break_row = cur_row;
             for (var row = cur_row; row <= next_row; 1)
             {
                 var failed = false;
@@ -141,6 +172,7 @@ public class BattleRole : ALittle.DisplayLayout
                 {
                     if (!g_GCenter.battle_scene.CanWalkByMap(row, col))
                     {
+                        break_row = row;
                         failed = true;
                         break;
                     }
@@ -152,7 +184,35 @@ public class BattleRole : ALittle.DisplayLayout
 
             if (!g_GCenter.battle_scene.CanWalkByEntity(this, this.x, target - this.height, this.x + this.width, target))
                 return false;
-            if (this.y == target - this.height) return false;
+            if (this.y == target - this.height)
+            {
+                if (!adjust) return false;
+
+                    // 中间都是可以走的
+                for (var col = col_min + 1; col < col_max; 1)
+                {
+                    if (!g_GCenter.battle_scene.CanWalkByMap(break_row, col))
+                        return false;
+                }
+                    // 判断是否可以修正
+                var left_check = g_GCenter.battle_scene.CanWalkByMap(break_row, col_min);
+                var right_check = g_GCenter.battle_scene.CanWalkByMap(break_row, col_max);
+                if (!left_check)
+                {
+                    if (this.Walk(DirType.DT_RIGHT, frame_time, false)) return true;
+                    this._dir = dir;
+                    this.UpdateWalk(0);
+                    return false;
+                } 
+                elseif (!right_check)
+                {
+                    if (this.Walk(DirType.DT_LEFT, frame_time, false)) return true;
+                    this._dir = dir;
+                    this.UpdateWalk(0);
+                    return false;
+                }
+                return false;
+            }
             this.y = target - this.height;
 
             return true;
@@ -168,6 +228,7 @@ public class BattleRole : ALittle.DisplayLayout
             if (x <= 0) x = 0;
             var next_col = ALittle.Math_Floor(x / g_GCenter.battle_scene.cell_size);
             var target = this.x;
+            var break_col = cur_col;
             for (var col = cur_col; col >= next_col; -1)
             {
                 var failed = false;
@@ -175,6 +236,7 @@ public class BattleRole : ALittle.DisplayLayout
                 {
                     if (!g_GCenter.battle_scene.CanWalkByMap(row, col))
                     {
+                        break_col = col;
                         failed = true;
                         break;
                     }
@@ -185,7 +247,36 @@ public class BattleRole : ALittle.DisplayLayout
             if (target < x) target = x;
             if (!g_GCenter.battle_scene.CanWalkByEntity(this, target, this.y, target + this.width, this.y + this.height))
                 return false;
-            if (this.x == target) return false;
+            if (this.x == target)
+            {
+                if (!adjust) return false;
+
+                    // 中间都是可以走的
+                for (var row = row_min + 1; row < row_max; 1)
+                {
+                    if (!g_GCenter.battle_scene.CanWalkByMap(row, break_col))
+                        return false;
+                }
+
+                    // 判断是否可以修正
+                var up_check = g_GCenter.battle_scene.CanWalkByMap(row_min, break_col);
+                var down_check = g_GCenter.battle_scene.CanWalkByMap(row_max, break_col);
+                if (!up_check) 
+                {
+                    if (this.Walk(DirType.DT_DOWN, frame_time, false)) return true;
+                    this._dir = dir;
+                    this.UpdateWalk(0);
+                    return false;
+                }
+                elseif (!down_check)
+                {
+                    if (this.Walk(DirType.DT_UP, frame_time, false)) return true;
+                    this._dir = dir;
+                    this.UpdateWalk(0);
+                    return false;
+                }
+                return false;
+            }
             this.x = target;
             return true;
         }
@@ -201,6 +292,7 @@ public class BattleRole : ALittle.DisplayLayout
             if (x >= g_GCenter.battle_scene.map_size) x = g_GCenter.battle_scene.map_size;
             var next_col = ALittle.Math_Floor(x / g_GCenter.battle_scene.cell_size);
             var target = right;
+            var break_col = cur_col;
             for (var col = cur_col; col <= next_col; 1)
             {
                 var failed = false;
@@ -208,6 +300,7 @@ public class BattleRole : ALittle.DisplayLayout
                 {
                     if (!g_GCenter.battle_scene.CanWalkByMap(row, col))
                     {
+                        break_col = col;
                         failed = true;
                         break;
                     }
@@ -218,7 +311,35 @@ public class BattleRole : ALittle.DisplayLayout
             if (target > x) target = x;
             if (!g_GCenter.battle_scene.CanWalkByEntity(this, target - this.width, this.y, target, this.y + this.height))
                 return false;
-            if (this.x == target - this.width) return false;
+            if (this.x == target - this.width)
+            {
+                if (!adjust) return false;
+
+                    // 中间都是可以走的
+                for (var row = row_min + 1; row < row_max; 1)
+                {
+                    if (!g_GCenter.battle_scene.CanWalkByMap(row, break_col))
+                        return false;
+                }
+                    // 判断是否可以修正
+                var up_check = g_GCenter.battle_scene.CanWalkByMap(row_min, break_col);
+                var down_check = g_GCenter.battle_scene.CanWalkByMap(row_max, break_col);
+                if (!up_check) 
+                {
+                    if (this.Walk(DirType.DT_DOWN, frame_time, false)) return true;
+                    this._dir = dir;
+                    this.UpdateWalk(0);
+                    return false;
+                }
+                elseif (!down_check)
+                {
+                    if (this.Walk(DirType.DT_UP, frame_time, false)) return true;
+                    this._dir = dir;
+                    this.UpdateWalk(0);
+                    return false;
+                }
+                return false;
+            }
             this.x = target - this.width;
         
             return true;

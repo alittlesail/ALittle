@@ -44,6 +44,7 @@ function BattleCity.BattleSettlement:Show(player1_kill, player2_kill)
 	self._2_enemy_3_score.text = 0
 	self._2_enemy_total.text = ""
 	self._high_score.text = BattleCity.g_GConfig:GetInt("high_score", 2000)
+	self._stage_num.text = g_GCenter.stage
 	local player1_data = g_GCenter.player1_data
 	local player2_data = g_GCenter.player2_data
 	self._player_1_score.text = player1_data.score
@@ -99,7 +100,9 @@ function BattleCity.BattleSettlement:HandlePlayerEnemyScore(count_text, score_te
 	player_score.text = player_data.score
 	local high_score = BattleCity.g_GConfig:GetInt("high_score", 2000)
 	if player_data.score >= high_score then
+		high_score = player_data.score
 		BattleCity.g_GConfig:SetConfig("high_score", high_score, true)
+		self._high_score.text = high_score
 	end
 end
 

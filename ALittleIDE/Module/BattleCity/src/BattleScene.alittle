@@ -97,6 +97,7 @@ public class BattleScene : ALittle.DisplayLayout
         }
 
         this._tile_container.RemoveAllChild();
+        this._grass_container.RemoveAllChild();
         this._sprite_map = new Map<int, Map<int, ALittle.Sprite>>();
         this._river_map = new Map<int, Map<int, ALittle.Sprite>>();
 
@@ -141,8 +142,8 @@ public class BattleScene : ALittle.DisplayLayout
         this._stage_num.text = stage;
 
         // 设置生命值
-        this._player1_life.text = g_GCenter.player1_data.life;
-        this._player2_life.text = g_GCenter.player2_data.life;
+        this._player1_life.text = g_GCenter.player1_data.life - 1;
+        this._player2_life.text = g_GCenter.player2_data.life - 1;
 
         // 初始化敌军个数
         this._enemy_tiletable.RemoveAllChild();
@@ -162,8 +163,6 @@ public class BattleScene : ALittle.DisplayLayout
         for (var index, child:BattleItem in this._item_container.childs)
         	child.Stop();
         this._item_container.RemoveAllChild();
-
-        this._grass_container.RemoveAllChild();
     
         this._player_1.RemoveFromParent();
         this._player_2.RemoveFromParent();
@@ -595,43 +594,43 @@ public class BattleScene : ALittle.DisplayLayout
             if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_A])
             {
                 if (this._player_1.parent != null && this._player_1.alive)
-                    this._player_1.Walk(DirType.DT_LEFT, frame_time);
+                    this._player_1.Walk(DirType.DT_LEFT, frame_time, true);
             }
             elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_W])
             {
                 if (this._player_1.parent != null && this._player_1.alive)
-                    this._player_1.Walk(DirType.DT_UP, frame_time);
+                    this._player_1.Walk(DirType.DT_UP, frame_time, true);
             }
             elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_S])
             {
                 if (this._player_1.parent != null && this._player_1.alive)
-                    this._player_1.Walk(DirType.DT_DOWN, frame_time);
+                    this._player_1.Walk(DirType.DT_DOWN, frame_time, true);
             }
             elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_D])
             {
                 if (this._player_1.parent != null && this._player_1.alive)
-                    this._player_1.Walk(DirType.DT_RIGHT, frame_time);
+                    this._player_1.Walk(DirType.DT_RIGHT, frame_time, true);
             }
 
             if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_LEFT])
             {
                 if (this._player_2.parent != null && this._player_2.alive)
-                    this._player_2.Walk(DirType.DT_LEFT, frame_time);
+                    this._player_2.Walk(DirType.DT_LEFT, frame_time, true);
             }
             elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_UP])
             {
                 if (this._player_2.parent != null && this._player_2.alive)
-                    this._player_2.Walk(DirType.DT_UP, frame_time);
+                    this._player_2.Walk(DirType.DT_UP, frame_time, true);
             }
             elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_DOWN])
             {
                 if (this._player_2.parent != null && this._player_2.alive)
-                    this._player_2.Walk(DirType.DT_DOWN, frame_time);
+                    this._player_2.Walk(DirType.DT_DOWN, frame_time, true);
             }
             elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_RIGHT])
             {
                 if (this._player_2.parent != null && this._player_2.alive)
-                    this._player_2.Walk(DirType.DT_RIGHT, frame_time);
+                    this._player_2.Walk(DirType.DT_RIGHT, frame_time, true);
             }
         }
 
@@ -678,7 +677,7 @@ public class BattleScene : ALittle.DisplayLayout
                 if (child.sprite.col_index == ItemType.IT_LIFE)
                 {
                     player_data.life += 1;
-                    player_life.text = player_data.life;
+                    player_life.text = player_data.life - 1;
                 }
                 elseif (child.sprite.col_index == ItemType.IT_STAR)
                 {
@@ -844,22 +843,22 @@ public class BattleScene : ALittle.DisplayLayout
 
         if (role == this._player_1)
         {
-            if (g_GCenter.player_count >= 1 && g_GCenter.player1_data.life > 0)
+            g_GCenter.player1_data.life -= 1;
+            if (g_GCenter.player_count >= 1 && g_GCenter.player1_data.life >= 1)
             {
-                g_GCenter.player1_data.life -= 1;
                 g_GCenter.player1_data.level = 1;
-                this._player1_life.text = g_GCenter.player1_data.life;
+                this._player1_life.text = g_GCenter.player1_data.life - 1;
                 this._entity_container.AddChild(this._player_1);
                 this._player_1.StartBorn(12 * 4, 4* 4, g_GCenter.player1_data.level, DirType.DT_UP, 0.08);
             }
         }
         elseif (role == this._player_2)
         {
-            if (g_GCenter.player_count >= 2 && g_GCenter.player2_data.life > 0)
+            g_GCenter.player2_data.life -= 1;
+            if (g_GCenter.player_count >= 2 && g_GCenter.player2_data.life >= 1)
             {
-                g_GCenter.player2_data.life -= 1;
                 g_GCenter.player2_data.level = 1;
-                this._player2_life.text = g_GCenter.player2_data.life;
+                this._player2_life.text = g_GCenter.player2_data.life - 1;
                 this._entity_container.AddChild(this._player_2);
                 this._player_2.StartBorn(12 * 4, 8* 4, g_GCenter.player2_data.level, DirType.DT_UP, 0.08);
             }
@@ -870,8 +869,8 @@ public class BattleScene : ALittle.DisplayLayout
             this._enemy_count -= 1;
         }
 
-        if (g_GCenter.player_count >= 2 && !this._player_1.alive && g_GCenter.player1_data.life <= 0 && !this._player_2.alive && g_GCenter.player2_data.life <= 0
-        	|| g_GCenter.player_count >= 1 && !this._player_1.alive && g_GCenter.player1_data.life <= 0)
+        if (g_GCenter.player_count >= 2 && g_GCenter.player1_data.life <= 0 && g_GCenter.player2_data.life <= 0
+        	|| g_GCenter.player_count >= 1 && g_GCenter.player1_data.life <= 0)
         {
             this.ShowGameOver();
         }

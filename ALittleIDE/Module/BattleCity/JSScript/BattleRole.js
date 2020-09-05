@@ -72,8 +72,7 @@ BattleCity.BattleRole = JavaScript.Class(ALittle.DisplayLayout, {
 		this._fire_count = this._fire_count + (1);
 		g_GCenter.battle_scene.FireBullet(this, this._bullet_speed);
 	},
-	Walk : function(dir, frame_time) {
-		let walk = (this._dir === dir);
+	Walk : function(dir, frame_time, adjust) {
 		this._dir = dir;
 		this.UpdateWalk(frame_time);
 		if (this._dir === BattleCity.DirType.DT_UP) {
@@ -86,10 +85,12 @@ BattleCity.BattleRole = JavaScript.Class(ALittle.DisplayLayout, {
 			}
 			let next_row = ALittle.Math_Floor(y / g_GCenter.battle_scene.cell_size);
 			let target = this.y;
+			let break_row = cur_row;
 			for (let row = cur_row; row >= next_row; row += -1) {
 				let failed = false;
 				for (let col = col_min; col <= col_max; col += 1) {
 					if (!g_GCenter.battle_scene.CanWalkByMap(row, col)) {
+						break_row = row;
 						failed = true;
 						break;
 					}
@@ -106,6 +107,31 @@ BattleCity.BattleRole = JavaScript.Class(ALittle.DisplayLayout, {
 				return false;
 			}
 			if (this.y === target) {
+				if (!adjust) {
+					return false;
+				}
+				for (let col = col_min + 1; col < col_max; col += 1) {
+					if (!g_GCenter.battle_scene.CanWalkByMap(break_row, col)) {
+						return false;
+					}
+				}
+				let left_check = g_GCenter.battle_scene.CanWalkByMap(break_row, col_min);
+				let right_check = g_GCenter.battle_scene.CanWalkByMap(break_row, col_max);
+				if (!left_check) {
+					if (this.Walk(BattleCity.DirType.DT_RIGHT, frame_time, false)) {
+						return true;
+					}
+					this._dir = dir;
+					this.UpdateWalk(0);
+					return false;
+				} else if (!right_check) {
+					if (this.Walk(BattleCity.DirType.DT_LEFT, frame_time, false)) {
+						return true;
+					}
+					this._dir = dir;
+					this.UpdateWalk(0);
+					return false;
+				}
 				return false;
 			}
 			this.y = target;
@@ -122,10 +148,12 @@ BattleCity.BattleRole = JavaScript.Class(ALittle.DisplayLayout, {
 			}
 			let next_row = ALittle.Math_Floor(y / g_GCenter.battle_scene.cell_size);
 			let target = bottom;
+			let break_row = cur_row;
 			for (let row = cur_row; row <= next_row; row += 1) {
 				let failed = false;
 				for (let col = col_min; col <= col_max; col += 1) {
 					if (!g_GCenter.battle_scene.CanWalkByMap(row, col)) {
+						break_row = row;
 						failed = true;
 						break;
 					}
@@ -142,6 +170,31 @@ BattleCity.BattleRole = JavaScript.Class(ALittle.DisplayLayout, {
 				return false;
 			}
 			if (this.y === target - this.height) {
+				if (!adjust) {
+					return false;
+				}
+				for (let col = col_min + 1; col < col_max; col += 1) {
+					if (!g_GCenter.battle_scene.CanWalkByMap(break_row, col)) {
+						return false;
+					}
+				}
+				let left_check = g_GCenter.battle_scene.CanWalkByMap(break_row, col_min);
+				let right_check = g_GCenter.battle_scene.CanWalkByMap(break_row, col_max);
+				if (!left_check) {
+					if (this.Walk(BattleCity.DirType.DT_RIGHT, frame_time, false)) {
+						return true;
+					}
+					this._dir = dir;
+					this.UpdateWalk(0);
+					return false;
+				} else if (!right_check) {
+					if (this.Walk(BattleCity.DirType.DT_LEFT, frame_time, false)) {
+						return true;
+					}
+					this._dir = dir;
+					this.UpdateWalk(0);
+					return false;
+				}
 				return false;
 			}
 			this.y = target - this.height;
@@ -157,10 +210,12 @@ BattleCity.BattleRole = JavaScript.Class(ALittle.DisplayLayout, {
 			}
 			let next_col = ALittle.Math_Floor(x / g_GCenter.battle_scene.cell_size);
 			let target = this.x;
+			let break_col = cur_col;
 			for (let col = cur_col; col >= next_col; col += -1) {
 				let failed = false;
 				for (let row = row_min; row <= row_max; row += 1) {
 					if (!g_GCenter.battle_scene.CanWalkByMap(row, col)) {
+						break_col = col;
 						failed = true;
 						break;
 					}
@@ -177,6 +232,31 @@ BattleCity.BattleRole = JavaScript.Class(ALittle.DisplayLayout, {
 				return false;
 			}
 			if (this.x === target) {
+				if (!adjust) {
+					return false;
+				}
+				for (let row = row_min + 1; row < row_max; row += 1) {
+					if (!g_GCenter.battle_scene.CanWalkByMap(row, break_col)) {
+						return false;
+					}
+				}
+				let up_check = g_GCenter.battle_scene.CanWalkByMap(row_min, break_col);
+				let down_check = g_GCenter.battle_scene.CanWalkByMap(row_max, break_col);
+				if (!up_check) {
+					if (this.Walk(BattleCity.DirType.DT_DOWN, frame_time, false)) {
+						return true;
+					}
+					this._dir = dir;
+					this.UpdateWalk(0);
+					return false;
+				} else if (!down_check) {
+					if (this.Walk(BattleCity.DirType.DT_UP, frame_time, false)) {
+						return true;
+					}
+					this._dir = dir;
+					this.UpdateWalk(0);
+					return false;
+				}
 				return false;
 			}
 			this.x = target;
@@ -193,10 +273,12 @@ BattleCity.BattleRole = JavaScript.Class(ALittle.DisplayLayout, {
 			}
 			let next_col = ALittle.Math_Floor(x / g_GCenter.battle_scene.cell_size);
 			let target = right;
+			let break_col = cur_col;
 			for (let col = cur_col; col <= next_col; col += 1) {
 				let failed = false;
 				for (let row = row_min; row <= row_max; row += 1) {
 					if (!g_GCenter.battle_scene.CanWalkByMap(row, col)) {
+						break_col = col;
 						failed = true;
 						break;
 					}
@@ -213,6 +295,31 @@ BattleCity.BattleRole = JavaScript.Class(ALittle.DisplayLayout, {
 				return false;
 			}
 			if (this.x === target - this.width) {
+				if (!adjust) {
+					return false;
+				}
+				for (let row = row_min + 1; row < row_max; row += 1) {
+					if (!g_GCenter.battle_scene.CanWalkByMap(row, break_col)) {
+						return false;
+					}
+				}
+				let up_check = g_GCenter.battle_scene.CanWalkByMap(row_min, break_col);
+				let down_check = g_GCenter.battle_scene.CanWalkByMap(row_max, break_col);
+				if (!up_check) {
+					if (this.Walk(BattleCity.DirType.DT_DOWN, frame_time, false)) {
+						return true;
+					}
+					this._dir = dir;
+					this.UpdateWalk(0);
+					return false;
+				} else if (!down_check) {
+					if (this.Walk(BattleCity.DirType.DT_UP, frame_time, false)) {
+						return true;
+					}
+					this._dir = dir;
+					this.UpdateWalk(0);
+					return false;
+				}
 				return false;
 			}
 			this.x = target - this.width;

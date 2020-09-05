@@ -54,6 +54,7 @@ function BattleCity.BattleScene:Show(stage)
 		return
 	end
 	self._tile_container:RemoveAllChild()
+	self._grass_container:RemoveAllChild()
 	self._sprite_map = {}
 	self._river_map = {}
 	for row, sub_map in ___pairs(self._battle_map.tile_map) do
@@ -84,8 +85,8 @@ function BattleCity.BattleScene:Show(stage)
 	self._iron_flash = false
 	self._iron_flash_brush = BattleCity.BrushType.BT_WALL
 	self._stage_num.text = stage
-	self._player1_life.text = g_GCenter.player1_data.life
-	self._player2_life.text = g_GCenter.player2_data.life
+	self._player1_life.text = g_GCenter.player1_data.life - 1
+	self._player2_life.text = g_GCenter.player2_data.life - 1
 	self._enemy_tiletable:RemoveAllChild()
 	local i = 1
 	while true do
@@ -104,7 +105,6 @@ function BattleCity.BattleScene:Show(stage)
 		child:Stop()
 	end
 	self._item_container:RemoveAllChild()
-	self._grass_container:RemoveAllChild()
 	self._player_1:RemoveFromParent()
 	self._player_2:RemoveFromParent()
 	self._player1_contianer.visible = g_GCenter.player_count >= 1
@@ -474,36 +474,36 @@ function BattleCity.BattleScene:HandleFrame(frame_time)
 	if not self._is_gameover then
 		if A_UISystem.sym_map[97] then
 			if self._player_1.parent ~= nil and self._player_1.alive then
-				self._player_1:Walk(BattleCity.DirType.DT_LEFT, frame_time)
+				self._player_1:Walk(BattleCity.DirType.DT_LEFT, frame_time, true)
 			end
 		elseif A_UISystem.sym_map[119] then
 			if self._player_1.parent ~= nil and self._player_1.alive then
-				self._player_1:Walk(BattleCity.DirType.DT_UP, frame_time)
+				self._player_1:Walk(BattleCity.DirType.DT_UP, frame_time, true)
 			end
 		elseif A_UISystem.sym_map[115] then
 			if self._player_1.parent ~= nil and self._player_1.alive then
-				self._player_1:Walk(BattleCity.DirType.DT_DOWN, frame_time)
+				self._player_1:Walk(BattleCity.DirType.DT_DOWN, frame_time, true)
 			end
 		elseif A_UISystem.sym_map[100] then
 			if self._player_1.parent ~= nil and self._player_1.alive then
-				self._player_1:Walk(BattleCity.DirType.DT_RIGHT, frame_time)
+				self._player_1:Walk(BattleCity.DirType.DT_RIGHT, frame_time, true)
 			end
 		end
 		if A_UISystem.sym_map[1073741904] then
 			if self._player_2.parent ~= nil and self._player_2.alive then
-				self._player_2:Walk(BattleCity.DirType.DT_LEFT, frame_time)
+				self._player_2:Walk(BattleCity.DirType.DT_LEFT, frame_time, true)
 			end
 		elseif A_UISystem.sym_map[1073741906] then
 			if self._player_2.parent ~= nil and self._player_2.alive then
-				self._player_2:Walk(BattleCity.DirType.DT_UP, frame_time)
+				self._player_2:Walk(BattleCity.DirType.DT_UP, frame_time, true)
 			end
 		elseif A_UISystem.sym_map[1073741905] then
 			if self._player_2.parent ~= nil and self._player_2.alive then
-				self._player_2:Walk(BattleCity.DirType.DT_DOWN, frame_time)
+				self._player_2:Walk(BattleCity.DirType.DT_DOWN, frame_time, true)
 			end
 		elseif A_UISystem.sym_map[1073741903] then
 			if self._player_2.parent ~= nil and self._player_2.alive then
-				self._player_2:Walk(BattleCity.DirType.DT_RIGHT, frame_time)
+				self._player_2:Walk(BattleCity.DirType.DT_RIGHT, frame_time, true)
 			end
 		end
 	end
@@ -544,7 +544,7 @@ function BattleCity.BattleScene:HandleFrame(frame_time)
 		if player ~= nil then
 			if child.sprite.col_index == BattleCity.ItemType.IT_LIFE then
 				player_data.life = player_data.life + (1)
-				player_life.text = player_data.life
+				player_life.text = player_data.life - 1
 			elseif child.sprite.col_index == BattleCity.ItemType.IT_STAR then
 				player:LevelUp()
 				player_data.level = player.level
@@ -717,18 +717,18 @@ end
 function BattleCity.BattleScene:RoleDeath(role)
 	self._entity_container:RemoveChild(role)
 	if role == self._player_1 then
-		if g_GCenter.player_count >= 1 and g_GCenter.player1_data.life > 0 then
-			g_GCenter.player1_data.life = g_GCenter.player1_data.life - (1)
+		g_GCenter.player1_data.life = g_GCenter.player1_data.life - (1)
+		if g_GCenter.player_count >= 1 and g_GCenter.player1_data.life >= 1 then
 			g_GCenter.player1_data.level = 1
-			self._player1_life.text = g_GCenter.player1_data.life
+			self._player1_life.text = g_GCenter.player1_data.life - 1
 			self._entity_container:AddChild(self._player_1)
 			self._player_1:StartBorn(12 * 4, 4 * 4, g_GCenter.player1_data.level, BattleCity.DirType.DT_UP, 0.08)
 		end
 	elseif role == self._player_2 then
-		if g_GCenter.player_count >= 2 and g_GCenter.player2_data.life > 0 then
-			g_GCenter.player2_data.life = g_GCenter.player2_data.life - (1)
+		g_GCenter.player2_data.life = g_GCenter.player2_data.life - (1)
+		if g_GCenter.player_count >= 2 and g_GCenter.player2_data.life >= 1 then
 			g_GCenter.player2_data.level = 1
-			self._player2_life.text = g_GCenter.player2_data.life
+			self._player2_life.text = g_GCenter.player2_data.life - 1
 			self._entity_container:AddChild(self._player_2)
 			self._player_2:StartBorn(12 * 4, 8 * 4, g_GCenter.player2_data.level, BattleCity.DirType.DT_UP, 0.08)
 		end
@@ -736,7 +736,7 @@ function BattleCity.BattleScene:RoleDeath(role)
 		self._enemy_map[role] = nil
 		self._enemy_count = self._enemy_count - (1)
 	end
-	if g_GCenter.player_count >= 2 and not self._player_1.alive and g_GCenter.player1_data.life <= 0 and not self._player_2.alive and g_GCenter.player2_data.life <= 0 or g_GCenter.player_count >= 1 and not self._player_1.alive and g_GCenter.player1_data.life <= 0 then
+	if g_GCenter.player_count >= 2 and g_GCenter.player1_data.life <= 0 and g_GCenter.player2_data.life <= 0 or g_GCenter.player_count >= 1 and g_GCenter.player1_data.life <= 0 then
 		self:ShowGameOver()
 	end
 end

@@ -90,8 +90,7 @@ function BattleCity.BattleRole:Fire()
 	g_GCenter.battle_scene:FireBullet(self, self._bullet_speed)
 end
 
-function BattleCity.BattleRole:Walk(dir, frame_time)
-	local walk = (self._dir == dir)
+function BattleCity.BattleRole:Walk(dir, frame_time, adjust)
 	self._dir = dir
 	self:UpdateWalk(frame_time)
 	if self._dir == BattleCity.DirType.DT_UP then
@@ -104,6 +103,7 @@ function BattleCity.BattleRole:Walk(dir, frame_time)
 		end
 		local next_row = ALittle.Math_Floor(y / g_GCenter.battle_scene.cell_size)
 		local target = self.y
+		local break_row = cur_row
 		local row = cur_row
 		while true do
 			if not(row >= next_row) then break end
@@ -112,6 +112,7 @@ function BattleCity.BattleRole:Walk(dir, frame_time)
 			while true do
 				if not(col <= col_max) then break end
 				if not g_GCenter.battle_scene:CanWalkByMap(row, col) then
+					break_row = row
 					failed = true
 					break
 				end
@@ -130,6 +131,34 @@ function BattleCity.BattleRole:Walk(dir, frame_time)
 			return false
 		end
 		if self.y == target then
+			if not adjust then
+				return false
+			end
+			local col = col_min + 1
+			while true do
+				if not(col < col_max) then break end
+				if not g_GCenter.battle_scene:CanWalkByMap(break_row, col) then
+					return false
+				end
+				col = col+(1)
+			end
+			local left_check = g_GCenter.battle_scene:CanWalkByMap(break_row, col_min)
+			local right_check = g_GCenter.battle_scene:CanWalkByMap(break_row, col_max)
+			if not left_check then
+				if self:Walk(BattleCity.DirType.DT_RIGHT, frame_time, false) then
+					return true
+				end
+				self._dir = dir
+				self:UpdateWalk(0)
+				return false
+			elseif not right_check then
+				if self:Walk(BattleCity.DirType.DT_LEFT, frame_time, false) then
+					return true
+				end
+				self._dir = dir
+				self:UpdateWalk(0)
+				return false
+			end
 			return false
 		end
 		self.y = target
@@ -146,6 +175,7 @@ function BattleCity.BattleRole:Walk(dir, frame_time)
 		end
 		local next_row = ALittle.Math_Floor(y / g_GCenter.battle_scene.cell_size)
 		local target = bottom
+		local break_row = cur_row
 		local row = cur_row
 		while true do
 			if not(row <= next_row) then break end
@@ -154,6 +184,7 @@ function BattleCity.BattleRole:Walk(dir, frame_time)
 			while true do
 				if not(col <= col_max) then break end
 				if not g_GCenter.battle_scene:CanWalkByMap(row, col) then
+					break_row = row
 					failed = true
 					break
 				end
@@ -172,6 +203,34 @@ function BattleCity.BattleRole:Walk(dir, frame_time)
 			return false
 		end
 		if self.y == target - self.height then
+			if not adjust then
+				return false
+			end
+			local col = col_min + 1
+			while true do
+				if not(col < col_max) then break end
+				if not g_GCenter.battle_scene:CanWalkByMap(break_row, col) then
+					return false
+				end
+				col = col+(1)
+			end
+			local left_check = g_GCenter.battle_scene:CanWalkByMap(break_row, col_min)
+			local right_check = g_GCenter.battle_scene:CanWalkByMap(break_row, col_max)
+			if not left_check then
+				if self:Walk(BattleCity.DirType.DT_RIGHT, frame_time, false) then
+					return true
+				end
+				self._dir = dir
+				self:UpdateWalk(0)
+				return false
+			elseif not right_check then
+				if self:Walk(BattleCity.DirType.DT_LEFT, frame_time, false) then
+					return true
+				end
+				self._dir = dir
+				self:UpdateWalk(0)
+				return false
+			end
 			return false
 		end
 		self.y = target - self.height
@@ -187,6 +246,7 @@ function BattleCity.BattleRole:Walk(dir, frame_time)
 		end
 		local next_col = ALittle.Math_Floor(x / g_GCenter.battle_scene.cell_size)
 		local target = self.x
+		local break_col = cur_col
 		local col = cur_col
 		while true do
 			if not(col >= next_col) then break end
@@ -195,6 +255,7 @@ function BattleCity.BattleRole:Walk(dir, frame_time)
 			while true do
 				if not(row <= row_max) then break end
 				if not g_GCenter.battle_scene:CanWalkByMap(row, col) then
+					break_col = col
 					failed = true
 					break
 				end
@@ -213,6 +274,34 @@ function BattleCity.BattleRole:Walk(dir, frame_time)
 			return false
 		end
 		if self.x == target then
+			if not adjust then
+				return false
+			end
+			local row = row_min + 1
+			while true do
+				if not(row < row_max) then break end
+				if not g_GCenter.battle_scene:CanWalkByMap(row, break_col) then
+					return false
+				end
+				row = row+(1)
+			end
+			local up_check = g_GCenter.battle_scene:CanWalkByMap(row_min, break_col)
+			local down_check = g_GCenter.battle_scene:CanWalkByMap(row_max, break_col)
+			if not up_check then
+				if self:Walk(BattleCity.DirType.DT_DOWN, frame_time, false) then
+					return true
+				end
+				self._dir = dir
+				self:UpdateWalk(0)
+				return false
+			elseif not down_check then
+				if self:Walk(BattleCity.DirType.DT_UP, frame_time, false) then
+					return true
+				end
+				self._dir = dir
+				self:UpdateWalk(0)
+				return false
+			end
 			return false
 		end
 		self.x = target
@@ -229,6 +318,7 @@ function BattleCity.BattleRole:Walk(dir, frame_time)
 		end
 		local next_col = ALittle.Math_Floor(x / g_GCenter.battle_scene.cell_size)
 		local target = right
+		local break_col = cur_col
 		local col = cur_col
 		while true do
 			if not(col <= next_col) then break end
@@ -237,6 +327,7 @@ function BattleCity.BattleRole:Walk(dir, frame_time)
 			while true do
 				if not(row <= row_max) then break end
 				if not g_GCenter.battle_scene:CanWalkByMap(row, col) then
+					break_col = col
 					failed = true
 					break
 				end
@@ -255,6 +346,34 @@ function BattleCity.BattleRole:Walk(dir, frame_time)
 			return false
 		end
 		if self.x == target - self.width then
+			if not adjust then
+				return false
+			end
+			local row = row_min + 1
+			while true do
+				if not(row < row_max) then break end
+				if not g_GCenter.battle_scene:CanWalkByMap(row, break_col) then
+					return false
+				end
+				row = row+(1)
+			end
+			local up_check = g_GCenter.battle_scene:CanWalkByMap(row_min, break_col)
+			local down_check = g_GCenter.battle_scene:CanWalkByMap(row_max, break_col)
+			if not up_check then
+				if self:Walk(BattleCity.DirType.DT_DOWN, frame_time, false) then
+					return true
+				end
+				self._dir = dir
+				self:UpdateWalk(0)
+				return false
+			elseif not down_check then
+				if self:Walk(BattleCity.DirType.DT_UP, frame_time, false) then
+					return true
+				end
+				self._dir = dir
+				self:UpdateWalk(0)
+				return false
+			end
 			return false
 		end
 		self.x = target - self.width

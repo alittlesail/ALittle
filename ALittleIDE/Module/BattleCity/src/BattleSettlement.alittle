@@ -65,6 +65,7 @@ public class BattleSettlement : ALittle.DisplayLayout
         this._2_enemy_total.text = "";
 
         this._high_score.text = g_GConfig.GetInt("high_score", 2000);
+        this._stage_num.text = g_GCenter.stage;
 
         var player1_data = g_GCenter.player1_data;
         var player2_data = g_GCenter.player2_data;
@@ -127,7 +128,11 @@ public class BattleSettlement : ALittle.DisplayLayout
 
         var high_score = g_GConfig.GetInt("high_score", 2000);
         if (player_data.score >= high_score)
+        {
+            high_score = player_data.score;
             g_GConfig.SetConfig("high_score", high_score, true);
+            this._high_score.text = high_score;
+        }
     }
 
     public fun HandlePlayerTotalScore(ALittle.Text total, int value)

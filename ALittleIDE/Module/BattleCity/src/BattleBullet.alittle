@@ -40,7 +40,7 @@ public class BattleBullet : ALittle.DisplayLayout
     {
         var explosion = false;
 
-        if (this._bullet.visible)
+        if (this._alive)
         {
             if (this._dir == DirType.DT_UP)
             {

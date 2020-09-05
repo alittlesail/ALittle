@@ -8,7 +8,7 @@ public class BattlePlayer : BattleRole
     public fun StartBorn(int row, int col, int level, int dir, double speed)
     {
         this._level = level;
-        if (this._level >= 2)
+        if (this._level >= 3)
         	this._bullet_total = 2;
         else
         	this._bullet_total = 1;

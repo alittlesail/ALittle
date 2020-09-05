@@ -43,7 +43,7 @@ end
 
 function BattleCity.BattleBullet:UpdateFrame(frame_time)
 	local explosion = false
-	if self._bullet.visible then
+	if self._alive then
 		if self._dir == BattleCity.DirType.DT_UP then
 			self.y = self.y - (self._speed * frame_time)
 			local check_collision, check_explosion = g_GCenter.battle_scene:BulletCollisionByEntity(self, self.x, self.y, self.x + self.width, self.y + self.height)

@@ -33,7 +33,7 @@ BattleCity.BattleBullet = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	UpdateFrame : function(frame_time) {
 		let explosion = false;
-		if (this._bullet.visible) {
+		if (this._alive) {
 			if (this._dir === BattleCity.DirType.DT_UP) {
 				this.y = this.y - (this._speed * frame_time);
 				let [check_collision, check_explosion] = g_GCenter.battle_scene.BulletCollisionByEntity(this, this.x, this.y, this.x + this.width, this.y + this.height);

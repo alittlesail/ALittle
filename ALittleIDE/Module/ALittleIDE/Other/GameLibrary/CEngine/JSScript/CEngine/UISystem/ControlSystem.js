@@ -119,7 +119,6 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 					ALittle.Error("FileLoad fialed:", module_path);
 					___COROUTINE(undefined); return;
 				}
-				ALittle.Log("buffer.byteLength", buffer.byteLength);
 				factory = ALittle.NewObject(JavaScript.JMessageReadFactory, new DataView(buffer), 0, false);
 			}
 			let rflct = T;

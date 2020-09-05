@@ -58,9 +58,9 @@ BattleCity.BattleEnemy = JavaScript.Class(BattleCity.BattleRole, {
 				this._changed_frame = 0;
 			}
 			if (this._changed_frame > 1 && ALittle.Math_RandomInt(1, 100) > 95) {
-				this.Walk(ALittle.Math_RandomInt(BattleCity.DirType.DT_UP, BattleCity.DirType.DT_RIGHT), frame_time);
+				this.Walk(ALittle.Math_RandomInt(BattleCity.DirType.DT_UP, BattleCity.DirType.DT_RIGHT), frame_time, true);
 			} else {
-				if (!this.Walk(this._dir, frame_time)) {
+				if (!this.Walk(this._dir, frame_time, true)) {
 					this._changed_frame = 1;
 				}
 			}

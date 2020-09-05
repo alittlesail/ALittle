@@ -71,15 +71,19 @@ function BattleCity.GCenter.__getter:edit_scene()
 	return self._edit_scene
 end
 
+function BattleCity.GCenter.__getter:stage()
+	return self._stage
+end
+
 function BattleCity.GCenter:Restart()
 	self._battle_scene:Hide()
 	self._player1 = {}
 	self._player1.level = 1
-	self._player1.life = 2
+	self._player1.life = 3
 	self._player1.score = 0
 	self._player2 = {}
 	self._player2.level = 1
-	self._player2.life = 2
+	self._player2.life = 3
 	self._player2.score = 0
 	self._login_scene:Show()
 end

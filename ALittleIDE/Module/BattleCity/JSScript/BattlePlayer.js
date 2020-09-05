@@ -9,7 +9,7 @@ BattleCity.BattlePlayer = JavaScript.Class(BattleCity.BattleRole, {
 	},
 	StartBorn : function(row, col, level, dir, speed) {
 		this._level = level;
-		if (this._level >= 2) {
+		if (this._level >= 3) {
 			this._bullet_total = 2;
 		} else {
 			this._bullet_total = 1;

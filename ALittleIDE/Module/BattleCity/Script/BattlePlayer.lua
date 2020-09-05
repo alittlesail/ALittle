@@ -15,7 +15,7 @@ end
 
 function BattleCity.BattlePlayer:StartBorn(row, col, level, dir, speed)
 	self._level = level
-	if self._level >= 2 then
+	if self._level >= 3 then
 		self._bullet_total = 2
 	else
 		self._bullet_total = 1

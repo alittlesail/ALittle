@@ -57,15 +57,18 @@ BattleCity.GCenter = JavaScript.Class(undefined, {
 	get edit_scene() {
 		return this._edit_scene;
 	},
+	get stage() {
+		return this._stage;
+	},
 	Restart : function() {
 		this._battle_scene.Hide();
 		this._player1 = {};
 		this._player1.level = 1;
-		this._player1.life = 2;
+		this._player1.life = 3;
 		this._player1.score = 0;
 		this._player2 = {};
 		this._player2.level = 1;
-		this._player2.life = 2;
+		this._player2.life = 3;
 		this._player2.score = 0;
 		this._login_scene.Show();
 	},

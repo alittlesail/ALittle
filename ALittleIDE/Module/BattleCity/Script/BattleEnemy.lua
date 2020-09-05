@@ -68,9 +68,9 @@ function BattleCity.BattleEnemy:UpdateFrame(frame_time)
 			self._changed_frame = 0
 		end
 		if self._changed_frame > 1 and ALittle.Math_RandomInt(1, 100) > 95 then
-			self:Walk(ALittle.Math_RandomInt(BattleCity.DirType.DT_UP, BattleCity.DirType.DT_RIGHT), frame_time)
+			self:Walk(ALittle.Math_RandomInt(BattleCity.DirType.DT_UP, BattleCity.DirType.DT_RIGHT), frame_time, true)
 		else
-			if not self:Walk(self._dir, frame_time) then
+			if not self:Walk(self._dir, frame_time, true) then
 				self._changed_frame = 1
 			end
 		end

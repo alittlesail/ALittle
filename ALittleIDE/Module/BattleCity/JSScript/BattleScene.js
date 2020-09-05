@@ -45,6 +45,7 @@ BattleCity.BattleScene = JavaScript.Class(ALittle.DisplayLayout, {
 			return;
 		}
 		this._tile_container.RemoveAllChild();
+		this._grass_container.RemoveAllChild();
 		this._sprite_map = new Map();
 		this._river_map = new Map();
 		for (let [row, sub_map] of this._battle_map.tile_map) {
@@ -79,8 +80,8 @@ BattleCity.BattleScene = JavaScript.Class(ALittle.DisplayLayout, {
 		this._iron_flash = false;
 		this._iron_flash_brush = BattleCity.BrushType.BT_WALL;
 		this._stage_num.text = stage;
-		this._player1_life.text = g_GCenter.player1_data.life;
-		this._player2_life.text = g_GCenter.player2_data.life;
+		this._player1_life.text = g_GCenter.player1_data.life - 1;
+		this._player2_life.text = g_GCenter.player2_data.life - 1;
 		this._enemy_tiletable.RemoveAllChild();
 		for (let i = 1; i <= 20; i += 1) {
 			let icon = BattleCity.g_Control.CreateControl("enemy_icon");
@@ -99,7 +100,6 @@ BattleCity.BattleScene = JavaScript.Class(ALittle.DisplayLayout, {
 			child.Stop();
 		}
 		this._item_container.RemoveAllChild();
-		this._grass_container.RemoveAllChild();
 		this._player_1.RemoveFromParent();
 		this._player_2.RemoveFromParent();
 		this._player1_contianer.visible = g_GCenter.player_count >= 1;
@@ -448,36 +448,36 @@ BattleCity.BattleScene = JavaScript.Class(ALittle.DisplayLayout, {
 		if (!this._is_gameover) {
 			if (A_UISystem.sym_map.get(97)) {
 				if (this._player_1.parent !== undefined && this._player_1.alive) {
-					this._player_1.Walk(BattleCity.DirType.DT_LEFT, frame_time);
+					this._player_1.Walk(BattleCity.DirType.DT_LEFT, frame_time, true);
 				}
 			} else if (A_UISystem.sym_map.get(119)) {
 				if (this._player_1.parent !== undefined && this._player_1.alive) {
-					this._player_1.Walk(BattleCity.DirType.DT_UP, frame_time);
+					this._player_1.Walk(BattleCity.DirType.DT_UP, frame_time, true);
 				}
 			} else if (A_UISystem.sym_map.get(115)) {
 				if (this._player_1.parent !== undefined && this._player_1.alive) {
-					this._player_1.Walk(BattleCity.DirType.DT_DOWN, frame_time);
+					this._player_1.Walk(BattleCity.DirType.DT_DOWN, frame_time, true);
 				}
 			} else if (A_UISystem.sym_map.get(100)) {
 				if (this._player_1.parent !== undefined && this._player_1.alive) {
-					this._player_1.Walk(BattleCity.DirType.DT_RIGHT, frame_time);
+					this._player_1.Walk(BattleCity.DirType.DT_RIGHT, frame_time, true);
 				}
 			}
 			if (A_UISystem.sym_map.get(1073741904)) {
 				if (this._player_2.parent !== undefined && this._player_2.alive) {
-					this._player_2.Walk(BattleCity.DirType.DT_LEFT, frame_time);
+					this._player_2.Walk(BattleCity.DirType.DT_LEFT, frame_time, true);
 				}
 			} else if (A_UISystem.sym_map.get(1073741906)) {
 				if (this._player_2.parent !== undefined && this._player_2.alive) {
-					this._player_2.Walk(BattleCity.DirType.DT_UP, frame_time);
+					this._player_2.Walk(BattleCity.DirType.DT_UP, frame_time, true);
 				}
 			} else if (A_UISystem.sym_map.get(1073741905)) {
 				if (this._player_2.parent !== undefined && this._player_2.alive) {
-					this._player_2.Walk(BattleCity.DirType.DT_DOWN, frame_time);
+					this._player_2.Walk(BattleCity.DirType.DT_DOWN, frame_time, true);
 				}
 			} else if (A_UISystem.sym_map.get(1073741903)) {
 				if (this._player_2.parent !== undefined && this._player_2.alive) {
-					this._player_2.Walk(BattleCity.DirType.DT_RIGHT, frame_time);
+					this._player_2.Walk(BattleCity.DirType.DT_RIGHT, frame_time, true);
 				}
 			}
 		}
@@ -525,7 +525,7 @@ BattleCity.BattleScene = JavaScript.Class(ALittle.DisplayLayout, {
 			if (player !== undefined) {
 				if (child.sprite.col_index === BattleCity.ItemType.IT_LIFE) {
 					player_data.life = player_data.life + (1);
-					player_life.text = player_data.life;
+					player_life.text = player_data.life - 1;
 				} else if (child.sprite.col_index === BattleCity.ItemType.IT_STAR) {
 					player.LevelUp();
 					player_data.level = player.level;
@@ -662,18 +662,18 @@ BattleCity.BattleScene = JavaScript.Class(ALittle.DisplayLayout, {
 	RoleDeath : function(role) {
 		this._entity_container.RemoveChild(role);
 		if (role === this._player_1) {
-			if (g_GCenter.player_count >= 1 && g_GCenter.player1_data.life > 0) {
-				g_GCenter.player1_data.life = g_GCenter.player1_data.life - (1);
+			g_GCenter.player1_data.life = g_GCenter.player1_data.life - (1);
+			if (g_GCenter.player_count >= 1 && g_GCenter.player1_data.life >= 1) {
 				g_GCenter.player1_data.level = 1;
-				this._player1_life.text = g_GCenter.player1_data.life;
+				this._player1_life.text = g_GCenter.player1_data.life - 1;
 				this._entity_container.AddChild(this._player_1);
 				this._player_1.StartBorn(12 * 4, 4 * 4, g_GCenter.player1_data.level, BattleCity.DirType.DT_UP, 0.08);
 			}
 		} else if (role === this._player_2) {
-			if (g_GCenter.player_count >= 2 && g_GCenter.player2_data.life > 0) {
-				g_GCenter.player2_data.life = g_GCenter.player2_data.life - (1);
+			g_GCenter.player2_data.life = g_GCenter.player2_data.life - (1);
+			if (g_GCenter.player_count >= 2 && g_GCenter.player2_data.life >= 1) {
 				g_GCenter.player2_data.level = 1;
-				this._player2_life.text = g_GCenter.player2_data.life;
+				this._player2_life.text = g_GCenter.player2_data.life - 1;
 				this._entity_container.AddChild(this._player_2);
 				this._player_2.StartBorn(12 * 4, 8 * 4, g_GCenter.player2_data.level, BattleCity.DirType.DT_UP, 0.08);
 			}
@@ -681,7 +681,7 @@ BattleCity.BattleScene = JavaScript.Class(ALittle.DisplayLayout, {
 			this._enemy_map.delete(role);
 			this._enemy_count = this._enemy_count - (1);
 		}
-		if (g_GCenter.player_count >= 2 && !this._player_1.alive && g_GCenter.player1_data.life <= 0 && !this._player_2.alive && g_GCenter.player2_data.life <= 0 || g_GCenter.player_count >= 1 && !this._player_1.alive && g_GCenter.player1_data.life <= 0) {
+		if (g_GCenter.player_count >= 2 && g_GCenter.player1_data.life <= 0 && g_GCenter.player2_data.life <= 0 || g_GCenter.player_count >= 1 && g_GCenter.player1_data.life <= 0) {
 			this.ShowGameOver();
 		}
 	},

@@ -96,9 +96,14 @@ function ALittle.ControlSystem:LoadMessageFromFile(T, path)
 	local rflct = T
 	local invoke_info = ALittle.CreateMessageInfo(rflct.name)
 	if invoke_info == nil then
+		ALittle.Error("CreateMessageInfo fialed:", module_path)
 		return nil
 	end
 	local data = ALittle.PS_ReadMessage(factory, invoke_info, nil, factory:GetDataSize())
+	if data == nil then
+		ALittle.Error("PS_ReadMessage fialed:", module_path)
+		return nil
+	end
 	return data
 end
 

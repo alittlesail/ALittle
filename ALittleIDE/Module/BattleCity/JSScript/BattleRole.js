@@ -72,10 +72,8 @@ BattleCity.BattleRole = JavaScript.Class(ALittle.DisplayLayout, {
 		this._fire_count = this._fire_count + (1);
 		g_GCenter.battle_scene.FireBullet(this, this._bullet_speed);
 	},
-	Walk : function(dir, frame_time, adjust) {
-		this._dir = dir;
-		this.UpdateWalk(frame_time);
-		if (this._dir === BattleCity.DirType.DT_UP) {
+	WalkImpl : function(dir, frame_time, adjust) {
+		if (dir === BattleCity.DirType.DT_UP) {
 			let col_min = ALittle.Math_Floor(this.x / g_GCenter.battle_scene.cell_size);
 			let col_max = ALittle.Math_Floor((this.x + this.width - 1) / g_GCenter.battle_scene.cell_size);
 			let cur_row = ALittle.Math_Floor(this.y / g_GCenter.battle_scene.cell_size);
@@ -118,26 +116,16 @@ BattleCity.BattleRole = JavaScript.Class(ALittle.DisplayLayout, {
 				let left_check = g_GCenter.battle_scene.CanWalkByMap(break_row, col_min);
 				let right_check = g_GCenter.battle_scene.CanWalkByMap(break_row, col_max);
 				if (!left_check) {
-					if (this.Walk(BattleCity.DirType.DT_RIGHT, frame_time, false)) {
-						return true;
-					}
-					this._dir = dir;
-					this.UpdateWalk(0);
-					return false;
+					return this.WalkImpl(BattleCity.DirType.DT_RIGHT, frame_time, false);
 				} else if (!right_check) {
-					if (this.Walk(BattleCity.DirType.DT_LEFT, frame_time, false)) {
-						return true;
-					}
-					this._dir = dir;
-					this.UpdateWalk(0);
-					return false;
+					return this.WalkImpl(BattleCity.DirType.DT_LEFT, frame_time, false);
 				}
 				return false;
 			}
 			this.y = target;
 			return true;
 		}
-		if (this._dir === BattleCity.DirType.DT_DOWN) {
+		if (dir === BattleCity.DirType.DT_DOWN) {
 			let col_min = ALittle.Math_Floor(this.x / g_GCenter.battle_scene.cell_size);
 			let col_max = ALittle.Math_Floor((this.x + this.width - 1) / g_GCenter.battle_scene.cell_size);
 			let bottom = this.y + this.height;
@@ -181,26 +169,16 @@ BattleCity.BattleRole = JavaScript.Class(ALittle.DisplayLayout, {
 				let left_check = g_GCenter.battle_scene.CanWalkByMap(break_row, col_min);
 				let right_check = g_GCenter.battle_scene.CanWalkByMap(break_row, col_max);
 				if (!left_check) {
-					if (this.Walk(BattleCity.DirType.DT_RIGHT, frame_time, false)) {
-						return true;
-					}
-					this._dir = dir;
-					this.UpdateWalk(0);
-					return false;
+					return this.WalkImpl(BattleCity.DirType.DT_RIGHT, frame_time, false);
 				} else if (!right_check) {
-					if (this.Walk(BattleCity.DirType.DT_LEFT, frame_time, false)) {
-						return true;
-					}
-					this._dir = dir;
-					this.UpdateWalk(0);
-					return false;
+					return this.WalkImpl(BattleCity.DirType.DT_LEFT, frame_time, false);
 				}
 				return false;
 			}
 			this.y = target - this.height;
 			return true;
 		}
-		if (this._dir === BattleCity.DirType.DT_LEFT) {
+		if (dir === BattleCity.DirType.DT_LEFT) {
 			let row_min = ALittle.Math_Floor(this.y / g_GCenter.battle_scene.cell_size);
 			let row_max = ALittle.Math_Floor((this.y + this.height - 1) / g_GCenter.battle_scene.cell_size);
 			let cur_col = ALittle.Math_Floor(this.x / g_GCenter.battle_scene.cell_size);
@@ -243,26 +221,16 @@ BattleCity.BattleRole = JavaScript.Class(ALittle.DisplayLayout, {
 				let up_check = g_GCenter.battle_scene.CanWalkByMap(row_min, break_col);
 				let down_check = g_GCenter.battle_scene.CanWalkByMap(row_max, break_col);
 				if (!up_check) {
-					if (this.Walk(BattleCity.DirType.DT_DOWN, frame_time, false)) {
-						return true;
-					}
-					this._dir = dir;
-					this.UpdateWalk(0);
-					return false;
+					return this.WalkImpl(BattleCity.DirType.DT_DOWN, frame_time, false);
 				} else if (!down_check) {
-					if (this.Walk(BattleCity.DirType.DT_UP, frame_time, false)) {
-						return true;
-					}
-					this._dir = dir;
-					this.UpdateWalk(0);
-					return false;
+					return this.WalkImpl(BattleCity.DirType.DT_UP, frame_time, false);
 				}
 				return false;
 			}
 			this.x = target;
 			return true;
 		}
-		if (this._dir === BattleCity.DirType.DT_RIGHT) {
+		if (dir === BattleCity.DirType.DT_RIGHT) {
 			let row_min = ALittle.Math_Floor(this.y / g_GCenter.battle_scene.cell_size);
 			let row_max = ALittle.Math_Floor((this.y + this.height - 1) / g_GCenter.battle_scene.cell_size);
 			let right = this.x + this.width;
@@ -306,19 +274,9 @@ BattleCity.BattleRole = JavaScript.Class(ALittle.DisplayLayout, {
 				let up_check = g_GCenter.battle_scene.CanWalkByMap(row_min, break_col);
 				let down_check = g_GCenter.battle_scene.CanWalkByMap(row_max, break_col);
 				if (!up_check) {
-					if (this.Walk(BattleCity.DirType.DT_DOWN, frame_time, false)) {
-						return true;
-					}
-					this._dir = dir;
-					this.UpdateWalk(0);
-					return false;
+					return this.WalkImpl(BattleCity.DirType.DT_DOWN, frame_time, false);
 				} else if (!down_check) {
-					if (this.Walk(BattleCity.DirType.DT_UP, frame_time, false)) {
-						return true;
-					}
-					this._dir = dir;
-					this.UpdateWalk(0);
-					return false;
+					return this.WalkImpl(BattleCity.DirType.DT_UP, frame_time, false);
 				}
 				return false;
 			}
@@ -326,6 +284,11 @@ BattleCity.BattleRole = JavaScript.Class(ALittle.DisplayLayout, {
 			return true;
 		}
 		return false;
+	},
+	Walk : function(dir, frame_time) {
+		this._dir = dir;
+		this.UpdateWalk(frame_time);
+		return this.WalkImpl(dir, frame_time, true);
 	},
 	HandleExplosionEnd : function() {
 		let loop = ALittle.NewObject(ALittle.LoopTimer, g_GCenter.battle_scene.RoleDeath.bind(g_GCenter.battle_scene, this), 0);

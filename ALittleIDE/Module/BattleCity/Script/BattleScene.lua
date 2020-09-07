@@ -474,36 +474,36 @@ function BattleCity.BattleScene:HandleFrame(frame_time)
 	if not self._is_gameover then
 		if A_UISystem.sym_map[97] then
 			if self._player_1.parent ~= nil and self._player_1.alive then
-				self._player_1:Walk(BattleCity.DirType.DT_LEFT, frame_time, true)
+				self._player_1:Walk(BattleCity.DirType.DT_LEFT, frame_time)
 			end
 		elseif A_UISystem.sym_map[119] then
 			if self._player_1.parent ~= nil and self._player_1.alive then
-				self._player_1:Walk(BattleCity.DirType.DT_UP, frame_time, true)
+				self._player_1:Walk(BattleCity.DirType.DT_UP, frame_time)
 			end
 		elseif A_UISystem.sym_map[115] then
 			if self._player_1.parent ~= nil and self._player_1.alive then
-				self._player_1:Walk(BattleCity.DirType.DT_DOWN, frame_time, true)
+				self._player_1:Walk(BattleCity.DirType.DT_DOWN, frame_time)
 			end
 		elseif A_UISystem.sym_map[100] then
 			if self._player_1.parent ~= nil and self._player_1.alive then
-				self._player_1:Walk(BattleCity.DirType.DT_RIGHT, frame_time, true)
+				self._player_1:Walk(BattleCity.DirType.DT_RIGHT, frame_time)
 			end
 		end
 		if A_UISystem.sym_map[1073741904] then
 			if self._player_2.parent ~= nil and self._player_2.alive then
-				self._player_2:Walk(BattleCity.DirType.DT_LEFT, frame_time, true)
+				self._player_2:Walk(BattleCity.DirType.DT_LEFT, frame_time)
 			end
 		elseif A_UISystem.sym_map[1073741906] then
 			if self._player_2.parent ~= nil and self._player_2.alive then
-				self._player_2:Walk(BattleCity.DirType.DT_UP, frame_time, true)
+				self._player_2:Walk(BattleCity.DirType.DT_UP, frame_time)
 			end
 		elseif A_UISystem.sym_map[1073741905] then
 			if self._player_2.parent ~= nil and self._player_2.alive then
-				self._player_2:Walk(BattleCity.DirType.DT_DOWN, frame_time, true)
+				self._player_2:Walk(BattleCity.DirType.DT_DOWN, frame_time)
 			end
 		elseif A_UISystem.sym_map[1073741903] then
 			if self._player_2.parent ~= nil and self._player_2.alive then
-				self._player_2:Walk(BattleCity.DirType.DT_RIGHT, frame_time, true)
+				self._player_2:Walk(BattleCity.DirType.DT_RIGHT, frame_time)
 			end
 		end
 	end

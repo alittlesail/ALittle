@@ -594,43 +594,43 @@ public class BattleScene : ALittle.DisplayLayout
             if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_A])
             {
                 if (this._player_1.parent != null && this._player_1.alive)
-                    this._player_1.Walk(DirType.DT_LEFT, frame_time, true);
+                    this._player_1.Walk(DirType.DT_LEFT, frame_time);
             }
             elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_W])
             {
                 if (this._player_1.parent != null && this._player_1.alive)
-                    this._player_1.Walk(DirType.DT_UP, frame_time, true);
+                    this._player_1.Walk(DirType.DT_UP, frame_time);
             }
             elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_S])
             {
                 if (this._player_1.parent != null && this._player_1.alive)
-                    this._player_1.Walk(DirType.DT_DOWN, frame_time, true);
+                    this._player_1.Walk(DirType.DT_DOWN, frame_time);
             }
             elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_D])
             {
                 if (this._player_1.parent != null && this._player_1.alive)
-                    this._player_1.Walk(DirType.DT_RIGHT, frame_time, true);
+                    this._player_1.Walk(DirType.DT_RIGHT, frame_time);
             }
 
             if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_LEFT])
             {
                 if (this._player_2.parent != null && this._player_2.alive)
-                    this._player_2.Walk(DirType.DT_LEFT, frame_time, true);
+                    this._player_2.Walk(DirType.DT_LEFT, frame_time);
             }
             elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_UP])
             {
                 if (this._player_2.parent != null && this._player_2.alive)
-                    this._player_2.Walk(DirType.DT_UP, frame_time, true);
+                    this._player_2.Walk(DirType.DT_UP, frame_time);
             }
             elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_DOWN])
             {
                 if (this._player_2.parent != null && this._player_2.alive)
-                    this._player_2.Walk(DirType.DT_DOWN, frame_time, true);
+                    this._player_2.Walk(DirType.DT_DOWN, frame_time);
             }
             elseif (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_RIGHT])
             {
                 if (this._player_2.parent != null && this._player_2.alive)
-                    this._player_2.Walk(DirType.DT_RIGHT, frame_time, true);
+                    this._player_2.Walk(DirType.DT_RIGHT, frame_time);
             }
         }
 

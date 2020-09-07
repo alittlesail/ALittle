@@ -83,12 +83,9 @@ public class BattleRole : ALittle.DisplayLayout
         g_GCenter.battle_scene.FireBullet(this, this._bullet_speed);
     }
 
-    public fun Walk(int dir, int frame_time, bool adjust) : bool
+    private fun WalkImpl(int dir, int frame_time, bool adjust) : bool
     {
-        this._dir = dir;
-        this.UpdateWalk(frame_time);
-
-        if (this._dir == DirType.DT_UP)
+        if (dir == DirType.DT_UP)
         {
             var col_min = ALittle.Math_Floor(this.x / g_GCenter.battle_scene.cell_size);
             var col_max = ALittle.Math_Floor((this.x + this.width - 1) / g_GCenter.battle_scene.cell_size);
@@ -123,7 +120,7 @@ public class BattleRole : ALittle.DisplayLayout
             {
                 if (!adjust) return false;
 
-                // 中间都是可以走的
+                    // 中间都是可以走的
                 for (var col = col_min + 1; col < col_max; 1)
                 {
                     if (!g_GCenter.battle_scene.CanWalkByMap(break_row, col))
@@ -133,27 +130,15 @@ public class BattleRole : ALittle.DisplayLayout
                 // 判断是否可以修正
                 var left_check = g_GCenter.battle_scene.CanWalkByMap(break_row, col_min);
                 var right_check = g_GCenter.battle_scene.CanWalkByMap(break_row, col_max);
-                if (!left_check)
-                {
-                    if (this.Walk(DirType.DT_RIGHT, frame_time, false)) return true;
-                    this._dir = dir;
-                    this.UpdateWalk(0);
-                    return false;
-                } 
-                elseif (!right_check)
-                {
-                    if (this.Walk(DirType.DT_LEFT, frame_time, false)) return true;
-                    this._dir = dir;
-                    this.UpdateWalk(0);
-                    return false;
-                }
+                if (!left_check) return this.WalkImpl(DirType.DT_RIGHT, frame_time, false);
+                elseif (!right_check) return this.WalkImpl(DirType.DT_LEFT, frame_time, false);
                 return false;
             }
             this.y = target;
             return true;
         }
 
-        if (this._dir == DirType.DT_DOWN)
+        if (dir == DirType.DT_DOWN)
         {
             var col_min = ALittle.Math_Floor(this.x / g_GCenter.battle_scene.cell_size);
             var col_max = ALittle.Math_Floor((this.x + this.width - 1) / g_GCenter.battle_scene.cell_size);
@@ -194,23 +179,11 @@ public class BattleRole : ALittle.DisplayLayout
                     if (!g_GCenter.battle_scene.CanWalkByMap(break_row, col))
                         return false;
                 }
-                    // 判断是否可以修正
+                // 判断是否可以修正
                 var left_check = g_GCenter.battle_scene.CanWalkByMap(break_row, col_min);
                 var right_check = g_GCenter.battle_scene.CanWalkByMap(break_row, col_max);
-                if (!left_check)
-                {
-                    if (this.Walk(DirType.DT_RIGHT, frame_time, false)) return true;
-                    this._dir = dir;
-                    this.UpdateWalk(0);
-                    return false;
-                } 
-                elseif (!right_check)
-                {
-                    if (this.Walk(DirType.DT_LEFT, frame_time, false)) return true;
-                    this._dir = dir;
-                    this.UpdateWalk(0);
-                    return false;
-                }
+                if (!left_check) return this.WalkImpl(DirType.DT_RIGHT, frame_time, false);
+                elseif (!right_check) return this.WalkImpl(DirType.DT_LEFT, frame_time, false);
                 return false;
             }
             this.y = target - this.height;
@@ -218,7 +191,7 @@ public class BattleRole : ALittle.DisplayLayout
             return true;
         }
 
-        if (this._dir == DirType.DT_LEFT)
+        if (dir == DirType.DT_LEFT)
         {
             var row_min = ALittle.Math_Floor(this.y / g_GCenter.battle_scene.cell_size);
             var row_max = ALittle.Math_Floor((this.y + this.height - 1) / g_GCenter.battle_scene.cell_size);
@@ -258,30 +231,18 @@ public class BattleRole : ALittle.DisplayLayout
                         return false;
                 }
 
-                    // 判断是否可以修正
+                // 判断是否可以修正
                 var up_check = g_GCenter.battle_scene.CanWalkByMap(row_min, break_col);
                 var down_check = g_GCenter.battle_scene.CanWalkByMap(row_max, break_col);
-                if (!up_check) 
-                {
-                    if (this.Walk(DirType.DT_DOWN, frame_time, false)) return true;
-                    this._dir = dir;
-                    this.UpdateWalk(0);
-                    return false;
-                }
-                elseif (!down_check)
-                {
-                    if (this.Walk(DirType.DT_UP, frame_time, false)) return true;
-                    this._dir = dir;
-                    this.UpdateWalk(0);
-                    return false;
-                }
+                if (!up_check) return this.WalkImpl(DirType.DT_DOWN, frame_time, false);
+                elseif (!down_check) return this.WalkImpl(DirType.DT_UP, frame_time, false);
                 return false;
             }
             this.x = target;
             return true;
         }
 
-        if (this._dir == DirType.DT_RIGHT)
+        if (dir == DirType.DT_RIGHT)
         {
             var row_min = ALittle.Math_Floor(this.y / g_GCenter.battle_scene.cell_size);
             var row_max = ALittle.Math_Floor((this.y + this.height - 1) / g_GCenter.battle_scene.cell_size);
@@ -321,23 +282,11 @@ public class BattleRole : ALittle.DisplayLayout
                     if (!g_GCenter.battle_scene.CanWalkByMap(row, break_col))
                         return false;
                 }
-                    // 判断是否可以修正
+                // 判断是否可以修正
                 var up_check = g_GCenter.battle_scene.CanWalkByMap(row_min, break_col);
                 var down_check = g_GCenter.battle_scene.CanWalkByMap(row_max, break_col);
-                if (!up_check) 
-                {
-                    if (this.Walk(DirType.DT_DOWN, frame_time, false)) return true;
-                    this._dir = dir;
-                    this.UpdateWalk(0);
-                    return false;
-                }
-                elseif (!down_check)
-                {
-                    if (this.Walk(DirType.DT_UP, frame_time, false)) return true;
-                    this._dir = dir;
-                    this.UpdateWalk(0);
-                    return false;
-                }
+                if (!up_check) return this.WalkImpl(DirType.DT_DOWN, frame_time, false);
+                elseif (!down_check) return this.WalkImpl(DirType.DT_UP, frame_time, false);
                 return false;
             }
             this.x = target - this.width;
@@ -346,6 +295,13 @@ public class BattleRole : ALittle.DisplayLayout
         }
 
         return false;
+    }
+
+    public fun Walk(int dir, int frame_time) : bool
+    {
+        this._dir = dir;
+        this.UpdateWalk(frame_time);
+        return this.WalkImpl(dir, frame_time, true);
     }
 
     private fun HandleExplosionEnd()

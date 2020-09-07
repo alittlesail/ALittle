@@ -448,36 +448,36 @@ BattleCity.BattleScene = JavaScript.Class(ALittle.DisplayLayout, {
 		if (!this._is_gameover) {
 			if (A_UISystem.sym_map.get(97)) {
 				if (this._player_1.parent !== undefined && this._player_1.alive) {
-					this._player_1.Walk(BattleCity.DirType.DT_LEFT, frame_time, true);
+					this._player_1.Walk(BattleCity.DirType.DT_LEFT, frame_time);
 				}
 			} else if (A_UISystem.sym_map.get(119)) {
 				if (this._player_1.parent !== undefined && this._player_1.alive) {
-					this._player_1.Walk(BattleCity.DirType.DT_UP, frame_time, true);
+					this._player_1.Walk(BattleCity.DirType.DT_UP, frame_time);
 				}
 			} else if (A_UISystem.sym_map.get(115)) {
 				if (this._player_1.parent !== undefined && this._player_1.alive) {
-					this._player_1.Walk(BattleCity.DirType.DT_DOWN, frame_time, true);
+					this._player_1.Walk(BattleCity.DirType.DT_DOWN, frame_time);
 				}
 			} else if (A_UISystem.sym_map.get(100)) {
 				if (this._player_1.parent !== undefined && this._player_1.alive) {
-					this._player_1.Walk(BattleCity.DirType.DT_RIGHT, frame_time, true);
+					this._player_1.Walk(BattleCity.DirType.DT_RIGHT, frame_time);
 				}
 			}
 			if (A_UISystem.sym_map.get(1073741904)) {
 				if (this._player_2.parent !== undefined && this._player_2.alive) {
-					this._player_2.Walk(BattleCity.DirType.DT_LEFT, frame_time, true);
+					this._player_2.Walk(BattleCity.DirType.DT_LEFT, frame_time);
 				}
 			} else if (A_UISystem.sym_map.get(1073741906)) {
 				if (this._player_2.parent !== undefined && this._player_2.alive) {
-					this._player_2.Walk(BattleCity.DirType.DT_UP, frame_time, true);
+					this._player_2.Walk(BattleCity.DirType.DT_UP, frame_time);
 				}
 			} else if (A_UISystem.sym_map.get(1073741905)) {
 				if (this._player_2.parent !== undefined && this._player_2.alive) {
-					this._player_2.Walk(BattleCity.DirType.DT_DOWN, frame_time, true);
+					this._player_2.Walk(BattleCity.DirType.DT_DOWN, frame_time);
 				}
 			} else if (A_UISystem.sym_map.get(1073741903)) {
 				if (this._player_2.parent !== undefined && this._player_2.alive) {
-					this._player_2.Walk(BattleCity.DirType.DT_RIGHT, frame_time, true);
+					this._player_2.Walk(BattleCity.DirType.DT_RIGHT, frame_time);
 				}
 			}
 		}

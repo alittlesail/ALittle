@@ -2,7 +2,7 @@
 #ifndef _ALITTLE_SOCKETCLIENT_H_
 #define _ALITTLE_SOCKETCLIENT_H_
 
-#include <asio/asio.hpp>
+#include <asio.hpp>
 
 #include <memory>
 #include <functional>

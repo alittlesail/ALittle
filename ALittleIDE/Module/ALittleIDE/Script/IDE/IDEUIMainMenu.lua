@@ -87,6 +87,7 @@ function ALittleIDE.IDEUIMainMenu:HandleGenCoreAllInOneClick()
 		ALittle.List_Push(file_list, base_path .. "ALittle.lua")
 		ALittle.List_Push(file_list, base_path .. "Core/Reflect/ReflectRegister.lua")
 		ALittle.List_Push(file_list, base_path .. "Core/Reflect/ReflectDefine.lua")
+		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Core/Lua/"))
 		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Core/Utility/"))
 		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "Core/Net/"))
 		for index, path in ___ipairs(file_list) do

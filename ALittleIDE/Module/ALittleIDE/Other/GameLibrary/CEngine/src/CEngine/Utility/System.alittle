@@ -328,15 +328,86 @@ public static System_GetCursorY() : int
     [Language(JavaScript)]
     return 0;
 }
-// 设置光标类型
-public static System_SetEditCursor() { [Language(Lua)]lua.__CPPAPI_SetEditCursor(); }            // 编辑光标
-public static System_SetNormalCursor() { [Language(Lua)]lua.__CPPAPI_SetNormalCursor(); }        // 普通光标
-public static System_SetHandCursor() { [Language(Lua)]lua.__CPPAPI_SetHandCursor(); }            // 手势光标
-public static System_SetHDragCursor() { [Language(Lua)]lua.__CPPAPI_SetHDragCursor(); }        // 水平光标
-public static System_SetVDragCursor() { [Language(Lua)]lua.__CPPAPI_SetVDragCursor(); }        // 垂直光标
-public static System_SetHVDragCursor() { [Language(Lua)]lua.__CPPAPI_SetHVDragCursor(); }        // 反斜杠光标
-public static System_SetHV2DragCursor() { [Language(Lua)]lua.__CPPAPI_SetHV2DragCursor(); }    // 正斜杠光标
-public static System_SetCrossDragCursor() { [Language(Lua)]lua.__CPPAPI_SetCrossDragCursor(); } // 十字光标
+// 编辑光标
+public static System_SetEditCursor()
+{
+    [Language(Lua)]
+    lua.__CPPAPI_SetEditCursor();
+    [Language(JavaScript)]
+    A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "text";
+    [Language(JavaScript)]
+    A_PixiApp.renderer.plugins.interaction.setCursorMode("text");
+}
+// 普通光标
+public static System_SetNormalCursor()
+{
+    [Language(Lua)]
+    lua.__CPPAPI_SetNormalCursor();
+    [Language(JavaScript)]
+    A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "auto";
+    [Language(JavaScript)]
+    A_PixiApp.renderer.plugins.interaction.setCursorMode("auto");
+}
+// 手势光标
+public static System_SetHandCursor()
+{
+    [Language(Lua)]
+    lua.__CPPAPI_SetHandCursor();
+    [Language(JavaScript)]
+    A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "pointer";
+    [Language(JavaScript)]
+    A_PixiApp.renderer.plugins.interaction.setCursorMode("pointer");
+}
+// 水平光标
+public static System_SetHDragCursor()
+{
+    [Language(Lua)]
+    lua.__CPPAPI_SetHDragCursor();
+    [Language(JavaScript)]
+    A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "e-resize";
+    [Language(JavaScript)]
+    A_PixiApp.renderer.plugins.interaction.setCursorMode("e-resize");
+}
+// 垂直光标
+public static System_SetVDragCursor()
+{
+    [Language(Lua)]
+    lua.__CPPAPI_SetVDragCursor();
+    [Language(JavaScript)]
+    A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "n-resize";
+    [Language(JavaScript)]
+    A_PixiApp.renderer.plugins.interaction.setCursorMode("n-resize");
+}
+// 反斜杠光标
+public static System_SetHVDragCursor()
+{
+    [Language(Lua)]
+    lua.__CPPAPI_SetHVDragCursor();
+    [Language(JavaScript)]
+    A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "nw-resize";
+    [Language(JavaScript)]
+    A_PixiApp.renderer.plugins.interaction.setCursorMode("nw-resize");
+}
+// 正斜杠光标
+public static System_SetHV2DragCursor()
+{
+    [Language(Lua)]
+    lua.__CPPAPI_SetHV2DragCursor();
+    [Language(JavaScript)]
+    A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "ne-resize";
+    [Language(JavaScript)]
+    A_PixiApp.renderer.plugins.interaction.setCursorMode("ne-resize");
+}
+// 十字光标
+public static System_SetCrossDragCursor()
+{
+    [Language(Lua)]
+    lua.__CPPAPI_SetCrossDragCursor();
+    [Language(JavaScript)]
+    A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "move";
+    [Language(JavaScript)]
+    A_PixiApp.renderer.plugins.interaction.setCursorMode("move");
+}
 
 ////窗口部分////////////////////////////////////////////////////////////////////-
 // 创建窗口

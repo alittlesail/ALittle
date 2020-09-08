@@ -12,7 +12,7 @@ struct ItemData
 {
     string title;
     string texture_name;
-    string url;
+    string path;
 }
 
 class GCenter
@@ -57,26 +57,26 @@ class GCenter
             var data = new ItemData();
             data.title = "BattleCity";
             data.texture_name = "BattleCity.png";
-            data.url = "https://alittlesail.github.io/BattleCity.html";
+            data.path = "BattleCity.html";
             ALittle.List_Push(data_list, data);
     
             data = new ItemData();
             data.title = "2048";
             data.texture_name = "G2048.png";
-            data.url = "https://alittlesail.github.io/G2048.html";
+            data.path = "G2048.html";
             ALittle.List_Push(data_list, data);
     
             data = new ItemData();
             data.title = "FlappyBird";
             data.texture_name = "FlappyBird.png";
-            data.url = "https://alittlesail.github.io/FlappyBird.html";
+            data.path = "FlappyBird.html";
             ALittle.List_Push(data_list, data);
 
 
             data = new ItemData();
             data.title = "ALittleIDE";
             data.texture_name = "ALittleIDE.png";
-            data.url = "https://alittlesail.github.io/ALittleIDE.html";
+            data.path = "ALittleIDE.html";
             ALittle.List_Push(data_list, data);
         }
 
@@ -112,10 +112,18 @@ class GCenter
     {
         var data:ItemData = event.target._user_data;
 
-        [Language(Lua)]
-        ALittle.System_OpenUrlBySystemBrowser(data.url);
+        var fixed_host = "139.159.176.119";
+
+        var base_url = "http://"..fixed_host.."/ALittle/";
         [Language(JavaScript)]
-        window.open(data.url);
+        var host = location.host;
+        [Language(JavaScript)]
+        if (host != fixed_host) base_url = "https://alittlesail.github.io/";
+
+        [Language(Lua)]
+        ALittle.System_OpenUrlBySystemBrowser(base_url..data.path);
+        [Language(JavaScript)]
+        window.open(base_url..data.path);
     }
 
     private fun HandleGithubClick(ALittle.UIClickEvent event)

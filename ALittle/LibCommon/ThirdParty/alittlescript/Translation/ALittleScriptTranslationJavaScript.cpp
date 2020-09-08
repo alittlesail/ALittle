@@ -733,7 +733,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateCustomType(std::share
                 error = dynamic_cast<ALittleScriptCustomTypeReference*>(custom_type->GetReference())->CalcNamespaceName(pre_namespace_name);
                 if (error) return error;
 
-                if (pre_namespace_name == "alittle") pre_namespace_name = "";
+                if (pre_namespace_name == "alittle" || pre_namespace_name == "javascript") pre_namespace_name = "";
                 if (pre_namespace_name.size() > 0) pre_namespace_name += ".";
 
                 class_name = pre_namespace_name + class_name;
@@ -746,7 +746,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateCustomType(std::share
             error = dynamic_cast<ALittleScriptCustomTypeReference*>(custom_type->GetReference())->CalcNamespaceName(pre_namespace_name);
             if (error) return error;
 
-            if (pre_namespace_name == "alittle") pre_namespace_name = "";
+            if (pre_namespace_name == "alittle" || pre_namespace_name == "javascript") pre_namespace_name = "";
             if (pre_namespace_name.size() > 0) pre_namespace_name += ".";
 
             class_name = pre_namespace_name + class_name;
@@ -1905,7 +1905,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GeneratePropertyValue(std::sh
                 error = dynamic_cast<ALittleScriptPropertyValueCustomTypeReference*>(custom_type->GetReference())->CalcNamespaceName(pre_namespace_name);
                 if (error) return error;
 
-                if (pre_namespace_name == "alittle") pre_namespace_name = "";
+                if (pre_namespace_name == "alittle" || pre_namespace_name == "javascript") pre_namespace_name = "";
                 if (pre_namespace_name.size() > 0) content += pre_namespace_name + ".";
             }
 

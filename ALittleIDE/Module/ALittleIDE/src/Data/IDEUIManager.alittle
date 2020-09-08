@@ -22,7 +22,7 @@ public class IDEUIManager
     // 依赖其他模块控件，KEY1:模块名.控件名 KEY2:控件名
     private Map<string, Map<string, bool>> _other_map_cur = new Map<string, Map<string, bool>>();
 
-	public ctor(string module)
+	public await fun Init(string module)
 	{
         this._module = module;
 
@@ -34,6 +34,17 @@ public class IDEUIManager
 
 		// 遍历文件夹，加载所有控件
 		this._base_path = ALittle.File_BaseFilePath().."Module/"..this._module.."/UI";
+
+        [Language(JavaScript)]
+        this._control.RegisterInfoByHttp();
+        [Language(JavaScript)]
+        for (var control_name, control_info in this._control.info_map)
+        {
+            var info = new Map<string, ALittle.DisplayInfo>();
+            info[control_name] = control_info;
+            ALittle.File_SaveFile(this._base_path.."/"..control_name..".json", ALittle.String_JsonEncode(info), -1);
+        }
+
 		// 加载UI文件夹内的所有json文件
 		var file_map = ALittle.File_GetFileAttrByDir(this._base_path);
 		for (var file_path, attr in file_map)
@@ -50,17 +61,6 @@ public class IDEUIManager
 					{
 						for (var control_name, control_info in content_info_map)
 						{
-                            if (this._module == "GBRMaker" && IDEUIUtility_GetExtends222(control_info))
-                            {
-                                // 将信息保存到文件中
-                                var file_path1111 = this._base_path.."/"..control_name..".json";
-                                // 创建一个保存映射表
-                                var save_info = new Map<string, ALittle.DisplayInfo>();
-                                save_info[control_name] = control_info;
-                                // 保存文件
-                                ALittle.File_SaveFile(file_path1111, ALittle.String_JsonEncode(save_info), -1);
-                            }
-
 							// 获取信息
 							var all_info = new IDEControlInfo();
 							all_info.info = control_info;

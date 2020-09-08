@@ -10,7 +10,6 @@ option_map : {}
 })
 
 let g_ALittleScriptColor = undefined;
-let g_ALittleScriptIcon = undefined;
 AUIPlugin.ALittleScriptColorType = {
 	COMMENT : 1,
 	DEFINE_NAME : 2,
@@ -40,6 +39,21 @@ AUIPlugin.ALittleScriptIconType = {
 	VARIABLE : 14,
 }
 
+let g_ALittleScriptIcon = new Map();
+g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.CLASS, "ABnf/ALittleScript/ALittleScriptClassIcon.png");
+g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.STRUCT, "ABnf/ALittleScript/ALittleScriptStructIcon.png");
+g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.PROPERTY, "ABnf/ALittleScript/ALittleScriptPropertyIcon.png");
+g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.NAMESPACE, "ABnf/ALittleScript/ALittleScriptNamespaceIcon.png");
+g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.TEMPLATE, "ABnf/ALittleScript/ALittleScriptTemplateIcon.png");
+g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.ENUM, "ABnf/ALittleScript/ALittleScriptEnumIcon.png");
+g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.LANGUAGE, "ABnf/ALittleScript/ALittleScriptNamespaceIcon.png");
+g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.GLOBAL_METHOD, "ABnf/ALittleScript/ALittleScriptStaticIcon.png");
+g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.MEMBER_METHOD, "ABnf/ALittleScript/ALittleScriptMethodIcon.png");
+g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.FIELD_METHOD, "ABnf/ALittleScript/ALittleScriptFieldIcon.png");
+g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.STATIC_METHOD, "ABnf/ALittleScript/ALittleScriptStaticIcon.png");
+g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.INSTANCE, "ABnf/ALittleScript/ALittleScriptInstanceIcon.png");
+g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.PARAM, "ABnf/ALittleScript/ALittleScriptParamIcon.png");
+g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.VARIABLE, "ABnf/ALittleScript/ALittleScriptVariableIcon.png");
 if (AUIPlugin.AUICodeLanguage === undefined) throw new Error(" extends class:AUIPlugin.AUICodeLanguage is undefined");
 AUIPlugin.AUICodeALittleScript = JavaScript.Class(AUIPlugin.AUICodeLanguage, {
 	Ctor : function(project, full_path, module_path) {
@@ -69,9 +83,9 @@ AUIPlugin.AUICodeALittleScript = JavaScript.Class(AUIPlugin.AUICodeLanguage, {
 			}
 			{
 				color = {};
-				color.red = 156 / 255;
-				color.green = 220 / 255;
-				color.blue = 254 / 255;
+				color.red = 146 / 255;
+				color.green = 210 / 255;
+				color.blue = 244 / 255;
 				g_ALittleScriptColor.set(AUIPlugin.ALittleScriptColorType.CUSTOM_NAME, color);
 			}
 			{
@@ -90,9 +104,9 @@ AUIPlugin.AUICodeALittleScript = JavaScript.Class(AUIPlugin.AUICodeLanguage, {
 			}
 			{
 				color = {};
-				color.red = 220 / 255;
-				color.green = 220 / 255;
-				color.blue = 170 / 255;
+				color.red = 210 / 255;
+				color.green = 210 / 255;
+				color.blue = 160 / 255;
 				g_ALittleScriptColor.set(AUIPlugin.ALittleScriptColorType.METHOD_NAME, color);
 			}
 			{
@@ -109,23 +123,6 @@ AUIPlugin.AUICodeALittleScript = JavaScript.Class(AUIPlugin.AUICodeLanguage, {
 				color.blue = 133 / 255;
 				g_ALittleScriptColor.set(AUIPlugin.ALittleScriptColorType.TEXT, color);
 			}
-		}
-		if (g_ALittleScriptIcon === undefined) {
-			g_ALittleScriptIcon = new Map();
-			g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.CLASS, "ABnf/ALittleScript/ALittleScriptClassIcon.png");
-			g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.STRUCT, "ABnf/ALittleScript/ALittleScriptStructIcon.png");
-			g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.PROPERTY, "ABnf/ALittleScript/ALittleScriptPropertyIcon.png");
-			g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.NAMESPACE, "ABnf/ALittleScript/ALittleScriptNamespaceIcon.png");
-			g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.TEMPLATE, "ABnf/ALittleScript/ALittleScriptTemplateIcon.png");
-			g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.ENUM, "ABnf/ALittleScript/ALittleScriptEnumIcon.png");
-			g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.LANGUAGE, "ABnf/ALittleScript/ALittleScriptNamespaceIcon.png");
-			g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.GLOBAL_METHOD, "ABnf/ALittleScript/ALittleScriptStaticIcon.png");
-			g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.MEMBER_METHOD, "ABnf/ALittleScript/ALittleScriptMethodIcon.png");
-			g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.FIELD_METHOD, "ABnf/ALittleScript/ALittleScriptFieldIcon.png");
-			g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.STATIC_METHOD, "ABnf/ALittleScript/ALittleScriptStaticIcon.png");
-			g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.INSTANCE, "ABnf/ALittleScript/ALittleScriptInstanceIcon.png");
-			g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.PARAM, "ABnf/ALittleScript/ALittleScriptParamIcon.png");
-			g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.VARIABLE, "ABnf/ALittleScript/ALittleScriptVariableIcon.png");
 		}
 		this._abnf_file = lua.alittlescript.create_alittlescript_file(project.project, module_path, full_path, "");
 	},
@@ -257,6 +254,9 @@ AUIPlugin.AUICodeALittleScriptProject = JavaScript.Class(AUIPlugin.AUICodeProjec
 			lua.alittlescript.alittlescriptproject_generate(this._project, query_id, full_path);
 			return;
 		}).bind(this));
+	},
+	QueryCompleteIcon : function(tag) {
+		return g_ALittleScriptIcon.get(tag);
 	},
 }, "AUIPlugin.AUICodeALittleScriptProject");
 

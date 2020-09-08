@@ -47,30 +47,6 @@ public static IDEUIUtility_GetExtends(string module, const ALittle.DisplayInfo i
 	return map;
 }
 
-// 收集所有引用的控件名称
-public static IDEUIUtility_GetExtends222(ALittle.DisplayInfo info, [Nullable] Map<string, Map<string, bool>> map) : bool
-{
-    var result = false;
-	if (map == null) map = new Map<string, Map<string, bool>>();
-	for (var k, v in cast<Map<string, any>>(info))
-	{
-		if (ALittle.String_Type(v) == "table")
-        {
-			if (IDEUIUtility_GetExtends222(v, map))
-                result = true;
-        }
-		elseif (k == "__extends" || k == "__include")
-        {
-            if (ALittle.String_Find(v, "ide_common_") == 1)
-            {
-                info.__module = "AUIPlugin";
-                result = true;
-            }
-        }
-	}
-    return result;
-}
-
 // 检查控件是否包含某个目标类
 public static IDEUIUtility_HasTargetClass(const ALittle.DisplayInfo info, string name) : bool
 {

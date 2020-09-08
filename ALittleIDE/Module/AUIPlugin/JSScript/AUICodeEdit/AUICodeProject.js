@@ -27,12 +27,18 @@ AUIPlugin.AUICodeProject = JavaScript.Class(ALittle.EventDispatcher, {
 		this._map = new Map();
 	},
 	CreateALittleScriptProject : function() {
+		if (lua.alittlescript === undefined) {
+			return undefined;
+		}
 		let abnf_buffer = ALittle.File_ReadTextFromFile(AUIPlugin.g_ModuleBasePath + "Other/ABnf/ALittleScript.abnf");
 		let project = ALittle.NewObject(AUIPlugin.AUICodeALittleScriptProject, lua.alittlescript.create_alittlescript_project(abnf_buffer));
 		project.Start();
 		return project;
 	},
 	CreateABnfProject : function() {
+		if (lua.abnf === undefined) {
+			return undefined;
+		}
 		let abnf_project = AUIPlugin.g_ABnfProjectMap["abnf"];
 		if (abnf_project === undefined) {
 			let abnf_buffer = ALittle.File_ReadTextFromFile(AUIPlugin.g_ModuleBasePath + "/Other/ABnf/ABnf.abnf");
@@ -46,6 +52,9 @@ AUIPlugin.AUICodeProject = JavaScript.Class(ALittle.EventDispatcher, {
 		return AUIPlugin.g_UpperExtMapABnf[upper_ext] !== undefined;
 	},
 	CreateCommonProject : function(upper_ext) {
+		if (lua.alanguage === undefined) {
+			return undefined;
+		}
 		let abnf = AUIPlugin.g_UpperExtMapABnf[upper_ext];
 		if (abnf === undefined) {
 			return undefined;
@@ -80,8 +89,35 @@ AUIPlugin.AUICodeProject = JavaScript.Class(ALittle.EventDispatcher, {
 	UpdateFile : function(module_path, full_path) {
 		lua.alanguage.abnfproject_updatefile(this._project, module_path, full_path, 0);
 	},
+	TempFile : function(module_path, full_path, text) {
+		lua.alanguage.abnfproject_tempfile(this._project, module_path, full_path, text, 0);
+	},
 	RemoveFile : function(full_path) {
 		lua.alanguage.abnfproject_removefile(this._project, full_path);
+	},
+	FindFile : function(text) {
+		return new Promise((function(___COROUTINE, ___) {
+			let query_id = this.Add(___COROUTINE);
+			lua.alanguage.abnfproject_findfile(this._project, query_id, text);
+			return;
+		}).bind(this));
+	},
+	FindDefine : function(pre_input, input) {
+		return new Promise((function(___COROUTINE, ___) {
+			let query_id = this.Add(___COROUTINE);
+			lua.alanguage.abnfproject_finddefine(this._project, query_id, pre_input, input);
+			return;
+		}).bind(this));
+	},
+	FindGoto : function(text) {
+		return new Promise((function(___COROUTINE, ___) {
+			let query_id = this.Add(___COROUTINE);
+			lua.alanguage.abnfproject_findgoto(this._project, query_id, text);
+			return;
+		}).bind(this));
+	},
+	QueryCompleteIcon : function(tag) {
+		return undefined;
 	},
 	Start : function() {
 		if (this._loop !== undefined) {

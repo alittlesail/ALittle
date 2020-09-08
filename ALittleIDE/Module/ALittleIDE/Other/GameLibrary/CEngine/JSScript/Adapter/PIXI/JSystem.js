@@ -276,8 +276,16 @@ JavaScript.JSystem_CreateView = function(title, width, height, flag, scale) {
 	if (func !== undefined) {
 		func(width, height);
 	}
+	window.onresize = JavaScript.JSystem_HandleViewResized;
 	A_PixiApp.ticker.add(JavaScript.JSystem_MainLoop);
 	return true;
+}
+
+JavaScript.JSystem_HandleViewResized = function() {
+	let func = window["__ALITTLEAPI_ViewResized"];
+	if (func !== undefined) {
+		func(ALittle.System_GetScreenWidth(), ALittle.System_GetScreenHeight());
+	}
 }
 
 JavaScript.JSystem_SetViewTitle = function(title) {

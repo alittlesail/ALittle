@@ -2,12 +2,6 @@
 if (typeof AUIPlugin === "undefined") window.AUIPlugin = {};
 let ___all_struct = ALittle.GetAllStruct();
 
-ALittle.RegStruct(1876308853, "AUIPlugin.AUIFileSelectItemUserData", {
-name : "AUIPlugin.AUIFileSelectItemUserData", ns_name : "AUIPlugin", rl_name : "AUIFileSelectItemUserData", hash_code : 1876308853,
-name_list : ["path","directory"],
-type_list : ["string","bool"],
-option_map : {}
-})
 ALittle.RegStruct(1821709712, "AUIPlugin.AUIFileSelectRightButtonDownEvent", {
 name : "AUIPlugin.AUIFileSelectRightButtonDownEvent", ns_name : "AUIPlugin", rl_name : "AUIFileSelectRightButtonDownEvent", hash_code : 1821709712,
 name_list : ["target","path","directory"],
@@ -20,90 +14,23 @@ name_list : ["target"],
 type_list : ["ALittle.EventDispatcher"],
 option_map : {}
 })
-ALittle.RegStruct(1686540930, "AUIPlugin.AUIFileSelectItemInfo", {
-name : "AUIPlugin.AUIFileSelectItemInfo", ns_name : "AUIPlugin", rl_name : "AUIFileSelectItemInfo", hash_code : 1686540930,
-name_list : ["name","frame","image","file","dir","button"],
-type_list : ["ALittle.DisplayObject","ALittle.DisplayObject","ALittle.Image","ALittle.Image","ALittle.Image","ALittle.DisplayObject"],
-option_map : {}
-})
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
 name : "ALittle.UIEvent", ns_name : "ALittle", rl_name : "UIEvent", hash_code : -1479093282,
 name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
-ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
-name : "ALittle.UIButtonEvent", ns_name : "ALittle", rl_name : "UIButtonEvent", hash_code : -1347278145,
-name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
-option_map : {}
-})
-ALittle.RegStruct(-1202439334, "ALittle.UIMoveOutEvent", {
-name : "ALittle.UIMoveOutEvent", ns_name : "ALittle", rl_name : "UIMoveOutEvent", hash_code : -1202439334,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(-1001723540, "ALittle.UIMouseMoveEvent", {
-name : "ALittle.UIMouseMoveEvent", ns_name : "ALittle", rl_name : "UIMouseMoveEvent", hash_code : -1001723540,
-name_list : ["target","abs_x","abs_y","rel_x","rel_y"],
-type_list : ["ALittle.DisplayObject","double","double","double","double"],
-option_map : {}
-})
-ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
-name : "ALittle.UIRButtonDownEvent", ns_name : "ALittle", rl_name : "UIRButtonDownEvent", hash_code : -641444818,
-name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
-type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
-option_map : {}
-})
-ALittle.RegStruct(-573946464, "AUIPlugin.AUIFileSelectCollectRunTime", {
-name : "AUIPlugin.AUIFileSelectCollectRunTime", ns_name : "AUIPlugin", rl_name : "AUIFileSelectCollectRunTime", hash_code : -573946464,
-name_list : ["cur_count","total_count"],
-type_list : ["int","int"],
-option_map : {}
-})
-ALittle.RegStruct(544684311, "ALittle.UIMoveInEvent", {
-name : "ALittle.UIMoveInEvent", ns_name : "ALittle", rl_name : "UIMoveInEvent", hash_code : 544684311,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
-name : "ALittle.UIClickEvent", ns_name : "ALittle", rl_name : "UIClickEvent", hash_code : -449066808,
-name_list : ["target","is_drag"],
-type_list : ["ALittle.DisplayObject","bool"],
-option_map : {}
-})
-ALittle.RegStruct(-338112738, "ALittle.UIDropFileEvent", {
-name : "ALittle.UIDropFileEvent", ns_name : "ALittle", rl_name : "UIDropFileEvent", hash_code : -338112738,
-name_list : ["target","path"],
-type_list : ["ALittle.DisplayObject","string"],
-option_map : {}
-})
 
 if (ALittle.EventDispatcher === undefined) throw new Error(" extends class:ALittle.EventDispatcher is undefined");
 AUIPlugin.AUIFileSelectDialog = JavaScript.Class(ALittle.EventDispatcher, {
 	Ctor : function(title, layer, ext_list) {
-		this._real_size = 100;
-		this._thread = undefined;
-		this._base_path = undefined;
-		this._real_path = undefined;
 		this._title = title;
 		this._layer = layer;
-		if (ext_list !== undefined) {
-			this._ext_map = {};
-			let ___OBJECT_1 = ext_list;
-			for (let index = 1; index <= ___OBJECT_1.length; ++index) {
-				let ext = ___OBJECT_1[index - 1];
-				if (ext === undefined) break;
-				this._ext_map[ALittle.String_Upper(ext)] = true;
-			}
-		}
+		this._ext_list = ext_list;
 	},
 	Shutdown : function() {
-		if (this._thread !== undefined) {
-			ALittle.Coroutine.Resume(this._thread, undefined);
-			this._thread = undefined;
+		if (this._layout !== undefined) {
+			this._layout.Release();
 		}
 		if (this._dialog !== undefined) {
 			if (this._layer !== undefined) {
@@ -115,14 +42,19 @@ AUIPlugin.AUIFileSelectDialog = JavaScript.Class(ALittle.EventDispatcher, {
 		}
 	},
 	HideDialog : function() {
-		if (this._thread !== undefined) {
-			ALittle.Coroutine.Resume(this._thread, undefined);
-			this._thread = undefined;
+		if (this._layout !== undefined) {
+			this._layout.Release();
 		}
-		this._real_path = undefined;
 		if (this._dialog !== undefined) {
 			this._dialog.visible = false;
 		}
+	},
+	ShowDialog : function() {
+		if (this._layout !== undefined) {
+			this._layout.Release();
+		}
+		this.CreateDialog();
+		this._dialog.visible = true;
 	},
 	CreateDialog : function() {
 		if (this._dialog === undefined) {
@@ -133,22 +65,33 @@ AUIPlugin.AUIFileSelectDialog = JavaScript.Class(ALittle.EventDispatcher, {
 			} else {
 				A_LayerManager.AddToModal(this._dialog);
 			}
+			this._dialog.close_callback = this.HandleDialogClose.bind(this);
+			this._layout.Init(this._ext_list);
+			this._layout.AddEventListener(___all_struct.get(-1265378424), this, this.HandleItemRButtonDown);
 		}
 	},
-	ShowDialog : function() {
-		if (this._thread !== undefined) {
-			ALittle.Coroutine.Resume(this._thread, undefined);
-			this._thread = undefined;
+	HandleItemRButtonDown : function(event) {
+		let e = {};
+		e.path = event.path;
+		e.directory = event.directory;
+		this.DispatchEvent(___all_struct.get(1821709712), e);
+	},
+	get base_path() {
+		if (this._layout === undefined) {
+			return undefined;
 		}
-		this.CreateDialog();
-		this._dialog.visible = true;
+		return this._layout.base_path;
 	},
 	ShowSelect : function() {
-		return new Promise((function(___COROUTINE, ___) {
+		return new Promise((async function(___COROUTINE, ___) {
 			this.ShowDialog();
-			this._thread = ___COROUTINE;
-			return;
+			___COROUTINE(await this._layout.ShowSelect()); return;
 		}).bind(this));
+	},
+	HandleDialogClose : function() {
+		if (this._layout !== undefined) {
+			this._layout.Release();
+		}
 	},
 	System_SetVDragCursor : function(event) {
 		ALittle.System_SetVDragCursor();
@@ -162,370 +105,20 @@ AUIPlugin.AUIFileSelectDialog = JavaScript.Class(ALittle.EventDispatcher, {
 	System_SetHVDragCursor : function(event) {
 		ALittle.System_SetHVDragCursor();
 	},
-	CreateFileItem : function(file_name, rel_path, abs_path) {
-		let ext = ALittle.File_GetFileExtByPath(file_name);
-		if (this._ext_map !== undefined) {
-			ext = ALittle.String_Upper(ext);
-			if (this._ext_map[ext] === undefined) {
-				return undefined;
-			}
-		}
-		let info = {};
-		let item = AUIPlugin.g_Control.CreateControl("ide_file_select_item", info);
-		info.name.text = file_name;
-		info.dir.visible = false;
-		info.file.visible = false;
-		info.image.visible = false;
-		if (ext === "PNG" || ext === "JPG") {
-			let width = undefined;
-			let height = undefined;
-			let surface = ALittle.System_LoadSurface(abs_path);
-			if (surface !== undefined) {
-				width = ALittle.System_GetSurfaceWidth(surface);
-				height = ALittle.System_GetSurfaceHeight(surface);
-				ALittle.System_FreeSurface(surface);
-			}
-			if (width === undefined) {
-				width = info.frame.width;
-				height = info.frame.height;
-			} else {
-				if (width < height) {
-					let rate = width / height;
-					height = info.frame.height;
-					width = rate * height;
-				} else {
-					let rate = height / width;
-					width = info.frame.width;
-					height = rate * width;
-				}
-			}
-			info.image.visible = true;
-			info.image.SetTextureCut(abs_path, ALittle.Math_Floor(info.frame.width), ALittle.Math_Floor(info.frame.height), true);
-			info.image.width = width;
-			info.image.height = height;
-			info.image.UpdateLayout();
-		} else {
-			info.file.visible = true;
-		}
-		info.button.drag_trans_target = this._scroll_list;
-		info.button.AddEventListener(___all_struct.get(-641444818), this, this.HandleItemRButtonDown);
-		info.button.AddEventListener(___all_struct.get(-449066808), this, this.HandleItemClick);
-		info.button.AddEventListener(___all_struct.get(544684311), this, this.HandleItemMoveIn);
-		info.button.AddEventListener(___all_struct.get(-1202439334), this, this.HandleItemMoveOut);
-		info.button.AddEventListener(___all_struct.get(-1001723540), this, this.HandleItemMouseMove);
-		info.button.AddEventListener(___all_struct.get(-338112738), this, this.HandleItemDropFile);
-		let user_data = {};
-		user_data.path = rel_path;
-		user_data.directory = false;
-		info.button._user_data = user_data;
-		item._user_data = user_data;
-		return item;
-	},
-	CreateDirItem : function(file_name, rel_path, abs_path) {
-		let info = {};
-		let item = AUIPlugin.g_Control.CreateControl("ide_file_select_item", info);
-		info.name.text = file_name;
-		info.image.visible = false;
-		info.file.visible = false;
-		info.dir.visible = true;
-		info.button.drag_trans_target = this._scroll_list;
-		info.button.AddEventListener(___all_struct.get(-449066808), this, this.HandleItemClick);
-		info.button.AddEventListener(___all_struct.get(-641444818), this, this.HandleItemRButtonDown);
-		info.button.AddEventListener(___all_struct.get(-338112738), this, this.HandleItemDropFile);
-		let user_data = {};
-		user_data.path = rel_path;
-		user_data.directory = true;
-		info.button._user_data = user_data;
-		item._user_data = user_data;
-		return item;
-	},
-	BrowserCollect : function(browser_path) {
-		let item_list_dir = [];
-		let item_list_img = [];
-		let file_map = ALittle.File_GetFileNameListByDir(browser_path);
-		let ___OBJECT_2 = file_map;
-		for (let file in ___OBJECT_2) {
-			let info = ___OBJECT_2[file];
-			if (info === undefined) continue;
-			let path = browser_path + "/" + file;
-			let rel_path = ALittle.String_Sub(path, ALittle.String_Len(this._base_path) + 2);
-			let attr = ALittle.File_GetFileAttr(path);
-			if (attr.mode === "directory") {
-				let item = this.CreateDirItem(file, rel_path, path);
-				if (item !== undefined) {
-					ALittle.List_Push(item_list_dir, item);
-				}
-			} else {
-				let item = this.CreateFileItem(file, rel_path, path);
-				if (item !== undefined) {
-					ALittle.List_Push(item_list_img, item);
-				}
-			}
-		}
-		return [item_list_dir, item_list_img];
-	},
-	SearchCollect : function(search_path, name, item_list, run_time) {
-		if (item_list === undefined) {
-			item_list = [];
-		}
-		if (run_time === undefined) {
-			run_time = {};
-			run_time.cur_count = 0;
-			run_time.total_count = 100;
-		}
-		if (name === "" || name === undefined) {
-			return [item_list, run_time];
-		}
-		let file_map = ALittle.File_GetFileNameListByDir(search_path);
-		let ___OBJECT_3 = file_map;
-		for (let file in ___OBJECT_3) {
-			let info = ___OBJECT_3[file];
-			if (info === undefined) continue;
-			let path = search_path + "/" + file;
-			let rel_path = ALittle.String_Sub(path, ALittle.String_Len(this._base_path) + 2);
-			let attr = ALittle.File_GetFileAttr(path);
-			if (attr.mode === "directory") {
-				this.SearchCollect(path, name, item_list, run_time);
-			} else if (ALittle.String_Find(file, name) !== undefined) {
-				let item = this.CreateFileItem(file, rel_path, path);
-				if (item !== undefined) {
-					run_time.cur_count = run_time.cur_count + 1;
-					ALittle.List_Push(item_list, item);
-				}
-			}
-			if (run_time.cur_count >= run_time.total_count) {
-				return [item_list, run_time];
-			}
-		}
-		return [item_list, run_time];
-	},
-	ItemListCmp : function(a, b) {
-		let a_user_data = a._user_data;
-		let b_user_data = b._user_data;
-		return a_user_data.path < b_user_data.path;
-	},
-	CreateItemAndAddToList : function(item_list_dir, item_list_img) {
-		ALittle.List_Sort(item_list_dir, AUIPlugin.AUIFileSelectDialog.ItemListCmp);
-		ALittle.List_Sort(item_list_img, AUIPlugin.AUIFileSelectDialog.ItemListCmp);
-		let item_list = [];
-		let ___OBJECT_4 = item_list_dir;
-		for (let index = 1; index <= ___OBJECT_4.length; ++index) {
-			let item = ___OBJECT_4[index - 1];
-			if (item === undefined) break;
-			ALittle.List_Push(item_list, item);
-		}
-		let ___OBJECT_5 = item_list_img;
-		for (let index = 1; index <= ___OBJECT_5.length; ++index) {
-			let item = ___OBJECT_5[index - 1];
-			if (item === undefined) break;
-			ALittle.List_Push(item_list, item);
-		}
-		let col_count = ALittle.Math_Floor(this._scroll_list.width / this._real_size);
-		let remain_count = 0;
-		let container = undefined;
-		let ___OBJECT_6 = item_list;
-		for (let index = 1; index <= ___OBJECT_6.length; ++index) {
-			let item = ___OBJECT_6[index - 1];
-			if (item === undefined) break;
-			if (remain_count === 0) {
-				container = ALittle.NewObject(ALittle.Linear, AUIPlugin.g_Control);
-				container.type = 1;
-				container.height = item.height;
-				this._scroll_list.AddChild(container);
-				container.AddChild(item);
-				remain_count = col_count - 1;
-			} else {
-				remain_count = remain_count - 1;
-				container.AddChild(item);
-			}
-		}
-	},
-	Refresh : function() {
-		this.CreateDialog();
-		this._scroll_list.RemoveAllChild();
-		this._path_input.text = ALittle.String_Sub(this._real_path, ALittle.String_Len(this._base_path) + 2);
-		this._search_input.text = "";
-		this._dialog.title = this._title;
-		let [item_list_dir, item_list_img] = this.BrowserCollect(this._real_path);
-		this.CreateItemAndAddToList(item_list_dir, item_list_img);
-	},
-	Search : function(name) {
-		this._scroll_list.RemoveAllChild();
-		let [item_list_img, run_time] = this.SearchCollect(this._real_path, name);
-		if (run_time.cur_count >= run_time.total_count) {
-			this._dialog.title = this._title + "(筛选出来的数量太多，只显示前" + run_time.total_count + "个)";
-		}
-		this.CreateItemAndAddToList([], item_list_img);
-	},
 	SetPath : function(base_path, rel_path) {
-		let attr = ALittle.File_GetFileAttr(base_path + "/" + rel_path);
-		if (attr === undefined || attr.mode !== "directory") {
-			g_AUITool.ShowNotice("错误", "无效路径");
-			return false;
-		}
-		this._base_path = base_path;
-		this._real_path = base_path;
-		if (rel_path !== "") {
-			this._real_path = this._real_path + "/" + rel_path;
-		}
-		this.Refresh();
-		return true;
+		this.CreateDialog();
+		return this._layout.SetPath(base_path, rel_path);
 	},
 	SetBasePath : function(base_path) {
-		if (this._base_path === base_path) {
+		if (this.base_path === base_path) {
 			return true;
 		}
 		return this.SetPath(base_path, "");
 	},
-	HandleSetPathClick : function(event) {
-		this.SetPath(this._base_path, this._path_input.text);
-	},
-	HandleSetPrePathClick : function(event) {
-		let rel_path = ALittle.String_Sub(this._real_path, ALittle.String_Len(this._base_path) + 2);
-		if (rel_path === "") {
-			return;
+	Refresh : function() {
+		if (this._layout !== undefined) {
+			this._layout.Refresh();
 		}
-		this.SetPath(this._base_path, ALittle.File_GetFilePathByPath(rel_path));
-	},
-	HandleSearchClick : function(event) {
-		this.Search(this._search_input.text);
-	},
-	HandleItemRButtonDown : function(event) {
-		let user_data = event.target._user_data;
-		let r_event = {};
-		r_event.path = user_data.path;
-		r_event.directory = user_data.directory;
-		this.DispatchEvent(___all_struct.get(1821709712), r_event);
-	},
-	HandleItemDropFile : function(event) {
-		let real_path = this._real_path;
-		let user_data = event.target._user_data;
-		if (user_data !== undefined && user_data.directory) {
-			real_path = this._base_path + "/" + user_data.path;
-		}
-		let name = ALittle.File_GetFileNameByPath(event.path);
-		let ansi_path = event.path;
-		let attr = ALittle.File_GetFileAttr(ansi_path);
-		if (attr === undefined) {
-			return;
-		}
-		if (attr.mode === "directory") {
-			let [check, error] = this.CheckResourceName(name);
-			if (!check) {
-				g_AUITool.ShowNotice("提示", error);
-				return;
-			}
-			ALittle.File_MakeDir(real_path + "/" + name);
-			if (this._ext_map === undefined) {
-				ALittle.File_CopyDeepDir(ansi_path, real_path + "/" + name);
-			} else {
-				let ___OBJECT_7 = this._ext_map;
-				for (let ext in ___OBJECT_7) {
-					let _ = ___OBJECT_7[ext];
-					if (_ === undefined) continue;
-					ALittle.File_CopyDeepDir(ansi_path, real_path + "/" + name, ext);
-				}
-			}
-		} else {
-			let upper_ext = ALittle.File_GetFileExtByPathAndUpper(event.path);
-			if (this._ext_map !== undefined && this._ext_map[upper_ext] === undefined) {
-				g_AUITool.ShowNotice("提示", "不能接受该类型的文件");
-				return;
-			}
-			let [check, error] = this.CheckResourceName(ALittle.File_GetJustFileNameByPath(event.path));
-			if (!check) {
-				g_AUITool.ShowNotice("提示", error);
-				return;
-			}
-			ALittle.File_CopyFile(event.path, real_path + "/" + name);
-		}
-		this.Refresh();
-	},
-	HandleNewDirectoryClick : async function(event) {
-		let [x, y] = event.target.LocalToGlobal();
-		let name = await g_AUITool.ShowRename("", x, y + event.target.height, 200);
-		if (name === undefined || name === "") {
-			return;
-		}
-		let [check, error] = this.CheckResourceName(name);
-		if (!check) {
-			g_AUITool.ShowNotice("错误", error);
-			return;
-		}
-		let result = ALittle.File_MakeDir(this._real_path + "/" + name);
-		if (!result) {
-			g_AUITool.ShowNotice("错误", "文件夹创建失败");
-			return;
-		}
-		this.Refresh();
-	},
-	HandleItemClick : function(event) {
-		let user_data = event.target._user_data;
-		if (user_data.directory) {
-			this._real_path = this._base_path + "/" + user_data.path;
-			this.Refresh();
-		} else {
-			if (this._thread !== undefined) {
-				this._dialog.visible = false;
-				ALittle.Coroutine.Resume(this._thread, user_data.path);
-				this._thread = undefined;
-			}
-		}
-	},
-	HandleItemMoveIn : function(event) {
-		if (this._image_pre_dialog === undefined) {
-			this._image_pre_dialog = AUIPlugin.g_Control.CreateControl("ide_image_pre_dialog", this);
-		}
-		A_LayerManager.AddToTip(this._image_pre_dialog);
-		let user_data = event.target._user_data;
-		let path = this._base_path + "/" + user_data.path;
-		this._pre_image.SetTextureCut(path, 0, 0, true, this.HandleItemPreViewCallback.bind(this));
-		this.UpdateImagePreDialogPos();
-	},
-	HandleItemPreViewCallback : function(image, result) {
-		let width = image.texture_width;
-		image.width = width;
-		if (width < 100) {
-			width = 100;
-		}
-		if (width > A_UISystem.view_width) {
-			width = A_UISystem.view_width;
-			image.width = width;
-		}
-		this._image_pre_dialog.width = width;
-		image.x = (width - image.width) / 2;
-		let height = image.texture_height;
-		image.height = height;
-		if (height < 50) {
-			height = 50;
-		}
-		if (height > A_UISystem.view_height - this._image_pre_dialog.head_size) {
-			height = A_UISystem.view_height - this._image_pre_dialog.head_size;
-			image.height = height;
-		}
-		image.y = (height - image.height) / 2;
-		this._image_pre_dialog.height = this._image_pre_dialog.head_size + height;
-	},
-	HandleItemMoveOut : function(event) {
-		A_LayerManager.RemoveFromTip(this._image_pre_dialog);
-	},
-	HandleItemMouseMove : function(event) {
-		this.UpdateImagePreDialogPos();
-	},
-	UpdateImagePreDialogPos : function() {
-		if (this._image_pre_dialog === undefined) {
-			return;
-		}
-		let x = A_UISystem.mouse_x + 20;
-		if (x + this._image_pre_dialog.width > A_UISystem.view_width) {
-			x = A_UISystem.view_width - this._image_pre_dialog.width;
-		}
-		let y = A_UISystem.mouse_y + 20;
-		if (y + this._image_pre_dialog.height > A_UISystem.view_height) {
-			y = A_UISystem.view_height - this._image_pre_dialog.height;
-		}
-		this._image_pre_dialog.x = x;
-		this._image_pre_dialog.y = y;
 	},
 	HandleDialogDrag : function(event) {
 		let delta_x = event.delta_x;
@@ -545,7 +138,7 @@ AUIPlugin.AUIFileSelectDialog = JavaScript.Class(ALittle.EventDispatcher, {
 		this._dialog.height = this._dialog.height + delta_y;
 	},
 	HandleDialogDragEnd : function(event) {
-		this.Refresh();
+		this._layout.Refresh();
 	},
 	CheckResourceName : function(name) {
 		let len = ALittle.String_Len(name);

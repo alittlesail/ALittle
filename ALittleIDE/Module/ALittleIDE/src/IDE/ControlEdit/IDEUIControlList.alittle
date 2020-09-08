@@ -47,14 +47,15 @@ public class IDEUIControlList : ALittle.DisplayLayout
 		this._control_scroll_screen.RemoveAllChild();
     }
 
-	private fun HandleProjectOpen(IDEProjectOpenEvent event)
+	private async fun HandleProjectOpen(IDEProjectOpenEvent event)
 	{
 		// 读取项目配置
 		var module_map = g_IDEProject.project.config.GetConfig("control_module", new Map<string, IDEControlModuleInfo>());
 		module_map[event.name] = null;
 
         // 主项目的UI管理器
-        var ui = new IDEUIManager(event.name);
+        var ui = new IDEUIManager();
+        ui.Init(event.name);
         g_IDEProject.project.ui[event.name] = ui;
 
 		// 添加自己的项目
@@ -72,7 +73,8 @@ public class IDEUIControlList : ALittle.DisplayLayout
 		for (var index, module in module_map)
 		{
 			info = new IDEControlTreeUserInfo();
-            info.ui = new IDEUIManager(module.module_name);
+            info.ui = new IDEUIManager();
+            info.ui.Init(module.module_name);
 			info.module_name = module.module_name;
 			info.name = ALittle.File_GetFileNameByPath(module.root_path);
 			info.path = module.root_path;
@@ -100,7 +102,7 @@ public class IDEUIControlList : ALittle.DisplayLayout
 
     public get scroll_screen() : ALittle.ScrollScreen { return this._control_scroll_screen; }
 
-	public fun AddModule(string name)
+	public await fun AddModule(string name)
 	{
         var ui_manager = g_IDEProject.GetUIManager(null);
         if (ui_manager == null) return;
@@ -123,7 +125,8 @@ public class IDEUIControlList : ALittle.DisplayLayout
         info.module_path = ALittle.File_BaseFilePath().."Module/"..name.."/";
         info.group = this._group;
 		info.root = true;
-        info.ui = new IDEUIManager(name);
+        info.ui = new IDEUIManager();
+        info.ui.Init(name);
         g_IDEProject.project.ui[name] = info.ui;
         ui_manager.control.RegisterPlugin(name, info.ui.control);
     

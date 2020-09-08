@@ -201,7 +201,7 @@ JavaScript.File_GetFileAttrByDir = function(path, file_map) {
 	for (let name in ___OBJECT_4) {
 		let value = ___OBJECT_4[name];
 		if (value === undefined) continue;
-		let file_path = cur_dir + name;
+		let file_path = path + "/" + name;
 		if (value.is_directory) {
 			JavaScript.File_GetFileAttrByDir(file_path, file_map);
 		} else {
@@ -243,7 +243,7 @@ JavaScript.File_GetFileListByDir = function(path, file_list) {
 	for (let name in ___OBJECT_6) {
 		let value = ___OBJECT_6[name];
 		if (value === undefined) continue;
-		let file_path = cur_dir + name;
+		let file_path = path + "/" + name;
 		if (value.is_directory) {
 			JavaScript.File_GetFileListByDir(file_path, file_list);
 		} else {
@@ -285,7 +285,7 @@ JavaScript.File_GetFileNameListByDir = function(path, file_map) {
 	for (let name in ___OBJECT_8) {
 		let value = ___OBJECT_8[name];
 		if (value === undefined) continue;
-		let file_path = cur_dir + name;
+		let file_path = path + "/" + name;
 		if (value.is_directory) {
 			let attr = {};
 			attr.mode = "directory";

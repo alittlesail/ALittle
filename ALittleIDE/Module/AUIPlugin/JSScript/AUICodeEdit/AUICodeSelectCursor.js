@@ -103,6 +103,30 @@ AUIPlugin.AUICodeSelectCursor = JavaScript.Class(undefined, {
 	get char_end() {
 		return this._it_char_end;
 	},
+	GetLineCharCloseToEnd : function() {
+		if (this._it_line_start < this._it_line_end) {
+			return [this._it_line_end, this._it_char_end];
+		}
+		if (this._it_line_start > this._it_line_end) {
+			return [this._it_line_start, this._it_char_start];
+		}
+		if (this._it_char_start < this._it_char_end) {
+			return [this._it_line_end, this._it_char_end];
+		}
+		return [this._it_line_start, this._it_char_start];
+	},
+	GetLineCharCloseToHome : function() {
+		if (this._it_line_start > this._it_line_end) {
+			return [this._it_line_end, this._it_char_end];
+		}
+		if (this._it_line_start < this._it_line_end) {
+			return [this._it_line_start, this._it_char_start];
+		}
+		if (this._it_char_start > this._it_char_end) {
+			return [this._it_line_end, this._it_char_end];
+		}
+		return [this._it_line_start, this._it_char_start];
+	},
 	StartLineChar : function(line, char) {
 		this.Hide();
 		if (this._edit.line_count === 0) {
@@ -262,8 +286,7 @@ AUIPlugin.AUICodeSelectCursor = JavaScript.Class(undefined, {
 				}
 			}
 			if (rejust) {
-				this._edit.code_screen.container.width = line.container.width + this._edit.line_number_width;
-				this._edit.code_screen.RejustScrollBar();
+				this._edit.RejustCodeScreen(line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH);
 			}
 			if (need_revoke) {
 				let revoke = ALittle.NewObject(AUIPlugin.AUICodeDeleteSelectRevoke, this._edit, this._edit.cursor, this, old_it_line_start, old_it_char_start, old_it_line_end, old_it_char_end, it_line_start, it_char_start, revoke_content, revoke_bind === undefined);
@@ -273,6 +296,7 @@ AUIPlugin.AUICodeSelectCursor = JavaScript.Class(undefined, {
 					this._edit.revoke_list.PushRevoke(revoke);
 				}
 			}
+			this._edit.UpdateLineFind(this._it_line_start);
 			return [true, it_line_start, it_char_start];
 		}
 		let old_it_line_start = this._it_line_start;
@@ -363,8 +387,7 @@ AUIPlugin.AUICodeSelectCursor = JavaScript.Class(undefined, {
 				max_width = line.container.width;
 			}
 		}
-		this._edit.code_screen.container.width = max_width + this._edit.line_number_width;
-		this._edit.code_screen.RejustScrollBar();
+		this._edit.RejustCodeScreen(max_width);
 		if (need_revoke) {
 			let revoke = ALittle.NewObject(AUIPlugin.AUICodeDeleteSelectRevoke, this._edit, this._edit.cursor, this, old_it_line_start, old_it_char_start, old_it_line_end, old_it_char_end, it_line_start, it_char_start, revoke_start + ALittle.String_Join(revoke_center, "") + revoke_end, revoke_bind === undefined);
 			if (revoke_bind !== undefined) {
@@ -373,6 +396,7 @@ AUIPlugin.AUICodeSelectCursor = JavaScript.Class(undefined, {
 				this._edit.revoke_list.PushRevoke(revoke);
 			}
 		}
+		this._edit.UpdateLineFind(it_line_start);
 		this._edit.UpdateLineNumber();
 		return [true, it_line_start, it_char_start];
 	},

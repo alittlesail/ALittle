@@ -215,28 +215,28 @@ class IDEExport
 		var out_file_map = new Map<string, IDEExportFileAttr>();
 		for (var file_path, attr in file_map)
 		{
-			var start_index = ALittle.String_Find(file_path, src_path);
-			var rel_path = ALittle.String_Sub(file_path, start_index + ALittle.String_Len(src_path));
-	
-			// 如果是图片，那么就获取一下宽高
-			var ext = ALittle.File_GetFileExtByPath(file_path);
-			ext = ALittle.String_Upper(ext);
-			var file = new lua.__CPPAPILocalFile();
-			file.SetPath(file_path);
-			assert(file.Load(), "IDEExport:PackagePath, 文件加载失败:"..file_path);
+            var start_index = ALittle.String_Find(file_path, src_path);
+            var rel_path = ALittle.String_Sub(file_path, start_index + ALittle.String_Len(src_path));
+        
+            // 如果是图片，那么就获取一下宽高
+            var ext = ALittle.File_GetFileExtByPath(file_path);
+            ext = ALittle.String_Upper(ext);
+            var file = new lua.__CPPAPILocalFile();
+            file.SetPath(file_path);
+            assert(file.Load(), "IDEExport:PackagePath, 文件加载失败:"..file_path);
 
-			if (crypt_mode) file.Encrypt(null);
-			ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(dst_path..rel_path));
-			file.Save(dst_path..rel_path);
+            if (crypt_mode) file.Encrypt(null);
+            ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(dst_path..rel_path));
+            file.Save(dst_path..rel_path);
 
-			var new_attr = new IDEExportFileAttr();
-			new_attr.attr = attr;
-			new_attr.md5 = __CPPAPI_ScriptSystemEx.FileMD5(dst_path..rel_path);
-			new_attr.file_type = file_type;
-			new_attr.file_path = file_type..rel_path;
-			out_file_map[file_path] = new_attr;
+            var new_attr = new IDEExportFileAttr();
+            new_attr.attr = attr;
+            new_attr.md5 = __CPPAPI_ScriptSystemEx.FileMD5(dst_path..rel_path);
+            new_attr.file_type = file_type;
+            new_attr.file_path = file_type..rel_path;
+            out_file_map[file_path] = new_attr;
 
-			file.Clear();
+            file.Clear();
 		}
 	
 		return out_file_map;

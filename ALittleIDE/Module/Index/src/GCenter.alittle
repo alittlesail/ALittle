@@ -1,0 +1,135 @@
+namespace Index;
+
+protected var g_GConfig:ALittle.IJsonConfig;
+
+struct ItemInfo
+{
+    ALittle.Image _image;
+    ALittle.Text _title;
+}
+
+struct ItemData
+{
+    string title;
+    string texture_name;
+    string url;
+}
+
+class GCenter
+{
+    private ALittle.DisplayLayout _main_layer;
+    private ALittle.DisplayLayout _dialog_layer;
+
+    private ALittle.TileTable _item_tiletable;
+    private ALittle.ScrollScreen _item_container;
+
+    private double _item_width;
+
+    public ctor()
+    {
+    }
+
+    public fun Setup()
+    {
+        // 获取配置信息
+        g_GConfig = ALittle.CreateConfigSystem(g_ModuleBasePath.."/User.cfg");
+        // 生成随机数种子
+        ALittle.Math_RandomSeed(ALittle.Time_GetCurTime());
+        // 设置1个线程
+        ALittle.System_SetThreadCount(1, ALittle.SystemThreadType.SLOW);
+
+        // 创建主层
+        this._main_layer = new ALittle.DisplayLayout(g_Control);
+        this._main_layer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this._main_layer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        g_LayerGroup.AddChild(this._main_layer, null);
+        this._dialog_layer = new ALittle.DisplayLayout(g_Control);
+        this._dialog_layer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this._dialog_layer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        g_LayerGroup.AddChild(this._dialog_layer, null);
+
+        var main_scene = g_Control.CreateControl{ALittle.DisplayLayout}("main_scene", this, this._main_layer);
+        this._item_tiletable = ALittle.Cast{ALittle.TileTable}(this._item_container.container);
+
+        var data_list = new List<ItemData>();
+
+        {
+            var data = new ItemData();
+            data.title = "BattleCity";
+            data.texture_name = "BattleCity.png";
+            data.url = "https://alittlesail.github.io/BattleCity.html";
+            ALittle.List_Push(data_list, data);
+    
+            data = new ItemData();
+            data.title = "2048";
+            data.texture_name = "G2048.png";
+            data.url = "https://alittlesail.github.io/G2048.html";
+            ALittle.List_Push(data_list, data);
+    
+            data = new ItemData();
+            data.title = "FlappyBird";
+            data.texture_name = "FlappyBird.png";
+            data.url = "https://alittlesail.github.io/FlappyBird.html";
+            ALittle.List_Push(data_list, data);
+
+
+            data = new ItemData();
+            data.title = "ALittleIDE";
+            data.texture_name = "ALittleIDE.png";
+            data.url = "https://alittlesail.github.io/ALittleIDE.html";
+            ALittle.List_Push(data_list, data);
+        }
+
+        this._item_width = 0;
+        for (var index, data in data_list)
+        {
+            var info = new ItemInfo();
+            var item = g_Control.CreateControl{ALittle.DisplayLayout}("sample_item", info);
+            this._item_tiletable.AddChild(item);
+            info._image.texture_name = data.texture_name;
+            info._title.text = data.title;
+            info._image._user_data = data;
+            info._image.AddEventListener(this, this.HandleImageClick);
+
+            this._item_width = item.width;
+        }
+
+        if (this._item_width > 0 && this._item_tiletable != null)
+        	this._item_tiletable.col_count = ALittle.Math_Floor(this._item_container.width / this._item_width);
+
+        this._item_container.RejustScrollBar();
+        A_UISystem.view_resize_callback = bind(this.HandleViewResized, this);
+    }
+
+    private fun HandleViewResized(int width, int height)
+    {
+        if (this._item_width > 0 && this._item_tiletable != null)
+        	this._item_tiletable.col_count = ALittle.Math_Floor(this._item_container.width / this._item_width);
+        this._item_container.RejustScrollBar();
+    }
+
+    private fun HandleImageClick(ALittle.UIClickEvent event)
+    {
+        var data:ItemData = event.target._user_data;
+
+        [Language(Lua)]
+        ALittle.System_OpenUrlBySystemBrowser(data.url);
+        [Language(JavaScript)]
+        window.open(data.url);
+    }
+
+    private fun HandleGithubClick(ALittle.UIClickEvent event)
+    {
+        var url = "https://github.com/alittlesail/ALittle.git";
+        [Language(Lua)]
+        ALittle.System_OpenUrlBySystemBrowser(url);
+        [Language(JavaScript)]
+        window.open(url);
+    }
+
+    public fun Shutdown()
+    {
+    }
+}
+
+public var g_GCenter = new GCenter();

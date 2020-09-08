@@ -1548,7 +1548,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GeneratePathsValue(std::share
     {
         if (i != 0)
         {
-            if (i % 3 == 0) content = "\n" + pre_tab + "\t";
+            if (i % 3 == 0) content += "\n" + pre_tab + "\t";
             content += ", ";
         }
         content += "\"" + path_list[i] + "\"";

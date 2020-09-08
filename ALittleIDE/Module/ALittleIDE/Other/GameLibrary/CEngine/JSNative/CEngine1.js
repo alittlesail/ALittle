@@ -833,8 +833,16 @@ JavaScript.JSystem_CreateView = function(title, width, height, flag, scale) {
 	if (func !== undefined) {
 		func(width, height);
 	}
+	window.onresize = JavaScript.JSystem_HandleViewResized;
 	A_PixiApp.ticker.add(JavaScript.JSystem_MainLoop);
 	return true;
+}
+
+JavaScript.JSystem_HandleViewResized = function() {
+	let func = window["__ALITTLEAPI_ViewResized"];
+	if (func !== undefined) {
+		func(ALittle.System_GetScreenWidth(), ALittle.System_GetScreenHeight());
+	}
 }
 
 JavaScript.JSystem_SetViewTitle = function(title) {
@@ -956,7 +964,7 @@ JavaScript.JDisplayObject = JavaScript.Class(ALittle.IDisplayObject, {
 	},
 	SetClip : function(value) {
 		this._clip = value;
-		this._native.visible = value && this._visible;
+		this._native.visible = !value && this._visible;
 	},
 	SetAlpha : function(value) {
 		this._native.alpha = value;
@@ -2918,7 +2926,7 @@ option_map : {}
 ALittle.RegStruct(1376035901, "ALittle.ModuleInfo", {
 name : "ALittle.ModuleInfo", ns_name : "ALittle", rl_name : "ModuleInfo", hash_code : 1376035901,
 name_list : ["name","crypt_mode","control","module","plugin_loaded","module_loaded","browser_loaded","layer_group","browser_setup","browser_addmodule","browser_shutdown","module_setup","module_shutdown","module_getinfo","plugin_setup","plugin_shutdown"],
-type_list : ["string","bool","ALittle.ControlSystem","any","bool","bool","bool","ALittle.DisplayLayout","Functor<(ALittle.DisplayLayout,ALittle.ControlSystem,string,string)>","Functor<(string,ALittle.DisplayLayout,ALittle.ModuleShortInfo):bool>","Functor<()>","Functor<(ALittle.DisplayLayout,ALittle.ControlSystem,string,string)>","Functor<()>","Functor<(ALittle.ControlSystem,string):ALittle.ModuleShortInfo>","Functor<(ALittle.ControlSystem,string,string)>","Functor<()>"],
+type_list : ["string","bool","ALittle.ControlSystem","any","bool","bool","bool","ALittle.DisplayLayout","Functor<(ALittle.DisplayLayout,ALittle.ControlSystem,string,string)>","Functor<(string,ALittle.DisplayLayout,ALittle.ModuleShortInfo):bool>","Functor<()>","Functor<(ALittle.DisplayLayout,ALittle.ControlSystem,string,string)>","Functor<()>","Functor<(ALittle.ControlSystem,string):ALittle.ModuleShortInfo>","Functor<await(ALittle.ControlSystem,string,string)>","Functor<()>"],
 option_map : {}
 })
 
@@ -3009,7 +3017,7 @@ ALittle.ModuleSystem = JavaScript.Class(undefined, {
 				___COROUTINE(undefined); return;
 			}
 			info.plugin_loaded = true;
-			setup_func(info.control, module_base_path, module_base_path + "JSScript/");
+			await setup_func(info.control, module_base_path, module_base_path + "JSScript/");
 			___COROUTINE(info.control); return;
 		}).bind(this));
 	},

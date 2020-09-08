@@ -19,7 +19,7 @@ public struct ModuleInfo
     Functor<(DisplayLayout, ControlSystem, string, string)> module_setup;
     Functor<()> module_shutdown;
     Functor<(ControlSystem, string):ModuleShortInfo> module_getinfo;
-    Functor<(ControlSystem, string, string)> plugin_setup;
+    Functor<await(ControlSystem, string, string)> plugin_setup;
     Functor<()> plugin_shutdown;
 }
 
@@ -106,7 +106,7 @@ class ModuleSystem
         info.module_setup = cast<Map<string, Functor<(DisplayLayout, ControlSystem, string, string)>>>(info.module)["__Module_Setup"];
         info.module_shutdown = cast<Map<string, Functor<()>>>(info.module)["__Module_Shutdown"];
         info.module_getinfo = cast<Map<string, Functor<(ControlSystem, string):ModuleShortInfo>>>(info.module)["__Module_GetInfo"];
-        info.plugin_setup = cast<Map<string, Functor<(ControlSystem, string, string)>>>(info.module)["__Plugin_Setup"];
+        info.plugin_setup = cast<Map<string, Functor<await(ControlSystem, string, string)>>>(info.module)["__Plugin_Setup"];
         info.plugin_shutdown = cast<Map<string, Functor<()>>>(info.module)["__Plugin_Shutdown"];
     
         // 创建层组

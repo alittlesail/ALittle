@@ -1,0 +1,64 @@
+
+namespace Index;
+
+// 壳入口函数
+public async static __Browser_Setup(ALittle.DisplayLayout layer_group
+                              , ALittle.ControlSystem control
+                              , string module_base_path, string script_base_path
+                              , string debug)
+{
+	// 创建窗口
+	var window_width, window_height, flag, scale = ALittle.System_CalcLandscape(1200, 600, ALittle.UIEnumTypes.VIEW_RESIZABLE);
+	ALittle.System_CreateView("Index", window_width, window_height, flag, scale);
+	ALittle.System_SetViewIcon(module_base_path.."/Other/ic_launcher.png");
+    
+	// 加载模块
+	A_ModuleSystem.LoadModule(module_base_path, "Index");
+}
+
+// 壳处理添加模块，layer_group是模块的层组
+// 返回false，或者nil，表示不处理，下面的层直接挂姐在壳下面
+public static __Browser_AddModule(string module_name, ALittle.DisplayLayout layer_group, ALittle.ModuleInfo module_info)
+{
+}
+
+// 壳结束函数
+public static __Browser_Shutdown()
+{
+}
+
+protected var g_Control:ALittle.ControlSystem;
+protected var g_LayerGroup:ALittle.DisplayLayout;
+protected var g_ModuleBasePath:string;
+
+// 模块入口函数
+public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.ControlSystem control
+                                  , string module_base_path, string script_base_path, string debug)
+{
+	// 把resource, layer_group变量保存到全局，便于使用
+	g_Control = control;
+	g_LayerGroup = layer_group;
+	g_ModuleBasePath = module_base_path;
+	
+	alittle.Require(script_base_path, "GCenter");
+	g_GCenter.Setup();
+}
+
+// 模块结束函数
+public static __Module_Shutdown()
+{
+	g_GCenter.Shutdown();
+}
+
+// 提供给壳的模块信息
+public static __Module_GetInfo(ALittle.ControlSystem control, string module_base_path, string script_base_path) : ALittle.ModuleShortInfo
+{
+	var info = new ALittle.ModuleShortInfo();
+	info.title = "Index";
+	info.icon = null;
+	info.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+	info.width_value = 0;
+	info.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+	info.height_value = 0;
+	return info;
+}

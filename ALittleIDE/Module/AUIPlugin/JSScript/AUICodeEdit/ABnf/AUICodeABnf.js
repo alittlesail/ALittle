@@ -75,8 +75,12 @@ AUIPlugin.AUICodeABnf = JavaScript.Class(AUIPlugin.AUICodeLanguage, {
 		}
 		this._abnf_file = lua.abnf.create_abnf_file(this._project.project, full_path, "");
 	},
-	OnOpen : function() {
-		this._project.UpdateFile("", this._full_path);
+	OnOpen : function(content) {
+		if (content !== undefined) {
+			this._project.TempFile("", this._full_path, content);
+		} else {
+			this._project.UpdateFile("", this._full_path);
+		}
 	},
 	OnShow : function() {
 	},
@@ -89,6 +93,9 @@ AUIPlugin.AUICodeABnf = JavaScript.Class(AUIPlugin.AUICodeLanguage, {
 		return g_ABnfColor.get(tag);
 	},
 	OnRightMenu : function(menu) {
+		menu.AddItem("生成", this.GenerateABnf.bind(this));
+	},
+	OnTabRightMenu : function(menu) {
 		menu.AddItem("生成", this.GenerateABnf.bind(this));
 	},
 	GenerateABnf : async function() {

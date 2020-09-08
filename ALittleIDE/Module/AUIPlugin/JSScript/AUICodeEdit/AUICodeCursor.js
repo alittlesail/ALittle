@@ -10,7 +10,7 @@ AUIPlugin.AUICodeCursor = JavaScript.Class(ALittle.Quad, {
 		this._it_line = 1;
 		this._it_char = 0;
 		this._virtual_indent = 0;
-		this._move_char = 0;
+		this._move_acc_width = 0;
 		this._edit = edit;
 	},
 	get line() {
@@ -98,7 +98,7 @@ AUIPlugin.AUICodeCursor = JavaScript.Class(ALittle.Quad, {
 		} else {
 			[this._it_line, this._it_char] = this._edit.CalcLineAndChar(x, y);
 		}
-		this.y = (this._it_line - 1) * this._edit.line_height;
+		this.y = (this._it_line - 1) * AUIPlugin.CODE_LINE_HEIGHT;
 		let line = this._edit.line_list[this._it_line - 1];
 		if (line === undefined || this._it_char === 0) {
 			this.x = 0;
@@ -110,24 +110,21 @@ AUIPlugin.AUICodeCursor = JavaScript.Class(ALittle.Quad, {
 			this.Show();
 		}
 		this._virtual_indent = 0;
-		this._move_char = this._it_char;
+		this._move_acc_width = this.x;
 	},
-	SetLineChar : function(it_line, it_char, show) {
-		this.SetLineCharInner(it_line, it_char, show);
-		this._move_char = this._it_char;
+	SetLineChar : function(it_line, it_char) {
+		this.SetLineCharInner(it_line, it_char);
+		this._move_acc_width = this.x;
 	},
-	SetLineCharInner : function(it_line, it_char, show) {
+	SetLineCharInner : function(it_line, it_char) {
 		this._it_line = it_line;
 		this._it_char = it_char;
-		this.y = (this._it_line - 1) * this._edit.line_height;
+		this.y = (this._it_line - 1) * AUIPlugin.CODE_LINE_HEIGHT;
 		let line = this._edit.line_list[this._it_line - 1];
 		if (line === undefined || this._it_char <= 0) {
 			this.x = 0;
 		} else {
 			this.x = line.char_list[this._it_char - 1].pre_width + line.char_list[this._it_char - 1].width;
-		}
-		if (show === undefined || show) {
-			this.Show();
 		}
 		this._virtual_indent = 0;
 	},
@@ -151,7 +148,9 @@ AUIPlugin.AUICodeCursor = JavaScript.Class(ALittle.Quad, {
 				this._virtual_indent = this._edit.language.QueryDesiredIndent(this._it_line, this._it_char);
 				if (this._virtual_indent > 0) {
 					this.x = this._virtual_indent * this._edit.ascii_width;
-					this._move_char = this._virtual_indent;
+					if (this.x > this._move_acc_width) {
+						this._move_acc_width = this.x;
+					}
 				}
 			}
 		}
@@ -174,10 +173,13 @@ AUIPlugin.AUICodeCursor = JavaScript.Class(ALittle.Quad, {
 		while (it_char > 0 && line.char_list[it_char - 1].width <= 0) {
 			-- it_char;
 		}
-		if (this._move_char < it_char) {
-			it_char = this._move_char;
+		while (it_char > 0) {
+			if (line.char_list[it_char - 1].pre_width + line.char_list[it_char - 1].width <= this._move_acc_width) {
+				break;
+			}
+			-- it_char;
 		}
-		this.SetLineCharInner(it_line, it_char, false);
+		this.SetLineCharInner(it_line, it_char);
 	},
 	OffsetDown : function() {
 		if (this._it_line >= this._edit.line_count) {
@@ -192,15 +194,18 @@ AUIPlugin.AUICodeCursor = JavaScript.Class(ALittle.Quad, {
 		while (it_char > 0 && line.char_list[it_char - 1].width <= 0) {
 			-- it_char;
 		}
-		if (this._move_char < it_char) {
-			it_char = this._move_char;
+		while (it_char > 0) {
+			if (line.char_list[it_char - 1].pre_width + line.char_list[it_char - 1].width <= this._move_acc_width) {
+				break;
+			}
+			-- it_char;
 		}
-		this.SetLineCharInner(it_line, it_char, false);
+		this.SetLineCharInner(it_line, it_char);
 	},
 	OffsetLeft : function(ctrl) {
 		if (this._it_char > 0) {
 			if (!ctrl) {
-				this.SetLineChar(this._it_line, this._it_char - 1, false);
+				this.SetLineChar(this._it_line, this._it_char - 1);
 				return;
 			}
 			let line = this._edit.line_list[this._it_line - 1];
@@ -212,12 +217,12 @@ AUIPlugin.AUICodeCursor = JavaScript.Class(ALittle.Quad, {
 			let it_char = this._it_char - 1;
 			while (it_char > 0) {
 				if (ALittle.String_IsWordChar(line.char_list[it_char - 1].char) !== is_word) {
-					this.SetLineChar(this._it_line, it_char, false);
+					this.SetLineChar(this._it_line, it_char);
 					return;
 				}
 				-- it_char;
 			}
-			this.SetLineChar(this._it_line, 0, false);
+			this.SetLineChar(this._it_line, 0);
 			return;
 		}
 		if (this._it_line > 1) {
@@ -227,10 +232,10 @@ AUIPlugin.AUICodeCursor = JavaScript.Class(ALittle.Quad, {
 			while (it_char > 0 && line.char_list[it_char - 1].width <= 0) {
 				-- it_char;
 			}
-			this.SetLineChar(it_line, it_char, false);
+			this.SetLineChar(it_line, it_char);
 			return;
 		}
-		this.SetLineChar(1, 0, false);
+		this.SetLineChar(1, 0);
 	},
 	OffsetRight : function(ctrl) {
 		if (this._edit.line_count <= 0) {
@@ -243,7 +248,7 @@ AUIPlugin.AUICodeCursor = JavaScript.Class(ALittle.Quad, {
 		}
 		if (this._it_char < count) {
 			if (!ctrl) {
-				this.SetLineChar(this._it_line, this._it_char + 1, false);
+				this.SetLineChar(this._it_line, this._it_char + 1);
 				return;
 			}
 			let cur_char = line.char_list[this._it_char + 1 - 1];
@@ -251,18 +256,18 @@ AUIPlugin.AUICodeCursor = JavaScript.Class(ALittle.Quad, {
 			let it_char = this._it_char + 1;
 			while (it_char <= count) {
 				if (ALittle.String_IsWordChar(line.char_list[it_char + 1 - 1].char) !== is_word) {
-					this.SetLineChar(this._it_line, it_char, false);
+					this.SetLineChar(this._it_line, it_char);
 					return;
 				}
 				++ it_char;
 			}
-			this.SetLineChar(this._it_line, count, false);
+			this.SetLineChar(this._it_line, count);
 			return;
 		}
 		if (this._it_line >= this._edit.line_count) {
 			return;
 		}
-		this.SetLineChar(this._it_line + 1, 0, false);
+		this.SetLineChar(this._it_line + 1, 0);
 	},
 	OffsetHome : function() {
 		if (this._it_char <= 0) {
@@ -281,9 +286,9 @@ AUIPlugin.AUICodeCursor = JavaScript.Class(ALittle.Quad, {
 			++ it_char;
 		}
 		if (this._it_char === it_char - 1) {
-			this.SetLineChar(this._it_line, 0, false);
+			this.SetLineChar(this._it_line, 0);
 		} else {
-			this.SetLineChar(this._it_line, it_char - 1, false);
+			this.SetLineChar(this._it_line, it_char - 1);
 		}
 	},
 	OffsetEnd : function() {
@@ -296,7 +301,7 @@ AUIPlugin.AUICodeCursor = JavaScript.Class(ALittle.Quad, {
 			-- count;
 		}
 		if (this._it_char < count) {
-			this.SetLineChar(this._it_line, count, false);
+			this.SetLineChar(this._it_line, count);
 		}
 	},
 	DeleteLeft : function(need_revoke, revoke_bind) {
@@ -341,7 +346,7 @@ AUIPlugin.AUICodeCursor = JavaScript.Class(ALittle.Quad, {
 				}
 			}
 			if (rejust) {
-				this._edit.code_screen.container.width = line.container.width + this._edit.line_number_width;
+				this._edit.code_screen.container.width = line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH;
 				this._edit.code_screen.RejustScrollBar();
 			}
 			if (need_revoke) {
@@ -354,6 +359,7 @@ AUIPlugin.AUICodeCursor = JavaScript.Class(ALittle.Quad, {
 					this._edit.revoke_list.PushRevoke(revoke);
 				}
 			}
+			this._edit.UpdateLineFind(this._it_line);
 			return true;
 		}
 		if (this._it_line <= 1) {
@@ -402,8 +408,8 @@ AUIPlugin.AUICodeCursor = JavaScript.Class(ALittle.Quad, {
 		this._edit.line_count = this._edit.line_count - (1);
 		ALittle.List_Remove(this._edit.line_list, this._it_line);
 		this.SetLineChar(new_it_line, new_it_char);
-		if (this._edit.code_screen.container.width < pre_line.container.width + this._edit.line_number_width) {
-			this._edit.code_screen.container.width = pre_line.container.width + this._edit.line_number_width;
+		if (this._edit.code_screen.container.width < pre_line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH) {
+			this._edit.code_screen.container.width = pre_line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH;
 		}
 		this._edit.code_screen.RejustScrollBar();
 		if (need_revoke) {
@@ -414,6 +420,8 @@ AUIPlugin.AUICodeCursor = JavaScript.Class(ALittle.Quad, {
 				this._edit.revoke_list.PushRevoke(revoke);
 			}
 		}
+		this._edit.UpdateLineFind(this._it_line);
+		this._edit.UpdateLineNumber();
 		return true;
 	},
 	DeleteRight : function(need_revoke, revoke_bind) {
@@ -462,7 +470,7 @@ AUIPlugin.AUICodeCursor = JavaScript.Class(ALittle.Quad, {
 				}
 			}
 			if (rejust) {
-				this._edit.code_screen.container.width = line.container.width + this._edit.line_number_width;
+				this._edit.code_screen.container.width = line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH;
 				this._edit.code_screen.RejustScrollBar();
 			}
 			let new_it_line = this._it_line;
@@ -475,6 +483,7 @@ AUIPlugin.AUICodeCursor = JavaScript.Class(ALittle.Quad, {
 					this._edit.revoke_list.PushRevoke(revoke);
 				}
 			}
+			this._edit.UpdateLineFind(this._it_line);
 			return true;
 		}
 		if (this._it_line >= this._edit.line_count) {
@@ -520,8 +529,8 @@ AUIPlugin.AUICodeCursor = JavaScript.Class(ALittle.Quad, {
 		this._edit.line_count = this._edit.line_count - (1);
 		ALittle.List_Remove(this._edit.line_list, this._it_line + 1);
 		this.SetLineChar(new_it_line, new_it_char);
-		if (this._edit.code_screen.container.width < cur_line.container.width + this._edit.line_number_width) {
-			this._edit.code_screen.container.width = cur_line.container.width + this._edit.line_number_width;
+		if (this._edit.code_screen.container.width < cur_line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH) {
+			this._edit.code_screen.container.width = cur_line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH;
 		}
 		this._edit.code_screen.RejustScrollBar();
 		if (need_revoke) {
@@ -532,6 +541,8 @@ AUIPlugin.AUICodeCursor = JavaScript.Class(ALittle.Quad, {
 				this._edit.revoke_list.PushRevoke(revoke);
 			}
 		}
+		this._edit.UpdateLineFind(this._it_line);
+		this._edit.UpdateLineNumber();
 		return true;
 	},
 	Hide : function() {

@@ -252,8 +252,15 @@ public static JSystem_CreateView(string title, int width, int height, int flag, 
     var func = cast<Map<string, Functor<(int, int)>>>(window)["__ALITTLEAPI_ViewResized"];
     if (func != null) func(width, height);
     
+    window.onresize = JSystem_HandleViewResized;
     A_PixiApp.ticker.add(JSystem_MainLoop);
     return true;
+}
+
+public static JSystem_HandleViewResized()
+{
+    var func = cast<Map<string, Functor<(int, int)>>>(window)["__ALITTLEAPI_ViewResized"];
+    if (func != null) func(ALittle.System_GetScreenWidth(), ALittle.System_GetScreenHeight());
 }
 
 public static JSystem_SetViewTitle(string title) : bool

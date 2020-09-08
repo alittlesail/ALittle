@@ -11,8 +11,12 @@ AUIPlugin.AUICodeCommon = JavaScript.Class(AUIPlugin.AUICodeLanguage, {
 		this._abnf_color = this._project.QueryRuleColor();
 		this._abnf_file = lua.alanguage.create_abnffile(this._project.project, full_path, "");
 	},
-	OnOpen : function() {
-		this._project.UpdateFile("", this._full_path);
+	OnOpen : function(content) {
+		if (content !== undefined) {
+			this._project.TempFile("", this._full_path, content);
+		} else {
+			this._project.UpdateFile("", this._full_path);
+		}
 	},
 	OnShow : function() {
 	},

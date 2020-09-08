@@ -42,7 +42,7 @@ public static __Module_GetInfo(ALittle.ControlSystem control, string module_base
 }
 
 // 插件入口函数
-public async static __Plugin_Setup(ALittle.ControlSystem control, string module_base_path, string script_base_path)
+public await static __Plugin_Setup(ALittle.ControlSystem control, string module_base_path, string script_base_path)
 {
 	g_Control = control;
 	g_ModuleBasePath = module_base_path;

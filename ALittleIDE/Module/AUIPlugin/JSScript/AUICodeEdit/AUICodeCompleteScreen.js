@@ -1,17 +1,10 @@
 {
 if (typeof AUIPlugin === "undefined") window.AUIPlugin = {};
-let ___all_struct = ALittle.GetAllStruct();
 
 ALittle.RegStruct(1773085126, "AUIPlugin.AUICodeCompleteItemInfo", {
 name : "AUIPlugin.AUICodeCompleteItemInfo", ns_name : "AUIPlugin", rl_name : "AUICodeCompleteItemInfo", hash_code : 1773085126,
 name_list : ["_item_button","_item_title","_tag_image","_item","pos","upper","complete"],
 type_list : ["ALittle.TextRadioButton","ALittle.Text","ALittle.Image","ALittle.DisplayObject","int","string","lua.ABnfQueryCompleteInfo"],
-option_map : {}
-})
-ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
-name : "ALittle.UIEvent", ns_name : "ALittle", rl_name : "UIEvent", hash_code : -1479093282,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
 ALittle.RegStruct(-1149003083, "lua.ABnfQueryCompleteInfo", {
@@ -20,49 +13,36 @@ name_list : ["display","insert","descriptor","tag"],
 type_list : ["string","string","string","int"],
 option_map : {}
 })
-ALittle.RegStruct(348388800, "ALittle.UIHideEvent", {
-name : "ALittle.UIHideEvent", ns_name : "ALittle", rl_name : "UIHideEvent", hash_code : 348388800,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
 
 AUIPlugin.AUICodeCompleteScreen = JavaScript.Class(undefined, {
-	Ctor : function() {
+	Ctor : function(edit) {
 		this._item_pool = [];
 		this._item_pool_count = 0;
 		this._item_height = 0;
-	},
-	get edit() {
-		return this._edit;
-	},
-	Shutdown : function() {
-		this.Hide();
-	},
-	ShowComplete : async function(edit) {
 		this._edit = edit;
+	},
+	ShowComplete : async function() {
 		if (this._complete === undefined) {
-			if (!await this.ReInit(edit)) {
+			if (!await this.ReInit()) {
 				this.Hide();
 				return;
 			}
 		}
-		this._line_end = edit.cursor.line;
-		this._char_end = edit.cursor.char;
-		let text = edit.GetTargetText(this._complete.line_start, this._complete.char_start - 1, edit.cursor.line, edit.cursor.char);
+		this._line_end = this._edit.cursor.line;
+		this._char_end = this._edit.cursor.char;
+		let text = this._edit.GetTargetText(this._complete.line_start, this._complete.char_start - 1, this._edit.cursor.line, this._edit.cursor.char);
 		if (text === undefined || text === "") {
 			this.Hide();
 			return;
 		}
 		if (!this.Fliter(text)) {
 			this.Hide();
-			this._edit = edit;
-			if (!await this.ReInit(edit)) {
+			if (!await this.ReInit()) {
 				return;
 			}
-			this._line_end = edit.cursor.line;
-			this._char_end = edit.cursor.char;
-			text = edit.GetTargetText(this._complete.line_start, this._complete.char_start - 1, edit.cursor.line, edit.cursor.char);
+			this._line_end = this._edit.cursor.line;
+			this._char_end = this._edit.cursor.char;
+			text = this._edit.GetTargetText(this._complete.line_start, this._complete.char_start - 1, this._edit.cursor.line, this._edit.cursor.char);
 			if (text === undefined || text === "") {
 				return;
 			}
@@ -152,21 +132,20 @@ AUIPlugin.AUICodeCompleteScreen = JavaScript.Class(undefined, {
 		}
 		return target;
 	},
-	ReInit : function(edit) {
+	ReInit : function() {
 		return new Promise((async function(___COROUTINE, ___) {
-			if (edit.language === undefined) {
+			if (this._edit.language === undefined) {
 				___COROUTINE(false); return;
 			}
-			this._complete = await edit.language.QueryComplete(edit.cursor.line, edit.cursor.char - 1);
+			this._complete = await this._edit.language.QueryComplete(this._edit.cursor.line, this._edit.cursor.char - 1);
 			if (this._complete === undefined) {
 				___COROUTINE(false); return;
 			}
-			let [x, y] = edit.CalcAbsPosition(this._complete.line_start, this._complete.char_start, true);
-			y = y + (edit.line_height);
+			let [x, y] = this._edit.CalcPosition(this._complete.line_start, this._complete.char_start, true);
+			y = y + (AUIPlugin.CODE_LINE_HEIGHT);
 			if (this._screen === undefined) {
 				this._screen = AUIPlugin.g_Control.CreateControl("ide_code_scroll_screen");
 				this._screen.width = 200;
-				this._screen.AddEventListener(___all_struct.get(348388800), this, this.HandleHideEvent);
 			}
 			this._screen.RemoveAllChild();
 			this._screen.x = x;
@@ -203,18 +182,18 @@ AUIPlugin.AUICodeCompleteScreen = JavaScript.Class(undefined, {
 				} else {
 					item_info.upper = ALittle.String_Upper(info.insert);
 				}
-				item_info._tag_image.texture_name = edit.language.QueryCompleteIcon(info.tag);
+				item_info._tag_image.texture_name = this._edit.language.QueryCompleteIcon(info.tag);
 				item_info._item._user_data = item_info;
 				item_info.complete = info;
 				this._item_list[index - 1] = item_info;
-				let title_wdith = edit.ascii_width * ALittle.String_Len(info.display);
+				let title_wdith = item_info._item_title.width + item_info._item_title.x + 5;
 				if (max_width < title_wdith) {
 					max_width = title_wdith;
 				}
 				this._item_height = item_info._item.height;
 			}
-			this._screen.width = max_width;
-			A_LayerManager.ShowFromRight(this._screen, false);
+			this._screen.width = max_width + this._screen.right_scrollbar.width;
+			this._edit.help_container.AddChild(this._screen);
 			___COROUTINE(true); return;
 		}).bind(this));
 	},
@@ -270,44 +249,35 @@ AUIPlugin.AUICodeCompleteScreen = JavaScript.Class(undefined, {
 	},
 	Hide : function() {
 		this.HideTip();
-		this._edit = undefined;
 		this._complete = undefined;
 		if (this._screen !== undefined) {
 			this._screen.RemoveAllChild();
 		}
-		A_LayerManager.HideFromRight(this._screen);
+		this._edit.help_container.RemoveChild(this._screen);
 	},
-	TryHide : function(edit) {
-		if (this._edit !== edit) {
-			return;
-		}
+	TryHide : function() {
 		if (this._complete === undefined) {
 			return;
 		}
-		if (edit.cursor.line < this._complete.line_start || edit.cursor.line > this._line_end) {
+		if (this._edit.cursor.line < this._complete.line_start || this._edit.cursor.line > this._line_end) {
 			this.Hide();
 			return;
 		}
-		if (edit.cursor.line === this._complete.line_start && edit.cursor.char < this._complete.char_start) {
+		if (this._edit.cursor.line === this._complete.line_start && this._edit.cursor.char < this._complete.char_start) {
 			this.Hide();
 			return;
 		}
-		if (edit.cursor.line === this._line_end && edit.cursor.char > this._char_end) {
+		if (this._edit.cursor.line === this._line_end && this._edit.cursor.char > this._char_end) {
 			this.Hide();
 			return;
 		}
-	},
-	HandleHideEvent : function(event) {
-		this.HideTip();
-		this._edit = undefined;
-		this._complete = undefined;
 	},
 	ShowTip : function(content) {
 		if (this._tip_dialog === undefined) {
 			this._tip_dialog = AUIPlugin.g_Control.CreateControl("ide_tool_area_tip", this);
 			this._tip_dialog.width = 200;
 		}
-		A_LayerManager.AddToTip(this._tip_dialog);
+		this._edit.help_container.AddChild(this._tip_dialog);
 		this._tip_dialog.visible = true;
 		this._tip_text.text = content;
 		this._tip_dialog.height = this._tip_text.real_height + 6;
@@ -319,9 +289,8 @@ AUIPlugin.AUICodeCompleteScreen = JavaScript.Class(undefined, {
 			return;
 		}
 		this._tip_dialog.visible = false;
-		A_LayerManager.RemoveFromTip(this._tip_dialog);
+		this._edit.help_container.RemoveChild(this._tip_dialog);
 	},
 }, "AUIPlugin.AUICodeCompleteScreen");
 
-AUIPlugin.g_AUICodeCompleteScreen = ALittle.NewObject(AUIPlugin.AUICodeCompleteScreen);
 }

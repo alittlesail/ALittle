@@ -24,7 +24,7 @@ AUIPlugin.AUICodeLanguage = JavaScript.Class(undefined, {
 	get version() {
 		return this._version;
 	},
-	OnOpen : function() {
+	OnOpen : function(content) {
 	},
 	OnClose : function() {
 	},
@@ -75,6 +75,16 @@ AUIPlugin.AUICodeLanguage = JavaScript.Class(undefined, {
 			lua.alanguage.abnffile_querycomplete(this._abnf_file, query_id, this._version, line, char);
 			return;
 		}).bind(this));
+	},
+	QueryParamList : function(line, char) {
+		return new Promise((function(___COROUTINE, ___) {
+			let query_id = this._project.Add(___COROUTINE);
+			lua.alanguage.abnffile_queryparamlist(this._abnf_file, query_id, this._version, line, char);
+			return;
+		}).bind(this));
+	},
+	QueryParamIndex : function(line, char) {
+		return [lua.alanguage.abnffile_queryparamindex(this._abnf_file, this._version, line, char)];
 	},
 	QueryError : function(force) {
 		return new Promise((function(___COROUTINE, ___) {

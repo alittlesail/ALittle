@@ -66,7 +66,7 @@ public class JDisplayObject : ALittle.IDisplayObject
     public fun SetWidth(double value) { }
     public fun SetHeight(double value) { }
     public fun SetVisible(bool value) { this._visible = value; this._native.visible = value && !this._clip; }
-    public fun SetClip(bool value) { this._clip = value; this._native.visible = value && this._visible; }
+    public fun SetClip(bool value) { this._clip = value; this._native.visible = !value && this._visible; }
     public fun SetAlpha(double value) { this._native.alpha = value; }
     public fun SetRed(double value) {}
     public fun SetGreen(double value) {}

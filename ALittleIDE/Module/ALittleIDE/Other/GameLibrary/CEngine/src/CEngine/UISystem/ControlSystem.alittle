@@ -93,6 +93,8 @@ public class ControlSystem
     public get crypt_mode() : bool { return this._crypt_mode; }
     public get log_error() : bool { return this._log_error; }
     public set log_error(bool value) { this._log_error = value; }
+    [Constant]
+    public get info_map() : const Map<string, DisplayInfo> { return this._name_map_info; }
     
     public fun RegisterFont(string src, string dst)
     {
@@ -135,12 +137,6 @@ public class ControlSystem
         for (var name, value in json)
         {
             this.RegisterInfo(name, value);
-        }
-        for (var name, value in json)
-        {
-            var info = this.CreateInfo(this._name_map_info[name]);
-            this._name_map_info[name] = info;
-            this._name_map_info_cache[name] = true;
         }
     }
 

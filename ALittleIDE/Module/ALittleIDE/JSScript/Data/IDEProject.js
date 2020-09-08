@@ -213,7 +213,7 @@ ALittleIDE.IDEProject = JavaScript.Class(ALittle.EventDispatcher, {
 			g_AUITool.ShowNotice("提示", "当前没有打开的项目");
 			return;
 		}
-		g_AUITool.ShowAlertDialog("提示", "JavaScript不支持运行项目");
+		g_AUITool.ShowNotice("提示", "JavaScript不支持运行项目");
 	},
 	get project() {
 		return this._project;

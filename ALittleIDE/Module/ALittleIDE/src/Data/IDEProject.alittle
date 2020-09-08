@@ -256,7 +256,7 @@ public class IDEProject : ALittle.EventDispatcher
 		}
 
 		[Language(JavaScript)]
-		g_AUITool.ShowAlertDialog("提示", "JavaScript不支持运行项目");
+		g_AUITool.ShowNotice("提示", "JavaScript不支持运行项目");
 
 		[Language(Lua)]
 		lua.os.execute("start ALittleClient.exe "..this._project.name.." debug");

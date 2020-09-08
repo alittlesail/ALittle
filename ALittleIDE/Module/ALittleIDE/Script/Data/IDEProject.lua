@@ -190,7 +190,9 @@ function ALittleIDE.IDEProject:HandleCodeProjectGoToEvent(event)
 end
 
 function ALittleIDE.IDEProject:OpenLastProject()
-	local name = ALittleIDE.g_IDEConfig:GetString("last_project", nil)
+	local default_name = "BattleCity"
+	default_name = nil
+	local name = ALittleIDE.g_IDEConfig:GetString("last_project", default_name)
 	if name == nil then
 		return
 	end

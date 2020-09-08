@@ -292,6 +292,8 @@ function BattleCity.BattleScene:ShowGameOver()
 end
 
 function BattleCity.BattleScene:StageCompleted()
+	g_GCenter.player1_data.level = self._player_1.level
+	g_GCenter.player2_data.level = self._player_2.level
 	g_GCenter.battle_settlement:Show(self._player1_kill, self._player2_kill)
 	self:Hide()
 end

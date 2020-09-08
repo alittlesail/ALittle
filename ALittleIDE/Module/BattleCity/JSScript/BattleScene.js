@@ -280,6 +280,8 @@ BattleCity.BattleScene = JavaScript.Class(ALittle.DisplayLayout, {
 		this._gameover_loop.Start();
 	},
 	StageCompleted : function() {
+		g_GCenter.player1_data.level = this._player_1.level;
+		g_GCenter.player2_data.level = this._player_2.level;
 		g_GCenter.battle_settlement.Show(this._player1_kill, this._player2_kill);
 		this.Hide();
 	},

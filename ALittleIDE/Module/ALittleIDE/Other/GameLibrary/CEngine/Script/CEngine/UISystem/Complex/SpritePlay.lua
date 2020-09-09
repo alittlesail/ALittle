@@ -28,19 +28,19 @@ end
 
 function ALittle.SpritePlay:Play()
 	if self._play_loop ~= nil then
-		A_LoopSystem:RemoveUpdater(self._play_loop)
+		A_WeakLoopSystem:RemoveUpdater(self._play_loop)
 		self._play_loop = nil
 	end
 	self._play_index = 0
 	self._row_index = 1
 	self._col_index = 1
 	self._play_loop = ALittle.LoopFunction(Lua.Bind(self.PlayUpdate, self), -1, self._interval, 0)
-	A_LoopSystem:AddUpdater(self._play_loop)
+	A_WeakLoopSystem:AddUpdater(self._play_loop)
 end
 
 function ALittle.SpritePlay:Stop()
 	if self._play_loop ~= nil then
-		A_LoopSystem:RemoveUpdater(self._play_loop)
+		A_WeakLoopSystem:RemoveUpdater(self._play_loop)
 		self._play_loop = nil
 	end
 end

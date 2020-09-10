@@ -1,0 +1,113 @@
+
+register namespace lua;
+
+public struct ABnfQueryColor
+{
+    int line_start;
+    int char_start;
+    int line_end;
+    int char_end;
+    int tag;
+    bool blur;
+}
+
+public struct ABnfQueryInfo
+{
+    int line_start;
+    int char_start;
+    int line_end;
+    int char_end;
+    string info;
+}
+
+public struct ABnfQueryGoto
+{
+    int line_start;
+    int char_start;
+    int line_end;
+    int char_end;
+    string file_path;
+}
+
+public struct ABnfQueryCompleteInfo
+{
+    string display;
+    string insert;
+    string descriptor;
+    int tag;
+}
+
+public struct ABnfQueryComplete
+{
+    int line_start;
+    int char_start;
+    int line_end;
+    int char_end;
+    List<ABnfQueryCompleteInfo> complete_list;
+}
+
+public struct ABnfQueryParameterInfo
+{
+    string descriptor;
+    string name;
+}
+
+public struct ABnfQueryParamList
+{
+    int line_start;
+    int char_start;
+    int line_end;
+    int char_end;
+    List<ABnfQueryParameterInfo> param_list;
+}
+
+public struct ABnfQueryError
+{
+    int line_start;
+    int char_start;
+    int line_end;
+    int char_end;
+    string error;
+}
+
+public struct ABnfPollInfo
+{
+    int query_id;
+    any result;
+}
+
+public struct ABnfFile { }
+public struct ABnfProject { }
+
+public class alanguage
+{
+    public static abnfproject_pollone(ABnfProject project) : ABnfPollInfo {}
+
+    public static create_abnfproject(string abnf_buffer) : ABnfProject {}
+    public static create_abnffile(ABnfProject project, string full_path, string text) : ABnfFile {}
+    public static abnfproject_queryrulecolor(ABnfProject project) : Map<int, AUIPlugin.ABnfColor> {}
+
+    public static abnfproject_updatefile(ABnfProject project, string module_path, string full_path, int version) {}
+    public static abnfproject_tempfile(ABnfProject project, string module_path, string full_path, string text, int version) {}
+    public static abnfproject_removefile(ABnfProject project, string full_path) {}
+    public static abnfproject_findfile(ABnfProject project, int query_id, string text) /*: List<string> */ {}
+    public static abnfproject_finddefine(ABnfProject project, int query_id, string pre_input, string input) /*: List<ABnfQueryCompleteInfo> */ {}
+    public static abnfproject_findgoto(ABnfProject project, int query_id, string text) /* ABnfQueryGoto */ {}
+    public static abnfproject_clear(ABnfProject project) {}
+
+    public static abnffile_settext(ABnfFile abnf_file, int version, string text) {}
+    public static abnffile_inserttext(ABnfFile abnf_file, int version, string text, int it_line, int it_char) {}
+    public static abnffile_deletetext(ABnfFile abnf_file, int version, int it_line_start, int it_char_start, int it_line_end, int it_char_end) {}
+    
+    public static abnffile_querycolor(ABnfFile abnf_file, int query_id, int version, int line) /*: List<ABnfQueryColor> */ {}
+    public static abnffile_queryinfo(ABnfFile abnf_file, int query_id, int version, int line, int char) /*: ABnfQueryInfo */ {}
+    public static abnffile_querygoto(ABnfFile abnf_file, int query_id, int version, int line, int char) /*: ABnfQueryGoto */ {}
+    public static abnffile_querycomplete(ABnfFile abnf_file, int query_id, int version, int line, int char) /*: ABnfQueryComplete */ {}
+    public static abnffile_queryparamlist(ABnfFile abnf_file, int query_id, int version, int line, int char) /*: ABnfQueryParamList */ {}
+    public static abnffile_queryerror(ABnfFile abnf_file, int query_id, int version, bool force) /*: List<ABnfQueryError> */ {}
+
+    public static abnffile_querydesiredindent(ABnfFile abnf_file, int version, int line, int char) : int {}
+    public static abnffile_queryformateindent(ABnfFile abnf_file, int version, int line, int char) : int {}
+    public static abnffile_queryautopair(ABnfFile abnf_file, int version, int line, int char, string left_pair, string right_pair) : bool {}
+    public static abnffile_queryparamindex(ABnfFile abnf_file, int version, int line, int char) : int, int {}
+}

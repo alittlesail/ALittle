@@ -1,0 +1,12 @@
+
+register namespace lua;
+
+public struct ABnfProjectClass : ABnfProject { }
+public struct ABnfFileClass : ABnfFile { }
+
+public class abnf
+{
+    public static create_abnf_project(string abnf_buffer) : ABnfProjectClass {}
+    public static create_abnf_file(ABnfProject project, string full_path, string text) : ABnfFileClass {}
+    public static abnffile_generate(ABnfFile file, int query_id, int version, string target_path, string language_name) /*: string*/ {}
+}

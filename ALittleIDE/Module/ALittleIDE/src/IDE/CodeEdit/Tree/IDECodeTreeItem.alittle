@@ -83,6 +83,17 @@ public class IDECodeTreeItem : IDECodeTreeLogic
 
     private fun HandleCutFile()
     {
+		var old_name = this._user_info.name;
+		var old_path = this._user_info.path;
+
+        var tab_child = g_IDECenter.center.content_edit.GetTabChildById{IDECodeTabChild}(old_path);
+        if (tab_child != null && tab_child.save != true)
+        {
+            g_IDECenter.center.code_list.SetCutTreeItem(null);
+            g_AUITool.ShowNotice("提示", "请先保存再重命名");
+            return;
+        }
+
         g_IDECenter.center.code_list.SetCutTreeItem(this);
     }
 

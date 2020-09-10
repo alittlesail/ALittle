@@ -1,0 +1,24 @@
+
+register namespace lua;
+
+public struct ALittleScriptGenerateError
+{
+    string full_path;
+    int line_start;
+    int char_start;
+    int line_end;
+    int char_end;
+    string error;
+}
+
+public struct ALittleScriptProjectClass : ABnfProject { }
+public struct ALittleScriptFileClass : ABnfFile { }
+
+public class alittlescript
+{
+    public static create_alittlescript_project(string abnf_buffer) : ALittleScriptProjectClass {}
+    public static create_alittlescript_file(ABnfProject project, string module_path, string full_path, string text) : ALittleScriptFileClass {}
+    public static alittlescriptproject_settargetlanguage(ABnfProject project, string target_language) {}
+    public static alittlescriptproject_gettargetlanguage(ABnfProject project) : string {}
+    public static alittlescriptproject_generate(ABnfProject project, int query_id, string full_path) {}
+}

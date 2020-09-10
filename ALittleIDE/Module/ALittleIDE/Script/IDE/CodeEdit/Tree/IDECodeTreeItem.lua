@@ -134,6 +134,14 @@ end
 ALittleIDE.IDECodeTreeItem.HandleDeleteFile = Lua.CoWrap(ALittleIDE.IDECodeTreeItem.HandleDeleteFile)
 
 function ALittleIDE.IDECodeTreeItem:HandleCutFile()
+	local old_name = self._user_info.name
+	local old_path = self._user_info.path
+	local tab_child = ALittleIDE.g_IDECenter.center.content_edit:GetTabChildById(ALittleIDE.IDECodeTabChild, old_path)
+	if tab_child ~= nil and tab_child.save ~= true then
+		ALittleIDE.g_IDECenter.center.code_list:SetCutTreeItem(nil)
+		g_AUITool:ShowNotice("提示", "请先保存再重命名")
+		return
+	end
 	ALittleIDE.g_IDECenter.center.code_list:SetCutTreeItem(self)
 end
 

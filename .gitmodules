@@ -10,3 +10,6 @@
 [submodule "ALittleIDE/Module/ALittleIDE/Other/GameLibrary/Core"]
 	path = ALittleIDE/Module/ALittleIDE/Other/GameLibrary/Core
 	url = https://github.com/alittlesail/ALittle-Core.git
+[submodule "ALittleIDE/Module/ALittleIDE/Other/GameLibrary/Std"]
+	path = ALittleIDE/Module/ALittleIDE/Other/GameLibrary/Std
+	url = https://github.com/alittlesail/ALittle-Std.git

@@ -1,7 +1,0 @@
-
-[Language(JavaScript)]
-register namespace javascript;
-
-// 请在html添加script标签
-// <script src="ALittle/Module/ALittleIDE/Other/GameLibrary/JSNative/md5.min.js"></script>
-public static md5(string text) : string {}

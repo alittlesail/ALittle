@@ -1,0 +1,40 @@
+
+[Language(Lua)]
+namespace Lua;
+
+private var __LUAHTTP_MAXID:int = 0;
+
+public class LuaHttpInterface : ALittle.IHttpSenderNative
+{
+    private int _id;
+    private string _url;
+    private string _content;
+    private string _response;
+    
+    public ctor()
+    {
+        ++ __LUAHTTP_MAXID;
+        this._id = __LUAHTTP_MAXID;
+    }
+    public fun GetID() : int { return this._id; }
+    public fun SetURL(string url, string content)
+    {
+        this._url = url;
+        this._content = content;
+    }
+    public fun Start()
+    {
+        if (this._content == null)
+            lua.net.get(A_LuaSchedule._net, this._id, this._url);
+        else
+            lua.net.post(A_LuaSchedule._net, this._id, this._url, "application/json", this._content);
+    }
+    public fun Stop()
+    {
+        if (this._content == null)
+            lua.net.stopget(A_LuaSchedule._net, this._id);
+        else
+            lua.net.stoppost(A_LuaSchedule._net, this._id);
+    }
+    public fun GetResponse() : string { return this._response; }                // 获取请求结果
+}

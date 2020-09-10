@@ -39,7 +39,7 @@ public static UtilityCreateTreeMessage(RootInfo root, lua.protobuf_message msg, 
     var detail_info = new DetailInfo();
     detail_info.message = msg;
     detail_info.reflection = rflct;
-    detail_info.info = A_LuaSocketSchedule.GetMessageInfo(lua.protobuf.messagedescriptor_fullname(descriptor));
+    detail_info.info = A_LuaProtobufSchedule.GetMessageInfo(lua.protobuf.messagedescriptor_fullname(descriptor));
     var tree = new IDETreeMessage(g_Control, root, msg_field_name, detail_info);
     detail_info.tree = tree;
 
@@ -58,7 +58,7 @@ public static UtilityCreateTreeRepeatedMessage(RootInfo root, IDETreeRepeated pa
     var detail_info = new DetailInfo();
     detail_info.message = msg;
     detail_info.reflection = rflct;
-    detail_info.info = A_LuaSocketSchedule.GetMessageInfo(lua.protobuf.messagedescriptor_fullname(descriptor));
+    detail_info.info = A_LuaProtobufSchedule.GetMessageInfo(lua.protobuf.messagedescriptor_fullname(descriptor));
     var tree = new IDETreeRepeatedMessage(g_Control, root, parent, detail_info);
     detail_info.tree = tree;
     
@@ -77,7 +77,7 @@ public static UtilityCreateTreeBoolMapMessage(RootInfo root, IDETreeMap parent, 
     var detail_info = new DetailInfo();
     detail_info.message = lua.protobuf.reflection_getmessage(rflct, msg, value_field);
     detail_info.reflection = lua.protobuf.message_getreflection(detail_info.message);
-    detail_info.info = A_LuaSocketSchedule.GetMessageInfo(lua.protobuf.messagedescriptor_fullname(lua.protobuf.message_getdescriptor(detail_info.message)));
+    detail_info.info = A_LuaProtobufSchedule.GetMessageInfo(lua.protobuf.messagedescriptor_fullname(lua.protobuf.message_getdescriptor(detail_info.message)));
     var tree = new IDETreeBoolMapMessage(g_Control, root, parent, rflct, msg, key_field, detail_info);
     detail_info.tree = tree;
     
@@ -96,7 +96,7 @@ public static UtilityCreateTreeEnumMapMessage(RootInfo root, IDETreeMap parent, 
     var detail_info = new DetailInfo();
     detail_info.message = lua.protobuf.reflection_getmessage(rflct, msg, value_field);
     detail_info.reflection = lua.protobuf.message_getreflection(detail_info.message);
-    detail_info.info = A_LuaSocketSchedule.GetMessageInfo(lua.protobuf.messagedescriptor_fullname(lua.protobuf.message_getdescriptor(detail_info.message)));
+    detail_info.info = A_LuaProtobufSchedule.GetMessageInfo(lua.protobuf.messagedescriptor_fullname(lua.protobuf.message_getdescriptor(detail_info.message)));
     var tree = new IDETreeEnumMapMessage(g_Control, root, parent, rflct, msg, key_field, detail_info);
     detail_info.tree = tree;
     
@@ -115,7 +115,7 @@ public static UtilityCreateTreeValueMapMessage(RootInfo root, IDETreeMap parent,
     var detail_info = new DetailInfo();
     detail_info.message = lua.protobuf.reflection_getmessage(rflct, msg, value_field);
     detail_info.reflection = lua.protobuf.message_getreflection(detail_info.message);
-    detail_info.info = A_LuaSocketSchedule.GetMessageInfo(lua.protobuf.messagedescriptor_fullname(lua.protobuf.message_getdescriptor(detail_info.message)));
+    detail_info.info = A_LuaProtobufSchedule.GetMessageInfo(lua.protobuf.messagedescriptor_fullname(lua.protobuf.message_getdescriptor(detail_info.message)));
     var tree = new IDETreeValueMapMessage(g_Control, root, parent, rflct, msg, key_field, detail_info);
     detail_info.tree = tree;
     
@@ -128,7 +128,7 @@ public static UtilityCreateTreeValueMapMessage(RootInfo root, IDETreeMap parent,
 public static Utility_CreateTreeForEdit(Lua.lua_socket_schedule_message_info info) : DetailInfo
 {
     // 创建消息包
-    var msg = A_LuaSocketSchedule.CreateMessage(info.full_name);
+    var msg = A_LuaProtobufSchedule.CreateMessage(info.full_name);
     if (msg == null) return null;
     
     // 从配置中获取记录的信息

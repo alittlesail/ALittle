@@ -1,7 +1,0 @@
-
-register namespace lua;
-
-public class dump
-{
-    public static setup(string name) {}
-}

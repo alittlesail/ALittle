@@ -1,0 +1,88 @@
+
+register namespace lua;
+
+public struct net_event
+{
+    int type;
+    int id;
+    
+    // 当type为HTTP_SUCCEED时有效
+    string content;
+    // 当type为HTTP_FILE_FAILED，HTTP_FAILED时有效
+    string error;
+    
+    // 当type为HTTP_FILE_PROGRESS时有效
+    int cur_size;
+    int total_size;
+    
+    // 当type为TIMER时有效，当前的时间戳，单位是毫秒
+    int time;
+    
+    // 当type为MSG_MESSAE
+    int msg_id;
+    int rpc_id;
+    read_factory factory;
+}
+
+public struct write_factory
+{
+    
+}
+
+public struct read_factory
+{
+    
+}
+
+public class net
+{
+    public static create() : net {}
+    
+    // 如果返回null，表示所有net全部处理结束
+    public static poll(net c) : net_event {}
+    
+    // 启动一个定时器
+    public static timer(net c, int delay_ms) {}
+    
+    // http相关接口
+    public static get(net c, int id, string url) {}
+    public static stopget(net c, int id) {}
+    public static post(net c, int id, string url, string type, string content) {}
+    public static stoppost(net c, int id) {}
+    public static download(net c, int id, string url, string file_path) {}
+    public static stopdownload(net c, int id) {}
+    public static upload(net c, int id, string url, string file_path) {}
+    public static stopupload(net c, int id) {}
+    
+    // 长连接相关接口
+    public static connect(net c, int id, string ip, int port) {}
+    public static isconnected(net c, int id) : bool {}
+    public static isconnecting(net c, int id) : bool {}
+    public static close(net c, int id) {}
+    public static send(net c, int id, write_factory factory) {}
+    
+    // 序列化相关接口
+    public static createwfactory() : write_factory{}
+    public static wfactorysetid(write_factory factory, int id) {}
+    public static wfactorysetrpcid(write_factory factory, int id) {}
+    public static wfactoryresetoffset(write_factory factory) {}
+    public static wfactorygetoffset(write_factory factory) : int {}
+    public static wfactorysetint(write_factory factory, int offset, int value) {}
+    public static wfactorywritebool(write_factory factory, bool value) : int {}
+    public static wfactorywriteint(write_factory factory, int value) : int {}
+    public static wfactorywritelong(write_factory factory, long value) : int {}
+    public static wfactorywritestring(write_factory factory, string value) : int {}
+    public static wfactorywritedouble(write_factory factory, double value) : int {}
+    
+    // 反序列化相关接口
+    public static rfactoryrelease(net c, read_factory factory) {}
+    public static rfactorygetdatasize(read_factory factory) : int {}
+    public static rfactoryreadbool(read_factory factory) : bool {}
+    public static rfactoryreadint(read_factory factory) : int {}
+    public static rfactoryreadlong(read_factory factory) : long {}
+    public static rfactoryreadstring(read_factory factory) : string {}
+    public static rfactoryreaddouble(read_factory factory) : double {}
+    public static rfactorygetreadsize(read_factory factory) : int {}
+    
+    public static exit(net c) {}
+}

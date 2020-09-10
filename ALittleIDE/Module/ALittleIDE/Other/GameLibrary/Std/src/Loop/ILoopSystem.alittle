@@ -1,0 +1,14 @@
+
+namespace ALittle;
+
+public class ILoopSystem
+{
+    public fun Update(int frame_time) {}
+    
+    public fun AddTimer(int delay_ms, Functor<()> callback, [Nullable] int loop, [Nullable] int interval_ms) : int { return 0; }
+    public fun RemoveTimer(int id) : bool { return false; }
+    
+    public fun AddUpdater(LoopObject object) {}
+    public fun RemoveUpdater(LoopObject object) {}
+    public fun HasUpdater(LoopObject object) : bool { return false; }
+}

@@ -1,0 +1,35 @@
+
+[Language(Lua)]
+namespace Lua;
+
+public class LuaMessageWriteFactory : ALittle.IMessageWriteFactory
+{
+    public lua.write_factory _factory;
+    
+    public ctor() { this._factory = lua.net.createwfactory(); }
+    public fun SetID(int id) { lua.net.wfactorysetid(this._factory, id); }
+    public fun SetRpcID(int id) { lua.net.wfactorysetrpcid(this._factory, id); }
+    public fun ResetOffset() { lua.net.wfactoryresetoffset(this._factory); }
+    public fun GetOffset() : int { return lua.net.wfactorygetoffset(this._factory); }
+    public fun SetInt(int offset, int value) { lua.net.wfactorysetint(this._factory, offset, value); }
+    
+    public fun WriteBool(bool value) : int { return lua.net.wfactorywritebool(this._factory, value); }
+    public fun WriteInt(int value) : int { return lua.net.wfactorywriteint(this._factory, value); }
+    public fun WriteLong(long value) : int { return lua.net.wfactorywritelong(this._factory, value); }
+    public fun WriteString(string value) : int { return lua.net.wfactorywritestring(this._factory, value); }
+    public fun WriteDouble(double value) : int { return lua.net.wfactorywritedouble(this._factory, value); }
+}
+
+public class LuaMessageReadFactory : ALittle.IMessageReadFactory
+{
+    private lua.read_factory _factory;
+    public fun SetFactory(lua.read_factory factory) { this._factory = factory; }
+    public fun GetDataSize() : int { return lua.net.rfactorygetdatasize(this._factory); }
+    
+    public fun ReadBool() : bool { return lua.net.rfactoryreadbool(this._factory); }
+    public fun ReadInt() : int { return lua.net.rfactoryreadint(this._factory); }
+    public fun ReadLong() : long { return lua.net.rfactoryreadlong(this._factory); }
+    public fun ReadString() : string { return lua.net.rfactoryreadstring(this._factory); }
+    public fun ReadDouble() : double { return lua.net.rfactoryreaddouble(this._factory); }
+    public fun GetReadSize() : int { return lua.net.rfactorygetreadsize(this._factory); }
+}

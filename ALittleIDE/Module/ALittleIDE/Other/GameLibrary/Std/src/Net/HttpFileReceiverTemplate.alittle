@@ -1,0 +1,56 @@
+
+namespace ALittle;
+
+public class IHttpFileReceiverNative
+{
+    // 关闭Http请求
+    public fun Close(int http_id) {}
+    // 返回字符串
+    public fun SendString(int http_id, string content) {}
+    // 开始接受文件
+    public fun StartReceiveFile(int http_id, string file_path, int start_size) {}
+}
+
+public class HttpFileReceiverTemplate<NATIVE : IHttpFileReceiverNative> : IHttpFileReceiver
+{
+    private int _http_id;
+    private Thread _thread;
+    private string _file_path;
+    private NATIVE _interface;
+    
+    private bool _received;
+    
+    public ctor(int http_id, Thread thread)
+    {
+        this._http_id = http_id;
+        this._thread = thread;
+        this._received = false;
+        this._interface = new NATIVE();
+    }
+
+    public await fun StartReceiveFile(string file_path, int start_size) : string
+    {
+        if (this._received) return "StartReceiveFile已经被调用过";
+        this._received = true;
+        this._interface.StartReceiveFile(this._http_id, file_path, start_size);
+        return yield;
+    }
+    
+    protected fun HandleReceiveResult(string reason)
+    {
+        var result, error = Coroutine.Resume(this._thread, reason);
+        if (!result) Error(error);
+    }
+    
+    public get received() : bool { return this._received; }
+
+    protected fun SendString(string content)
+    {
+        this._interface.SendString(this._http_id, content);
+    }
+    
+    public fun Clsoe()
+    {
+        this._interface.Close(this._http_id);
+    }
+}

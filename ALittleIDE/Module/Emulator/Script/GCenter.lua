@@ -132,7 +132,7 @@ function Emulator.GCenter:Setup()
 	end
 	local proto_root = Emulator.g_GConfig:GetString("proto_root", "")
 	if proto_root ~= "" and ALittle.File_GetFileAttr(proto_root) ~= nil then
-		local error = A_LuaSocketSchedule:LoadProto(proto_root)
+		local error = A_LuaProtobufSchedule:LoadProto(proto_root)
 		if error == nil then
 			local func = _G["__PLUGIN_ProtoRefresh"]
 			if func ~= nil then
@@ -147,7 +147,7 @@ function Emulator.GCenter:Setup()
 		end
 	end
 	local login_proto = Emulator.g_GConfig:GetString("login_proto", "")
-	local msg_info = A_LuaSocketSchedule:GetMessageInfo(login_proto)
+	local msg_info = A_LuaProtobufSchedule:GetMessageInfo(login_proto)
 	if msg_info ~= nil then
 		self._login_detail_info = Emulator.Utility_CreateTreeForEdit(msg_info)
 		self._login_scroll_screen:SetContainer(self._login_detail_info.tree)
@@ -173,7 +173,7 @@ function Emulator.GCenter:Setup()
 end
 
 function Emulator.GCenter:UpdateFrame(frame_time)
-	A_LuaSocketSchedule:RunInFrame()
+	A_LuaProtobufSchedule:RunInFrame()
 end
 
 function Emulator.GCenter:HandleIpSelectChanged(event)
@@ -220,7 +220,7 @@ function Emulator.GCenter:HandleSettingConfirmClick(event)
 		g_AUITool:ShowNotice("错误", "文件夹不存在")
 		return
 	end
-	local error = A_LuaSocketSchedule:LoadProto(self._proto_root_input.text)
+	local error = A_LuaProtobufSchedule:LoadProto(self._proto_root_input.text)
 	if error ~= nil then
 		g_AUITool:ShowNotice("错误", error)
 		return
@@ -265,7 +265,7 @@ function Emulator.GCenter:HandleSettingConfirmClick(event)
 	self:RefreshLogList()
 	self._login_detail_info = nil
 	local login_proto = self._login_proto_input.text
-	local msg_info = A_LuaSocketSchedule:GetMessageInfo(login_proto)
+	local msg_info = A_LuaProtobufSchedule:GetMessageInfo(login_proto)
 	if msg_info ~= nil then
 		self._login_detail_info = Emulator.Utility_CreateTreeForEdit(msg_info)
 		self._login_scroll_screen:SetContainer(self._login_detail_info.tree)
@@ -294,9 +294,9 @@ function Emulator.GCenter:RefreshProtoList()
 	self._protobuf_scroll_screen:RemoveAllChild()
 	local list
 	if ALittle.List_MaxN(key_list) == 0 then
-		list = A_LuaSocketSchedule:FindMessageByUpperKey("")
+		list = A_LuaProtobufSchedule:FindMessageByUpperKey("")
 	else
-		list = A_LuaSocketSchedule:FindMessageByUpperKeyList(key_list)
+		list = A_LuaProtobufSchedule:FindMessageByUpperKeyList(key_list)
 	end
 	for index, info in ___ipairs(list) do
 		local item = self._proto_search_item_pool[info.name]
@@ -405,7 +405,7 @@ function Emulator.GCenter:AddLogMessage(msg)
 		ALittle.List_Remove(self._log_item_list, 1)
 	end
 	local user_data = {}
-	user_data.info = A_LuaSocketSchedule:GetMessageInfoByMessage(msg)
+	user_data.info = A_LuaProtobufSchedule:GetMessageInfoByMessage(msg)
 	user_data.msg = protobuf.clonemessage(msg)
 	user_data.upper_name = ALittle.String_Upper(user_data.info.name)
 	local item = Emulator.g_Control:CreateControl("emulator_common_item_radiobutton")

@@ -1,0 +1,204 @@
+
+[Language(JavaScript)]
+namespace JavaScript;
+
+public class JNetBuffer
+{
+    private int _msize;    // 数据包体大小
+    private int _dstart;    // 数据起始便宜，dstart之前都是旧数据不要的
+    private int _dsize;    // 数据大小
+    private javascript.DataView _memory;
+    
+    public ctor(int init_size)
+    {
+        this._msize = 0;
+        this._dstart = 0;
+        this._dsize = 0;
+        var data = new javascript.ArrayBuffer(init_size);
+        this._memory = new javascript.DataView(data);
+    }
+    
+    // 添加缓冲区
+    public fun Add(javascript.ArrayBuffer array_buffer)
+    {
+		var data_view = new javascript.DataView(array_buffer);
+		this.Resize(data_view.byteLength);
+		for (var i = 0; i < data_view.byteLength; 1)
+		{
+			this._memory.setUint8(this._dstart + this._dsize, data_view.getUint8(i));
+			++ this._dsize;
+		}
+    }
+    
+    public fun Read() : javascript.DataView, int
+    {
+        // 如果数据还不足头部大小，那么直接返回
+		if (this._dsize < 12) return null, 0;
+        
+        // 读取头部大小
+		if (this._dsize >= 4)
+			this._msize = this._memory.getUint32(this._dstart, true);   
+        
+        // 检查协议体大小
+        if (this._dsize - 12 >= this._msize)
+        {
+            var offset = this._dstart;
+            var data = new javascript.DataView(this._memory.buffer, this._dstart, this._msize + 12);
+            this._dstart += this._msize + 12;
+            this._dsize -= this._msize + 12;
+            return data, offset;
+        }
+        
+		return null, 0;
+    }
+    
+    // 把后面的数据全部整到前面
+    public fun Optimizes()
+    {
+        if (this._dstart < 100) return;
+        
+        var start = this._dstart;
+        var endv = this._dstart + this._dsize;
+        for (var i = start; i < endv; 1)
+            this._memory.setUint8(i - this._dsize, this._memory.getUint8(i));
+        
+        this._dstart = 0;
+    }
+        
+    public fun Resize(int add_size)
+	{
+        // 计算大小
+        var need_size = this._dstart + this._dsize + add_size;
+		if (need_size <= this._memory.byteLength) return;
+
+        // 创建内存        
+		var new_data:javascript.ArrayBuffer = null;
+		if (this._memory.byteLength * 2 < need_size)
+			new_data = new javascript.ArrayBuffer(need_size);
+		else
+			new_data = new javascript.ArrayBuffer(this._memory.byteLength * 2);
+        
+        // 拷贝内存
+		var new_memory = new javascript.DataView(new_data);
+		for (var i = 0; i < this._memory.byteLength; 1)
+			new_memory.setUint8(i, this._memory.getUint8(i));
+        
+        // 替换内存
+        this._memory = new_memory;
+	}
+}
+
+private enum JConnectStatus
+{
+    NET_IDLE = 0;
+    NET_CONNECTING = 1;
+    NET_CONNECTED = 2;
+}
+
+private var __JMSG_MAXID:int = 0;
+public class JMsgInterface : ALittle.IMsgCommonNative
+{
+    private javascript.WebSocket _net_system;
+    private JNetBuffer _net_buffer;
+    private int _net_status;    // 当前状态
+    private string _ip;
+    private int _port;
+    private int _id;
+    
+    public ctor()
+    {
+        ++__JMSG_MAXID;
+        this._id = __JMSG_MAXID;
+        this._net_status = JConnectStatus.NET_IDLE;
+        this._ip = "";
+        this._port = 0;
+	    this._net_buffer = new JNetBuffer(2048);
+    }
+    
+    public fun GetID() : int { return this._id; }         // 获取连接对象全局ID
+    public fun Connect(string ip, int port)
+    {
+        if (this._net_status == JConnectStatus.NET_CONNECTED)
+            this.Close();
+        
+        if (this._net_status == JConnectStatus.NET_CONNECTING)
+        {
+            ALittle.Warn("net system already connecting:"..this._ip..":"..this._port);
+            return;
+        }
+        
+        var url = "ws://"..ip..":"..port;
+		
+		this._net_status = JConnectStatus.NET_CONNECTING;
+        
+		this._net_system = new javascript.WebSocket(url);
+		this._net_system.binaryType = "arraybuffer";
+		this._net_system.onmessage = bind(this.HandleMessage, this);
+		this._net_system.onopen = bind(this.HandleOpen, this);
+		this._net_system.onclose = bind(this.HandleClose, this);
+		this._net_system.onerror = bind(this.HandleError, this);
+    }
+    public fun IsConnected() : bool
+    {
+        return this._net_status == JConnectStatus.NET_CONNECTED;
+    }
+    public fun SendFactory(ALittle.IMessageWriteFactory factory)
+    {
+		this._net_system.send(cast<JMessageWriteFactory>(factory).GetArrayBuffer(true));
+    }
+    public fun Close()
+    {
+        if (this._net_status == JConnectStatus.NET_IDLE)
+			return;
+        
+        this._net_system.close();
+        this._net_system = null;
+        this._net_status = JConnectStatus.NET_IDLE;
+    }
+    
+	private fun HandleOpen(javascript.WebSocketOnOpenEvent event)
+	{
+		if (this._net_status != JConnectStatus.NET_CONNECTING) return;
+		
+		this._net_status = JConnectStatus.NET_CONNECTED;
+        ALittle.__ALITTLEAPI_ConnectSucceed(this._id);
+	}
+    
+    private fun HandleClose(javascript.WebSocketOnCloseEvent event)
+    {
+		if (this._net_status != JConnectStatus.NET_CONNECTED) return;
+        
+		this._net_status = JConnectStatus.NET_IDLE;
+		this._net_system = null;
+        
+        ALittle.__ALITTLEAPI_Disconnect(this._id);
+    }
+    
+    private fun HandleError(javascript.WebSocketOnErrorEvent event)
+    {
+		if (this._net_status != JConnectStatus.NET_CONNECTING) return;
+        
+		this._net_status = JConnectStatus.NET_IDLE;
+		this._net_system = null;
+        
+        ALittle.__ALITTLEAPI_ConnectFailed(this._id);
+    }
+                                          
+    private fun HandleMessage(javascript.WebSocketOnMessageEvent event)
+	{
+        if (event.data == null) return;
+        
+        this._net_buffer.Add(event.data);
+		while (true)
+		{
+            var data, offset = this._net_buffer.Read();
+            if (data == null) break;
+            
+			var factory = new JMessageReadFactory(data, offset, true);
+            ALittle.__ALITTLEAPI_Message(this._id, factory.GetID(), factory.GetRpcID(), factory);
+		}
+        
+        // 优化缓冲区
+        this._net_buffer.Optimizes();
+	}   
+}

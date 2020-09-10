@@ -1,0 +1,206 @@
+
+namespace ALittle;
+
+public static String_JsonEncode(any object) : string
+{
+    [Language(Lua)]
+    return lua.json.encode(object);
+    
+    [Language(JavaScript)]
+    return javascript.JSON.stringify(object);
+}
+
+public static String_JsonDecode(string text) : any
+{
+    [Language(Lua)]
+    return lua.json.decode(text);
+    
+    [Language(JavaScript)]
+    return javascript.JSON.parse(text);
+}
+
+public static String_MD5(string text) : string
+{
+    [Language(Lua)]
+    return lua.md5.stringmd5(text);
+    
+    [Language(JavaScript)]
+    return javascript.md5(text);
+}
+
+public static String_Base64Encode(string text) : string
+{
+    [Language(Lua)]
+    return lua.base64.encode(text);
+    
+    [Language(JavaScript)]
+    return javascript.btoa(text);
+}
+
+public static String_Base64Decode(string text) : string
+{
+    [Language(Lua)]
+    return lua.base64.decode(text);
+    
+    [Language(JavaScript)]
+    return javascript.atob(text);
+}
+
+public static String_GetWordCount(string text) : int
+{
+    [Language(Lua)]
+    return lua.utf8.wordcount(text);
+    
+    [Language(JavaScript)]
+    return cast<javascript.String>(text).length;
+}
+
+public static String_GetByteCount(string text, int word_count) : int
+{
+    [Language(Lua)]
+    return lua.utf8.bytecount(text, 0, word_count);
+    
+    [Language(JavaScript)]
+    if (cast<javascript.String>(text).length < word_count)
+        return cast<javascript.String>(text).length;
+    else
+        return word_count;
+}
+
+class StringGenerateID
+{
+    private int _string_last_time;
+    private int _string_last_index;
+
+    public ctor()
+    {
+        this._string_last_index = 0;
+        this._string_last_time = 0;
+    }
+
+    public fun GenID(string pre) : string
+    {
+        var cur_time = Time_GetCurTime();
+        if (cur_time != this._string_last_time)
+        {
+            this._string_last_time = cur_time;
+            this._string_last_index = 0;
+        }
+        else
+        {
+            ++ this._string_last_index;
+        }
+        var result = "";
+        if (pre != null)
+            result = pre .. "-";
+        result = result .. this._string_last_time .. "-" .. this._string_last_index .. "-" .. Math_RandomInt(0, 10000) .. "-" .. Math_RandomInt(0, 10000);
+        return result;
+    }
+}
+
+private var A_StringGenerateID = new StringGenerateID();
+
+// 生成ID
+public static String_GenerateID(string pre) : string
+{
+    return A_StringGenerateID.GenID(pre);
+}
+
+// 参数解析
+public static String_HttpAnalysisValueMap(string param, string content) : Map<string, any>
+{
+    var value_map = new Map<string, any>();
+    var param_split_list = String_Split(param, "&");
+    for (var index, param_content in param_split_list)
+    {
+        var value_split_list = String_Split(param_content, "=");
+        if (List_MaxN(value_split_list) == 2)
+        {
+            if (String_Sub(value_split_list[2], 1, 1) == "\""
+                && String_Sub(value_split_list[2], -1, -1) == "\"")
+            {
+                value_map[value_split_list[1]] = String_Sub(value_split_list[2], 2, -2);
+            }
+            else
+            {
+                var number = Math_ToDouble(value_split_list[2]);
+                if (number == null)
+                    value_map[value_split_list[1]] = value_split_list[2];
+                else
+                    value_map[value_split_list[1]] = number;
+            }
+        }
+    }
+
+    if (String_Len(content) > 0)
+    {
+        var error, value:Map<string, any> = tcall(String_JsonDecode, content);
+        if (error == null)
+        {
+            for (var k, v in value)
+                value_map[k] = v;
+        }
+    }
+
+    return value_map;
+}
+
+// 判断是不是手机号码
+public static String_IsPhoneNumber(string number) : bool
+{
+    var l = String_Len(number);
+    for (var i = 1; i <= l; 1)
+    {
+        var value = String_Byte(number, i);
+        if (value < 48) return false;
+        if (value > 57) return false;
+    }
+
+    return true;
+}
+
+// 判断是不是单词的字符
+public static String_IsWordChar(string char) : bool
+{
+    var len = String_Len(char);
+    if (len != 1) return false;
+
+    var value = String_Byte(char, 1);
+    // 数字
+    if (value >= 48 && value <= 57) return true;
+    // 下划线
+    if (value == 95) return true;
+    // 小写字母
+    if (value >= 97 && value <= 122) return true;
+    // 大写字母
+    if (value >= 64 && value <= 90) return true;
+
+    return false;
+}
+
+// 切割utf8字符串
+public static String_SplitUTF8(string content) : List<string>
+{
+    var len = ALittle.String_Len(content);
+    var index = 1;
+    var char_list = new List<string>();
+    var char_count = 0;
+    while (index <= len)
+    {
+        [Language(Lua)]
+        {
+            var byte_count = lua.utf8.bytecount(content, index - 1, 1);
+            char_count += 1;
+            char_list[char_count] = lua.String.sub(content, index, index + byte_count - 1);
+            index += byte_count;
+        }
+        [Language(JavaScript)]
+        {
+            var code = cast<javascript.String>(content).charCodeAt(index - 1);
+            char_count += 1;
+            char_list[char_count] = cast<javascript.String>(content).substring(index - 1, index);
+            index += 1;
+        }
+    }
+    return char_list;
+}

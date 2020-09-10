@@ -1,0 +1,63 @@
+
+namespace ALittle;
+
+public class MsgReceiverTemplate<NATIVE : IMsgCommonNative, WFATCORY : IMessageWriteFactory> : IMsgCommonTemplate
+{
+    private int _client_id;
+    private string _remote_ip;
+    private int _remote_port;
+    private bool _is_connected;
+
+    public int _client_account_id;
+    public bool _client_logining;
+    public string _web_account_id;
+    public bool _web_is_logining;
+    
+    public ctor(int client_id, string remote_ip, int remote_port)
+    {
+        // 创建客户端对象
+        this._interface = new NATIVE();
+        
+        this._interface.SetID(client_id);
+        this._write_factory = new WFATCORY();
+        this._is_connected = true;
+
+        this._client_id = client_id;
+        this._remote_ip = remote_ip;
+        this._remote_port = remote_port;
+        
+        this._client_account_id = 0;
+        this._client_logining = false;
+        this._web_account_id = "";
+        this._web_is_logining = false;
+    }
+    
+    public get remote_ip() : string { return this._remote_ip; }
+    public get remote_port() : int { return this._remote_port; }
+
+    // 判断是否已经连接成功
+    public fun IsConnected() : bool
+    {
+        return this._is_connected;
+    }
+
+    protected fun HandleConnected()
+    {
+        this._is_connected = true;
+    }
+
+    protected fun HandleDisconnected()
+    {
+        this._is_connected = false;
+        this.ClearRPC("连接断开了");
+    }
+
+    public fun Close([Nullable] string reason)
+    {
+        if (!this._is_connected) return;
+        this._is_connected = false;
+        if (reason == null) reason = "主动关闭连接";
+        this.ClearRPC(reason);
+        this._interface.Close();
+    }
+}

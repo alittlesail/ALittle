@@ -1,0 +1,10 @@
+
+namespace ALittle;
+
+public class IHeapTimer
+{
+    public fun Add(int delay_ms, int loop, int interval_ms) : int { return 0; }
+    public fun Remove(int id) : bool { return false; }
+    public fun Update(int ms) {}
+    public fun Poll() : int { return 0; }
+}

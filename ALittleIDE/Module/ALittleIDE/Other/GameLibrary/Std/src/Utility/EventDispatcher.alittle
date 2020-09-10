@@ -1,0 +1,107 @@
+
+namespace ALittle;
+
+public struct Event
+{
+    EventDispatcher target;
+}
+
+using EventCallbackValue = Map<Functor<(any, Event)>, bool>;
+using EventCallbackTable = Map<any, EventCallbackValue>;
+
+public class EventDispatcher
+{
+    // 侦听对象，保存所有侦听这个控件的逻辑对象，以及它们的回调函数
+    protected Map<int, EventCallbackTable> _listeners;
+    // 是否禁用，如果_abs_disable为true，那么它调用DispatchEvent时什么都不做
+    private bool _abs_disabled;
+    
+    public ctor()
+    {
+        this._listeners = new Map<int, EventCallbackTable>();
+        this._abs_disabled = false;
+    }
+    
+    // 添加侦听对象：侦听事件类型，侦听对象，以及回调函数
+    // event_type 侦听的时间类型
+    // object 回调函数的对象
+    // callback object的回调函数
+    public fun AddEventListener<T:Event>(any object, Functor<(any, T)> callback) : bool
+    {
+        if (object == null) return false;
+        if (callback == null) return false;
+        
+        var rflt = reflect<T>;
+        
+        var callback_table = this._listeners[rflt.hash_code];
+        if (callback_table == null)
+        {
+            // 创建回调映射表
+            callback_table = CreateKeyWeakMap();
+            // 保存表
+            this._listeners[rflt.hash_code] = callback_table;
+        }
+
+        // 获取当前注册的函数
+        var callback_value = callback_table[object];
+        // 如果是空的，那就创建一个，然后再赋值
+        if (callback_value == null)
+        {
+            callback_value = new EventCallbackValue();
+            callback_table[object] = callback_value;
+        }
+        callback_value[callback] = true;
+        return true;
+    }
+
+    // 移除侦听对象：侦听事件类型，侦听对象
+    public fun RemoveEventListener<T:Event>(any object, Functor<(any, T)> callback)
+    {
+        var rflt = reflect<T>;
+        
+        var callback_table = this._listeners[rflt.hash_code];
+        if (callback_table == null) return;
+        
+        // 将要删除的侦听对象置为nil
+        if (callback == null)
+        {
+            callback_table[object] = null;
+        }
+        else
+        {
+            var callback_value = callback_table[object];
+            if (callback_value == null) return;
+            callback_value[callback] = null;
+        }
+    }
+
+    // 清理所有侦听
+    public fun ClearEventListener()
+    {
+        this._listeners = new Map<int, EventCallbackTable>();
+    }
+    
+    // 分发事件
+    public fun DispatchEvent<T:Event>(T event)
+    {
+        var rflt = reflect<T>;
+        if (event.target == null) event.target = this;
+        
+        // 根据事件类型，获得所有侦听者
+        var callback_table = this._listeners[rflt.hash_code];
+        // 检查event的type属性，如果没有则什么都不做。所以每个event必须要有一个type属性
+        if (callback_table == null) return;
+        // 遍历所有侦听者
+        for (var object, callback_value in callback_table)
+        {
+            // 依次调用它们的回调函数
+            for (var func, _ in callback_value)
+            {
+                [Language(Lua)]
+                func(object, event);
+                [Language(JavaScript)]
+                cast<javascript.Function>(func).call(object, event);
+            }
+        }
+    }
+}

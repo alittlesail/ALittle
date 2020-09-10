@@ -1,0 +1,203 @@
+
+namespace ALittle;
+
+public struct CsvInvokeInfo
+{
+    Functor<(string, CsvInvokeInfo):any> func;
+    
+    // 当这个结构体是上级的成员变量时，那么这个不为空
+    string var_name;
+    
+    // 如果是List
+    string split;
+    CsvInvokeInfo sub_info;
+    
+    // 如果是message，表示列表
+    List<CsvInvokeInfo> handle;
+}
+
+//回调注册部分//////////////////////////////////////////////////////////////////////////////////////////////////////////-
+
+private var floor = Math_Floor;
+private var tonumber = Math_ToDouble;
+private var maxn = List_MaxN;
+private var upper = String_Upper;
+
+private static Csv_ReadBool(string content, CsvInvokeInfo value) : bool
+{
+    return upper(content) == "TRUE";
+}
+
+private static Csv_ReadInt(string content, CsvInvokeInfo value) : int
+{
+    if (content == "") return 0;
+    return floor(tonumber(content));
+}
+
+private static Csv_ReadLong(string content, CsvInvokeInfo value) : long
+{
+    if (content == "") return 0;
+    return floor(tonumber(content));
+}
+
+private static Csv_ReadString(string content, CsvInvokeInfo value) : string
+{
+    return content;
+}
+
+private static Csv_ReadDouble(string content, CsvInvokeInfo value) : double
+{
+    if (content == "") return 0;
+    return tonumber(content);
+}
+
+private static Csv_ReadArray(string content, CsvInvokeInfo value) : List<any>
+{
+    var list = String_Split(content, value.split);
+    var result = new List<any>();
+    for (var index, sub in list)
+    {
+        var v = value.sub_info.func(sub, value.sub_info);
+        if (v == null) return null;
+        result[index] = v;
+    }
+    return result;
+}
+
+protected static Csv_ReadMessage(string content, CsvInvokeInfo value) : any
+{
+    var list = String_Split(content, value.split);
+    var t = new Map<string, any>();
+    for (var index, handle in value.handle)
+        t[handle.var_name] = handle.func(list[index], handle);
+    return t;
+}
+
+private var __csv_read_data_map = new Map<string, any>();
+__csv_read_data_map["bool"] = Csv_ReadBool;
+__csv_read_data_map["int"] = Csv_ReadInt;
+__csv_read_data_map["long"] = Csv_ReadLong;
+__csv_read_data_map["string"] = Csv_ReadString;
+__csv_read_data_map["double"] = Csv_ReadDouble;
+
+private var __split_list = ["*","#",";"];     // 从左到右，从里到外
+private var __split_list_last = __split_list[maxn(__split_list)];
+private var __split_list_max = maxn(__split_list);
+
+//构造部分//////////////////////////////////////////////////////////////////////////////////////////////////////////-
+private var find = String_Find;
+private var sub = String_Sub;
+
+protected static CalcCsvSubInfoSplit(string sub_type, int split_index) : int
+{
+    if (find(sub_type, "List<") == 1)
+        return CalcCsvSubInfoSplit(sub(sub_type, 6, -2), split_index + 1);
+    
+    if (find(sub_type, "Map<") == 1)
+        throw("不支持Map解析");
+    
+    var func = __csv_read_data_map[sub_type];
+    if (func != null) return split_index;
+    
+    return CalcCsvInfoSplitImpl(sub_type, split_index + 1);
+}
+
+protected static CalcCsvInfoSplitImpl(string var_type, int split_index) : int
+{
+    var rflt = FindStructByName(var_type);
+    assert(rflt != null, "FindReflectByName调用失败! 未知类型:" .. var_type);
+    
+    var max_count = split_index;
+    for (var index, var_name in rflt.name_list)
+    {
+        var count = CalcCsvSubInfoSplit(rflt.type_list[index], split_index);
+        if (max_count < count) max_count = count;
+    }
+    return max_count;
+}
+
+protected static CalcCsvInfoSplit(StructInfo rflt) : int
+{
+    var max_count = 0;
+    for (var index, var_name in rflt.name_list)
+    {
+        var count = CalcCsvSubInfoSplit(rflt.type_list[index], 0);
+        if (max_count < count) max_count = count;
+    }
+    return max_count;
+}
+
+protected static CreateCsvSubInfo(string sub_type, int split_index) : CsvInvokeInfo
+{
+    var func = __csv_read_data_map[sub_type];
+    if (func != null)
+    {
+        var sub_info = new CsvInvokeInfo();
+        sub_info.func = func;
+        return sub_info;
+    }
+    
+    if (find(sub_type, "List<") == 1)
+        return CreateCsvArrayInfo(sub_type, split_index);
+    
+    if (find(sub_type, "Map<") == 1)
+        throw("不支持Map解析");
+    
+    return CreateCsvInfoImpl(sub_type, split_index);
+}
+
+protected static CreateCsvArrayInfo(string var_type, int split_index) : CsvInvokeInfo
+{
+    assert(split_index > 0, "分隔符数量不足");
+
+    var invoke_info = new CsvInvokeInfo();
+    invoke_info.func = Csv_ReadArray;
+    invoke_info.split = __split_list[split_index];
+    invoke_info.sub_info = CreateCsvSubInfo(sub(var_type, 6, -2), split_index - 1);
+    return invoke_info;
+}
+
+protected static CreateCsvInfoImpl(string var_type, int split_index) : CsvInvokeInfo
+{
+    assert(split_index > 0, "分隔符数量不足");
+    
+    var rflt = FindStructByName(var_type);
+    assert(rflt, "FindReflectByName调用失败! 未知类型:" .. var_type);
+    
+    var invoke_info = new CsvInvokeInfo();
+    invoke_info.split = __split_list[split_index];
+    invoke_info.func = Csv_ReadMessage;
+    
+    var handle = new List<CsvInvokeInfo>();
+    invoke_info.handle = handle;
+    var handle_count = 0;
+    for (var index, var_name in rflt.name_list)
+    {
+        var var_info = CreateCsvSubInfo(rflt.type_list[index], split_index - 1);
+        var_info.var_name = var_name;
+        handle_count = handle_count + 1;
+        handle[handle_count] = var_info;
+    }
+    return invoke_info;
+}
+
+protected static CreateCsvInfo(StructInfo rflt) : CsvInvokeInfo
+{
+    var split_index = CalcCsvInfoSplit(rflt);
+    
+    var invoke_info = new CsvInvokeInfo();
+    invoke_info.split = __split_list[split_index];
+    invoke_info.func = Csv_ReadMessage;
+    
+    var handle = new List<CsvInvokeInfo>();
+    invoke_info.handle = handle;
+    var handle_count = 0;
+    for (var index, var_name in rflt.name_list)
+    {
+        var var_info = CreateCsvSubInfo(rflt.type_list[index], split_index);
+        var_info.var_name = var_name;
+        handle_count = handle_count + 1;
+        handle[handle_count] = var_info;
+    }
+    return invoke_info;
+}

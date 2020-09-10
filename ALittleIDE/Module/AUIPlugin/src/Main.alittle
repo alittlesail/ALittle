@@ -55,8 +55,15 @@ public await static __Plugin_Setup(ALittle.ControlSystem control, string module_
         lua.require("alanguage");
         lua.require("abnf");
         lua.require("alittlescript");
+        lua.require("memory");
+        lua.require("protobuf");
+        lua.require("socket");
     }
 
+    [Language(Lua)]
+    alittle.Require(script_base_path, "Protobuf/Lua/ISocket");
+    [Language(Lua)]
+    alittle.Require(script_base_path, "Protobuf/Lua/LuaProtobufSchedule");
     alittle.RequireFromPaths(script_base_path, "AUI/", paths("src/AUI"));
     alittle.RequireFromPaths(script_base_path, "AUICodeEdit/", paths("src/AUICodeEdit"));
     g_AUIIMEManager.Setup();

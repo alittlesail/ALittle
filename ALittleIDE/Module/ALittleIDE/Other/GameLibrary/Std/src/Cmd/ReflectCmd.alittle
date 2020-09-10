@@ -1,0 +1,211 @@
+
+namespace ALittle;
+
+struct CmdCallbackInfo
+{
+    Functor<(...)> callback;
+    List<string> var_list;
+    List<string> name_list;
+    string desc;
+}
+
+private var __all_callback = new Map<string, CmdCallbackInfo>();
+protected static RegCmdCallback(string method, Functor<(...)> callback, List<string> var_list, List<string> name_list, string desc)
+{
+    if (__all_callback[method] != null)
+    {
+        Error("RegCmdCallback消息回调函数注册失败，名字为"..method.."已存在");
+        return;
+    }
+    var info = new CmdCallbackInfo();
+    info.callback = callback;
+    info.var_list = var_list;
+    info.name_list = name_list;
+    if (desc == null)
+        info.desc = "";
+    else
+        info.desc = desc;
+    __all_callback[method] = info;
+}
+
+// 处理命令行
+public static ExecuteCommand(string cmd)
+{
+    if (cmd == "")
+    {
+        Warn("命令行是空");
+        return;
+    }
+
+    var method = "";
+    var param = "";
+    var index = String_Find(cmd, " ");
+    if (index == null)
+    {
+        method = cmd;
+        param = "";
+    }
+    else
+    {
+        method = String_Sub(cmd, 1, index - 1);
+        param = String_Sub(cmd, index + 1);
+    }
+    
+    if (String_Upper(method) == "HELP")
+    {
+        var method_list = new List<string>();
+        for (var method_name, info in __all_callback)
+            List_Push(method_list, method_name);
+        List_Sort(method_list);
+        var out_list = new List<string>();
+        List_Push(out_list, "");
+        List_Push(out_list, "help 打印当前模块支持的指令列表");
+        for (var _, method_name in method_list)
+        {
+            var info = __all_callback[method_name];
+            var detail = method_name.." ";
+            var param_list = new List<string>();
+            for (var i, v in info.var_list)
+                ALittle.List_Push(param_list, info.name_list[i]..":"..v);
+            detail = method_name.." "..ALittle.String_Join(param_list, ", ").." "..info.desc;
+            List_Push(out_list, detail);
+        }
+        Log(String_Join(out_list, "\n"));
+        return;
+    }
+
+    var info = __all_callback[method];
+    if (info == null)
+    {
+        Warn("未知指令:"..cmd);
+        return;
+    }
+
+    var param_list = new List<string>();
+    index = 1;
+    var in_quote = false;
+    var len = String_Len(param);
+    var i = 1;
+    while (i <= len)
+    {
+        var byte = String_Byte(param, i);
+        // 处理空格
+        if (byte == 32)
+        {
+            // 如果在引号中，那么就要添加到当前的参数字符串
+            if (in_quote)
+            {
+                ++i;
+            }
+            // 如果没有在引号中，那么就要做切割
+            else
+            {
+                // 如果当前还未收集到字符，那么就不用切割，直接一起往后走
+                if (index == i)
+                {
+                    ++i;
+                    index = i;
+                }
+                // 如果当前已经收集到字符，那么就要做切割
+                else
+                {
+                    List_Push(param_list, String_Sub(param, index, i - 1));
+                    ++i;
+                    index = i;
+                }
+            }
+        }
+        // 处理双引号
+        elseif (byte == 34)
+        {
+            // 如果当前已经在引号中，那么就要做字符切割
+            if (in_quote)
+            {
+                in_quote = false;
+                if (index == i)
+                {
+                    List_Push(param_list, "");
+                    ++i;
+                    index = i;
+                }
+                else
+                {
+                    List_Push(param_list, String_Sub(param, index, i - 1));
+                    ++i;
+                    index = i;
+                }
+            }
+            else
+            {
+                in_quote = true;
+                if (index != i)
+                {
+                    List_Push(param_list, String_Sub(param, index, i - 1));
+                    ++i;
+                    index = i;
+                }
+            }
+        }
+        else
+        {
+            ++i;
+        }
+    }
+
+    if (index != i)
+    {
+        List_Push(param_list, String_Sub(param, index, i - 1));
+        ++i;
+        index = i;
+    }
+
+    len = List_MaxN(param_list);
+    var need_len = List_MaxN(info.var_list);
+    if (len != need_len)
+    {
+        Warn("输入的参数数量"..len.."和指令要求"..need_len.."的不一致");
+        return;
+    }
+
+    var value_list = new List<any>();
+    for (var ii, _ in param_list)
+    {
+        var var_type = info.var_list[ii];
+        if (var_type == "int" || var_type == "long" || var_type == "double")
+        {
+            value_list[ii] = Math_ToDouble(param_list[ii]);
+            if (value_list[ii] == null)
+            {
+                Warn("输入的第"..ii.."个参数"..param_list[ii].."转为"..var_type.."失败");
+                return;
+            }
+        }
+        elseif (var_type == "string")
+        {
+            value_list[ii] = param_list[ii];
+        }
+        elseif (var_type == "bool")
+        {
+            if (param_list[ii] == "true")
+                value_list[ii] = true;
+            elseif (param_list[ii] == "false")
+                value_list[ii] = false;
+            else
+            {
+                Warn("输入的第"..ii.."个参数"..param_list[ii].."转为"..var_type.."失败");
+                return;
+            }
+        }
+        else
+        {
+            Warn("输入的第"..ii.."个参数"..param_list[ii].."转为"..var_type.."失败，支持基本变量类型");
+            return;
+        }
+    }
+    
+    [Language(Lua)]
+    info.callback(lua.unpack(value_list, 1, len));
+    
+    [Language(JavaScript)]
+    cast<javascript.Function>(info.callback).apply(null, value_list);
+}

@@ -1,0 +1,443 @@
+
+namespace ALittle;
+
+[Language(Lua)]
+private var open = lua.io.open;
+[Language(Lua)]
+private var rename = lua.os.rename;
+[Language(Lua)]
+private var remove = lua.os.remove;
+[Language(Lua)]
+private var attributes = lua.lfs.attributes;
+[Language(Lua)]
+private var dir = lua.lfs.dir;
+[Language(Lua)]
+private var currentdir = lua.lfs.currentdir;
+[Language(Lua)]
+private var chdir = lua.lfs.chdir;
+[Language(Lua)]
+private var rmdir = lua.lfs.rmdir;
+[Language(Lua)]
+private var mkdir = lua.lfs.mkdir;
+
+// 文件加载接口
+public class IFileLoader
+{
+    public fun Load(string file_path) : string { return null; }
+}
+
+// 最普通的文件加载器
+[Language(Lua)]
+public class LuaFileLoader : IFileLoader
+{
+    public fun Load(string file_path) : string
+    {
+        var file = open(file_path, "r");
+        if (file == null) return null;
+        var content = file.read("*a");
+        file.close();
+        return content;
+    }
+}
+
+[Language(JavaScript)]
+public class JFileLoader : IFileLoader
+{
+    public fun Load(string file_path) : string
+    {
+        var content, buffer = JavaScript.File_LoadFile(file_path);
+        return content;
+    }
+}
+
+// 文件保存接口
+public class IFileSaver
+{
+    public fun Save(string file_path, string content) : bool { return false; }
+}
+
+// 最普通的文件保存期
+[Language(Lua)]
+public class LuaFileSaver : IFileSaver
+{
+    public fun Save(string file_path, string content) : bool
+    {
+        var file = open(file_path, "w");
+        if (file == null) return false;
+        file.write(content);
+        file.close();
+        return true;
+    }
+}
+
+[Language(JavaScript)]
+public class JFileSaver : IFileSaver
+{
+    public fun Save(string file_path, string content) : bool
+    {
+        return JavaScript.File_SaveFile(file_path, content, null);
+    }
+}
+
+// 获取当前路径
+public static File_GetCurrentPath() : string
+{
+    [Language(Lua)]
+    return currentdir();
+    [Language(JavaScript)]
+    return JavaScript.File_GetCurrentPath();
+}
+
+// 设置当前路径
+public static File_SetCurrentPath(string path) : bool
+{
+    [Language(Lua)]
+    return chdir(path);
+    
+    [Language(JavaScript)]
+    return JavaScript.File_SetCurrentPath(path);
+}
+
+// 重命名文件
+public static File_RenameFile(string path, string new_path) : bool
+{
+    [Language(Lua)]
+    return rename(path, new_path);
+    
+    [Language(JavaScript)]
+    return JavaScript.File_RenameFile(path, new_path);
+}
+
+// 删除文件
+public static File_DeleteFile(string path) : bool
+{
+    [Language(Lua)]
+    return remove(path);
+    
+    [Language(JavaScript)]
+    return JavaScript.File_DeleteFile(path);
+}
+
+// 获取文件属性
+public static File_GetFileAttr(string path) : lua.fileattr
+{
+    [Language(Lua)]
+    return attributes(path);
+    
+    [Language(JavaScript)]
+    return JavaScript.File_GetFileAttr(path);
+}
+
+// 获取某个目录以及子目录下的所有文件属性
+public static File_GetFileAttrByDir(string path, [Nullable] Map<string, lua.fileattr> file_map) : Map<string, lua.fileattr>
+{
+    // 初始化参数
+    [Language(Lua)]
+    {
+        if (file_map == null)
+            file_map = new Map<string, lua.fileattr>();
+        // 遍历路径
+        for (var file in dir(path))
+        {
+            // 跳过当前目录，父级目录
+            if (file != "." && file != "..")
+            {
+                // 生成文件目录
+                var file_path = path .. "/" .. file;
+                // 获取文件属性
+                var attr = attributes(file_path);
+                // 如果是目录，那么就递归遍历
+                if (attr.mode == "directory")
+                    File_GetFileAttrByDir(file_path, file_map);
+                    // 如果是文件，那么就直接获取属性
+                else
+                    file_map[file_path] = attr;
+            }
+        }
+        // 返回结果
+        return file_map;   
+    }
+    
+    [Language(JavaScript)]
+    return JavaScript.File_GetFileAttrByDir(path, file_map);
+}
+
+// 获取某个目录以及子目录下的所有文件属性
+public static File_GetFileListByDir(string path, [Nullable] List<string> file_list) : List<string>
+{
+    // 初始化参数
+    [Language(Lua)]
+    {
+        if (file_list == null)
+            file_list = new List<string>();
+        // 遍历路径
+        for (var file in dir(path))
+        {
+            // 跳过当前目录，父级目录
+            if (file != "." && file != "..")
+            {
+                // 生成文件目录
+                var file_path = path .. "/" .. file;
+                // 获取文件属性
+                var attr = attributes(file_path);
+                // 如果是目录，那么就递归遍历
+                if (attr.mode == "directory")
+                    File_GetFileListByDir(file_path, file_list);
+                    // 如果是文件，那么就直接获取属性
+                else
+                    List_Push(file_list, file_path);
+            }
+        }
+        // 返回结果
+        return file_list;   
+    }
+    
+    [Language(JavaScript)]
+    return JavaScript.File_GetFileListByDir(path, file_list);
+}
+
+// 获取某个目录所有文件属性
+public static File_GetFileNameListByDir(string path, [Nullable] Map<string, lua.fileattr> file_map) : Map<string, lua.fileattr>
+{
+    // 初始化参数
+    [Language(Lua)]
+    {
+        if (file_map == null)
+            file_map = new Map<string, lua.fileattr>();
+        // 遍历路径
+        for (var file in dir(path))
+        {
+            // 跳过当前目录，父级目录
+            if (file != "." && file != "..")
+            {
+                // 生成文件目录
+                var file_path = path .. "/" .. file;
+                // 获取文件属性
+                file_map[file] = attributes(file_path);
+            }
+        }
+        // 返回结果
+        return file_map;   
+    }
+    
+    [Language(JavaScript)]
+    return JavaScript.File_GetFileNameListByDir(path, file_map);
+}
+
+// 删除文件夹(只对空文件夹有效)
+public static File_DeleteDir(string path) : bool
+{
+    [Language(Lua)]
+    return rmdir(path);
+    [Language(JavaScript)]
+    return JavaScript.File_DeleteDir(path);
+}
+
+// 深度删除文件夹
+public static File_DeleteDeepDir(string path, [Nullable] bool log_path)
+{
+    [Language(Lua)]
+    {
+        // 拦截判断，如果path是空串，表示当前盘的根目录，所以必须拦截
+        if (path == null || path == "")
+            return;
+        if (File_GetFileAttr(path) == null)
+            return;
+        
+        // 遍历文件夹
+        for (var file in dir(path))
+        {
+            // 跳过当前目录，父级目录
+            if (file != "." && file != "..")
+            {
+                // 生成文件目录
+                var file_path = path .. "/" .. file;
+                // 获取文件属性
+                var attr = attributes(file_path);
+                // 如果是目录，那么就递归删除文件夹
+                if (attr.mode == "directory")
+                    File_DeleteDeepDir(file_path, log_path);
+                    // 如果是文件，那么就直接删除文件
+                else
+                {
+                    File_DeleteFile(file_path);
+                    if (log_path)
+                        Log("delete file:", file_path);
+                }
+            }
+        }
+        // 删除文件夹
+        File_DeleteDir(path);
+    }
+    
+    [Language(JavaScript)]
+    JavaScript.File_DeleteDeepDir(path, log_path);
+}
+
+// 创建文件夹
+public static File_MakeDir(string path) : bool
+{
+    [Language(Lua)]
+    return mkdir(path);
+    [Language(JavaScript)]
+    return JavaScript.File_MakeDir(path);
+}
+
+// 深度创建文件夹
+public static File_MakeDeepDir(string path)
+{
+    // 根据路径分隔符分割
+    var path_list = String_SplitSepList(path, ["/", "\\"]);
+    // 遍历路径列表
+    var cur_path = "";
+    for (var index, sub_path in path_list)
+    {
+        // 计算当前要创建的路径
+        cur_path = cur_path .. sub_path;
+        // 创建路径
+        File_MakeDir(cur_path);
+        // 添加分隔符
+        cur_path = cur_path .. "/";
+    }
+}
+
+// 修正路径
+public static File_PathEndWithSplit(string file_path) : string
+{
+    var len = String_Len(file_path);
+    if (len == 0) return file_path;
+    var byte = String_Byte(file_path, len);
+    if (byte == 47 || byte == 92) return file_path;
+    if (String_Find(file_path, "\\") != null) return file_path.."\\";
+    return file_path.."/";
+}
+
+// 从路径中获取文件名(带后缀)
+public static File_GetFileNameByPath(string file_path) : string
+{
+    var list = String_SplitSepList(file_path, ["/","\\"]);
+    var l = List_MaxN(list);
+    if (l <= 0) return file_path;
+    return list[l];
+}
+
+// 从路径中获取路径
+public static File_GetFilePathByPath(string file_path) : string
+{
+    var new_file_path = File_GetFileNameByPath(file_path);
+    return String_Sub(file_path, 1, -String_Len(new_file_path) - 2);
+}
+
+// 从路径中获取扩展名
+public static File_GetFileExtByPath(string file_path) : string
+{
+    var list = String_Split(file_path, ".");
+    var l = List_MaxN(list);
+    if (l <= 0) return file_path;
+    return list[l];
+}
+
+// 替换扩展名
+public static File_ChangeFileExtByPath(string file_path, string ext) : string
+{
+    var list = String_Split(file_path, ".");
+    var l = List_MaxN(list);
+    if (l <= 0) return file_path.."."..ext;
+    list[l] = ext;
+    return String_Join(list, ".");
+}
+
+// 从路径中获取扩展名并改为大写
+public static File_GetFileExtByPathAndUpper(string file_path) : string
+{
+    return String_Upper(File_GetFileExtByPath(file_path));
+}
+
+// 从路径中获取文件名(不带后缀)
+public static File_GetJustFileNameByPath(string file_path) : string
+{
+    var new_file_path = File_GetFileNameByPath(file_path);
+    var list = String_Split(new_file_path, ".");
+    var l = List_MaxN(list);
+    if (l <= 1) return new_file_path;
+    return list[l - 1];
+}
+
+public static File_ReadJsonFromStdFile(string file_path) : any, string
+{
+    // 读取文件
+    [Language(Lua)]
+    {
+        var file = lua.io.open(file_path, "rb");
+        if (file == null) return null, file_path.." load failed";
+        var content = file.read("*a");
+        file.close();
+        var error, new_content = tcall(lua.json.decode, content);
+        if (error == null) return new_content, content;
+        return null, new_content;
+    }
+    
+    [Language(JavaScript)]
+    {
+        var content = JavaScript.File_LoadFile(file_path);
+        if (content == null) return null, file_path.." load failed";
+        var error, new_content = tcall(javascript.JSON.parse, content);
+        if (error == null) return new_content, content;
+        return null, new_content;
+    }
+}
+
+public static File_WriteJsonFromStdFile(any content, string file_path) : bool
+{
+    // 读取文件
+    [Language(Lua)]
+    {
+        var file = lua.io.open(file_path, "wb");
+        if (file == null) return false;
+        file.write(lua.json.encode(content));
+        file.close();
+        return true;
+    }
+    
+    [Language(JavaScript)]
+    {
+        return JavaScript.File_SaveFile(file_path, javascript.JSON.stringify(content), null);
+    }
+}
+
+public static File_ReadTextFromStdFile(string file_path) : string
+{
+    // 读取文件
+    [Language(Lua)]
+    {
+        var file = lua.io.open(file_path, "rb");
+        if (file == null) return null;
+        var content = file.read("*a");
+        file.close();
+        return content;
+    }
+    
+    [Language(JavaScript)]
+    {
+        var content, buffer = JavaScript.File_LoadFile(file_path);
+        return content;
+    }
+}
+
+public static File_WriteTextFromStdFile(string content, string file_path) : bool
+{
+    // 读取文件
+    [Language(Lua)]
+    {
+        var file = lua.io.open(file_path, "wb");
+        if (file == null) return false;
+        file.write(content);
+        file.close();
+        return true;
+    }
+    
+    [Language(JavaScript)]
+    {
+        return JavaScript.File_SaveFile(file_path, content, null);
+    }
+}

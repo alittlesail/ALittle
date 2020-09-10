@@ -1,0 +1,541 @@
+
+namespace ALittle;
+
+protected struct ProtocolInvokeInfo
+{
+    // 当前结构体的序列化和反序列化方法
+    Functor<(IMessageWriteFactory, ProtocolInvokeInfo, any, any):int> wfunc;
+    Functor<(IMessageReadFactory, ProtocolInvokeInfo, any, int):any, int> rfunc;
+    StructInfo rflt;    // 当前结构体的反射信息
+
+    // 当这个结构体是上级的成员变量时，那么这个不为空
+    string var_name;
+    
+    // 当前是Map时
+    ProtocolInvokeInfo key_info;
+    ProtocolInvokeInfo value_info;
+    
+    // 当前是List时
+    ProtocolInvokeInfo sub_info;
+
+    // 当前是Message，各个成员变量的结构体
+    List<ProtocolInvokeInfo> handle;
+}
+
+// 表示any的协议类型
+public struct ProtocolAnyStruct
+{
+    int hash_code;  // struct的哈希值
+    any value;      // 结构体值
+}
+
+var __all_name_invoke = new Map<string, ProtocolInvokeInfo>();
+var __all_id_invoke = new Map<int, ProtocolInvokeInfo>();
+
+//序列化部分////////////////////////////////////////////////////////////////////////////////////////////////////////////-
+
+private static PS_WriteBool(IMessageWriteFactory factory, ProtocolInvokeInfo var_info, any parent, bool var_value) : int
+{
+    if (var_value == null)
+        return factory.WriteBool(false);
+    return factory.WriteBool(var_value);
+}
+
+private static PS_WriteInt(IMessageWriteFactory factory, ProtocolInvokeInfo var_info, any parent, int var_value) : int
+{
+    if (var_value == null)
+        return factory.WriteInt(0);
+    return factory.WriteInt(var_value);
+}
+
+private static PS_WriteString(IMessageWriteFactory factory, ProtocolInvokeInfo var_info, any parent, string var_value) : int
+{
+    if (var_value == null)
+        return factory.WriteString("");
+    return factory.WriteString(var_value);
+}
+
+private static PS_WriteDouble(IMessageWriteFactory factory, ProtocolInvokeInfo var_info, any  parent, double var_value) : int
+{
+    if (var_value == null)
+        return factory.WriteDouble(0);
+    return factory.WriteDouble(var_value);
+}
+
+private static PS_WriteLong(IMessageWriteFactory factory, ProtocolInvokeInfo var_info, any parent, long var_value) : int
+{
+    if (var_value == null)
+        return factory.WriteLong(0);
+    return factory.WriteLong(var_value);
+}
+
+private static PS_WriteArray(IMessageWriteFactory factory, ProtocolInvokeInfo var_info, any parent, List<any> var_value) : int
+{
+    if (var_value == null)
+        return factory.WriteInt(0);
+    var offset = factory.GetOffset();
+    var l = factory.WriteInt(0);
+    var sub_info = var_info.sub_info;
+    var sub_func = sub_info.wfunc;
+    var count = 0;
+    for (var index, value in var_value)
+    {
+        l = l + sub_func(factory, sub_info, var_value, value);
+        count = count + 1;
+    }
+    factory.SetInt(offset, count);
+    return l;
+}
+
+private static PS_WriteMap(IMessageWriteFactory factory, ProtocolInvokeInfo var_info, any parent, Map<any, any> var_value) : int
+{
+    if (var_value == null)
+        return factory.WriteInt(0);
+    
+    var offset = factory.GetOffset();
+    var l = factory.WriteInt(0);
+    var key_info = var_info.key_info;
+    var key_func = key_info.wfunc;
+    var value_info = var_info.value_info;
+    var value_func = value_info.wfunc;
+    var count = 0;
+    [Language(Lua)]
+    for (var key, value in var_value)
+    {
+        l = l + key_func(factory, key_info, var_value, key);
+        l = l + value_func(factory, value_info, var_value, value);
+        count = count + 1;
+    }
+    [Language(JavaScript)]
+    if (key_func == PS_WriteString)
+    {
+        for (var key, value in cast<Map<string, any>>(var_value))
+        {
+            l = l + key_func(factory, key_info, var_value, key);
+            l = l + value_func(factory, value_info, var_value, value);
+            count = count + 1;
+        }
+    }
+    else
+    {
+        for (var key, value in var_value)
+        {
+            l = l + key_func(factory, key_info, var_value, key);
+            l = l + value_func(factory, value_info, var_value, value);
+            count = count + 1;
+        }
+    }
+    factory.SetInt(offset, count);
+    return l;
+}
+
+public static PS_WriteMessage(IMessageWriteFactory factory, ProtocolInvokeInfo var_info, any parent, any var_value) : int
+{
+    if (var_value == null)
+    {
+        var offset = factory.GetOffset();
+        var pre_size = factory.WriteInt(0);
+        var size = 0;
+        for (var index, info in var_info.handle)
+            size = size + info.wfunc(factory, info, var_value, null);
+        factory.SetInt(offset, size);
+        return pre_size + size;
+    }
+    var offset = factory.GetOffset();
+    var pre_size = factory.WriteInt(0);
+    var size = 0;
+    for (var index, info in var_info.handle)
+        size = size + info.wfunc(factory, info, var_value, cast<Map<string, any>>(var_value)[info.var_name]);
+    factory.SetInt(offset, size);
+    return pre_size + size;
+}
+
+protected static PS_WriteAny(IMessageWriteFactory factory, ProtocolInvokeInfo var_info, any parent, any var_value) : int
+{
+    var invoke_info = CreateProtocolInvokeInfo(cast<ProtocolAnyStruct>(parent).hash_code);
+    return PS_WriteMessage(factory, invoke_info, parent, var_value);
+}
+
+protected static PS_WriteMessageForSend(IMessageWriteFactory factory, ProtocolInvokeInfo var_info, any parent, any var_value) : int
+{
+    if (var_value == null)
+    {
+        var offset = factory.GetOffset();
+        var size = 0;
+        for (var index, info in var_info.handle)
+            size = size + info.wfunc(factory, info, var_value, null);
+        return size;
+    }
+    var offset = factory.GetOffset();
+    var size = 0;
+    for (var index, info in var_info.handle)
+        size = size + info.wfunc(factory, info, var_value, cast<Map<string, any>>(var_value)[info.var_name]);
+
+    return size;
+}
+
+//反序列化部分//////////////////////////////////////////////////////////////////////////////////////////////////////////-
+
+private static PS_ReadBool(IMessageReadFactory factory, ProtocolInvokeInfo var_info, any parent, int l) : bool, int
+{
+    if (l == 0)
+        return false, 0;
+    if (l < 1)
+        return false, -1;
+    return factory.ReadBool(), 1;
+}
+
+private static PS_ReadInt(IMessageReadFactory factory, ProtocolInvokeInfo var_info, any parent, int l) : int, int
+{
+    if (l == 0)
+        return 0, 0;
+    if (l < 4)
+        return 0, -1;
+    return factory.ReadInt(), 4;
+}
+
+private static PS_ReadString(IMessageReadFactory factory, ProtocolInvokeInfo var_info, any parent, int l) : string, int
+{
+    if (l == 0)
+        return "", 0;
+    return factory.ReadString(), factory.GetReadSize();
+}
+
+private static PS_ReadDouble(IMessageReadFactory factory, ProtocolInvokeInfo var_info, any parent, int l) : double, int
+{
+    if (l == 0)
+        return 0, 0;
+    if (l < 8)
+        return 0, -1;
+    return factory.ReadDouble(), 8;
+}
+
+private static PS_ReadLong(IMessageReadFactory factory, ProtocolInvokeInfo var_info, any parent, int l) : long, int
+{
+    if (l == 0)
+        return 0, 0;
+    if (l < 8)
+        return 0, -1;
+    return factory.ReadLong(), 8;
+}
+
+private static PS_ReadArray(IMessageReadFactory factory, ProtocolInvokeInfo var_info, any parent, int l) : List<any>, int
+{
+    if (l == 0)
+        return new List<any>(), 0;
+    var save_len = l;
+    if (l < 4)
+        return null, -1;
+    var count = factory.ReadInt();
+    l = l - 4;
+    if (count < 0)
+        return null, -1;
+    var sub_info = var_info.sub_info;
+    var sub_func = sub_info.rfunc;
+    var sub_len = 0;
+    var value_list = new List<any>();
+    for (var index = 1; index <= count; 1)
+    {
+        value_list[index], sub_len = sub_func(factory, sub_info, value_list, l);
+        if (sub_len < 0)
+            return null, sub_len;
+        l = l - (sub_len);
+    }
+    return value_list, save_len - l;
+}
+
+private static PS_ReadMap(IMessageReadFactory factory, ProtocolInvokeInfo var_info, any parent, int l) : Map<any, any>, int
+{
+    if (l == 0)
+    {
+        [Language(JavaScript)]
+        if (var_info.key_info.rfunc == PS_ReadString)
+            return new Map<string, any>(), 0;
+        else
+            return new Map<any, any>(), 0;
+        [Language(Lua)]
+        return new Map<any, any>(), 0;
+    }
+
+    var save_len = l;
+    if (l < 4)
+        return null, -1;
+    var count = factory.ReadInt();
+    l = l - 4;
+    if (count < 0)
+        return null, -1;
+    var key_info = var_info.key_info;
+    var key_func = key_info.rfunc;
+    var value_info = var_info.value_info;
+    var value_func = value_info.rfunc;
+
+    [Language(Lua)]
+    {
+        var value_map = new Map<any, any>();
+        for (var index = 1; index <= count; 1)
+        {
+            var key, key_len = key_func(factory, key_info, value_map, l);
+            if (key_len < 0)
+                return null, key_len;
+            l = l - key_len;
+            var value, value_len = value_func(factory, value_info, value_map, l);
+            if (value_len < 0)
+                return null, value_len;
+            l = l - value_len;
+            value_map[key] = value;
+        }
+        return value_map, save_len - l;
+    }
+    
+    [Language(JavaScript)]
+    if (key_func == PS_ReadString)
+    {
+        var value_map = new Map<string, any>();
+        for (var index = 1; index <= count; 1)
+        {
+            var key, key_len = key_func(factory, key_info, value_map, l);
+            if (key_len < 0)
+                return null, key_len;
+            l = l - key_len;
+            var value, value_len = value_func(factory, value_info, value_map, l);
+            if (value_len < 0)
+                return null, value_len;
+            l = l - value_len;
+            value_map[key] = value;
+        }
+        return value_map, save_len - l;
+    }
+    else
+    {
+        var value_map = new Map<any, any>();
+        for (var index = 1; index <= count; 1)
+        {
+            var key, key_len = key_func(factory, key_info, value_map, l);
+            if (key_len < 0)
+                return null, key_len;
+            l = l - key_len;
+            var value, value_len = value_func(factory, value_info, value_map, l);
+            if (value_len < 0)
+                return null, value_len;
+            l = l - value_len;
+            value_map[key] = value;
+        }
+        return value_map, save_len - l;
+    }
+}
+
+public static PS_ReadMessage(IMessageReadFactory factory, ProtocolInvokeInfo var_info, any parent, int l) : any, int
+{
+    if (l == 0)
+    {
+        var value_map = new Map<string, any>();
+        var sub_len = 0;
+        for (var index, info in var_info.handle)
+            value_map[info.var_name], sub_len = info.rfunc(factory, info, value_map, 0);
+        return value_map, 0;
+    }
+    if (l < 4)
+        return null, -1;
+    var object_len = factory.ReadInt();
+    l = l - 4;
+    var save_len = 4;
+    if (object_len > l)
+        return null, -1;
+    save_len = save_len + object_len;
+    var sub_len = 0;
+    var value_map = new Map<string, any>();
+    for (var index, info in var_info.handle)
+    {
+        value_map[info.var_name], sub_len = info.rfunc(factory, info, value_map, object_len);
+        if (sub_len < 0)
+            return null, sub_len;
+        object_len = object_len - sub_len;
+    }
+    return value_map, save_len;
+}
+
+protected static PS_ReadAny(IMessageReadFactory factory, ProtocolInvokeInfo var_info, any parent, int l) : any, int
+{
+    var invoke_info = CreateProtocolInvokeInfo(cast<ProtocolAnyStruct>(parent).hash_code);
+    return PS_ReadMessage(factory, invoke_info, parent, l);
+}
+
+protected static PS_ReadMessageForReceive(IMessageReadFactory factory, ProtocolInvokeInfo var_info, any parent, int l) : any, int
+{
+    if (l == 0)
+    {
+        var value_map = new Map<string, any>();
+        var sub_len = 0;
+        for (var index, info in var_info.handle)
+            value_map[info.var_name], sub_len = info.rfunc(factory, info, value_map, 0);
+        return value_map, 0;
+    }
+    var sub_len = 0;
+    var value_map = new Map<string, any>();
+    for (var index, info in var_info.handle)
+    {
+        value_map[info.var_name], sub_len = info.rfunc(factory, info, value_map, l);
+        if (sub_len < 0)
+            return null, sub_len;
+        l = l - sub_len;
+    }
+    return value_map, l;
+}
+
+//回调注册部分//////////////////////////////////////////////////////////////////////////////////////////////////////////-
+
+private var __ps_write_data_map = new Map<string, any>();
+__ps_write_data_map["bool"] = PS_WriteBool;
+__ps_write_data_map["int"] = PS_WriteInt;
+__ps_write_data_map["long"] = PS_WriteLong;
+__ps_write_data_map["string"] = PS_WriteString;
+__ps_write_data_map["double"] = PS_WriteDouble;
+__ps_write_data_map["any"] = PS_WriteAny;
+
+private var __ps_read_data_map = new Map<string, any>();
+__ps_read_data_map["bool"] = PS_ReadBool;
+__ps_read_data_map["int"] = PS_ReadInt;
+__ps_read_data_map["long"] = PS_ReadLong;
+__ps_read_data_map["string"] = PS_ReadString;
+__ps_read_data_map["double"] = PS_ReadDouble;
+__ps_read_data_map["any"] = PS_ReadAny;
+
+//构造部分//////////////////////////////////////////////////////////////////////////////////////////////////////////-
+private var find = String_Find;
+private var sub = String_Sub;
+private var len = String_Len;
+private var byte = String_Byte;
+protected static CreateSubInfo(string sub_type) : ProtocolInvokeInfo
+{
+    var wfunc = __ps_write_data_map[sub_type];
+    if (wfunc != null)
+    {
+        var sub_info = new ProtocolInvokeInfo();
+        sub_info.wfunc = wfunc;
+        sub_info.rfunc = __ps_read_data_map[sub_type];
+        return sub_info;
+    }
+
+    if (find(sub_type, "List<") == 1)
+        return CreateArrayInfo(sub_type);
+    if (find(sub_type, "Map<") == 1)
+        return CreateMapInfo(sub_type);
+    return CreateMessageInfo(sub_type);
+}
+
+protected static CreateArrayInfo(string var_type) : ProtocolInvokeInfo
+{
+    var invoke_info = new ProtocolInvokeInfo();
+    invoke_info.wfunc = PS_WriteArray;
+    invoke_info.rfunc = PS_ReadArray;
+    invoke_info.sub_info = CreateSubInfo(sub(var_type, 6, -2));
+    return invoke_info;
+}
+
+protected static CreateMapInfo(string var_type) : ProtocolInvokeInfo
+{
+    var invoke_info = new ProtocolInvokeInfo();
+    var sub_type = sub(var_type, 5, -2);
+    var comma_index = 0;
+    var sub_type_len = len(sub_type);
+    var ltgt = 0;
+    for (var i = 1; i <= sub_type_len; 1)
+    {
+        var code = byte(sub_type, i);
+        if (code == 60)
+            ltgt = ltgt + 1;
+        elseif (code == 62)
+            ltgt = ltgt - 1;
+        elseif (code == 44)
+        {
+            if (ltgt == 0)
+            {
+                comma_index = i;
+                break;
+            }
+        }
+    }
+    assert(comma_index != 0, "can'f find comma in var_type:" .. var_type);
+    invoke_info.wfunc = PS_WriteMap;
+    invoke_info.rfunc = PS_ReadMap;
+    invoke_info.key_info = CreateSubInfo(sub(sub_type, 1, comma_index - 1));
+    invoke_info.value_info = CreateSubInfo(sub(sub_type, comma_index + 1));
+    return invoke_info;
+}
+
+public static CreateMessageInfo(string var_type) : ProtocolInvokeInfo
+{
+    var invoke = __all_name_invoke[var_type];
+    if (invoke != null) return invoke;
+    
+    var rflt = FindStructByName(var_type);
+    assert(rflt != null, "FindReflect调用失败! 未知类型:" .. var_type);
+    invoke = CreateMessageInfoImpl(rflt);
+    
+    __all_id_invoke[rflt.hash_code] = invoke;
+    __all_name_invoke[rflt.name] = invoke;
+    return invoke;
+}
+
+protected static CreateMessageInfoImpl(StructInfo rflt) : ProtocolInvokeInfo
+{
+    var invoke_info = new ProtocolInvokeInfo();
+    invoke_info.wfunc = PS_WriteMessage;
+    invoke_info.rfunc = PS_ReadMessage;
+    invoke_info.rflt = rflt;
+    var handle = new List<ProtocolInvokeInfo>();
+    invoke_info.handle = handle;
+    var handle_count = 0;
+    for (var index, var_name in rflt.name_list)
+    {
+        var var_info = CreateSubInfo(rflt.type_list[index]);
+        var_info.var_name = var_name;
+        handle_count = handle_count + 1;
+        handle[handle_count] = var_info;
+    }
+    return invoke_info;
+}
+
+protected static CreateProtocolInvokeInfo(int msg_id) : ProtocolInvokeInfo
+{
+    var invoke = __all_id_invoke[msg_id];
+    if (invoke != null) return invoke;
+    
+    var rflt = FindStructById(msg_id);
+    assert(rflt != null, "FindReflect调用失败! 未知ID:" .. msg_id);
+    invoke = CreateMessageInfoImpl(rflt);
+    
+    __all_id_invoke[rflt.hash_code] = invoke;
+    __all_name_invoke[rflt.name] = invoke;
+    return invoke;
+}
+
+private static CollectStructInfo(ProtocolInvokeInfo invoke, Map<int, StructInfo> map)
+{
+    if (invoke == null) return;
+    
+    if (invoke.rflt != null)
+    {
+        if (map[invoke.rflt.hash_code] != null) return;
+        map[invoke.rflt.hash_code] = invoke.rflt;
+    }    
+    
+    if (invoke.key_info != null) CollectStructInfo(invoke.key_info, map);
+    if (invoke.value_info != null) CollectStructInfo(invoke.value_info, map);
+    if (invoke.sub_info != null) CollectStructInfo(invoke.sub_info, map);
+    if (invoke.handle != null)
+    {
+        for (var index, info in invoke.handle)
+            CollectStructInfo(info, map);
+    }
+}
+
+public static CollectStructReflect(StructInfo info, Map<int, StructInfo> map) : string
+{
+    if (info == null) return "参数info是null";
+    var error, invoke = tcall(CreateMessageInfoImpl, info);
+    if (error != null) return error;
+    
+    CollectStructInfo(invoke, map);
+    return null;
+}

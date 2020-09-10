@@ -1,0 +1,245 @@
+
+[Language(JavaScript)]
+namespace JavaScript;
+
+public class JMessageWriteFactory : ALittle.IMessageWriteFactory
+{
+    private int _id;
+    private int _size;
+    private int _rpc_id;
+    private javascript.DataView _memory;
+    
+    public ctor(int init_size)
+    {
+        // 初始化
+        this._size = 0;
+        this._id = 0;
+        this._rpc_id = 0;
+        
+        // 构建内存
+        if (init_size == null || init_size <= 0) init_size = 1024;
+        var data = new javascript.ArrayBuffer(init_size);
+        this._memory = new javascript.DataView(data);
+    }
+    
+    private fun ResizeMemory(int add_size)
+    {
+        // 如果内存够，那么就直接返回
+        if (this._memory.byteLength >= this._size + add_size) return;
+        
+        // 创建新数据
+		var new_data = new javascript.ArrayBuffer(this._memory.byteLength * 2);
+		var new_memory = new javascript.DataView(new_data);
+        // 复制数据
+        for (var i = 0; i < this._memory.byteLength; 1)
+            new_memory.setUint8(i, this._memory.getUint8(i));
+        // 替换数据
+		this._memory = new_memory;
+    }
+    
+    public fun SetID(int id) { this._id = id; }
+    public fun SetRpcID(int id) { this._rpc_id = id; }
+    public fun ResetOffset() { this._size = 0; }
+    public fun GetOffset() : int { return this._size; }
+    public fun SetInt(int offset, int value) { this._memory.setInt32(offset, value, true); }
+    
+    public fun WriteBool(bool value) : int
+    {
+        this.ResizeMemory(1);
+        if (value)
+            this._memory.setUint8(this._size, 1);
+        else
+            this._memory.setUint8(this._size, 0);
+        this._size += 1;
+        return 1;
+    }
+    public fun WriteInt(int value) : int
+    {
+        this.ResizeMemory(4);
+        this._memory.setInt32(this._size, value, true);
+        this._size += 4;
+        return 4;
+    }
+    public fun WriteLong(long value) : int
+    {
+        throw("not suppert long");
+    }
+    public fun WriteString(string value) : int
+    {
+        // 一个字符最多扩展到utf8是4个字节，后面的5是最后\0和len需要的内存大小
+		this.ResizeMemory(cast<javascript.String>(value).length*4 + 5);
+        
+        // 保存旧的大小
+        var old_size = this._size;
+        // 向前偏移4个字节
+        this._size += 4;
+        // 转为utf8，然后拷贝到内存
+		var new_data = javascript.StringToUTF8Array(value);
+		var new_memory = new javascript.DataView(new_data.buffer);
+		for (var i = 0; i < new_memory.byteLength; 1)
+		{
+            this._memory.setUint8(this._size, new_memory.getUint8(i));
+			++ this._size;
+		}
+        // 计算字符串长度
+        var str_len = this._size - 4 - old_size;
+        // 设置长度到内存
+        this._memory.setUint32(old_size, str_len + 1, true);
+        // 尾巴带上\0
+        this._memory.setUint8(this._size, 0);
+        this._size += 1;
+        
+        // 最后返回实际的序列化长度
+        return str_len + 4 + 1;
+    }
+    public fun WriteDouble(double value) : int
+    {
+        this.ResizeMemory(8);
+        this._memory.setFloat64(this._size, value, true);
+        this._size += 8;
+        return 8;
+    }
+    
+    // head 表示是否包含了消息头
+    public fun GetArrayBuffer(bool head) : javascript.ArrayBuffer
+    {
+        if (head)
+        {
+            var new_data = new javascript.ArrayBuffer(this._size + 12);
+            var new_view = new javascript.DataView(new_data);
+            new_view.setInt32(0, this._size, true);
+            new_view.setInt32(4, this._id, true);
+            new_view.setInt32(8, this._rpc_id, true);
+            for (var i = 0; i < this._size; 1)
+                new_view.setUint8(12 + i, this._memory.getUint8(i));
+            return new_data;
+        }
+        else
+        {
+            var new_data = new javascript.ArrayBuffer(this._size);
+            var new_view = new javascript.DataView(new_data);
+            for (var i = 0; i < this._size; 1)
+                new_view.setUint8(i, this._memory.getUint8(i));
+            return new_data;
+        }
+    }
+    
+    public fun WriteToStdFile(string file_path) : bool
+    {
+        var buffer = this.GetArrayBuffer(false);
+        return JavaScript.File_SaveFile(file_path, null, buffer);
+    }
+}
+
+public class JMessageReadFactory : ALittle.IMessageReadFactory
+{
+    private int _id;                        // 消息ID
+    private int _rpc_id;                    // 消息RpcID
+    private int _read_size;                 // _memory已读取的字节数
+    private int _total_size;                // _memory字节总数
+    private int _data_size;                 // 消息体字节总数
+    private int _last_read_size;            // 上一次读取的字节数
+    private javascript.DataView _memory;    // 消息头+消息体
+    private int _offset;                    // buffer的偏移位置
+    
+    // head 表示是否包含了消息头
+    public ctor(javascript.DataView data, int offset, bool head)
+    {
+        this._memory = data;
+        this._offset = offset;
+        this._total_size = data.byteLength;
+        this._read_size = 0;
+        if (head)
+        {
+            this._data_size = this.ReadInt();
+            this._id = this.ReadInt();
+            this._rpc_id = this.ReadInt();
+        }
+        else
+        {
+            this._data_size = data.byteLength;
+            this._id = 0;
+            this._rpc_id = 0;
+        }
+        this._last_read_size = 0;
+    }
+    
+    public fun GetID() : int { return this._id; }
+    public fun GetRpcID() : int { return this._rpc_id; }
+    public fun GetDataSize() : int { return this._data_size; }
+    
+    public fun ReadBool() : bool
+    {
+		if (this._read_size >= this._total_size || this._read_size < 0)
+		{
+			this._last_read_size = -1;
+			ALittle.Error("id: "..this._id.." already read completed:"..this._total_size..", "..this._read_size);
+			return false;
+		}
+		var value = this._memory.getUint8(this._read_size);
+        this._read_size += 1;
+        this._last_read_size = 1;
+		return value != 0;
+    }
+    public fun ReadInt() : int
+    {
+		if (this._read_size >= this._total_size || this._read_size < 0)
+		{
+			this._last_read_size = -1;
+			ALittle.Error("id: "..this._id.." already read completed:"..this._total_size..", "..this._read_size);
+			return 0;
+		}
+		var value = this._memory.getInt32(this._read_size, true);
+        this._read_size += 4;
+        this._last_read_size = 4;
+		return value;
+    }
+    public fun ReadLong() : long
+    {
+		ALittle.Error("id: "..this._id.." not support long");
+        return 0;
+    }
+    public fun ReadString() : string
+    {
+        if (this._read_size >= this._total_size || this._read_size < 0)
+        {
+            this._last_read_size = -1;
+		    ALittle.Log("id:"..this._id.." already read completed:"..this._total_size..", "..this._read_size);
+		    return "";
+	    }
+        // 获取字符串长度，这个长度包括了最后的\0
+	    var len = this._memory.getInt32(this._read_size, true); // include '\0'
+	    if (len <= 0)
+        {
+            this._last_read_size = -1;
+		    ALittle.Error("id:"..this._id.." string len: "..len.." is error:"..this._total_size..", "..this._read_size);
+		    return "";
+	    }
+        // 向前走一个int
+        this._read_size += 4;
+        // utf8转为字符串
+        var value = "";
+        if (len > 1) value = javascript.UTF8ArrayToString(new javascript.Uint8Array(this._memory.buffer, this._offset + this._read_size, len - 1));
+        // 向前走len
+        this._read_size += len;
+        this._last_read_size = len + 4;
+        // 返回长度
+	    return value;
+    }
+    
+    public fun ReadDouble() : double
+    {
+		if (this._read_size >= this._total_size || this._read_size < 0)
+		{
+			this._last_read_size = -1;
+			ALittle.Error("id: "..this._id.." already read completed:"..this._total_size..", "..this._read_size);
+			return 0;
+		}
+		var value = this._memory.getFloat64(this._read_size, true);
+        this._read_size += 8;
+        this._last_read_size = 8;
+		return value;
+    }
+    
+    public fun GetReadSize() : int { return this._last_read_size; }
+}

@@ -38,7 +38,7 @@ function Emulator.UtilityCreateTreeMessage(root, msg, msg_field_name)
 	local detail_info = {}
 	detail_info.message = msg
 	detail_info.reflection = rflct
-	detail_info.info = A_LuaSocketSchedule:GetMessageInfo(protobuf.messagedescriptor_fullname(descriptor))
+	detail_info.info = A_LuaProtobufSchedule:GetMessageInfo(protobuf.messagedescriptor_fullname(descriptor))
 	local tree = Emulator.IDETreeMessage(Emulator.g_Control, root, msg_field_name, detail_info)
 	detail_info.tree = tree
 	Emulator.UitlityCreateChildMessage(root, tree, descriptor, rflct, msg)
@@ -51,7 +51,7 @@ function Emulator.UtilityCreateTreeRepeatedMessage(root, parent, msg)
 	local detail_info = {}
 	detail_info.message = msg
 	detail_info.reflection = rflct
-	detail_info.info = A_LuaSocketSchedule:GetMessageInfo(protobuf.messagedescriptor_fullname(descriptor))
+	detail_info.info = A_LuaProtobufSchedule:GetMessageInfo(protobuf.messagedescriptor_fullname(descriptor))
 	local tree = Emulator.IDETreeRepeatedMessage(Emulator.g_Control, root, parent, detail_info)
 	detail_info.tree = tree
 	Emulator.UitlityCreateChildMessage(root, tree, descriptor, rflct, msg)
@@ -64,7 +64,7 @@ function Emulator.UtilityCreateTreeBoolMapMessage(root, parent, msg, key_field, 
 	local detail_info = {}
 	detail_info.message = protobuf.reflection_getmessage(rflct, msg, value_field)
 	detail_info.reflection = protobuf.message_getreflection(detail_info.message)
-	detail_info.info = A_LuaSocketSchedule:GetMessageInfo(protobuf.messagedescriptor_fullname(protobuf.message_getdescriptor(detail_info.message)))
+	detail_info.info = A_LuaProtobufSchedule:GetMessageInfo(protobuf.messagedescriptor_fullname(protobuf.message_getdescriptor(detail_info.message)))
 	local tree = Emulator.IDETreeBoolMapMessage(Emulator.g_Control, root, parent, rflct, msg, key_field, detail_info)
 	detail_info.tree = tree
 	Emulator.UitlityCreateChildMessage(root, tree, descriptor, rflct, msg)
@@ -77,7 +77,7 @@ function Emulator.UtilityCreateTreeEnumMapMessage(root, parent, msg, key_field, 
 	local detail_info = {}
 	detail_info.message = protobuf.reflection_getmessage(rflct, msg, value_field)
 	detail_info.reflection = protobuf.message_getreflection(detail_info.message)
-	detail_info.info = A_LuaSocketSchedule:GetMessageInfo(protobuf.messagedescriptor_fullname(protobuf.message_getdescriptor(detail_info.message)))
+	detail_info.info = A_LuaProtobufSchedule:GetMessageInfo(protobuf.messagedescriptor_fullname(protobuf.message_getdescriptor(detail_info.message)))
 	local tree = Emulator.IDETreeEnumMapMessage(Emulator.g_Control, root, parent, rflct, msg, key_field, detail_info)
 	detail_info.tree = tree
 	Emulator.UitlityCreateChildMessage(root, tree, descriptor, rflct, msg)
@@ -90,7 +90,7 @@ function Emulator.UtilityCreateTreeValueMapMessage(root, parent, msg, key_field,
 	local detail_info = {}
 	detail_info.message = protobuf.reflection_getmessage(rflct, msg, value_field)
 	detail_info.reflection = protobuf.message_getreflection(detail_info.message)
-	detail_info.info = A_LuaSocketSchedule:GetMessageInfo(protobuf.messagedescriptor_fullname(protobuf.message_getdescriptor(detail_info.message)))
+	detail_info.info = A_LuaProtobufSchedule:GetMessageInfo(protobuf.messagedescriptor_fullname(protobuf.message_getdescriptor(detail_info.message)))
 	local tree = Emulator.IDETreeValueMapMessage(Emulator.g_Control, root, parent, rflct, msg, key_field, detail_info)
 	detail_info.tree = tree
 	Emulator.UitlityCreateChildMessage(root, tree, descriptor, rflct, msg)
@@ -98,7 +98,7 @@ function Emulator.UtilityCreateTreeValueMapMessage(root, parent, msg, key_field,
 end
 
 function Emulator.Utility_CreateTreeForEdit(info)
-	local msg = A_LuaSocketSchedule:CreateMessage(info.full_name)
+	local msg = A_LuaProtobufSchedule:CreateMessage(info.full_name)
 	if msg == nil then
 		return nil
 	end

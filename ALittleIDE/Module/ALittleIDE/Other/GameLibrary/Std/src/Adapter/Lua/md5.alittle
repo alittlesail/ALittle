@@ -1,8 +1,0 @@
-
-register namespace lua;
-
-public class md5
-{
-    public static stringmd5(string value) : string {}
-    public static filemd5(string file_path) : string {}
-}

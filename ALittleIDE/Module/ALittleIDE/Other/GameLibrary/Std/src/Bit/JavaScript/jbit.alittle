@@ -1,0 +1,8 @@
+
+register namespace javascript;
+
+public class bit
+{
+    public static band(int x, int y) : int {}
+    public static bor(int x, int y) : int {}
+}

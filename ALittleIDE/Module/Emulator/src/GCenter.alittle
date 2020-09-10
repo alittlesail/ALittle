@@ -162,7 +162,7 @@ class GCenter
         var proto_root = g_GConfig.GetString("proto_root", "");
         if (proto_root != "" && ALittle.File_GetFileAttr(proto_root) != null)
         {
-            var error = A_LuaSocketSchedule.LoadProto(proto_root);
+            var error = A_LuaProtobufSchedule.LoadProto(proto_root);
             if (error == null)
             {
                 var func = cast<Map<string, Functor<()>>>(_G)["__PLUGIN_ProtoRefresh"];
@@ -181,7 +181,7 @@ class GCenter
 
         // 登陆部分
         var login_proto = g_GConfig.GetString("login_proto", "");
-        var msg_info = A_LuaSocketSchedule.GetMessageInfo(login_proto);
+        var msg_info = A_LuaProtobufSchedule.GetMessageInfo(login_proto);
         if (msg_info != null)
         {
             this._login_detail_info = Utility_CreateTreeForEdit(msg_info);
@@ -215,7 +215,7 @@ class GCenter
 
     public fun UpdateFrame(int frame_time)
     {
-        A_LuaSocketSchedule.RunInFrame();
+        A_LuaProtobufSchedule.RunInFrame();
     }
 
     private fun HandleIpSelectChanged(ALittle.UISelectChangedEvent event)
@@ -273,7 +273,7 @@ class GCenter
             return;
         }
 
-        var error = A_LuaSocketSchedule.LoadProto(this._proto_root_input.text);
+        var error = A_LuaProtobufSchedule.LoadProto(this._proto_root_input.text);
         if (error != null)
         {
             g_AUITool.ShowNotice("错误", error);
@@ -333,7 +333,7 @@ class GCenter
         this._login_detail_info = null;
 
         var login_proto = this._login_proto_input.text;
-        var msg_info = A_LuaSocketSchedule.GetMessageInfo(login_proto);
+        var msg_info = A_LuaProtobufSchedule.GetMessageInfo(login_proto);
         if (msg_info != null)
         {
             this._login_detail_info = Utility_CreateTreeForEdit(msg_info);
@@ -376,9 +376,9 @@ class GCenter
         // 搜索
         var list:List<Lua.lua_socket_schedule_message_info>;
         if (ALittle.List_MaxN(key_list) == 0)
-            list = A_LuaSocketSchedule.FindMessageByUpperKey("");
+            list = A_LuaProtobufSchedule.FindMessageByUpperKey("");
         else
-            list = A_LuaSocketSchedule.FindMessageByUpperKeyList(key_list);
+            list = A_LuaProtobufSchedule.FindMessageByUpperKeyList(key_list);
         for (var index, info in list)
         {
             var item = this._proto_search_item_pool[info.name];
@@ -513,7 +513,7 @@ class GCenter
         }
 
         var user_data = new LogItemUserData();
-        user_data.info = A_LuaSocketSchedule.GetMessageInfoByMessage(msg);
+        user_data.info = A_LuaProtobufSchedule.GetMessageInfoByMessage(msg);
         user_data.msg = lua.protobuf.clonemessage(msg);
         user_data.upper_name = ALittle.String_Upper(user_data.info.name);
 

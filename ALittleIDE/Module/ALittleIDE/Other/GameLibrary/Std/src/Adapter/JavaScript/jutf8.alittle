@@ -1,5 +1,0 @@
-
-register namespace javascript;
-
-public static UTF8ArrayToString(javascript.Uint8Array array) : string {}
-public static StringToUTF8Array(string str) : javascript.Uint8Array {}

@@ -1,0 +1,226 @@
+
+namespace ALittle;
+
+// 长连接所有的对象集合，提供客户端使用
+private var __MsgSenderMap = new Map<int, IMsgCommon>();
+
+// 用于长连接
+public class MsgSenderTemplate<MI : IMsgCommonNative, WFACTORY : IMessageWriteFactory> : IMsgCommonTemplate
+{
+    private int _heartbeat;        // 心跳间隔时间
+    private int _heartbeat_loop;   // 心跳定时器
+    private bool _check_heartbeat;
+    private ILoopSystem _loop_system;
+    private Functor<()> _callback;
+    
+    private string _ip;
+    private int _port;
+    
+    // @param heartbeat 心跳间隔时间(秒)
+    // @param check_heartbeat 检测心跳是否有接受到回复
+    // @param callback 断开连接的回调
+    public ctor(int heartbeat, bool check_heartbeat, ILoopSystem loop_system, [Nullable] Functor<()> callback)
+    {
+        // 创建客户端对象
+        this._interface = new MI();
+        this._write_factory = new WFACTORY();
+        this._loop_system = loop_system;
+        // 定时心跳
+        this._heartbeat = heartbeat;
+        this._heartbeat_loop = null;
+        
+        this._check_heartbeat = null;
+        if (this._heartbeat != null)
+            this._check_heartbeat = check_heartbeat;
+        this._last_recv_time = 0;
+        
+        // 连接回调
+        this._callback = callback;
+    }
+
+    // 连接ip对象，ip也可以是域名
+    public await fun Connect(string ip, int port) : string
+    {
+        if (ip == null) ip = "";
+        if (port == null) port = 0;
+        
+        if (co == null) return "当前不是协程";
+        
+        this._co = co;
+        // 注册到MsgSystem
+        __MsgSenderMap[this._interface.GetID()] = this;
+
+        this._ip = ip;
+        this._port = port;
+        // 开始连接
+        this._interface.Connect(ip, port);
+
+        // 协程挂起，并等待返回值
+        return yield;
+    }
+
+    // 客户端连接服务端，成功
+    protected fun HandleConnectSucceed()
+    {
+        // 初始化标记时间
+        this._last_recv_time = 0;
+        // 立刻发送一个心跳包，这样服务器可以很好的分辨出WebSocket
+        this.SendHeartbeat();
+        // 启动定时心跳
+        this.StartHeartbeat();
+
+        // 返回协程
+        var result, reason = Coroutine.Resume(this._co, null);
+        if (result != true) Error(reason);
+    }
+
+    // 断开连接
+    protected fun HandleDisconnect()
+    {
+        this.StopHeartbeat();
+        __MsgSenderMap[this._interface.GetID()] = null;
+
+        this.ClearRPC("连接断开了");
+        if (this._callback != null)
+            this._callback();
+    }
+
+    // 客户端链接服务端，失败
+    protected fun HandleConnectFailed(string error)
+    {
+        // 返回协程
+        __MsgSenderMap[this._interface.GetID()] = null;
+        if (error == null) error = this._ip..":"..this._port.."连接失败";
+        var result, reason = Coroutine.Resume(this._co, error);
+        if (result != true) Error(reason);
+    }
+
+    // 关闭连接
+    public fun Close([Nullable] string reason)
+    {
+        // 停止发送心跳包
+        this.StopHeartbeat();
+        // 关闭连接
+        this._interface.Close();
+
+        // 清理RPC
+        if (reason == null) reason = "主动关闭连接";
+        this.ClearRPC(reason);
+
+        __MsgSenderMap[this._interface.GetID()] = null;
+    }
+
+    // 发送心跳包
+    // max_ms 可以接受的最大延迟毫秒数，默认是10000毫秒
+    private fun SendHeartbeat([Nullable] int max_ms)
+    {
+        // 如果没有连接成功，那么直接返回
+        if (this._interface.IsConnected() == false)
+            return;
+
+        // 发送心跳包
+        this._write_factory.ResetOffset();
+        // 设置id
+        this._write_factory.SetID(0);
+        this._write_factory.SetRpcID(0);
+        this._interface.SendFactory(this._write_factory);
+        
+        // 启动检测
+        if (this._check_heartbeat)
+        {
+            // 获取当前时间
+            var send_time = Time_GetCurTime();
+            // 计算合适的间隔时间
+            var default_delta = this._heartbeat / 2;
+
+            var delta_time:double = max_ms;
+            if (delta_time == null) delta_time = default_delta;
+            if (delta_time > default_delta)
+            delta_time = default_delta;
+            // 定时检查
+            this._loop_system.AddTimer(Math_Floor(delta_time) * 1000
+                                 , bind(this.CheckHeartbeat, this, send_time, Math_Floor(delta_time)));
+        }
+    }
+
+    // 心跳包检测
+    private fun CheckHeartbeat(int send_time, int delta_time)
+    {
+        // 有的时候，以为APP被挂起，所有线程无条件挂起，导致LoopSystem时间跳跃。会立即执行当前的回调函数
+        // 所以确认当前时间和发送时间是否在delta_time+2范围内，如果没有则放弃当前检查
+
+        // 获取当前时间
+        var invoke_time = Time_GetCurTime();
+        // 获取间隔时间
+        var interval_time = invoke_time - send_time;
+        // 如果调用的时间和发送的时间超过delta_time，说明是线程挂起导致的，这个时候可以跳过不用检查
+        if (interval_time > delta_time + 2) return;
+
+        // 如果当前毫秒数 减去 最后一次接受数据包的毫秒数，超过指定范围
+        // 那么就表示连接已经断了
+        if (this._last_recv_time > 0 && send_time - this._last_recv_time > delta_time)
+        {
+            // 如果没有连接成功，那么直接返回
+            if (this._interface.IsConnected() == false)
+                return;
+            // 主动关闭连接
+            this.Close("心跳检测失败，主动断开连接");
+            // 调用断开连接回调
+            if (this._callback != null)
+                this._callback();
+        }
+    }
+
+    // 开始发送心跳包
+    private fun StartHeartbeat()
+    {
+        if (this._heartbeat == null)
+            return;
+        if (this._heartbeat <= 0)
+            return;
+        if (this._heartbeat_loop != null)
+            return;
+        this._heartbeat_loop = this._loop_system.AddTimer(1, bind(this.SendHeartbeat, this, null), -1, this._heartbeat * 1000);
+    }
+    // 停止发送心跳包
+    private fun StopHeartbeat()
+    {
+        if (this._heartbeat_loop == null)
+            return;
+        this._last_recv_time = 0;
+        this._loop_system.RemoveTimer(this._heartbeat_loop);
+        this._heartbeat_loop = null;
+    }
+}
+
+// 客户端连接服务端，成功
+public static __ALITTLEAPI_ConnectSucceed(int id)
+{
+    var client = __MsgSenderMap[id];
+    if (client ==  null) return;
+    client.HandleConnectSucceed();
+}
+
+// 断开连接
+public static __ALITTLEAPI_Disconnect(int id)
+{
+    var client = __MsgSenderMap[id];
+    if (client ==  null) return;
+    client.HandleDisconnect();
+}
+
+// 客户端链接服务端，失败
+public static __ALITTLEAPI_ConnectFailed(int id)
+{
+    var client = __MsgSenderMap[id];
+    if (client ==  null) return;
+    client.HandleConnectFailed(null);
+}
+
+// 收到服务端发来的数据包
+public static __ALITTLEAPI_Message(int id, int msg_id, int rpc_id, ALittle.IMessageReadFactory factory)
+{
+    var client = __MsgSenderMap[id];
+    if (client ==  null) return;
+    client.HandleMessage(msg_id, rpc_id, factory);
+}

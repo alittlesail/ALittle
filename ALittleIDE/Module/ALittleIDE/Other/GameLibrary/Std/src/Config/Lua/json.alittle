@@ -1,0 +1,14 @@
+
+register namespace lua;
+
+public class json
+{
+    public static encode(any table) : string {}
+    public static decode(string value) : any {}
+}
+
+public class ajson
+{
+    public static encode(any table) : string {}
+    public static decode(string value) : any {}
+}

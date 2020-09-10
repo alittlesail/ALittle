@@ -1,0 +1,186 @@
+
+namespace ALittle;
+
+public class LoopSystem<HT : IHeapTimer> : ILoopSystem
+{
+    private Map<LoopObject, bool> _loop_updaters;
+    private bool _in_update;
+    private Map<LoopObject, bool> _loop_cache;
+    private bool _cache_empty;
+    
+    private HT _timer;
+    private Map<int, Functor<()>> _handler_map;
+    
+    public ctor([Nullable] bool weak)
+    {
+        if (weak)
+            this._loop_updaters = CreateKeyWeakMap();
+        else
+            this._loop_updaters = new Map<LoopObject, bool>();
+        this._in_update = false;
+        this._loop_cache = new Map<LoopObject, bool>();
+        this._cache_empty = true;
+        
+        this._timer = new HT();
+        this._handler_map = new Map<int, Functor<()>>();
+    }
+
+    // 添加updater
+    public fun AddUpdater(LoopObject updater)
+    {
+        if (updater == null) return;
+        
+        if (this._in_update)
+        {
+            this._cache_empty = false;
+            this._loop_cache[updater] = true;
+        }
+        else
+        {
+            this._loop_updaters[updater] = true;
+        }
+    }
+    
+    // 移除updater
+    public fun RemoveUpdater(LoopObject updater)
+    {
+        if (updater == null) return;
+        
+        if (this._in_update)
+        {
+            this._cache_empty = false;
+            this._loop_cache[updater] = false;
+        }
+        else
+        {
+            this._loop_updaters[updater] = null;
+        }
+    }
+    
+    // 检查updater是否存在
+    public fun HasUpdater(LoopObject updater) : bool
+    {
+        return this._loop_updaters[updater] != null || this._loop_cache[updater] == true;
+    }
+
+    // 添加定时器
+    // loop 表示循环次数，如果小于或等于0，表示无限循环
+    public fun AddTimer(int delay_ms, Functor<()> callback, [Nullable] int loop, [Nullable] int interval_ms) : int
+    {
+        if (callback == null) return 0;
+        if (loop == null) loop = 1;
+        if (interval_ms == null) interval_ms = 1;
+        var id = this._timer.Add(delay_ms, loop, interval_ms);
+        this._handler_map[id] = callback;
+        return id;
+    }
+    
+    // 移除定时器
+    public fun RemoveTimer(int id) : bool
+    {
+        if (id == null) return false;
+        this._handler_map[id] = null;
+        return this._timer.Remove(id);
+    }
+    
+    // 更新
+    public fun Update(int frame_time)
+    {
+        // 标记为正在更新
+        this._in_update = true;
+        
+        // 遍历并更新，并且保存更新完成的对象
+        var remove_map:Map<LoopObject, bool> = null;
+        for (var updater, v in this._loop_updaters)
+        {
+            if (updater.IsCompleted())
+            {
+                if (remove_map == null)
+                    remove_map = new Map<LoopObject, bool>();
+                remove_map[updater] = true;
+            }
+            else
+            {
+                updater.Update(frame_time);
+            }
+        }
+        
+        // 遍历列表，移除
+        if (remove_map != null)
+        {
+            for (var updater, v in remove_map)
+            {
+                this._loop_updaters[updater] = null;
+                updater.Completed();
+            }
+        }
+        
+        // 处理更新期间所产生的缓存
+        if (!this._cache_empty)
+        {
+            for (var updater, v in this._loop_cache)
+            {
+                if (v)
+                    this._loop_updaters[updater] = true;
+                else
+                    this._loop_updaters[updater] = null;
+            }
+            this._loop_cache = new Map<LoopObject, bool>();
+            this._cache_empty = true;
+        }
+        
+        // 标记为不在更新中
+        this._in_update = false;
+
+        this._timer.Update(frame_time);
+        while (true)
+        {
+            var id = this._timer.Poll();
+            if (id == 0) break;
+
+            if (id < 0)
+            {
+                var handle = this._handler_map[-id];
+                if (handle != null)
+                {
+                    handle();
+                    this._handler_map[-id] = null;
+                }
+            }
+            else
+            {
+                var handle = this._handler_map[id];
+                if (handle != null) handle();
+            }
+        }
+    }
+}
+
+[Language(Lua)]
+public var A_LuaLoopSystem = new LoopSystem<Lua.LuaHeapTimer>();
+[Language(Lua)]
+public var A_LuaWeakLoopSystem = new LoopSystem<Lua.LuaHeapTimer>(true);
+
+[Language(JavaScript)]
+public var A_JLoopSystem = new LoopSystem<JavaScript.JHeapTimer>();
+[Language(JavaScript)]
+public var A_JWeakLoopSystem = new LoopSystem<JavaScript.JHeapTimer>(true);
+
+private static GetLoopSystem() : ILoopSystem
+{
+    [Language(Lua)]
+    return A_LuaLoopSystem;
+    [Language(JavaScript)]
+    return A_JLoopSystem;
+}
+
+private static GetWeakLoopSystem() : ILoopSystem
+{
+    [Language(Lua)]
+    return A_LuaWeakLoopSystem;
+    [Language(JavaScript)]
+    return A_JWeakLoopSystem;
+}
+
+public var A_LoopSystem = GetLoopSystem();
+public var A_WeakLoopSystem = GetWeakLoopSystem();

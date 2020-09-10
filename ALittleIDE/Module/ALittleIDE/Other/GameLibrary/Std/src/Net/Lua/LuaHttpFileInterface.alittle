@@ -1,0 +1,44 @@
+
+[Language(Lua)]
+namespace Lua;
+
+private var __LUAHTTPFILE_MAXID:int = 0;
+
+public class LuaHttpFileInterface : ALittle.IHttpFileSenderNative
+{
+    private int _id;
+    private string _url;
+    private string _file_path;
+    private bool _download;
+    
+    public ctor()
+    {
+        ++ __LUAHTTPFILE_MAXID;
+        this._id = __LUAHTTPFILE_MAXID;
+    }
+    public fun GetID() : int { return this._id; }
+    
+    // start_size暂时不支持
+    public fun SetURL(string url, string file_path, bool download, int start_size, bool array_buffer)
+    {
+        this._url = url;
+        this._file_path = file_path;
+        this._download = download;
+    }
+    public fun Start()
+    {
+        if (this._download)
+            lua.net.download(A_LuaSchedule._net, this._id, this._url, this._file_path);
+        else
+            lua.net.upload(A_LuaSchedule._net, this._id, this._url, this._file_path);
+    }
+    public fun Stop()
+    {
+        if (this._download)
+            lua.net.stopdownload(A_LuaSchedule._net, this._id);
+        else
+            lua.net.stopupload(A_LuaSchedule._net, this._id);
+    }
+    
+    public fun GetPath() : string { return this._file_path; }
+}

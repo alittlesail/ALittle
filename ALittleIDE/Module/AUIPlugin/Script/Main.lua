@@ -30,6 +30,7 @@ function AUIPlugin.__Module_GetInfo(control, module_base_path, script_base_path)
 end
 
 function AUIPlugin.__Plugin_Setup(control, module_base_path, script_base_path)
+	local ___COROUTINE = coroutine.running()
 	AUIPlugin.g_Control = control
 	AUIPlugin.g_ModuleBasePath = module_base_path
 	AUIPlugin.g_ScriptBasePath = script_base_path
@@ -38,7 +39,12 @@ function AUIPlugin.__Plugin_Setup(control, module_base_path, script_base_path)
 		require("alanguage")
 		require("abnf")
 		require("alittlescript")
+		require("memory")
+		require("protobuf")
+		require("socket")
 	end
+	Require(script_base_path, "Protobuf/Lua/ISocket")
+	Require(script_base_path, "Protobuf/Lua/LuaProtobufSchedule")
 	RequireFromPaths(script_base_path, "AUI/", {"AUIWebLoginManager.alittle", "AUIVersionManager.alittle", "AUITool.alittle"
 		, "AUIRightMenu.alittle", "AUIImageCutPlugin.alittle", "AUIIMEManager.alittle"
 		, "AUIFileSelectLayout.alittle", "AUIFileSelectDialog.alittle", "AUIEditImageDialog.alittle"})
@@ -50,7 +56,6 @@ function AUIPlugin.__Plugin_Setup(control, module_base_path, script_base_path)
 		, "ABnf/AUICodeABnf.alittle"})
 	AUIPlugin.g_AUIIMEManager:Setup()
 end
-AUIPlugin.__Plugin_Setup = Lua.CoWrap(AUIPlugin.__Plugin_Setup)
 
 function AUIPlugin.__Plugin_Shutdown()
 	AUIPlugin.g_AUIIMEManager:Shutdown()

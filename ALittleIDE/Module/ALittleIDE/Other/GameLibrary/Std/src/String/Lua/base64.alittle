@@ -1,7 +1,0 @@
-register namespace lua;
-
-public class base64
-{
-    public static encode(string value) : string { }
-    public static decode(string value) : string { }
-}

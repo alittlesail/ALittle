@@ -86,8 +86,10 @@
     <ClInclude Include="ThreadSystem\Task.h" />
     <ClInclude Include="ThreadSystem\Thread.h" />
     <ClInclude Include="ThreadSystem\ThreadSystem.h" />
+    <ClInclude Include="Tool\concurrentqueue.h" />
     <ClInclude Include="Tool\CsvFile.h" />
     <ClInclude Include="Tool\LocalFile.h" />
+    <ClInclude Include="Tool\MemoryPool.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioSystem\AudioSystem.cpp" />

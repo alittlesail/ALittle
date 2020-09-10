@@ -297,6 +297,12 @@
     <ClInclude Include="Tool\CsvFile.h">
       <Filter>Tool</Filter>
     </ClInclude>
+    <ClInclude Include="Tool\MemoryPool.h">
+      <Filter>Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="Tool\concurrentqueue.h">
+      <Filter>Tool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioSystem\bcg729\LSPQuantization.c">

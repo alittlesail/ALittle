@@ -7,8 +7,8 @@
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
 #include "ALittle/LibClient/Helper/FileHelperEx.h"
 #include "ALittle/LibClient/ScriptSystem/ScriptSystemEx.h"
+#include "ALittle/LibClient/Tool/MemoryPool.h"
 
-#include "ALittle/LibCommon/Tool/MemoryPool.h"
 #include "ALittle/LibCommon/Helper/FileHelper.h"
 #include "ALittle/LibCommon/Helper/StringHelper.h"
 #include "ALittle/LibCommon/Helper/LogHelper.h"

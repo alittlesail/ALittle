@@ -4,8 +4,8 @@
 
 #include <SDL.h>
 #include "ALittle/LibClient/Helper/NetHelper.h"
+#include "ALittle/LibClient/Tool/concurrentqueue.h"
 
-#include "ALittle/LibCommon/Tool/concurrentqueue.h"
 #include "ALittle/LibCommon/Protocol/Message.h"
 
 namespace ALittle

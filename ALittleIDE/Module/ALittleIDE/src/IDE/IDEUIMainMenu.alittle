@@ -85,7 +85,7 @@ protected class IDEUIMainMenu : ALittle.Linear
     			all_in_one[index] = ALittle.File_ReadTextFromStdFile(path);
     			if (all_in_one[index] == null)
     			{
-    				g_AUITool.ShowNotice("提示", "生成失败");
+    				g_AUITool.ShowNotice("提示", "生成失败:"..path);
     				return;
                 }
     		}
@@ -105,7 +105,7 @@ protected class IDEUIMainMenu : ALittle.Linear
     		ALittle.List_Push(file_list, base_path.."ALittle.lua");
     		ALittle.List_Push(file_list, base_path.."Core/Base.lua");
     		ALittle.List_Push(file_list, base_path.."Core/Reflect.lua");
-    		ALittle.List_Push(file_list, base_path.."Core/JavaScript.lua");
+    		ALittle.List_Push(file_list, base_path.."Core/Lua.lua");
     		ALittle.List_Push(file_list, base_path.."Core/Log.lua");
     		ALittle.List_Push(file_list, base_path.."Core/List.lua");
     		ALittle.List_Push(file_list, base_path.."Core/Map.lua");
@@ -119,11 +119,11 @@ protected class IDEUIMainMenu : ALittle.Linear
     			all_in_one[index] = ALittle.File_ReadTextFromStdFile(path);
     			if (all_in_one[index] == null)
     			{
-    				g_AUITool.ShowNotice("提示", "生成失败");
+    				g_AUITool.ShowNotice("提示", "生成失败:"..path);
     				return;
                 }
     		}
-    		var result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/Core/Core.lua");
+    		var result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/Core/LuaNative/Core.lua");
             if (!result)
             {
                 g_AUITool.ShowNotice("提示", "生成失败");
@@ -142,18 +142,52 @@ protected class IDEUIMainMenu : ALittle.Linear
     		var base_path = "Module/ALittleIDE/Other/GameLibrary/Std/JSScript/";
     		var file_list = new List<string>();
     		ALittle.List_Push(file_list, base_path.."ALittle.js");
-    		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path.."Std/Reflect/"));
-    		ALittle.List_Push(file_list, base_path.."Std/Loop/LoopObject.js");
-    		ALittle.List_Push(file_list, base_path.."Std/Loop/ILoopSystem.js");
-    		ALittle.List_Push(file_list, base_path.."Std/Loop/LoopFrame.js");
-    		ALittle.List_Push(file_list, base_path.."Std/Loop/LoopFunction.js");
-    		ALittle.List_Push(file_list, base_path.."Std/Loop/LoopGroup.js");
-    		ALittle.List_Push(file_list, base_path.."Std/Loop/LoopList.js");
-    		ALittle.List_Push(file_list, base_path.."Std/Loop/LoopTimer.js");
-    		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path.."Std/Utility/"));
-    		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path.."Std/Net/"));
-    		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path.."Adapter/JavaScript/"));
-    		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path.."Std/Singleton/"));
+    		ALittle.List_Push(file_list, base_path.."Cmd/ReflectCmd.js");
+    		ALittle.List_Push(file_list, base_path.."Config/ReflectCsv.js");
+    		ALittle.List_Push(file_list, base_path.."Net/ReflectMessage.js");
+
+    		ALittle.List_Push(file_list, base_path.."Loop/LoopObject.js");
+    		ALittle.List_Push(file_list, base_path.."Loop/ILoopSystem.js");
+    		ALittle.List_Push(file_list, base_path.."Loop/LoopFrame.js");
+    		ALittle.List_Push(file_list, base_path.."Loop/LoopFunction.js");
+    		ALittle.List_Push(file_list, base_path.."Loop/LoopGroup.js");
+    		ALittle.List_Push(file_list, base_path.."Loop/LoopList.js");
+    		ALittle.List_Push(file_list, base_path.."Loop/LoopTimer.js");
+
+    		ALittle.List_Push(file_list, base_path.."Config/CsvConfig.js");
+    		ALittle.List_Push(file_list, base_path.."Config/JsonConfig.js");
+
+    		ALittle.List_Push(file_list, base_path.."Bit/Bit.js");
+    		ALittle.List_Push(file_list, base_path.."WeakRef/WeakRef.js");
+    		ALittle.List_Push(file_list, base_path.."Loop/IHeapTimer.js");
+    		ALittle.List_Push(file_list, base_path.."Schedule/ISchedule.js");
+    		ALittle.List_Push(file_list, base_path.."Utility/EventDispatcher.js");
+    		ALittle.List_Push(file_list, base_path.."Utility/SafeIDCreator.js");
+    		ALittle.List_Push(file_list, base_path.."String/String.js");
+    		ALittle.List_Push(file_list, base_path.."File/File.js");
+
+    		ALittle.List_Push(file_list, base_path.."Net/HttpFileReceiverTemplate.js");
+    		ALittle.List_Push(file_list, base_path.."Net/HttpFileSenderTemplate.js");
+    		ALittle.List_Push(file_list, base_path.."Net/HttpReceiverTemplate.js");
+    		ALittle.List_Push(file_list, base_path.."Net/HttpSenderTemplate.js");
+    		ALittle.List_Push(file_list, base_path.."Net/MsgCommonTemplate.js");
+    		ALittle.List_Push(file_list, base_path.."Net/MsgReceiverTemplate.js");
+    		ALittle.List_Push(file_list, base_path.."Net/MsgSenderTemplate.js");
+    		ALittle.List_Push(file_list, base_path.."Net/MsgSessionTemplate.js");
+
+            ALittle.List_Push(file_list, base_path.."Loop/JavaScript/JHeapTimer.js");
+            ALittle.List_Push(file_list, base_path.."File/JavaScript/JFileSystem.js");
+            ALittle.List_Push(file_list, base_path.."Net/JavaScript/JHttpFileInterface.js");
+            ALittle.List_Push(file_list, base_path.."Net/JavaScript/JHttpFileWxInterface.js");
+            ALittle.List_Push(file_list, base_path.."Net/JavaScript/JHttpInterface.js");
+            ALittle.List_Push(file_list, base_path.."Net/JavaScript/JHttpWxInterface.js");
+            ALittle.List_Push(file_list, base_path.."Net/JavaScript/JMessageFactory.js");
+            ALittle.List_Push(file_list, base_path.."Net/JavaScript/JMsgInterface.js");
+            ALittle.List_Push(file_list, base_path.."Schedule/JavaScript/JSchedule.js");
+            ALittle.List_Push(file_list, base_path.."Config/JavaScript/JCsvFile.js");
+
+            ALittle.List_Push(file_list, base_path.."Loop/LoopSystem.js");
+            ALittle.List_Push(file_list, base_path.."Schedule/Schedule.js");
     		for (var index, path in file_list)
     		{
     			all_in_one[index] = ALittle.File_ReadTextFromStdFile(path);
@@ -177,18 +211,50 @@ protected class IDEUIMainMenu : ALittle.Linear
     		var base_path = "Module/ALittleIDE/Other/GameLibrary/Std/Script/";
     		var file_list = new List<string>();
     		ALittle.List_Push(file_list, base_path.."ALittle.lua");
-    		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path.."Std/Reflect/"));
-    		ALittle.List_Push(file_list, base_path.."Std/Loop/LoopObject.lua");
-    		ALittle.List_Push(file_list, base_path.."Std/Loop/ILoopSystem.lua");
-    		ALittle.List_Push(file_list, base_path.."Std/Loop/LoopFrame.lua");
-    		ALittle.List_Push(file_list, base_path.."Std/Loop/LoopFunction.lua");
-    		ALittle.List_Push(file_list, base_path.."Std/Loop/LoopGroup.lua");
-    		ALittle.List_Push(file_list, base_path.."Std/Loop/LoopList.lua");
-    		ALittle.List_Push(file_list, base_path.."Std/Loop/LoopTimer.lua");
-    		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path.."Std/Utility/"));
-    		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path.."Std/Net/"));
-    		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path.."Adapter/JavaScript/"));
-    		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path.."Std/Singleton/"));
+
+            ALittle.List_Push(file_list, base_path.."Cmd/ReflectCmd.lua");
+            ALittle.List_Push(file_list, base_path.."Config/ReflectCsv.lua");
+            ALittle.List_Push(file_list, base_path.."Net/ReflectMessage.lua");
+
+            ALittle.List_Push(file_list, base_path.."Loop/LoopObject.lua");
+            ALittle.List_Push(file_list, base_path.."Loop/ILoopSystem.lua");
+            ALittle.List_Push(file_list, base_path.."Loop/LoopFrame.lua");
+            ALittle.List_Push(file_list, base_path.."Loop/LoopFunction.lua");
+            ALittle.List_Push(file_list, base_path.."Loop/LoopGroup.lua");
+            ALittle.List_Push(file_list, base_path.."Loop/LoopList.lua");
+            ALittle.List_Push(file_list, base_path.."Loop/LoopTimer.lua");
+
+            ALittle.List_Push(file_list, base_path.."Config/CsvConfig.lua");
+            ALittle.List_Push(file_list, base_path.."Config/JsonConfig.lua");
+
+            ALittle.List_Push(file_list, base_path.."Bit/Bit.lua");
+            ALittle.List_Push(file_list, base_path.."WeakRef/WeakRef.lua");
+            ALittle.List_Push(file_list, base_path.."Loop/IHeapTimer.lua");
+            ALittle.List_Push(file_list, base_path.."Schedule/ISchedule.lua");
+            ALittle.List_Push(file_list, base_path.."Utility/EventDispatcher.lua");
+            ALittle.List_Push(file_list, base_path.."Utility/SafeIDCreator.lua");
+            ALittle.List_Push(file_list, base_path.."String/String.lua");
+            ALittle.List_Push(file_list, base_path.."File/File.lua");
+
+            ALittle.List_Push(file_list, base_path.."Net/HttpFileReceiverTemplate.lua");
+            ALittle.List_Push(file_list, base_path.."Net/HttpFileSenderTemplate.lua");
+            ALittle.List_Push(file_list, base_path.."Net/HttpReceiverTemplate.lua");
+            ALittle.List_Push(file_list, base_path.."Net/HttpSenderTemplate.lua");
+            ALittle.List_Push(file_list, base_path.."Net/MsgCommonTemplate.lua");
+            ALittle.List_Push(file_list, base_path.."Net/MsgReceiverTemplate.lua");
+            ALittle.List_Push(file_list, base_path.."Net/MsgSenderTemplate.lua");
+            ALittle.List_Push(file_list, base_path.."Net/MsgSessionTemplate.lua");
+        
+            ALittle.List_Push(file_list, base_path.."Loop/Lua/LuaHeapTimer.lua");
+            ALittle.List_Push(file_list, base_path.."Config/Lua/LuaCsvFile.lua");
+            ALittle.List_Push(file_list, base_path.."Net/Lua/LuaHttpFileInterface.lua");
+            ALittle.List_Push(file_list, base_path.."Net/Lua/LuaHttpInterface.lua");
+            ALittle.List_Push(file_list, base_path.."Net/Lua/LuaMsgInterface.lua");
+            ALittle.List_Push(file_list, base_path.."Net/Lua/LuaMessageFactory.lua");
+            ALittle.List_Push(file_list, base_path.."Schedule/Lua/LuaSchedule.lua");
+        
+            ALittle.List_Push(file_list, base_path.."Loop/LoopSystem.lua");
+            ALittle.List_Push(file_list, base_path.."Schedule/Schedule.lua");
     		for (var index, path in file_list)
     		{
     			all_in_one[index] = ALittle.File_ReadTextFromStdFile(path);
@@ -198,7 +264,7 @@ protected class IDEUIMainMenu : ALittle.Linear
     				return;
                 }
     		}
-    		var result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/Std/Std.lua");
+    		var result = ALittle.File_WriteTextFromStdFile(ALittle.String_Join(all_in_one, "\n"), "Module/ALittleIDE/Other/GameLibrary/Std/LuaNative/Std.lua");
             if (!result)
             {
                 g_AUITool.ShowNotice("提示", "生成失败");

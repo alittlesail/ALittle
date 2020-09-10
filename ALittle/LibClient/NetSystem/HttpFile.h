@@ -34,7 +34,7 @@ public:
 	 * @param true:download, false:upload
 	 * @param start_size: file offset to start
 	 */
-	void SetURL(const char* url, const char* file_name, bool download, int start_size);
+	void SetURL(const char* url, const char* file_name, bool download, int start_size, bool array_buffer);
 	
 	int GetID() const;
 

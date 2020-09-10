@@ -27,7 +27,7 @@ function ALittle.String_DecryptPassword(account_name, pwd)
 	if start_index == nil then
 		return nil
 	end
-	pwd = ALittle.String_Sub(pwd, start_index + string.len(device_id_md5_base64))
+	pwd = ALittle.String_Sub(pwd, start_index + ALittle.String_Len(device_id_md5_base64))
 	start_index = ALittle.String_Find(pwd, account_name_md5_base64)
 	if start_index == nil then
 		return nil
@@ -38,7 +38,7 @@ function ALittle.String_DecryptPassword(account_name, pwd)
 	if start_index == nil then
 		return nil
 	end
-	pwd = ALittle.String_Sub(pwd, start_index + string.len(device_id_md5_ex))
+	pwd = ALittle.String_Sub(pwd, start_index + ALittle.String_Len(device_id_md5_ex))
 	start_index = ALittle.String_Find(pwd, account_name_md5_ex)
 	if start_index == nil then
 		return nil

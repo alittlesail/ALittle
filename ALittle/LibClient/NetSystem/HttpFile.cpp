@@ -55,7 +55,7 @@ const char* HttpFile::GetPath()
 	return m_file_path.c_str();
 }
 
-void HttpFile::SetURL(const char* url, const char* file_path, bool download, int start_size)
+void HttpFile::SetURL(const char* url, const char* file_path, bool download, int start_size, bool array_buffer)
 {
 	if (m_socket)
 	{

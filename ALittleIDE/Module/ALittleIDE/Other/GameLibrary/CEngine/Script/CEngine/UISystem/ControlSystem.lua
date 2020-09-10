@@ -40,6 +40,10 @@ function ALittle.ControlSystem.__setter:log_error(value)
 	self._log_error = value
 end
 
+function ALittle.ControlSystem.__getter:info_map()
+	return self._name_map_info
+end
+
 function ALittle.ControlSystem:RegisterFont(src, dst)
 	self._font_map[src] = dst
 end
@@ -74,11 +78,6 @@ function ALittle.ControlSystem:RegisterInfoByHttp()
 	end
 	for name, value in ___pairs(json) do
 		self:RegisterInfo(name, value)
-	end
-	for name, value in ___pairs(json) do
-		local info = self:CreateInfo(self._name_map_info[name])
-		self._name_map_info[name] = info
-		self._name_map_info_cache[name] = true
 	end
 end
 

@@ -7,6 +7,8 @@ class GCenter
     private ALittle.DisplayLayout _main_layer;
     private ALittle.DisplayLayout _dialog_layer;
 
+    private LoginScene _login_scene;
+    private EditScene _edit_scene;
 
     public ctor()
     {
@@ -30,7 +32,19 @@ class GCenter
         this._dialog_layer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
         this._dialog_layer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
         g_LayerGroup.AddChild(this._dialog_layer, null);
+
+        this._login_scene = g_Control.CreateControl{LoginScene}("login_scene");
+        this._main_layer.AddChild(this._login_scene);
+        this._login_scene.visible = false;
+        this._edit_scene = g_Control.CreateControl{EditScene}("edit_scene");
+        this._main_layer.AddChild(this._edit_scene);
+        this._edit_scene.visible = false;
+
+        this._login_scene.Show();
     }
+
+    public get login_scene() : LoginScene { return this._login_scene; }
+    public get edit_scene() : EditScene { return this._edit_scene; }
 
     public fun Shutdown()
     {

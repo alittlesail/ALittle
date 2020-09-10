@@ -3,8 +3,51 @@ namespace SuperMarioBros;
 
 public class LoginScene : ALittle.DisplayLayout
 {
+	private ALittle.Text _top_score;
+	private ALittle.Text _startgame_text;
+	private ALittle.Text _editworld_text;
+	private ALittle.Image _select_cursor;
 	private ALittle.Text _score;
 	private ALittle.Text _life;
 
+    private int _option = 1;
 
+    public fun Show()
+    {
+        this.visible = true;
+        A_UISystem.keydown_callback = bind(this.HandleKeyDown, this);
+    }
+
+    private fun HandleKeyDown(int mod, int sym, int scancode)
+    {
+        if (sym == ALittle.UIEnumTypes.KEY_G)
+        {
+            this._option += 1;
+            if (this._option > 2) this._option = 1;
+
+            if (this._option == 1)
+            	this._select_cursor.y = this._startgame_text.y + this._startgame_text.height / 2 - this._select_cursor.height / 2;
+            elseif (this._option == 2)
+            	this._select_cursor.y = this._editworld_text.y + this._editworld_text.height / 2 - this._select_cursor.height / 2;
+        }
+
+        if (sym == ALittle.UIEnumTypes.KEY_H)
+        {
+            if (this._option == 2)
+            {
+                A_UISystem.keydown_callback = null;
+                this.Hide();
+                g_GCenter.edit_scene.Show();
+            }
+            elseif (this._option == 1)
+            {
+
+            }
+        }
+    }
+
+    public fun Hide()
+    {
+        this.visible = false;
+    }
 }

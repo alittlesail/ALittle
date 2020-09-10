@@ -1,0 +1,112 @@
+
+namespace SuperMarioBros;
+
+public class EditScene : ALittle.DisplayLayout
+{
+	private ALittle.DisplayView _tile_view;
+	private ALittle.Image _tile_image;
+	private ALittle.Sprite _select_tile;
+	private ALittle.TextInput _world_input;
+	private ALittle.TextInput _subworld_input;
+
+    private BattleMap _cur_data;
+    private string _path;
+
+    public fun Show()
+    {
+        this.visible = true;
+
+        this.Load(1, 1);
+        ALittle.File_MakeDeepDir(g_ModuleBasePath.."Other/Map");
+
+        ALittle.System_SetViewSize(ALittle.Math_Floor(this.width), ALittle.Math_Floor(this.height));
+    }
+
+    public fun Hide()
+    {
+        this.visible = false;
+    }
+
+    private async fun Load(int world, int subworld)
+    {
+        this.Save();
+
+        this._world_input.text = world;
+        this._subworld_input.text = subworld;
+        this._path = "Other/Map/world_"..world.."_"..subworld..".map";
+        this._cur_data = g_Control.LoadMessageFromFile{BattleMap}(this._path);
+        if (this._cur_data == null)
+        {
+            this._cur_data = new BattleMap();
+            this._cur_data.row_count = 0;
+            this._cur_data.col_count = 0;
+            this._cur_data.background = new Map<int, Map<int, int>>();
+            this._cur_data.mask = new Map<int, Map<int, int>>();
+            this._cur_data.object = new Map<int, Map<int, int>>();
+        }
+    }
+
+    private fun Save()
+    {
+        if (this._cur_data == null) return;
+
+        var rflct = reflect<BattleMap>;
+
+        // 打开文件
+        var factory:ALittle.IMessageWriteFactory;
+        [Language(Lua)]
+        factory = new lua.__CPPAPIMessageWriteFactory();
+        [Language(JavaScript)]
+        factory = new JavaScript.JMessageWriteFactory(1024);
+        if (factory == null)
+        {
+            ALittle.Error("factory create failed");
+            return;
+        }
+
+        // 获取反射信息
+        var invoke_info = ALittle.CreateMessageInfo(rflct.name);
+        if (invoke_info == null)
+        {
+            ALittle.Error("create message info failed:"..rflct.name);
+            return;
+        }
+
+            // 反序列化
+        ALittle.PS_WriteMessage(factory, invoke_info, null, this._cur_data);
+
+        // 保存到文件
+        factory.WriteToStdFile(ALittle.File_BaseFilePath()..g_ModuleBasePath..this._path);
+    }
+
+    private fun HandleTileSelected(ALittle.UILButtonDownEvent event)
+    {
+        var col = ALittle.Math_Floor(event.rel_x / this._select_tile.width) + 1;
+        var row = ALittle.Math_Floor(event.rel_y / this._select_tile.height) + 1;
+        this._select_tile.col_index = col;
+        this._select_tile.row_index = row;
+    }
+
+    private fun HandleWorldChanged(ALittle.UIChangedEvent event)
+    {
+        var world = ALittle.Math_ToInt(this._world_input.text);
+        if (world == null || world < 0) return;
+        var subworld = ALittle.Math_ToInt(this._subworld_input.text);
+        if (subworld == null || world < 0) return;
+
+        this.Load(world, subworld);
+    }
+
+    private fun HandleSaveClick(ALittle.UILButtonDownEvent event)
+    {
+        this.Save();
+    }
+
+    private fun HandleBackClick(ALittle.UILButtonDownEvent event)
+    {
+        this.Save();
+        this.Hide();
+        ALittle.System_SetViewSize(ALittle.Math_Floor(g_GCenter.login_scene.width), ALittle.Math_Floor(g_GCenter.login_scene.height));
+        g_GCenter.login_scene.Show();
+    }
+}

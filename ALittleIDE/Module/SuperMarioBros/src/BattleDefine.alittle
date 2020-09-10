@@ -1,0 +1,11 @@
+
+namespace SuperMarioBros;
+
+protected struct BattleMap
+{
+    int row_count;				// 总行数
+    int col_count;				// 总列数
+    Map<int, Map<int, int>> background;	// 背景
+    Map<int, Map<int, int>> mask;		  // 标记哪些可走哪些不可走
+    Map<int, Map<int, int>> object;		// 实体对象
+}

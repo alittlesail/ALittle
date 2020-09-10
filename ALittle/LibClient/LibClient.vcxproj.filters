@@ -294,12 +294,6 @@
     <ClInclude Include="Tool\LocalFile.h">
       <Filter>Tool</Filter>
     </ClInclude>
-    <ClInclude Include="Tool\MemoryPool.h">
-      <Filter>Tool</Filter>
-    </ClInclude>
-    <ClInclude Include="Tool\concurrentqueue.h">
-      <Filter>Tool</Filter>
-    </ClInclude>
     <ClInclude Include="Tool\CsvFile.h">
       <Filter>Tool</Filter>
     </ClInclude>

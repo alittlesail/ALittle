@@ -1,15 +1,8 @@
 
 #include "SystemHelper.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
 #include "ALittle/LibClient/ScriptSystem/ScriptSystemEx.h"
-#include "ALittle/LibClient/Tool/MemoryPool.h"
-
-#include "ALittle/LibClient/RenderSystem/RenderSystem.h"
-
-#include "ALittle/LibClient/Platform/Android/AndroidSystem.h"
-#include "ALittle/LibClient/Platform/iOS/iOSSystem.h"
+#include "ALittle/LibCommon/Tool/MemoryPool.h"
 #include "ALittle/LibClient/Platform/Windows/WindowsSystem.h"
 #include <SDL.h>
 

@@ -8,6 +8,7 @@
 #include "ALittle/LibCommon/Helper/StringHelper.h"
 #include "ALittle/LibCommon/Tool/LogSystem.h"
 #include "ALittle/LibCommon/Tool/ConsoleSystem.h"
+#include "ALittle/LibCommon/Tool/MemoryPool.h"
 
 #include "ALittle/LibClient/ThreadSystem/ThreadSystem.h"
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"
@@ -15,7 +16,6 @@
 #include "ALittle/LibClient/AudioSystem/AudioSystem.h"
 #include "ALittle/LibClient/NetSystem/NetSystem.h"
 #include "ALittle/LibClient/ScriptSystem/ScriptSystemEx.h"
-#include "ALittle/LibClient/Tool/MemoryPool.h"
 #include "ALittle/LibClient/Helper/FileHelperEx.h"
 #include "ALittle/LibClient/Helper/InputHelper.h"
 

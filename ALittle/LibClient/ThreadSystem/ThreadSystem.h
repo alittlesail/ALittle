@@ -6,7 +6,7 @@
 
 #include "Thread.h"
 #include "Task.h"
-#include "ALittle/LibClient/Tool/concurrentqueue.h"
+#include "ALittle/LibCommon/Tool/concurrentqueue.h"
 
 namespace ALittle
 {

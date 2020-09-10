@@ -79,8 +79,10 @@
     <ClInclude Include="ThirdParty\timer\timerlib.h" />
     <ClInclude Include="ThirdParty\utf8\utf8.h" />
     <ClInclude Include="ThirdParty\utf8\utf8lib.h" />
+    <ClInclude Include="Tool\concurrentqueue.h" />
     <ClInclude Include="Tool\ConsoleSystem.h" />
     <ClInclude Include="Tool\LogSystem.h" />
+    <ClInclude Include="Tool\MemoryPool.h" />
     <ClInclude Include="Tool\SafeIDCreator.h" />
     <ClInclude Include="Tool\ThreadConsumer.h" />
   </ItemGroup>

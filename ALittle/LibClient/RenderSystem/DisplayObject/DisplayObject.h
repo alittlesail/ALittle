@@ -2,7 +2,7 @@
 #ifndef _ALITTLE_DISPLAYOBJECT_H_
 #define _ALITTLE_DISPLAYOBJECT_H_
 
-#include "ALittle/LibClient/Tool/MemoryPool.h"
+#include "ALittle/LibCommon/Tool/MemoryPool.h"
 #include "ALittle/LibClient/RenderSystem/Matrix2D.h"
 
 namespace ALittle

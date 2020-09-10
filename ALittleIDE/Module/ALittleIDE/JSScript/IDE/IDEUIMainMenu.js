@@ -46,11 +46,17 @@ ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 			let base_path = "Module/ALittleIDE/Other/GameLibrary/Core/JSScript/";
 			let file_list = [];
 			ALittle.List_Push(file_list, base_path + "ALittle.js");
-			ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path + "Core/JavaScript/"));
-			ALittle.List_Push(file_list, base_path + "Core/Reflect/ReflectRegister.js");
-			ALittle.List_Push(file_list, base_path + "Core/Reflect/ReflectDefine.js");
-			ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path + "Core/Utility/"));
-			ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path + "Core/Net/"));
+			ALittle.List_Push(file_list, base_path + "Core/Base.js");
+			ALittle.List_Push(file_list, base_path + "Core/Reflect.js");
+			ALittle.List_Push(file_list, base_path + "Core/JavaScript.js");
+			ALittle.List_Push(file_list, base_path + "Core/Log.js");
+			ALittle.List_Push(file_list, base_path + "Core/List.js");
+			ALittle.List_Push(file_list, base_path + "Core/Map.js");
+			ALittle.List_Push(file_list, base_path + "Core/Math.js");
+			ALittle.List_Push(file_list, base_path + "Core/String.js");
+			ALittle.List_Push(file_list, base_path + "Core/Time.js");
+			ALittle.List_Push(file_list, base_path + "Core/Coroutine.js");
+			ALittle.List_Push(file_list, base_path + "Core/Net.js");
 			let ___OBJECT_1 = file_list;
 			for (let index = 1; index <= ___OBJECT_1.length; ++index) {
 				let path = ___OBJECT_1[index - 1];
@@ -72,11 +78,17 @@ ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 			let base_path = "Module/ALittleIDE/Other/GameLibrary/Core/Script/";
 			let file_list = [];
 			ALittle.List_Push(file_list, base_path + "ALittle.lua");
-			ALittle.List_Push(file_list, base_path + "Core/Reflect/ReflectRegister.lua");
-			ALittle.List_Push(file_list, base_path + "Core/Reflect/ReflectDefine.lua");
-			ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path + "Core/Lua/"));
-			ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path + "Core/Utility/"));
-			ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path + "Core/Net/"));
+			ALittle.List_Push(file_list, base_path + "Core/Base.lua");
+			ALittle.List_Push(file_list, base_path + "Core/Reflect.lua");
+			ALittle.List_Push(file_list, base_path + "Core/JavaScript.lua");
+			ALittle.List_Push(file_list, base_path + "Core/Log.lua");
+			ALittle.List_Push(file_list, base_path + "Core/List.lua");
+			ALittle.List_Push(file_list, base_path + "Core/Map.lua");
+			ALittle.List_Push(file_list, base_path + "Core/Math.lua");
+			ALittle.List_Push(file_list, base_path + "Core/String.lua");
+			ALittle.List_Push(file_list, base_path + "Core/Time.lua");
+			ALittle.List_Push(file_list, base_path + "Core/Coroutine.lua");
+			ALittle.List_Push(file_list, base_path + "Core/Net.lua");
 			let ___OBJECT_2 = file_list;
 			for (let index = 1; index <= ___OBJECT_2.length; ++index) {
 				let path = ___OBJECT_2[index - 1];

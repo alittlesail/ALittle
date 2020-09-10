@@ -44,7 +44,8 @@ end
 function ALittleIDE.IDEUIControlList:HandleProjectOpen(event)
 	local module_map = ALittleIDE.g_IDEProject.project.config:GetConfig("control_module", {})
 	module_map[event.name] = nil
-	local ui = ALittleIDE.IDEUIManager(event.name)
+	local ui = ALittleIDE.IDEUIManager()
+	ui:Init(event.name)
 	ALittleIDE.g_IDEProject.project.ui[event.name] = ui
 	local info = {}
 	info.ui = ui
@@ -57,7 +58,8 @@ function ALittleIDE.IDEUIControlList:HandleProjectOpen(event)
 	self._control_scroll_screen:AddChild(ALittleIDE.IDEControlTree(ALittleIDE.g_Control, info))
 	for index, module in ___pairs(module_map) do
 		info = {}
-		info.ui = ALittleIDE.IDEUIManager(module.module_name)
+		info.ui = ALittleIDE.IDEUIManager()
+		info.ui:Init(module.module_name)
 		info.module_name = module.module_name
 		info.name = ALittle.File_GetFileNameByPath(module.root_path)
 		info.path = module.root_path
@@ -70,6 +72,7 @@ function ALittleIDE.IDEUIControlList:HandleProjectOpen(event)
 		self._control_scroll_screen:AddChild(tree)
 	end
 end
+ALittleIDE.IDEUIControlList.HandleProjectOpen = Lua.CoWrap(ALittleIDE.IDEUIControlList.HandleProjectOpen)
 
 function ALittleIDE.IDEUIControlList:GetControlTree(module)
 	for index, child in ___ipairs(self._control_scroll_screen.childs) do
@@ -85,6 +88,7 @@ function ALittleIDE.IDEUIControlList.__getter:scroll_screen()
 end
 
 function ALittleIDE.IDEUIControlList:AddModule(name)
+	local ___COROUTINE = coroutine.running()
 	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(nil)
 	if ui_manager == nil then
 		return
@@ -107,7 +111,8 @@ function ALittleIDE.IDEUIControlList:AddModule(name)
 	info.module_path = ALittle.File_BaseFilePath() .. "Module/" .. name .. "/"
 	info.group = self._group
 	info.root = true
-	info.ui = ALittleIDE.IDEUIManager(name)
+	info.ui = ALittleIDE.IDEUIManager()
+	info.ui:Init(name)
 	ALittleIDE.g_IDEProject.project.ui[name] = info.ui
 	ui_manager.control:RegisterPlugin(name, info.ui.control)
 	local tree = ALittleIDE.IDEControlTree(ALittleIDE.g_Control, info)

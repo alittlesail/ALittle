@@ -1,0 +1,10 @@
+
+namespace SuperMarioBros;
+
+public class LoginScene : ALittle.DisplayLayout
+{
+	private ALittle.Text _score;
+	private ALittle.Text _life;
+
+
+}

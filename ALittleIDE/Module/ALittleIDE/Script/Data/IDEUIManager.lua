@@ -51,16 +51,20 @@ option_map = {}
 
 ALittleIDE.IDEUIManager = Lua.Class(nil, "ALittleIDE.IDEUIManager")
 
-function ALittleIDE.IDEUIManager:Ctor(module)
+function ALittleIDE.IDEUIManager:Ctor()
 	___rawset(self, "_control_map", {})
 	___rawset(self, "_cur_map_other", {})
 	___rawset(self, "_other_map_cur", {})
-	___rawset(self, "_module", module)
-	___rawset(self, "_control", ALittle.ControlSystem(self._module))
+end
+
+function ALittleIDE.IDEUIManager:Init(module)
+	local ___COROUTINE = coroutine.running()
+	self._module = module
+	self._control = ALittle.ControlSystem(self._module)
 	self._control.log_error = false
 	self._control.cache_texture = false
 	self._control.use_plugin_class = false
-	___rawset(self, "_base_path", ALittle.File_BaseFilePath() .. "Module/" .. self._module .. "/UI")
+	self._base_path = ALittle.File_BaseFilePath() .. "Module/" .. self._module .. "/UI"
 	local file_map = ALittle.File_GetFileAttrByDir(self._base_path)
 	for file_path, attr in ___pairs(file_map) do
 		local ext = ALittle.String_Upper(ALittle.File_GetFileExtByPath(file_path))
@@ -70,12 +74,6 @@ function ALittleIDE.IDEUIManager:Ctor(module)
 				local error, content_info_map = Lua.TCall(ALittle.String_JsonDecode, content)
 				if error == nil then
 					for control_name, control_info in ___pairs(content_info_map) do
-						if self._module == "GBRMaker" and ALittleIDE.IDEUIUtility_GetExtends222(control_info) then
-							local file_path1111 = self._base_path .. "/" .. control_name .. ".json"
-							local save_info = {}
-							save_info[control_name] = control_info
-							ALittle.File_SaveFile(file_path1111, ALittle.String_JsonEncode(save_info), -1)
-						end
 						local all_info = {}
 						all_info.info = control_info
 						all_info.name = control_name

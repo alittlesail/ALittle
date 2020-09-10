@@ -84,26 +84,6 @@ function ALittleIDE.IDEUIUtility_GetExtends(module, info, map)
 	return map
 end
 
-function ALittleIDE.IDEUIUtility_GetExtends222(info, map)
-	local result = false
-	if map == nil then
-		map = {}
-	end
-	for k, v in ___pairs(info) do
-		if ALittle.String_Type(v) == "table" then
-			if ALittleIDE.IDEUIUtility_GetExtends222(v, map) then
-				result = true
-			end
-		elseif k == "__extends" or k == "__include" then
-			if ALittle.String_Find(v, "ide_common_") == 1 then
-				info.__module = "AUIPlugin"
-				result = true
-			end
-		end
-	end
-	return result
-end
-
 function ALittleIDE.IDEUIUtility_HasTargetClass(info, name)
 	local target_class = info.__target_class
 	if target_class ~= nil then

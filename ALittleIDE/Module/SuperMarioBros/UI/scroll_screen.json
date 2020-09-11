@@ -1,1 +1,1 @@
-{"scroll_screen":{"__class":"ScrollScreen","height_type":4,"width_type":4,"container":{"__module":"SuperMarioBros","__extends":"scroll_linear"},"bottom_scrollbar":{"__module":"SuperMarioBros","__extends":"scroll_bar"}}}
+{"scroll_screen":{"__class":"ScrollScreen","bottom_scrollbar":{"__module":"SuperMarioBros","__extends":"scroll_bar"},"width_type":4,"container":{"__module":"SuperMarioBros","__extends":"scroll_container"},"height_type":4}}

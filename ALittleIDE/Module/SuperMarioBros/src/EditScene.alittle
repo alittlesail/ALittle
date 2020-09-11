@@ -1,16 +1,38 @@
 
 namespace SuperMarioBros;
 
+public class EditContainer : ALittle.DisplayLayout
+{
+	private ALittle.Linear _tile_linear;
+    public fun Init(ALittle.Linear tile_linear)
+    {
+        this._tile_linear = tile_linear;
+    }
+
+    // 裁剪，优化渲染速度
+    public fun ClipRect(double x, double y, double width, double height, double h_move, double v_move)
+    {
+        this._tile_linear.ClipRect(x - this._x, y - this._y, width - this._x, height - this._y, h_move, v_move);
+    }
+}
+
 public class EditScene : ALittle.DisplayLayout
 {
-	private ALittle.DisplayView _tile_view;
 	private ALittle.Image _tile_image;
 	private ALittle.Sprite _select_tile;
 	private ALittle.TextInput _world_input;
 	private ALittle.TextInput _subworld_input;
 
+    private ALittle.ScrollScreen _scroll_screen;
+	private ALittle.Linear _tile_linear;
+
     private BattleMap _cur_data;
     private string _path;
+
+    public fun TCtor()
+    {
+        cast<EditContainer>(this._scroll_screen.container).Init(this._tile_linear);
+    }
 
     public fun Show()
     {
@@ -44,11 +66,52 @@ public class EditScene : ALittle.DisplayLayout
             this._cur_data.mask = new Map<int, Map<int, int>>();
             this._cur_data.object = new Map<int, Map<int, int>>();
         }
+
+        for (var row, submap in this._cur_data.background)
+        {
+            for (var col, index in submap)
+            {
+                var show_row = ALittle.Math_Floor(index / this._select_tile.col_count) + 1;
+                var show_col = index % this._select_tile.col_count + 1;
+                this.SetTileShow(row, col, show_row, show_col);
+            }
+        }
+        this._scroll_screen.container.width = this._tile_linear.width + this._scroll_screen.view_width;
+        this._scroll_screen.RejustScrollBar();
     }
 
     private fun Save()
     {
         if (this._cur_data == null) return;
+
+        this._cur_data.row_count = 0;
+        this._cur_data.col_count = 0;
+
+        this._cur_data.background = new Map<int, Map<int, int>>();
+        for (var index, linear:ALittle.Linear in this._tile_linear.childs)
+        {
+            var col = index - 1;
+            for (var subindex, sprite:ALittle.Sprite in linear.childs)
+            {
+                if (sprite.visible)
+                {
+                    var row = subindex - 1;
+                    var submap = this._cur_data.background[row];
+                    if (submap == null)
+                    {
+                        submap = new Map<int, int>();
+                        this._cur_data.background[row] = submap;
+                    }
+
+                    submap[col] = (sprite.row_index - 1) * this._select_tile.col_count + (sprite.col_index - 1);
+
+                    if (this._cur_data.row_count < row + 1)
+                        this._cur_data.row_count = row + 1;
+                    if (this._cur_data.col_count < col + 1)
+                    	this._cur_data.col_count = col + 1;
+                }
+            }
+        }
 
         var rflct = reflect<BattleMap>;
 
@@ -72,11 +135,110 @@ public class EditScene : ALittle.DisplayLayout
             return;
         }
 
-            // 反序列化
+        // 反序列化
         ALittle.PS_WriteMessage(factory, invoke_info, null, this._cur_data);
 
         // 保存到文件
         factory.WriteToStdFile(ALittle.File_BaseFilePath()..g_ModuleBasePath..this._path);
+    }
+
+    private fun HandleTileQuadClick(ALittle.UILButtonDownEvent event)
+    {
+        var shift = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_LSHIFT] != null;
+
+        var col = ALittle.Math_Floor((event.rel_x - this._scroll_screen.container_x) / this._select_tile.width);
+        var row = ALittle.Math_Floor((event.rel_y - this._scroll_screen.container_y) / this._select_tile.height);
+
+        if (shift) this.RemoveTileShow(row, col);
+        else this.SetTileShow(row, col, this._select_tile.row_index, this._select_tile.col_index);
+    }
+
+    private fun HandleTileQuadDrag(ALittle.UIButtonDragEvent event)
+    {
+        var shift = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_LSHIFT] != null;
+
+        var col = ALittle.Math_Floor((event.rel_x - this._scroll_screen.container_x) / this._select_tile.width);
+        var row = ALittle.Math_Floor((event.rel_y - this._scroll_screen.container_y) / this._select_tile.height);
+
+        if (shift) this.RemoveTileShow(row, col);
+        else this.SetTileShow(row, col, this._select_tile.row_index, this._select_tile.col_index);
+    }
+
+    private fun SetTileShow(int row, int col, int show_row, int show_col)
+    {
+        if (this._tile_linear.child_count < col + 1)
+        {
+            for (var i = this._tile_linear.child_count; i < col + 1; 1)
+            {
+                var linear = new ALittle.Linear(g_Control);
+                linear.type = ALittle.UIEnumTypes.TYPE_V;
+                linear.width = this._select_tile.width;
+                this._tile_linear.AddChild(linear);
+            }
+
+            this._scroll_screen.container.width = this._tile_linear.width + this._scroll_screen.view_width;
+            this._scroll_screen.RejustScrollBar();
+        }
+
+        var linear = cast<ALittle.Linear>(this._tile_linear.GetChildByIndex(col + 1));
+        if (linear == null) return;
+
+        if (linear.child_count < row + 1)
+        {
+            for (var i = linear.child_count; i < row + 1; 1)
+            {
+                var sprite = new ALittle.Sprite(g_Control);
+                sprite.texture_name = this._select_tile.texture_name;
+                sprite.row_count = this._select_tile.row_count;
+                sprite.col_count = this._select_tile.col_count;
+                sprite.width = this._select_tile.width;
+                sprite.height = this._select_tile.height;
+                sprite.visible = false;
+                linear.AddChild(sprite);
+            }
+        }
+
+        var sprite = cast<ALittle.Sprite>(linear.GetChildByIndex(row + 1));
+        sprite.row_index = show_row;
+        sprite.col_index = show_col;
+        sprite.visible = true;
+
+        this._scroll_screen.RejustScrollBar();
+        this._scroll_screen.RefreshClipDisLine();
+    }
+
+    private fun RemoveTileShow(int row, int col)
+    {
+        var linear = cast<ALittle.Linear>(this._tile_linear.GetChildByIndex(col + 1));
+        if (linear == null) return;
+        var sprite = cast<ALittle.Sprite>(linear.GetChildByIndex(row + 1));
+        if (sprite == null) return;
+        sprite.visible = false;
+
+        if (col + 1 != this._tile_linear.child_count) return;
+
+        for (var i = this._tile_linear.child_count; i >= 1; -1)
+        {
+            var remove = true;
+            linear = cast<ALittle.Linear>(this._tile_linear.childs[i]);
+            for (var index, child in linear.childs)
+            {
+                if (child.visible)
+                {
+                    remove = false;
+                    break;
+                }
+            }
+
+            if (remove)
+	            this._tile_linear.RemoveChild(linear);
+            else
+            	break;
+        }
+
+        this._scroll_screen.container.width = this._tile_linear.width + this._scroll_screen.view_width;
+        this._scroll_screen.RejustScrollBar();
+        this._scroll_screen.RefreshClipDisLine();
     }
 
     private fun HandleTileSelected(ALittle.UILButtonDownEvent event)

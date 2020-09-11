@@ -224,10 +224,8 @@ function ALittle.DisplayGroup:PickUp(x, y)
 	if self._ignore or self._abs_disabled or self._abs_visible == false then
 		return nil, nil, nil
 	end
-	local rel_x = x - self._x
-	local rel_y = y - self._y
-	local xx = rel_x - self._center_x
-	local yy = rel_y - self._center_y
+	local xx = x - self._x
+	local yy = y - self._y
 	if self._angle ~= 0 then
 		local rad = 3.1415926 * -self._angle / 180.0
 		local cos = __cos(rad)
@@ -243,8 +241,8 @@ function ALittle.DisplayGroup:PickUp(x, y)
 	if self._scale_y > 0 then
 		yy = yy / (self._scale_y)
 	end
-	rel_x = xx + self._center_x
-	rel_y = yy + self._center_y
+	local rel_x = xx + self._center_x
+	local rel_y = yy + self._center_y
 	if self._scale_x <= 0 or self._scale_y <= 0 then
 		if self._modal then
 			return self, rel_x, rel_y

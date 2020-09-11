@@ -1,0 +1,1 @@
+{"scroll_bar":{"bar_button":{"__module":"Index","__extends":"scroll_bar_btn"},"up_button":{"__module":"Index","__extends":"scroll_bar_btn"},"up_size":20,"total_size":100,"down_size":20,"__class":"ScrollBar","show_size":30,"type":1,"down_button":{"__module":"Index","__extends":"scroll_bar_btn"},"height_value":20,"width_value":200}}

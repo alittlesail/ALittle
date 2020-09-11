@@ -13,7 +13,6 @@ bool DisplayObject::UpdateSelfMatrix2D()
 	m_self_matrix.SetTranslation(-m_center.x, -m_center.y);
 	m_self_matrix.Scale(m_scale.x, m_scale.y);
 	m_self_matrix.Rotate(m_angle);
-	m_self_matrix.Translation(m_center.x, m_center.y);
 	m_self_matrix.Translation(m_pos.x, m_pos.y);
 
 	return true;

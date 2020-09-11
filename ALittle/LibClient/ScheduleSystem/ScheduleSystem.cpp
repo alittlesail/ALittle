@@ -8,7 +8,7 @@
 #include "ALittle/LibCommon/Helper/StringHelper.h"
 #include "ALittle/LibCommon/Tool/LogSystem.h"
 #include "ALittle/LibCommon/Tool/ConsoleSystem.h"
-#include "ALittle/LibCommon/Tool/MemoryPool.h"
+#include "ALittle/LibClient/Tool/MemoryPool.h"
 
 #include "ALittle/LibClient/ThreadSystem/ThreadSystem.h"
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"

@@ -104,9 +104,17 @@ public class TextEdit : DisplayObject
         this._move_in = false;
         [Language(JavaScript)]
         this._focus_in = false;
+        [Language(JavaScript)]
+        cast<PIXI.TextInput>(cast<JavaScript.JTextEdit>(this._show).native).htmlInput.onchange = bind(this.HandleHtmlInputChanged, this);
 
         [Language(Lua)]
         A_LoadTextureManager.RegisterRedrawControl(this);
+    }
+
+    [Language(JavaScript)]
+    private fun HandleHtmlInputChanged()
+    {
+        this.DispatchEvent(new UIChangedEvent());
     }
     
     // 重新绘制

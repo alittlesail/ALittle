@@ -42,6 +42,10 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 		this.AddEventListener(___all_struct.get(1337289812), this, this.HandleDrag);
 		this._move_in = false;
 		this._focus_in = false;
+		this._show.native.htmlInput.onchange = this.HandleHtmlInputChanged.bind(this);
+	},
+	HandleHtmlInputChanged : function() {
+		this.DispatchEvent(___all_struct.get(958494922), {});
 	},
 	Redraw : function() {
 		this._show.NeedDraw();

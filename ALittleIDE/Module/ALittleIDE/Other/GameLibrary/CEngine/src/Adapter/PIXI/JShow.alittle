@@ -40,28 +40,12 @@ public class JDisplayObject : ALittle.IDisplayObject
     }
     
     public get native() : PIXI.DisplayObject { return this._native; }
-    public fun SetX(double x)
-    {
-        this._x = x;
-        this._native.x = javascript.Math.floor(x + this._pivot.x);
-    }
-    public fun SetY(double y)
-    {
-        this._y = y;
-        this._native.y = javascript.Math.floor(y + this._pivot.y);
-    }
+    public fun SetX(double x) { this._x = x; this._native.x = this._x; }
+    public fun SetY(double y) { this._y = y; this._native.y = this._y; }
     public fun SetScaleX(double value) { this._scale.x = value; this._native.scale = this._scale; }
     public fun SetScaleY(double value) { this._scale.y = value; this._native.scale = this._scale; }
-    public fun SetCenterX(double value)
-    {
-        this._pivot.x = value; this._native.pivot = this._pivot;
-        this._native.x = javascript.Math.floor(this._x + this._pivot.x);
-    }
-    public fun SetCenterY(double value)
-    {
-        this._pivot.y = value; this._native.pivot = this._pivot;
-        this._native.y = javascript.Math.floor(this._y + this._pivot.y);
-    }
+    public fun SetCenterX(double value) { this._pivot.x = value; this._native.pivot = this._pivot; }
+    public fun SetCenterY(double value) { this._pivot.y = value; this._native.pivot = this._pivot; }
     public fun SetAngle(double value) { this._native.angle = value; }
     public fun SetWidth(double value) { }
     public fun SetHeight(double value) { }

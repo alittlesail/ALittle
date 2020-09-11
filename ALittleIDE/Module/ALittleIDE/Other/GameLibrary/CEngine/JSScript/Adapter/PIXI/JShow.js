@@ -44,11 +44,11 @@ JavaScript.JDisplayObject = JavaScript.Class(ALittle.IDisplayObject, {
 	},
 	SetX : function(x) {
 		this._x = x;
-		this._native.x = Math.floor(x + this._pivot.x);
+		this._native.x = this._x;
 	},
 	SetY : function(y) {
 		this._y = y;
-		this._native.y = Math.floor(y + this._pivot.y);
+		this._native.y = this._y;
 	},
 	SetScaleX : function(value) {
 		this._scale.x = value;
@@ -61,12 +61,10 @@ JavaScript.JDisplayObject = JavaScript.Class(ALittle.IDisplayObject, {
 	SetCenterX : function(value) {
 		this._pivot.x = value;
 		this._native.pivot = this._pivot;
-		this._native.x = Math.floor(this._x + this._pivot.x);
 	},
 	SetCenterY : function(value) {
 		this._pivot.y = value;
 		this._native.pivot = this._pivot;
-		this._native.y = Math.floor(this._y + this._pivot.y);
 	},
 	SetAngle : function(value) {
 		this._native.angle = value;

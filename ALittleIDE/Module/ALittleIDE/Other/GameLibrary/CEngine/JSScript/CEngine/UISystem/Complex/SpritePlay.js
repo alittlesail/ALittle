@@ -20,18 +20,18 @@ ALittle.SpritePlay = JavaScript.Class(ALittle.Sprite, {
 	},
 	Play : function() {
 		if (this._play_loop !== undefined) {
-			A_LoopSystem.RemoveUpdater(this._play_loop);
+			A_WeakLoopSystem.RemoveUpdater(this._play_loop);
 			this._play_loop = undefined;
 		}
 		this._play_index = 0;
 		this._row_index = 1;
 		this._col_index = 1;
 		this._play_loop = ALittle.NewObject(ALittle.LoopFunction, this.PlayUpdate.bind(this), -1, this._interval, 0);
-		A_LoopSystem.AddUpdater(this._play_loop);
+		A_WeakLoopSystem.AddUpdater(this._play_loop);
 	},
 	Stop : function() {
 		if (this._play_loop !== undefined) {
-			A_LoopSystem.RemoveUpdater(this._play_loop);
+			A_WeakLoopSystem.RemoveUpdater(this._play_loop);
 			this._play_loop = undefined;
 		}
 	},

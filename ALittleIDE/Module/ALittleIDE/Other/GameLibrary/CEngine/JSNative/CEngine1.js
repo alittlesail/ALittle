@@ -927,11 +927,11 @@ JavaScript.JDisplayObject = JavaScript.Class(ALittle.IDisplayObject, {
 	},
 	SetX : function(x) {
 		this._x = x;
-		this._native.x = Math.floor(x + this._pivot.x);
+		this._native.x = this._x;
 	},
 	SetY : function(y) {
 		this._y = y;
-		this._native.y = Math.floor(y + this._pivot.y);
+		this._native.y = this._y;
 	},
 	SetScaleX : function(value) {
 		this._scale.x = value;
@@ -944,12 +944,10 @@ JavaScript.JDisplayObject = JavaScript.Class(ALittle.IDisplayObject, {
 	SetCenterX : function(value) {
 		this._pivot.x = value;
 		this._native.pivot = this._pivot;
-		this._native.x = Math.floor(this._x + this._pivot.x);
 	},
 	SetCenterY : function(value) {
 		this._pivot.y = value;
 		this._native.pivot = this._pivot;
-		this._native.y = Math.floor(this._y + this._pivot.y);
 	},
 	SetAngle : function(value) {
 		this._native.angle = value;
@@ -2021,7 +2019,7 @@ ALittle.String_DecryptPassword = function(account_name, pwd) {
 	if (start_index === undefined) {
 		return undefined;
 	}
-	pwd = ALittle.String_Sub(pwd, start_index + lua.String.len(device_id_md5_base64));
+	pwd = ALittle.String_Sub(pwd, start_index + ALittle.String_Len(device_id_md5_base64));
 	start_index = ALittle.String_Find(pwd, account_name_md5_base64);
 	if (start_index === undefined) {
 		return undefined;
@@ -2032,7 +2030,7 @@ ALittle.String_DecryptPassword = function(account_name, pwd) {
 	if (start_index === undefined) {
 		return undefined;
 	}
-	pwd = ALittle.String_Sub(pwd, start_index + lua.String.len(device_id_md5_ex));
+	pwd = ALittle.String_Sub(pwd, start_index + ALittle.String_Len(device_id_md5_ex));
 	start_index = ALittle.String_Find(pwd, account_name_md5_ex);
 	if (start_index === undefined) {
 		return undefined;
@@ -5079,10 +5077,8 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		if (this._ignore || this._abs_disabled || this._abs_visible === false) {
 			return [undefined, undefined, undefined];
 		}
-		let rel_x = x - this._x;
-		let rel_y = y - this._y;
-		let xx = rel_x - this._center_x;
-		let yy = rel_y - this._center_y;
+		let xx = x - this._x;
+		let yy = y - this._y;
 		if (this._angle !== 0) {
 			let rad = 3.1415926 * -this._angle / 180.0;
 			let cos = __cos(rad);
@@ -5098,8 +5094,8 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		if (this._scale_y > 0) {
 			yy = yy / (this._scale_y);
 		}
-		rel_x = xx + this._center_x;
-		rel_y = yy + this._center_y;
+		let rel_x = xx + this._center_x;
+		let rel_y = yy + this._center_y;
 		if (this._scale_x <= 0 || this._scale_y <= 0) {
 			if (this._modal) {
 				return [this, rel_x, rel_y];
@@ -5116,10 +5112,8 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		}
 	},
 	PickUpSelf : function(x, y) {
-		let rel_x = x - this._x;
-		let rel_y = y - this._y;
-		let xx = rel_x - this._center_x;
-		let yy = rel_y - this._center_y;
+		let xx = x - this._x;
+		let yy = y - this._y;
 		if (this._angle !== 0) {
 			let rad = 3.1415926 * -this._angle / 180.0;
 			let cos = __cos(rad);
@@ -5135,8 +5129,8 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		if (this._scale_y > 0) {
 			yy = yy / (this._scale_y);
 		}
-		rel_x = xx + this._center_x;
-		rel_y = yy + this._center_y;
+		let rel_x = xx + this._center_x;
+		let rel_y = yy + this._center_y;
 		if (this._scale_x <= 0 || this._scale_y <= 0) {
 			return [undefined, rel_x, rel_y];
 		}
@@ -5493,10 +5487,8 @@ ALittle.DisplayGroup = JavaScript.Class(ALittle.DisplayObject, {
 		if (this._ignore || this._abs_disabled || this._abs_visible === false) {
 			return [undefined, undefined, undefined];
 		}
-		let rel_x = x - this._x;
-		let rel_y = y - this._y;
-		let xx = rel_x - this._center_x;
-		let yy = rel_y - this._center_y;
+		let xx = x - this._x;
+		let yy = y - this._y;
 		if (this._angle !== 0) {
 			let rad = 3.1415926 * -this._angle / 180.0;
 			let cos = __cos(rad);
@@ -5512,8 +5504,8 @@ ALittle.DisplayGroup = JavaScript.Class(ALittle.DisplayObject, {
 		if (this._scale_y > 0) {
 			yy = yy / (this._scale_y);
 		}
-		rel_x = xx + this._center_x;
-		rel_y = yy + this._center_y;
+		let rel_x = xx + this._center_x;
+		let rel_y = yy + this._center_y;
 		if (this._scale_x <= 0 || this._scale_y <= 0) {
 			if (this._modal) {
 				return [this, rel_x, rel_y];
@@ -6509,6 +6501,10 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 		this.AddEventListener(___all_struct.get(-1737121315), this, this.HandleMButtonWheel);
 		this._move_in = false;
 		this._focus_in = false;
+		this._show.native.htmlInput.onchange = this.HandleHtmlInputChanged.bind(this);
+	},
+	HandleHtmlInputChanged : function() {
+		this.DispatchEvent(___all_struct.get(958494922), {});
 	},
 	Redraw : function() {
 		this._show.NeedDraw();
@@ -7077,6 +7073,10 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 		this.AddEventListener(___all_struct.get(1337289812), this, this.HandleDrag);
 		this._move_in = false;
 		this._focus_in = false;
+		this._show.native.htmlInput.onchange = this.HandleHtmlInputChanged.bind(this);
+	},
+	HandleHtmlInputChanged : function() {
+		this.DispatchEvent(___all_struct.get(958494922), {});
 	},
 	Redraw : function() {
 		this._show.NeedDraw();
@@ -13427,18 +13427,18 @@ ALittle.SpritePlay = JavaScript.Class(ALittle.Sprite, {
 	},
 	Play : function() {
 		if (this._play_loop !== undefined) {
-			A_LoopSystem.RemoveUpdater(this._play_loop);
+			A_WeakLoopSystem.RemoveUpdater(this._play_loop);
 			this._play_loop = undefined;
 		}
 		this._play_index = 0;
 		this._row_index = 1;
 		this._col_index = 1;
 		this._play_loop = ALittle.NewObject(ALittle.LoopFunction, this.PlayUpdate.bind(this), -1, this._interval, 0);
-		A_LoopSystem.AddUpdater(this._play_loop);
+		A_WeakLoopSystem.AddUpdater(this._play_loop);
 	},
 	Stop : function() {
 		if (this._play_loop !== undefined) {
-			A_LoopSystem.RemoveUpdater(this._play_loop);
+			A_WeakLoopSystem.RemoveUpdater(this._play_loop);
 			this._play_loop = undefined;
 		}
 	},
@@ -14341,10 +14341,8 @@ ALittle.ImageInput = JavaScript.Class(ALittle.DisplayLayout, {
 		if (this._ignore || this._abs_disabled || this._abs_visible === false) {
 			return [undefined, undefined, undefined];
 		}
-		let rel_x = x - this._x;
-		let rel_y = y - this._y;
-		let xx = rel_x - this._center_x;
-		let yy = rel_y - this._center_y;
+		let xx = x - this._x;
+		let yy = y - this._y;
 		if (this._angle !== 0) {
 			let rad = 3.1415926 * -this._angle / 180.0;
 			let cos = __cos(rad);
@@ -14360,8 +14358,8 @@ ALittle.ImageInput = JavaScript.Class(ALittle.DisplayLayout, {
 		if (this._scale_y > 0) {
 			yy = yy / (this._scale_y);
 		}
-		rel_x = xx + this._center_x;
-		rel_y = yy + this._center_y;
+		let rel_x = xx + this._center_x;
+		let rel_y = yy + this._center_y;
 		if (this._scale_x <= 0 || this._scale_y <= 0) {
 			if (this._modal) {
 				return [this, rel_x, rel_y];
@@ -14827,10 +14825,8 @@ ALittle.ImageEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		if (this._ignore || this._abs_disabled || this._abs_visible === false) {
 			return [undefined, undefined, undefined];
 		}
-		let rel_x = x - this._x;
-		let rel_y = y - this._y;
-		let xx = rel_x - this._center_x;
-		let yy = rel_y - this._center_y;
+		let xx = x - this._x;
+		let yy = y - this._y;
 		if (this._angle !== 0) {
 			let rad = 3.1415926 * -this._angle / 180.0;
 			let cos = __cos(rad);
@@ -14846,8 +14842,8 @@ ALittle.ImageEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		if (this._scale_y > 0) {
 			yy = yy / (this._scale_y);
 		}
-		rel_x = xx + this._center_x;
-		rel_y = yy + this._center_y;
+		let rel_x = xx + this._center_x;
+		let rel_y = yy + this._center_y;
 		if (this._scale_x <= 0 || this._scale_y <= 0) {
 			if (this._modal) {
 				return [this, rel_x, rel_y];

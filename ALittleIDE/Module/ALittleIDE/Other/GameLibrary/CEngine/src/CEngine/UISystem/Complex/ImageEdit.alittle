@@ -521,12 +521,8 @@ public class ImageEdit : DisplayLayout
             return null, null, null;
     
         // 计算出相对于控件的点
-        var rel_x = x - this._x;
-        var rel_y = y - this._y;
-    
-        // 移到中心点
-        var xx = rel_x - this._center_x;
-        var yy = rel_y - this._center_y;
+        var xx = x - this._x;
+        var yy = y - this._y;
     
         // 处理旋转
         if (this._angle != 0)
@@ -547,8 +543,8 @@ public class ImageEdit : DisplayLayout
         if (this._scale_y > 0) yy /= this._scale_y;
     
         // 移动到原来的位置
-        rel_x = xx + this._center_x;
-        rel_y = yy + this._center_y;
+        var rel_x = xx + this._center_x;
+        var rel_y = yy + this._center_y;
     
         if (this._scale_x <= 0 || this._scale_y <= 0)
         {

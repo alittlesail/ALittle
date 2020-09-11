@@ -1,11 +1,24 @@
 
 namespace SuperMarioBros;
 
+protected enum EntityType
+{
+    ET_RANDOM_WALL_1 = 1;	// 随机奖励墙
+    ET_WALL_1 = 2;	// 普通墙
+    ET_ENEMY_1 = 3;	// 蘑菇1
+    ET_HIDE_WALL_1 = 4;	// 隐藏墙
+    ET_ENEMY_2 = 5;	// 蘑菇2
+    ET_FLAG_1 = 6;	// 旗帜1
+    ET_FLAG_2 = 7;	// 旗帜2
+    ET_FLAG_3 = 8;	// 旗帜3
+    ET_FLAG_4 = 9;	// 旗帜4
+    ET_FLAG_5 = 10;	// 旗帜5
+}
+
 protected struct BattleMap
 {
     int row_count;				// 总行数
     int col_count;				// 总列数
     Map<int, Map<int, int>> background;	// 背景
-    Map<int, Map<int, int>> mask;		  // 标记哪些可走哪些不可走
     Map<int, Map<int, int>> object;		// 实体对象
 }

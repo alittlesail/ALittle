@@ -16,6 +16,16 @@ public class EditContainer : ALittle.DisplayLayout
     }
 }
 
+protected struct EditEntityInfo
+{
+    string ui;
+    int type;
+    double width;
+    double height;
+    double center_x;
+    double center_y;
+}
+
 public class EditScene : ALittle.DisplayLayout
 {
 	private ALittle.Image _tile_image;
@@ -26,12 +36,107 @@ public class EditScene : ALittle.DisplayLayout
     private ALittle.ScrollScreen _scroll_screen;
 	private ALittle.Linear _tile_linear;
 
+    private ALittle.DisplayLayout _entity_container;
+    private Map<int, Map<int, ALittle.DisplayObject>> _entity_map;
+
+    private ALittle.DisplayLayout _entity_panel;
+    private ALittle.DisplayObject _entity_random_wall_1;	// 随机奖励墙1
+    private ALittle.DisplayObject _entity_wall_1;	// 普通墙1
+    private ALittle.DisplayObject _entity_hide_wall_1;	// 隐藏墙1
+    private ALittle.DisplayObject _entity_enemy_1;	// 蘑菇1
+    private ALittle.DisplayObject _entity_enemy_2;	// 鸭子1
+
+    private ALittle.DisplayObject _entity_flag_1;	// 旗帜1
+    private ALittle.DisplayObject _entity_flag_2;	// 旗帜2
+    private ALittle.DisplayObject _entity_flag_3;	// 旗帜3
+    private ALittle.DisplayObject _entity_flag_4;	// 旗帜4
+    private ALittle.DisplayObject _entity_flag_5;	// 旗帜5
+
+    private Map<int, EditEntityInfo> _entity_info_map;
+
+    private ALittle.DisplayObject _select_frame;
+
     private BattleMap _cur_data;
     private string _path;
 
     public fun TCtor()
     {
         cast<EditContainer>(this._scroll_screen.container).Init(this._tile_linear);
+        this._entity_panel.visible = false;
+
+        this._entity_info_map = new Map<int, EditEntityInfo>();
+        this._entity_map = new Map<int, Map<int, ALittle.DisplayObject>>();
+
+        var info = new EditEntityInfo();
+        info.ui = "random_wall_1"; info.type = EntityType.ET_RANDOM_WALL_1;
+        info.width = this._entity_random_wall_1.width; info.height = this._entity_random_wall_1.height;
+        info.center_x = this._entity_random_wall_1.center_x; info.center_y = this._entity_random_wall_1.center_y;
+        this._entity_random_wall_1._user_data = info;
+        this._entity_random_wall_1.AddEventListener(this, this.HandleEntitySelectClick);
+        this._entity_info_map[EntityType.ET_RANDOM_WALL_1] = info;
+
+        info = new EditEntityInfo();
+        info.ui = "hide_wall_1"; info.type = EntityType.ET_HIDE_WALL_1; info.width = this._entity_hide_wall_1.width; info.height = this._entity_hide_wall_1.height;
+        info.center_x = this._entity_hide_wall_1.center_x; info.center_y = this._entity_hide_wall_1.center_y;
+        this._entity_hide_wall_1._user_data = info;
+        this._entity_hide_wall_1.AddEventListener(this, this.HandleEntitySelectClick);
+        this._entity_info_map[EntityType.ET_HIDE_WALL_1] = info;
+        
+        info = new EditEntityInfo();
+        info.ui = "wall_1"; info.type = EntityType.ET_WALL_1; info.width = this._entity_wall_1.width; info.height = this._entity_wall_1.height;
+        info.center_x = this._entity_wall_1.center_x; info.center_y = this._entity_wall_1.center_y;
+        this._entity_wall_1._user_data = info;
+        this._entity_wall_1.AddEventListener(this, this.HandleEntitySelectClick);
+        this._entity_info_map[EntityType.ET_WALL_1] = info;
+
+        info = new EditEntityInfo();
+        info.ui = "enemy_1"; info.type = EntityType.ET_ENEMY_1; info.width = this._entity_enemy_1.width; info.height = this._entity_enemy_1.height;
+        info.center_x = this._entity_enemy_1.center_x; info.center_y = this._entity_enemy_1.center_y;
+        this._entity_enemy_1._user_data = info;
+        this._entity_enemy_1.AddEventListener(this, this.HandleEntitySelectClick);
+        this._entity_info_map[EntityType.ET_ENEMY_1] = info;
+
+        info = new EditEntityInfo();
+        info.ui = "enemy_2"; info.type = EntityType.ET_ENEMY_2; info.width = this._entity_enemy_2.width; info.height = this._entity_enemy_2.height;
+        info.center_x = this._entity_enemy_2.center_x; info.center_y = this._entity_enemy_2.center_y;
+        this._entity_enemy_2._user_data = info;
+        this._entity_enemy_2.AddEventListener(this, this.HandleEntitySelectClick);
+        this._entity_info_map[EntityType.ET_ENEMY_2] = info;
+
+        info = new EditEntityInfo();
+        info.ui = "flag_1"; info.type = EntityType.ET_FLAG_1; info.width = this._entity_flag_1.width; info.height = this._entity_flag_1.height;
+        info.center_x = this._entity_flag_1.center_x; info.center_y = this._entity_flag_1.center_y;
+        this._entity_flag_1._user_data = info;
+        this._entity_flag_1.AddEventListener(this, this.HandleEntitySelectClick);
+        this._entity_info_map[EntityType.ET_FLAG_1] = info;
+
+        info = new EditEntityInfo();
+        info.ui = "flag_2"; info.type = EntityType.ET_FLAG_2; info.width = this._entity_flag_2.width; info.height = this._entity_flag_2.height;
+        info.center_x = this._entity_flag_2.center_x; info.center_y = this._entity_flag_2.center_y;
+        this._entity_flag_2._user_data = info;
+        this._entity_flag_2.AddEventListener(this, this.HandleEntitySelectClick);
+        this._entity_info_map[EntityType.ET_FLAG_2] = info;
+
+        info = new EditEntityInfo();
+        info.ui = "flag_3"; info.type = EntityType.ET_FLAG_3; info.width = this._entity_flag_3.width; info.height = this._entity_flag_3.height;
+        info.center_x = this._entity_flag_3.center_x; info.center_y = this._entity_flag_3.center_y;
+        this._entity_flag_3._user_data = info;
+        this._entity_flag_3.AddEventListener(this, this.HandleEntitySelectClick);
+        this._entity_info_map[EntityType.ET_FLAG_3] = info;
+
+        info = new EditEntityInfo();
+        info.ui = "flag_4"; info.type = EntityType.ET_FLAG_4; info.width = this._entity_flag_4.width; info.height = this._entity_flag_4.height;
+        info.center_x = this._entity_flag_4.center_x; info.center_y = this._entity_flag_4.center_y;
+        this._entity_flag_4._user_data = info;
+        this._entity_flag_4.AddEventListener(this, this.HandleEntitySelectClick);
+        this._entity_info_map[EntityType.ET_FLAG_4] = info;
+
+        info = new EditEntityInfo();
+        info.ui = "flag_5"; info.type = EntityType.ET_FLAG_5; info.width = this._entity_flag_5.width; info.height = this._entity_flag_5.height;
+        info.center_x = this._entity_flag_5.center_x; info.center_y = this._entity_flag_5.center_y;
+        this._entity_flag_5._user_data = info;
+        this._entity_flag_5.AddEventListener(this, this.HandleEntitySelectClick);
+        this._entity_info_map[EntityType.ET_FLAG_5] = info;
     }
 
     public fun Show()
@@ -63,9 +168,12 @@ public class EditScene : ALittle.DisplayLayout
             this._cur_data.row_count = 0;
             this._cur_data.col_count = 0;
             this._cur_data.background = new Map<int, Map<int, int>>();
-            this._cur_data.mask = new Map<int, Map<int, int>>();
             this._cur_data.object = new Map<int, Map<int, int>>();
         }
+
+        this._tile_linear.RemoveAllChild();
+        this._entity_container.RemoveAllChild();
+        this._entity_map = new Map<int, Map<int, ALittle.DisplayObject>>();
 
         for (var row, submap in this._cur_data.background)
         {
@@ -76,11 +184,19 @@ public class EditScene : ALittle.DisplayLayout
                 this.SetTileShow(row, col, show_row, show_col);
             }
         }
+
+        for (var row, submap in this._cur_data.object)
+        {
+            for (var col, type in submap)
+            {
+                this.SetEntityShow(row, col, type);
+            }
+        }
         this._scroll_screen.container.width = this._tile_linear.width + this._scroll_screen.view_width;
         this._scroll_screen.RejustScrollBar();
     }
 
-    private fun Save()
+    public fun Save()
     {
         if (this._cur_data == null) return;
 
@@ -110,6 +226,20 @@ public class EditScene : ALittle.DisplayLayout
                     if (this._cur_data.col_count < col + 1)
                     	this._cur_data.col_count = col + 1;
                 }
+            }
+        }
+        this._cur_data.object = new Map<int, Map<int, int>>();
+        for (var row, entity_submap in this._entity_map)
+        {
+            for (var col, object in entity_submap)
+            {
+                var submap = this._cur_data.object[row];
+                if (submap == null)
+                {
+                    submap = new Map<int, int>();
+                    this._cur_data.object[row] = submap;
+                }
+                submap[col] = cast<EditEntityInfo>(object._user_data).type;
             }
         }
 
@@ -142,27 +272,51 @@ public class EditScene : ALittle.DisplayLayout
         factory.WriteToStdFile(ALittle.File_BaseFilePath()..g_ModuleBasePath..this._path);
     }
 
-    private fun HandleTileQuadClick(ALittle.UILButtonDownEvent event)
+    private fun HandleEntitySelectClick(ALittle.UILButtonDownEvent event)
+    {
+        this._select_frame.x = event.target.x;
+        this._select_frame.y = event.target.y;
+        this._select_frame._user_data = event.target._user_data;
+    }
+
+    private fun HandleTileTabClick(ALittle.UILButtonDownEvent event)
+    {
+        this._entity_panel.visible = false;
+        this._tile_image.visible = true;
+        this._select_tile.visible = true;
+    }
+
+    private fun HandleEntityTabClick(ALittle.UILButtonDownEvent event)
+    {
+        this._entity_panel.visible = true;
+        this._tile_image.visible = false;
+        this._select_tile.visible = false;
+    }
+
+    private fun CursorHandleImpl(double rel_x, double rel_y)
     {
         var shift = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_LSHIFT] != null;
 
-        var col = ALittle.Math_Floor((event.rel_x - this._scroll_screen.container_x) / this._select_tile.width);
-        var row = ALittle.Math_Floor((event.rel_y - this._scroll_screen.container_y) / this._select_tile.height);
+        var col = ALittle.Math_Floor((rel_x - this._scroll_screen.container_x) / this._select_tile.width);
+        var row = ALittle.Math_Floor((rel_y - this._scroll_screen.container_y) / this._select_tile.height);
 
-        if (shift) this.RemoveTileShow(row, col);
-        else this.SetTileShow(row, col, this._select_tile.row_index, this._select_tile.col_index);
+        if (this._tile_image.visible)
+        {
+            if (shift) this.RemoveTileShow(row, col);
+            else this.SetTileShow(row, col, this._select_tile.row_index, this._select_tile.col_index);
+        }
+        elseif (this._entity_panel.visible)
+        {
+            var info = cast<EditEntityInfo>(this._select_frame._user_data);
+            if (info == null) return;
+
+            if (shift) this.RemoveEntityShow(row, col);
+            else this.SetEntityShow(row, col, info.type);
+        }
     }
 
-    private fun HandleTileQuadDrag(ALittle.UIButtonDragEvent event)
-    {
-        var shift = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_LSHIFT] != null;
-
-        var col = ALittle.Math_Floor((event.rel_x - this._scroll_screen.container_x) / this._select_tile.width);
-        var row = ALittle.Math_Floor((event.rel_y - this._scroll_screen.container_y) / this._select_tile.height);
-
-        if (shift) this.RemoveTileShow(row, col);
-        else this.SetTileShow(row, col, this._select_tile.row_index, this._select_tile.col_index);
-    }
+    private fun HandleTileQuadClick(ALittle.UILButtonDownEvent event) { this.CursorHandleImpl(event.rel_x, event.rel_y); }
+    private fun HandleTileQuadDrag(ALittle.UIButtonDragEvent event) { this.CursorHandleImpl(event.rel_x, event.rel_y); }
 
     private fun SetTileShow(int row, int col, int show_row, int show_col)
     {
@@ -205,6 +359,43 @@ public class EditScene : ALittle.DisplayLayout
 
         this._scroll_screen.RejustScrollBar();
         this._scroll_screen.RefreshClipDisLine();
+    }
+
+    private fun SetEntityShow(int row, int col, int type)
+    {
+        this.RemoveEntityShow(row, col);
+
+        var info = this._entity_info_map[type];
+        if (info == null) return;
+
+        var submap = this._entity_map[row];
+        if (submap == null)
+        {
+            submap = new Map<int, ALittle.DisplayObject>();
+            this._entity_map[row] = submap;
+        }
+        var object = g_Control.CreateControl{ALittle.DisplayObject}(info.ui);
+        object._user_data = info;
+        object.width = info.width;
+        object.height = info.height;
+        object.center_x = info.center_x;
+        object.center_y = info.center_y;
+        object.x = col * this._select_tile.width;
+        object.y = row * this._select_tile.height;
+        this._entity_container.AddChild(object);
+        submap[col] = object;
+    }
+
+    private fun RemoveEntityShow(int row, int col)
+    {
+        var submap = this._entity_map[row];
+        if (submap == null) return;
+
+        var object = submap[col];
+        if (object == null) return;
+
+        submap[col] = null;
+        this._entity_container.RemoveChild(object);
     }
 
     private fun RemoveTileShow(int row, int col)

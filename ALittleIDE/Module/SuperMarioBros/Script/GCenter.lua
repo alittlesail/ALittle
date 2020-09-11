@@ -41,6 +41,7 @@ function SuperMarioBros.GCenter.__getter:edit_scene()
 end
 
 function SuperMarioBros.GCenter:Shutdown()
+	self._edit_scene:Save()
 end
 
 _G.g_GCenter = SuperMarioBros.GCenter()

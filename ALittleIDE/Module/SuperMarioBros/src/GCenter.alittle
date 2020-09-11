@@ -48,6 +48,7 @@ class GCenter
 
     public fun Shutdown()
     {
+        this._edit_scene.Save();
     }
 }
 

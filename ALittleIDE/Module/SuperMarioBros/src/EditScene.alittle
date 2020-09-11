@@ -67,76 +67,32 @@ public class EditScene : ALittle.DisplayLayout
         this._entity_info_map = new Map<int, EditEntityInfo>();
         this._entity_map = new Map<int, Map<int, ALittle.DisplayObject>>();
 
+        this.AddEntity("wall_1", EntityType.ET_WALL_1, this._entity_wall_1);
+        this.AddEntity("hide_wall_1", EntityType.ET_HIDE_WALL_1, this._entity_hide_wall_1);
+        this.AddEntity("random_wall_1", EntityType.ET_RANDOM_WALL_1, this._entity_random_wall_1);
+
+        this.AddEntity("enemy_1", EntityType.ET_ENEMY_1, this._entity_enemy_1);
+        this.AddEntity("enemy_2", EntityType.ET_ENEMY_2, this._entity_enemy_2);
+
+        this.AddEntity("flag_1", EntityType.ET_FLAG_1, this._entity_flag_1);
+        this.AddEntity("flag_2", EntityType.ET_FLAG_2, this._entity_flag_2);
+        this.AddEntity("flag_3", EntityType.ET_FLAG_3, this._entity_flag_3);
+        this.AddEntity("flag_4", EntityType.ET_FLAG_4, this._entity_flag_4);
+        this.AddEntity("flag_5", EntityType.ET_FLAG_5, this._entity_flag_5);
+    }
+
+    private fun AddEntity(string ui, int type, ALittle.DisplayObject object)
+    {
         var info = new EditEntityInfo();
-        info.ui = "random_wall_1"; info.type = EntityType.ET_RANDOM_WALL_1;
-        info.width = this._entity_random_wall_1.width; info.height = this._entity_random_wall_1.height;
-        info.center_x = this._entity_random_wall_1.center_x; info.center_y = this._entity_random_wall_1.center_y;
-        this._entity_random_wall_1._user_data = info;
-        this._entity_random_wall_1.AddEventListener(this, this.HandleEntitySelectClick);
-        this._entity_info_map[EntityType.ET_RANDOM_WALL_1] = info;
-
-        info = new EditEntityInfo();
-        info.ui = "hide_wall_1"; info.type = EntityType.ET_HIDE_WALL_1; info.width = this._entity_hide_wall_1.width; info.height = this._entity_hide_wall_1.height;
-        info.center_x = this._entity_hide_wall_1.center_x; info.center_y = this._entity_hide_wall_1.center_y;
-        this._entity_hide_wall_1._user_data = info;
-        this._entity_hide_wall_1.AddEventListener(this, this.HandleEntitySelectClick);
-        this._entity_info_map[EntityType.ET_HIDE_WALL_1] = info;
-        
-        info = new EditEntityInfo();
-        info.ui = "wall_1"; info.type = EntityType.ET_WALL_1; info.width = this._entity_wall_1.width; info.height = this._entity_wall_1.height;
-        info.center_x = this._entity_wall_1.center_x; info.center_y = this._entity_wall_1.center_y;
-        this._entity_wall_1._user_data = info;
-        this._entity_wall_1.AddEventListener(this, this.HandleEntitySelectClick);
-        this._entity_info_map[EntityType.ET_WALL_1] = info;
-
-        info = new EditEntityInfo();
-        info.ui = "enemy_1"; info.type = EntityType.ET_ENEMY_1; info.width = this._entity_enemy_1.width; info.height = this._entity_enemy_1.height;
-        info.center_x = this._entity_enemy_1.center_x; info.center_y = this._entity_enemy_1.center_y;
-        this._entity_enemy_1._user_data = info;
-        this._entity_enemy_1.AddEventListener(this, this.HandleEntitySelectClick);
-        this._entity_info_map[EntityType.ET_ENEMY_1] = info;
-
-        info = new EditEntityInfo();
-        info.ui = "enemy_2"; info.type = EntityType.ET_ENEMY_2; info.width = this._entity_enemy_2.width; info.height = this._entity_enemy_2.height;
-        info.center_x = this._entity_enemy_2.center_x; info.center_y = this._entity_enemy_2.center_y;
-        this._entity_enemy_2._user_data = info;
-        this._entity_enemy_2.AddEventListener(this, this.HandleEntitySelectClick);
-        this._entity_info_map[EntityType.ET_ENEMY_2] = info;
-
-        info = new EditEntityInfo();
-        info.ui = "flag_1"; info.type = EntityType.ET_FLAG_1; info.width = this._entity_flag_1.width; info.height = this._entity_flag_1.height;
-        info.center_x = this._entity_flag_1.center_x; info.center_y = this._entity_flag_1.center_y;
-        this._entity_flag_1._user_data = info;
-        this._entity_flag_1.AddEventListener(this, this.HandleEntitySelectClick);
-        this._entity_info_map[EntityType.ET_FLAG_1] = info;
-
-        info = new EditEntityInfo();
-        info.ui = "flag_2"; info.type = EntityType.ET_FLAG_2; info.width = this._entity_flag_2.width; info.height = this._entity_flag_2.height;
-        info.center_x = this._entity_flag_2.center_x; info.center_y = this._entity_flag_2.center_y;
-        this._entity_flag_2._user_data = info;
-        this._entity_flag_2.AddEventListener(this, this.HandleEntitySelectClick);
-        this._entity_info_map[EntityType.ET_FLAG_2] = info;
-
-        info = new EditEntityInfo();
-        info.ui = "flag_3"; info.type = EntityType.ET_FLAG_3; info.width = this._entity_flag_3.width; info.height = this._entity_flag_3.height;
-        info.center_x = this._entity_flag_3.center_x; info.center_y = this._entity_flag_3.center_y;
-        this._entity_flag_3._user_data = info;
-        this._entity_flag_3.AddEventListener(this, this.HandleEntitySelectClick);
-        this._entity_info_map[EntityType.ET_FLAG_3] = info;
-
-        info = new EditEntityInfo();
-        info.ui = "flag_4"; info.type = EntityType.ET_FLAG_4; info.width = this._entity_flag_4.width; info.height = this._entity_flag_4.height;
-        info.center_x = this._entity_flag_4.center_x; info.center_y = this._entity_flag_4.center_y;
-        this._entity_flag_4._user_data = info;
-        this._entity_flag_4.AddEventListener(this, this.HandleEntitySelectClick);
-        this._entity_info_map[EntityType.ET_FLAG_4] = info;
-
-        info = new EditEntityInfo();
-        info.ui = "flag_5"; info.type = EntityType.ET_FLAG_5; info.width = this._entity_flag_5.width; info.height = this._entity_flag_5.height;
-        info.center_x = this._entity_flag_5.center_x; info.center_y = this._entity_flag_5.center_y;
-        this._entity_flag_5._user_data = info;
-        this._entity_flag_5.AddEventListener(this, this.HandleEntitySelectClick);
-        this._entity_info_map[EntityType.ET_FLAG_5] = info;
+        info.ui = ui;
+        info.type = type;
+        info.width = object.width;
+        info.height = object.height;
+        info.center_x = object.center_x;
+        info.center_y = object.center_y;
+        object._user_data = info;
+        object.AddEventListener(this, this.HandleEntitySelectClick);
+        this._entity_info_map[type] = info;
     }
 
     public fun Show()

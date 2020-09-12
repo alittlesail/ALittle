@@ -52,6 +52,8 @@ public class EditScene : ALittle.DisplayLayout
     private ALittle.DisplayObject _entity_flag_4;	// 旗帜4
     private ALittle.DisplayObject _entity_flag_5;	// 旗帜5
 
+    private ALittle.DisplayObject _entity_born_1;	// 出生点
+
     private Map<int, EditEntityInfo> _entity_info_map;
 
     private ALittle.DisplayObject _select_frame;
@@ -79,6 +81,8 @@ public class EditScene : ALittle.DisplayLayout
         this.AddEntity("flag_3", EntityType.ET_FLAG_3, this._entity_flag_3);
         this.AddEntity("flag_4", EntityType.ET_FLAG_4, this._entity_flag_4);
         this.AddEntity("flag_5", EntityType.ET_FLAG_5, this._entity_flag_5);
+
+        this.AddEntity("born_1", EntityType.ET_BORN_1, this._entity_born_1);
     }
 
     private fun AddEntity(string ui, int type, ALittle.DisplayObject object)

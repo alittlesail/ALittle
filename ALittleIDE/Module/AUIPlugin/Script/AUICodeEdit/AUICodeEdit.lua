@@ -142,6 +142,7 @@ function AUIPlugin.AUICodeEdit:TCtor()
 	self._code_screen:AddEventListener(___all_struct[-1234078962], self, self.HandleTextInput)
 	self._code_screen:AddEventListener(___all_struct[-1001723540], self, self.HandleMouseMove)
 	self._code_screen:AddEventListener(___all_struct[-338112738], self, self.HandleDropFile)
+	self._code_screen:EnableDrag(false)
 	self:AddEventListener(___all_struct[958494922], self, self.HandleChangedEvent)
 	self._find_dialog.visible = false
 	self._find_dialog.close_callback = Lua.Bind(self.HandleFindEscClick, self, nil)
@@ -331,11 +332,13 @@ end
 
 function AUIPlugin.AUICodeEdit:HandleLButtonDown(event)
 	local rel_x = event.rel_x
+	local rel_y = event.rel_y
 	if event.target == self._code_screen then
 		rel_x = rel_x - (self._code_linear.x)
+		rel_y = rel_y - (self._code_screen.container_y)
 	end
 	self._select_cursor:Hide()
-	self._cursor:SetOffsetXY(rel_x, event.rel_y)
+	self._cursor:SetOffsetXY(rel_x, rel_y)
 	if event.count > 1 then
 		local it_start, it_end = self._cursor:CalcSelectWord()
 		if it_start == nil then
@@ -346,7 +349,7 @@ function AUIPlugin.AUICodeEdit:HandleLButtonDown(event)
 		self._select_cursor:UpdateLineChar(self._cursor.line, it_end)
 	end
 	if A_UISystem.sym_map[1073742048] and self._query_info ~= nil and self._language ~= nil then
-		local it_line, it_char = self:CalcLineAndChar(rel_x, event.rel_y)
+		local it_line, it_char = self:CalcLineAndChar(rel_x, rel_y)
 		self:DoQueryGoto(it_line, it_char)
 		self:StopQueryInfo()
 	end
@@ -384,20 +387,24 @@ function AUIPlugin.AUICodeEdit:HandleDragBegin(event)
 		self._error_quad_move_in = nil
 	end
 	local rel_x = event.rel_x
+	local rel_y = event.rel_y
 	if event.target == self._code_screen then
 		rel_x = rel_x - (self._code_linear.x)
+		rel_y = rel_y - (self._code_screen.container_y)
 	end
 	self._in_drag = true
-	self._cursor:SetOffsetXY(rel_x, event.rel_y)
+	self._cursor:SetOffsetXY(rel_x, rel_y)
 	self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
 end
 
 function AUIPlugin.AUICodeEdit:HandleDrag(event)
 	local rel_x = event.rel_x
+	local rel_y = event.rel_y
 	if event.target == self._code_screen then
 		rel_x = rel_x - (self._code_linear.x)
+		rel_y = rel_y - (self._code_screen.container_y)
 	end
-	self._cursor:SetOffsetXY(rel_x, event.rel_y)
+	self._cursor:SetOffsetXY(rel_x, rel_y)
 	self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
 end
 

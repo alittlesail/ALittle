@@ -159,10 +159,17 @@ function AUIPlugin.AUICodeSelectCursor:StartLineChar(line, char)
 	self._it_char_start = char
 end
 
-function AUIPlugin.AUICodeSelectCursor:UpdateLineChar(line, char)
+function AUIPlugin.AUICodeSelectCursor:UpdateLineChar(it_line, it_char)
 	self:ClearQuad()
-	self._it_line_end = line
-	self._it_char_end = char
+	self._it_line_end = it_line
+	local line = self._edit.line_list[it_line]
+	if line == nil then
+		self._it_char_end = 0
+	elseif line.char_count < it_char then
+		self._it_line_end = line.char_count
+	else
+		self._it_char_end = it_char
+	end
 	self:SetQuad()
 end
 

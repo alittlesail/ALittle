@@ -28,6 +28,14 @@ SuperMarioBros.EntityType = {
 	ET_FLAG_3 = 8,
 	ET_FLAG_4 = 9,
 	ET_FLAG_5 = 10,
+	ET_BORN_1 = 11,
 }
 
+SuperMarioBros.TILE_COL_COUNT = 13
+SuperMarioBros.TILE_ROW_COUNT = 11
+SuperMarioBros.TILE_WIDTH = 32
+SuperMarioBros.TILE_HEIGHT = 32
+SuperMarioBros.TILE_TEXTURE_NAME = "tile_map.png"
+SuperMarioBros.PLAYER_MAX_WALK_SPEED = 3
+SuperMarioBros.PLAYER_MAX_SPEED_RATE = 0.05
 end

@@ -13,6 +13,7 @@ protected enum EntityType
     ET_FLAG_3 = 8;	// 旗帜3
     ET_FLAG_4 = 9;	// 旗帜4
     ET_FLAG_5 = 10;	// 旗帜5
+    ET_BORN_1 = 11;	// 出生点
 }
 
 protected struct BattleMap
@@ -33,3 +34,14 @@ protected struct PlayerData
 
     int score;
 }
+
+
+protected var TILE_COL_COUNT = 13;
+protected var TILE_ROW_COUNT = 11;
+protected var TILE_WIDTH = 32;
+protected var TILE_HEIGHT = 32;
+protected var TILE_TEXTURE_NAME = "tile_map.png";
+
+
+protected var PLAYER_MAX_WALK_SPEED = 3;
+protected var PLAYER_MAX_SPEED_RATE = 0.05;

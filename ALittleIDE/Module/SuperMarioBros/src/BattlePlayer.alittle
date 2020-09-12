@@ -1,7 +1,271 @@
 
 namespace SuperMarioBros;
 
+public enum PlayerState
+{
+    PS_IDLE = 0;
+    PS_WALK = 1;
+    PS_JUMP = 2;
+}
+
 public class BattlePlayer : ALittle.DisplayLayout
 {
+	private ALittle.Sprite _level_1_sprite_right;
+	private ALittle.Sprite _level_1_sprite_left;
+	private ALittle.Sprite _level_2_sprite_right;
+	private ALittle.Sprite _level_2_sprite_left;
+	private ALittle.Sprite _level_3_sprite_right;
+	private ALittle.Sprite _level_3_sprite_left;
 
+    private int _state;
+    private bool _right = true;
+    private int _level = 1;
+
+    private double _speed = 0;
+    private double _speed_rate = 0;
+
+    private double _walk_frame_change = 0.0;
+    private int _walk_frame = 1;
+
+    private fun TCtor()
+    {
+        this._level_1_sprite_right.visible = false;
+        this._level_1_sprite_left.visible = false;
+        this._level_2_sprite_right.visible = false;
+        this._level_2_sprite_left.visible = false;
+        this._level_3_sprite_right.visible = false;
+        this._level_3_sprite_left.visible = false;
+    }
+
+    public fun Init(int row, int col, int level)
+    {
+        this._state = PlayerState.PS_IDLE;
+        this._speed = 0;
+        this._right = true;
+        this._level = level;
+        this._level = 1;
+        if (this._level == 1)
+        {
+            this._level_1_sprite_right.visible = true;
+            this.height = this._level_1_sprite_right.height;
+            this._level_1_sprite_right.col_index = 1;
+            this._level_1_sprite_right.row_index = 1;
+
+            this.x = col * TILE_WIDTH;
+            this.y = row * TILE_HEIGHT - this._level_1_sprite_right.height;
+        }
+        elseif (this._level == 2)
+        {
+            this._level_2_sprite_right.visible = true;
+            this.height = this._level_2_sprite_right.height;
+            this._level_2_sprite_right.col_index = 2;
+
+            this.x = col * TILE_WIDTH;
+            this.y = row * TILE_HEIGHT - this._level_2_sprite_right.height;
+        }
+        elseif (this._level == 3)
+        {
+            this._level_3_sprite_right.visible = true;
+            this.height = this._level_3_sprite_right.height;
+            this._level_3_sprite_right.col_index = 2;
+
+            this.x = col * TILE_WIDTH;
+            this.y = row * TILE_HEIGHT - this._level_3_sprite_right.height;
+        }
+    }
+
+    public fun UpdateFrame(int frame_time)
+    {
+        if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_D] != null)
+        {
+            // 如果是跳跃状态
+            if (this._state == PlayerState.PS_JUMP)
+            {
+
+            }
+            else
+            {
+                if (!this._right)
+                {
+                    this._speed_rate = 0;
+                    this._speed = 0;
+                    if (this._level == 1)
+                    {
+                        this._level_1_sprite_right.visible = true;
+                        this._level_1_sprite_left.visible = false;
+                    }
+                    elseif (this._level == 2)
+                    {
+                        this._level_2_sprite_right.visible = true;
+                        this._level_2_sprite_left.visible = false;
+                    }
+                    elseif (this._level == 3)
+                    {
+                        this._level_3_sprite_right.visible = true;
+                        this._level_3_sprite_left.visible = false;
+                    }
+                }
+                this._right = true;
+                this._state = PlayerState.PS_WALK;
+
+                this._speed_rate += 0.001;
+                if (this._speed_rate > PLAYER_MAX_SPEED_RATE) this._speed_rate = PLAYER_MAX_SPEED_RATE;
+                this._speed += this._speed_rate * frame_time;
+                if (this._speed >= PLAYER_MAX_WALK_SPEED) this._speed = PLAYER_MAX_WALK_SPEED;
+                this.x += this._speed;
+
+                this._walk_frame_change += 0.006 * frame_time * (1 + this._speed);
+                if (this._walk_frame_change >= 1)
+                {
+                    this._walk_frame_change = 0.0;
+                    this._walk_frame += 1;
+
+                    if (this._level == 1)
+                    {
+                        if (this._walk_frame == 2)
+                        	this._level_1_sprite_right.col_index = 5;
+                        elseif (this._walk_frame == 3)
+                        	this._level_1_sprite_right.col_index = 6;
+                        else
+                        {
+                            this._walk_frame = 1;
+                            this._level_1_sprite_right.col_index = 4;
+                        }
+                    }
+                    elseif (this._level == 2)
+                    {
+                        if (this._walk_frame == 2)
+                        	this._level_2_sprite_right.col_index = 5;
+                        elseif (this._walk_frame == 3)
+                        	this._level_2_sprite_right.col_index = 6;
+                        else
+                        {
+                            this._walk_frame = 1;
+                            this._level_2_sprite_right.col_index = 4;
+                        }
+                    }
+                    elseif (this._level == 3)
+                    {
+                        if (this._walk_frame == 2)
+                        	this._level_3_sprite_right.col_index = 5;
+                        elseif (this._walk_frame == 3)
+                        	this._level_3_sprite_right.col_index = 6;
+                        else
+                        {
+                            this._walk_frame = 1;
+                            this._level_3_sprite_right.col_index = 4;
+                        }
+                    }
+                }
+            }
+            return;
+        }
+
+        if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_A] != null)
+        {
+            // 如果是跳跃状态
+            if (this._state == PlayerState.PS_JUMP)
+            {
+
+            }
+            else
+            {
+                if (this._right)
+                {
+                    this._speed_rate = 0;
+                    this._speed = 0;
+                    if (this._level == 1)
+                    {
+                        this._level_1_sprite_right.visible = false;
+                        this._level_1_sprite_left.visible = true;
+                    }
+                    elseif (this._level == 2)
+                    {
+                        this._level_2_sprite_right.visible = false;
+                        this._level_2_sprite_left.visible = true;
+                    }
+                    elseif (this._level == 3)
+                    {
+                        this._level_3_sprite_right.visible = false;
+                        this._level_3_sprite_left.visible = true;
+                    }
+                }
+
+                this._right = false;
+                this._state = PlayerState.PS_WALK;
+
+                this._speed_rate += 0.001;
+                if (this._speed_rate > PLAYER_MAX_SPEED_RATE) this._speed_rate = PLAYER_MAX_SPEED_RATE;
+                this._speed += this._speed_rate * frame_time;
+                if (this._speed >= PLAYER_MAX_WALK_SPEED) this._speed = PLAYER_MAX_WALK_SPEED;
+                this.x -= this._speed;
+
+                this._walk_frame_change += 0.006 * frame_time * (1 + this._speed);
+                if (this._walk_frame_change >= 1)
+                {
+                    this._walk_frame_change = 0.0;
+                    this._walk_frame += 1;
+
+                    if (this._level == 1)
+                    {
+                        if (this._walk_frame == 2)
+                        	this._level_1_sprite_left.col_index = 4;
+                        elseif (this._walk_frame == 3)
+                        	this._level_1_sprite_left.col_index = 3;
+                        else
+                        {
+                            this._walk_frame = 1;
+                            this._level_1_sprite_left.col_index = 2;
+                        }
+                    }
+                    elseif (this._level == 2)
+                    {
+                        if (this._walk_frame == 2)
+                        	this._level_2_sprite_left.col_index = 4;
+                        elseif (this._walk_frame == 3)
+                        	this._level_2_sprite_left.col_index = 3;
+                        else
+                        {
+                            this._walk_frame = 1;
+                            this._level_2_sprite_left.col_index = 2;
+                        }
+                    }
+                    elseif (this._level == 3)
+                    {
+                        if (this._walk_frame == 2)
+                        	this._level_3_sprite_left.col_index = 4;
+                        elseif (this._walk_frame == 3)
+                        	this._level_3_sprite_left.col_index = 3;
+                        else
+                        {
+                            this._walk_frame = 1;
+                            this._level_3_sprite_left.col_index = 2;
+                        }
+                    }
+                }
+            }
+            return;
+        }
+
+        if (this._state == PlayerState.PS_WALK)
+        {
+            this._speed = 0;
+            this._state = PlayerState.PS_IDLE;
+            if (this._level == 1)
+            {
+                if (this._right) this._level_1_sprite_right.col_index = 1;
+                else this._level_1_sprite_left.col_index = 7;
+            }
+            elseif (this._level == 2)
+            {
+                if (this._right) this._level_2_sprite_right.col_index = 2;
+                else this._level_2_sprite_left.col_index = 6;
+            }
+            elseif (this._level == 3)
+            {
+                if (this._right) this._level_3_sprite_right.col_index = 2;
+                else this._level_3_sprite_left.col_index = 6;
+            }
+        }
+    }
 }

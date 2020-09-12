@@ -23,7 +23,7 @@ public class StageScene : ALittle.DisplayLayout
         this._life_text.text = g_GCenter.player_data.life;
 
         if (this._loop != null) this._loop.Stop();
-        this._loop = new ALittle.LoopTimer(bind(this.ShowTimeOut, this, world, subworld), 3000);
+        this._loop = new ALittle.LoopTimer(bind(this.ShowTimeOut, this, world, subworld), 1000);
         this._loop.Start();
     }
 

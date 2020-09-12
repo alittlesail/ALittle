@@ -159,11 +159,17 @@ public class AUICodeSelectCursor
         this._it_char_start = char;
     }
 
-    public fun UpdateLineChar(int line, int char)
+    public fun UpdateLineChar(int it_line, int it_char)
     {
         this.ClearQuad();
-        this._it_line_end = line;
-        this._it_char_end = char;
+        this._it_line_end = it_line;
+        var line = this._edit.line_list[it_line];
+        if (line == null)
+        	this._it_char_end = 0;
+        elseif (line.char_count < it_char)
+        	this._it_line_end = line.char_count;
+        else
+	        this._it_char_end = it_char;
         this.SetQuad();
     }
 

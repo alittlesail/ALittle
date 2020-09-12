@@ -53,6 +53,18 @@ function ALittle.ScrollScreen:HandleMButtonWheel(event)
 	self:RejustScrollBar()
 end
 
+function ALittle.ScrollScreen:EnableDrag(value)
+	if value then
+		self:AddEventListener(___all_struct[1337289812], self, self.HandleDrag)
+		self:AddEventListener(___all_struct[150587926], self, self.HandleDragEnd)
+		self:AddEventListener(___all_struct[1301789264], self, self.HandleDragBegin)
+	else
+		self:RemoveEventListener(___all_struct[1337289812], self, self.HandleDrag)
+		self:RemoveEventListener(___all_struct[150587926], self, self.HandleDragEnd)
+		self:RemoveEventListener(___all_struct[1301789264], self, self.HandleDragBegin)
+	end
+end
+
 function ALittle.ScrollScreen.__getter:open_extends_drag()
 	return self._open_extends_drag
 end

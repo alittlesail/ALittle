@@ -1,12 +1,6 @@
 
 namespace SuperMarioBros;
 
-var TILE_COL_COUNT = 13;
-var TILE_ROW_COUNT = 11;
-var TILE_WIDTH = 32;
-var TILE_HEIGHT = 32;
-var TILE_TEXTURE_NAME = "tile_map.png";
-
 public class BattleScene : ALittle.DisplayLayout
 {
 	private ALittle.ScrollScreen _scroll_screen;
@@ -20,8 +14,11 @@ public class BattleScene : ALittle.DisplayLayout
 
     private BattleMap _battle_map;
     private Map<int, Map<int, ALittle.DisplayObject>> _entity_map;
+    private BattlePlayer _player;
 
     private int _coin_value;
+
+    private ALittle.LoopFrame _frame_loop;
 
     public fun TCtor()
     {
@@ -58,10 +55,26 @@ public class BattleScene : ALittle.DisplayLayout
             }
         }
 
+        for (var row, submap in this._battle_map.object)
+        {
+            for (var col, type in submap)
+            {
+                if (type == EntityType.ET_BORN_1)
+                    this._player.Init(row + 1, col, g_GCenter.player_data.level);
+            }
+        }
+
         this._scroll_screen.container.width = this._tile_linear.width + this._scroll_screen.view_width;
         this._scroll_screen.RefreshClipDisLine();
 
         this.visible = true;
+
+        A_UISystem.keydown_callback = bind(this.HandleKeyDown, this);
+
+        if (this._frame_loop != null)
+            this._frame_loop.Stop();
+        this._frame_loop = new ALittle.LoopFrame(bind(this.HandleFrame, this));
+        this._frame_loop.Start();
     }
 
     private fun SetTileShow(int row, int col, int show_row, int show_col)
@@ -104,6 +117,22 @@ public class BattleScene : ALittle.DisplayLayout
         sprite.visible = true;
     }
 
+    private fun HandleFrame(int frame_time)
+    {
+        this._player.UpdateFrame(frame_time);
+    }
+
+
+    private fun HandleKeyDown(int mod, int sym, int scancode)
+    {
+        if (sym == ALittle.UIEnumTypes.KEY_K)
+        {
+        }
+
+        if (sym == ALittle.UIEnumTypes.KEY_J)
+        {
+        }
+    }
 
     public fun Hide()
     {

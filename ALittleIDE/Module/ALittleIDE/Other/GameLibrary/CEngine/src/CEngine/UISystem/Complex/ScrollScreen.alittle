@@ -100,6 +100,22 @@ public class ScrollScreen : DisplayGroup
         }
         this.RejustScrollBar();
     }
+
+    public fun EnableDrag(bool value)
+    {
+        if (value)
+        {
+            this.AddEventListener(this, this.HandleDrag);
+            this.AddEventListener(this, this.HandleDragEnd);
+            this.AddEventListener(this, this.HandleDragBegin);
+        }
+        else
+        {
+            this.RemoveEventListener(this, this.HandleDrag);
+            this.RemoveEventListener(this, this.HandleDragEnd);
+            this.RemoveEventListener(this, this.HandleDragBegin);
+        }
+    }
     
     public get open_extends_drag() : bool
     {

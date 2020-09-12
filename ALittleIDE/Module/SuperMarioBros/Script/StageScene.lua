@@ -19,7 +19,7 @@ function SuperMarioBros.StageScene:Show(world, subworld)
 	if self._loop ~= nil then
 		self._loop:Stop()
 	end
-	self._loop = ALittle.LoopTimer(Lua.Bind(self.ShowTimeOut, self, world, subworld), 3000)
+	self._loop = ALittle.LoopTimer(Lua.Bind(self.ShowTimeOut, self, world, subworld), 1000)
 	self._loop:Start()
 end
 

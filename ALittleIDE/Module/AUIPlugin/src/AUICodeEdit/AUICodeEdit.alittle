@@ -89,6 +89,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         this._code_screen.AddEventListener(this, this.HandleTextInput);
         this._code_screen.AddEventListener(this, this.HandleMouseMove);
         this._code_screen.AddEventListener(this, this.HandleDropFile);
+        this._code_screen.EnableDrag(false);
         this.AddEventListener(this, this.HandleChangedEvent);
 
         this._find_dialog.visible = false;
@@ -245,10 +246,15 @@ public class AUICodeEdit : ALittle.DisplayLayout
     private fun HandleLButtonDown(ALittle.UILButtonDownEvent event)
     {
         var rel_x = event.rel_x;
-        if (event.target == this._code_screen) rel_x -= this._code_linear.x;
+        var rel_y = event.rel_y;
+        if (event.target == this._code_screen)
+        {
+            rel_x -= this._code_linear.x;
+            rel_y -= this._code_screen.container_y;
+        } 
 
         this._select_cursor.Hide();
-        this._cursor.SetOffsetXY(rel_x, event.rel_y);
+        this._cursor.SetOffsetXY(rel_x, rel_y);
         
         // 如果多次点击，那么就选中文本
         if (event.count > 1)
@@ -262,7 +268,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
         if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_CTRL] && this._query_info != null && this._language != null)
         {
-            var it_line, it_char = this.CalcLineAndChar(rel_x, event.rel_y);
+            var it_line, it_char = this.CalcLineAndChar(rel_x, rel_y);
             this.DoQueryGoto(it_line, it_char);
             this.StopQueryInfo();
         }
@@ -309,19 +315,30 @@ public class AUICodeEdit : ALittle.DisplayLayout
         }
 
         var rel_x = event.rel_x;
-        if (event.target == this._code_screen) rel_x -= this._code_linear.x;
+        var rel_y = event.rel_y;
+        if (event.target == this._code_screen)
+        {
+            rel_x -= this._code_linear.x;
+            rel_y -= this._code_screen.container_y;
+        }
 
         this._in_drag = true;
-        this._cursor.SetOffsetXY(rel_x, event.rel_y);
+        this._cursor.SetOffsetXY(rel_x, rel_y);
         this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
     }
 
     private fun HandleDrag(ALittle.UIButtonDragEvent event)
     {
-        var rel_x = event.rel_x;
-        if (event.target == this._code_screen) rel_x -= this._code_linear.x;
 
-        this._cursor.SetOffsetXY(rel_x, event.rel_y);
+        var rel_x = event.rel_x;
+        var rel_y = event.rel_y;
+        if (event.target == this._code_screen)
+        {
+            rel_x -= this._code_linear.x;
+            rel_y -= this._code_screen.container_y;
+        }
+
+        this._cursor.SetOffsetXY(rel_x, rel_y);
         this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);
     }
 

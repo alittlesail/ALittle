@@ -8,7 +8,11 @@ class GCenter
     private ALittle.DisplayLayout _dialog_layer;
 
     private LoginScene _login_scene;
+    private StageScene _stage_scene;
+    private BattleScene _battle_scene;
     private EditScene _edit_scene;
+
+    private PlayerData _player_data;
 
     public ctor()
     {
@@ -36,15 +40,35 @@ class GCenter
         this._login_scene = g_Control.CreateControl{LoginScene}("login_scene");
         this._main_layer.AddChild(this._login_scene);
         this._login_scene.visible = false;
+        this._stage_scene = g_Control.CreateControl{StageScene}("stage_scene");
+        this._main_layer.AddChild(this._stage_scene);
+        this._stage_scene.visible = false;
+        this._battle_scene = g_Control.CreateControl{BattleScene}("battle_scene");
+        this._main_layer.AddChild(this._battle_scene);
+        this._battle_scene.visible = false;
         this._edit_scene = g_Control.CreateControl{EditScene}("edit_scene");
         this._main_layer.AddChild(this._edit_scene);
         this._edit_scene.visible = false;
 
+        this.ReStart();
+    }
+
+    public fun ReStart()
+    {
+        this._player_data = new PlayerData();
+        this._player_data.score = 0;
+        this._player_data.world = 1;
+        this._player_data.subworld = 1;
+        this._player_data.life = 3;
+        this._player_data.level = 1;
         this._login_scene.Show();
     }
 
     public get login_scene() : LoginScene { return this._login_scene; }
+    public get stage_scene() : StageScene { return this._stage_scene; }
+    public get battle_scene() : BattleScene { return this._battle_scene; }
     public get edit_scene() : EditScene { return this._edit_scene; }
+    public get player_data() : PlayerData { return this._player_data; }
 
     public fun Shutdown()
     {

@@ -1,0 +1,112 @@
+
+namespace SuperMarioBros;
+
+var TILE_COL_COUNT = 13;
+var TILE_ROW_COUNT = 11;
+var TILE_WIDTH = 32;
+var TILE_HEIGHT = 32;
+var TILE_TEXTURE_NAME = "tile_map.png";
+
+public class BattleScene : ALittle.DisplayLayout
+{
+	private ALittle.ScrollScreen _scroll_screen;
+	private ALittle.Linear _tile_linear;
+	private ALittle.DisplayLayout _entity_container;
+
+	private ALittle.Text _score;
+	private ALittle.Text _coin;
+	private ALittle.Text _stage;
+	private ALittle.Text _time;
+
+    private BattleMap _battle_map;
+    private Map<int, Map<int, ALittle.DisplayObject>> _entity_map;
+
+    private int _coin_value;
+
+    public fun TCtor()
+    {
+        cast<EditContainer>(this._scroll_screen.container).Init(this._tile_linear);
+    }
+
+    public async fun Show(int world, int subworld)
+    {
+        this._battle_map = g_Control.LoadMessageFromFile{BattleMap}("Other/Map/world_"..world.."_"..subworld..".map");
+        if (this._battle_map == null)
+        {
+            ALittle.Error("map load filed! Other/Map/world_"..world.."_"..subworld..".map");
+            return;
+        }
+
+        this._coin_value = 0;
+
+        this._score.text = g_GCenter.player_data.score;
+        this._coin.text = this._coin_value;
+        this._stage.text = g_GCenter.player_data.world.."-"..g_GCenter.player_data.subworld;
+        this._time.text = 60 * 5;
+
+        this._tile_linear.RemoveAllChild();
+        this._entity_container.RemoveAllChild();
+        this._entity_map = new Map<int, Map<int, ALittle.DisplayObject>>();
+
+        for (var row, submap in this._battle_map.background)
+        {
+            for (var col, index in submap)
+            {
+                var show_row = ALittle.Math_Floor(index / TILE_COL_COUNT) + 1;
+                var show_col = index % TILE_COL_COUNT + 1;
+                this.SetTileShow(row, col, show_row, show_col);
+            }
+        }
+
+        this._scroll_screen.container.width = this._tile_linear.width + this._scroll_screen.view_width;
+        this._scroll_screen.RefreshClipDisLine();
+
+        this.visible = true;
+    }
+
+    private fun SetTileShow(int row, int col, int show_row, int show_col)
+    {
+        if (this._tile_linear.child_count < col + 1)
+        {
+            for (var i = this._tile_linear.child_count; i < col + 1; 1)
+            {
+                var linear = new ALittle.Linear(g_Control);
+                linear.type = ALittle.UIEnumTypes.TYPE_V;
+                linear.width = TILE_WIDTH;
+                this._tile_linear.AddChild(linear);
+            }
+
+            this._scroll_screen.container.width = this._tile_linear.width + this._scroll_screen.view_width;
+            this._scroll_screen.RejustScrollBar();
+        }
+
+        var linear = cast<ALittle.Linear>(this._tile_linear.GetChildByIndex(col + 1));
+        if (linear == null) return;
+
+        if (linear.child_count < row + 1)
+        {
+            for (var i = linear.child_count; i < row + 1; 1)
+            {
+                var sprite = new ALittle.Sprite(g_Control);
+                sprite.texture_name = TILE_TEXTURE_NAME;
+                sprite.row_count = TILE_ROW_COUNT;
+                sprite.col_count = TILE_COL_COUNT;
+                sprite.width = TILE_WIDTH;
+                sprite.height = TILE_HEIGHT;
+                sprite.visible = false;
+                linear.AddChild(sprite);
+            }
+        }
+
+        var sprite = cast<ALittle.Sprite>(linear.GetChildByIndex(row + 1));
+        sprite.row_index = show_row;
+        sprite.col_index = show_col;
+        sprite.visible = true;
+    }
+
+
+    public fun Hide()
+    {
+        this.visible = false;
+    }
+}

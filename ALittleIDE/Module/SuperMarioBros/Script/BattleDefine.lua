@@ -4,6 +4,12 @@ if _G.SuperMarioBros == nil then _G.SuperMarioBros = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
 
+ALittle.RegStruct(1141499810, "SuperMarioBros.PlayerData", {
+name = "SuperMarioBros.PlayerData", ns_name = "SuperMarioBros", rl_name = "PlayerData", hash_code = 1141499810,
+name_list = {"level","life","world","subworld","score"},
+type_list = {"int","int","int","int","int"},
+option_map = {}
+})
 ALittle.RegStruct(-876795489, "SuperMarioBros.BattleMap", {
 name = "SuperMarioBros.BattleMap", ns_name = "SuperMarioBros", rl_name = "BattleMap", hash_code = -876795489,
 name_list = {"row_count","col_count","background","object"},

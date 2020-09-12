@@ -1,0 +1,40 @@
+
+namespace SuperMarioBros;
+
+public class StageScene : ALittle.DisplayLayout
+{
+	private ALittle.Text _score;
+	private ALittle.Text _coin;
+	private ALittle.Text _stage;
+	private ALittle.Text _time;
+	private ALittle.Text _stage_text;
+	private ALittle.Text _life_text;
+    private ALittle.LoopObject _loop;
+
+    public fun Show(int world, int subworld)
+    {
+        this.visible = true;
+
+        this._score.text = g_GCenter.player_data.score;
+        this._coin.text = 0;
+        this._stage.text = g_GCenter.player_data.world.."-"..g_GCenter.player_data.subworld;
+        this._time.text = 0;
+        this._stage_text.text = this._stage.text;
+        this._life_text.text = g_GCenter.player_data.life;
+
+        if (this._loop != null) this._loop.Stop();
+        this._loop = new ALittle.LoopTimer(bind(this.ShowTimeOut, this, world, subworld), 3000);
+        this._loop.Start();
+    }
+
+    private fun ShowTimeOut(int world, int subworld)
+    {
+        g_GCenter.battle_scene.Show(world, subworld);
+        this.Hide();
+    }
+
+    public fun Hide()
+    {
+        this.visible = false;
+    }
+}

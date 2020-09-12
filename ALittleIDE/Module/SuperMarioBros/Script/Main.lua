@@ -29,6 +29,8 @@ function SuperMarioBros.__Module_Setup(layer_group, control, module_base_path, s
 	Require(script_base_path, "BattleDefine")
 	Require(script_base_path, "LoginScene")
 	Require(script_base_path, "EditScene")
+	Require(script_base_path, "StageScene")
+	Require(script_base_path, "BattleScene")
 	Require(script_base_path, "GCenter")
 	g_GCenter:Setup()
 end

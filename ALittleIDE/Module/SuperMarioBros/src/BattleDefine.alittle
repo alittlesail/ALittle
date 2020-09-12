@@ -22,3 +22,14 @@ protected struct BattleMap
     Map<int, Map<int, int>> background;	// 背景
     Map<int, Map<int, int>> object;		// 实体对象
 }
+
+protected struct PlayerData
+{
+    int level;	// 玩家等级
+    int life;	// 玩家生命数量
+
+    int world;	// 打关卡
+    int subworld;	// 子关卡
+
+    int score;
+}

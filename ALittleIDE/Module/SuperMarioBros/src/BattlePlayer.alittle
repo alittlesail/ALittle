@@ -1,0 +1,7 @@
+
+namespace SuperMarioBros;
+
+public class BattlePlayer : ALittle.DisplayLayout
+{
+
+}

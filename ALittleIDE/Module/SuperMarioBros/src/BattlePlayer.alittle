@@ -21,8 +21,11 @@ public class BattlePlayer : ALittle.DisplayLayout
     private int _level = 1;
 
     private bool _right = true;
-    private double _speed = 0;
-    private double _speed_rate = 0;
+    private double _lr_speed = 0;
+    private double _lr_speed_rate = 0;
+    private double _ud_speed = 0;
+    private double _ud_speed_rate = 0;
+    private double _jump_height = 0;
 
     private double _walk_frame_change = 0.0;
     private int _walk_frame = 1;
@@ -41,10 +44,12 @@ public class BattlePlayer : ALittle.DisplayLayout
     {
         this._state = PlayerState.PS_IDLE;
         this._right = true;
-        this._speed = 0;
-        this._speed_rate = 0;
+        this._lr_speed = 0;
+        this._lr_speed_rate = 0;
+        this._ud_speed = 0;
+        this._ud_speed_rate = 0;
         this._level = level;
-        this._level = 1;
+        this._level = 3;
         if (this._level == 1)
         {
             this._level_1_sprite_right.visible = true;
@@ -75,10 +80,54 @@ public class BattlePlayer : ALittle.DisplayLayout
         }
     }
 
+    public fun Jump()
+    {
+        if (this._state != PlayerState.PS_WALK && this._state != PlayerState.PS_IDLE) return;
+
+        this._state = PlayerState.PS_JUMP;
+        this._ud_speed_rate = 0.5;
+    }
+
+    public fun Fire()
+    {
+
+    }
+
     public fun UpdateFrame(int frame_time)
     {
         var walk_left = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_A] != null;
         var walk_right = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_D] != null;
+        var jump = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_K] != null;
+
+        if (jump)
+        {
+            if (this._state == PlayerState.PS_JUMP)
+            {
+                this._ud_speed_rate += 0.01;
+                this._ud_speed += this._ud_speed_rate * frame_time;
+                
+                if (this._jump_height < PLAYER_MAX_JUMP_HEIGHT)
+                {
+                    var delta = this._ud_speed;
+                    this._jump_height += delta;
+                    if (this._jump_height > PLAYER_MAX_JUMP_HEIGHT)
+                    {
+                        delta = PLAYER_MAX_JUMP_HEIGHT - this._jump_height;
+                        this._jump_height = PLAYER_MAX_JUMP_HEIGHT; 
+                    }
+                    this.y += delta;
+                }
+            }
+            elseif (this._state == PlayerState.PS_WALK || this._state == PlayerState.PS_IDLE)
+            {
+                this._state = PlayerState.PS_JUMP;
+                this._ud_speed_rate = 0.01;
+                this._ud_speed += this._ud_speed_rate * frame_time;
+
+                this._jump_height = this._ud_speed;
+                this.y += this._ud_speed;
+            }
+        }
 
         if (walk_left || walk_right)
         {
@@ -87,7 +136,7 @@ public class BattlePlayer : ALittle.DisplayLayout
             {
 
             }
-            else
+            elseif (this._state == PlayerState.PS_WALK || this._state == PlayerState.PS_IDLE)
             {
                 if (walk_right)
                 {
@@ -96,11 +145,11 @@ public class BattlePlayer : ALittle.DisplayLayout
                         this._right = true;
                         this.UpdateLeftRight();
                     }
-                    if (this._speed_rate < 0)
-                        this._speed_rate += 0.03;
+                    if (this._lr_speed_rate < 0)
+                        this._lr_speed_rate += 0.03;
                     else
-	                    this._speed_rate += 0.001;
-                    if (this._speed_rate > PLAYER_MAX_SPEED_RATE) this._speed_rate = PLAYER_MAX_SPEED_RATE;
+                        this._lr_speed_rate += 0.001;
+                    if (this._lr_speed_rate > PLAYER_MAX_SPEED_RATE) this._lr_speed_rate = PLAYER_MAX_SPEED_RATE;
                 }
                 else
                 {
@@ -109,20 +158,19 @@ public class BattlePlayer : ALittle.DisplayLayout
                         this._right = false;
                         this.UpdateLeftRight();
                     }
-                    if (this._speed_rate >= 0)
-                        this._speed_rate -= 0.03;
+                    if (this._lr_speed_rate >= 0)
+                        this._lr_speed_rate -= 0.03;
                     else
-	                    this._speed_rate -= 0.001;
-                    if (this._speed_rate < -PLAYER_MAX_SPEED_RATE) this._speed_rate = -PLAYER_MAX_SPEED_RATE;
+                        this._lr_speed_rate -= 0.001;
+                    if (this._lr_speed_rate < -PLAYER_MAX_SPEED_RATE) this._lr_speed_rate = -PLAYER_MAX_SPEED_RATE;
                 }
 
-                this._speed += this._speed_rate * frame_time;
-                if (this._speed > PLAYER_MAX_WALK_SPEED) this._speed = PLAYER_MAX_WALK_SPEED;
-                elseif (this._speed < -PLAYER_MAX_WALK_SPEED) this._speed = -PLAYER_MAX_WALK_SPEED;
+                this._lr_speed += this._lr_speed_rate * frame_time;
+                if (this._lr_speed > PLAYER_MAX_WALK_SPEED) this._lr_speed = PLAYER_MAX_WALK_SPEED;
+                elseif (this._lr_speed < -PLAYER_MAX_WALK_SPEED) this._lr_speed = -PLAYER_MAX_WALK_SPEED;
+                this.x += this._lr_speed;
 
                 this._state = PlayerState.PS_WALK;
-                this.x += this._speed;
-
                 this.WalkUpdateFrame(frame_time);
             }
             return;
@@ -130,28 +178,28 @@ public class BattlePlayer : ALittle.DisplayLayout
 
         if (this._state == PlayerState.PS_WALK)
         {
-            if (this._speed > 0)
+            if (this._lr_speed > 0)
             {
-                this._speed -= 0.01 * frame_time;
-                if (this._speed >= 0)
+                this._lr_speed -= 0.01 * frame_time;
+                if (this._lr_speed >= 0)
                 {
-                    this.x += this._speed;
+                    this.x += this._lr_speed;
                     this.WalkUpdateFrame(frame_time);
                     return;
                 }
             }
-            elseif (this._speed < 0)
+            elseif (this._lr_speed < 0)
             {
-                this._speed += 0.01 * frame_time;
-                if (this._speed < 0)
+                this._lr_speed += 0.01 * frame_time;
+                if (this._lr_speed < 0)
                 {
-                    this.x += this._speed;
+                    this.x += this._lr_speed;
                     this.WalkUpdateFrame(frame_time);
                     return;
                 }
             }
 
-            this._speed = 0;
+            this._lr_speed = 0;
             this._state = PlayerState.PS_IDLE;
             if (this._level == 1)
             {
@@ -192,7 +240,7 @@ public class BattlePlayer : ALittle.DisplayLayout
 
     private fun WalkUpdateFrame(int frame_time)
     {
-        this._walk_frame_change += 0.006 * frame_time * (1 + ALittle.Math_Abs(this._speed));
+        this._walk_frame_change += 0.006 * frame_time * (1 + ALittle.Math_Abs(this._lr_speed));
         if (this._walk_frame_change >= 1)
         {
             this._walk_frame_change = 0.0;
@@ -202,7 +250,7 @@ public class BattlePlayer : ALittle.DisplayLayout
             {
                 if (this._level == 1)
                 {
-                    if (this._speed < 0)
+                    if (this._lr_speed < 0)
                     {
                         this._walk_frame = 1;
                         this._level_1_sprite_right.col_index = 3;
@@ -219,7 +267,7 @@ public class BattlePlayer : ALittle.DisplayLayout
                 }
                 elseif (this._level == 2)
                 {
-                    if (this._speed < 0)
+                    if (this._lr_speed < 0)
                     {
                         this._walk_frame = 1;
                         this._level_2_sprite_right.col_index = 3;
@@ -236,7 +284,7 @@ public class BattlePlayer : ALittle.DisplayLayout
                 }
                 elseif (this._level == 3)
                 {
-                    if (this._speed < 0)
+                    if (this._lr_speed < 0)
                     {
                         this._walk_frame = 1;
                         this._level_3_sprite_right.col_index = 3;
@@ -256,7 +304,7 @@ public class BattlePlayer : ALittle.DisplayLayout
             {
                 if (this._level == 1)
                 {
-                    if (this._speed >= 0)
+                    if (this._lr_speed >= 0)
                     {
                         this._walk_frame = 1;
                         this._level_1_sprite_left.col_index = 5;
@@ -273,7 +321,7 @@ public class BattlePlayer : ALittle.DisplayLayout
                 }
                 elseif (this._level == 2)
                 {
-                    if (this._speed >= 0)
+                    if (this._lr_speed >= 0)
                     {
                         this._walk_frame = 1;
                         this._level_2_sprite_left.col_index = 5;
@@ -290,7 +338,7 @@ public class BattlePlayer : ALittle.DisplayLayout
                 }
                 elseif (this._level == 3)
                 {
-                    if (this._speed >= 0)
+                    if (this._lr_speed >= 0)
                     {
                         this._walk_frame = 1;
                         this._level_3_sprite_left.col_index = 5;

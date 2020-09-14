@@ -45,3 +45,4 @@ protected var TILE_TEXTURE_NAME = "tile_map.png";
 
 protected var PLAYER_MAX_WALK_SPEED = 3;
 protected var PLAYER_MAX_SPEED_RATE = 0.05;
+protected var PLAYER_MAX_JUMP_HEIGHT = 4*32;

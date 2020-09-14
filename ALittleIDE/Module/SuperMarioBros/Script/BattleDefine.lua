@@ -38,4 +38,5 @@ SuperMarioBros.TILE_HEIGHT = 32
 SuperMarioBros.TILE_TEXTURE_NAME = "tile_map.png"
 SuperMarioBros.PLAYER_MAX_WALK_SPEED = 3
 SuperMarioBros.PLAYER_MAX_SPEED_RATE = 0.05
+SuperMarioBros.PLAYER_MAX_JUMP_HEIGHT = 4 * 32
 end

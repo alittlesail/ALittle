@@ -127,10 +127,12 @@ public class BattleScene : ALittle.DisplayLayout
     {
         if (sym == ALittle.UIEnumTypes.KEY_K)
         {
+            this._player.Jump();
         }
 
         if (sym == ALittle.UIEnumTypes.KEY_J)
         {
+            this._player.Fire();
         }
     }
 

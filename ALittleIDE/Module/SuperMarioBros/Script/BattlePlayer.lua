@@ -18,8 +18,11 @@ SuperMarioBros.BattlePlayer = Lua.Class(ALittle.DisplayLayout, "SuperMarioBros.B
 function SuperMarioBros.BattlePlayer:Ctor()
 	___rawset(self, "_level", 1)
 	___rawset(self, "_right", true)
-	___rawset(self, "_speed", 0)
-	___rawset(self, "_speed_rate", 0)
+	___rawset(self, "_lr_speed", 0)
+	___rawset(self, "_lr_speed_rate", 0)
+	___rawset(self, "_ud_speed", 0)
+	___rawset(self, "_ud_speed_rate", 0)
+	___rawset(self, "_jump_height", 0)
 	___rawset(self, "_walk_frame_change", 0.0)
 	___rawset(self, "_walk_frame", 1)
 end
@@ -36,10 +39,12 @@ end
 function SuperMarioBros.BattlePlayer:Init(row, col, level)
 	self._state = SuperMarioBros.PlayerState.PS_IDLE
 	self._right = true
-	self._speed = 0
-	self._speed_rate = 0
+	self._lr_speed = 0
+	self._lr_speed_rate = 0
+	self._ud_speed = 0
+	self._ud_speed_rate = 0
 	self._level = level
-	self._level = 1
+	self._level = 3
 	if self._level == 1 then
 		self._level_1_sprite_right.visible = true
 		self.height = self._level_1_sprite_right.height
@@ -62,68 +67,101 @@ function SuperMarioBros.BattlePlayer:Init(row, col, level)
 	end
 end
 
+function SuperMarioBros.BattlePlayer:Jump()
+	if self._state ~= SuperMarioBros.PlayerState.PS_WALK and self._state ~= SuperMarioBros.PlayerState.PS_IDLE then
+		return
+	end
+	self._state = SuperMarioBros.PlayerState.PS_JUMP
+	self._ud_speed_rate = 0.5
+end
+
+function SuperMarioBros.BattlePlayer:Fire()
+end
+
 function SuperMarioBros.BattlePlayer:UpdateFrame(frame_time)
 	local walk_left = A_UISystem.sym_map[97] ~= nil
 	local walk_right = A_UISystem.sym_map[100] ~= nil
+	local jump = A_UISystem.sym_map[107] ~= nil
+	if jump then
+		if self._state == SuperMarioBros.PlayerState.PS_JUMP then
+			self._ud_speed_rate = self._ud_speed_rate + (0.01)
+			self._ud_speed = self._ud_speed + (self._ud_speed_rate * frame_time)
+			if self._jump_height < SuperMarioBros.PLAYER_MAX_JUMP_HEIGHT then
+				local delta = self._ud_speed
+				self._jump_height = self._jump_height + (delta)
+				if self._jump_height > SuperMarioBros.PLAYER_MAX_JUMP_HEIGHT then
+					delta = SuperMarioBros.PLAYER_MAX_JUMP_HEIGHT - self._jump_height
+					self._jump_height = SuperMarioBros.PLAYER_MAX_JUMP_HEIGHT
+				end
+				self.y = self.y + (delta)
+			end
+		elseif self._state == SuperMarioBros.PlayerState.PS_WALK or self._state == SuperMarioBros.PlayerState.PS_IDLE then
+			self._state = SuperMarioBros.PlayerState.PS_JUMP
+			self._ud_speed_rate = 0.01
+			self._ud_speed = self._ud_speed + (self._ud_speed_rate * frame_time)
+			self._jump_height = self._ud_speed
+			self.y = self.y + (self._ud_speed)
+		end
+	end
 	if walk_left or walk_right then
 		if self._state == SuperMarioBros.PlayerState.PS_JUMP then
-		else
+		elseif self._state == SuperMarioBros.PlayerState.PS_WALK or self._state == SuperMarioBros.PlayerState.PS_IDLE then
 			if walk_right then
 				if not self._right then
 					self._right = true
 					self:UpdateLeftRight()
 				end
-				if self._speed_rate < 0 then
-					self._speed_rate = self._speed_rate + (0.03)
+				if self._lr_speed_rate < 0 then
+					self._lr_speed_rate = self._lr_speed_rate + (0.03)
 				else
-					self._speed_rate = self._speed_rate + (0.001)
+					self._lr_speed_rate = self._lr_speed_rate + (0.001)
 				end
-				if self._speed_rate > SuperMarioBros.PLAYER_MAX_SPEED_RATE then
-					self._speed_rate = SuperMarioBros.PLAYER_MAX_SPEED_RATE
+				if self._lr_speed_rate > SuperMarioBros.PLAYER_MAX_SPEED_RATE then
+					self._lr_speed_rate = SuperMarioBros.PLAYER_MAX_SPEED_RATE
 				end
 			else
 				if self._right then
 					self._right = false
 					self:UpdateLeftRight()
 				end
-				if self._speed_rate >= 0 then
-					self._speed_rate = self._speed_rate - (0.03)
+				if self._lr_speed_rate >= 0 then
+					self._lr_speed_rate = self._lr_speed_rate - (0.03)
 				else
-					self._speed_rate = self._speed_rate - (0.001)
+					self._lr_speed_rate = self._lr_speed_rate - (0.001)
 				end
-				if self._speed_rate < -SuperMarioBros.PLAYER_MAX_SPEED_RATE then
-					self._speed_rate = -SuperMarioBros.PLAYER_MAX_SPEED_RATE
+				if self._lr_speed_rate < -SuperMarioBros.PLAYER_MAX_SPEED_RATE then
+					self._lr_speed_rate = -SuperMarioBros.PLAYER_MAX_SPEED_RATE
 				end
 			end
-			self._speed = self._speed + (self._speed_rate * frame_time)
-			if self._speed > SuperMarioBros.PLAYER_MAX_WALK_SPEED then
-				self._speed = SuperMarioBros.PLAYER_MAX_WALK_SPEED
-			elseif self._speed < -SuperMarioBros.PLAYER_MAX_WALK_SPEED then
-				self._speed = -SuperMarioBros.PLAYER_MAX_WALK_SPEED
+			self._lr_speed = self._lr_speed + (self._lr_speed_rate * frame_time)
+			if self._lr_speed > SuperMarioBros.PLAYER_MAX_WALK_SPEED then
+				self._lr_speed = SuperMarioBros.PLAYER_MAX_WALK_SPEED
+			elseif self._lr_speed < -SuperMarioBros.PLAYER_MAX_WALK_SPEED then
+				self._lr_speed = -SuperMarioBros.PLAYER_MAX_WALK_SPEED
 			end
+			self.x = self.x + (self._lr_speed)
 			self._state = SuperMarioBros.PlayerState.PS_WALK
-			self.x = self.x + (self._speed)
 			self:WalkUpdateFrame(frame_time)
 		end
 		return
 	end
 	if self._state == SuperMarioBros.PlayerState.PS_WALK then
-		if self._speed > 0 then
-			self._speed = self._speed - (0.01 * frame_time)
-			if self._speed >= 0 then
-				self.x = self.x + (self._speed)
+		if self._lr_speed > 0 then
+			self._lr_speed = self._lr_speed - (0.01 * frame_time)
+			if self._lr_speed >= 0 then
+				self.x = self.x + (self._lr_speed)
 				self:WalkUpdateFrame(frame_time)
 				return
 			end
-		elseif self._speed < 0 then
-			self._speed = self._speed + (0.01 * frame_time)
-			if self._speed < 0 then
-				self.x = self.x + (self._speed)
+		elseif self._lr_speed < 0 then
+			self._lr_speed = self._lr_speed + (0.01 * frame_time)
+			if self._lr_speed < 0 then
+				self.x = self.x + (self._lr_speed)
 				self:WalkUpdateFrame(frame_time)
 				return
 			end
 		end
-		self._speed = 0
+		self._lr_speed = 0
 		self._state = SuperMarioBros.PlayerState.PS_IDLE
 		if self._level == 1 then
 			if self._right then
@@ -161,13 +199,13 @@ function SuperMarioBros.BattlePlayer:UpdateLeftRight()
 end
 
 function SuperMarioBros.BattlePlayer:WalkUpdateFrame(frame_time)
-	self._walk_frame_change = self._walk_frame_change + (0.006 * frame_time * (1 + ALittle.Math_Abs(self._speed)))
+	self._walk_frame_change = self._walk_frame_change + (0.006 * frame_time * (1 + ALittle.Math_Abs(self._lr_speed)))
 	if self._walk_frame_change >= 1 then
 		self._walk_frame_change = 0.0
 		self._walk_frame = self._walk_frame + (1)
 		if self._right then
 			if self._level == 1 then
-				if self._speed < 0 then
+				if self._lr_speed < 0 then
 					self._walk_frame = 1
 					self._level_1_sprite_right.col_index = 3
 				elseif self._walk_frame == 2 then
@@ -179,7 +217,7 @@ function SuperMarioBros.BattlePlayer:WalkUpdateFrame(frame_time)
 					self._level_1_sprite_right.col_index = 4
 				end
 			elseif self._level == 2 then
-				if self._speed < 0 then
+				if self._lr_speed < 0 then
 					self._walk_frame = 1
 					self._level_2_sprite_right.col_index = 3
 				elseif self._walk_frame == 2 then
@@ -191,7 +229,7 @@ function SuperMarioBros.BattlePlayer:WalkUpdateFrame(frame_time)
 					self._level_2_sprite_right.col_index = 4
 				end
 			elseif self._level == 3 then
-				if self._speed < 0 then
+				if self._lr_speed < 0 then
 					self._walk_frame = 1
 					self._level_3_sprite_right.col_index = 3
 				elseif self._walk_frame == 2 then
@@ -205,7 +243,7 @@ function SuperMarioBros.BattlePlayer:WalkUpdateFrame(frame_time)
 			end
 		else
 			if self._level == 1 then
-				if self._speed >= 0 then
+				if self._lr_speed >= 0 then
 					self._walk_frame = 1
 					self._level_1_sprite_left.col_index = 5
 				elseif self._walk_frame == 2 then
@@ -217,7 +255,7 @@ function SuperMarioBros.BattlePlayer:WalkUpdateFrame(frame_time)
 					self._level_1_sprite_left.col_index = 2
 				end
 			elseif self._level == 2 then
-				if self._speed >= 0 then
+				if self._lr_speed >= 0 then
 					self._walk_frame = 1
 					self._level_2_sprite_left.col_index = 5
 				elseif self._walk_frame == 2 then
@@ -229,7 +267,7 @@ function SuperMarioBros.BattlePlayer:WalkUpdateFrame(frame_time)
 					self._level_2_sprite_left.col_index = 2
 				end
 			elseif self._level == 3 then
-				if self._speed >= 0 then
+				if self._lr_speed >= 0 then
 					self._walk_frame = 1
 					self._level_3_sprite_left.col_index = 5
 				elseif self._walk_frame == 2 then

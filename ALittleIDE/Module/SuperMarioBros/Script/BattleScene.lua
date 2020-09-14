@@ -98,8 +98,10 @@ end
 
 function SuperMarioBros.BattleScene:HandleKeyDown(mod, sym, scancode)
 	if sym == 107 then
+		self._player:Jump()
 	end
 	if sym == 106 then
+		self._player:Fire()
 	end
 end
 

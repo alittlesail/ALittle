@@ -33,10 +33,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ALittleClientWin", "ALittle
 		{BC196BAC-66A7-4AEB-8323-EA7509293930} = {BC196BAC-66A7-4AEB-8323-EA7509293930}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SokolTest", "SokolTest\SokolTest.vcxproj", "{44E2005C-5BC5-4921-B9BB-A119650259F7}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibSokol", "LibSokol\LibSokol.vcxproj", "{96A9BC13-4FA6-42E2-804E-B415F339F608}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -83,18 +79,6 @@ Global
 		{9FFF70D9-F561-4870-801D-746D9343762C}.Release|x64.Build.0 = Release|x64
 		{9FFF70D9-F561-4870-801D-746D9343762C}.Release|x86.ActiveCfg = Release|Win32
 		{9FFF70D9-F561-4870-801D-746D9343762C}.Release|x86.Build.0 = Release|Win32
-		{44E2005C-5BC5-4921-B9BB-A119650259F7}.Debug|x64.ActiveCfg = Debug|x64
-		{44E2005C-5BC5-4921-B9BB-A119650259F7}.Debug|x64.Build.0 = Debug|x64
-		{44E2005C-5BC5-4921-B9BB-A119650259F7}.Debug|x86.ActiveCfg = Debug|x64
-		{44E2005C-5BC5-4921-B9BB-A119650259F7}.Release|x64.ActiveCfg = Release|x64
-		{44E2005C-5BC5-4921-B9BB-A119650259F7}.Release|x64.Build.0 = Release|x64
-		{44E2005C-5BC5-4921-B9BB-A119650259F7}.Release|x86.ActiveCfg = Release|x64
-		{96A9BC13-4FA6-42E2-804E-B415F339F608}.Debug|x64.ActiveCfg = Debug|x64
-		{96A9BC13-4FA6-42E2-804E-B415F339F608}.Debug|x64.Build.0 = Debug|x64
-		{96A9BC13-4FA6-42E2-804E-B415F339F608}.Debug|x86.ActiveCfg = Debug|x64
-		{96A9BC13-4FA6-42E2-804E-B415F339F608}.Release|x64.ActiveCfg = Release|x64
-		{96A9BC13-4FA6-42E2-804E-B415F339F608}.Release|x64.Build.0 = Release|x64
-		{96A9BC13-4FA6-42E2-804E-B415F339F608}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

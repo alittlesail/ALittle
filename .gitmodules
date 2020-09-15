@@ -13,3 +13,6 @@
 [submodule "ALittleIDE/Module/ALittleIDE/Other/GameLibrary/Std"]
 	path = ALittleIDE/Module/ALittleIDE/Other/GameLibrary/Std
 	url = https://github.com/alittlesail/ALittle-Std.git
+[submodule "sokol"]
+	path = sokol
+	url = https://github.com/floooh/sokol.git

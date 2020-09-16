@@ -19,3 +19,6 @@
 [submodule "stb"]
 	path = stb
 	url = https://github.com/nothings/stb.git
+[submodule "Carp"]
+	path = Carp
+	url = https://github.com/alittlesail/ALittle-Carp.git

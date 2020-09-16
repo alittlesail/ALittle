@@ -36,6 +36,7 @@ namespace ALittle
 {
 
 DisplaySystem::DisplaySystem()
+	: m_quad_texture(0)
 { }
 
 DisplaySystem::~DisplaySystem() {}

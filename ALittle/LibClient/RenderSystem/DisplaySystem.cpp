@@ -31,7 +31,6 @@
 #include "Texture/TextureCutLoader.h"
 
 #include <SDL.h>
-#include <SDL_image.h>
 
 namespace ALittle
 {

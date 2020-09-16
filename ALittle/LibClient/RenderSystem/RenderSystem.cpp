@@ -3,7 +3,6 @@
 
 #include <SDL.h>
 #include <SDL_shape.h>
-#include <SDL_image.h>
 #include <SDL_syswm.h>
 
 #include "DisplaySystem.h"
@@ -13,6 +12,7 @@
 #include "ALittle/LibClient/ScriptSystem/ScriptSystemEx.h"
 #include "ALittle/LibClient/Platform/iOS/iOSSystem.h"
 #include "ALittle/LibClient/Helper/FileHelperEx.h"
+#include "ALittle/LibClient/Helper/TextureHelper.h"
 
 namespace ALittle
 {
@@ -246,23 +246,12 @@ bool RenderSystem::SetViewShape(const char* file_path)
 	std::vector<char> file_content;
 	if (!FileHelperEx::LoadFile(file_path, false, file_content)) return false;
 
-	// create mem from file
-	SDL_RWops* mem = SDL_RWFromMem((void*)&(file_content[0]), static_cast<int>(file_content.size()));
-	if (mem == 0)
-	{
-		ALITTLE_ERROR(SDL_GetError());
-		return false;
-	}
-
 	// create surface
-	SDL_Surface* surface = IMG_Load_RW(mem, 0);
-	// free mem
-	SDL_RWclose(mem);
-
+	SDL_Surface* surface = TextureHelper::LoadImageFromMemory(file_content.data(), file_content.size());
 	// check load succeed or not
 	if (surface == 0)
 	{
-		ALITTLE_ERROR("IMG_Load_RW failed:" << file_path);
+		ALITTLE_ERROR("LoadImageFromMemory failed:" << file_path);
 		return false;
 	}
 
@@ -444,23 +433,13 @@ bool RenderSystem::SetViewIcon(const char* path)
 	std::vector<char> file_content;
 	if (!FileHelperEx::LoadFile(path, false, file_content)) return false;
 
-	// create mem from file
-	SDL_RWops* mem = SDL_RWFromMem((void*)&(file_content[0]), static_cast<int>(file_content.size()));
-	if (mem == 0)
-	{
-		ALITTLE_ERROR(SDL_GetError());
-		return false;
-	}
-
 	// create surface
-	m_icon = IMG_Load_RW(mem, 0);
-	// free mem
-	SDL_RWclose(mem);
+	m_icon = TextureHelper::LoadImageFromMemory(file_content.data(), file_content.size());
 
 	// check load succeed or not
 	if (m_icon == 0)
 	{
-		ALITTLE_ERROR("IMG_Load_RW failed:" << path);
+		ALITTLE_ERROR("LoadImageFromMemory failed:" << path);
 		return false;
 	}
 

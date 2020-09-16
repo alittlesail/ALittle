@@ -22,7 +22,6 @@
 #include "ALittle/LibClient/Platform/Windows/WindowsSystem.h"
 
 #include <SDL.h>
-#include <SDL_image.h>
 #include <SDL_version.h>
 #include <SDL_ttf.h>
 #include <SDL_net.h>
@@ -125,8 +124,6 @@ int ScheduleSystem::Run(int argc, char* argv[])
 	// init SDL
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_AUDIO) == -1)
 		ALITTLE_ERROR(SDL_GetError());
-	if (IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG) == 0)
-		ALITTLE_ERROR(IMG_GetError());
 	if (SDLNet_Init() == -1)
 		ALITTLE_ERROR(SDLNet_GetError());
 	if (TTF_Init() == -1)
@@ -207,7 +204,6 @@ int ScheduleSystem::Run(int argc, char* argv[])
 	Mix_Quit();
 	TTF_Quit();
 	SDLNet_Quit();
-	IMG_Quit();
 	SDL_Quit();
 
 #ifdef _WIN32

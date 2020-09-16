@@ -2,10 +2,16 @@
 #include "TextureHelper.h"
 
 #include "ALittle/LibCommon/Helper/StringHelper.h"
+#include "ALittle/LibCommon/Helper/FileHelper.h"
 
 #include <SDL_surface.h>
 #include <vector>
 #include "ALittle/LibClient/Platform/iOS/iOSSystem.h"
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb/stb_image.h"
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb/stb_image_write.h"
 
 namespace ALittle
 {
@@ -148,15 +154,41 @@ void TextureHelper::RejustSurfaceAlpha(SDL_Surface * surface)
 	}
 }
 
-SDL_Surface* TextureHelper::LoadSurface(const char* file_name)
+SDL_Surface* TextureHelper::LoadSurface(const char* file_path)
 {
 #ifdef __IPHONEOS__
-	SDL_Surface* surface = IMG_Load(file_name);
-	if (surface == 0) surface = iOS_GetPhoto(file_name);
+	SDL_Surface* surface = LoadImageFromFile(file_path);
+	if (surface == 0) surface = iOS_GetPhoto(file_path);
 #else
-	SDL_Surface* surface = IMG_Load(file_name);
+	SDL_Surface* surface = LoadImageFromFile(file_path);
 #endif
 	if (surface) SDL_SetSurfaceBlendMode(surface, SDL_BLENDMODE_NONE);
+	return surface;
+}
+
+SDL_Surface* TextureHelper::LoadImageFromFile(const char* file_path)
+{
+	int width = 0;
+	int height = 0;
+	int comp = 0;
+	stbi_uc* uc = stbi_load(file_path, &width, &height, &comp, 0);
+	if (uc == nullptr) return nullptr;
+	SDL_Surface* surface = CreateSurface(width, height);
+	if (surface) memcpy(surface->pixels, uc, width * height * comp);
+	stbi_image_free(uc);
+	return surface;
+}
+
+SDL_Surface* TextureHelper::LoadImageFromMemory(const char* mem, size_t len)
+{
+	int width = 0;
+	int height = 0;
+	int comp = 0;
+	stbi_uc* uc = stbi_load_from_memory((unsigned char*)mem, (int)len, &width, &height, &comp, 0);
+	if (uc == nullptr) return nullptr;
+	SDL_Surface* surface = CreateSurface(width, height);
+	if (surface) memcpy(surface->pixels, uc, width * height * comp);
+	stbi_image_free(uc);
 	return surface;
 }
 
@@ -172,7 +204,7 @@ unsigned int TextureHelper::GetSurfaceHeight(SDL_Surface* surface)
 
 bool TextureHelper::SaveSurface(SDL_Surface* surface, const char* file_name)
 {
-	return IMG_SavePNG(surface, file_name) == 0;
+	return stbi_write_png(file_name, surface->w, surface->h, 4, surface->pixels, surface->pitch) != 0;
 }
 
 unsigned int TextureHelper::GetSurfaceGrid9(SDL_Surface* surface, const char* type)

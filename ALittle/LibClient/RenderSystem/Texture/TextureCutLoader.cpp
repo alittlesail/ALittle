@@ -51,26 +51,15 @@ void TextureCutLoader::Execute()
 			return;
 		}
 
-		// load from memory
-		SDL_RWops* mem = SDL_RWFromMem((void*)local_file.GetContent(), local_file.GetSize());
-		if (mem == 0)
-		{
-			ALITTLE_ERROR(SDL_GetError() << ", " << m_file_path);
-			g_ScheduleSystem.PushUserEvent(TEXTURECUT_LOAD_FAILED, this);
-			return;
-		}
 		// create surface
-		surface = IMG_Load_RW(mem, 0);
-		// release mem
-		SDL_RWclose(mem);
-
+		surface = TextureHelper::LoadImageFromMemory(local_file.GetContent(), local_file.GetSize());
 #ifdef __IPHONEOS__
 	}
 #endif
 
 	if (!surface)
 	{
-		ALITTLE_ERROR(IMG_GetError() << ", " << m_file_path);
+		ALITTLE_ERROR("LoadImageFromMemory failed:" << m_file_path);
 		g_ScheduleSystem.PushUserEvent(TEXTURECUT_LOAD_FAILED, this);
 		return;
 	}

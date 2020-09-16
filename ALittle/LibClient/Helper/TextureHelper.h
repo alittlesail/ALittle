@@ -4,7 +4,6 @@
 
 #include <string>
 #include <SDL.h>
-#include <SDL_image.h>
 
 namespace ALittle
 {
@@ -77,6 +76,8 @@ public:
 	 * @return surface
 	 */
 	static SDL_Surface* LoadSurface(const char* file_path);
+	static SDL_Surface* LoadImageFromFile(const char* file_path);
+	static SDL_Surface* LoadImageFromMemory(const char* mem, size_t len);
 	
 	/**
 	 * get surface width

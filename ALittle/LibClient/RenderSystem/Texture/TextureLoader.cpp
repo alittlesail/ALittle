@@ -65,24 +65,13 @@ void TextureLoader::Execute()
 			return;
 		}
 		if (m_crypt_mode) CryptHelper::XXTeaDecodeMemory(&(file_content[0]), static_cast<int>(file_content.size()), 0);
-		// load from memory
-		SDL_RWops* mem = SDL_RWFromMem((void*)&(file_content[0]), static_cast<int>(file_content.size()));
-		if (mem == 0)
-		{
-			if (surface) SDL_FreeSurface(surface);
-			ALITTLE_ERROR(SDL_GetError() << ", " << file_path);
-			g_ScheduleSystem.PushUserEvent(TEXTURE_LOAD_FAILED, this);
-			return;
-		}
 
 		// create surface
-		SDL_Surface* child_surface = IMG_Load_RW(mem, 0);
-		// release mem
-		SDL_RWclose(mem);
+		SDL_Surface* child_surface = TextureHelper::LoadImageFromMemory(file_content.data(), file_content.size());
 		if (!child_surface)
 		{
 			if (surface) SDL_FreeSurface(surface);
-			ALITTLE_ERROR(IMG_GetError() << ", " << file_path);
+			ALITTLE_ERROR("LoadImageFromMemory failed:" << file_path);
 			g_ScheduleSystem.PushUserEvent(TEXTURE_LOAD_FAILED, this);
 			return;
 		}

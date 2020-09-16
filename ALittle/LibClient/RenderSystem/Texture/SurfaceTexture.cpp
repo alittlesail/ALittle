@@ -1,6 +1,5 @@
 
 #include "SurfaceTexture.h"
-#include <SDL_image.h>
 
 #include "ALittle/LibCommon/Helper/StringHelper.h"
 #include "ALittle/LibCommon/Helper/LogHelper.h"

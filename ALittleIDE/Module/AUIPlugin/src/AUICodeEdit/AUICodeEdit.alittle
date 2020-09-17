@@ -187,7 +187,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 this._code_screen.right_scrollbar.offset_rate = (center_y - view_y) / real_height;
             }
         }
-        this._code_screen.RejustScrollBar();
+        this._code_screen.AdjustScrollBar();
 
         return true;
     }
@@ -201,7 +201,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         if (real_height > 0)
         {
             this._code_screen.right_scrollbar.offset_rate = (it_line - 1) * CODE_LINE_HEIGHT / real_height;
-            this._code_screen.RejustScrollBar();   
+            this._code_screen.AdjustScrollBar();   
         }
     }
 
@@ -214,7 +214,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         if (real_height > 0)
         {
             this._code_screen.right_scrollbar.offset_rate = (it_line * CODE_LINE_HEIGHT - this._code_screen.view_height) / real_height;
-            this._code_screen.RejustScrollBar();   
+            this._code_screen.AdjustScrollBar();   
         }
     }
 
@@ -275,7 +275,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
         this._complete_screen.TryHide();
         this._param_dialog.TryHide();
-        this._cursor.RejustShowCursor();
+        this._cursor.AdjustShowCursor();
         this.DispatchJumEvent();
     }
 
@@ -991,7 +991,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 }
                 else
                     this._cursor.OffsetLeft(ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0);
-                this._cursor.RejustShowCursor();
+                this._cursor.AdjustShowCursor();
                 this._complete_screen.TryHide();
                 this._param_dialog.TryHide();
             }
@@ -1027,7 +1027,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     }
                     else
                         this._cursor.OffsetUp();
-                    this._cursor.RejustShowCursor();
+                    this._cursor.AdjustShowCursor();
                 }
                 else
                 {
@@ -1063,7 +1063,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     }
                     else
                         this._cursor.OffsetDown();
-                    this._cursor.RejustShowCursor();
+                    this._cursor.AdjustShowCursor();
                 }
                 else
                 {
@@ -1093,7 +1093,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 }
                 else
                     this._cursor.OffsetRight(ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0);
-                this._cursor.RejustShowCursor();
+                this._cursor.AdjustShowCursor();
                 this._complete_screen.TryHide();
                 this._param_dialog.TryHide();
             }
@@ -1117,7 +1117,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 if (this._select_cursor.line_start == null)
                 {
                     is_change = this._cursor.DeleteLeft(true);
-                    this._cursor.RejustShowCursor();
+                    this._cursor.AdjustShowCursor();
                     this._complete_screen.TryHide();
                     if (this._complete_screen.IsShow())
                         this._complete_screen.ShowComplete();
@@ -1222,11 +1222,11 @@ public class AUICodeEdit : ALittle.DisplayLayout
                         {
                             this._cursor.SetLineChar(old_line, old_char);
                             is_change = this.InsertText("\n", true, revoke_bind);
-                            this._cursor.RejustShowCursor();
+                            this._cursor.AdjustShowCursor();
                         }
                     }
                     else
-                        this._cursor.RejustShowCursor();
+                        this._cursor.AdjustShowCursor();
                     revoke_bind.complete = bind(this.DispatchChangedEvent, this);
                     this._revoke_list.PushRevoke(revoke_bind);
                 }
@@ -1555,7 +1555,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
         for (var index, line in this._line_list)
             this._code_linear.AddChild(line.container);
-        this.RejustCodeScreen(max_width);
+        this.AdjustCodeScreen(max_width);
 
         this._cursor.SetLineChar(1, 0);
 
@@ -1565,11 +1565,11 @@ public class AUICodeEdit : ALittle.DisplayLayout
     }
 
     // 更新代码窗口大小
-    public fun RejustCodeScreen(double max_width)
+    public fun AdjustCodeScreen(double max_width)
     {
         this._code_screen.container.width = max_width + CODE_LINE_NUMBER_WIDTH;
         this._code_screen.container.height = this._line_count * CODE_LINE_HEIGHT + CODE_PAD_LINES * CODE_LINE_HEIGHT;
-        this._code_screen.RejustScrollBar();
+        this._code_screen.AdjustScrollBar();
     }
 
     // 插入多行tab键
@@ -1623,7 +1623,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         for (var index, line in this._line_list)
             if (line.container.width > max_width) max_width = line.container.width;
         this._code_screen.container.width = max_width + CODE_LINE_NUMBER_WIDTH;
-        this._code_screen.RejustScrollBar();
+        this._code_screen.AdjustScrollBar();
 
         this._cursor.SetLineChar(old_line, old_char + 4);
         this._select_cursor.StartLineChar(old_line_start, old_char_start + 4);
@@ -1817,7 +1817,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
 	        for (var index, line in this._line_list)
  	           if (line.container.width > max_width) max_width = line.container.width;
         	this._code_screen.container.width = max_width + CODE_LINE_NUMBER_WIDTH;
-        	this._code_screen.RejustScrollBar();
+        	this._code_screen.AdjustScrollBar();
 
             if (this._find_map != null)
             {
@@ -2055,7 +2055,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
             if (line.container.width > max_width) max_width = line.container.width;
         this._code_screen.container.width = max_width + CODE_LINE_NUMBER_WIDTH;
         this._code_screen.container.height = this._line_count * CODE_LINE_HEIGHT + CODE_PAD_LINES * CODE_LINE_HEIGHT;
-        this._code_screen.RejustScrollBar();
+        this._code_screen.AdjustScrollBar();
 
         this._cursor.SetLineChar(it_cursor_line, it_cursor_char);
 

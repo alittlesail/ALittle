@@ -164,7 +164,7 @@ bool TextEdit::DeleteSelectText()
 	// check selected or not
 	if (m_char_select_it == m_line_select_it->char_list.end()) return false;
 
-	// rejust cursor position
+	// adjust cursor position
 	LineCharInfoList::iterator line_begin_it;
 	CharInfoList::iterator begin_it;
 	LineCharInfoList::iterator line_end_it;
@@ -201,7 +201,7 @@ bool TextEdit::DeleteSelectText()
 		}
 	}
 
-	// rejust start line
+	// adjust start line
 	if (begin_it == line_begin_it->char_list.begin())
 	{
 		if (line_begin_it != m_linechar_list.begin() && line_begin_it->force_line == false)
@@ -214,8 +214,8 @@ bool TextEdit::DeleteSelectText()
 
 	// delete text info
 	DeleteTextImpl(line_begin_it, begin_it, line_end_it, end_it);
-	// rejust start iterator
-	RejustStartItAwayFromCursor((int)m_size.x / 2);
+	// adjust start iterator
+	AdjustStartItAwayFromCursor((int)m_size.x / 2);
 	// reset cursor
 	ResetCursor();
 
@@ -233,8 +233,8 @@ bool TextEdit::InsertText(const char* text)
 	// insert text at cursor
 	InsertTextImpl(text);
 
-	// rejust start iterator
-	RejustStartItCloseTOCursor((int)m_size.y);
+	// adjust start iterator
+	AdjustStartItCloseTOCursor((int)m_size.y);
 
 	// reset cursor
 	ResetCursor();
@@ -273,7 +273,7 @@ bool TextEdit::DeleteText(bool left)
 		else
 		{
 			-- begin_it;
-			// if rejust forword is soft \n, then then delete end char at last line
+			// if adjust forword is soft \n, then then delete end char at last line
 			if (begin_it == line_begin_it->char_list.begin() && line_begin_it->force_line == false)
 			{
 				if (line_begin_it != m_linechar_list.begin())
@@ -287,8 +287,8 @@ bool TextEdit::DeleteText(bool left)
 
 		// delete text
 		DeleteTextImpl(line_begin_it, begin_it, line_end_it, end_it);
-		// rejust start iterator
-		RejustStartItAwayFromCursor((int)m_size.x / 2);
+		// adjust start iterator
+		AdjustStartItAwayFromCursor((int)m_size.x / 2);
 	}
 	else
 	{
@@ -306,7 +306,7 @@ bool TextEdit::DeleteText(bool left)
 
 		end_char = line_end_it->char_list.end();
 		-- end_char;
-		// if at end char of line, then rejust next line at first char
+		// if at end char of line, then adjust next line at first char
 		if (end_it == end_char)
 		{
 			if (line_end_it != end_line)

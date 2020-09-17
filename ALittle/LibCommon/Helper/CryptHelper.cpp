@@ -41,12 +41,12 @@ void CryptHelper::XXTeaEncodeMemory(char* memory, int size, const char* key)
 	if (!memory) return;
 
 	char* real_key = 0;
-	char rejust_key[16] = {0};
+	char adjust_key[16] = {0};
 	if (key)
 	{
 		size_t key_len = strlen(key);
-		for (size_t i = 0; i < key_len; ++i) rejust_key[i] = key[i];
-		real_key = rejust_key;
+		for (size_t i = 0; i < key_len; ++i) adjust_key[i] = key[i];
+		real_key = adjust_key;
 	}
 
 	while (size >= XXTEA_BLOCK_SIZE * sizeof(unsigned int))
@@ -93,12 +93,12 @@ void CryptHelper::XXTeaDecodeMemory(char* memory, int size, const char* key)
 	
 	char* real_key = 0;
 
-	char rejust_key[16] = {0};
+	char adjust_key[16] = {0};
 	if (key)
 	{
 		size_t key_len = strlen(key);
-		for (size_t i = 0; i < key_len; ++i) rejust_key[i] = key[i];
-		real_key = rejust_key;
+		for (size_t i = 0; i < key_len; ++i) adjust_key[i] = key[i];
+		real_key = adjust_key;
 	}
 
 	while (size >= XXTEA_BLOCK_SIZE * sizeof(unsigned int))

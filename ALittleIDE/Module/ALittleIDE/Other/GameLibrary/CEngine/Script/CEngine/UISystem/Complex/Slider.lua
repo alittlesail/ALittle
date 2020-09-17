@@ -22,12 +22,12 @@ end
 
 function ALittle.Slider.__setter:width(value)
 	ALittle.DisplayLayout.__setter.width(self, value)
-	self:RejustBarButton()
+	self:AdjustBarButton()
 end
 
 function ALittle.Slider.__setter:height(value)
 	ALittle.DisplayLayout.__setter.height(self, value)
-	self:RejustBarButton()
+	self:AdjustBarButton()
 end
 
 function ALittle.Slider.__getter:width()
@@ -43,7 +43,7 @@ function ALittle.Slider.__setter:type(value)
 		return
 	end
 	self._type = value
-	self:RejustBarButton()
+	self:AdjustBarButton()
 end
 
 function ALittle.Slider.__getter:type()
@@ -57,7 +57,7 @@ function ALittle.Slider.__setter:offset_rate(value)
 	elseif self._offset_rate > 1 then
 		self._offset_rate = 1
 	end
-	self:RejustBarButton()
+	self:AdjustBarButton()
 end
 
 function ALittle.Slider.__getter:offset_rate()
@@ -89,7 +89,7 @@ function ALittle.Slider.__setter:bar_background(value)
 		self:AddChild(value, 1)
 		value:AddEventListener(___all_struct[1883782801], self, self.HandleBarBackgroudLButtonDown)
 	end
-	self:RejustBarButton()
+	self:AdjustBarButton()
 end
 
 function ALittle.Slider:HandleBarBackgroudLButtonDown(event)
@@ -172,7 +172,7 @@ function ALittle.Slider.__setter:bar_button(value)
 		value:AddEventListener(___all_struct[-1737121315], self, self.HandleBarButtonScroll)
 		value._can_scroll = true
 	end
-	self:RejustBarButton()
+	self:AdjustBarButton()
 end
 
 function ALittle.Slider.__getter:bar_button()
@@ -197,7 +197,7 @@ function ALittle.Slider.__setter:fixed(value)
 		local num = table.maxn(self._grade_list)
 		self._grade_list[num + 1] = 1
 	end
-	self:RejustBarButton()
+	self:AdjustBarButton()
 end
 
 function ALittle.Slider.__getter:fixed()
@@ -222,7 +222,7 @@ function ALittle.Slider.__setter:grade(value)
 		local num = table.maxn(self._grade_list)
 		self._grade_list[num + 1] = 1
 	end
-	self:RejustBarButton()
+	self:AdjustBarButton()
 end
 
 function ALittle.Slider.__getter:grade()
@@ -369,7 +369,7 @@ function ALittle.Slider:HandleUpDownButton(step)
 	self:DispatchEvent(___all_struct[958494922], {})
 end
 
-function ALittle.Slider:RejustBarButton()
+function ALittle.Slider:AdjustBarButton()
 	if self._bar_background ~= nil then
 		self._bar_background.x = 0
 		self._bar_background.y = 0

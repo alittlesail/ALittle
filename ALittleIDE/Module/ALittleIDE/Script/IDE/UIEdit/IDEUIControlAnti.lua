@@ -543,7 +543,7 @@ function ALittleIDE.IDEAntiPanel:Init(tab_child)
 	self._anti_anti_linear.x = static_object_hv.width
 	self._anti_anti_linear.y = static_object_hv.height
 	self._anti_anti_linear.width = static_object_h.width - static_object_hv.width
-	self._anti_screen:RejustScrollBar()
+	self._anti_screen:AdjustScrollBar()
 	if self._anti_scroll_list.child_count > 0 then
 		self._anti_scroll_list.childs[1].selected = true
 		self:ShowAnti(self._anti_scroll_list.childs[1].text)
@@ -677,7 +677,7 @@ function ALittleIDE.IDEAntiPanel:ShowAnti(name)
 		self._anti_link_linear:AddChild(link_item)
 	end
 	static_object_v.height = self._anti_link_linear.y + self._anti_link_linear.height
-	self._anti_screen:RejustScrollBar()
+	self._anti_screen:AdjustScrollBar()
 	self._handle_container.visible = true
 end
 
@@ -689,7 +689,7 @@ function ALittleIDE.IDEAntiPanel:HideAnti()
 	self._anti_anti_linear:RemoveAllChild()
 	self._anti_link_linear:RemoveAllChild()
 	self._anti_screen.static_object_v.height = self._anti_link_linear.y
-	self._anti_screen:RejustScrollBar()
+	self._anti_screen:AdjustScrollBar()
 	self._handle_container.visible = false
 	self._loop_linear.visible = false
 	self._loop_attribute.visible = false
@@ -738,7 +738,7 @@ function ALittleIDE.IDEAntiPanel:HandleCopyAttrLineClick(event)
 	self._anti_link_linear:AddChild(link_item)
 	local static_object_v = self._anti_screen.static_object_v
 	static_object_v.height = self._anti_link_linear.y + self._anti_link_linear.height
-	self._anti_screen:RejustScrollBar()
+	self._anti_screen:AdjustScrollBar()
 	local revoke = ALittleIDE.IDEAntiAddAttrRevoke(self, self._cur_show, child, anti_item, link_item)
 	self._tab_child.revoke_list:PushRevoke(revoke)
 	self._tab_child.save = false
@@ -765,7 +765,7 @@ function ALittleIDE.IDEAntiPanel:HandleAddAttrClick(event)
 	self._anti_link_linear:AddChild(link_item)
 	local static_object_v = self._anti_screen.static_object_v
 	static_object_v.height = self._anti_link_linear.y + self._anti_link_linear.height
-	self._anti_screen:RejustScrollBar()
+	self._anti_screen:AdjustScrollBar()
 	local revoke = ALittleIDE.IDEAntiAddAttrRevoke(self, self._cur_show, child, anti_item, link_item)
 	self._tab_child.revoke_list:PushRevoke(revoke)
 	self._tab_child.save = false
@@ -787,7 +787,7 @@ function ALittleIDE.IDEAntiPanel:RemoveAttr(child_index)
 	local link_item = self._anti_link_linear:GetChildByIndex(child_index)
 	self._anti_link_linear:RemoveChild(link_item)
 	self._anti_screen.static_object_v.height = self._anti_link_linear.y + self._anti_link_linear.height
-	self._anti_screen:RejustScrollBar()
+	self._anti_screen:AdjustScrollBar()
 	local revoke = ALittleIDE.IDEAntiRemoveAttrRevoke(self, self._cur_show, child, anti_item, link_item, child_index)
 	self._tab_child.revoke_list:PushRevoke(revoke)
 	self._tab_child.save = false

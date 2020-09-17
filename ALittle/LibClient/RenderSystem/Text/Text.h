@@ -60,7 +60,7 @@ public:
 public:
 	unsigned int GetRealWidth();
 	unsigned int GetRealHeight();
-	void RejustSize();
+	void AdjustSize();
 
 public:
 	void SetBold(bool bold);
@@ -77,7 +77,7 @@ public:
 	int GetCutWidthByIndex(int index) { return m_calc_width_list[index]; }
 	void ClearCutWidthCache() { m_calc_width_list.clear();}
 	int CalcTextWidth(const char* content);
-	int RejustCursorPos(int x, const char* content);
+	int AdjustCursorPos(int x, const char* content);
 	
 public:
 	void NeedDraw() { m_need_redraw = true; }

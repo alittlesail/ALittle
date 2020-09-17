@@ -1497,7 +1497,7 @@ function ALittle.RichEdit:SetStartIt(line_index)
 	end
 	self._line_start_it = line_index
 	self._start_it_delta = 0
-	self:RejustContentY()
+	self:AdjustContentY()
 end
 
 function ALittle.RichEdit:ResetCursor()
@@ -2339,18 +2339,18 @@ function ALittle.RichEdit:DrawImpl()
 	local child = self._scroll_list:GetChildByIndex(self._line_start_it)
 	self._scroll_list.scroll_offset = -child.y - self._start_it_delta
 	self._scroll_list:RefreshClipDisLine()
-	self._scroll_list:RejustScrollBar()
+	self._scroll_list:AdjustScrollBar()
 	self._draw_loop = nil
 end
 
-function ALittle.RichEdit:RejustContentY()
+function ALittle.RichEdit:AdjustContentY()
 	if self._draw_loop ~= nil then
 		return
 	end
 	local child = self._scroll_list:GetChildByIndex(self._line_start_it)
 	self._scroll_list.scroll_offset = -child.y - self._start_it_delta
 	self._scroll_list:RefreshClipDisLine()
-	self._scroll_list:RejustScrollBar()
+	self._scroll_list:AdjustScrollBar()
 end
 
 function ALittle.RichEdit:Draw()
@@ -2432,7 +2432,7 @@ function ALittle.RichEdit:ResetCursorLine()
 		if line_list[self._line_cursor_it].acc_height > self._scroll_list.height and self._scroll_list.scroll_offset < 0 then
 			self._scroll_list.scroll_offset = self._scroll_list.height - line_list[self._line_cursor_it].acc_height
 			self._scroll_list:RefreshClipDisLine()
-			self._scroll_list:RejustScrollBar()
+			self._scroll_list:AdjustScrollBar()
 			while line_list[self._line_start_it].pre_height > -self._scroll_list.scroll_offset do
 				self._line_start_it = self._line_start_it - 1
 			end
@@ -2442,7 +2442,7 @@ function ALittle.RichEdit:ResetCursorLine()
 		if line_list[self._line_cursor_it].acc_height <= self._scroll_list.height then
 			self._scroll_list.scroll_offset = 0
 			self._scroll_list:RefreshClipDisLine()
-			self._scroll_list:RejustScrollBar()
+			self._scroll_list:AdjustScrollBar()
 			self._line_start_it = 1
 			self._start_it_delta = 0
 			return
@@ -2451,12 +2451,12 @@ function ALittle.RichEdit:ResetCursorLine()
 	if line_list[self._line_cursor_it].pre_height <= -self._scroll_list.scroll_offset then
 		self._scroll_list.scroll_offset = -line_list[self._line_cursor_it].pre_height
 		self._scroll_list:RefreshClipDisLine()
-		self._scroll_list:RejustScrollBar()
+		self._scroll_list:AdjustScrollBar()
 		self._line_start_it = self._line_cursor_it
 	elseif line_list[self._line_cursor_it].acc_height >= self._scroll_list.height - self._scroll_list.scroll_offset then
 		self._scroll_list.scroll_offset = self._scroll_list.height - line_list[self._line_cursor_it].acc_height
 		self._scroll_list:RefreshClipDisLine()
-		self._scroll_list:RejustScrollBar()
+		self._scroll_list:AdjustScrollBar()
 		while line_list[self._line_start_it].acc_height <= -self._scroll_list.scroll_offset do
 			self._line_start_it = self._line_start_it + 1
 		end

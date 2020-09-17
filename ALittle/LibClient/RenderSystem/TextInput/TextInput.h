@@ -90,12 +90,12 @@ private:
 	 * Closer to the starting position and distance
 	 * @param distance
 	 */
-	void RejustStartItCloseTOCursor(int distance);
+	void AdjustStartItCloseTOCursor(int distance);
 	/**
 	 * wawy from Starting position and distance
 	 * @param distance
 	 */
-	void RejustStartItAwayFromCursor(int distance);
+	void AdjustStartItAwayFromCursor(int distance);
 	/**
 	 * Delete the specified range node
 	 * @param begin_it

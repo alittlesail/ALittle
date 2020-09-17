@@ -122,15 +122,15 @@ private:
 	void ResetCursor();
 
 	/**
-	 * rejust start iterator close to Cursor
+	 * adjust start iterator close to Cursor
 	 * @param distance at last
 	 */
-	void RejustStartItCloseTOCursor(int distance);
+	void AdjustStartItCloseTOCursor(int distance);
 	/**
-	 * rejust start iterator away from Cursor
+	 * adjust start iterator away from Cursor
 	 * @param distance at most
 	 */
-	void RejustStartItAwayFromCursor(int distance);
+	void AdjustStartItAwayFromCursor(int distance);
 	/**
 	 * delete text info
 	 * @param line_begin_it: begin line iterator

@@ -88,14 +88,14 @@ bool TextInput::DeleteSelectText()
 	if (!m_font) return false;
 	// selected text or not
 	if (m_select_it == m_char_list.end()) return false;
-	// rejust cursor position
+	// adjust cursor position
 	CharInfoList::iterator it = m_cursor_it;
 	if (m_select_it->pre_width > m_cursor_it->pre_width)
 		m_cursor_it = m_select_it;
 	// delete text
 	DeleteTextImpl(m_select_it, it);
-	// rejust start iterator
-	RejustStartItAwayFromCursor((int)m_size.x / 2);
+	// adjust start iterator
+	AdjustStartItAwayFromCursor((int)m_size.x / 2);
 	// set not selected
 	m_select_it = m_char_list.end();
 	// reset cursor
@@ -113,7 +113,7 @@ bool TextInput::InsertText(const char* text)
 
 	InsertTextImpl(text);
 
-	RejustStartItCloseTOCursor((int)m_size.x);
+	AdjustStartItCloseTOCursor((int)m_size.x);
 
 	ResetCursor();
 
@@ -133,7 +133,7 @@ bool TextInput::DeleteText(bool left)
 		-- it;
 		DeleteTextImpl(it, m_cursor_it);
 		// Adjust the start cursor
-		RejustStartItAwayFromCursor((int)m_size.x / 2);
+		AdjustStartItAwayFromCursor((int)m_size.x / 2);
 	}
 	else
 	{

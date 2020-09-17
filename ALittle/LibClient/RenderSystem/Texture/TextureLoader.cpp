@@ -123,7 +123,7 @@ void TextureLoader::Execute()
 
 		SDL_FreeSurface(child_surface);
 	}
-	// TextureHelper::RejustSurfaceAlpha(surface);
+	// TextureHelper::AdjustSurfaceAlpha(surface);
 	g_ScheduleSystem.PushUserEvent(TEXTURE_LOAD_SUCCEED, this, surface);
 }
 

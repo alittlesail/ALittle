@@ -38,7 +38,7 @@ void TextInput::ClearText()
 	m_need_redraw = true;
 }
 
-void TextInput::RejustStartItAwayFromCursor(int distance)
+void TextInput::AdjustStartItAwayFromCursor(int distance)
 {
 	// If the starting position is equal to the cursor position
 	if (m_start_it == m_cursor_it && m_start_it != m_char_list.begin())
@@ -55,7 +55,7 @@ void TextInput::RejustStartItAwayFromCursor(int distance)
 	}
 }
 	
-void TextInput::RejustStartItCloseTOCursor(int distance)
+void TextInput::AdjustStartItCloseTOCursor(int distance)
 {
 	while (m_start_it != m_cursor_it)
 	{
@@ -176,7 +176,7 @@ void TextInput::InsertTextImpl(const char* text)
 	if (text_len <= 0) return;
 
 	// Whether the current cursor position to the starting position
-	bool rejust_start_it = (m_start_it == m_cursor_it);
+	bool adjust_start_it = (m_start_it == m_cursor_it);
 	// Initialize
 	const char* str = text;
 	// The starting point for each character, each character width
@@ -186,7 +186,7 @@ void TextInput::InsertTextImpl(const char* text)
 		int byte_count = utf8_GetByteCountOfOneWord(*str);
 		// Save the information
 		m_cursor_it = m_char_list.insert(m_cursor_it, CharInfo());
-		if (rejust_start_it) { -- m_start_it; rejust_start_it = false; }
+		if (adjust_start_it) { -- m_start_it; adjust_start_it = false; }
 		// copy string
 		m_cursor_it->str.assign(str, byte_count);
 		// Set the current character index

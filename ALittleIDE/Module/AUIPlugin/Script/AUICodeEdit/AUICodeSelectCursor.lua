@@ -343,7 +343,7 @@ function AUIPlugin.AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 			end
 		end
 		if rejust then
-			self._edit:RejustCodeScreen(line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH)
+			self._edit:AdjustCodeScreen(line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH)
 		end
 		if need_revoke then
 			local revoke = AUIPlugin.AUICodeDeleteSelectRevoke(self._edit, self._edit.cursor, self, old_it_line_start, old_it_char_start, old_it_line_end, old_it_char_end, it_line_start, it_char_start, revoke_content, revoke_bind == nil)
@@ -456,7 +456,7 @@ function AUIPlugin.AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 			max_width = line.container.width
 		end
 	end
-	self._edit:RejustCodeScreen(max_width)
+	self._edit:AdjustCodeScreen(max_width)
 	if need_revoke then
 		local revoke = AUIPlugin.AUICodeDeleteSelectRevoke(self._edit, self._edit.cursor, self, old_it_line_start, old_it_char_start, old_it_line_end, old_it_char_end, it_line_start, it_char_start, revoke_start .. ALittle.String_Join(revoke_center, "") .. revoke_end, revoke_bind == nil)
 		if revoke_bind ~= nil then

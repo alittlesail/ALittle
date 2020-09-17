@@ -91,7 +91,7 @@ bool LocalFile::Load()
 	m_memory = (char*)malloc(m_size + 1);
 	// write to memory
 	SDL_RWread(src_file, (char*)m_memory, m_size, 1);
-	// rejust to string
+	// adjust to string
 	m_memory[m_size] = 0;
 	// close file
 	SDL_RWclose(src_file);
@@ -115,7 +115,7 @@ bool LocalFile::LoadBySDL()
 	m_memory = (char*)malloc(m_size + 1);
 	// write to memory
 	SDL_RWread(src_file, (char*)m_memory, m_size, 1);
-	// rejust to string
+	// adjust to string
 	m_memory[m_size] = 0;
 	// close file
 	SDL_RWclose(src_file);

@@ -29,13 +29,13 @@ public class Slider : DisplayLayout
     public set width(double value)
     { 
     	DisplayLayout.width(this, value);
-    	this.RejustBarButton();
+    	this.AdjustBarButton();
     }
     
     public set height(double value)
     { 
     	DisplayLayout.height(this, value);
-    	this.RejustBarButton();
+    	this.AdjustBarButton();
     }
     
     // 获取控件的宽高
@@ -55,7 +55,7 @@ public class Slider : DisplayLayout
     {
     	if (this._type == value) return;
     	this._type = value;
-    	this.RejustBarButton();
+    	this.AdjustBarButton();
     }
     
     public get type() : int
@@ -69,7 +69,7 @@ public class Slider : DisplayLayout
     	if (this._offset_rate < 0) this._offset_rate = 0;
     	elseif (this._offset_rate > 1) this._offset_rate = 1;
     
-    	this.RejustBarButton();
+    	this.AdjustBarButton();
     }
     public get offset_rate() : double
     {
@@ -106,7 +106,7 @@ public class Slider : DisplayLayout
     		this.AddChild(value, 1);
     		value.AddEventListener(this, this.HandleBarBackgroudLButtonDown);
     	}
-    	this.RejustBarButton();
+    	this.AdjustBarButton();
     }
 
 	protected fun HandleBarBackgroudLButtonDown(UILButtonDownEvent event)
@@ -199,7 +199,7 @@ public class Slider : DisplayLayout
     		value.AddEventListener(this, this.HandleBarButtonScroll);
     		value._can_scroll = true;
     	}
-    	this.RejustBarButton();
+    	this.AdjustBarButton();
     }
     
     public get bar_button() : DisplayObject
@@ -221,7 +221,7 @@ public class Slider : DisplayLayout
 			var num = lua.table.maxn(this._grade_list);
     		this._grade_list[num+1] = 1;
     	}
-    	this.RejustBarButton();
+    	this.AdjustBarButton();
     }
     
     public get fixed() : int
@@ -243,7 +243,7 @@ public class Slider : DisplayLayout
 			var num = lua.table.maxn(this._grade_list);
     		this._grade_list[num+1] = 1;
     	}
-    	this.RejustBarButton();
+    	this.AdjustBarButton();
     }
     
     public get grade() : int
@@ -393,7 +393,7 @@ public class Slider : DisplayLayout
     	this.DispatchEvent(new UIChangedEvent());
     }
 
-    public fun RejustBarButton()
+    public fun AdjustBarButton()
     {
     	if (this._bar_background != null)
     	{

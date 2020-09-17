@@ -189,7 +189,7 @@ function ALittle.ScrollList:RemoveAllChild()
 	end
 	self._scroll_linear:RemoveAllChild()
 	self:UpdateLoadingShow()
-	self:RejustScrollBar()
+	self:AdjustScrollBar()
 end
 
 function ALittle.ScrollList:RefreshChild(loop)
@@ -208,7 +208,7 @@ function ALittle.ScrollList:RefreshChild(loop)
 		if target_x == nil or target_x == self._scroll_linear.x then
 			A_LoopSystem:RemoveUpdater(self._drag_loop_x)
 			self:RefreshClipDisLine()
-			self:RejustScrollBar()
+			self:AdjustScrollBar()
 			return
 		end
 		if self._drag_loop_x ~= nil and self._drag_loop_x:IsCompleted() == false then
@@ -243,7 +243,7 @@ function ALittle.ScrollList:RefreshChild(loop)
 		if target_y == nil or target_y == self._scroll_linear.y then
 			A_LoopSystem:RemoveUpdater(self._drag_loop_y)
 			self:RefreshClipDisLine()
-			self:RejustScrollBar()
+			self:AdjustScrollBar()
 			return
 		end
 		if self._drag_loop_y ~= nil and self._drag_loop_y:IsCompleted() == false then
@@ -265,7 +265,7 @@ function ALittle.ScrollList:RefreshChild(loop)
 		end
 	end
 	self:RefreshClipDisLine()
-	self:RejustScrollBar()
+	self:AdjustScrollBar()
 end
 
 function ALittle.ScrollList.__setter:clip_atonce(value)
@@ -292,7 +292,7 @@ function ALittle.ScrollList.__setter:scroll_offset(value)
 			end
 		end
 		self._scroll_linear.x = value
-		self:RejustScrollBar()
+		self:AdjustScrollBar()
 	else
 		A_LoopSystem:RemoveUpdater(self._drag_loop_y)
 		A_LoopSystem:RemoveUpdater(self._drag_delta_loop_y)
@@ -308,7 +308,7 @@ function ALittle.ScrollList.__setter:scroll_offset(value)
 			end
 		end
 		self._scroll_linear.y = value
-		self:RejustScrollBar()
+		self:AdjustScrollBar()
 	end
 end
 
@@ -332,7 +332,7 @@ function ALittle.ScrollList.__setter:gap(value)
 	end
 	self._scroll_linear.gap = value
 	self:RefreshClipDisLine()
-	self:RejustScrollBar()
+	self:AdjustScrollBar()
 end
 
 function ALittle.ScrollList.__getter:gap()
@@ -460,7 +460,7 @@ function ALittle.ScrollList.__getter:right_scrollbar()
 	return self._scroll_bar
 end
 
-function ALittle.ScrollList:RejustScrollBar()
+function ALittle.ScrollList:AdjustScrollBar()
 	if self._type == ALittle.UIEnumTypes.TYPE_H then
 		local linear_width = self._scroll_linear.width
 		if self._scroll_bar ~= nil then
@@ -563,7 +563,7 @@ function ALittle.ScrollList:DeepLayout()
 end
 
 function ALittle.ScrollList:HandleLinearResize(event)
-	self:RejustScrollBar()
+	self:AdjustScrollBar()
 	self:RefreshClipDisLine()
 end
 

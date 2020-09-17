@@ -43,7 +43,7 @@ function ALittleIDE.ScrollListS:HandleGapFOCUSOUT(event)
 end
 
 function ALittleIDE.ScrollListS:HandleClipClick(event)
-	self._object:RejustScrollBar()
+	self._object:AdjustScrollBar()
 	self._object:RefreshClipDisLine()
 end
 

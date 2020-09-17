@@ -117,7 +117,7 @@ function AUIPlugin.AUICodeFilterScreen:SelectUp()
 		local offset = (target - 1) * self._item_height + self._screen.container_y
 		if offset < 0 then
 			self._screen.right_scrollbar.offset_rate = ((target - 1) * self._item_height) / delta
-			self._screen:RejustScrollBar()
+			self._screen:AdjustScrollBar()
 		end
 	end
 end
@@ -141,7 +141,7 @@ function AUIPlugin.AUICodeFilterScreen:SelectDown()
 		local offset = target * self._item_height + self._screen.container_y
 		if offset > self._screen.height then
 			self._screen.right_scrollbar.offset_rate = (target * self._item_height - self._screen.height) / delta
-			self._screen:RejustScrollBar()
+			self._screen:AdjustScrollBar()
 		end
 	end
 end

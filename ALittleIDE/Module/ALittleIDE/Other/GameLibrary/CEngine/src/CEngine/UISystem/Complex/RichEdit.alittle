@@ -2010,7 +2010,7 @@ public class RichEdit : DisplayLayout
             return;
         this._line_start_it = line_index;
         this._start_it_delta = 0;
-        this.RejustContentY();
+        this.AdjustContentY();
     }
     
     // 重置光标
@@ -3133,12 +3133,12 @@ public class RichEdit : DisplayLayout
         this._scroll_list.scroll_offset = -child.y - this._start_it_delta;
         // 最后裁剪
         this._scroll_list.RefreshClipDisLine();
-        this._scroll_list.RejustScrollBar();
+        this._scroll_list.AdjustScrollBar();
     
         this._draw_loop = null;
     }
 
-    protected fun RejustContentY()
+    protected fun AdjustContentY()
     {
         if (this._draw_loop != null)
             return;
@@ -3149,7 +3149,7 @@ public class RichEdit : DisplayLayout
     
         // 最后裁剪
         this._scroll_list.RefreshClipDisLine();
-        this._scroll_list.RejustScrollBar();
+        this._scroll_list.AdjustScrollBar();
     }
 
     protected fun Draw()
@@ -3270,7 +3270,7 @@ public class RichEdit : DisplayLayout
                 //  把光标所在行和下边界对齐
                 this._scroll_list.scroll_offset = this._scroll_list.height - line_list[this._line_cursor_it].acc_height;
                 this._scroll_list.RefreshClipDisLine();
-                this._scroll_list.RejustScrollBar();
+                this._scroll_list.AdjustScrollBar();
                 // 设置当前起始行
                 while (line_list[this._line_start_it].pre_height > -this._scroll_list.scroll_offset)
                     this._line_start_it = this._line_start_it - 1;
@@ -3281,7 +3281,7 @@ public class RichEdit : DisplayLayout
             {
                 this._scroll_list.scroll_offset = 0;
                 this._scroll_list.RefreshClipDisLine();
-                this._scroll_list.RejustScrollBar();
+                this._scroll_list.AdjustScrollBar();
                 this._line_start_it = 1;
                 this._start_it_delta = 0;
                 return;
@@ -3294,7 +3294,7 @@ public class RichEdit : DisplayLayout
             //  把光标所在行和上边界对齐
             this._scroll_list.scroll_offset = -line_list[this._line_cursor_it].pre_height;
             this._scroll_list.RefreshClipDisLine();
-            this._scroll_list.RejustScrollBar();
+            this._scroll_list.AdjustScrollBar();
             // 设置当前起始行
             this._line_start_it = this._line_cursor_it;
         }
@@ -3304,7 +3304,7 @@ public class RichEdit : DisplayLayout
             //  把光标所在行和下边界对齐
             this._scroll_list.scroll_offset = this._scroll_list.height - line_list[this._line_cursor_it].acc_height;
             this._scroll_list.RefreshClipDisLine();
-            this._scroll_list.RejustScrollBar();
+            this._scroll_list.AdjustScrollBar();
             // 设置当前起始行
             while (line_list[this._line_start_it].acc_height <= -this._scroll_list.scroll_offset)
                 this._line_start_it = this._line_start_it + 1;

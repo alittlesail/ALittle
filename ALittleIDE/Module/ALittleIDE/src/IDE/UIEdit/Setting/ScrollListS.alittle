@@ -45,7 +45,7 @@ public class ScrollListS : DisplayLayoutS
 	
 	public fun HandleClipClick(ALittle.UIEvent event)
 	{
-		cast<ALittle.ScrollList>(this._object).RejustScrollBar();
+		cast<ALittle.ScrollList>(this._object).AdjustScrollBar();
 		cast<ALittle.ScrollList>(this._object).RefreshClipDisLine();
 	}
 	

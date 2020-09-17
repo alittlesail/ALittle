@@ -127,7 +127,7 @@ unsigned int Text::GetRealHeight()
 	return m_real_height;
 }
 
-void Text::RejustSize()
+void Text::AdjustSize()
 {
 	SetWidth((float)m_real_width);
 	SetHeight((float)m_real_height);
@@ -288,12 +288,12 @@ int Text::CalcTextWidth(const char* content)
 	return text_width_2 - text_width_1;
 }
 
-int Text::RejustCursorPos(int x, const char* content)
+int Text::AdjustCursorPos(int x, const char* content)
 {
 	if (m_font == 0) m_font = g_DisplaySystem.GetFont(m_font_path.c_str(), m_font_style, m_font_size);
 	if (m_font == 0) return 0;
 
-	return FontHelper::RejustCursorPos(x, content, m_font);
+	return FontHelper::AdjustCursorPos(x, content, m_font);
 }
 
 } // ALittle

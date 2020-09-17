@@ -86,7 +86,7 @@ void TextEdit::SetCursorToEnd()
 	m_char_cursor_it = m_line_cursor_it->char_list.end();
 	-- m_char_cursor_it;
 
-	RejustStartItCloseTOCursor((int)m_size.y);
+	AdjustStartItCloseTOCursor((int)m_size.y);
 	ResetCursor();
 }
 
@@ -100,7 +100,7 @@ void TextEdit::SelectAll()
 	m_char_cursor_it = m_line_cursor_it->char_list.end();
 	-- m_char_cursor_it;
 
-	RejustStartItCloseTOCursor((int)m_size.y);
+	AdjustStartItCloseTOCursor((int)m_size.y);
 
 	ResetCursor();
 }
@@ -112,7 +112,7 @@ void TextEdit::ClickCursor(float offset_x, float offset_y)
 	// set cursor position
 	GetIteratorByOffset(offset_x, offset_y, &m_line_cursor_it, &m_char_cursor_it);
 
-	RejustStartItCloseTOCursor((int)m_size.y);
+	AdjustStartItCloseTOCursor((int)m_size.y);
 
 	ResetCursor();
 }
@@ -182,7 +182,7 @@ bool TextEdit::ClickWordCursor(float offset_x, float offset_y)
 	if (m_line_select_it == m_line_cursor_it && m_char_select_it == m_char_cursor_it)
 		m_char_select_it = m_line_select_it->char_list.end();
 
-	RejustStartItCloseTOCursor((int)m_size.y);
+	AdjustStartItCloseTOCursor((int)m_size.y);
 
 	ResetCursor();
 
@@ -220,9 +220,9 @@ void TextEdit::DragCursor(float offset_x, float offset_y)
 		return;
 	}
 
-	// rejust start iterator
+	// adjust start iterator
 	if (m_line_cursor_it->acc_height - m_line_start_it->pre_height > (int)m_size.y)
-		RejustStartItCloseTOCursor((int)m_size.y);
+		AdjustStartItCloseTOCursor((int)m_size.y);
 
 	ResetCursor();
 }

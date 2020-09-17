@@ -140,7 +140,7 @@ function ALittleIDE.IDEUITabChild:Ctor(ctrl_sys, module, name, save)
 	self._tab_screen.container.scale_y = 1
 	self._tab_container.width = ALittleIDE.g_IDEProject.project.config:GetConfig("default_show_width", 800)
 	self._tab_container.height = ALittleIDE.g_IDEProject.project.config:GetConfig("default_show_height", 600)
-	self._tab_screen:RejustScrollBar()
+	self._tab_screen:AdjustScrollBar()
 	self._tab_select_container.visible = ALittleIDE.g_IDECenter.center.singleselect
 	self._tab_handle_quad:AddEventListener(___all_struct[1883782801], self, self.HandleHandleContainerLButtonDown)
 	self._tab_handle_quad:AddEventListener(___all_struct[40651933], self, self.HandleHandleContainerLButtonUp)
@@ -221,7 +221,7 @@ function ALittleIDE.IDEUITabChild:ShowInCenter()
 			local center_y = y + object.height / 2
 			self._tab_screen.right_scrollbar.offset_rate = (center_y - view_y) / real_height
 		end
-		self._tab_screen:RejustScrollBar()
+		self._tab_screen:AdjustScrollBar()
 	end
 end
 
@@ -248,14 +248,14 @@ end
 function ALittleIDE.IDEUITabChild:HandleProjectSettingChanged(event)
 	self._tab_container.width = event.default_show_width
 	self._tab_container.height = event.default_show_height
-	self._tab_screen:RejustScrollBar()
+	self._tab_screen:AdjustScrollBar()
 	for target, handle_info in ___pairs(self._tab_quad_map) do
 		self:UpdateHandleQuadLayout(target)
 	end
 end
 
 function ALittleIDE.IDEUITabChild:HandleTreeSizeChanged(event)
-	self._tree_screen:RejustScrollBar()
+	self._tree_screen:AdjustScrollBar()
 end
 
 function ALittleIDE.IDEUITabChild:HandleSavePng(event)
@@ -932,14 +932,14 @@ function ALittleIDE.IDEUITabChild:HandleScaleContainerLButtonDown(event)
 	end
 	self._tab_screen.container.scale_x = scale
 	self._tab_screen.container.scale_y = scale
-	self._tab_screen:RejustScrollBar()
+	self._tab_screen:AdjustScrollBar()
 	ALittleIDE.g_IDECenter.center:UpdateToolScale(scale)
 end
 
 function ALittleIDE.IDEUITabChild:HandleEditScaleChanged(event)
 	self._tab_screen.container.scale_x = event.scale
 	self._tab_screen.container.scale_y = event.scale
-	self._tab_screen:RejustScrollBar()
+	self._tab_screen:AdjustScrollBar()
 end
 
 function ALittleIDE.IDEUITabChild:GetScale()
@@ -1487,7 +1487,7 @@ function ALittleIDE.IDEUITabChild:ShowTreeItemFocus(target)
 		end
 	end
 	self._tree_object.fold = true
-	self._tree_screen:RejustScrollBar()
+	self._tree_screen:AdjustScrollBar()
 	local x, y = target:LocalToGlobal(self._tree_screen.container)
 	local target_x = (self._tree_screen.view_width - target.width / 2) / 2 - x
 	local target_y = (self._tree_screen.view_height - target.height) / 2 - y

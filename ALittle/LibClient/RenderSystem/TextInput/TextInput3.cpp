@@ -42,7 +42,7 @@ void TextInput::SelectAll()
 
 	// Adjust the starting position
 	if (m_cursor_it->pre_width - m_start_it->pre_width > (int)m_size.x)
-		RejustStartItCloseTOCursor((int)m_size.x);
+		AdjustStartItCloseTOCursor((int)m_size.x);
 	
 	ResetCursor();
 }
@@ -67,7 +67,7 @@ void TextInput::SetCursorToEnd()
 
 	// Adjust the starting position
 	if (m_cursor_it->pre_width - m_start_it->pre_width > (int)m_size.x)
-		RejustStartItCloseTOCursor((int)m_size.x);
+		AdjustStartItCloseTOCursor((int)m_size.x);
 
 	ResetCursor();
 }
@@ -116,7 +116,7 @@ bool TextInput::ClickWordCursor(float offset)
 	if (m_select_it == m_cursor_it)
 		m_select_it = m_char_list.end();
 	else if (m_select_it != m_char_list.end())
-		RejustStartItCloseTOCursor((int)m_size.x);
+		AdjustStartItCloseTOCursor((int)m_size.x);
 
 	ResetCursor();
 
@@ -153,7 +153,7 @@ void TextInput::DragCursor(float offset_x, float offset_y)
 
 	if (m_cursor_it->pre_width - m_start_it->pre_width > (int)m_size.x)
 	{
-		RejustStartItCloseTOCursor((int)m_size.x);
+		AdjustStartItCloseTOCursor((int)m_size.x);
 		ResetCursor();
 		return;
 	}

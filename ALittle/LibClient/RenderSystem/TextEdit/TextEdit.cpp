@@ -61,7 +61,7 @@ void TextEdit::SetHeight(float height)
 	if (m_size.y == height) return;
 	m_size.y = height;
 
-	RejustStartItCloseTOCursor((int)height);
+	AdjustStartItCloseTOCursor((int)height);
 
 	ResetCursor();
 

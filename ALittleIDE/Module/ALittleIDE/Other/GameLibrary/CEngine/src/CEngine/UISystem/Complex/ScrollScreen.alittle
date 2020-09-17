@@ -98,7 +98,7 @@ public class ScrollScreen : DisplayGroup
             elseif (offset < -60) offset = -60;
             if (offset != 0) this._right_scroll_bar.offset_rate = this._right_scroll_bar.offset_rate - offset / this._content_height;
         }
-        this.RejustScrollBar();
+        this.AdjustScrollBar();
     }
 
     public fun EnableDrag(bool value)
@@ -161,7 +161,7 @@ public class ScrollScreen : DisplayGroup
 
         this._scroll_content.AddEventListener(this, this.HandleContainerResize);
         this._scroll_view.AddChild(this._scroll_content, 1);
-        this.RejustScrollBar();
+        this.AdjustScrollBar();
     }
 
     // 单纯更换container
@@ -175,7 +175,7 @@ public class ScrollScreen : DisplayGroup
         
         this._scroll_content.AddEventListener(this, this.HandleContainerResize);
         this._scroll_view.AddChild(this._scroll_content, 1);   
-        this.RejustScrollBar();
+        this.AdjustScrollBar();
     }
     
     // 设置容器的Y轴相对位置
@@ -185,7 +185,7 @@ public class ScrollScreen : DisplayGroup
             return;
         this._scroll_content.y = value;
         this.YScrollBarChange();
-        this.RejustScrollBar();
+        this.AdjustScrollBar();
     }
     public get container_y() : double
     {
@@ -201,7 +201,7 @@ public class ScrollScreen : DisplayGroup
             return;
         this._scroll_content.x = value;
         this.XScrollBarChange();
-        this.RejustScrollBar();
+        this.AdjustScrollBar();
     }
     public get container_x() : double
     {
@@ -310,7 +310,7 @@ public class ScrollScreen : DisplayGroup
             return false;
         if (this._scroll_content.AddChild(child, index) == false)
             return false;
-        this.RejustScrollBar();
+        this.AdjustScrollBar();
         return true;
     }
     public fun RemoveChild(DisplayObject child) : bool
@@ -319,13 +319,13 @@ public class ScrollScreen : DisplayGroup
             return false;
         if (this._scroll_content.RemoveChild(child) == false)
             return false;
-        this.RejustScrollBar();
+        this.AdjustScrollBar();
         return true;
     }
     public fun SpliceChild(int index, [Nullable] int count) : int
     {
         var result = this._scroll_content.SpliceChild(index, count);
-        if (result != 0) this.RejustScrollBar();
+        if (result != 0) this.AdjustScrollBar();
         return result;
     }
     // 检查是否存在某个子控件
@@ -343,7 +343,7 @@ public class ScrollScreen : DisplayGroup
         A_LoopSystem.RemoveUpdater(this._x_type_dispatch);
         A_LoopSystem.RemoveUpdater(this._y_type_dispatch);
         this._scroll_content.RemoveAllChild();
-        this.RejustScrollBar();
+        this.AdjustScrollBar();
     }
     ////////////////////////////////////////////////////////////
     public set width(double value)
@@ -634,7 +634,7 @@ public class ScrollScreen : DisplayGroup
         return this._bottom_scroll_bar;
     }
     
-    public fun RejustScrollBar()
+    public fun AdjustScrollBar()
     {
         this._content_width = this._scroll_content.max_right;
         if (this._static_object_h != null)
@@ -707,7 +707,7 @@ public class ScrollScreen : DisplayGroup
 
     protected fun HandleContainerResize(UIResizeEvent event)
     {
-        this.RejustScrollBar();
+        this.AdjustScrollBar();
     }
     
     protected fun HandleDragBegin(UIButtonDragBeginEvent event)

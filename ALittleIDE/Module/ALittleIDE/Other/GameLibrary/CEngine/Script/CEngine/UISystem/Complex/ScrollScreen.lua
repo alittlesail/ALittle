@@ -50,7 +50,7 @@ function ALittle.ScrollScreen:HandleMButtonWheel(event)
 			self._right_scroll_bar.offset_rate = self._right_scroll_bar.offset_rate - offset / self._content_height
 		end
 	end
-	self:RejustScrollBar()
+	self:AdjustScrollBar()
 end
 
 function ALittle.ScrollScreen:EnableDrag(value)
@@ -100,7 +100,7 @@ function ALittle.ScrollScreen.__setter:container(value)
 	end
 	self._scroll_content:AddEventListener(___all_struct[-431205740], self, self.HandleContainerResize)
 	self._scroll_view:AddChild(self._scroll_content, 1)
-	self:RejustScrollBar()
+	self:AdjustScrollBar()
 end
 
 function ALittle.ScrollScreen:SetContainer(value)
@@ -112,7 +112,7 @@ function ALittle.ScrollScreen:SetContainer(value)
 	self._scroll_content = value
 	self._scroll_content:AddEventListener(___all_struct[-431205740], self, self.HandleContainerResize)
 	self._scroll_view:AddChild(self._scroll_content, 1)
-	self:RejustScrollBar()
+	self:AdjustScrollBar()
 end
 
 function ALittle.ScrollScreen.__setter:container_y(value)
@@ -121,7 +121,7 @@ function ALittle.ScrollScreen.__setter:container_y(value)
 	end
 	self._scroll_content.y = value
 	self:YScrollBarChange()
-	self:RejustScrollBar()
+	self:AdjustScrollBar()
 end
 
 function ALittle.ScrollScreen.__getter:container_y()
@@ -137,7 +137,7 @@ function ALittle.ScrollScreen.__setter:container_x(value)
 	end
 	self._scroll_content.x = value
 	self:XScrollBarChange()
-	self:RejustScrollBar()
+	self:AdjustScrollBar()
 end
 
 function ALittle.ScrollScreen.__getter:container_x()
@@ -230,7 +230,7 @@ function ALittle.ScrollScreen:AddChild(child, index)
 	if self._scroll_content:AddChild(child, index) == false then
 		return false
 	end
-	self:RejustScrollBar()
+	self:AdjustScrollBar()
 	return true
 end
 
@@ -241,14 +241,14 @@ function ALittle.ScrollScreen:RemoveChild(child)
 	if self._scroll_content:RemoveChild(child) == false then
 		return false
 	end
-	self:RejustScrollBar()
+	self:AdjustScrollBar()
 	return true
 end
 
 function ALittle.ScrollScreen:SpliceChild(index, count)
 	local result = self._scroll_content:SpliceChild(index, count)
 	if result ~= 0 then
-		self:RejustScrollBar()
+		self:AdjustScrollBar()
 	end
 	return result
 end
@@ -265,7 +265,7 @@ function ALittle.ScrollScreen:RemoveAllChild()
 	A_LoopSystem:RemoveUpdater(self._x_type_dispatch)
 	A_LoopSystem:RemoveUpdater(self._y_type_dispatch)
 	self._scroll_content:RemoveAllChild()
-	self:RejustScrollBar()
+	self:AdjustScrollBar()
 end
 
 function ALittle.ScrollScreen.__setter:width(value)
@@ -512,7 +512,7 @@ function ALittle.ScrollScreen.__getter:bottom_scrollbar()
 	return self._bottom_scroll_bar
 end
 
-function ALittle.ScrollScreen:RejustScrollBar()
+function ALittle.ScrollScreen:AdjustScrollBar()
 	self._content_width = self._scroll_content.max_right
 	if self._static_object_h ~= nil then
 		if self._static_object_h.width > self._content_width then
@@ -576,7 +576,7 @@ function ALittle.ScrollScreen:HandleBottomScrollBarChange(event)
 end
 
 function ALittle.ScrollScreen:HandleContainerResize(event)
-	self:RejustScrollBar()
+	self:AdjustScrollBar()
 end
 
 function ALittle.ScrollScreen:HandleDragBegin(event)

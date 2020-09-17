@@ -442,7 +442,7 @@ public class IDEAntiAddAttrRevoke : ALittle.RevokeObject
 
 			var static_object_v = this._target.anti_screen.static_object_v;
 			static_object_v.height = this._target.anti_link_linear.y + this._target.anti_link_linear.height;
-			this._target.anti_screen.RejustScrollBar();
+			this._target.anti_screen.AdjustScrollBar();
 		}
 
 		// 设置为未保存
@@ -465,7 +465,7 @@ public class IDEAntiAddAttrRevoke : ALittle.RevokeObject
 
 			var static_object_v = this._target.anti_screen.static_object_v;
 			static_object_v.height = this._target.anti_link_linear.y + this._target.anti_link_linear.height;
-			this._target.anti_screen.RejustScrollBar();
+			this._target.anti_screen.AdjustScrollBar();
 		}
 
 		// 设置为未保存
@@ -508,7 +508,7 @@ public class IDEAntiRemoveAttrRevoke : ALittle.RevokeObject
 
 			var static_object_v = this._target.anti_screen.static_object_v;
 			static_object_v.height = this._target.anti_link_linear.y + this._target.anti_link_linear.height;
-			this._target.anti_screen.RejustScrollBar();
+			this._target.anti_screen.AdjustScrollBar();
 		}
 
 		// 设置为未保存
@@ -531,7 +531,7 @@ public class IDEAntiRemoveAttrRevoke : ALittle.RevokeObject
 
 			var static_object_v = this._target.anti_screen.static_object_v;
 			static_object_v.height = this._target.anti_link_linear.y + this._target.anti_link_linear.height;
-			this._target.anti_screen.RejustScrollBar();
+			this._target.anti_screen.AdjustScrollBar();
 		}
 
 		// 设置为未保存

@@ -155,7 +155,7 @@ public class AUICodeCursor : ALittle.Quad
         return true;
     }
 
-    public fun RejustShowCursor()
+    public fun AdjustShowCursor()
     {
         var line = this._edit.line_list[this._it_line];
         if (line == null) return;
@@ -391,7 +391,7 @@ public class AUICodeCursor : ALittle.Quad
             if (rejust)
             {
                 this._edit.code_screen.container.width = line.container.width + CODE_LINE_NUMBER_WIDTH;
-                this._edit.code_screen.RejustScrollBar();
+                this._edit.code_screen.AdjustScrollBar();
             }
 
             if (need_revoke)
@@ -461,7 +461,7 @@ public class AUICodeCursor : ALittle.Quad
         this.SetLineChar(new_it_line, new_it_char);
         if (this._edit.code_screen.container.width < pre_line.container.width + CODE_LINE_NUMBER_WIDTH)
             this._edit.code_screen.container.width = pre_line.container.width + CODE_LINE_NUMBER_WIDTH;
-        this._edit.code_screen.RejustScrollBar();
+        this._edit.code_screen.AdjustScrollBar();
 
         if (need_revoke)
         {
@@ -526,7 +526,7 @@ public class AUICodeCursor : ALittle.Quad
             if (rejust)
             {
                 this._edit.code_screen.container.width = line.container.width + CODE_LINE_NUMBER_WIDTH;
-                this._edit.code_screen.RejustScrollBar();
+                this._edit.code_screen.AdjustScrollBar();
             }
 
             var new_it_line = this._it_line;
@@ -596,7 +596,7 @@ public class AUICodeCursor : ALittle.Quad
         this.SetLineChar(new_it_line, new_it_char);
         if (this._edit.code_screen.container.width < cur_line.container.width + CODE_LINE_NUMBER_WIDTH)
             this._edit.code_screen.container.width = cur_line.container.width + CODE_LINE_NUMBER_WIDTH;
-        this._edit.code_screen.RejustScrollBar();
+        this._edit.code_screen.AdjustScrollBar();
 
         if (need_revoke)
         {

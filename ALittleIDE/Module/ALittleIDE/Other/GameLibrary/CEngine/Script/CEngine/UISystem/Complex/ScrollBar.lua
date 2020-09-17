@@ -27,31 +27,31 @@ end
 function ALittle.ScrollBar.__setter:type(value)
 	ALittle.Grid3.__setter.type(self, value)
 	self:UpdateShowSize()
-	self:RejustBarButton()
+	self:AdjustBarButton()
 end
 
 function ALittle.ScrollBar.__setter:up_size(value)
 	ALittle.Grid3.__setter.up_size(self, value)
 	self:UpdateShowSize()
-	self:RejustBarButton()
+	self:AdjustBarButton()
 end
 
 function ALittle.ScrollBar.__setter:down_size(value)
 	ALittle.Grid3.__setter.down_size(self, value)
 	self:UpdateShowSize()
-	self:RejustBarButton()
+	self:AdjustBarButton()
 end
 
 function ALittle.ScrollBar.__setter:gap(value)
 	ALittle.Grid3.__setter.gap(self, value)
 	self:UpdateShowSize()
-	self:RejustBarButton()
+	self:AdjustBarButton()
 end
 
 function ALittle.ScrollBar.__setter:total_size(value)
 	self._logic_total_size = value
 	self:UpdateShowSize()
-	self:RejustBarButton()
+	self:AdjustBarButton()
 end
 
 function ALittle.ScrollBar.__getter:total_size()
@@ -61,7 +61,7 @@ end
 function ALittle.ScrollBar.__setter:show_size(value)
 	self._logic_show_size = value
 	self:UpdateShowSize()
-	self:RejustBarButton()
+	self:AdjustBarButton()
 end
 
 function ALittle.ScrollBar.__getter:show_size()
@@ -75,7 +75,7 @@ function ALittle.ScrollBar.__setter:offset_rate(value)
 	elseif self._offset_rate > 1 then
 		self._offset_rate = 1
 	end
-	self:RejustBarButton()
+	self:AdjustBarButton()
 end
 
 function ALittle.ScrollBar.__getter:offset_rate()
@@ -100,7 +100,7 @@ end
 
 function ALittle.ScrollBar:SetToDown()
 	self._offset_rate = 1
-	self:RejustBarButton()
+	self:AdjustBarButton()
 end
 
 function ALittle.ScrollBar.__setter:width(value)
@@ -109,7 +109,7 @@ function ALittle.ScrollBar.__setter:width(value)
 	end
 	ALittle.Grid3.__setter.width(self, value)
 	self:UpdateShowSize()
-	self:RejustBarButton()
+	self:AdjustBarButton()
 end
 
 function ALittle.ScrollBar.__setter:height(value)
@@ -118,7 +118,7 @@ function ALittle.ScrollBar.__setter:height(value)
 	end
 	ALittle.Grid3.__setter.height(self, value)
 	self:UpdateShowSize()
-	self:RejustBarButton()
+	self:AdjustBarButton()
 end
 
 function ALittle.ScrollBar.__setter:up_button(value)
@@ -201,7 +201,7 @@ function ALittle.ScrollBar.__setter:bar_button(value)
 		value:AddEventListener(___all_struct[150587926], self, self.HandleBarButtonDragEnd)
 		value:AddEventListener(___all_struct[-1737121315], self, self.HandleBarButtonScroll)
 	end
-	self:RejustBarButton()
+	self:AdjustBarButton()
 end
 
 function ALittle.ScrollBar.__getter:bar_button()
@@ -216,7 +216,7 @@ function ALittle.ScrollBar.__setter:bar_background(value)
 	if value ~= nil then
 		self._bar_container:AddChild(value, 1)
 	end
-	self:RejustBarButton()
+	self:AdjustBarButton()
 end
 
 function ALittle.ScrollBar.__getter:bar_background()
@@ -295,7 +295,7 @@ function ALittle.ScrollBar:HandleBarButtonDrag(event)
 	self:DispatchEvent(___all_struct[958494922], {})
 end
 
-function ALittle.ScrollBar:RejustBarButton()
+function ALittle.ScrollBar:AdjustBarButton()
 	local real_size = self._center_size - self._show_size
 	if self._type == ALittle.UIEnumTypes.TYPE_V then
 		if self._bar_button ~= nil then

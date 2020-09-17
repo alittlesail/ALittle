@@ -47,27 +47,27 @@ public class ScrollBar : Grid3
     {
         Grid3.type(this, value);
         this.UpdateShowSize();
-        this.RejustBarButton();
+        this.AdjustBarButton();
     }
     public set up_size(double value)
     {
         Grid3.up_size(this, value);
         this.UpdateShowSize();
-        this.RejustBarButton();
+        this.AdjustBarButton();
     }
     
     public set down_size(double value)
     {
         Grid3.down_size(this, value);
         this.UpdateShowSize();
-        this.RejustBarButton();
+        this.AdjustBarButton();
     }
     
     public set gap(double value)
     {
         Grid3.gap(this, value);
         this.UpdateShowSize();
-        this.RejustBarButton();
+        this.AdjustBarButton();
     }
     
     public set total_size(double value)
@@ -75,7 +75,7 @@ public class ScrollBar : Grid3
         this._logic_total_size = value;
     
         this.UpdateShowSize();
-        this.RejustBarButton();
+        this.AdjustBarButton();
     }
     public get total_size() : double
     {
@@ -86,7 +86,7 @@ public class ScrollBar : Grid3
         this._logic_show_size = value;
     
         this.UpdateShowSize();
-        this.RejustBarButton();
+        this.AdjustBarButton();
     }
     public get show_size() : double
     {
@@ -101,7 +101,7 @@ public class ScrollBar : Grid3
         elseif (this._offset_rate > 1)
             this._offset_rate = 1;
     
-        this.RejustBarButton();
+        this.AdjustBarButton();
     }
     public get offset_rate() : double
     {
@@ -128,7 +128,7 @@ public class ScrollBar : Grid3
     public fun SetToDown()
     {
         this._offset_rate = 1;
-        this.RejustBarButton();
+        this.AdjustBarButton();
     }
     
     public set width(double value)
@@ -139,7 +139,7 @@ public class ScrollBar : Grid3
         Grid3.width(this, value);
     
         this.UpdateShowSize();
-        this.RejustBarButton();
+        this.AdjustBarButton();
     }
     
     public set height(double value)
@@ -149,7 +149,7 @@ public class ScrollBar : Grid3
         Grid3.height(this, value);
     
         this.UpdateShowSize();
-        this.RejustBarButton();
+        this.AdjustBarButton();
     }
     
     public set up_button(DisplayObject value)
@@ -235,7 +235,7 @@ public class ScrollBar : Grid3
             value.AddEventListener(this, this.HandleBarButtonDragEnd);
             value.AddEventListener(this, this.HandleBarButtonScroll);
         }
-        this.RejustBarButton();
+        this.AdjustBarButton();
     }
     
     public get bar_button() : DisplayObject
@@ -250,7 +250,7 @@ public class ScrollBar : Grid3
         this._bar_background = value;
         if (value != null)
             this._bar_container.AddChild(value, 1);
-        this.RejustBarButton();
+        this.AdjustBarButton();
     }
     public get bar_background() : DisplayObject
     {
@@ -340,7 +340,7 @@ public class ScrollBar : Grid3
         this.DispatchEvent(new UIChangedEvent());
     }
 
-    protected fun RejustBarButton()
+    protected fun AdjustBarButton()
     {
         var real_size = this._center_size - this._show_size;
         if (this._type == UIEnumTypes.TYPE_V)

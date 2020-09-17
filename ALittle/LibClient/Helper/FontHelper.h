@@ -12,6 +12,8 @@ namespace ALittle
 class FontHelper
 {
 public:
+
+	
 	/**
 	* cut text by width
 	* @param content: total text
@@ -26,9 +28,9 @@ public:
 	* get offset by offset x
 	* @param x: x offset from 0
 	* @param content: total text
-	* @return rejust offset from content
+	* @return adjust offset from content
 	*/
-	static int RejustCursorPos(int x, const char* content, TTF_Font* font);
+	static int AdjustCursorPos(int x, const char* content, TTF_Font* font);
 
 	/**
 	* set font style

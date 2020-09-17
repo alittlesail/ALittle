@@ -219,7 +219,7 @@ function ALittleIDE.IDEUICodeList:ShowTreeItemFocus(target)
 			parent = parent.logic_parent
 		end
 	end
-	self._code_scroll_screen:RejustScrollBar()
+	self._code_scroll_screen:AdjustScrollBar()
 	local x, y = target:LocalToGlobal(self._code_scroll_screen.container)
 	local target_x = (self._code_scroll_screen.view_width - target.width / 2) / 2 - x
 	local target_y = (self._code_scroll_screen.view_height - target.height) / 2 - y

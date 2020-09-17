@@ -41,7 +41,7 @@ int FontHelper::CutTextByWidth(const char* content, int width, TTF_Font* font, i
 	return utf8_CalcByteCountByWordCount(content, 0, char_count);
 }
 
-int FontHelper::RejustCursorPos(int x, const char* content, TTF_Font* font)
+int FontHelper::AdjustCursorPos(int x, const char* content, TTF_Font* font)
 {
 	if (font == 0 || content == 0) return 0;
 

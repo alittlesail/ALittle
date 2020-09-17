@@ -85,7 +85,7 @@ void TextEdit::CursorOffsetLRImpl(bool left)
 	}
 
 	// Adjust the starting position
-	RejustStartItCloseTOCursor((int)m_size.y);
+	AdjustStartItCloseTOCursor((int)m_size.y);
 
 	ResetCursor();
 }
@@ -148,7 +148,7 @@ void TextEdit::CursorOffsetUDImpl(bool up)
 		m_char_cursor_it = end_char_it;
 	}
 
-	RejustStartItCloseTOCursor((int)m_size.y);
+	AdjustStartItCloseTOCursor((int)m_size.y);
 
 	ResetCursor();
 }

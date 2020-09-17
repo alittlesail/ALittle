@@ -597,7 +597,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 		this._anti_anti_linear.y = static_object_hv.height;
 		this._anti_anti_linear.width = static_object_h.width - static_object_hv.width;
 
-		this._anti_screen.RejustScrollBar();
+		this._anti_screen.AdjustScrollBar();
 
 		if (this._anti_scroll_list.child_count > 0)
 		{
@@ -761,7 +761,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 			this._anti_link_linear.AddChild(link_item);
 		}
 		static_object_v.height = this._anti_link_linear.y + this._anti_link_linear.height;
-		this._anti_screen.RejustScrollBar();
+		this._anti_screen.AdjustScrollBar();
 
 		this._handle_container.visible = true;
 	}
@@ -774,7 +774,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 		this._anti_anti_linear.RemoveAllChild();
 		this._anti_link_linear.RemoveAllChild();
 		this._anti_screen.static_object_v.height = this._anti_link_linear.y;
-		this._anti_screen.RejustScrollBar();
+		this._anti_screen.AdjustScrollBar();
 
 		this._handle_container.visible = false;
 
@@ -829,7 +829,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
         
 		var static_object_v = this._anti_screen.static_object_v;
 		static_object_v.height = this._anti_link_linear.y + this._anti_link_linear.height;
-		this._anti_screen.RejustScrollBar();
+		this._anti_screen.AdjustScrollBar();
         
 		var revoke = new IDEAntiAddAttrRevoke(this, this._cur_show, child, anti_item, link_item);
 		this._tab_child.revoke_list.PushRevoke(revoke);
@@ -860,7 +860,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 
 		var static_object_v = this._anti_screen.static_object_v;
 		static_object_v.height = this._anti_link_linear.y + this._anti_link_linear.height;
-		this._anti_screen.RejustScrollBar();
+		this._anti_screen.AdjustScrollBar();
 
 		var revoke = new IDEAntiAddAttrRevoke(this, this._cur_show, child, anti_item, link_item);
 		this._tab_child.revoke_list.PushRevoke(revoke);
@@ -883,7 +883,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 		var link_item = cast<IDEAntiFrameLinkItem>(this._anti_link_linear.GetChildByIndex(child_index));
 		this._anti_link_linear.RemoveChild(link_item);
 		this._anti_screen.static_object_v.height = this._anti_link_linear.y + this._anti_link_linear.height;
-		this._anti_screen.RejustScrollBar();
+		this._anti_screen.AdjustScrollBar();
 
 		var revoke = new IDEAntiRemoveAttrRevoke(this, this._cur_show, child, anti_item, link_item, child_index);
 		this._tab_child.revoke_list.PushRevoke(revoke);

@@ -150,7 +150,7 @@ void HttpReceiver::HandleRead(const asio::error_code& ec, std::size_t actual_siz
 				// check is completed
 				if (last_size > 0)
 				{
-					// rejust buffer
+					// adjust buffer
 					for (int i = 0; i < last_size; ++i)
 						m_http_buffer[i] = m_http_buffer[receive_size + i];
 
@@ -196,7 +196,7 @@ void HttpReceiver::HandleRead(const asio::error_code& ec, std::size_t actual_siz
                 // check is completed
                 if (last_size > 0)
                 {
-                    // rejust buffer
+                    // adjust buffer
                     for (int i = 0; i < last_size; ++i)
                         m_http_buffer[i] = m_http_buffer[receive_size + i];
                 }
@@ -313,7 +313,7 @@ void HttpReceiver::HandleReadFile(const asio::error_code& ec, std::size_t actual
 
 				if (last_size > 0)
 				{
-					// rejust buffer
+					// adjust buffer
 					for (int i = 0; i < last_size; ++i)
 						m_http_buffer[i] = m_http_buffer[receive_size + i];
 

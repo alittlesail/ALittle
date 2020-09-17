@@ -29,7 +29,7 @@ void TextInput::CursorOffsetImpl(bool left)
 
 		m_need_redraw = true;
 
-		RejustStartItAwayFromCursor((int)m_size.x / 2);
+		AdjustStartItAwayFromCursor((int)m_size.x / 2);
 
 		ResetCursor();
 		return;
@@ -38,7 +38,7 @@ void TextInput::CursorOffsetImpl(bool left)
 	if (m_cursor_it->str.size() == 0) return;
 
 	++ m_cursor_it;
-	RejustStartItCloseTOCursor((int)m_size.x);
+	AdjustStartItCloseTOCursor((int)m_size.x);
 
 	ResetCursor();
 }

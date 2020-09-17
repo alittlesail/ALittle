@@ -264,7 +264,7 @@ public class ScrollList : DisplayView
         }
         this._scroll_linear.RemoveAllChild();
         this.UpdateLoadingShow();
-        this.RejustScrollBar();
+        this.AdjustScrollBar();
     }
     
     // 子控件变化位置刷新
@@ -290,7 +290,7 @@ public class ScrollList : DisplayView
             {
                 A_LoopSystem.RemoveUpdater(this._drag_loop_x);
                 this.RefreshClipDisLine();
-                this.RejustScrollBar();
+                this.AdjustScrollBar();
                 return;
             }
             // 之前正在loop,就用原来的速度移动向目标位置
@@ -339,7 +339,7 @@ public class ScrollList : DisplayView
             {
                 A_LoopSystem.RemoveUpdater(this._drag_loop_y);
                 this.RefreshClipDisLine();
-                this.RejustScrollBar();
+                this.AdjustScrollBar();
                 return;
             }
             // 之前正在loop,就用原来的速度移动向目标位置
@@ -369,7 +369,7 @@ public class ScrollList : DisplayView
             }
         }
         this.RefreshClipDisLine();
-        this.RejustScrollBar();
+        this.AdjustScrollBar();
     }
     
     ////////////////////////////////////////////////////////////
@@ -401,7 +401,7 @@ public class ScrollList : DisplayView
                     value = delta;
             }
             this._scroll_linear.x = value;
-            this.RejustScrollBar();
+            this.AdjustScrollBar();
         }
         else
         {
@@ -420,7 +420,7 @@ public class ScrollList : DisplayView
                     value = delta;
             }
             this._scroll_linear.y = value;
-            this.RejustScrollBar();
+            this.AdjustScrollBar();
         }
     }
     
@@ -444,7 +444,7 @@ public class ScrollList : DisplayView
         if (value == null) value = 0;
         this._scroll_linear.gap = value;
         this.RefreshClipDisLine();
-        this.RejustScrollBar();
+        this.AdjustScrollBar();
     }
     
     public get gap() : double
@@ -600,7 +600,7 @@ public class ScrollList : DisplayView
         return this._scroll_bar;
     }
     //  重置滚动条
-    public fun RejustScrollBar()
+    public fun AdjustScrollBar()
     {
         if (this._type == UIEnumTypes.TYPE_H)
         {
@@ -725,7 +725,7 @@ public class ScrollList : DisplayView
     // linear resize事件
     protected fun HandleLinearResize(UIResizeEvent event)
     {
-        this.RejustScrollBar();
+        this.AdjustScrollBar();
         this.RefreshClipDisLine();
     }
     // 滚动条 change事件

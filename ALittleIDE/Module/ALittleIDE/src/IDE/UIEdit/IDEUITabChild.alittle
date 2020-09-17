@@ -106,7 +106,7 @@ public class IDEUITabChild : IDETabChild
 		this._tab_screen.container.scale_y = 1;
 		this._tab_container.width = g_IDEProject.project.config.GetConfig("default_show_width", 800);
 		this._tab_container.height = g_IDEProject.project.config.GetConfig("default_show_height", 600);
-		this._tab_screen.RejustScrollBar();
+		this._tab_screen.AdjustScrollBar();
 	
 		// 控件层
 		// this._tab_object_container
@@ -214,7 +214,7 @@ public class IDEUITabChild : IDETabChild
                 this._tab_screen.right_scrollbar.offset_rate = (center_y - view_y) / real_height;
             }
 
-            this._tab_screen.RejustScrollBar();
+            this._tab_screen.AdjustScrollBar();
         }
     }
 
@@ -244,7 +244,7 @@ public class IDEUITabChild : IDETabChild
     {
         this._tab_container.width = event.default_show_width;
         this._tab_container.height = event.default_show_height;
-        this._tab_screen.RejustScrollBar();
+        this._tab_screen.AdjustScrollBar();
 	
 		for (var target, handle_info in this._tab_quad_map)
             this.UpdateHandleQuadLayout(target);
@@ -252,7 +252,7 @@ public class IDEUITabChild : IDETabChild
 	
 	public fun HandleTreeSizeChanged(ALittle.UIResizeEvent event)
 	{
-		this._tree_screen.RejustScrollBar();
+		this._tree_screen.AdjustScrollBar();
 	}
 
     private fun HandleSavePng(ALittle.UISystemSaveFileEvent event)
@@ -1027,7 +1027,7 @@ public class IDEUITabChild : IDETabChild
 
         this._tab_screen.container.scale_x = scale;
         this._tab_screen.container.scale_y = scale;
-        this._tab_screen.RejustScrollBar();
+        this._tab_screen.AdjustScrollBar();
         g_IDECenter.center.UpdateToolScale(scale);
 	}
 	
@@ -1035,7 +1035,7 @@ public class IDEUITabChild : IDETabChild
     {
         this._tab_screen.container.scale_x = event.scale;
         this._tab_screen.container.scale_y = event.scale;
-        this._tab_screen.RejustScrollBar();
+        this._tab_screen.AdjustScrollBar();
 	}
 
 	public fun GetScale() : double
@@ -1711,7 +1711,7 @@ public class IDEUITabChild : IDETabChild
 			}
 		}
         this._tree_object.fold = true;
-        this._tree_screen.RejustScrollBar();
+        this._tree_screen.AdjustScrollBar();
 	
 		// 如果现在直接看的见的话，就直接返回了
         var x, y = target.LocalToGlobal(this._tree_screen.container);

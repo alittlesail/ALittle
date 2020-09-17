@@ -149,7 +149,7 @@ public class IDEUIControlList : ALittle.DisplayLayout
                 parent = cast<IDEUITreeLogic>(parent.logic_parent);
 			}
 		}
-        this._control_scroll_screen.RejustScrollBar();
+        this._control_scroll_screen.AdjustScrollBar();
 
 		// 如果现在直接看的见的话，就直接返回了
         var x, y = target.LocalToGlobal(this._control_scroll_screen.container);

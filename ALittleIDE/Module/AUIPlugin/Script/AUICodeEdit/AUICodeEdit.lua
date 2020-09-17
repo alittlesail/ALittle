@@ -281,7 +281,7 @@ function AUIPlugin.AUICodeEdit:FocusLineCharToCenter(it_line, it_char)
 			self._code_screen.right_scrollbar.offset_rate = (center_y - view_y) / real_height
 		end
 	end
-	self._code_screen:RejustScrollBar()
+	self._code_screen:AdjustScrollBar()
 	return true
 end
 
@@ -293,7 +293,7 @@ function AUIPlugin.AUICodeEdit:FocusLineCharToUp(it_line, it_char)
 	local real_height = self._code_screen.container.height - self._code_screen.view_height
 	if real_height > 0 then
 		self._code_screen.right_scrollbar.offset_rate = (it_line - 1) * AUIPlugin.CODE_LINE_HEIGHT / real_height
-		self._code_screen:RejustScrollBar()
+		self._code_screen:AdjustScrollBar()
 	end
 end
 
@@ -305,7 +305,7 @@ function AUIPlugin.AUICodeEdit:FocusLineCharToDown(it_line, it_char)
 	local real_height = self._code_screen.container.height - self._code_screen.view_height
 	if real_height > 0 then
 		self._code_screen.right_scrollbar.offset_rate = (it_line * AUIPlugin.CODE_LINE_HEIGHT - self._code_screen.view_height) / real_height
-		self._code_screen:RejustScrollBar()
+		self._code_screen:AdjustScrollBar()
 	end
 end
 
@@ -355,7 +355,7 @@ function AUIPlugin.AUICodeEdit:HandleLButtonDown(event)
 	end
 	self._complete_screen:TryHide()
 	self._param_dialog:TryHide()
-	self._cursor:RejustShowCursor()
+	self._cursor:AdjustShowCursor()
 	self:DispatchJumEvent()
 end
 
@@ -1014,7 +1014,7 @@ function AUIPlugin.AUICodeEdit:HandleKeyDown(event)
 			else
 				self._cursor:OffsetLeft(ALittle.BitAnd(event.mod, 0x00c0) ~= 0)
 			end
-			self._cursor:RejustShowCursor()
+			self._cursor:AdjustShowCursor()
 			self._complete_screen:TryHide()
 			self._param_dialog:TryHide()
 		else
@@ -1042,7 +1042,7 @@ function AUIPlugin.AUICodeEdit:HandleKeyDown(event)
 				else
 					self._cursor:OffsetUp()
 				end
-				self._cursor:RejustShowCursor()
+				self._cursor:AdjustShowCursor()
 			else
 				if self._select_cursor.line_start == nil then
 					self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
@@ -1073,7 +1073,7 @@ function AUIPlugin.AUICodeEdit:HandleKeyDown(event)
 				else
 					self._cursor:OffsetDown()
 				end
-				self._cursor:RejustShowCursor()
+				self._cursor:AdjustShowCursor()
 			else
 				if self._select_cursor.line_start == nil then
 					self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
@@ -1101,7 +1101,7 @@ function AUIPlugin.AUICodeEdit:HandleKeyDown(event)
 			else
 				self._cursor:OffsetRight(ALittle.BitAnd(event.mod, 0x00c0) ~= 0)
 			end
-			self._cursor:RejustShowCursor()
+			self._cursor:AdjustShowCursor()
 			self._complete_screen:TryHide()
 			self._param_dialog:TryHide()
 		else
@@ -1121,7 +1121,7 @@ function AUIPlugin.AUICodeEdit:HandleKeyDown(event)
 		if self._editable then
 			if self._select_cursor.line_start == nil then
 				is_change = self._cursor:DeleteLeft(true)
-				self._cursor:RejustShowCursor()
+				self._cursor:AdjustShowCursor()
 				self._complete_screen:TryHide()
 				if self._complete_screen:IsShow() then
 					self._complete_screen:ShowComplete()
@@ -1206,10 +1206,10 @@ function AUIPlugin.AUICodeEdit:HandleKeyDown(event)
 					if self._cursor:GetCurCharInLine() == "}" then
 						self._cursor:SetLineChar(old_line, old_char)
 						is_change = self:InsertText("\n", true, revoke_bind)
-						self._cursor:RejustShowCursor()
+						self._cursor:AdjustShowCursor()
 					end
 				else
-					self._cursor:RejustShowCursor()
+					self._cursor:AdjustShowCursor()
 				end
 				revoke_bind.complete = Lua.Bind(self.DispatchChangedEvent, self)
 				self._revoke_list:PushRevoke(revoke_bind)
@@ -1487,7 +1487,7 @@ function AUIPlugin.AUICodeEdit:SetText(content)
 	for index, line in ___ipairs(self._line_list) do
 		self._code_linear:AddChild(line.container)
 	end
-	self:RejustCodeScreen(max_width)
+	self:AdjustCodeScreen(max_width)
 	self._cursor:SetLineChar(1, 0)
 	if self._language ~= nil then
 		self._language:SetText(content)
@@ -1495,10 +1495,10 @@ function AUIPlugin.AUICodeEdit:SetText(content)
 	self:UpdateLineNumber()
 end
 
-function AUIPlugin.AUICodeEdit:RejustCodeScreen(max_width)
+function AUIPlugin.AUICodeEdit:AdjustCodeScreen(max_width)
 	self._code_screen.container.width = max_width + AUIPlugin.CODE_LINE_NUMBER_WIDTH
 	self._code_screen.container.height = self._line_count * AUIPlugin.CODE_LINE_HEIGHT + AUIPlugin.CODE_PAD_LINES * AUIPlugin.CODE_LINE_HEIGHT
-	self._code_screen:RejustScrollBar()
+	self._code_screen:AdjustScrollBar()
 end
 
 function AUIPlugin.AUICodeEdit:MultiTabInsert(need_revoke, revoke_bind)
@@ -1556,7 +1556,7 @@ function AUIPlugin.AUICodeEdit:MultiTabInsert(need_revoke, revoke_bind)
 		end
 	end
 	self._code_screen.container.width = max_width + AUIPlugin.CODE_LINE_NUMBER_WIDTH
-	self._code_screen:RejustScrollBar()
+	self._code_screen:AdjustScrollBar()
 	self._cursor:SetLineChar(old_line, old_char + 4)
 	self._select_cursor:StartLineChar(old_line_start, old_char_start + 4)
 	self._select_cursor:UpdateLineChar(old_line_end, old_char_end + 4)
@@ -1736,7 +1736,7 @@ function AUIPlugin.AUICodeEdit:MultiTabDelete(need_revoke, revoke_bind)
 			end
 		end
 		self._code_screen.container.width = max_width + AUIPlugin.CODE_LINE_NUMBER_WIDTH
-		self._code_screen:RejustScrollBar()
+		self._code_screen:AdjustScrollBar()
 		if self._find_map ~= nil then
 			local index = line_min
 			while true do
@@ -1967,7 +1967,7 @@ function AUIPlugin.AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 	end
 	self._code_screen.container.width = max_width + AUIPlugin.CODE_LINE_NUMBER_WIDTH
 	self._code_screen.container.height = self._line_count * AUIPlugin.CODE_LINE_HEIGHT + AUIPlugin.CODE_PAD_LINES * AUIPlugin.CODE_LINE_HEIGHT
-	self._code_screen:RejustScrollBar()
+	self._code_screen:AdjustScrollBar()
 	self._cursor:SetLineChar(it_cursor_line, it_cursor_char)
 	if need_revoke then
 		local revoke = AUIPlugin.AUICodeInsertTextRevoke(self, self._cursor, self._select_cursor, old_it_line, old_it_char, it_cursor_line, it_cursor_char, content, revoke_bind == nil)

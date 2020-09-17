@@ -119,7 +119,7 @@ bool TextureHelper::SetSurfacePixel(SDL_Surface* surface, int x, int y, unsigned
 	return true;
 }
 
-void TextureHelper::RejustSurfaceAlpha(SDL_Surface * surface)
+void TextureHelper::AdjustSurfaceAlpha(SDL_Surface * surface)
 {
 	if (surface == 0 || surface->w == 0) return;
 

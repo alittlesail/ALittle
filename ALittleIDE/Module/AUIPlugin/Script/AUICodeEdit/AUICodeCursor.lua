@@ -164,7 +164,7 @@ function AUIPlugin.AUICodeCursor:CurLineHasChar()
 	return true
 end
 
-function AUIPlugin.AUICodeCursor:RejustShowCursor()
+function AUIPlugin.AUICodeCursor:AdjustShowCursor()
 	local line = self._edit.line_list[self._it_line]
 	if line == nil then
 		return
@@ -381,7 +381,7 @@ function AUIPlugin.AUICodeCursor:DeleteLeft(need_revoke, revoke_bind)
 		end
 		if rejust then
 			self._edit.code_screen.container.width = line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH
-			self._edit.code_screen:RejustScrollBar()
+			self._edit.code_screen:AdjustScrollBar()
 		end
 		if need_revoke then
 			local new_it_line = self._it_line
@@ -448,7 +448,7 @@ function AUIPlugin.AUICodeCursor:DeleteLeft(need_revoke, revoke_bind)
 	if self._edit.code_screen.container.width < pre_line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH then
 		self._edit.code_screen.container.width = pre_line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH
 	end
-	self._edit.code_screen:RejustScrollBar()
+	self._edit.code_screen:AdjustScrollBar()
 	if need_revoke then
 		local revoke = AUIPlugin.AUICodeDeleteLeftRevoke(self._edit, self, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content, revoke_bind == nil)
 		if revoke_bind ~= nil then
@@ -509,7 +509,7 @@ function AUIPlugin.AUICodeCursor:DeleteRight(need_revoke, revoke_bind)
 		end
 		if rejust then
 			self._edit.code_screen.container.width = line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH
-			self._edit.code_screen:RejustScrollBar()
+			self._edit.code_screen:AdjustScrollBar()
 		end
 		local new_it_line = self._it_line
 		local new_it_char = self._it_char
@@ -573,7 +573,7 @@ function AUIPlugin.AUICodeCursor:DeleteRight(need_revoke, revoke_bind)
 	if self._edit.code_screen.container.width < cur_line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH then
 		self._edit.code_screen.container.width = cur_line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH
 	end
-	self._edit.code_screen:RejustScrollBar()
+	self._edit.code_screen:AdjustScrollBar()
 	if need_revoke then
 		local revoke = AUIPlugin.AUICodeDeleteRightRevoke(self._edit, self, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content, revoke_bind == nil)
 		if revoke_bind ~= nil then

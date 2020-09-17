@@ -97,7 +97,7 @@ protected class AUICodeCompleteScreen
             if (offset < 0)
             {
                 this._screen.right_scrollbar.offset_rate = ((target - 1) * this._item_height) / delta; 
-                this._screen.RejustScrollBar();
+                this._screen.AdjustScrollBar();
             }
         }
     }
@@ -123,7 +123,7 @@ protected class AUICodeCompleteScreen
             if (offset > this._screen.height)
             {
                 this._screen.right_scrollbar.offset_rate = (target * this._item_height - this._screen.height) / delta;   
-                this._screen.RejustScrollBar();   
+                this._screen.AdjustScrollBar();   
             }
         }
     }

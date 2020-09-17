@@ -64,10 +64,10 @@ public:
 	static unsigned int SetPixelBlue(unsigned int color, unsigned int blue) { return (color & 0xff00ffff) | (blue << 16); }
 
 	/**
-	* rejust surface's alpha
+	* adjust surface's alpha
 	* @param surface
 	*/
-	static void RejustSurfaceAlpha(SDL_Surface* surface);
+	static void AdjustSurfaceAlpha(SDL_Surface* surface);
 
 public:
 	/**

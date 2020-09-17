@@ -72,10 +72,10 @@ void TextureCutLoader::Execute()
 		float max_scale = scale_x;
 		if (max_scale > scale_y) max_scale = scale_y;
 
-		int rejust_width = int(max_scale * surface->w);
-		if (rejust_width == 0) rejust_width = 1;
-		int rejust_height = int(max_scale * surface->h);
-		if (rejust_height == 0) rejust_height = 1;
+		int adjust_width = int(max_scale * surface->w);
+		if (adjust_width == 0) adjust_width = 1;
+		int adjust_height = int(max_scale * surface->h);
+		if (adjust_height == 0) adjust_height = 1;
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
 		int rmask = 0xff000000;
@@ -88,14 +88,14 @@ void TextureCutLoader::Execute()
 		int bmask = 0x00ff0000;
 		int amask = 0xff000000;
 #endif
-		SDL_Surface* new_surface = SDL_CreateRGBSurface(0, rejust_width, rejust_height, 32, rmask, gmask, bmask, amask);
+		SDL_Surface* new_surface = SDL_CreateRGBSurface(0, adjust_width, adjust_height, 32, rmask, gmask, bmask, amask);
 		SDL_SetSurfaceBlendMode(surface, SDL_BLENDMODE_NONE);
 		SDL_BlitScaled(surface, 0, new_surface, 0);
 		SDL_FreeSurface(surface);
 		surface = new_surface;
 	}
 
-	// TextureHelper::RejustSurfaceAlpha(surface);
+	// TextureHelper::AdjustSurfaceAlpha(surface);
 	g_ScheduleSystem.PushUserEvent(TEXTURECUT_LOAD_SUCCEED, this, surface);
 }
 

@@ -79,7 +79,7 @@ void TextEdit::ClearText()
 	m_need_redraw = true;
 }
 
-void TextEdit::RejustStartItAwayFromCursor(int distance)
+void TextEdit::AdjustStartItAwayFromCursor(int distance)
 {
 	if (m_line_start_it->pre_height > m_line_cursor_it->pre_height)
 	{
@@ -89,7 +89,7 @@ void TextEdit::RejustStartItAwayFromCursor(int distance)
 	}
 }
 	
-void TextEdit::RejustStartItCloseTOCursor(int distance)
+void TextEdit::AdjustStartItCloseTOCursor(int distance)
 {
 	while (m_line_start_it != m_line_cursor_it)
 	{
@@ -256,7 +256,7 @@ void TextEdit::DeleteTextImpl(LineCharInfoList::iterator line_begin_it, CharInfo
 	LineCharInfoList::iterator line_delete_end = line_end_it;
 	CharInfoList::iterator char_delete_begin = begin_it;
 	CharInfoList::iterator char_delete_end = end_it;
-	// rejust real start and end position
+	// adjust real start and end position
 	if (line_begin_it->pre_height > line_end_it->pre_height)
 	{
 		line_delete_begin = line_end_it;

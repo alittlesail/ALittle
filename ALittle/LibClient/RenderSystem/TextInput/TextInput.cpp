@@ -15,7 +15,7 @@ TextInput::TextInput()
 : m_need_redraw(false)
 , m_font(0)
 , m_real_width(0), m_real_height(0)
-, m_font_style(TTF_STYLE_NORMAL)
+, m_font_style(CARP_FONT_STYLE_NORMAL)
 , m_cursor_width(1), m_font_size(0)
 , m_password_mode(false), m_default_text_mode(true), m_default_text_alpha(255)
 {
@@ -79,13 +79,13 @@ void TextInput::SetCursorAlpha(float alpha)
 
 void TextInput::SetBold(bool bold)
 {
-	bool is_bold = (m_font_style & TTF_STYLE_BOLD) != 0;
+	bool is_bold = (m_font_style & CARP_FONT_STYLE_BOLD) != 0;
 	if (is_bold == bold) return;
 
 	if (bold)
-		m_font_style |= TTF_STYLE_BOLD;
+		m_font_style |= CARP_FONT_STYLE_BOLD;
 	else
-		m_font_style &= ~TTF_STYLE_BOLD;
+		m_font_style &= ~CARP_FONT_STYLE_BOLD;
 
 	if (!m_font_path.empty() && m_font_size > 0)
 		m_font = g_DisplaySystem.GetFont(m_font_path.c_str(), m_font_style, m_font_size);
@@ -101,13 +101,13 @@ void TextInput::SetBold(bool bold)
 
 void TextInput::SetUnderline(bool underline)
 {
-	bool is_underline = (m_font_style & TTF_STYLE_UNDERLINE) != 0;
+	bool is_underline = (m_font_style & CARP_FONT_STYLE_UNDERLINE) != 0;
 	if (is_underline == underline) return;
 
 	if (underline)
-		m_font_style |= TTF_STYLE_UNDERLINE;
+		m_font_style |= CARP_FONT_STYLE_UNDERLINE;
 	else
-		m_font_style &= ~TTF_STYLE_UNDERLINE;
+		m_font_style &= ~CARP_FONT_STYLE_UNDERLINE;
 
 	if (!m_font_path.empty() && m_font_size > 0)
 		m_font = g_DisplaySystem.GetFont(m_font_path.c_str(), m_font_style, m_font_size);
@@ -116,13 +116,13 @@ void TextInput::SetUnderline(bool underline)
 
 void TextInput::SetDeleteline(bool deleteline)
 {
-	bool is_deleteline = (m_font_style & TTF_STYLE_STRIKETHROUGH) != 0;
+	bool is_deleteline = (m_font_style & CARP_FONT_STYLE_DELETELINE) != 0;
 	if (is_deleteline == deleteline) return;
 
 	if (deleteline)
-		m_font_style |= TTF_STYLE_STRIKETHROUGH;
+		m_font_style |= CARP_FONT_STYLE_DELETELINE;
 	else
-		m_font_style &= ~TTF_STYLE_STRIKETHROUGH;
+		m_font_style &= ~CARP_FONT_STYLE_DELETELINE;
 
 	if (!m_font_path.empty() && m_font_size > 0)
 		m_font = g_DisplaySystem.GetFont(m_font_path.c_str(), m_font_style, m_font_size);
@@ -131,13 +131,13 @@ void TextInput::SetDeleteline(bool deleteline)
 
 void TextInput::SetItalic(bool italic)
 {
-	bool is_italic = (m_font_style & TTF_STYLE_ITALIC) != 0;
+	bool is_italic = (m_font_style & CARP_FONT_STYLE_ITALIC) != 0;
 	if (is_italic == italic) return;
 
 	if (italic)
-		m_font_style |= TTF_STYLE_ITALIC;
+		m_font_style |= CARP_FONT_STYLE_ITALIC;
 	else
-		m_font_style &= ~TTF_STYLE_ITALIC;
+		m_font_style &= ~CARP_FONT_STYLE_ITALIC;
 
 	if (!m_font_path.empty() && m_font_size > 0)
 		m_font = g_DisplaySystem.GetFont(m_font_path.c_str(), m_font_style, m_font_size);
@@ -229,14 +229,12 @@ void TextInput::Draw()
 		++ char_it;
 	}
 	
-	// init color
-	SDL_Color color = { 255, 255, 255, 255 };
 	// render text to surface
 	if (content.size() == 0) return;
-	SDL_Surface* surface = TTF_RenderUTF8_Blended(m_font, content.c_str(), color);
+	SDL_Surface* surface = FontHelper::CreateSurface(m_font, content.c_str());
 	if (!surface)
 	{
-		ALITTLE_ERROR(TTF_GetError());
+		ALITTLE_ERROR("CreateSurface failed!");
 		return;
 	}
 

@@ -19,7 +19,7 @@ namespace ALittle
 
 TextArea::TextArea()
 : m_need_redraw(false)
-, m_font(0), m_font_style(TTF_STYLE_NORMAL)
+, m_font(0), m_font_style(CARP_FONT_STYLE_NORMAL)
 , m_halign(HALIGN_LEFT), m_valign(VALIGN_TOP)
 , m_real_height(0), m_font_size(0)
 { }
@@ -96,13 +96,13 @@ void TextArea::Draw(bool draw)
 	int total_height = height;
 
 	// get font height
-	int font_height = TTF_FontHeight(m_font);
+	int font_height = FontHelper::GetFontHeight(m_font);
 	// start layout
 	const char* str = m_text.c_str();
 	// remain size
 	int width_offset = 0;
 	int height_offset = 0;
-	int gap = TTF_FontLineSkip(m_font) - font_height;
+	int gap = FontHelper::GetFontLineGap(m_font);
 	std::vector<int> height_offset_array, width_offset_array;
 	std::vector<std::string> string_array;
 	// calc text
@@ -150,8 +150,7 @@ void TextArea::Draw(bool draw)
 		else
 			next_calc_text.append(str, byte_count);
 
-		int text_width = 0, text_height = 0;
-		TTF_SizeUTF8(m_font, next_calc_text.c_str(), &text_width, &text_height);
+		int text_width = FontHelper::CutTextWidth(next_calc_text.c_str(), m_font);
 		int next_width_offset = text_width;
 
 		if (next_width_offset > total_width && calc_text.size())
@@ -175,7 +174,7 @@ void TextArea::Draw(bool draw)
 	// total line
 	int line_count = static_cast<int>(height_offset_array.size());
 	// total height
-	m_real_height = height_offset_array[line_count - 1] + font_height - TTF_FontDescent(m_font);
+	m_real_height = height_offset_array[line_count - 1] + font_height;
 
 	// if not need to draw then return
 	if (draw == false) return;
@@ -219,7 +218,7 @@ void TextArea::Draw(bool draw)
 		if (current_height_offset > total_height || current_height_offset + font_height <= 0)
 			continue;
 		// create text surface
-		SDL_Surface* surface = TTF_RenderUTF8_Blended(m_font, string_array[i].c_str(), color);
+		SDL_Surface* surface = FontHelper::CreateSurface(m_font, string_array[i].c_str());
 		if (!surface) continue;
 		SDL_SetSurfaceBlendMode(surface, SDL_BLENDMODE_NONE);
 		// offset at width
@@ -250,13 +249,13 @@ void TextArea::Draw(bool draw)
 
 void TextArea::SetBold(bool bold)
 {
-	bool is_bold = (m_font_style & TTF_STYLE_BOLD) != 0;
+	bool is_bold = (m_font_style & CARP_FONT_STYLE_BOLD) != 0;
 	if (is_bold == bold) return;
 
 	if (bold)
-		m_font_style |= TTF_STYLE_BOLD;
+		m_font_style |= CARP_FONT_STYLE_BOLD;
 	else
-		m_font_style &= ~TTF_STYLE_BOLD;
+		m_font_style &= ~CARP_FONT_STYLE_BOLD;
 
 	m_font = 0;
 	m_need_redraw = true;
@@ -264,13 +263,13 @@ void TextArea::SetBold(bool bold)
 
 void TextArea::SetUnderline(bool underline)
 {
-	bool is_underline = (m_font_style & TTF_STYLE_UNDERLINE) != 0;
+	bool is_underline = (m_font_style & CARP_FONT_STYLE_UNDERLINE) != 0;
 	if (is_underline == underline) return;
 
 	if (underline)
-		m_font_style |= TTF_STYLE_UNDERLINE;
+		m_font_style |= CARP_FONT_STYLE_UNDERLINE;
 	else
-		m_font_style &= ~TTF_STYLE_UNDERLINE;
+		m_font_style &= ~CARP_FONT_STYLE_UNDERLINE;
 
 	m_font = 0;
 	m_need_redraw = true;
@@ -278,13 +277,13 @@ void TextArea::SetUnderline(bool underline)
 
 void TextArea::SetDeleteline(bool deleteline)
 {
-	bool is_deleteline = (m_font_style & TTF_STYLE_STRIKETHROUGH) != 0;
+	bool is_deleteline = (m_font_style & CARP_FONT_STYLE_DELETELINE) != 0;
 	if (is_deleteline == deleteline) return;
 
 	if (deleteline)
-		m_font_style |= TTF_STYLE_STRIKETHROUGH;
+		m_font_style |= CARP_FONT_STYLE_DELETELINE;
 	else
-		m_font_style &= ~TTF_STYLE_STRIKETHROUGH;
+		m_font_style &= ~CARP_FONT_STYLE_DELETELINE;
 
 	m_font = 0;
 	m_need_redraw = true;
@@ -292,13 +291,13 @@ void TextArea::SetDeleteline(bool deleteline)
 
 void TextArea::SetItalic(bool italic)
 {
-	bool is_italic = (m_font_style & TTF_STYLE_ITALIC) != 0;
+	bool is_italic = (m_font_style & CARP_FONT_STYLE_ITALIC) != 0;
 	if (is_italic == italic) return;
 
 	if (italic)
-		m_font_style |= TTF_STYLE_ITALIC;
+		m_font_style |= CARP_FONT_STYLE_ITALIC;
 	else
-		m_font_style &= ~TTF_STYLE_ITALIC;
+		m_font_style &= ~CARP_FONT_STYLE_ITALIC;
 
 	m_font = 0;
 	m_need_redraw = true;

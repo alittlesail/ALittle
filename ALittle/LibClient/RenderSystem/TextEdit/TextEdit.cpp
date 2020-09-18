@@ -6,6 +6,7 @@
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"
 #include "ALittle/LibClient/RenderSystem/Texture/SurfaceTexture.h"
 #include "ALittle/LibClient/Helper/FontHelper.h"
+#include "ALittle/LibClient/Helper/TextureHelper.h"
 
 namespace ALittle
 {
@@ -13,7 +14,7 @@ namespace ALittle
 TextEdit::TextEdit()
 : m_need_redraw(false)
 , m_font(0)
-, m_font_style(TTF_STYLE_NORMAL)
+, m_font_style(CARP_FONT_STYLE_NORMAL)
 , m_cursor_width(1), m_font_size(0)
 , m_default_text_mode(true), m_default_text_alpha(255)
 {
@@ -102,13 +103,13 @@ void TextEdit::SetCursorAlpha(float alpha)
 
 void TextEdit::SetBold(bool bold)
 {
-	bool is_bold = (m_font_style & TTF_STYLE_BOLD) != 0;
+	bool is_bold = (m_font_style & CARP_FONT_STYLE_BOLD) != 0;
 	if (is_bold == bold) return;
 
 	if (bold)
-		m_font_style |= TTF_STYLE_BOLD;
+		m_font_style |= CARP_FONT_STYLE_BOLD;
 	else
-		m_font_style &= ~TTF_STYLE_BOLD;
+		m_font_style &= ~CARP_FONT_STYLE_BOLD;
 
 	if (!m_font_path.empty() && m_font_size > 0)
 		m_font = g_DisplaySystem.GetFont(m_font_path.c_str(), m_font_style, m_font_size);
@@ -126,13 +127,13 @@ void TextEdit::SetBold(bool bold)
 
 void TextEdit::SetUnderline(bool underline)
 {
-	bool is_underline = (m_font_style & TTF_STYLE_UNDERLINE) != 0;
+	bool is_underline = (m_font_style & CARP_FONT_STYLE_UNDERLINE) != 0;
 	if (is_underline == underline) return;
 
 	if (underline)
-		m_font_style |= TTF_STYLE_UNDERLINE;
+		m_font_style |= CARP_FONT_STYLE_UNDERLINE;
 	else
-		m_font_style &= ~TTF_STYLE_UNDERLINE;
+		m_font_style &= ~CARP_FONT_STYLE_UNDERLINE;
 
 	if (!m_font_path.empty() && m_font_size > 0)
 		m_font = g_DisplaySystem.GetFont(m_font_path.c_str(), m_font_style, m_font_size);
@@ -142,13 +143,13 @@ void TextEdit::SetUnderline(bool underline)
 
 void TextEdit::SetDeleteline(bool deleteline)
 {
-	bool is_deleteline = (m_font_style & TTF_STYLE_STRIKETHROUGH) != 0;
+	bool is_deleteline = (m_font_style & CARP_FONT_STYLE_DELETELINE) != 0;
 	if (is_deleteline == deleteline) return;
 
 	if (deleteline)
-		m_font_style |= TTF_STYLE_STRIKETHROUGH;
+		m_font_style |= CARP_FONT_STYLE_DELETELINE;
 	else
-		m_font_style &= ~TTF_STYLE_STRIKETHROUGH;
+		m_font_style &= ~CARP_FONT_STYLE_DELETELINE;
 
 	if (!m_font_path.empty() && m_font_size > 0)
 		m_font = g_DisplaySystem.GetFont(m_font_path.c_str(), m_font_style, m_font_size);
@@ -158,13 +159,13 @@ void TextEdit::SetDeleteline(bool deleteline)
 
 void TextEdit::SetItalic(bool italic)
 {
-	bool is_italic = (m_font_style & TTF_STYLE_ITALIC) != 0;
+	bool is_italic = (m_font_style & CARP_FONT_STYLE_ITALIC) != 0;
 	if (is_italic == italic) return;
 
 	if (italic)
-		m_font_style |= TTF_STYLE_ITALIC;
+		m_font_style |= CARP_FONT_STYLE_ITALIC;
 	else
-		m_font_style &= ~TTF_STYLE_ITALIC;
+		m_font_style &= ~CARP_FONT_STYLE_ITALIC;
 
 	if (!m_font_path.empty() && m_font_size > 0)
 		m_font = g_DisplaySystem.GetFont(m_font_path.c_str(), m_font_style, m_font_size);
@@ -231,29 +232,15 @@ void TextEdit::Draw()
 	if (!m_font || m_linechar_list.size() == 0 || m_size.x <= 0 || m_size.y <= 0) return;
 
 	// get line gap
-	int line_skip = TTF_FontLineSkip(m_font);
+	int line_skip = FontHelper::GetFontLineGap(m_font) + FontHelper::GetFontHeight(m_font);
 
 	// create surface
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-	int rmask = 0xff000000;
-	int gmask = 0x00ff0000;
-	int bmask = 0x0000ff00;
-	int amask = 0x000000ff;
-#else
-	int rmask = 0x000000ff;
-	int gmask = 0x0000ff00;
-	int bmask = 0x00ff0000;
-	int amask = 0xff000000;
-#endif
-	SDL_Surface* total_surface = SDL_CreateRGBSurface(0, (int)m_size.x, (int)m_size.y, 32, rmask, gmask, bmask, amask);
+	SDL_Surface* total_surface = TextureHelper::CreateSurface((int)m_size.x, (int)m_size.y);
 	if (!total_surface)
 	{
 		ALITTLE_ERROR(SDL_GetError());
 		return;
 	}
-
-	// init color
-	SDL_Color color = { 255, 255, 255, 255 };
 
 	// According to the width of the current height, 
 	// capture the real to apply colours to a drawing of that part of the string
@@ -277,10 +264,10 @@ void TextEdit::Draw()
 		// If there is a text, then perform rendering, copying the surface
 		if (content.size())
 		{
-			SDL_Surface* surface = TTF_RenderUTF8_Blended(m_font, content.c_str(), color);
+			SDL_Surface* surface = FontHelper::CreateSurface(m_font, content.c_str());
 			if (!surface)
 			{
-				ALITTLE_ERROR(TTF_GetError());
+				ALITTLE_ERROR("FontHelper::CreateSurface failed!");
 				SDL_FreeSurface(total_surface);
 				return;
 			}

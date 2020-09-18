@@ -5,8 +5,8 @@
 #include "ALittle/LibClient/RenderSystem/Image/Image.h"
 #include "ALittle/LibClient/RenderSystem/Image/Quad.h"
 
-#include <SDL.h>
-#include <SDL_ttf.h>
+
+typedef struct _carp_font_t carp_font_t;
 
 #include <string>
 #include <list>
@@ -269,7 +269,7 @@ private:
 	// all char info
 	CharInfoList m_char_list;
 	// font object
-	TTF_Font* m_font;
+	carp_font_t* m_font;
 	std::string m_font_path;
 	unsigned int m_font_size;
 	// font style

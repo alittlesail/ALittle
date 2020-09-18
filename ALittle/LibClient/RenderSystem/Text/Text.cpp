@@ -11,9 +11,9 @@
 namespace ALittle
 {
 
-std::unordered_map<TTF_Font*, std::unordered_map<std::string, TextTextureInfo*>> Text::s_texture_map;
+std::unordered_map<carp_font_t*, std::unordered_map<std::string, TextTextureInfo*>> Text::s_texture_map;
 
-TextTextureInfo* Text::CreateTextureInfo(TTF_Font* font, const std::string& text)
+TextTextureInfo* Text::CreateTextureInfo(carp_font_t* font, const std::string& text)
 {
 	auto& text_map = s_texture_map[font];
 	auto it = text_map.find(text);
@@ -23,13 +23,11 @@ TextTextureInfo* Text::CreateTextureInfo(TTF_Font* font, const std::string& text
 		return it->second;
 	}
 
-	// init color
-	SDL_Color color = { 255, 255, 255, 255 };
 	// create surface
-	SDL_Surface* surface = TTF_RenderUTF8_Blended(font, text.c_str(), color);
+	SDL_Surface* surface = FontHelper::CreateSurface(font, text.c_str());
 	if (!surface)
 	{
-		ALITTLE_ERROR(TTF_GetError());
+		ALITTLE_ERROR("Font Helper create surface failed!");
 		return 0;
 	}
 
@@ -68,7 +66,7 @@ void Text::ReleaseTextureInfo(TextTextureInfo* info)
 Text::Text()
 : m_need_redraw(false)
 , m_calc_real_size(false)
-, m_font(0), m_font_style(TTF_STYLE_NORMAL)
+, m_font(0), m_font_style(CARP_FONT_STYLE_NORMAL)
 , m_real_width(0), m_real_height(0)
 , m_texture_info(0), m_font_size(0)
 { }
@@ -95,10 +93,8 @@ unsigned int Text::GetRealWidth()
 	if (m_font == 0) return 0;
 
 	// calc size
-	int width, height;
-	TTF_SizeUTF8(m_font, m_text.c_str(), &width, &height);
-	m_real_width = width;
-	m_real_height = height;
+	m_real_width = FontHelper::CutTextWidth(m_text.c_str(), m_font);
+	m_real_height = FontHelper::GetFontHeight(m_font);
 
 	m_calc_real_size = true;
 
@@ -118,10 +114,8 @@ unsigned int Text::GetRealHeight()
 	if (m_font == 0) return 0;
 
 	// calc size
-	int width, height;
-	TTF_SizeUTF8(m_font, m_text.c_str(), &width, &height);
-	m_real_height = height;
-	m_real_width = width;
+	m_real_width = FontHelper::CutTextWidth(m_text.c_str(), m_font);
+	m_real_height = FontHelper::GetFontHeight(m_font);
 
 	m_calc_real_size = true;
 	return m_real_height;
@@ -201,13 +195,13 @@ void Text::Draw()
 
 void Text::SetBold(bool bold)
 {
-	bool is_bold = (m_font_style & TTF_STYLE_BOLD) != 0;
+	bool is_bold = (m_font_style & CARP_FONT_STYLE_BOLD) != 0;
 	if (is_bold == bold) return;
 
 	if (bold)
-		m_font_style |= TTF_STYLE_BOLD;
+		m_font_style |= CARP_FONT_STYLE_BOLD;
 	else
-		m_font_style &= ~TTF_STYLE_BOLD;
+		m_font_style &= ~CARP_FONT_STYLE_BOLD;
 
 	m_font = 0;
 	m_need_redraw = true;
@@ -216,13 +210,13 @@ void Text::SetBold(bool bold)
 
 void Text::SetUnderline(bool underline)
 {
-	bool is_underline = (m_font_style & TTF_STYLE_UNDERLINE) != 0;
+	bool is_underline = (m_font_style & CARP_FONT_STYLE_UNDERLINE) != 0;
 	if (is_underline == underline) return;
 
 	if (underline)
-		m_font_style |= TTF_STYLE_UNDERLINE;
+		m_font_style |= CARP_FONT_STYLE_UNDERLINE;
 	else
-		m_font_style &= ~TTF_STYLE_UNDERLINE;
+		m_font_style &= ~CARP_FONT_STYLE_UNDERLINE;
 
 	m_font = 0;
 	m_need_redraw = true;
@@ -231,13 +225,13 @@ void Text::SetUnderline(bool underline)
 
 void Text::SetDeleteline(bool deleteline)
 {
-	bool is_deleteline = (m_font_style & TTF_STYLE_STRIKETHROUGH) != 0;
+	bool is_deleteline = (m_font_style & CARP_FONT_STYLE_DELETELINE) != 0;
 	if (is_deleteline == deleteline) return;
 
 	if (deleteline)
-		m_font_style |= TTF_STYLE_STRIKETHROUGH;
+		m_font_style |= CARP_FONT_STYLE_DELETELINE;
 	else
-		m_font_style &= ~TTF_STYLE_STRIKETHROUGH;
+		m_font_style &= ~CARP_FONT_STYLE_DELETELINE;
 
 	m_font = 0;
 	m_need_redraw = true;
@@ -246,13 +240,13 @@ void Text::SetDeleteline(bool deleteline)
 
 void Text::SetItalic(bool italic)
 {
-	bool is_italic = (m_font_style & TTF_STYLE_ITALIC) != 0;
+	bool is_italic = (m_font_style & CARP_FONT_STYLE_ITALIC) != 0;
 	if (is_italic == italic) return;
 
 	if (italic)
-		m_font_style |= TTF_STYLE_ITALIC;
+		m_font_style |= CARP_FONT_STYLE_ITALIC;
 	else
-		m_font_style &= ~TTF_STYLE_ITALIC;
+		m_font_style &= ~CARP_FONT_STYLE_ITALIC;
 
 	m_font = 0;
 	m_need_redraw = true;
@@ -264,7 +258,7 @@ int Text::GetFontHeight()
 	if (m_font == 0) m_font = g_DisplaySystem.GetFont(m_font_path.c_str(), m_font_style, m_font_size);
 	if (m_font == 0) return 0;
 
-	return TTF_FontHeight(m_font);
+	return FontHelper::GetFontHeight(m_font);
 }
 
 int Text::CutTextByWidth(float width, const char* content, int max_width)
@@ -281,19 +275,7 @@ int Text::CalcTextWidth(const char* content)
 	if (m_font == 0) m_font = g_DisplaySystem.GetFont(m_font_path.c_str(), m_font_style, m_font_size);
 	if (m_font == 0) return 0;
 
-	int text_width_1 = 0, text_height_1 = 0;
-	TTF_SizeUTF8(m_font, "aa", &text_width_1, &text_height_1);
-	int text_width_2 = 0, text_height_2 = 0;
-	TTF_SizeUTF8(m_font, (std::string() + "a" + content + "a").c_str(), &text_width_2, &text_height_2);
-	return text_width_2 - text_width_1;
-}
-
-int Text::AdjustCursorPos(int x, const char* content)
-{
-	if (m_font == 0) m_font = g_DisplaySystem.GetFont(m_font_path.c_str(), m_font_style, m_font_size);
-	if (m_font == 0) return 0;
-
-	return FontHelper::AdjustCursorPos(x, content, m_font);
+	return FontHelper::CutTextWidth(content, m_font);
 }
 
 } // ALittle

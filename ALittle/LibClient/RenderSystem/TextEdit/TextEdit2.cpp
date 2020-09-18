@@ -349,7 +349,7 @@ void TextEdit::DeleteTextImpl(LineCharInfoList::iterator line_begin_it, CharInfo
 	if (free_line_list.size())
 	{
 		// get line gap + line height
-		int line_skip = TTF_FontLineSkip(m_font);
+		int line_skip = FontHelper::GetFontHeight(m_font) + FontHelper::GetFontLineGap(m_font);
 
 		// get last line height
 		LineCharInfoList::iterator last_line = m_linechar_list.end();
@@ -457,7 +457,7 @@ void TextEdit::InsertTextImpl(const char* text)
 	if (free_line_list.size())
 	{
 		// get line gap + line height
-		int line_skip = TTF_FontLineSkip(m_font);
+		int line_skip = FontHelper::GetFontHeight(m_font) + FontHelper::GetFontLineGap(m_font);
 
 		// get last line height
 		LineCharInfoList::iterator last_line = m_linechar_list.end();
@@ -489,7 +489,7 @@ void TextEdit::InsertTextImpl(const char* text)
 void TextEdit::InsertTextUtil(const char* text, LineCharInfoList::iterator* line_begin_it, CharInfoList::iterator* begin_it)
 {
 	// get line gap + line height
-	int line_skip = TTF_FontLineSkip(m_font);
+	int line_skip = FontHelper::GetFontHeight(m_font) + FontHelper::GetFontLineGap(m_font);
 
 	const char* str = text;
 	std::string current_char = "";
@@ -642,7 +642,7 @@ void TextEdit::InsertTextUtil(const char* text, LineCharInfoList::iterator* line
 void TextEdit::GetCharSize(const char* text, int& width, int& height)
 {
 	// get font height
-	height = TTF_FontHeight(m_font);
+	height = FontHelper::GetFontHeight(m_font);
 
 	// find text height
 	std::map<std::string, int>::iterator it = m_width_map.find(text);
@@ -652,17 +652,9 @@ void TextEdit::GetCharSize(const char* text, int& width, int& height)
 		return;
 	}
 
-	// calc char width
-	int width_1 = 0;
-	TTF_SizeUTF8(m_font, "aa", &width_1, &height);
-	int width_2 = 0;
-	std::string content = "a";
-	content.append(text).append("a");
-	TTF_SizeUTF8(m_font, content.c_str(), &width_2, &height);
-
-	width = width_2 - width_1;
+	width = FontHelper::CutTextWidth(text, m_font);
 	// save size
-	m_width_map[content] = width;
+	m_width_map[text] = width;
 }
 
 } // ALittle

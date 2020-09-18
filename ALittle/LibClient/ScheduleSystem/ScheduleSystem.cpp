@@ -23,7 +23,6 @@
 
 #include <SDL.h>
 #include <SDL_version.h>
-#include <SDL_ttf.h>
 #include <SDL_net.h>
 #include <SDL_syswm.h>
 #include <functional>
@@ -126,8 +125,6 @@ int ScheduleSystem::Run(int argc, char* argv[])
 		ALITTLE_ERROR(SDL_GetError());
 	if (SDLNet_Init() == -1)
 		ALITTLE_ERROR(SDLNet_GetError());
-	if (TTF_Init() == -1)
-		ALITTLE_ERROR(TTF_GetError());
 	if (Mix_Init(MIX_INIT_OGG) == 0)
 		ALITTLE_ERROR(Mix_GetError());
 	
@@ -202,7 +199,6 @@ int ScheduleSystem::Run(int argc, char* argv[])
 
 	// release SDL
 	Mix_Quit();
-	TTF_Quit();
 	SDLNet_Quit();
 	SDL_Quit();
 

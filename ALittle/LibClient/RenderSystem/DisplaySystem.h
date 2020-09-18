@@ -1,9 +1,9 @@
 
 #ifndef _ALITTLE_DISPLAYSYSTEM_H_
 #define _ALITTLE_DISPLAYSYSTEM_H_
+#include "ALittle/LibClient/Tool/LocalFile.h"
 
-#include <SDL.h>
-#include <SDL_ttf.h>
+typedef struct _carp_font_t carp_font_t;
 
 #include <string>
 #include <map>
@@ -103,7 +103,8 @@ public:
 	 * @param font_size
 	 * @return font object
 	 */
-	TTF_Font* GetFont(const char* font_path, unsigned int font_style, unsigned int font_size);
+	carp_font_t* GetFont(const char* font_path, unsigned int font_style, unsigned int font_size);
+	LocalFile* GetFontFile(const std::string& font_path);
 
 	/**
 	 * release fonts
@@ -112,12 +113,13 @@ public:
 
 private:
 	// font size map font object
-	typedef std::map<unsigned int, TTF_Font*> TTF_FontSizeMap;
+	typedef std::map<unsigned int, carp_font_t*> TTF_FontSizeMap;
 	// font style map font object
 	typedef std::map<unsigned int, TTF_FontSizeMap> TTF_FontStyleMap;
 	// font path map TTF_FontMap
 	typedef std::map<std::string, TTF_FontStyleMap> TTF_FontMap;
 	TTF_FontMap m_font_map;
+	std::map<std::string, LocalFile*> m_font_file_map;
 
 private:
 	DisplaySystem();

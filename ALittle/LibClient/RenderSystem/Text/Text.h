@@ -4,11 +4,10 @@
 
 #include "ALittle/LibClient/RenderSystem/Image/Image.h"
 
-#include <SDL.h>
-#include <SDL_ttf.h>
-
 #include <string>
 #include <unordered_map>
+
+typedef struct _carp_font_t carp_font_t;
 
 namespace ALittle
 {
@@ -20,7 +19,7 @@ class TextTextureInfo
 public:
 	TextTextureInfo() : font(0), texture(0), ref_count(0) {}
 	Texture* texture;
-	TTF_Font* font;
+	carp_font_t* font;
 	int ref_count;
 	std::string text;
 };
@@ -77,7 +76,6 @@ public:
 	int GetCutWidthByIndex(int index) { return m_calc_width_list[index]; }
 	void ClearCutWidthCache() { m_calc_width_list.clear();}
 	int CalcTextWidth(const char* content);
-	int AdjustCursorPos(int x, const char* content);
 	
 public:
 	void NeedDraw() { m_need_redraw = true; }
@@ -99,15 +97,15 @@ private:
 	unsigned int m_font_style;
 	std::string m_font_path;
 	unsigned int m_font_size;
-	TTF_Font* m_font;
+	carp_font_t* m_font;
 
 private:
 	std::vector<int> m_calc_width_list;
 
 private:
-	static TextTextureInfo* CreateTextureInfo(TTF_Font* font, const std::string& text);
+	static TextTextureInfo* CreateTextureInfo(carp_font_t* font, const std::string& text);
 	static void ReleaseTextureInfo(TextTextureInfo* info);
-	static std::unordered_map<TTF_Font*, std::unordered_map<std::string, TextTextureInfo*>> s_texture_map;
+	static std::unordered_map<carp_font_t*, std::unordered_map<std::string, TextTextureInfo*>> s_texture_map;
 };
 
 } // ALittle

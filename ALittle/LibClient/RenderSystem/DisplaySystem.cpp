@@ -32,6 +32,8 @@
 
 #include <SDL.h>
 
+#include "ALittle/LibClient/Helper/FontHelper.h"
+
 namespace ALittle
 {
 
@@ -282,7 +284,6 @@ void DisplaySystem::RegisterToScript(ScriptSystem& script_system)
 		.addFunction("GetFontHeight", &Text::GetFontHeight)
 		.addFunction("CutTextByWidth", &Text::CutTextByWidth)
 		.addFunction("CalcTextWidth", &Text::CalcTextWidth)
-		.addFunction("AdjustCursorPos", &Text::AdjustCursorPos)
 		.addFunction("NeedDraw", &Text::NeedDraw)
 		.addFunction("GetCutWidthListCount", &Text::GetCutWidthListCount)
 		.addFunction("GetCutWidthByIndex", &Text::GetCutWidthByIndex)
@@ -552,7 +553,7 @@ Texture * DisplaySystem::GetQuadTexture()
 	return m_quad_texture;
 }
 
-TTF_Font* DisplaySystem::GetFont(const char* font_path, unsigned int font_style, unsigned int font_size)
+carp_font_t* DisplaySystem::GetFont(const char* font_path, unsigned int font_style, unsigned int font_size)
 {
 	// check font path
 	if (!font_path) return NULL;
@@ -587,38 +588,53 @@ TTF_Font* DisplaySystem::GetFont(const char* font_path, unsigned int font_style,
 		FileHelperEx::CpFile(font_full_path.c_str(), internal_full_path.c_str(), true);
 	}
 
-	TTF_Font* font = TTF_OpenFont(internal_full_path.c_str(), font_size);
+	carp_font_t* font = FontHelper::LoadFont(GetFontFile(internal_full_path), font_size, font_style);
 #else
-	TTF_Font* font = TTF_OpenFont(font_path, font_size);
+	carp_font_t* font = FontHelper::LoadFont(GetFontFile(font_path), font_size, font_style);
 #endif
-	if (font == NULL)
+	if (font == nullptr)
 	{
 		// if create failed then use system font
 #ifdef _WIN32
 		ALITTLE_ERROR("create font failed: path(" << font_path << ") can't find or font_size(" << font_size << ") not support " << ", and try C:\\Windows\\Fonts\\msyhbd.ttf");
 		std::string new_font_path = "C:\\Windows\\Fonts\\";
 		new_font_path += font_just_name;
-		font = TTF_OpenFont(new_font_path.c_str(), font_size);
+		font = FontHelper::LoadFont(GetFontFile(new_font_path), font_size, font_style);
 #elif __ANDROID__
 		ALITTLE_ERROR("create font failed: path(" << font_path << ") can't find or font_size(" << font_size << ") not support " << ", and try /system/fonts/Miui-Regular.ttf");
 		std::string new_font_path = "/system/fonts/";
 		new_font_path += font_just_name;
-		font = TTF_OpenFont(new_font_path.c_str(), font_size);
+		font = FontHelper::LoadFont(GetFontFile(new_font_path), font_size);
 #endif
 	}
-	if (font == NULL)
+	if (font == nullptr)
 	{
-		ALITTLE_ERROR(SDL_GetError());
-		return NULL;
+		ALITTLE_ERROR("Load font failed:" << font_path);
+		return nullptr;
 	}
-	TTF_SetFontKerning(font, 0);
-	TTF_SetFontHinting(font, TTF_HINTING_LIGHT);
-	TTF_SetFontStyle(font, font_style);
+
 	// save font
 	size_map[font_size] = font;
 
 	// return font
 	return font;
+}
+
+LocalFile* DisplaySystem::GetFontFile(const std::string& font_path)
+{
+	auto it = m_font_file_map.find(font_path);
+	if (it != m_font_file_map.end()) return it->second;
+
+	LocalFile* file = new LocalFile();
+	file->SetPath(font_path.c_str());
+	if (!file->Load())
+	{
+		delete file;
+		return nullptr;
+	}
+	m_font_file_map[font_path] = file;
+
+	return file;
 }
 
 void DisplaySystem::ClearFont()
@@ -629,11 +645,16 @@ void DisplaySystem::ClearFont()
 		{
 			for (auto size_it = style_it->second.begin(); size_it != style_it->second.end(); ++size_it)
 			{
-				TTF_CloseFont(size_it->second);
+				FontHelper::ReleaseFont(size_it->second);
 			}
 		}
 	}
 	m_font_map.clear();
+	for (auto& pair : m_font_file_map)
+	{
+		delete pair.second;
+	}
+	m_font_file_map.clear();
 }
 
 } // ALittle

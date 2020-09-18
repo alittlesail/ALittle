@@ -4,10 +4,9 @@
 
 #include "ALittle/LibClient/RenderSystem/Image/Image.h"
 
-#include <SDL.h>
-#include <SDL_ttf.h>
-
 #include <string>
+
+typedef struct _carp_font_t carp_font_t;
 
 namespace ALittle
 {
@@ -97,7 +96,7 @@ private:
 	unsigned int m_font_style;
 	std::string m_font_path;
 	unsigned int m_font_size;
-	TTF_Font* m_font;
+	carp_font_t* m_font;
 };
 
 } // ALittle

@@ -398,7 +398,7 @@ class GCenter
             this._protobuf_scroll_screen.AddChild(item);
         }
 
-        this._protobuf_scroll_screen.RejustScrollBar();
+        this._protobuf_scroll_screen.AdjustScrollBar();
     }
 
     // 处理proto被选中
@@ -414,7 +414,7 @@ class GCenter
             this._detail_tree_item_pool[info.full_name] = detail_info;
         }
         this._detail_scroll_screen.SetContainer(detail_info.tree);
-        this._detail_scroll_screen.RejustScrollBar();
+        this._detail_scroll_screen.AdjustScrollBar();
     }
 
     // 右键菜单
@@ -489,7 +489,7 @@ class GCenter
                 this._log_scroll_screen.AddChild(button);
             }
         }
-        this._log_scroll_screen.RejustScrollBar();
+        this._log_scroll_screen.AdjustScrollBar();
     }
 
     // 添加消息

@@ -314,7 +314,7 @@ function Emulator.GCenter:RefreshProtoList()
 		item.group = self._proto_search_group
 		self._protobuf_scroll_screen:AddChild(item)
 	end
-	self._protobuf_scroll_screen:RejustScrollBar()
+	self._protobuf_scroll_screen:AdjustScrollBar()
 end
 
 function Emulator.GCenter:HandleProtoItemSelected(event)
@@ -328,7 +328,7 @@ function Emulator.GCenter:HandleProtoItemSelected(event)
 		self._detail_tree_item_pool[info.full_name] = detail_info
 	end
 	self._detail_scroll_screen:SetContainer(detail_info.tree)
-	self._detail_scroll_screen:RejustScrollBar()
+	self._detail_scroll_screen:AdjustScrollBar()
 end
 
 function Emulator.GCenter:HandleProtoItemRButtonDown(event)
@@ -385,7 +385,7 @@ function Emulator.GCenter:RefreshLogList()
 			self._log_scroll_screen:AddChild(button)
 		end
 	end
-	self._log_scroll_screen:RejustScrollBar()
+	self._log_scroll_screen:AdjustScrollBar()
 end
 
 function Emulator.GCenter:AddLogMessage(msg)

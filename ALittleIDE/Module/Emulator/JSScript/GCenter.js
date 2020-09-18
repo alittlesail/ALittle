@@ -2,28 +2,10 @@
 if (typeof Emulator === "undefined") window.Emulator = {};
 let ___all_struct = ALittle.GetAllStruct();
 
-ALittle.RegStruct(-297098024, "lua.protobuf_descriptor", {
-name : "lua.protobuf_descriptor", ns_name : "lua", rl_name : "protobuf_descriptor", hash_code : -297098024,
+ALittle.RegStruct(1835920059, "lua.protobuf_reflection", {
+name : "lua.protobuf_reflection", ns_name : "lua", rl_name : "protobuf_reflection", hash_code : 1835920059,
 name_list : [],
 type_list : [],
-option_map : {}
-})
-ALittle.RegStruct(398889456, "Emulator.RootInfo", {
-name : "Emulator.RootInfo", ns_name : "Emulator", rl_name : "RootInfo", hash_code : 398889456,
-name_list : ["detail_info","for_show"],
-type_list : ["Emulator.DetailInfo","bool"],
-option_map : {}
-})
-ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
-name : "ALittle.UIChangedEvent", ns_name : "ALittle", rl_name : "UIChangedEvent", hash_code : 958494922,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
-ALittle.RegStruct(1618605759, "Emulator.DetailInfo", {
-name : "Emulator.DetailInfo", ns_name : "Emulator", rl_name : "DetailInfo", hash_code : 1618605759,
-name_list : ["tree","message","reflection","info"],
-type_list : ["Emulator.IDETreeLogic","lua.protobuf_message","lua.protobuf_reflection","Lua.lua_socket_schedule_message_info"],
 option_map : {}
 })
 ALittle.RegStruct(1628431371, "Lua.lua_socket_schedule_message_info", {
@@ -32,10 +14,10 @@ name_list : ["descriptor","full_name","name"],
 type_list : ["lua.protobuf_descriptor","string","string"],
 option_map : {}
 })
-ALittle.RegStruct(1835920059, "lua.protobuf_reflection", {
-name : "lua.protobuf_reflection", ns_name : "lua", rl_name : "protobuf_reflection", hash_code : 1835920059,
-name_list : [],
-type_list : [],
+ALittle.RegStruct(1618605759, "Emulator.DetailInfo", {
+name : "Emulator.DetailInfo", ns_name : "Emulator", rl_name : "DetailInfo", hash_code : 1618605759,
+name_list : ["tree","message","reflection","info"],
+type_list : ["Emulator.IDETreeLogic","lua.protobuf_message","lua.protobuf_reflection","Lua.lua_socket_schedule_message_info"],
 option_map : {}
 })
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -50,10 +32,16 @@ name_list : ["target","abs_x","abs_y","rel_x","rel_y","count","is_drag"],
 type_list : ["ALittle.DisplayObject","double","double","double","double","int","bool"],
 option_map : {}
 })
+ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
+name : "ALittle.UIChangedEvent", ns_name : "ALittle", rl_name : "UIChangedEvent", hash_code : 958494922,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
 ALittle.RegStruct(-888044440, "Emulator.LogItemUserData", {
 name : "Emulator.LogItemUserData", ns_name : "Emulator", rl_name : "LogItemUserData", hash_code : -888044440,
-name_list : ["msg","info","upper_name","detail_info"],
-type_list : ["lua.protobuf_message","Lua.lua_socket_schedule_message_info","string","Emulator.DetailInfo"],
+name_list : ["msg","info","upper_name","json_content"],
+type_list : ["lua.protobuf_message","Lua.lua_socket_schedule_message_info","string","string"],
 option_map : {}
 })
 ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
@@ -64,6 +52,18 @@ option_map : {}
 })
 ALittle.RegStruct(-628015380, "lua.protobuf_message", {
 name : "lua.protobuf_message", ns_name : "lua", rl_name : "protobuf_message", hash_code : -628015380,
+name_list : [],
+type_list : [],
+option_map : {}
+})
+ALittle.RegStruct(398889456, "Emulator.RootInfo", {
+name : "Emulator.RootInfo", ns_name : "Emulator", rl_name : "RootInfo", hash_code : 398889456,
+name_list : ["detail_info","for_show"],
+type_list : ["Emulator.DetailInfo","bool"],
+option_map : {}
+})
+ALittle.RegStruct(-297098024, "lua.protobuf_descriptor", {
+name : "lua.protobuf_descriptor", ns_name : "lua", rl_name : "protobuf_descriptor", hash_code : -297098024,
 name_list : [],
 type_list : [],
 option_map : {}
@@ -129,7 +129,7 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 		}
 		let proto_root = Emulator.g_GConfig.GetString("proto_root", "");
 		if (proto_root !== "" && ALittle.File_GetFileAttr(proto_root) !== undefined) {
-			let error = A_LuaSocketSchedule.LoadProto(proto_root);
+			let error = A_LuaProtobufSchedule.LoadProto(proto_root);
 			if (error === undefined) {
 				let func = _G["__PLUGIN_ProtoRefresh"];
 				if (func !== undefined) {
@@ -144,7 +144,7 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 			}
 		}
 		let login_proto = Emulator.g_GConfig.GetString("login_proto", "");
-		let msg_info = A_LuaSocketSchedule.GetMessageInfo(login_proto);
+		let msg_info = A_LuaProtobufSchedule.GetMessageInfo(login_proto);
 		if (msg_info !== undefined) {
 			this._login_detail_info = Emulator.Utility_CreateTreeForEdit(msg_info);
 			this._login_scroll_screen.SetContainer(this._login_detail_info.tree);
@@ -152,21 +152,35 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 		this._login_button.visible = true;
 		this._logout_button.visible = false;
 		this._login_ip_input.text = Emulator.g_GConfig.GetString("login_ip", "127.0.0.1");
+		let data_list = Emulator.g_GConfig.GetConfig("login_ip_list", []);
+		if (ALittle.List_Find(data_list, this._login_ip_input.text) === undefined) {
+			ALittle.List_Push(data_list, this._login_ip_input.text);
+		}
+		this._ip_dropdown.data_list = data_list;
+		this._ip_dropdown.text = "";
 		this._login_port_input.text = ALittle.String_ToString(Emulator.g_GConfig.GetInt("login_port", 0));
 		this._right_grad3_ud.up_size = Emulator.g_GConfig.GetDouble("right_grid3_up_size", this._right_grad3_ud.up_size);
 		this._main_grid3_lr.down_size = Emulator.g_GConfig.GetDouble("main_grid3_down_size", this._main_grid3_lr.down_size);
 		this._send_button.disabled = true;
 		this._frame_loop = ALittle.NewObject(ALittle.LoopFrame, this.UpdateFrame.bind(this));
 		this._frame_loop.Start();
+		this._json_codeedit = AUIPlugin.AUICodeEdit.Create();
+		this._json_codeedit.editable = false;
+		this._json_container.AddChild(this._json_codeedit);
 	},
 	UpdateFrame : function(frame_time) {
-		A_LuaSocketSchedule.RunInFrame();
+		A_LuaProtobufSchedule.RunInFrame();
+	},
+	HandleIpSelectChanged : function(event) {
+		this._login_ip_input.text = this._ip_dropdown.text;
 	},
 	HandleShowSettingDialog : function(event) {
 		this._setting_dialog.visible = true;
 		this._proto_root_input.text = Emulator.g_GConfig.GetString("proto_root", "");
 		this._login_proto_input.text = Emulator.g_GConfig.GetString("login_proto", "");
 		this._plugin_file_input.text = Emulator.g_GConfig.GetString("plugin_script", "");
+	},
+	HandleShowVersionDialog : function(event) {
 	},
 	HandleSettingSelectProtoRootClick : function(event) {
 		if (event.path === undefined) {
@@ -191,12 +205,12 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 	HandleSettingConfirmClick : function(event) {
 		let attr = ALittle.File_GetFileAttr(this._proto_root_input.text);
 		if (attr === undefined || attr.mode !== "directory") {
-			Emulator.g_IDETool.ShowNotice("错误", "文件夹不存在");
+			g_AUITool.ShowNotice("错误", "文件夹不存在");
 			return;
 		}
-		let error = A_LuaSocketSchedule.LoadProto(this._proto_root_input.text);
+		let error = A_LuaProtobufSchedule.LoadProto(this._proto_root_input.text);
 		if (error !== undefined) {
-			Emulator.g_IDETool.ShowNotice("错误", error);
+			g_AUITool.ShowNotice("错误", error);
 			return;
 		}
 		if (ALittle.File_GetFileExtByPathAndUpper(this._plugin_file_input.text) === "LUA") {
@@ -210,7 +224,7 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 				__CPPAPI_ScriptSystemEx.RunScript(plugin_script, this._plugin_file_input.text);
 			}
 		} else {
-			Emulator.g_IDETool.ShowNotice("错误", "插件脚本必须是lua脚本");
+			g_AUITool.ShowNotice("错误", "插件脚本必须是lua脚本");
 			return;
 		}
 		this._setting_dialog.visible = false;
@@ -223,7 +237,7 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 			}
 		}
 		if (error !== undefined) {
-			Emulator.g_IDETool.ShowNotice("错误", error);
+			g_AUITool.ShowNotice("错误", error);
 			return;
 		}
 		this._protobuf_scroll_screen.RemoveAllChild();
@@ -239,7 +253,7 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 		this.RefreshLogList();
 		this._login_detail_info = undefined;
 		let login_proto = this._login_proto_input.text;
-		let msg_info = A_LuaSocketSchedule.GetMessageInfo(login_proto);
+		let msg_info = A_LuaProtobufSchedule.GetMessageInfo(login_proto);
 		if (msg_info !== undefined) {
 			this._login_detail_info = Emulator.Utility_CreateTreeForEdit(msg_info);
 			this._login_scroll_screen.SetContainer(this._login_detail_info.tree);
@@ -258,6 +272,7 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 	RefreshProtoList : function() {
 		let key = this._proto_search_key.text;
 		key = ALittle.String_Upper(key);
+		let key_list = ALittle.String_SplitSepList(key, [" ", "\t"]);
 		let ___OBJECT_2 = this._protobuf_scroll_screen.childs;
 		for (let index = 1; index <= ___OBJECT_2.length; ++index) {
 			let child = ___OBJECT_2[index - 1];
@@ -265,7 +280,12 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 			child.group = undefined;
 		}
 		this._protobuf_scroll_screen.RemoveAllChild();
-		let list = A_LuaSocketSchedule.FindMessageByUpperKey(key);
+		let list = undefined;
+		if (ALittle.List_MaxN(key_list) === 0) {
+			list = A_LuaProtobufSchedule.FindMessageByUpperKey("");
+		} else {
+			list = A_LuaProtobufSchedule.FindMessageByUpperKeyList(key_list);
+		}
 		let ___OBJECT_3 = list;
 		for (let index = 1; index <= ___OBJECT_3.length; ++index) {
 			let info = ___OBJECT_3[index - 1];
@@ -285,7 +305,7 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 			item.group = this._proto_search_group;
 			this._protobuf_scroll_screen.AddChild(item);
 		}
-		this._protobuf_scroll_screen.RejustScrollBar();
+		this._protobuf_scroll_screen.AdjustScrollBar();
 	},
 	HandleProtoItemSelected : function(event) {
 		let info = event.target._user_data;
@@ -298,7 +318,7 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 			this._detail_tree_item_pool[info.full_name] = detail_info;
 		}
 		this._detail_scroll_screen.SetContainer(detail_info.tree);
-		this._detail_scroll_screen.RejustScrollBar();
+		this._detail_scroll_screen.AdjustScrollBar();
 	},
 	HandleProtoItemRButtonDown : function(event) {
 		A_LayerManager.ShowFromRight(this._proto_item_msg_menu);
@@ -315,7 +335,7 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 		this._log_item_count = 0;
 		this._log_scroll_screen.RemoveAllChild();
 		this._cur_item_user_data = undefined;
-		this._show_scroll_screen.SetContainer(undefined);
+		this._json_codeedit.OnClose();
 	},
 	HandleLogFliterClick : function(event) {
 		this._log_fliter_dialog.visible = true;
@@ -357,7 +377,7 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 				this._log_scroll_screen.AddChild(button);
 			}
 		}
-		this._log_scroll_screen.RejustScrollBar();
+		this._log_scroll_screen.AdjustScrollBar();
 	},
 	AddLogMessage : function(msg) {
 		let descriptor = lua.protobuf.message_getdescriptor(msg);
@@ -369,14 +389,14 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 			let item = this._log_item_list[1 - 1];
 			let user_data = item._user_data;
 			if (this._cur_item_user_data === user_data) {
-				this._show_scroll_screen.SetContainer(undefined);
+				this._json_codeedit.OnClose();
 			}
 			this._log_scroll_screen.RemoveChild(item);
 			item.group = undefined;
 			ALittle.List_Remove(this._log_item_list, 1);
 		}
 		let user_data = {};
-		user_data.info = A_LuaSocketSchedule.GetMessageInfoByMessage(msg);
+		user_data.info = A_LuaProtobufSchedule.GetMessageInfoByMessage(msg);
 		user_data.msg = lua.protobuf.clonemessage(msg);
 		user_data.upper_name = ALittle.String_Upper(user_data.info.name);
 		let item = Emulator.g_Control.CreateControl("emulator_common_item_radiobutton");
@@ -401,10 +421,11 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 	HandleLogItemSelected : function(event) {
 		this._show_search_key.text = "";
 		this._cur_item_user_data = event.target._user_data;
-		if (this._cur_item_user_data.detail_info === undefined) {
-			this._cur_item_user_data.detail_info = Emulator.Utility_CreateTreeForShow(this._cur_item_user_data.msg);
+		if (this._cur_item_user_data.json_content === undefined) {
+			this._cur_item_user_data.json_content = lua.protobuf.message_jsonencode(this._cur_item_user_data.msg, false);
 		}
-		this._show_scroll_screen.SetContainer(this._cur_item_user_data.detail_info.tree);
+		this._json_codeedit.OnClose();
+		this._json_codeedit.Load("temp.json", this._cur_item_user_data.json_content, undefined);
 	},
 	HandleProtoLogRButtonDown : function(event) {
 		A_LayerManager.ShowFromRight(this._log_item_msg_menu);
@@ -417,11 +438,7 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 			return;
 		}
 		let key = this._show_search_key.text;
-		key = ALittle.String_Upper(key);
-		let tree = this._cur_item_user_data.detail_info.tree;
-		tree.SearchBegin();
-		let list = tree.SearchDescription(key);
-		tree.SearchEnd(list);
+		this._json_codeedit.FindNext(key);
 	},
 	HandleMsgCopyFullName : function(event) {
 		if (A_LayerManager.IsCurrentRight(this._proto_item_msg_menu)) {
@@ -493,23 +510,30 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 		let ip = this._login_ip_input.text;
 		let port = ALittle.Math_ToInt(this._login_port_input.text);
 		if (port === undefined || port <= 0) {
-			Emulator.g_IDETool.ShowNotice("提示", "请使用正确的端口");
+			g_AUITool.ShowNotice("提示", "请使用正确的端口");
 			return;
 		}
 		if (this._login_detail_info === undefined) {
-			Emulator.g_IDETool.ShowNotice("提示", "请设置登陆协议");
+			g_AUITool.ShowNotice("提示", "请设置登陆协议");
 			return;
 		}
 		if (this._login_status === Emulator.LoginStatus.EMULATOR_LOGINING) {
-			Emulator.g_IDETool.ShowNotice("提示", "当前正在登陆，请先断开");
+			g_AUITool.ShowNotice("提示", "当前正在登陆，请先断开");
 			return;
 		}
 		if (this._login_status === Emulator.LoginStatus.EMULATOR_LOGINED) {
-			Emulator.g_IDETool.ShowNotice("提示", "当前已登录，请先断开");
+			g_AUITool.ShowNotice("提示", "当前已登录，请先断开");
 			return;
 		}
 		Emulator.g_GConfig.SetConfig("login_ip", ip);
 		Emulator.g_GConfig.SetConfig("login_port", port);
+		let data_list = ALittle.List_Copy(Emulator.g_GConfig.GetConfig("login_ip_list", []));
+		if (ALittle.List_Find(data_list, ip) === undefined) {
+			ALittle.List_Push(data_list, ip);
+		}
+		Emulator.g_GConfig.SetConfig("login_ip_list", data_list);
+		this._ip_dropdown.data_list = data_list;
+		this._ip_dropdown.text = "";
 		this._login_button.visible = false;
 		this._logout_button.visible = true;
 		this._login_status = Emulator.LoginStatus.EMULATOR_LOGINING;
@@ -536,7 +560,7 @@ Emulator.GCenter = JavaScript.Class(undefined, {
 			this._login_status = Emulator.LoginStatus.EMULATOR_LOGINED;
 			this._send_button.disabled = false;
 		} else {
-			Emulator.g_IDETool.ShowNotice("提示", error);
+			g_AUITool.ShowNotice("提示", error);
 			this._login_status = Emulator.LoginStatus.EMULATOR_IDLE;
 			this._login_button.visible = true;
 			this._logout_button.visible = false;

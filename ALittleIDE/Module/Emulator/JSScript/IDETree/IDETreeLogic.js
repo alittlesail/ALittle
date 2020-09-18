@@ -59,7 +59,7 @@ Emulator.IDETreeLogic = JavaScript.Class(ALittle.DisplayLayout, {
 		return list;
 	},
 	Save : function() {
-		let content = lua.protobuf.message_jsonencode(this._root.detail_info.message);
+		let content = lua.protobuf.message_jsonencode(this._root.detail_info.message, false);
 		if (content === undefined) {
 			return;
 		}

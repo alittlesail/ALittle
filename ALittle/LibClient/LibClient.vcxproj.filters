@@ -303,6 +303,9 @@
     <ClInclude Include="Tool\concurrentqueue.h">
       <Filter>Tool</Filter>
     </ClInclude>
+    <ClInclude Include="Helper\SoundHelper.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioSystem\bcg729\LSPQuantization.c">
@@ -517,6 +520,9 @@
     </ClCompile>
     <ClCompile Include="Tool\CsvFile.cpp">
       <Filter>Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="Helper\SoundHelper.cpp">
+      <Filter>Helper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -46,6 +46,7 @@
     <ClInclude Include="Helper\FontHelper.h" />
     <ClInclude Include="Helper\InputHelper.h" />
     <ClInclude Include="Helper\NetHelper.h" />
+    <ClInclude Include="Helper\SoundHelper.h" />
     <ClInclude Include="Helper\SystemHelper.h" />
     <ClInclude Include="Helper\TextureHelper.h" />
     <ClInclude Include="NetSystem\HttpClient.h" />
@@ -121,6 +122,7 @@
     <ClCompile Include="Helper\FontHelper.cpp" />
     <ClCompile Include="Helper\InputHelper.cpp" />
     <ClCompile Include="Helper\NetHelper.cpp" />
+    <ClCompile Include="Helper\SoundHelper.cpp" />
     <ClCompile Include="Helper\SystemHelper.cpp" />
     <ClCompile Include="Helper\TextureHelper.cpp" />
     <ClCompile Include="NetSystem\HttpClient.cpp" />

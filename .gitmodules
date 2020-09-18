@@ -22,6 +22,3 @@
 [submodule "Carp"]
 	path = Carp
 	url = https://github.com/alittlesail/ALittle-Carp.git
-[submodule "sts"]
-	path = sts
-	url = https://github.com/kieselsteini/sts.git

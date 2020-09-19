@@ -4,12 +4,6 @@
     <Filter Include="AudioSystem">
       <UniqueIdentifier>{578fefee-5961-407b-8aa5-0c80dc156ca6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AudioSystem\bcg729">
-      <UniqueIdentifier>{853a82e4-7274-4276-aa8a-30fcd98fe5da}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AudioSystem\bcg729\bcg729">
-      <UniqueIdentifier>{8b818820-fe5e-4ec7-bfa5-868edc4b0c74}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Helper">
       <UniqueIdentifier>{8f151102-bb70-4f9b-9d29-72e1cac6dfdb}</UniqueIdentifier>
     </Filter>
@@ -66,93 +60,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AudioSystem\bcg729\bcg729\encoder.h">
-      <Filter>AudioSystem\bcg729\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\bcg729\decoder.h">
-      <Filter>AudioSystem\bcg729\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\LPSynthesisFilter.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\LSPQuantization.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\postFilter.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\postProcessing.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\preProcessing.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\qLSP2LP.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\typedef.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\utils.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\adaptativeCodebookSearch.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\basicOperationsMacros.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\codebooks.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\codecParameters.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\computeAdaptativeCodebookGain.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\computeLP.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\computeWeightedSpeech.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\decodeAdaptativeCodeVector.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\decodeFixedCodeVector.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\decodeGains.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\decodeLSP.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\findOpenLoopPitchDelay.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\fixedCodebookSearch.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\fixedPointMacros.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\floatingPointMacros.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\g729FixedPointMath.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\gainQuantization.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\interpolateqLSP.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
-    <ClInclude Include="AudioSystem\bcg729\LP2LSPConversion.h">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClInclude>
     <ClInclude Include="AudioSystem\AudioSystem.h">
       <Filter>AudioSystem</Filter>
     </ClInclude>
@@ -303,80 +210,8 @@
     <ClInclude Include="Tool\concurrentqueue.h">
       <Filter>Tool</Filter>
     </ClInclude>
-    <ClInclude Include="Helper\SoundHelper.h">
-      <Filter>Helper</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AudioSystem\bcg729\LSPQuantization.c">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSystem\bcg729\postFilter.c">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSystem\bcg729\postProcessing.c">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSystem\bcg729\preProcessing.c">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSystem\bcg729\qLSP2LP.c">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSystem\bcg729\utils.c">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSystem\bcg729\adaptativeCodebookSearch.c">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSystem\bcg729\codebooks.c">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSystem\bcg729\computeAdaptativeCodebookGain.c">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSystem\bcg729\computeLP.c">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSystem\bcg729\computeWeightedSpeech.c">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSystem\bcg729\decodeAdaptativeCodeVector.c">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSystem\bcg729\decodeFixedCodeVector.c">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSystem\bcg729\decodeGains.c">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSystem\bcg729\decodeLSP.c">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSystem\bcg729\decoder.c">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSystem\bcg729\encoder.c">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSystem\bcg729\findOpenLoopPitchDelay.c">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSystem\bcg729\fixedCodebookSearch.c">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSystem\bcg729\gainQuantization.c">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSystem\bcg729\interpolateqLSP.c">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSystem\bcg729\LP2LSPConversion.c">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="AudioSystem\bcg729\LPSynthesisFilter.c">
-      <Filter>AudioSystem\bcg729</Filter>
-    </ClCompile>
     <ClCompile Include="AudioSystem\AudioSystem.cpp">
       <Filter>AudioSystem</Filter>
     </ClCompile>
@@ -520,9 +355,6 @@
     </ClCompile>
     <ClCompile Include="Tool\CsvFile.cpp">
       <Filter>Tool</Filter>
-    </ClCompile>
-    <ClCompile Include="Helper\SoundHelper.cpp">
-      <Filter>Helper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

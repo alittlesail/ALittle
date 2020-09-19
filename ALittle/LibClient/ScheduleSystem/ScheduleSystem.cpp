@@ -125,8 +125,6 @@ int ScheduleSystem::Run(int argc, char* argv[])
 		ALITTLE_ERROR(SDL_GetError());
 	if (SDLNet_Init() == -1)
 		ALITTLE_ERROR(SDLNet_GetError());
-	if (Mix_Init(MIX_INIT_OGG) == 0)
-		ALITTLE_ERROR(Mix_GetError());
 	
 	// enable drop file
 	SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
@@ -198,7 +196,6 @@ int ScheduleSystem::Run(int argc, char* argv[])
 	while(m_restart);
 
 	// release SDL
-	Mix_Quit();
 	SDLNet_Quit();
 	SDL_Quit();
 

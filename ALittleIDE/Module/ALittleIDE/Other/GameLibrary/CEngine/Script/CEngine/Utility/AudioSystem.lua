@@ -25,8 +25,6 @@ function ALittle.AudioSystem:Ctor()
 	___rawset(self, "_chunk_map", {})
 	___rawset(self, "_app_background", false)
 	___rawset(self, "_all_chunk_mute", false)
-	___rawset(self, "_music_mute", false)
-	___rawset(self, "_music_valume", 1)
 	A_OtherSystem:AddEventListener(___all_struct[521107426], self, self.HandleDidEnterBackground)
 	A_OtherSystem:AddEventListener(___all_struct[760325696], self, self.HandleDidEnterForeground)
 end
@@ -34,13 +32,11 @@ end
 function ALittle.AudioSystem:HandleDidEnterBackground(event)
 	self._app_background = true
 	self:UpdateAllChunkVolume()
-	self:UpdateMusicVolume()
 end
 
 function ALittle.AudioSystem:HandleDidEnterForeground(event)
 	self._app_background = false
 	self:UpdateAllChunkVolume()
-	self:UpdateMusicVolume()
 end
 
 function ALittle.AudioSystem:UpdateChunkVolume(info)
@@ -49,14 +45,6 @@ function ALittle.AudioSystem:UpdateChunkVolume(info)
 		real_volume = 0
 	end
 	__CPPAPI_AudioSystem:SetChunkVolume(info.channel, real_volume)
-end
-
-function ALittle.AudioSystem:UpdateMusicVolume()
-	local real_volume = self._music_valume
-	if self._music_mute or self._app_background then
-		real_volume = 0
-	end
-	__CPPAPI_AudioSystem:SetMusicVolume(real_volume)
 end
 
 function ALittle.AudioSystem:UpdateAllChunkVolume()
@@ -73,20 +61,8 @@ function ALittle.AudioSystem:SetAllChunkMute(mute)
 	self:UpdateAllChunkVolume()
 end
 
-function ALittle.AudioSystem:SetMusicMute(mute)
-	if self._music_mute == mute then
-		return
-	end
-	self._music_mute = mute
-	self:UpdateMusicVolume()
-end
-
 function ALittle.AudioSystem:GetAllChunkMute()
 	return self._all_chunk_mute
-end
-
-function ALittle.AudioSystem:GetMusicMute()
-	return self._music_mute
 end
 
 function ALittle.AudioSystem:AddChunkCache(file_path)
@@ -172,35 +148,6 @@ function ALittle.AudioSystem:HandleAudioChunkStopedEvent(channel)
 		return
 	end
 	info.callback(info.file_path, info.channel)
-end
-
-function ALittle.AudioSystem:StartMusic(file_path, loop)
-	if loop == nil then
-		loop = 1
-	end
-	local result = __CPPAPI_AudioSystem:StartMusic(file_path, loop)
-	if result then
-		return false
-	end
-	self._music_valume = __CPPAPI_AudioSystem:GetMusicVolume()
-	self:UpdateMusicVolume()
-	return result
-end
-
-function ALittle.AudioSystem:StopMusic()
-	__CPPAPI_AudioSystem:StopMusic()
-end
-
-function ALittle.AudioSystem:StartRecord(file_path)
-	return __CPPAPI_AudioSystem:StartRecord(file_path)
-end
-
-function ALittle.AudioSystem:IsRecording()
-	return __CPPAPI_AudioSystem:IsRecording()
-end
-
-function ALittle.AudioSystem:StopRecord()
-	__CPPAPI_AudioSystem:StopRecord()
 end
 
 _G.A_AudioSystem = ALittle.AudioSystem()

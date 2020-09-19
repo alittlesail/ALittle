@@ -1,7 +1,7 @@
 
 namespace AUIPlugin;
 
-protected var CODE_LINE_HEIGHT = 16;
+protected var CODE_LINE_HEIGHT = 18;
 protected var CODE_LINE_NUMBER_WIDTH = 40;
 protected var CODE_PAD_LINES = 5;
 protected var CODE_FONT_SIZE = 14;

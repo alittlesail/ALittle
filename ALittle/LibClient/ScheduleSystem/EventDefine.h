@@ -41,7 +41,6 @@ namespace ALittle
 #define CSV_LOAD_FAILED			    86	// texture load failed
 
 #define CHUNK_STOPED				101 // SDL_Mixer Mix_Chunk stoped
-#define MUSIC_STOPED				102 // SDL_Mixer Mix_Music stoped
 
 } // ALittle
 

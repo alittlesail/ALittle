@@ -53,7 +53,7 @@ type_list = {"ALittle.DisplayObject","string","int","int","int","int"},
 option_map = {}
 })
 
-AUIPlugin.CODE_LINE_HEIGHT = 16
+AUIPlugin.CODE_LINE_HEIGHT = 18
 AUIPlugin.CODE_LINE_NUMBER_WIDTH = 40
 AUIPlugin.CODE_PAD_LINES = 5
 AUIPlugin.CODE_FONT_SIZE = 14

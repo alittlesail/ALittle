@@ -15,8 +15,6 @@ class AudioSystem
     private Map<int, ChunkInfo> _chunk_map;
     private bool                _app_background;
     private bool                _all_chunk_mute;
-    private bool                _music_mute;
-    private double              _music_valume;
     
     public ctor()
     {
@@ -24,8 +22,6 @@ class AudioSystem
     
         this._app_background = false;
         this._all_chunk_mute = false;
-        this._music_mute = false;
-        this._music_valume = 1;
 
         A_OtherSystem.AddEventListener(this, this.HandleDidEnterBackground);
         A_OtherSystem.AddEventListener(this, this.HandleDidEnterForeground);
@@ -36,14 +32,12 @@ class AudioSystem
     {
         this._app_background = true;
         this.UpdateAllChunkVolume();
-        this.UpdateMusicVolume();
     }
     
     public fun HandleDidEnterForeground(AppDidEnterForeground event)
     {
         this._app_background = false;
         this.UpdateAllChunkVolume();
-        this.UpdateMusicVolume();
     }
     
     public fun UpdateChunkVolume(ChunkInfo info)
@@ -52,14 +46,6 @@ class AudioSystem
         if (info.mute || this._app_background || this._all_chunk_mute)
             real_volume = 0;
         __CPPAPI_AudioSystem.SetChunkVolume(info.channel, real_volume);
-    }
-    
-    public fun UpdateMusicVolume()
-    {
-        var real_volume = this._music_valume;
-        if (this._music_mute || this._app_background)
-            real_volume = 0;
-        __CPPAPI_AudioSystem.SetMusicVolume(real_volume);
     }
     
     public fun UpdateAllChunkVolume()
@@ -76,22 +62,9 @@ class AudioSystem
         this.UpdateAllChunkVolume();
     }
     
-    public fun SetMusicMute(bool mute)
-    {
-        if (this._music_mute == mute)
-            return;
-        this._music_mute = mute;
-        this.UpdateMusicVolume();
-    }
-    
     public fun GetAllChunkMute() : bool
     {
         return this._all_chunk_mute;
-    }
-    
-    public fun GetMusicMute() : bool
-    {
-        return this._music_mute;
     }
     
     //////////////////////////////////////-Mixer部分//////////////////////////////////////-
@@ -105,7 +78,7 @@ class AudioSystem
         __CPPAPI_AudioSystem.RemoveChunkCache(file_path);
     }
     
-    public fun StartChunk(string file_path, int loop, Functor<(string, int)> callback) : int
+    public fun StartChunk(string file_path, [Nullable] int loop, [Nullable] Functor<(string, int)> callback) : int
     {
         if (loop == null) loop = 1;
 
@@ -183,40 +156,6 @@ class AudioSystem
         if (info.callback == null)
             return;
         info.callback(info.file_path, info.channel);
-    }
-    
-    public fun StartMusic(string file_path, int loop) : bool
-    {
-        if (loop == null) loop = 1;
-
-        var result = __CPPAPI_AudioSystem.StartMusic(file_path, loop);
-        if (result) return false;
-    
-        this._music_valume = __CPPAPI_AudioSystem.GetMusicVolume();
-        this.UpdateMusicVolume();
-        return result;
-    }
-    
-    public fun StopMusic()
-    {
-        __CPPAPI_AudioSystem.StopMusic();
-    }
-    
-    //////////////////////////////////////////////////////////////////////////
-    
-    public fun StartRecord(string file_path) : bool
-    {
-        return __CPPAPI_AudioSystem.StartRecord(file_path);
-    }
-    
-    public fun IsRecording() : bool
-    {
-        return __CPPAPI_AudioSystem.IsRecording();
-    }
-    
-    public fun StopRecord()
-    {
-        __CPPAPI_AudioSystem.StopRecord();
     }
 }
 

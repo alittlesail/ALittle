@@ -107,7 +107,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>LibCommon.lib;LibClient.lib;SDL2.lib;SDL2main.lib;SDL2_mixer.lib;SDL2_net.lib;lua51.lib;Iphlpapi.lib;Wininet.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>LibCommon.lib;LibClient.lib;SDL2.lib;SDL2main.lib;SDL2_net.lib;lua51.lib;Iphlpapi.lib;Wininet.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)lib/SDL2;$(SolutionDir)lib/ALittle;$(SolutionDir)lib/LuaJIT;$(SolutionDir)lib/mysql;$(SolutionDir)lib/openssl;$(SolutionDir)LibCommon/ThirdParty/protobuf/lib/protobuf;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -139,7 +139,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>LibCommond.lib;LibClientd.lib;SDL2.lib;SDL2main.lib;SDL2_mixer.lib;SDL2_net.lib;lua51.lib;Iphlpapi.lib;Wininet.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>LibCommond.lib;LibClientd.lib;SDL2.lib;SDL2main.lib;SDL2_net.lib;lua51.lib;Iphlpapi.lib;Wininet.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)lib/SDL2;$(SolutionDir)lib/ALittle;$(SolutionDir)lib/LuaJIT;$(SolutionDir)lib/mysql;$(SolutionDir)lib/openssl;$(SolutionDir)LibCommon/ThirdParty/protobuf/lib/protobuf;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>

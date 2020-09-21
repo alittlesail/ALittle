@@ -11,6 +11,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Carp\carp_array.h" />
+    <ClInclude Include="..\..\Carp\carp_file_helper.hpp" />
+    <ClInclude Include="..\..\Carp\carp_font.h" />
+    <ClInclude Include="..\..\Carp\carp_message.hpp" />
+    <ClInclude Include="..\..\Carp\carp_mixer.h" />
+    <ClInclude Include="..\..\Carp\carp_http.hpp" />
+    <ClInclude Include="..\..\Carp\carp_connect_client.hpp" />
+    <ClInclude Include="..\..\Carp\carp_string.h" />
+    <ClInclude Include="..\..\Carp\carp_string_helper.hpp" />
+    <ClInclude Include="..\..\Carp\carp_win_ime.h" />
     <ClInclude Include="AudioSystem\AudioSystem.h" />
     <ClInclude Include="Helper\BitHelper.h" />
     <ClInclude Include="Helper\FileHelperEx.h" />
@@ -171,7 +181,7 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;_CRTDBG_MAP_ALLOC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\SDL_mixer\include\;$(SolutionDir)..\SDL_net\;$(SolutionDir)..\SDL_image\;$(SolutionDir)..\SDL_ttf\;$(SolutionDir)..\SDL\include\;$(SolutionDir)..\LuaJIT-2.1.0-beta3\src\;$(SolutionDir)..\LuaBridge\Source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\SDL_net\;$(SolutionDir)..\SDL\include\;$(SolutionDir)..\LuaJIT-2.1.0-beta3\src\;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)..\asio\asio\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -189,7 +199,7 @@
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\SDL_mixer\include\;$(SolutionDir)..\SDL_net\;$(SolutionDir)..\SDL_image\;$(SolutionDir)..\SDL_ttf\;$(SolutionDir)..\SDL\include\;$(SolutionDir)..\LuaJIT-2.1.0-beta3\src\;$(SolutionDir)..\LuaBridge\Source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\SDL_net\;$(SolutionDir)..\SDL\include\;$(SolutionDir)..\LuaJIT-2.1.0-beta3\src\;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)..\asio\asio\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

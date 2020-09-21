@@ -25,7 +25,7 @@ ConnectEndpoint::~ConnectEndpoint()
 	ClearRPC("route_id:" + ROUTE2S(m_route_id) + u8" ConnectEndpoint:~ConnectEndpoint 调用析构函数的时候触发ClearRPC");
 }
 
-void ConnectEndpoint::SendWithCallback(const Message& msg, RPCCallback& callback)
+void ConnectEndpoint::SendWithCallback(const CarpMessage& msg, RPCCallback& callback)
 {
 	// 如果已经断开连接，那么就直接调用返回值
 	if (IsConnected() == false)
@@ -49,7 +49,7 @@ void ConnectEndpoint::SendWithCallback(const Message& msg, RPCCallback& callback
 	QConnect2ConnectRPCWrite wrap_msg;
 	wrap_msg.SetRpcID(rpc_id);
 	wrap_msg.message_id = msg.GetID();
-	wrap_msg.message_body = (Message*)&msg;
+	wrap_msg.message_body = (CarpMessage*)&msg;
 	Send(wrap_msg);
 }
 
@@ -65,7 +65,7 @@ void ConnectEndpoint::SendError(int rpc_id, const std::string& reason)
 	Send(wrap_msg);
 }
 
-void ConnectEndpoint::SendResponse(int rpc_id, const Message& msg)
+void ConnectEndpoint::SendResponse(int rpc_id, const CarpMessage& msg)
 {
 #ifdef CONNECT_INVOKE_LOG
 	ALITTLE_INFO(u8"ConnectEndpoint SendResponse 向:" << ROUTE2S(m_target_route_id) << ", rpc_id:" << rpc_id << ", message_id:" << msg.GetID());
@@ -74,7 +74,7 @@ void ConnectEndpoint::SendResponse(int rpc_id, const Message& msg)
 	AConnect2ConnectRPCWrite wrap_msg;
 	wrap_msg.SetRpcID(-rpc_id);
 	wrap_msg.message_id = msg.GetID();
-	wrap_msg.message_body = (Message*)&msg;
+	wrap_msg.message_body = (CarpMessage*)&msg;
 	Send(wrap_msg);
 }
 
@@ -116,7 +116,7 @@ void ConnectEndpoint::ClearRPC(const std::string& reason)
 		(*it)(&reason, 0, 0, 0);
 }
 
-void ConnectEndpoint::HandleMessage(void* memory, int memory_size)
+void ConnectEndpoint::HandleMessage(void* memory, size_t memory_size)
 {
 	// 这个是HandleMessageImpl的输出值，用来判断是否需要释放内存
 	bool need_free = true;
@@ -126,20 +126,20 @@ void ConnectEndpoint::HandleMessage(void* memory, int memory_size)
 	if (need_free) free(memory);
 }
 
-void ConnectEndpoint::HandleMessageImpl(void* memory, int memory_size, bool& need_free)
+void ConnectEndpoint::HandleMessageImpl(void* memory, size_t memory_size, bool& need_free)
 {
 	char* body_memory = (char*)memory;
 
 	// 读取协议大小和协议ID
-	MESSAGE_SIZE message_size = 0;
-	memcpy(&message_size, body_memory, sizeof(MESSAGE_SIZE));
-	body_memory += sizeof(MESSAGE_SIZE);
-	MESSAGE_ID message_id = 0;
-	memcpy(&message_id, body_memory, sizeof(MESSAGE_ID));
-	body_memory += sizeof(MESSAGE_ID);
-	MESSAGE_RPCID message_rpcid = 0;
-	memcpy(&message_rpcid, body_memory, sizeof(MESSAGE_RPCID));
-	body_memory += sizeof(MESSAGE_RPCID);
+	CARP_MESSAGE_SIZE message_size = 0;
+	memcpy(&message_size, body_memory, sizeof(CARP_MESSAGE_SIZE));
+	body_memory += sizeof(CARP_MESSAGE_SIZE);
+	CARP_MESSAGE_ID message_id = 0;
+	memcpy(&message_id, body_memory, sizeof(CARP_MESSAGE_ID));
+	body_memory += sizeof(CARP_MESSAGE_ID);
+	CARP_MESSAGE_RPCID message_rpcid = 0;
+	memcpy(&message_rpcid, body_memory, sizeof(CARP_MESSAGE_RPCID));
+	body_memory += sizeof(CARP_MESSAGE_RPCID);
 	
 	// 心跳包，直接跳过
 	if (message_id == HeartbeatMessage::GetStaticID())
@@ -383,7 +383,7 @@ void ConnectEndpoint::HandleMessageImpl(void* memory, int memory_size, bool& nee
 		// 把携带的协议交给route_system处理
 		m_route_system->HandleConnectRouteMessage(this->shared_from_this(), msg.connect_key, message_rpcid
 													, msg.message_id, msg.message_rpcid, body_memory + deser_size, message_size - deser_size
-													, memory, memory_size, need_free);
+													, memory, (int)memory_size, need_free);
 		return;
 	}
 

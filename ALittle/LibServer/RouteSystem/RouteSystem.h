@@ -13,6 +13,8 @@
 #include "RouteIdDefine.h"
 #include "SessionConnection.h"
 
+class CarpMessage;
+
 namespace ALittle
 {
 
@@ -29,11 +31,7 @@ typedef std::weak_ptr<ConnectEndpoint> ConnectEndpointWeakPtr;
 class SessionConnection;
 typedef std::shared_ptr<SessionConnection> SessionConnectionPtr;
 
-class QConnect2ConnectRPCRead;
 class ConnectRouteDisconnected;
-class ConnectRouteMessageRead;
-class QSession2SessionRPCRead;
-class Message;
 
 class ServerSchedule;
 

@@ -59,10 +59,8 @@ void ScriptSystemEx::Setup()
 		.addFunction("__CPPAPI_GetPixelBlue", TextureHelper::GetPixelBlue)
 		.addFunction("__CPPAPI_SetPixelBlue", TextureHelper::SetPixelBlue)
 		//////////////////////////////////////////////////////////////////////////
-		.addFunction("__CPPAPI_GetLocalIPList", NetHelper::GetLocalIPList)
 		.addFunction("__CPPAPI_StartNetworkListener", NetHelper::StartNetworkListener)
 		.addFunction("__CPPAPI_GetNetworkType", NetHelper::GetNetworkType)
-		.addFunction("__CPPAPI_ClearAIFamily", NetHelper::ClearAIFamily)
 		//////////////////////////////////////////////////////////////////////////
 		.addFunction("__CPPAPI_GetDeviceID", SystemHelper::GetDeviceID)
 		.addFunction("__CPPAPI_GetPlatform", SDL_GetPlatform)

@@ -9,6 +9,8 @@
 #include <functional>
 #include <asio.hpp>
 
+#include "Carp/carp_message.hpp"
+
 #include "ALittle/LibServer/Tool/FileCacheSystem.h"
 #include "ALittle/LibServer/HttpSystem/Server/HttpServer.h"
 #include "ALittle/LibServer/ClientSystem/ClientServer.h"
@@ -16,8 +18,6 @@
 #include "ALittle/LibServer/MysqlSystem/MysqlThreadSystem.h"
 #include "ALittle/LibCommon/Tool/SafeIDCreator.h"
 #include "ALittle/LibCommon/ScriptSystem/ScriptSystem.h"
-#include "ALittle/LibCommon/Protocol/MessageReadFactory.h"
-#include "ALittle/LibCommon/Protocol/MessageWriteFactory.h"
 
 typedef asio::basic_waitable_timer<std::chrono::system_clock> AsioTimer;
 typedef std::shared_ptr<AsioTimer> AsioTimerPtr;
@@ -91,7 +91,7 @@ private:
 private:
 	time_t m_current_time;
 	AsioTimerPtr m_timer;
-	MessageReadFactory m_read_factory;
+	CarpMessageReadFactory m_read_factory;
 
 public:
 	void StartMysqlQuery(int thread_count
@@ -156,7 +156,7 @@ public:
 
 private:
 	void ClientClose(int id);
-	void ClientSend(int id, MessageWriteFactory* factory);
+	void ClientSend(int id, CarpMessageWriteFactory* factory);
 
 	std::set<ClientServerPtr> m_client_server_set;
 	std::map<int, ClientReceiverPtr> m_id_map_client;
@@ -180,7 +180,7 @@ public:
 
 private:
 	void SessionClose(CONNECT_KEY connect_key);
-	void SessionSend(CONNECT_KEY connect_key, MessageWriteFactory* factory);
+	void SessionSend(CONNECT_KEY connect_key, CarpMessageWriteFactory* factory);
 
 	std::map<CONNECT_KEY, SessionConnectionPtr> m_session_map;
 	RouteSystem* m_route_system;

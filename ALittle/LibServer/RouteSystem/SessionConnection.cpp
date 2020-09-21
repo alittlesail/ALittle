@@ -15,7 +15,7 @@ SessionConnection::~SessionConnection()
 {
 }
 
-bool SessionConnection::Send(const Message& msg)
+bool SessionConnection::Send(const CarpMessage& msg)
 {
 	// 如果本节点不是起始点或者终点，那么就没有权利发送数据包
 	if (m_connect_index > 0 && m_connect_index + 1 < (int)m_vector_route_path.size())
@@ -38,7 +38,7 @@ bool SessionConnection::Send(const Message& msg)
 	wrap_msg.connect_key = GetConnectKey();
 	wrap_msg.message_id = msg.GetID();
 	wrap_msg.message_rpcid = msg.GetRpcID();
-	wrap_msg.message_body = (Message*)&msg;
+	wrap_msg.message_body = (CarpMessage*)&msg;
 	target_endpoint->Send(wrap_msg);
 
 	return true;

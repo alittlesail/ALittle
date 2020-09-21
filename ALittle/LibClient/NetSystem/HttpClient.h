@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+#include "Carp/carp_http.hpp"
+
 #include "ALittle/LibCommon/Tool/SafeIDCreator.h"
 #include "ALittle/LibClient/Helper/NetHelper.h"
 #include "ALittle/LibClient/ThreadSystem/Task.h"
@@ -12,7 +14,7 @@
 namespace ALittle
 {
 
-class HttpClient : public Task
+class HttpClient
 {
 public:
 	HttpClient();
@@ -33,11 +35,6 @@ public:
 	 * @param content POST content
 	 */
 	void SetURL(const char* url, const char* content);
-	/**
-	 * start load
-	 * @return succeed or not
-	 */
-	bool Load();
 
 	/**
 	 * Start http
@@ -49,8 +46,6 @@ public:
 	 */
 	void Stop();
 
-	const char* GetStatus() const;
-	
 	/**
 	 * get response
 	 * @return response
@@ -60,7 +55,7 @@ public:
 	 * get response
 	 * @return response
 	 */
-	void GetContent(char*& content, int& size);
+	void GetContent(const char*& content, int& size);
 	
 	/**
 	 * get URL
@@ -74,24 +69,17 @@ public:
 	 */
 	int GetID() const;
 
-public:
-	void Execute();
-	void Abandon();
-
 private:
 	int m_id;
 	std::string m_url;			// url
 	std::string m_content;		// if content is empty, then GET. otherwise POST
-	std::vector<char> m_response;		// repones
-	std::vector<char> m_chunk_buffer; // chunk buffer
-	bool m_continue_load;		// check load continue
-	std::string m_status;		// status of response
+	std::string m_response;		// repones
 	std::string m_failed_reason;	//  ß∞‹‘≠“Ú
 
 	static SafeIDCreator<int> s_id_creator;
 
 private:
-	TCPsocket m_socket;
+	CarpHttpClientTextPtr m_client;
 };
 
 } // ALittle

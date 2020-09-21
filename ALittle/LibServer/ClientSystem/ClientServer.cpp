@@ -144,7 +144,7 @@ void ClientServer::HandleOuterDisconnected(ClientReceiverPtr receiver)
 	m_schedule->HandleClientDisconnect(receiver);
 }
 
-void ClientServer::HandleClientMessage(ClientReceiverPtr receiver, MESSAGE_SIZE message_size, MESSAGE_ID message_id, MESSAGE_RPCID message_rpcid, void* memory)
+void ClientServer::HandleClientMessage(ClientReceiverPtr receiver, CARP_MESSAGE_SIZE message_size, CARP_MESSAGE_ID message_id, CARP_MESSAGE_RPCID message_rpcid, void* memory)
 {
 	// 通知处理消息包
 	m_schedule->HandleClientMessage(receiver, message_size, message_id, message_rpcid, memory);

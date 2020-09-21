@@ -4,9 +4,6 @@
     <Filter Include="Helper">
       <UniqueIdentifier>{af3c384f-9861-419d-94a5-96a1cd61c61e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Protocol">
-      <UniqueIdentifier>{2147ddca-f604-4167-8e21-8c19292db89d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ScriptSystem">
       <UniqueIdentifier>{b516be14-981a-4224-b410-2b4af60aa674}</UniqueIdentifier>
     </Filter>
@@ -62,15 +59,6 @@
     </ClCompile>
     <ClCompile Include="Helper\CryptHelper.cpp">
       <Filter>Helper</Filter>
-    </ClCompile>
-    <ClCompile Include="Protocol\Message.cpp">
-      <Filter>Protocol</Filter>
-    </ClCompile>
-    <ClCompile Include="Protocol\MessageReadFactory.cpp">
-      <Filter>Protocol</Filter>
-    </ClCompile>
-    <ClCompile Include="Protocol\MessageWriteFactory.cpp">
-      <Filter>Protocol</Filter>
     </ClCompile>
     <ClCompile Include="ScriptSystem\ScriptSystem.cpp">
       <Filter>ScriptSystem</Filter>
@@ -163,15 +151,6 @@
     </ClInclude>
     <ClInclude Include="Helper\CryptHelper.h">
       <Filter>Helper</Filter>
-    </ClInclude>
-    <ClInclude Include="Protocol\Message.h">
-      <Filter>Protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="Protocol\MessageReadFactory.h">
-      <Filter>Protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="Protocol\MessageWriteFactory.h">
-      <Filter>Protocol</Filter>
     </ClInclude>
     <ClInclude Include="ScriptSystem\ScriptSystem.h">
       <Filter>ScriptSystem</Filter>

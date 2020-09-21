@@ -14,6 +14,7 @@
 #include "ALittle/LibCommon/Helper/StringHelper.h"
 #include "ALittle/LibCommon/Helper/LogHelper.h"
 
+#define CARP_MIXER_IMPL
 #include "Carp/carp_mixer.h"
 
 namespace ALittle

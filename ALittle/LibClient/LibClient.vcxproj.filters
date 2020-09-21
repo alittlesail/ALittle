@@ -90,19 +90,10 @@
     <ClInclude Include="NetSystem\NetSystem.h">
       <Filter>NetSystem</Filter>
     </ClInclude>
-    <ClInclude Include="NetSystem\ReceiveThread.h">
-      <Filter>NetSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="NetSystem\SendThread.h">
-      <Filter>NetSystem</Filter>
-    </ClInclude>
     <ClInclude Include="NetSystem\HttpClient.h">
       <Filter>NetSystem</Filter>
     </ClInclude>
     <ClInclude Include="NetSystem\HttpFile.h">
-      <Filter>NetSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="NetSystem\MessageReceiver.h">
       <Filter>NetSystem</Filter>
     </ClInclude>
     <ClInclude Include="Platform\Android\AndroidSystem.h">
@@ -272,19 +263,10 @@
     <ClCompile Include="Helper\InputHelper.cpp">
       <Filter>Helper</Filter>
     </ClCompile>
-    <ClCompile Include="NetSystem\ReceiveThread.cpp">
-      <Filter>NetSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="NetSystem\SendThread.cpp">
-      <Filter>NetSystem</Filter>
-    </ClCompile>
     <ClCompile Include="NetSystem\HttpClient.cpp">
       <Filter>NetSystem</Filter>
     </ClCompile>
     <ClCompile Include="NetSystem\HttpFile.cpp">
-      <Filter>NetSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="NetSystem\MessageReceiver.cpp">
       <Filter>NetSystem</Filter>
     </ClCompile>
     <ClCompile Include="NetSystem\NetSystem.cpp">

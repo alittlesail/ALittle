@@ -3,7 +3,7 @@
 #define _ALITTLE_CLIENTSERVER_H_
 
 #include <asio.hpp>
-#include "ALittle/LibCommon/Protocol/Message.h"
+#include "Carp/carp_message.hpp"
 
 #include <map>
 #include <string>
@@ -74,7 +74,7 @@ private:
 
 public:
 	// 处理消息事件
-	void HandleClientMessage(ClientReceiverPtr receiver, MESSAGE_SIZE message_size, MESSAGE_ID message_id, MESSAGE_RPCID message_rpcid, void* memory);
+	void HandleClientMessage(ClientReceiverPtr receiver, CARP_MESSAGE_SIZE message_size, CARP_MESSAGE_ID message_id, CARP_MESSAGE_RPCID message_rpcid, void* memory);
 	
 private:
 	// 保存客户端连接对象

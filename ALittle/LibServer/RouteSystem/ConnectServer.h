@@ -3,7 +3,7 @@
 #define _ALITTLE_CONNECTSERVER_H_
 
 #include <asio.hpp>
-#include "ALittle/LibCommon/Protocol/Message.h"
+#include "Carp/carp_message.hpp"
 #include "RouteIdDefine.h"
 
 #include <map>

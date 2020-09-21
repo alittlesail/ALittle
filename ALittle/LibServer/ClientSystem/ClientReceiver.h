@@ -3,7 +3,7 @@
 #define _ALITTLE_CLIENTRECEIVER_H_
 
 #include <asio.hpp>
-#include "ALittle/LibCommon/Protocol/Message.h"
+#include "Carp/carp_message.hpp"
 #include <memory>
 
 
@@ -92,7 +92,7 @@ private:
 
 private:
 	// 协议头
-	char m_message_head[PROTOCOL_HEAD_SIZE];
+	char m_message_head[CARP_PROTOCOL_HEAD_SIZE];
 	// 协议体
 	void* m_memory;
 	// 归属的服务器
@@ -104,11 +104,11 @@ private:
 
 public:
 	// 发送协议
-	void Send(const Message& message);
+	void Send(const CarpMessage& message);
 
 private:
-	void SendBinary(const Message& message);
-	void SendWebSocket(const Message& message);
+	void SendBinary(const CarpMessage& message);
+	void SendWebSocket(const CarpMessage& message);
 
 private:
 	// 处理发送

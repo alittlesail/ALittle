@@ -7,6 +7,8 @@
 extern "C" {
 #include "ALittle/LibCommon/ThirdParty/utf8/utf8.h"
 }
+
+#define CARP_FONT_IMPL
 #include "Carp/carp_font.h"
 
 namespace ALittle

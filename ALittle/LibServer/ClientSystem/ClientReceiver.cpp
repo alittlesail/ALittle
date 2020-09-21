@@ -73,9 +73,9 @@ void ClientReceiver::ReadComplete()
 	}
 
 	// 读取协议头的信息
-	MESSAGE_SIZE* message_size = (MESSAGE_SIZE*)m_message_head;
-	MESSAGE_ID* message_id = (MESSAGE_ID*)(m_message_head + sizeof(MESSAGE_SIZE));
-	MESSAGE_RPCID* message_rpcid = (MESSAGE_RPCID*)(m_message_head + sizeof(MESSAGE_SIZE) + sizeof(MESSAGE_ID));
+	CARP_MESSAGE_SIZE* message_size = (CARP_MESSAGE_SIZE*)m_message_head;
+	CARP_MESSAGE_ID* message_id = (CARP_MESSAGE_ID*)(m_message_head + sizeof(CARP_MESSAGE_SIZE));
+	CARP_MESSAGE_RPCID* message_rpcid = (CARP_MESSAGE_RPCID*)(m_message_head + sizeof(CARP_MESSAGE_SIZE) + sizeof(CARP_MESSAGE_ID));
 
 	// 通过消息队列执行发送操作
 	m_schedule->Execute(std::bind(&ClientServer::HandleClientMessage, server, this->shared_from_this()
@@ -109,7 +109,7 @@ void ClientReceiver::Close()
 	// if (m_memory) { free(m_memory); m_memory = 0; }
 }
 
-void ClientReceiver::Send(const Message& message)
+void ClientReceiver::Send(const CarpMessage& message)
 {
 	if (m_is_websocket)
 		SendWebSocket(message);

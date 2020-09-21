@@ -118,16 +118,6 @@ public static System_GetDeviceID() : string
     return JavaScript.JSystem_GetDeviceID();
 }
 
-// 获取局域网的IP列表，比如["127.0.0.1","192.168.1.10"]
-public static System_GetLocalIPList() : string
-{
-    [Language(Lua)]
-    return lua.__CPPAPI_GetLocalIPList();
-    
-    [Language(JavaScript)]
-    return "[]";
-}
-
 // 获取是不是移动平台
 public static System_IsPhone() : bool
 {
@@ -150,13 +140,6 @@ public static System_InstallProgram(string file_path)
 {
     [Language(Lua)]
     lua.__CPPAPI_InstallProgram(file_path);
-}
-
-// 清理AI簇数据
-public static System_ClearAIFamily()
-{
-    [Language(Lua)]
-    lua.__CPPAPI_ClearAIFamily();
 }
 
 // 启动进程

@@ -3,7 +3,7 @@
 #define _ALITTLE_CONNECTRECEIVER_H_
 
 #include <asio.hpp>
-#include "ALittle/LibCommon/Protocol/Message.h"
+#include "Carp/carp_message.hpp"
 #include "RouteIdDefine.h"
 
 #include "ConnectEndpoint.h"
@@ -54,14 +54,14 @@ protected:
 	
 private:
 	// 保存协议头
-	char m_message_head[PROTOCOL_HEAD_SIZE];
+	char m_message_head[CARP_PROTOCOL_HEAD_SIZE];
 	// 保存协议体
 	void* m_memory;
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 public:
-	void Send(const Message& message);
+	void Send(const CarpMessage& message);
 	void SendPocket(void* memory, int memory_size);
 
 private:

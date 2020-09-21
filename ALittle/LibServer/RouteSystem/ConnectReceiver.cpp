@@ -58,7 +58,7 @@ void ConnectReceiver::HandleReadHead(const asio::error_code& ec, std::size_t act
 	}
 
 	// 获取协议大小
-	MESSAGE_SIZE message_size = *(MESSAGE_SIZE*)m_message_head;
+	CARP_MESSAGE_SIZE message_size = *(CARP_MESSAGE_SIZE*)m_message_head;
 	
 	if (message_size > 100*1024*1024)
 	{
@@ -79,7 +79,7 @@ void ConnectReceiver::HandleReadHead(const asio::error_code& ec, std::size_t act
 
 	// 申请内存
 	if (m_memory) { free(m_memory); m_memory = 0; }
-	m_memory = malloc(message_size + PROTOCOL_HEAD_SIZE);
+	m_memory = malloc(message_size + CARP_PROTOCOL_HEAD_SIZE);
 	char* body_memory = (char*)m_memory;
 
 	// 复制协议头
@@ -94,7 +94,7 @@ void ConnectReceiver::HandleReadHead(const asio::error_code& ec, std::size_t act
 	}
 	
 	// 读取协议体
-	asio::async_read(*m_socket, asio::buffer((char*)m_memory + PROTOCOL_HEAD_SIZE, message_size)
+	asio::async_read(*m_socket, asio::buffer((char*)m_memory + CARP_PROTOCOL_HEAD_SIZE, message_size)
 		, std::bind(&ConnectEndpoint::HandleReadBody, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 }
 
@@ -126,8 +126,8 @@ void ConnectReceiver::HandleReadBody(const asio::error_code& ec, std::size_t act
 void ConnectReceiver::ReadComplete()
 {
 	// 获取协议大小，计算出内存大小
-	MESSAGE_SIZE message_size = *(MESSAGE_SIZE*)m_message_head;
-	int memory_size = message_size + PROTOCOL_HEAD_SIZE;
+	CARP_MESSAGE_SIZE message_size = *(CARP_MESSAGE_SIZE*)m_message_head;
+	int memory_size = message_size + CARP_PROTOCOL_HEAD_SIZE;
 
 	// 处理消息包
 	m_route_system->GetSchedule()->Execute(std::bind(&ConnectEndpoint::HandleMessage
@@ -163,29 +163,29 @@ void ConnectReceiver::Close(const std::string& reason)
 	ClearRPC(reason);
 }
 
-void ConnectReceiver::Send(const Message& message)
+void ConnectReceiver::Send(const CarpMessage& message)
 {
 	// 获取消息包大小
-	MESSAGE_SIZE message_size = message.GetTotalSize();
+	CARP_MESSAGE_SIZE message_size = message.GetTotalSize();
 	// 获取消息包ID
-	MESSAGE_ID message_id = message.GetID();
+	CARP_MESSAGE_ID message_id = message.GetID();
 	// 获取消息包RPCID
-	MESSAGE_RPCID message_rpcid = message.GetRpcID();
+	CARP_MESSAGE_RPCID message_rpcid = message.GetRpcID();
 
 	// 内存大小 = 协议体大小 + 协议头大小
-	int memory_size = message_size + PROTOCOL_HEAD_SIZE;
+	int memory_size = message_size + CARP_PROTOCOL_HEAD_SIZE;
 
 	// 申请内存
 	void* memory = malloc(memory_size);
 	char* body_memory = (char*)memory;
 
 	// 设置协议头
-	memcpy(body_memory, &message_size, sizeof(MESSAGE_SIZE));
-	body_memory += sizeof(MESSAGE_SIZE);
-	memcpy(body_memory, &message_id, sizeof(MESSAGE_ID));
-	body_memory += sizeof(MESSAGE_ID);
-	memcpy(body_memory, &message_rpcid, sizeof(MESSAGE_RPCID));
-	body_memory += sizeof(MESSAGE_RPCID);
+	memcpy(body_memory, &message_size, sizeof(CARP_MESSAGE_SIZE));
+	body_memory += sizeof(CARP_MESSAGE_SIZE);
+	memcpy(body_memory, &message_id, sizeof(CARP_MESSAGE_ID));
+	body_memory += sizeof(CARP_MESSAGE_ID);
+	memcpy(body_memory, &message_rpcid, sizeof(CARP_MESSAGE_RPCID));
+	body_memory += sizeof(CARP_MESSAGE_RPCID);
 
 	// 序列化
 	message.Serialize(body_memory);

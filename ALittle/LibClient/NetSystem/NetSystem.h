@@ -2,26 +2,18 @@
 #ifndef _ALITTLE_NETSYSTEM_H_
 #define _ALITTLE_NETSYSTEM_H_
 
-#include "ALittle/LibClient/ThreadSystem/Task.h"
-
-#include "ALittle/LibClient/Helper/NetHelper.h"
-
 #include <vector>
 #include <string>
 
-#include "SendThread.h"
-#include "ReceiveThread.h"
-
-#include "ALittle/LibCommon/Protocol/Message.h"
-#include "ALittle/LibCommon/Protocol/MessageReadFactory.h"
-#include "ALittle/LibCommon/Protocol/MessageWriteFactory.h"
+#include "Carp/carp_connect_client.hpp"
+#include "Carp/carp_message.hpp"
 
 namespace ALittle
 {
 
 class ScriptSystem;
 
-class NetSystem : public Task
+class NetSystem
 {
 public:
 	NetSystem();
@@ -68,16 +60,6 @@ public:
 	bool IsConnected() const { return m_state == CONNECT_ED; }
 
 public:
-	// handle message function template
-	typedef void (*MessageHandle)(const Message& msg);
-	/**
-	 * register callback to handle message
-	 * @param msg: message object
-	 * @param func: callback
-	 */
-	void RegisterHandle(Message* msg, MessageHandle func);
-
-public:
 	/**
 	 * handle connect event
 	 * @param event_type
@@ -93,40 +75,33 @@ public:
 	 */
 	static void HandleMessageEvent(unsigned int event_type, void* data1, void* data2);
 
+private:
+	void HandleConnectFailed();
+	void HandleConnectSucceed();
+	void HandleDisconnected();
+	void HandleMessage(void* message, int size);
+
 public:
 	/**
 	 * send message
 	 * @param message
 	 */
-	void Send(const Message& message);
+	void Send(const CarpMessage& message);
 	
 	/**
 	 * send message factory
 	 * @param message
 	 */
-	void SendFactory(const MessageWriteFactory* message);
+	void SendFactory(const CarpMessageWriteFactory* message);
 	
 private:
-	TCPsocket m_socket;	// TCP socket
-
-private:	
-	SendThread* m_send_thread;			// sender thread
-	ReceiveThread* m_receive_thread;	// receive thread
-
-private:
 	ConnectState m_state;		// connect status
-	bool m_in_cancel;			// is in cancel
 	std::string m_ip;			// ip
 	unsigned int m_port;		// port
 
 private:
-	typedef std::vector<MessageHandle> HandleList;
-	HandleList m_handle_list;	// handle list
-	
-	typedef std::vector<Message*> MessageList;
-	MessageList m_message_list;	// message list
-
-	MessageReadFactory m_read_factory;	// read factory
+	CarpMessageReadFactory m_read_factory;	// read factory
+	CarpConnectClientPtr m_client;
 };
 
 } // ALittle

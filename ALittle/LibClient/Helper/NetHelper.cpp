@@ -55,44 +55,6 @@ bool NetHelper::VectorChar2Hex( const std::vector<char>& buffer, int& result )
 	return true;
 }
 
-int NetHelper::TCPSocketReceive( TCPsocket sock, void *buffer, int len )
-{
-	int offset_len = 0;
-	int remain_len = len;
-	while(remain_len > 0)
-	{
-		int recv_len = SDLNet_TCP_Recv(sock, static_cast<char*>(buffer) + offset_len, remain_len);
-		if (recv_len <= 0) return offset_len;
-
-		offset_len += recv_len;
-		remain_len -= recv_len;
-	}
-	return len;
-}
-
-int NetHelper::TCPSocketSend( TCPsocket sock, void *buffer, int len )
-{
-	return SDLNet_TCP_Send(sock, buffer, len);
-}
-
-const char* NetHelper::GetLocalIPList()
-{
-	static std::string ip_list;
-
-	ip_list = "[";
-	IPaddress address[16];
-	int count = SDLNet_GetLocalAddresses(address, 16);
-	for (int i = 0; i < count; ++i)
-	{
-		ip_list += "\"" + Ip2String(BitHelper::TransEndian(address[i].host)) + "\"";
-		if (i + 1 < count)
-			ip_list.push_back(',');
-	}
-
-	ip_list += "]";
-	return ip_list.c_str();
-}
-
 std::string NetHelper::Ip2String(unsigned int ip)
 {
 	char ip_dest[16] = { 0 };
@@ -128,20 +90,6 @@ void NetHelper::StartNetworkListener()
 #elif _WIN32
 	Windows_StartNetworkListener();
 #endif
-}
-
-int NetHelper::s_ai_family = -1;
-
-int NetHelper::GetAIFamily( const char* ip, int port )
-{
-	if (s_ai_family != -1) return s_ai_family;
-	s_ai_family = SDLNet_TCP_GetAIFamily(ip, port);
-	return s_ai_family;
-}
-
-void NetHelper::ClearAIFamily()
-{
-	s_ai_family = -1;
 }
 
 } // ALittle

@@ -1,6 +1,7 @@
 ﻿
 #include "ScheduleSystem.h"
 #include "EventDefine.h"
+#include <asio.hpp>
 
 #include "ALittle/LibCommon/Helper/FileHelper.h"
 #include "ALittle/LibCommon/Helper/DumpHelper.h"
@@ -23,7 +24,6 @@
 
 #include <SDL.h>
 #include <SDL_version.h>
-#include <SDL_net.h>
 #include <SDL_syswm.h>
 #include <functional>
 
@@ -123,8 +123,6 @@ int ScheduleSystem::Run(int argc, char* argv[])
 	// init SDL
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_AUDIO) == -1)
 		ALITTLE_ERROR(SDL_GetError());
-	if (SDLNet_Init() == -1)
-		ALITTLE_ERROR(SDLNet_GetError());
 	
 	// enable drop file
 	SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
@@ -196,7 +194,6 @@ int ScheduleSystem::Run(int argc, char* argv[])
 	while(m_restart);
 
 	// release SDL
-	SDLNet_Quit();
 	SDL_Quit();
 
 #ifdef _WIN32

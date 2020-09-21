@@ -17,8 +17,8 @@ extern "C" {
 #include "ALittle/LibCommon/Helper/FileHelper.h"
 #include "ALittle/LibCommon/Helper/CryptHelper.h"
 #include "ALittle/LibCommon/Tool/LogSystem.h"
-#include "ALittle/LibCommon/Protocol/MessageReadFactory.h"
-#include "ALittle/LibCommon/Protocol/MessageWriteFactory.h"
+
+#include "Carp/carp_message.hpp"
 
 namespace ALittle
 {
@@ -48,32 +48,32 @@ void ScriptSystem::Init(const std::string& module_title)
 	luaopen_sqlite3(m_L); lua_settop(m_L, 0);
 
 	luabridge::getGlobalNamespace(m_L)
-		.beginClass<MessageReadFactory>("__CPPAPIMessageReadFactory")
+		.beginClass<CarpMessageReadFactory>("__CPPAPIMessageReadFactory")
 		.addConstructor<void(*)()>()
-		.addFunction("ReadFromStdFile", &MessageReadFactory::ReadFromStdFile)
-		.addFunction("ReadBool", &MessageReadFactory::ReadBool)
-		.addFunction("ReadInt", &MessageReadFactory::ReadInt)
-		.addFunction("ReadI64", &MessageReadFactory::ReadLongLong)
-		.addFunction("ReadString", &MessageReadFactory::ReadString)
-		.addFunction("ReadDouble", &MessageReadFactory::ReadDouble)
-		.addFunction("GetReadSize", &MessageReadFactory::GetReadSize)
-		.addFunction("GetDataSize", &MessageReadFactory::GetDataSize)
+		.addFunction("ReadFromStdFile", &CarpMessageReadFactory::ReadFromStdFile)
+		.addFunction("ReadBool", &CarpMessageReadFactory::ReadBool)
+		.addFunction("ReadInt", &CarpMessageReadFactory::ReadInt)
+		.addFunction("ReadI64", &CarpMessageReadFactory::ReadLongLong)
+		.addFunction("ReadString", &CarpMessageReadFactory::ReadString)
+		.addFunction("ReadDouble", &CarpMessageReadFactory::ReadDouble)
+		.addFunction("GetReadSize", &CarpMessageReadFactory::GetReadSize)
+		.addFunction("GetDataSize", &CarpMessageReadFactory::GetDataSize)
 		.endClass();
 
 	luabridge::getGlobalNamespace(m_L)
-		.beginClass<MessageWriteFactory>("__CPPAPIMessageWriteFactory")
+		.beginClass<CarpMessageWriteFactory>("__CPPAPIMessageWriteFactory")
 		.addConstructor<void(*)()>()
-		.addFunction("WriteToStdFile", &MessageWriteFactory::WriteToStdFile)
-		.addFunction("SetID", &MessageWriteFactory::SetID)
-		.addFunction("SetRpcID", &MessageWriteFactory::SetRpcID)
-		.addFunction("ResetOffset", &MessageWriteFactory::ResetOffset)
-		.addFunction("WriteBool", &MessageWriteFactory::WriteBool)
-		.addFunction("WriteInt", &MessageWriteFactory::WriteInt)
-		.addFunction("WriteI64", &MessageWriteFactory::WriteLongLong)
-		.addFunction("WriteString", &MessageWriteFactory::WriteString)
-		.addFunction("WriteDouble", &MessageWriteFactory::WriteDouble)
-		.addFunction("SetInt", &MessageWriteFactory::SetInt)
-		.addFunction("GetOffset", &MessageWriteFactory::GetOffset)
+		.addFunction("WriteToStdFile", &CarpMessageWriteFactory::WriteToStdFile)
+		.addFunction("SetID", &CarpMessageWriteFactory::SetID)
+		.addFunction("SetRpcID", &CarpMessageWriteFactory::SetRpcID)
+		.addFunction("ResetOffset", &CarpMessageWriteFactory::ResetOffset)
+		.addFunction("WriteBool", &CarpMessageWriteFactory::WriteBool)
+		.addFunction("WriteInt", &CarpMessageWriteFactory::WriteInt)
+		.addFunction("WriteI64", &CarpMessageWriteFactory::WriteLongLong)
+		.addFunction("WriteString", &CarpMessageWriteFactory::WriteString)
+		.addFunction("WriteDouble", &CarpMessageWriteFactory::WriteDouble)
+		.addFunction("SetInt", &CarpMessageWriteFactory::SetInt)
+		.addFunction("GetOffset", &CarpMessageWriteFactory::GetOffset)
 		.endClass();
 
 	RegisterImpl();

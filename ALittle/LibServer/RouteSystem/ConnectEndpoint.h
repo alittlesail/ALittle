@@ -3,7 +3,7 @@
 #define _ALITTLE_CONNECTENDPOINT_H_
 
 #include <asio.hpp>
-#include "ALittle/LibCommon/Protocol/Message.h"
+#include "Carp/carp_message.hpp"
 #include "ALittle/LibCommon/Tool/SafeIDCreator.h"
 #include "RouteIdDefine.h"
 
@@ -23,7 +23,7 @@ public:
 
 public:
 	virtual void Close(const std::string& reason) = 0;
-	virtual void Send(const Message& msg) = 0;
+	virtual void Send(const CarpMessage& msg) = 0;
 	virtual void SendPocket(void* memory, int memory_size) = 0;
 	virtual void NextReadHead() = 0;
 	virtual bool IsConnected() = 0;
@@ -44,10 +44,10 @@ public:
 
 public:
 	// 发送可靠性调用
-	void SendWithCallback(const Message& msg, RPCCallback& callback);
+	void SendWithCallback(const CarpMessage& msg, RPCCallback& callback);
 	// 应答可靠性调用
 	void SendError(int rpc_id, const std::string& reason);
-	void SendResponse(int rpc_id, const Message& msg);
+	void SendResponse(int rpc_id, const CarpMessage& msg);
 
 public:
 	// 处理连接状态
@@ -55,10 +55,10 @@ public:
 	void HandleConnectFailed();
 	void HandleDisconnected();
 	// 处理消息包
-	void HandleMessage(void* memory, int memory_size);
+	void HandleMessage(void* memory, size_t memory_size);
 
 private:
-	void HandleMessageImpl(void* memory, int memory_size, bool& need_free);
+	void HandleMessageImpl(void* memory, size_t memory_size, bool& need_free);
 
 public:
 	ROUTE_ID GetTargetRouteId() const { return m_target_route_id; }

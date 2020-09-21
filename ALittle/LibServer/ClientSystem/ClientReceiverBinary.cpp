@@ -36,7 +36,7 @@ void ClientReceiver::HandleReadHeadBinary(const asio::error_code& ec, std::size_
 	}
 
 	// 从协议头读取数据包大小
-	MESSAGE_SIZE message_size = *(MESSAGE_SIZE*)m_message_head;
+	CARP_MESSAGE_SIZE message_size = *(CARP_MESSAGE_SIZE*)m_message_head;
 	
 	// 如果数据包大小为0，那么就直接执行完成
 	if (message_size == 0)
@@ -76,20 +76,20 @@ void ClientReceiver::HandleReadBodyBinary(const asio::error_code& ec, std::size_
 	NextReadHeadBinary();
 }
 
-void ClientReceiver::SendBinary(const Message& message)
+void ClientReceiver::SendBinary(const CarpMessage& message)
 {
 	// 如果已经关闭，那么就不发送数据包
 	if (m_is_connected == false) return;
 
 	// 获取消息包总大小
-	MESSAGE_SIZE message_size = message.GetTotalSize();
+	CARP_MESSAGE_SIZE message_size = message.GetTotalSize();
 	// 获取消息包ID
-	MESSAGE_ID message_id = message.GetID();
+	CARP_MESSAGE_ID message_id = message.GetID();
 	// 获取RPCID
-	MESSAGE_RPCID message_rpcid = message.GetRpcID();
+	CARP_MESSAGE_RPCID message_rpcid = message.GetRpcID();
 
 	// 计算内存大小
-	int memory_size = message_size + PROTOCOL_HEAD_SIZE;
+	int memory_size = message_size + CARP_PROTOCOL_HEAD_SIZE;
 
 	// 申请内存
 	void* memory = malloc(memory_size);
@@ -101,12 +101,12 @@ void ClientReceiver::SendBinary(const Message& message)
 	char* body_memory = static_cast<char*>(memory);
 
 	// 写入消息包大小和ID
-	memcpy(body_memory, &message_size, sizeof(MESSAGE_SIZE));
-	body_memory += sizeof(MESSAGE_SIZE);
-	memcpy(body_memory, &message_id, sizeof(MESSAGE_ID));
-	body_memory += sizeof(MESSAGE_ID);
-	memcpy(body_memory, &message_rpcid, sizeof(MESSAGE_RPCID));
-	body_memory += sizeof(MESSAGE_RPCID);
+	memcpy(body_memory, &message_size, sizeof(CARP_MESSAGE_SIZE));
+	body_memory += sizeof(CARP_MESSAGE_SIZE);
+	memcpy(body_memory, &message_id, sizeof(CARP_MESSAGE_ID));
+	body_memory += sizeof(CARP_MESSAGE_ID);
+	memcpy(body_memory, &message_rpcid, sizeof(CARP_MESSAGE_RPCID));
+	body_memory += sizeof(CARP_MESSAGE_RPCID);
 
 	// 系列化消息
 	message.Serialize(body_memory);

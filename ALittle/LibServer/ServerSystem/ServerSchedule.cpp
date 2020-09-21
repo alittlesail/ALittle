@@ -496,7 +496,7 @@ void ServerSchedule::ClientClose(int id)
 	m_id_map_client.erase(it);
 }
 
-void ServerSchedule::ClientSend(int id, MessageWriteFactory* factory)
+void ServerSchedule::ClientSend(int id, CarpMessageWriteFactory* factory)
 {
 	auto it = m_id_map_client.find(id);
 	if (it == m_id_map_client.end()) return;
@@ -638,7 +638,7 @@ void ServerSchedule::SessionClose(CONNECT_KEY connect_key)
 	m_session_map.erase(it);
 }
 
-void ServerSchedule::SessionSend(CONNECT_KEY connect_key, MessageWriteFactory* factory)
+void ServerSchedule::SessionSend(CONNECT_KEY connect_key, CarpMessageWriteFactory* factory)
 {
 	auto it = m_session_map.find(connect_key);
 	if (it == m_session_map.end()) return;

@@ -18,9 +18,6 @@
     <ClCompile Include="Helper\LogHelper.cpp" />
     <ClCompile Include="Helper\StringHelper.cpp" />
     <ClCompile Include="Helper\TimeHelper.cpp" />
-    <ClCompile Include="Protocol\Message.cpp" />
-    <ClCompile Include="Protocol\MessageReadFactory.cpp" />
-    <ClCompile Include="Protocol\MessageWriteFactory.cpp" />
     <ClCompile Include="ScriptSystem\ScriptSystem.cpp" />
     <ClCompile Include="ThirdParty\base64\base64.c" />
     <ClCompile Include="ThirdParty\base64\base64lib.c" />
@@ -53,9 +50,6 @@
     <ClInclude Include="Helper\LogHelper.h" />
     <ClInclude Include="Helper\StringHelper.h" />
     <ClInclude Include="Helper\TimeHelper.h" />
-    <ClInclude Include="Protocol\Message.h" />
-    <ClInclude Include="Protocol\MessageReadFactory.h" />
-    <ClInclude Include="Protocol\MessageWriteFactory.h" />
     <ClInclude Include="ScriptSystem\ScriptSystem.h" />
     <ClInclude Include="ThirdParty\base64\base64.h" />
     <ClInclude Include="ThirdParty\base64\base64lib.h" />

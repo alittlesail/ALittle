@@ -11,6 +11,8 @@
 
 #include "RouteIdDefine.h"
 
+class CarpMessage;
+
 namespace ALittle
 {
 
@@ -21,8 +23,6 @@ typedef std::weak_ptr<ConnectEndpoint> ConnectEndpointWeakPtr;
 class SessionConnection;
 typedef std::shared_ptr<SessionConnection> SessionConnectionPtr;
 typedef std::weak_ptr<SessionConnection> SessionConnectionWeakPtr;
-
-class Message;
 
 // 会话节点信息
 class SessionConnection : public std::enable_shared_from_this<SessionConnection>
@@ -55,7 +55,7 @@ public:
 	inline ROUTE_NUM GetRouteNum() const { return RouteIdDefine::CalcRouteNum(GetRouteId()); }
 	bool IsConnected() const { return m_status == Status::SCS_CONNECTED; }
 
-	bool Send(const Message& msg);
+	bool Send(const CarpMessage& msg);
 	
 private:
 	bool Close();

@@ -337,8 +337,8 @@ void ClientReceiver::HandleWebSocketReadData( int total_size, int offset )
 		if (m_head_size == sizeof(m_message_head))
 		{
 			// get message size from head buffer
-			MESSAGE_SIZE message_size = *(MESSAGE_SIZE*)m_message_head;
-			MESSAGE_ID message_id = *(MESSAGE_ID*)(m_message_head + sizeof(MESSAGE_SIZE));
+			CARP_MESSAGE_SIZE message_size = *(CARP_MESSAGE_SIZE*)m_message_head;
+			CARP_MESSAGE_ID message_id = *(CARP_MESSAGE_ID*)(m_message_head + sizeof(CARP_MESSAGE_SIZE));
 
 			// check message_id is 0 and message_size is 0 then is heartbeat message
 			if (message_id == 0 && message_size == 0)
@@ -396,7 +396,7 @@ void ClientReceiver::HandleWebSocketReadData( int total_size, int offset )
 	}
 
 	// get message size from head buffer
-	MESSAGE_SIZE message_size = *(MESSAGE_SIZE*)m_message_head;
+	CARP_MESSAGE_SIZE message_size = *(CARP_MESSAGE_SIZE*)m_message_head;
 	
 	// offset body memory
 	char* body_memory = (char*)m_memory;
@@ -434,17 +434,17 @@ void ClientReceiver::ReleaseWebSocketBuffer()
 	}
 }
 
-void ClientReceiver::SendWebSocket(const Message& message)
+void ClientReceiver::SendWebSocket(const CarpMessage& message)
 {
 	// get the size of message body and save in head
-	MESSAGE_SIZE message_size = message.GetTotalSize();
+	CARP_MESSAGE_SIZE message_size = message.GetTotalSize();
 	// get the id of message and save in head
-	MESSAGE_ID message_id = message.GetID();
+	CARP_MESSAGE_ID message_id = message.GetID();
 	// ªÒ»°RPCID
-	MESSAGE_RPCID message_rpcid = message.GetRpcID();
+	CARP_MESSAGE_RPCID message_rpcid = message.GetRpcID();
 
 	// memory size = body size + head size
-	unsigned int extend_size = message_size + PROTOCOL_HEAD_SIZE;
+	unsigned int extend_size = message_size + CARP_PROTOCOL_HEAD_SIZE;
 	unsigned int memory_size = extend_size;
 	void* memory = 0;
 	unsigned char* body_memory = 0;
@@ -519,12 +519,12 @@ void ClientReceiver::SendWebSocket(const Message& message)
 	}
 
 	// set head info
-	memcpy(body_memory, &message_size, sizeof(MESSAGE_SIZE));
-	body_memory += sizeof(MESSAGE_SIZE);
-	memcpy(body_memory, &message_id, sizeof(MESSAGE_ID));
-	body_memory += sizeof(MESSAGE_ID);
-	memcpy(body_memory, &message_rpcid, sizeof(MESSAGE_RPCID));
-	body_memory += sizeof(MESSAGE_RPCID);
+	memcpy(body_memory, &message_size, sizeof(CARP_MESSAGE_SIZE));
+	body_memory += sizeof(CARP_MESSAGE_SIZE);
+	memcpy(body_memory, &message_id, sizeof(CARP_MESSAGE_ID));
+	body_memory += sizeof(CARP_MESSAGE_ID);
+	memcpy(body_memory, &message_rpcid, sizeof(CARP_MESSAGE_RPCID));
+	body_memory += sizeof(CARP_MESSAGE_RPCID);
 	// transfer message to memory
 	message.Serialize(body_memory);
 

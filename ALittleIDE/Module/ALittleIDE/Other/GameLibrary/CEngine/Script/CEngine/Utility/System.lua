@@ -69,10 +69,6 @@ function ALittle.System_GetDeviceID()
 	return __CPPAPI_GetDeviceID()
 end
 
-function ALittle.System_GetLocalIPList()
-	return __CPPAPI_GetLocalIPList()
-end
-
 function ALittle.System_IsPhone()
 	local platform = __CPPAPI_GetPlatform()
 	return platform ~= "Windows" and platform ~= "Emscripten"
@@ -80,10 +76,6 @@ end
 
 function ALittle.System_InstallProgram(file_path)
 	__CPPAPI_InstallProgram(file_path)
-end
-
-function ALittle.System_ClearAIFamily()
-	__CPPAPI_ClearAIFamily()
 end
 
 function ALittle.System_StartProgram(package_name)

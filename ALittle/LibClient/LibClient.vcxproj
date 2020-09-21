@@ -32,10 +32,7 @@
     <ClInclude Include="Helper\TextureHelper.h" />
     <ClInclude Include="NetSystem\HttpClient.h" />
     <ClInclude Include="NetSystem\HttpFile.h" />
-    <ClInclude Include="NetSystem\MessageReceiver.h" />
     <ClInclude Include="NetSystem\NetSystem.h" />
-    <ClInclude Include="NetSystem\ReceiveThread.h" />
-    <ClInclude Include="NetSystem\SendThread.h" />
     <ClInclude Include="Platform\Android\AndroidSystem.h" />
     <ClInclude Include="Platform\iOS\iOSDelegate.h" />
     <ClInclude Include="Platform\iOS\iOSSystem.h" />
@@ -84,10 +81,7 @@
     <ClCompile Include="Helper\TextureHelper.cpp" />
     <ClCompile Include="NetSystem\HttpClient.cpp" />
     <ClCompile Include="NetSystem\HttpFile.cpp" />
-    <ClCompile Include="NetSystem\MessageReceiver.cpp" />
     <ClCompile Include="NetSystem\NetSystem.cpp" />
-    <ClCompile Include="NetSystem\ReceiveThread.cpp" />
-    <ClCompile Include="NetSystem\SendThread.cpp" />
     <ClCompile Include="Platform\Android\AndroidSystem.cpp" />
     <ClCompile Include="Platform\Windows\WindowsSystem.cpp" />
     <ClCompile Include="RenderSystem\DisplayObject\DisplayObject.cpp" />
@@ -182,7 +176,7 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;_CRTDBG_MAP_ALLOC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\SDL_net\;$(SolutionDir)..\SDL\include\;$(SolutionDir)..\LuaJIT-2.1.0-beta3\src\;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)..\asio\asio\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\SDL\include\;$(SolutionDir)..\LuaJIT-2.1.0-beta3\src\;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)..\asio\asio\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -200,7 +194,7 @@
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\SDL_net\;$(SolutionDir)..\SDL\include\;$(SolutionDir)..\LuaJIT-2.1.0-beta3\src\;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)..\asio\asio\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\SDL\include\;$(SolutionDir)..\LuaJIT-2.1.0-beta3\src\;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)..\asio\asio\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

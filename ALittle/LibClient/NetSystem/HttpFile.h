@@ -5,14 +5,14 @@
 #include <string>
 #include <vector>
 
+#include "Carp/carp_http.hpp"
+
 #include "ALittle/LibCommon/Tool/SafeIDCreator.h"
-#include "ALittle/LibClient/ThreadSystem/Task.h"
-#include "ALittle/LibClient/Helper/NetHelper.h"
 
 namespace ALittle
 {
 
-class HttpFile : public Task
+class HttpFile
 {
 public:
 	HttpFile();
@@ -40,17 +40,6 @@ public:
 
 public:
 	/**
-	 * download
-	 * @return succeed or not
-	 */
-	bool Download();
-	/**
-	 * upload
-	 * @return succeed or not
-	 */
-	bool Upload();
-
-	/**
 	 * start
 	 */
 	void Start();
@@ -61,15 +50,9 @@ public:
 	void Stop();
 
 public:
-	const char* GetStatus();
-	const char* GetContent();
 	const char* GetPath();
 	unsigned int GetTotalSize() const;
 	unsigned int GetCurSize() const;
-
-public:
-	void Execute();
-	void Abandon();
 
 private:
 	int m_id;
@@ -79,16 +62,14 @@ private:
 	unsigned int m_cur_size;	// current size
 	int m_start_size;				// start size
 	bool m_download;				// download or upload
-	bool m_continue_load;			// continue or not
-	std::string m_response;			// response for upload
-	std::vector<char> m_chunk_buffer; // chunk buffer
-	std::string m_status;			// response status
-	std::string m_failed_reason;		//  ß∞‹‘≠“Ú
+	std::string m_failed_reason;
 
+private:
 	static SafeIDCreator<int> s_id_creator;
 
 private:
-	TCPsocket m_socket;
+	CarpHttpClientPostPtr m_upload_client;
+	CarpHttpClientTextPtr m_download_client;
 };
 
 } // ALittle

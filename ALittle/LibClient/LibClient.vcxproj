@@ -18,6 +18,7 @@
     <ClInclude Include="..\..\Carp\carp_mixer.h" />
     <ClInclude Include="..\..\Carp\carp_http.hpp" />
     <ClInclude Include="..\..\Carp\carp_connect_client.hpp" />
+    <ClInclude Include="..\..\Carp\carp_schedule.hpp" />
     <ClInclude Include="..\..\Carp\carp_string.h" />
     <ClInclude Include="..\..\Carp\carp_string_helper.hpp" />
     <ClInclude Include="..\..\Carp\carp_win_ime.h" />

@@ -7,7 +7,6 @@
 #include "ALittle/LibClient/ScheduleSystem/EventDefine.h"
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
 
-#define CARP_SCHEDULE_IMPL
 #include "Carp/carp_schedule.hpp"
 
 CarpSchedule& CarpScheduleInstance()
@@ -70,7 +69,7 @@ void NetSystem::Setup()
 	g_ScheduleSystem.RegisterHandle(NET_CONNECT_SUCCEED, NetSystem::HandleConnectEvent);
 	g_ScheduleSystem.RegisterHandle(NET_CONNECT_FAILED, NetSystem::HandleConnectEvent);
 
-	CarpScheduleInstance().Start(nullptr);
+	CarpScheduleInstance().Start(true, nullptr);
 }
 
 void NetSystem::Shutdown()

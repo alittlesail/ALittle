@@ -1,6 +1,6 @@
 
 #include "HttpClient.h"
-
+#include "NetSystem.h"
 #include "Carp/carp_schedule.hpp"
 
 #include "ALittle/LibClient/ScheduleSystem/EventDefine.h"

@@ -10,6 +10,12 @@
 #define CARP_SCHEDULE_IMPL
 #include "Carp/carp_schedule.hpp"
 
+CarpSchedule& CarpScheduleInstance()
+{
+	static CarpSchedule instance;
+	return instance;
+}
+
 namespace ALittle
 {
 

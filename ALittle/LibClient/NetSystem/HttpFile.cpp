@@ -1,6 +1,6 @@
 
 #include "HttpFile.h"
-
+#include "NetSystem.h"
 #include "Carp/carp_schedule.hpp"
 
 #include "ALittle/LibCommon/Helper/LogHelper.h"
@@ -9,7 +9,6 @@
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
 #include "ALittle/LibClient/ScriptSystem/ScriptSystemEx.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
 #include "ALittle/LibCommon/Helper/FileHelper.h"
 
 namespace ALittle

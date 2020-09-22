@@ -7,6 +7,9 @@
 
 #include "Carp/carp_connect_client.hpp"
 #include "Carp/carp_message.hpp"
+#include "Carp/carp_schedule.hpp"
+
+extern CarpSchedule& CarpScheduleInstance();
 
 namespace ALittle
 {

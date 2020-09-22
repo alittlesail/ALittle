@@ -3,13 +3,15 @@
 #include "HttpServer.h"
 #include "HttpReceiver.h"
 
+#define CARP_HAS_SSL
+#include "Carp/carp_http.hpp"
+
 #include "ALittle/LibCommon/Helper/HttpHelper.h"
 #include "ALittle/LibCommon/Helper/FileHelper.h"
 #include "ALittle/LibCommon/Helper/LogHelper.h"
 #include "ALittle/LibCommon/Helper/TimeHelper.h"
 #include "ALittle/LibCommon/Helper/StringHelper.h"
 
-#include "ALittle/LibServer/Tool/SocketWrap.h"
 #include "ALittle/LibServer/Tool/FileCacheSystem.h"
 #include "ALittle/LibServer/ServerSystem/ServerSchedule.h"
 
@@ -20,7 +22,7 @@ void HttpSender_HandleSend(HttpSenderPtr self, const asio::error_code& ec, std::
 
 #define HTTPS_SEND_FILE_BUFFER_SIZE 10240
 
-HttpSender::HttpSender(ALittleSocketPtr socket, HttpServerPtr server, ServerSchedule* schedule)
+HttpSender::HttpSender(CarpHttpSocketPtr socket, HttpServerPtr server, ServerSchedule* schedule)
 : m_socket(socket), m_end_time(0), m_is_sending(false)
 , m_server_system(server)
 , m_is_removed(false)
@@ -29,8 +31,8 @@ HttpSender::HttpSender(ALittleSocketPtr socket, HttpServerPtr server, ServerSche
 	m_file = new FileCacheHelper(&schedule->GetFileChacheSystem());
 
 	// save target ip
-	SOCKETHELPER_GetRemoteIp(socket, m_remote_ip);
-	SOCKETHELPER_GetRemotePort(socket, m_remote_port);
+	CARPHTTPSOCKET_GetRemoteIp(socket, m_remote_ip);
+	CARPHTTPSOCKET_GetRemotePort(socket, m_remote_port);
 }
 
 HttpSender::~HttpSender()
@@ -74,7 +76,7 @@ void HttpSender::SendString(const std::string& message)
 	m_http_content += message;
 
 	// send response
-	SOCKETHELPER_AsyncWrite(m_socket, m_http_content.c_str(), m_http_content.size(),
+	CARPHTTPSOCKET_AsyncWrite(m_socket, m_http_content.c_str(), m_http_content.size(),
 		std::bind(HttpSender_HandleSend, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 }
 
@@ -110,7 +112,7 @@ void HttpSender::HandleSend(std::size_t bytes_transferred)
 		else
 		{
 			// send file content
-			SOCKETHELPER_AsyncWrite(m_socket, &(m_file_buffer[0]), size,
+			CARPHTTPSOCKET_AsyncWrite(m_socket, &(m_file_buffer[0]), size,
 				std::bind(HttpSender_HandleSend, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 		}
 	}
@@ -136,7 +138,7 @@ void HttpSender::Close()
 	// clear buffer, reset status
 	Clear();
 	// save socket, this is import!(prevent count of smart point desc to 0)
-	ALittleSocketPtr socket = m_socket;
+	CarpHttpSocketPtr socket = m_socket;
 	// remove from server
 	HttpServerPtr server_system = m_server_system.lock();
 	if (server_system) server_system->ExecuteRemoveCallBack(socket);
@@ -190,7 +192,7 @@ void HttpSender::SendFile(const char* path, const char* content_type, bool for_d
 		m_http_content += "\r\n";
 
 		// send
-		SOCKETHELPER_AsyncWrite(m_socket, m_http_content.c_str(), m_http_content.size(),
+		CARPHTTPSOCKET_AsyncWrite(m_socket, m_http_content.c_str(), m_http_content.size(),
 			std::bind(HttpSender_HandleSend, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 
 		return;
@@ -243,7 +245,7 @@ void HttpSender::SendFile(const char* path, const char* content_type, bool for_d
 	m_http_content += "\r\n"; // ending code
 
 	// send
-	SOCKETHELPER_AsyncWrite(m_socket, m_http_content.c_str(), m_http_content.size(),
+	CARPHTTPSOCKET_AsyncWrite(m_socket, m_http_content.c_str(), m_http_content.size(),
 		std::bind(HttpSender_HandleSend, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 }
 

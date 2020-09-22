@@ -1,15 +1,14 @@
 
 #include "HttpServer.h"
 #include "HttpReceiver.h"
-
 #include "HttpSender.h"
 
-#include "ALittle/LibCommon/Helper/HttpHelper.h"
-#include "ALittle/LibCommon/Helper/FileHelper.h"
+#define CARP_HAS_SSL
+#include "Carp/carp_http.hpp"
+
 #include "ALittle/LibCommon/Helper/LogHelper.h"
 #include "ALittle/LibCommon/Helper/StringHelper.h"
 
-#include "ALittle/LibServer/Tool/SocketWrap.h"
 #include "ALittle/LibServer/ServerSystem/ServerSchedule.h"
 
 namespace ALittle
@@ -181,7 +180,7 @@ void HttpServer::Close()
 	asio::error_code ec;
 	SocketReceiverMap::iterator receiver_it, receiver_end = m_receiver_socket_map.end();
 	for (receiver_it = m_receiver_socket_map.begin(); receiver_it != receiver_end; ++receiver_it)
-		SOCKETHELPER_Close(receiver_it->first);
+		CARPHTTPSOCKET_Close(receiver_it->first);
 
 	m_receiver_socket_map.clear();
 	m_sender_socket_map.clear();
@@ -189,11 +188,11 @@ void HttpServer::Close()
 	ALITTLE_SYSTEM("HttpServer stop succeed.");
 }
 
-void HttpServer::CloseClient(ALittleSocketPtr socket)
+void HttpServer::CloseClient(CarpHttpSocketPtr socket)
 {
 	if (!socket) return;
 	// close client
-	SOCKETHELPER_Close(socket);
+	CARPHTTPSOCKET_Close(socket);
 	
 	// remove receiver
 	m_receiver_socket_map.erase(socket);
@@ -207,7 +206,7 @@ void HttpServer::CloseClient(ALittleSocketPtr socket)
 	// ALITTLE_INFO("HttpServer ##CLOSE, socket count : " << m_receiver_socket_map.size());
 }
 
-void HttpServer::ExecuteRemoveCallBack(ALittleSocketPtr socket)
+void HttpServer::ExecuteRemoveCallBack(CarpHttpSocketPtr socket)
 {
 	// if socket is not exist, than is close by self, no need to invoke callback
 	SocketSenderMap::iterator it = m_sender_socket_map.find(socket);
@@ -226,13 +225,13 @@ void HttpServer::NextAccept(int error_count)
 	if (!m_acceptor) return;
 
 	// create socket
-	ALittleSocketPtr socket = ALittleSocketPtr(new ALittleSocket(m_is_ssl, &m_schedule->GetIOService(), &m_context));
+	CarpHttpSocketPtr socket = CarpHttpSocketPtr(new CarpHttpSocket(m_is_ssl, &m_schedule->GetIOService(), &m_context));
 	
 	// bind callback
-	SOCKETHELPER_AsyncAccept(socket, m_acceptor, std::bind(&HttpServer::HandleAccept, this->shared_from_this(), socket, std::placeholders::_1, error_count));
+	CARPHTTPSOCKET_AsyncAccept(socket, m_acceptor, std::bind(&HttpServer::HandleAccept, this->shared_from_this(), socket, std::placeholders::_1, error_count));
 }
 
-void HttpServer::HandleAccept(ALittleSocketPtr socket, const asio::error_code& ec, int error_count)
+void HttpServer::HandleAccept(CarpHttpSocketPtr socket, const asio::error_code& ec, int error_count)
 {
 	if (ec)
 	{
@@ -245,7 +244,7 @@ void HttpServer::HandleAccept(ALittleSocketPtr socket, const asio::error_code& e
 	}
 
 	// set no delay
-	SOCKETHELPER_SetNoDelay(socket);
+	CARPHTTPSOCKET_SetNoDelay(socket);
 	if (socket->ssl_socket)
 		socket->ssl_socket->async_handshake(asio::ssl::stream<asio::ip::tcp::socket>::server
 			, std::bind(&HttpServer::HandleHandShake, this->shared_from_this(), socket, std::placeholders::_1));
@@ -256,7 +255,7 @@ void HttpServer::HandleAccept(ALittleSocketPtr socket, const asio::error_code& e
 	NextAccept(0);
 }
 
-void HttpServer::HandleHandShake(ALittleSocketPtr socket, const asio::error_code& ec)
+void HttpServer::HandleHandShake(CarpHttpSocketPtr socket, const asio::error_code& ec)
 {
 	if (ec)
 	{

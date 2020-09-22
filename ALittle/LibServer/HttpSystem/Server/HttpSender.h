@@ -6,6 +6,9 @@
 #include <string>
 #include <vector>
 
+class CarpHttpSocket;
+typedef std::shared_ptr<CarpHttpSocket> CarpHttpSocketPtr;
+
 namespace ALittle
 {
 
@@ -21,9 +24,6 @@ class HttpServer;
 typedef std::shared_ptr<HttpServer> HttpServerPtr;
 typedef std::weak_ptr<HttpServer> HttpServerWeakPtr;
 
-class ALittleSocket;
-typedef std::shared_ptr<ALittleSocket> ALittleSocketPtr;
-
 class FileCacheHelper;
 class ServerSchedule;
 
@@ -33,7 +33,7 @@ public:
 	friend HttpServer;
 
 public:
-	HttpSender(ALittleSocketPtr socket, HttpServerPtr server, ServerSchedule* schedule);
+	HttpSender(CarpHttpSocketPtr socket, HttpServerPtr server, ServerSchedule* schedule);
 	~HttpSender();
 
 public:
@@ -70,10 +70,10 @@ public:
 
 public:
 	void* GetSocket() const { return m_socket.get(); }
-	ALittleSocketPtr GetSocketPtr() const { return m_socket; }
+	CarpHttpSocketPtr GetSocketPtr() const { return m_socket; }
 
 private:
-	ALittleSocketPtr m_socket;			// socket
+	CarpHttpSocketPtr m_socket;			// socket
 
 	std::string m_remote_ip;			// ip dress
 	int m_remote_port;

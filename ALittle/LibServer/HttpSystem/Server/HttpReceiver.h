@@ -8,6 +8,9 @@
 
 #include <memory>
 
+class CarpHttpSocket;
+typedef std::shared_ptr<CarpHttpSocket> CarpHttpSocketPtr;
+
 namespace ALittle
 {
 
@@ -23,9 +26,6 @@ class HttpServer;
 typedef std::shared_ptr<HttpServer> HttpServerPtr;
 typedef std::weak_ptr<HttpServer> HttpServerWeakPtr;
 
-class ALittleSocket;
-typedef std::shared_ptr<ALittleSocket> ALittleSocketPtr;
-
 #define HTTP_HEAD_BUFFER_SIZE 1024
 
 class HttpReceiver : public std::enable_shared_from_this<HttpReceiver>
@@ -34,7 +34,7 @@ public:
 	friend HttpServer;
 
 public:
-	HttpReceiver(ALittleSocketPtr socket, HttpServerPtr server);
+	HttpReceiver(CarpHttpSocketPtr socket, HttpServerPtr server);
 	~HttpReceiver();
 
 private:
@@ -70,7 +70,7 @@ public:
 	HttpSenderPtr m_sender;		// sender
 
 private:
-	ALittleSocketPtr m_socket;			// socket
+	CarpHttpSocketPtr m_socket;			// socket
 	HttpServerWeakPtr m_server_system;	// server that create this receiver
 
 private:

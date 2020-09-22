@@ -6,10 +6,12 @@
 #include <asio/ssl.hpp>
 
 #include <memory>
-#include <functional>
 
 #include <map>
 #include <string>
+
+class CarpHttpSocket;
+typedef std::shared_ptr<CarpHttpSocket> CarpHttpSocketPtr;
 
 namespace ALittle
 {
@@ -25,9 +27,6 @@ typedef std::weak_ptr<HttpSender> HttpSenderWeakPtr;
 class HttpServer;
 typedef std::shared_ptr<HttpServer> HttpServerPtr;
 typedef std::weak_ptr<HttpServer> HttpServerWeakPtr;
-
-class ALittleSocket;
-typedef std::shared_ptr<ALittleSocket> ALittleSocketPtr;
 
 typedef std::shared_ptr<asio::ip::tcp::acceptor> AcceptorPtr;
 
@@ -64,21 +63,21 @@ public:
 	void Close();
 
 private:
-	void CloseClient(ALittleSocketPtr socket);
+	void CloseClient(CarpHttpSocketPtr socket);
 
-	void ExecuteRemoveCallBack(ALittleSocketPtr socket);
+	void ExecuteRemoveCallBack(CarpHttpSocketPtr socket);
 	
 private:
 	void NextAccept(int error_count);
 
-	void HandleAccept(ALittleSocketPtr socket, const asio::error_code& ec, int error_count);
-	void HandleHandShake(ALittleSocketPtr socket, const asio::error_code& ec);
+	void HandleAccept(CarpHttpSocketPtr socket, const asio::error_code& ec, int error_count);
+	void HandleHandShake(CarpHttpSocketPtr socket, const asio::error_code& ec);
 
 public:
 	// receive container
-	typedef std::map<ALittleSocketPtr, HttpReceiverPtr> SocketReceiverMap;
+	typedef std::map<CarpHttpSocketPtr, HttpReceiverPtr> SocketReceiverMap;
 	// sender container
-	typedef std::map<ALittleSocketPtr, HttpSenderPtr> SocketSenderMap;
+	typedef std::map<CarpHttpSocketPtr, HttpSenderPtr> SocketSenderMap;
 
 private:
 	SocketReceiverMap m_receiver_socket_map;

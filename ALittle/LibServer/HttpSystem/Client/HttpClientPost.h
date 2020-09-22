@@ -1,7 +1,8 @@
 #ifndef _ALITTLE_HTTPCLIENTPOST_H_
 #define _ALITTLE_HTTPCLIENTPOST_H_
 
-#include "ALittle/LibServer/Tool/SocketWrap.h"
+#define CARP_HAS_SSL
+#include "Carp/carp_http.hpp"
 #include "ALittle/LibCommon/Helper/HttpHelper.h"
 
 #include <string>
@@ -90,7 +91,7 @@ private:
 	std::string m_chunk_size;			// save for chunk size string
 	int m_response_size;				// size of response
 
-	ALittleSocketPtr m_socket;			// Socket
+	CarpHttpSocketPtr m_socket;			// Socket
 	ResolverPtr m_resolver;				// reslover
 	asio::io_service* m_io_service;		// io_service
 

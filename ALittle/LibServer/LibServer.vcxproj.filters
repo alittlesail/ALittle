@@ -45,9 +45,6 @@
     <ClInclude Include="Tool\FileCacheSystem.h">
       <Filter>Tool</Filter>
     </ClInclude>
-    <ClInclude Include="Tool\SocketWrap.h">
-      <Filter>Tool</Filter>
-    </ClInclude>
     <ClInclude Include="ServerSystem\ServerSystem.h">
       <Filter>ServerSystem</Filter>
     </ClInclude>

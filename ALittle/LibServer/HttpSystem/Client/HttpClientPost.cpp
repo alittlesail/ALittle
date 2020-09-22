@@ -62,7 +62,7 @@ void HttpClientPost::SendRequest(const std::string& url
 		return;
 	}
 
-	m_socket = ALittleSocketPtr(new ALittleSocket(is_ssl, m_io_service, domain));
+	m_socket = CarpHttpSocketPtr(new CarpHttpSocket(is_ssl, m_io_service, domain));
 	
 	// get ip dress by domain
 	m_resolver = ResolverPtr(new asio::ip::tcp::resolver(*m_io_service));
@@ -100,7 +100,7 @@ void HttpClientPost::HandleQueryIPByDemain(	const asio::error_code& ec
 
 	// start connect
 	asio::ip::tcp::resolver::iterator endpoint = endpoint_iterator;
-	SOCKETHELPER_AsyncConnect(m_socket, endpoint
+	CARPHTTPSOCKET_AsyncConnect(m_socket, endpoint
 		, std::bind(&HttpClientPost::HandleSocketConnect, this->shared_from_this()
 		, std::placeholders::_1, ++endpoint_iterator));
 }
@@ -118,7 +118,7 @@ void HttpClientPost::HandleQueryIPByDemainAgain(const asio::error_code& ec , asi
 
 	// start connect
 	asio::ip::tcp::resolver::iterator endpoint = endpoint_iterator;
-	SOCKETHELPER_AsyncConnect(m_socket, endpoint
+	CARPHTTPSOCKET_AsyncConnect(m_socket, endpoint
 		, std::bind(&HttpClientPost::HandleSocketConnect, this->shared_from_this()
 		, std::placeholders::_1, ++endpoint_iterator));
 }
@@ -235,7 +235,7 @@ void HttpClientPost::HandleSocketConnect(const asio::error_code& ec
 {
 	if (!ec)
 	{
-		SOCKETHELPER_AfterAsyncConnect(m_socket);
+		CARPHTTPSOCKET_AfterAsyncConnect(m_socket);
 		if (m_socket->ssl_socket)
 			m_socket->ssl_socket->async_handshake(asio::ssl::stream<asio::ip::tcp::socket>::client
 				, std::bind(&HttpClientPost::HandleSSLHandShake, this->shared_from_this(), std::placeholders::_1));
@@ -245,7 +245,7 @@ void HttpClientPost::HandleSocketConnect(const asio::error_code& ec
 	else if (endpoint_iterator != asio::ip::tcp::resolver::iterator())  
 	{  
 		asio::ip::tcp::resolver::iterator endpoint = endpoint_iterator;
-		SOCKETHELPER_AsyncConnect(m_socket, endpoint
+		CARPHTTPSOCKET_AsyncConnect(m_socket, endpoint
 			, std::bind(&HttpClientPost::HandleSocketConnect, this->shared_from_this()
 			, std::placeholders::_1, ++endpoint_iterator));
 	}  
@@ -272,7 +272,7 @@ void HttpClientPost::HandleSocketSendRequestHead(const asio::error_code& ec, std
 	if (m_request_param.size())
 	{
 		// send param
-		SOCKETHELPER_AsyncWrite(m_socket, m_request_param.c_str(), m_request_param.size()
+		CARPHTTPSOCKET_AsyncWrite(m_socket, m_request_param.c_str(), m_request_param.size()
 			, std::bind(&HttpClientPost::HandleSocketSendRequestParam, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 		return;
 	}
@@ -280,7 +280,7 @@ void HttpClientPost::HandleSocketSendRequestHead(const asio::error_code& ec, std
 	if (m_request_file_begin.size())
 	{
 		// send file begin param
-		SOCKETHELPER_AsyncWrite(m_socket, m_request_file_begin.c_str(), m_request_file_begin.size()
+		CARPHTTPSOCKET_AsyncWrite(m_socket, m_request_file_begin.c_str(), m_request_file_begin.size()
 			, std::bind(&HttpClientPost::HandleSocketSendRequestFileBegin, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 		return;
 	}
@@ -300,13 +300,13 @@ void HttpClientPost::HandleSocketSendRequestParam(const asio::error_code& ec, st
 	if (m_request_file_begin.size())
 	{
 		// send file begin param
-		SOCKETHELPER_AsyncWrite(m_socket, m_request_file_begin.c_str(), m_request_file_begin.size()
+		CARPHTTPSOCKET_AsyncWrite(m_socket, m_request_file_begin.c_str(), m_request_file_begin.size()
 			, std::bind(&HttpClientPost::HandleSocketSendRequestFileBegin, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 		return;
 	}
 
 	// send end param
-	SOCKETHELPER_AsyncWrite(m_socket, m_request_file_end.c_str(), m_request_file_end.size()
+	CARPHTTPSOCKET_AsyncWrite(m_socket, m_request_file_end.c_str(), m_request_file_end.size()
 		, std::bind(&HttpClientPost::HandleSocketSendRequestFileEnd, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 }
 
@@ -334,7 +334,7 @@ void HttpClientPost::HandleSocketSendRequestFileBegin(const asio::error_code& ec
 	if (read_size > 0)
 	{
 		// send file content
-		SOCKETHELPER_AsyncWrite(m_socket, m_http_buffer, read_size
+		CARPHTTPSOCKET_AsyncWrite(m_socket, m_http_buffer, read_size
 			, std::bind(&HttpClientPost::HandleSocketSendRequestFile, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 	}
 	else
@@ -342,7 +342,7 @@ void HttpClientPost::HandleSocketSendRequestFileBegin(const asio::error_code& ec
 		if (m_file) { fclose(m_file); m_file = 0; }
 		
 		// send end param
-		SOCKETHELPER_AsyncWrite(m_socket, m_request_file_end.c_str(), m_request_file_end.size()
+		CARPHTTPSOCKET_AsyncWrite(m_socket, m_request_file_end.c_str(), m_request_file_end.size()
 			, std::bind(&HttpClientPost::HandleSocketSendRequestFileEnd, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 	}
 }
@@ -371,7 +371,7 @@ void HttpClientPost::HandleSocketSendRequestFile(const asio::error_code& ec, std
 	if (read_size > 0)
 	{
 		// send file content
-		SOCKETHELPER_AsyncWrite(m_socket, m_http_buffer, read_size
+		CARPHTTPSOCKET_AsyncWrite(m_socket, m_http_buffer, read_size
 			, std::bind(&HttpClientPost::HandleSocketSendRequestFile, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 	}
 	else
@@ -379,7 +379,7 @@ void HttpClientPost::HandleSocketSendRequestFile(const asio::error_code& ec, std
 		if (m_file) { fclose(m_file); m_file = 0; }
 		
 		// send end param
-		SOCKETHELPER_AsyncWrite(m_socket, m_request_file_end.c_str(), m_request_file_end.size()
+		CARPHTTPSOCKET_AsyncWrite(m_socket, m_request_file_end.c_str(), m_request_file_end.size()
 			, std::bind(&HttpClientPost::HandleSocketSendRequestFileEnd, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 	}
 }
@@ -396,7 +396,7 @@ void HttpClientPost::HandleSocketSendRequestFileEnd(const asio::error_code& ec, 
 	}
 
 	// start receive http response
-	SOCKETHELPER_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
+	CARPHTTPSOCKET_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
 		, std::bind(&HttpClientPost::HandleResponseHead, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 }
 
@@ -478,7 +478,7 @@ void HttpClientPost::HandleResponseHead(const asio::error_code& ec, std::size_t 
 	else
 	{
 		// read next bytes
-		SOCKETHELPER_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
+		CARPHTTPSOCKET_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
 			, std::bind(&HttpClientPost::HandleResponseHead, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 	}
 }
@@ -508,7 +508,7 @@ void HttpClientPost::HandleResponseByContentLength(const asio::error_code& ec, s
 	}
 
 	// read next bytes
-	SOCKETHELPER_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
+	CARPHTTPSOCKET_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
 		, std::bind(&HttpClientPost::HandleResponseByContentLength, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2, 0));
 }
 
@@ -527,7 +527,7 @@ void HttpClientPost::HandleResponseByDataFollow(const asio::error_code& ec, std:
 	m_response.append(m_http_buffer + buffer_offset, actual_size);
 
 	// read next bytes
-	SOCKETHELPER_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
+	CARPHTTPSOCKET_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
 		, std::bind(&HttpClientPost::HandleResponseByDataFollow, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2, 0));
 }
 
@@ -564,7 +564,7 @@ void HttpClientPost::HandleResponseByChunk(const asio::error_code& ec, std::size
 				return;
 			}
 
-			SOCKETHELPER_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
+			CARPHTTPSOCKET_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
 				, std::bind(&HttpClientPost::HandleResponseByChunk, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2, 0));
 			return;
 		}
@@ -575,7 +575,7 @@ void HttpClientPost::HandleResponseByChunk(const asio::error_code& ec, std::size
 			if (actual_size - add_chunk_size > 0)
 				HandleResponseByChunk(ec, actual_size - add_chunk_size, buffer_offset + add_chunk_size);
 			else
-				SOCKETHELPER_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
+				CARPHTTPSOCKET_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
 					, std::bind(&HttpClientPost::HandleResponseByChunk, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2, 0));
 			return;
 		}
@@ -612,7 +612,7 @@ void HttpClientPost::HandleResponseByChunk(const asio::error_code& ec, std::size
 		if (static_cast<int>(actual_size) - add_chunk_size > 0)
 			HandleResponseByChunk(ec, actual_size - add_chunk_size, buffer_offset + add_chunk_size);
 		else
-			SOCKETHELPER_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
+			CARPHTTPSOCKET_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
 				, std::bind(&HttpClientPost::HandleResponseByChunk, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2, 0));
 		return;
 	}
@@ -622,7 +622,7 @@ void HttpClientPost::HandleResponseByChunk(const asio::error_code& ec, std::size
 		m_response.append(m_http_buffer + buffer_offset, actual_size);
 
 		m_response_size -= static_cast<int>(actual_size);
-		SOCKETHELPER_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
+		CARPHTTPSOCKET_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
 			, std::bind(&HttpClientPost::HandleResponseByChunk, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2, 0));
 		return;
 	}
@@ -647,7 +647,7 @@ void HttpClientPost::HandleSSLHandShake(const asio::error_code& ec)
 		return;
 	}
 	// connect succeed and send request
-	SOCKETHELPER_AsyncWrite(m_socket, m_request_head.c_str(), m_request_head.size()
+	CARPHTTPSOCKET_AsyncWrite(m_socket, m_request_head.c_str(), m_request_head.size()
 		, std::bind(&HttpClientPost::HandleSocketSendRequestHead, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2)); 
 }
 

@@ -34,7 +34,6 @@
     <ClInclude Include="ServerSystem\ServerSchedule.h" />
     <ClInclude Include="ServerSystem\ServerSystem.h" />
     <ClInclude Include="Tool\FileCacheSystem.h" />
-    <ClInclude Include="Tool\SocketWrap.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClientSystem\ClientReceiver.cpp" />

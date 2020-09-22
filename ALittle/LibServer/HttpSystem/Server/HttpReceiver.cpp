@@ -2,21 +2,20 @@
 #include "HttpReceiver.h"
 #include "HttpServer.h"
 #include "HttpSender.h"
+#define CARP_HAS_SSL
+#include "Carp/carp_http.hpp"
 
 #include "ALittle/LibCommon/Helper/HttpHelper.h"
-#include "ALittle/LibCommon/Helper/FileHelper.h"
 #include "ALittle/LibCommon/Helper/LogHelper.h"
 #include "ALittle/LibCommon/Helper/TimeHelper.h"
 #include "ALittle/LibCommon/Helper/StringHelper.h"
-
-#include "ALittle/LibServer/Tool/SocketWrap.h"
 
 namespace ALittle
 {
 
 #define HTTP_HEAD_BUFFER_SIZE_MAX 10240000
 
-HttpReceiver::HttpReceiver(ALittleSocketPtr socket, HttpServerPtr server)
+HttpReceiver::HttpReceiver(CarpHttpSocketPtr socket, HttpServerPtr server)
 : m_receive_time(0), m_socket(socket), m_server_system(server)
 , m_last_size_of_http_buffer(0), m_boundary_or_file(false), m_receive_size(0)
 {
@@ -37,7 +36,7 @@ void HttpReceiver::Clear()
 
 void HttpReceiver::JustWait()
 {
-	SOCKETHELPER_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
+	CARPHTTPSOCKET_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
 		, std::bind(&HttpReceiver::HandleJustWait, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 }
 
@@ -58,7 +57,7 @@ void HttpReceiver::NextRead()
 	m_receive_time = TimeHelper::GetCurTime();
 
 	// read next bytes
-	SOCKETHELPER_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
+	CARPHTTPSOCKET_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
 		, std::bind(&HttpReceiver::HandleRead, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 }
 
@@ -242,7 +241,7 @@ void HttpReceiver::NextReadFile()
 	// update to current time
 	m_receive_time = TimeHelper::GetCurTime();
 
-	SOCKETHELPER_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
+	CARPHTTPSOCKET_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
 		, std::bind(&HttpReceiver::HandleReadFile, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 }
 
@@ -362,7 +361,7 @@ void HttpReceiver::NextReadPost()
 	// update to current time
 	m_receive_time = TimeHelper::GetCurTime();
 
-	SOCKETHELPER_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
+	CARPHTTPSOCKET_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
 		, std::bind(&HttpReceiver::HandleReadPost, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 }
 
@@ -405,7 +404,7 @@ void HttpReceiver::Close()
 	// clear buffer, reset status
 	Clear();
 	// save socket, this is import!(prevent count of smart point desc to 0)
-	ALittleSocketPtr socket = m_socket;
+	CarpHttpSocketPtr socket = m_socket;
 	// remove from server
 	HttpServerPtr server_system = m_server_system.lock();
 	if (server_system) server_system->ExecuteRemoveCallBack(socket);

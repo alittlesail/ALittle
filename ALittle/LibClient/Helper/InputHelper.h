@@ -17,15 +17,9 @@ public:
 	* IME
 	*/
 	static const char* GetIMESelectList();
-	static void SetIMSType(const char* type);
 	static void SetIMSPos(int x, int y);
 	static void SetIMSRect(int x, int y, int width, int height);
 	static SDL_Rect s_ime_rect;
-
-	/**
-	* SetSoftInputMode
-	*/
-	static void SetSoftInputMode(const char* mode);
 
 	/**
 	* Clipboard

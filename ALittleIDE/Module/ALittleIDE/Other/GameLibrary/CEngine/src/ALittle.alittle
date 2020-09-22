@@ -290,7 +290,6 @@ public static __ALITTLEAPI_AudioChunkStopedEvent(int id)
 //////////////////////////////////////////////////////////////////////////////////////
 public static __ALITTLEAPI_NetworkChanged(int net_type)
 {
-    ALittle.System_ClearAIFamily();
     A_OtherSystem.HandleNetworkChanged(net_type);
 }
 

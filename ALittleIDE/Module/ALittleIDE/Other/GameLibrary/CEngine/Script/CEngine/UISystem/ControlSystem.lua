@@ -174,14 +174,6 @@ function ALittle.ControlSystem:StopChunk(channel)
 	A_AudioSystem:StopChunk(channel)
 end
 
-function ALittle.ControlSystem:StartMusic(file_path, loop)
-	return A_AudioSystem:StartMusic(self._sound_path .. file_path, loop)
-end
-
-function ALittle.ControlSystem:StopMusic()
-	A_AudioSystem:StopMusic()
-end
-
 function ALittle.ControlSystem:SetTexture(object, name)
 	self._texture_mgr:SetTexture(object, name)
 end

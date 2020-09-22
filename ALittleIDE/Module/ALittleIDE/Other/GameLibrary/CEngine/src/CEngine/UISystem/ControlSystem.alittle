@@ -284,14 +284,6 @@ public class ControlSystem
     {
         A_AudioSystem.StopChunk(channel);
     }
-    public fun StartMusic(string file_path, int loop) : bool
-    {
-        return A_AudioSystem.StartMusic(this._sound_path .. file_path, loop);
-    }
-    public fun StopMusic()
-    {
-        A_AudioSystem.StopMusic();
-    }
     
     ////////////////////////////////////////////////////////////////-
     public fun SetTexture(DisplayObject object, string name)

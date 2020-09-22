@@ -229,7 +229,6 @@ function _G.__ALITTLEAPI_AudioChunkStopedEvent(id)
 end
 
 function _G.__ALITTLEAPI_NetworkChanged(net_type)
-	ALittle.System_ClearAIFamily()
 	A_OtherSystem:HandleNetworkChanged(net_type)
 end
 

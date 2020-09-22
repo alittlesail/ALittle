@@ -20,7 +20,7 @@ int FontHelper::CutTextByWidth(const char* content, int width, carp_font_t* font
 	int len = (int)strlen(content);
 	if (len == 0) return 0;
 	
-	int acc_width = carp_font_italic_extra_wdith(font);
+	int acc_width = carp_font_italic_extra_width(font);
 	unsigned int pre_char = 0;
 	int char_count = 0;
 	while (len > 0)
@@ -57,7 +57,7 @@ int FontHelper::CutTextWidth(const char* content, carp_font_t* font)
 	int len = (int)strlen(content);
 	if (len == 0) return 0;
 
-	int acc_width = carp_font_italic_extra_wdith(font);
+	int acc_width = carp_font_italic_extra_width(font);
 	unsigned int pre_char = 0;
 	while (len > 0)
 	{

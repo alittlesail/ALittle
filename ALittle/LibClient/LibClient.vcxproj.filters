@@ -78,9 +78,6 @@
     <ClInclude Include="Helper\TextureHelper.h">
       <Filter>Helper</Filter>
     </ClInclude>
-    <ClInclude Include="Helper\BitHelper.h">
-      <Filter>Helper</Filter>
-    </ClInclude>
     <ClInclude Include="Helper\FileHelperEx.h">
       <Filter>Helper</Filter>
     </ClInclude>
@@ -249,9 +246,6 @@
       <Filter>Helper</Filter>
     </ClCompile>
     <ClCompile Include="Helper\TextureHelper.cpp">
-      <Filter>Helper</Filter>
-    </ClCompile>
-    <ClCompile Include="Helper\BitHelper.cpp">
       <Filter>Helper</Filter>
     </ClCompile>
     <ClCompile Include="Helper\FileHelperEx.cpp">

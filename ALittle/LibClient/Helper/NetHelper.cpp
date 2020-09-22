@@ -1,8 +1,6 @@
 
 #include "NetHelper.h"
 
-#include "BitHelper.h"
-
 #include "ALittle/LibCommon/Helper/LogHelper.h"
 
 #include "ALittle/LibClient/Platform/Android/AndroidSystem.h"

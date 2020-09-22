@@ -9,7 +9,8 @@ extern "C" {
 
 #include "ALittle/LibClient/RenderSystem/DisplaySystem.h"
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"
-#include "ALittle/LibClient/Helper/FontHelper.h"
+
+#include "Carp/carp_font.hpp"
 
 namespace ALittle
 {
@@ -349,7 +350,7 @@ void TextEdit::DeleteTextImpl(LineCharInfoList::iterator line_begin_it, CharInfo
 	if (free_line_list.size())
 	{
 		// get line gap + line height
-		int line_skip = FontHelper::GetFontHeight(m_font) + FontHelper::GetFontLineGap(m_font);
+		int line_skip = m_font->GetLineSkip();
 
 		// get last line height
 		LineCharInfoList::iterator last_line = m_linechar_list.end();
@@ -457,7 +458,7 @@ void TextEdit::InsertTextImpl(const char* text)
 	if (free_line_list.size())
 	{
 		// get line gap + line height
-		int line_skip = FontHelper::GetFontHeight(m_font) + FontHelper::GetFontLineGap(m_font);
+		int line_skip = m_font->GetLineSkip();
 
 		// get last line height
 		LineCharInfoList::iterator last_line = m_linechar_list.end();
@@ -489,7 +490,7 @@ void TextEdit::InsertTextImpl(const char* text)
 void TextEdit::InsertTextUtil(const char* text, LineCharInfoList::iterator* line_begin_it, CharInfoList::iterator* begin_it)
 {
 	// get line gap + line height
-	int line_skip = FontHelper::GetFontHeight(m_font) + FontHelper::GetFontLineGap(m_font);
+	int line_skip = m_font->GetLineSkip();
 
 	const char* str = text;
 	std::string current_char = "";
@@ -642,7 +643,7 @@ void TextEdit::InsertTextUtil(const char* text, LineCharInfoList::iterator* line
 void TextEdit::GetCharSize(const char* text, int& width, int& height)
 {
 	// get font height
-	height = FontHelper::GetFontHeight(m_font);
+	height = m_font->GetFontHeight();
 
 	// find text height
 	std::map<std::string, int>::iterator it = m_width_map.find(text);
@@ -652,7 +653,7 @@ void TextEdit::GetCharSize(const char* text, int& width, int& height)
 		return;
 	}
 
-	width = FontHelper::CutTextWidth(text, m_font);
+	width = m_font->CutTextWidth(text);
 	// save size
 	m_width_map[text] = width;
 }

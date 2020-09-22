@@ -3,7 +3,7 @@
 #define _ALITTLE_DISPLAYSYSTEM_H_
 #include "ALittle/LibClient/Tool/LocalFile.h"
 
-typedef struct _carp_font_t carp_font_t;
+class CarpFont;
 
 #include <string>
 #include <map>
@@ -103,8 +103,12 @@ public:
 	 * @param font_size
 	 * @return font object
 	 */
-	carp_font_t* GetFont(const char* font_path, unsigned int font_style, unsigned int font_size);
-	LocalFile* GetFontFile(const std::string& font_path);
+	CarpFont* GetFont(const char* font_path, unsigned int font_style, unsigned int font_size);
+
+	SDL_Surface* CreateSurface(CarpFont* font, const char* content);
+	
+private:
+	CarpFont* LoadFont(const std::string& file, unsigned int font_size, unsigned int font_style);
 
 	/**
 	 * release fonts
@@ -113,7 +117,7 @@ public:
 
 private:
 	// font size map font object
-	typedef std::map<unsigned int, carp_font_t*> TTF_FontSizeMap;
+	typedef std::map<unsigned int, CarpFont*> TTF_FontSizeMap;
 	// font style map font object
 	typedef std::map<unsigned int, TTF_FontSizeMap> TTF_FontStyleMap;
 	// font path map TTF_FontMap

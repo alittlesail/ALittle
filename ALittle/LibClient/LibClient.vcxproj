@@ -13,7 +13,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\Carp\carp_array.h" />
     <ClInclude Include="..\..\Carp\carp_file_helper.hpp" />
-    <ClInclude Include="..\..\Carp\carp_font.h" />
+    <ClInclude Include="..\..\Carp\carp_font.hpp" />
     <ClInclude Include="..\..\Carp\carp_message.hpp" />
     <ClInclude Include="..\..\Carp\carp_mixer.h" />
     <ClInclude Include="..\..\Carp\carp_http.hpp" />
@@ -24,7 +24,6 @@
     <ClInclude Include="..\..\Carp\carp_win_ime.h" />
     <ClInclude Include="AudioSystem\AudioSystem.h" />
     <ClInclude Include="Helper\FileHelperEx.h" />
-    <ClInclude Include="Helper\FontHelper.h" />
     <ClInclude Include="Helper\InputHelper.h" />
     <ClInclude Include="Helper\NetHelper.h" />
     <ClInclude Include="Helper\SystemHelper.h" />
@@ -72,7 +71,6 @@
   <ItemGroup>
     <ClCompile Include="AudioSystem\AudioSystem.cpp" />
     <ClCompile Include="Helper\FileHelperEx.cpp" />
-    <ClCompile Include="Helper\FontHelper.cpp" />
     <ClCompile Include="Helper\InputHelper.cpp" />
     <ClCompile Include="Helper\NetHelper.cpp" />
     <ClCompile Include="Helper\SystemHelper.cpp" />

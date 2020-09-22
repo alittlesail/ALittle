@@ -9,7 +9,7 @@ extern "C" {
 
 #include "ALittle/LibClient/RenderSystem/DisplaySystem.h"
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"
-#include "ALittle/LibClient/Helper/FontHelper.h"
+#include "Carp/carp_font.hpp"
 
 namespace ALittle
 {
@@ -140,19 +140,19 @@ void TextInput::DeleteTextImpl(CharInfoList::iterator begin_it, CharInfoList::it
 	// Bridging the cursor to the end of the characters
 	int width_1 = 0;
 	if (m_password_mode)
-		width_1 = FontHelper::CutTextWidth("*a", m_font);
+		width_1 = m_font->CutTextWidth("*a");
 	else
-		width_1 = FontHelper::CutTextWidth((calc_it->str + "a").c_str(), m_font);
+		width_1 = m_font->CutTextWidth((calc_it->str + "a").c_str());
 	int width_2 = 0;
 	if (m_password_mode)
 	{
 		if (delete_end->str.size())
-			width_2 = FontHelper::CutTextWidth("**a", m_font);
+			width_2 = m_font->CutTextWidth("**a");
 		else
-			width_2 = FontHelper::CutTextWidth("*a", m_font);
+			width_2 = m_font->CutTextWidth("*a");
 	}
 	else
-		width_2 = FontHelper::CutTextWidth((calc_it->str + delete_end->str + "a").c_str(), m_font);
+		width_2 = m_font->CutTextWidth((calc_it->str + delete_end->str + "a").c_str());
 	int offset_width = (width_2 - width_1 + acc_width) - delete_end->acc_width;
 	// Recalculate, from the current cursor back until the end, the width of the characters
 	for (CharInfoList::iterator it = delete_end; it != m_char_list.end(); ++it)
@@ -196,12 +196,12 @@ void TextInput::InsertTextImpl(const char* text)
 			m_cursor_it->text_index = 0;
 			m_cursor_it->pre_width = 0;
 
-			int width_1 = FontHelper::CutTextWidth("a", m_font);
+			int width_1 = m_font->CutTextWidth("a");
 			int width_2 = 0;
 			if (m_password_mode)
-				width_2 = FontHelper::CutTextWidth("*a", m_font);
+				width_2 = m_font->CutTextWidth("*a");
 			else
-				width_2 = FontHelper::CutTextWidth((calc_it->str + "a").c_str(), m_font);
+				width_2 = m_font->CutTextWidth((calc_it->str + "a").c_str());
 			m_cursor_it->acc_width = width_2 - width_1;
 		}
 		else
@@ -212,14 +212,14 @@ void TextInput::InsertTextImpl(const char* text)
 			
 			int width_1 = 0;
 			if (m_password_mode)
-				width_1 = FontHelper::CutTextWidth("*a", m_font);
+				width_1 = m_font->CutTextWidth("*a");
 			else
-				width_1 = FontHelper::CutTextWidth((calc_it->str + "a").c_str(), m_font);
+				width_1 = m_font->CutTextWidth((calc_it->str + "a").c_str());
 			int width_2 = 0;
 			if (m_password_mode)
-				width_2 = FontHelper::CutTextWidth("**a", m_font);
+				width_2 = m_font->CutTextWidth("**a");
 			else
-				width_2 = FontHelper::CutTextWidth((calc_it->str + m_cursor_it->str + "a").c_str(), m_font);
+				width_2 = m_font->CutTextWidth((calc_it->str + m_cursor_it->str + "a").c_str());
 			m_cursor_it->acc_width = width_2 - width_1 + calc_it->acc_width;
 		}
 		// The cursor backward step
@@ -232,19 +232,19 @@ void TextInput::InsertTextImpl(const char* text)
 	-- calc_it;
 	int width_1 = 0;
 	if (m_password_mode)
-		width_1 = FontHelper::CutTextWidth("*a", m_font);
+		width_1 = m_font->CutTextWidth("*a");
 	else
-		width_1 = FontHelper::CutTextWidth((calc_it->str + "a").c_str(), m_font);
+		width_1 = m_font->CutTextWidth((calc_it->str + "a").c_str());
 	int width_2 = 0;
 	if (m_password_mode)
 	{
 		if (m_cursor_it->str.size())
-			width_2 = FontHelper::CutTextWidth("**a", m_font);
+			width_2 = m_font->CutTextWidth("**a");
 		else
-			width_2 = FontHelper::CutTextWidth("*a", m_font);
+			width_2 = m_font->CutTextWidth("*a");
 	}
 	else
-		width_2 = FontHelper::CutTextWidth((calc_it->str + m_cursor_it->str + "a").c_str(), m_font);
+		width_2 = m_font->CutTextWidth((calc_it->str + m_cursor_it->str + "a").c_str());
 	// Recalculate, from the current cursor back until the end, the width of the characters
 	int offset_width = width_2 - width_1 + calc_it->acc_width - m_cursor_it->acc_width;
 	for (CharInfoList::iterator it = m_cursor_it; it != m_char_list.end(); ++it)

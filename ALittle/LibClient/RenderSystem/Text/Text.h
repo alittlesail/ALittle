@@ -7,7 +7,7 @@
 #include <string>
 #include <unordered_map>
 
-typedef struct _carp_font_t carp_font_t;
+class CarpFont;
 
 namespace ALittle
 {
@@ -19,7 +19,7 @@ class TextTextureInfo
 public:
 	TextTextureInfo() : font(0), texture(0), ref_count(0) {}
 	Texture* texture;
-	carp_font_t* font;
+	CarpFont* font;
 	int ref_count;
 	std::string text;
 };
@@ -97,15 +97,15 @@ private:
 	unsigned int m_font_style;
 	std::string m_font_path;
 	unsigned int m_font_size;
-	carp_font_t* m_font;
+	CarpFont* m_font;
 
 private:
 	std::vector<int> m_calc_width_list;
 
 private:
-	static TextTextureInfo* CreateTextureInfo(carp_font_t* font, const std::string& text);
+	static TextTextureInfo* CreateTextureInfo(CarpFont* font, const std::string& text);
 	static void ReleaseTextureInfo(TextTextureInfo* info);
-	static std::unordered_map<carp_font_t*, std::unordered_map<std::string, TextTextureInfo*>> s_texture_map;
+	static std::unordered_map<CarpFont*, std::unordered_map<std::string, TextTextureInfo*>> s_texture_map;
 };
 
 } // ALittle

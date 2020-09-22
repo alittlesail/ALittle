@@ -6,7 +6,7 @@
 
 #include <string>
 
-typedef struct _carp_font_t carp_font_t;
+class CarpFont;
 
 namespace ALittle
 {
@@ -96,7 +96,7 @@ private:
 	unsigned int m_font_style;
 	std::string m_font_path;
 	unsigned int m_font_size;
-	carp_font_t* m_font;
+	CarpFont* m_font;
 };
 
 } // ALittle

@@ -6,14 +6,14 @@
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"
 #include "ALittle/LibClient/RenderSystem/Texture/SurfaceTexture.h"
 
-#include "ALittle/LibClient/Helper/FontHelper.h"
+#include "Carp/carp_font.hpp"
 
 namespace ALittle
 {
 
-std::unordered_map<carp_font_t*, std::unordered_map<std::string, TextTextureInfo*>> Text::s_texture_map;
+std::unordered_map<CarpFont*, std::unordered_map<std::string, TextTextureInfo*>> Text::s_texture_map;
 
-TextTextureInfo* Text::CreateTextureInfo(carp_font_t* font, const std::string& text)
+TextTextureInfo* Text::CreateTextureInfo(CarpFont* font, const std::string& text)
 {
 	auto& text_map = s_texture_map[font];
 	auto it = text_map.find(text);
@@ -24,7 +24,7 @@ TextTextureInfo* Text::CreateTextureInfo(carp_font_t* font, const std::string& t
 	}
 
 	// create surface
-	SDL_Surface* surface = FontHelper::CreateSurface(font, text.c_str());
+	SDL_Surface* surface = g_DisplaySystem.CreateSurface(font, text.c_str());
 	if (!surface)
 	{
 		ALITTLE_ERROR("Font Helper create surface failed!");
@@ -93,8 +93,8 @@ unsigned int Text::GetRealWidth()
 	if (m_font == 0) return 0;
 
 	// calc size
-	m_real_width = FontHelper::CutTextWidth(m_text.c_str(), m_font);
-	m_real_height = FontHelper::GetFontHeight(m_font);
+	m_real_width = m_font->CutTextWidth(m_text.c_str());
+	m_real_height = m_font->GetFontHeight();
 
 	m_calc_real_size = true;
 
@@ -114,8 +114,8 @@ unsigned int Text::GetRealHeight()
 	if (m_font == 0) return 0;
 
 	// calc size
-	m_real_width = FontHelper::CutTextWidth(m_text.c_str(), m_font);
-	m_real_height = FontHelper::GetFontHeight(m_font);
+	m_real_width = m_font->CutTextWidth(m_text.c_str());
+	m_real_height = m_font->GetFontHeight();
 
 	m_calc_real_size = true;
 	return m_real_height;
@@ -258,7 +258,7 @@ int Text::GetFontHeight()
 	if (m_font == 0) m_font = g_DisplaySystem.GetFont(m_font_path.c_str(), m_font_style, m_font_size);
 	if (m_font == 0) return 0;
 
-	return FontHelper::GetFontHeight(m_font);
+	return m_font->GetFontHeight();
 }
 
 int Text::CutTextByWidth(float width, const char* content, int max_width)
@@ -267,7 +267,7 @@ int Text::CutTextByWidth(float width, const char* content, int max_width)
 	if (m_font == 0) return 0;
 
 	m_calc_width_list.clear();
-	return FontHelper::CutTextByWidth(content, (int)width, m_font, max_width, &m_calc_width_list);
+	return m_font->CutTextByWidth(content, (int)width, max_width, &m_calc_width_list);
 }
 
 int Text::CalcTextWidth(const char* content)
@@ -275,7 +275,7 @@ int Text::CalcTextWidth(const char* content)
 	if (m_font == 0) m_font = g_DisplaySystem.GetFont(m_font_path.c_str(), m_font_style, m_font_size);
 	if (m_font == 0) return 0;
 
-	return FontHelper::CutTextWidth(content, m_font);
+	return m_font->CutTextWidth(content);
 }
 
 } // ALittle

@@ -12,6 +12,9 @@
 #include "ALittle/LibCommon/Helper/LogHelper.h"
 #include "ALittle/LibCommon/Helper/FileHelper.h"
 
+#define CARP_FONT_IMPL
+#include "Carp/carp_font.hpp"
+
 #include "DisplayObject/DisplayView.h"
 
 #include "Image/Quad.h"
@@ -29,10 +32,6 @@
 #include "Texture/SurfaceTexture.h"
 #include "Texture/TextureLoader.h"
 #include "Texture/TextureCutLoader.h"
-
-#include <SDL.h>
-
-#include "ALittle/LibClient/Helper/FontHelper.h"
 
 namespace ALittle
 {
@@ -74,13 +73,13 @@ void DisplaySystem::Shutdown()
 
 void DisplaySystem::RegisterToScript(ScriptSystem& script_system)
 {
-	lua_State* L = script_system.GetLuaState();
+	lua_State* lstate = script_system.GetLuaState();
 
-	luabridge::getGlobalNamespace(L)
+	luabridge::getGlobalNamespace(lstate)
 		.beginClass<DisplayObject>("__CPPAPIDisplayObject")
 		.endClass();
 
-	luabridge::getGlobalNamespace(L)
+	luabridge::getGlobalNamespace(lstate)
 		.deriveClass<DisplayObjects, DisplayObject>("__CPPAPIDisplayObjects")
 		.addConstructor<void(*)()>()
 		.addFunction("SetScaleX", &DisplayObjects::SetScaleX)
@@ -105,7 +104,7 @@ void DisplaySystem::RegisterToScript(ScriptSystem& script_system)
 		.addFunction("SetClip", &DisplayObjects::SetClip)
 		.endClass();
 
-	luabridge::getGlobalNamespace(L)
+	luabridge::getGlobalNamespace(lstate)
 		.deriveClass<Image, DisplayObject>("__CPPAPIImage")
 		.addConstructor<void(*)()>()
 		.addFunction("SetScaleX", &Image::SetScaleX)
@@ -129,7 +128,7 @@ void DisplaySystem::RegisterToScript(ScriptSystem& script_system)
 		.addFunction("SetClip", &Image::SetClip)
 		.endClass();
 
-	luabridge::getGlobalNamespace(L)
+	luabridge::getGlobalNamespace(lstate)
 		.deriveClass<Quad, Image>("__CPPAPIQuad")
 		.addConstructor<void(*)()>()
 		.addFunction("SetX", &Quad::SetX)
@@ -149,7 +148,7 @@ void DisplaySystem::RegisterToScript(ScriptSystem& script_system)
 		.addFunction("SetClip", &Quad::SetClip)
 		.endClass();
 
-	luabridge::getGlobalNamespace(L)
+	luabridge::getGlobalNamespace(lstate)
 		.deriveClass<Sprite, Image>("__CPPAPISprite")
 		.addConstructor<void(*)()>()
 		.addFunction("SetX", &Sprite::SetX)
@@ -175,7 +174,7 @@ void DisplaySystem::RegisterToScript(ScriptSystem& script_system)
 		.addFunction("SetRowColIndex", &Sprite::SetRowColIndex)
 		.endClass();
 
-	luabridge::getGlobalNamespace(L)
+	luabridge::getGlobalNamespace(lstate)
 		.deriveClass<Triangle, DisplayObject>("__CPPAPITriangle")
 		.addConstructor<void(*)()>()
 		.addFunction("SetScaleX", &Triangle::SetScaleX)
@@ -200,7 +199,7 @@ void DisplaySystem::RegisterToScript(ScriptSystem& script_system)
 		.addFunction("SetTexUV", &Triangle::SetTexUV)
 		.endClass();
 
-	luabridge::getGlobalNamespace(L)
+	luabridge::getGlobalNamespace(lstate)
 		.deriveClass<Grid9Image, DisplayObjects>("__CPPAPIGrid9Image")
 		.addConstructor<void(*)()>()
 		.addFunction("SetX", &Grid9Image::SetX)
@@ -228,7 +227,7 @@ void DisplaySystem::RegisterToScript(ScriptSystem& script_system)
 		.addFunction("SetRightSize", &Grid9Image::SetRightSize)
 		.endClass();
 
-	luabridge::getGlobalNamespace(L)
+	luabridge::getGlobalNamespace(lstate)
 		.deriveClass<DisplayView, DisplayObjects>("__CPPAPIDisplayView")
 		.addConstructor<void(*)()>()
 		.addFunction("SetScaleX", &DisplayView::SetScaleX)
@@ -253,7 +252,7 @@ void DisplaySystem::RegisterToScript(ScriptSystem& script_system)
 		.addFunction("SetClip", &DisplayView::SetClip)
 		.endClass();
 
-	luabridge::getGlobalNamespace(L)
+	luabridge::getGlobalNamespace(lstate)
 		.deriveClass<Text, Image>("__CPPAPIText")
 		.addConstructor<void(*)()>()
 		.addFunction("SetScaleX", &Text::SetScaleX)
@@ -290,7 +289,7 @@ void DisplaySystem::RegisterToScript(ScriptSystem& script_system)
 		.addFunction("ClearCutWidthCache", &Text::ClearCutWidthCache)
 		.endClass();
 
-	luabridge::getGlobalNamespace(L)
+	luabridge::getGlobalNamespace(lstate)
 		.deriveClass<TextArea, Image>("__CPPAPITextArea")
 		.addConstructor<void(*)()>()
 		.addFunction("SetScaleX", &TextArea::SetScaleX)
@@ -321,7 +320,7 @@ void DisplaySystem::RegisterToScript(ScriptSystem& script_system)
 		.addFunction("NeedDraw", &TextArea::NeedDraw)
 		.endClass();
 
-	luabridge::getGlobalNamespace(L)
+	luabridge::getGlobalNamespace(lstate)
 		.deriveClass<TextInput, Image>("__CPPAPITextInput")
 		.addConstructor<void(*)()>()
 		.addFunction("SetScaleX", &TextInput::SetScaleX)
@@ -375,7 +374,7 @@ void DisplaySystem::RegisterToScript(ScriptSystem& script_system)
 		.addFunction("NeedDraw", &TextInput::NeedDraw)
 		.endClass();
 
-	luabridge::getGlobalNamespace(L)
+	luabridge::getGlobalNamespace(lstate)
 		.deriveClass<TextEdit, Image>("__CPPAPITextEdit")
 		.addConstructor<void(*)()>()
 		.addFunction("SetScaleX", &TextEdit::SetScaleX)
@@ -434,11 +433,11 @@ void DisplaySystem::RegisterToScript(ScriptSystem& script_system)
 		.addFunction("NeedDraw", &TextEdit::NeedDraw)
 		.endClass();
 
-	luabridge::getGlobalNamespace(L)
+	luabridge::getGlobalNamespace(lstate)
 		.beginClass<Texture>("__CPPAPITexture")
 		.endClass();
 
-	luabridge::getGlobalNamespace(L)
+	luabridge::getGlobalNamespace(lstate)
 		.beginClass<TextureWrap>("__CPPAPITextureWrap")
 		.addConstructor<void(*)()>()
 		.addFunction("SetTexture", &TextureWrap::SetTexture)
@@ -448,7 +447,7 @@ void DisplaySystem::RegisterToScript(ScriptSystem& script_system)
 		.addFunction("Clear", &TextureWrap::Clear)
 		.endClass();
 
-	luabridge::getGlobalNamespace(L)
+	luabridge::getGlobalNamespace(lstate)
 		.deriveClass<RenderTexture, Texture>("__CPPAPIRenderTexture")
 		.addConstructor<void(*)()>()
 		.addFunction("Draw", &RenderTexture::Draw)
@@ -456,7 +455,7 @@ void DisplaySystem::RegisterToScript(ScriptSystem& script_system)
 		.addFunction("Clear", &RenderTexture::Clear)
 		.endClass();
 
-	luabridge::getGlobalNamespace(L)
+	luabridge::getGlobalNamespace(lstate)
 		.beginClass<TextureLoader>("__CPPAPITextureLoader")
 		.addConstructor<void(*)()>()
         .addFunction("SetPath", &TextureLoader::SetPath)
@@ -465,7 +464,7 @@ void DisplaySystem::RegisterToScript(ScriptSystem& script_system)
 		.addFunction("GetID", &TextureLoader::GetID)
 		.endClass();
 
-	luabridge::getGlobalNamespace(L)
+	luabridge::getGlobalNamespace(lstate)
 		.beginClass<TextureCutLoader>("__CPPAPITextureCutLoader")
 		.addConstructor<void(*)()>()
 		.addFunction("GetMaxWidth", &TextureCutLoader::GetMaxWidth)
@@ -476,7 +475,7 @@ void DisplaySystem::RegisterToScript(ScriptSystem& script_system)
 		.addFunction("GetID", &TextureCutLoader::GetID)
 		.endClass();
 
-	luabridge::getGlobalNamespace(L)
+	luabridge::getGlobalNamespace(lstate)
 		.beginClass<DisplaySystem>("__CPPAPIDisplaySystem")
 		.addFunction("AddChild", &DisplaySystem::AddChild)
 		.addFunction("AddChildAfter", &DisplaySystem::AddChildAfter)
@@ -488,7 +487,7 @@ void DisplaySystem::RegisterToScript(ScriptSystem& script_system)
 		.addFunction("RemoveAllChild", &DisplaySystem::RemoveAllChild)
 		.endClass();
 
-	luabridge::setGlobal(L, this, "__CPPAPI_DisplaySystem");
+	luabridge::setGlobal(lstate, this, "__CPPAPI_DisplaySystem");
 }
 
 void DisplaySystem::AddSpecialChild(DisplayObject* object)
@@ -553,7 +552,7 @@ Texture * DisplaySystem::GetQuadTexture()
 	return m_quad_texture;
 }
 
-carp_font_t* DisplaySystem::GetFont(const char* font_path, unsigned int font_style, unsigned int font_size)
+CarpFont* DisplaySystem::GetFont(const char* font_path, unsigned int font_style, unsigned int font_size)
 {
 	// check font path
 	if (!font_path) return NULL;
@@ -588,9 +587,9 @@ carp_font_t* DisplaySystem::GetFont(const char* font_path, unsigned int font_sty
 		FileHelperEx::CpFile(font_full_path.c_str(), internal_full_path.c_str(), true);
 	}
 
-	carp_font_t* font = FontHelper::LoadFont(GetFontFile(internal_full_path), font_size, font_style);
+	CarpFont* font = LoadFont(internal_full_path, font_size, font_style);
 #else
-	carp_font_t* font = FontHelper::LoadFont(GetFontFile(font_path), font_size, font_style);
+	CarpFont* font = LoadFont(font_path, font_size, font_style);
 #endif
 	if (font == nullptr)
 	{
@@ -599,12 +598,12 @@ carp_font_t* DisplaySystem::GetFont(const char* font_path, unsigned int font_sty
 		ALITTLE_ERROR("create font failed: path(" << font_path << ") can't find or font_size(" << font_size << ") not support " << ", and try C:\\Windows\\Fonts\\msyhbd.ttf");
 		std::string new_font_path = "C:\\Windows\\Fonts\\";
 		new_font_path += font_just_name;
-		font = FontHelper::LoadFont(GetFontFile(new_font_path), font_size, font_style);
+		font = LoadFont(new_font_path, font_size, font_style);
 #elif __ANDROID__
 		ALITTLE_ERROR("create font failed: path(" << font_path << ") can't find or font_size(" << font_size << ") not support " << ", and try /system/fonts/Miui-Regular.ttf");
 		std::string new_font_path = "/system/fonts/";
 		new_font_path += font_just_name;
-		font = FontHelper::LoadFont(GetFontFile(new_font_path), font_size);
+		font = LoadFont(new_font_path, font_size, font_style);
 #endif
 	}
 	if (font == nullptr)
@@ -620,21 +619,60 @@ carp_font_t* DisplaySystem::GetFont(const char* font_path, unsigned int font_sty
 	return font;
 }
 
-LocalFile* DisplaySystem::GetFontFile(const std::string& font_path)
+SDL_Surface* DisplaySystem::CreateSurface(CarpFont* font, const char* content)
 {
-	auto it = m_font_file_map.find(font_path);
-	if (it != m_font_file_map.end()) return it->second;
+	if (content == 0 || font == 0) return nullptr;
 
-	LocalFile* file = new LocalFile();
-	file->SetPath(font_path.c_str());
-	if (!file->Load())
+	CarpFontBitmap* carp_bitmap = font->CreateBitmapFromUTF8(content);
+	if (carp_bitmap == nullptr) return nullptr;
+
+	SDL_Surface* surface = TextureHelper::CreateSurface(carp_bitmap->width, carp_bitmap->height);
+	if (surface == nullptr)
 	{
-		delete file;
+		delete carp_bitmap;
 		return nullptr;
 	}
-	m_font_file_map[font_path] = file;
 
-	return file;
+	for (int row = 0; row < carp_bitmap->height; ++row)
+	{
+		int offset = row * carp_bitmap->width;
+		for (int col = 0; col < carp_bitmap->width; ++col)
+		{
+			unsigned int value = carp_bitmap->bitmap[offset + col];
+			if (value != 0)
+			{
+				unsigned int color = value << 24 | 0x00FFFFFF;
+				TextureHelper::SetSurfacePixel(surface, col, row, color);
+			}
+		}
+	}
+
+	delete carp_bitmap;
+	return surface;
+}
+
+CarpFont* DisplaySystem::LoadFont(const std::string& font_path, unsigned int font_size, unsigned int font_style)
+{
+	LocalFile* file = nullptr;
+	auto it = m_font_file_map.find(font_path);
+	if (it == m_font_file_map.end())
+	{
+		file = new LocalFile();
+		file->SetPath(font_path.c_str());
+		if (!file->Load())
+		{
+			delete file;
+			return nullptr;
+		}
+
+		m_font_file_map[font_path] = file;
+	}
+	else
+	{
+		file = it->second;
+	}
+
+	return new CarpFont(file->GetContent(), file->GetSize(), font_size, font_style);
 }
 
 void DisplaySystem::ClearFont()
@@ -645,15 +683,13 @@ void DisplaySystem::ClearFont()
 		{
 			for (auto size_it = style_it->second.begin(); size_it != style_it->second.end(); ++size_it)
 			{
-				FontHelper::ReleaseFont(size_it->second);
+				delete size_it->second;
 			}
 		}
 	}
 	m_font_map.clear();
 	for (auto& pair : m_font_file_map)
-	{
 		delete pair.second;
-	}
 	m_font_file_map.clear();
 }
 

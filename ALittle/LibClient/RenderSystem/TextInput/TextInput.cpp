@@ -4,7 +4,8 @@
 #include "ALittle/LibClient/RenderSystem/Texture/SurfaceTexture.h"
 #include "ALittle/LibClient/RenderSystem/DisplaySystem.h"
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"
-#include "ALittle/LibClient/Helper/FontHelper.h"
+
+#include "Carp/carp_font.hpp"
 
 #include "ALittle/LibCommon/Helper/LogHelper.h"
 
@@ -231,7 +232,7 @@ void TextInput::Draw()
 	
 	// render text to surface
 	if (content.size() == 0) return;
-	SDL_Surface* surface = FontHelper::CreateSurface(m_font, content.c_str());
+	SDL_Surface* surface = g_DisplaySystem.CreateSurface(m_font, content.c_str());
 	if (!surface)
 	{
 		ALITTLE_ERROR("CreateSurface failed!");

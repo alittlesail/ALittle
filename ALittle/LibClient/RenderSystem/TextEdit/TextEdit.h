@@ -5,7 +5,7 @@
 #include "ALittle/LibClient/RenderSystem/Image/Image.h"
 #include "ALittle/LibClient/RenderSystem/Image/Quad.h"
 
-typedef struct _carp_font_t carp_font_t;
+class CarpFont;
 
 #include <string>
 #include <list>
@@ -326,7 +326,7 @@ private:
 	// all char info
 	LineCharInfoList m_linechar_list;
 	// font object
-	carp_font_t* m_font;
+	CarpFont* m_font;
 	std::string m_font_path;
 	unsigned int m_font_size;
 	// font style

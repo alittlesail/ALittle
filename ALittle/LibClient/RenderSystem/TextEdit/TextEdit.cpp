@@ -5,8 +5,9 @@
 #include "ALittle/LibClient/RenderSystem/DisplaySystem.h"
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"
 #include "ALittle/LibClient/RenderSystem/Texture/SurfaceTexture.h"
-#include "ALittle/LibClient/Helper/FontHelper.h"
 #include "ALittle/LibClient/Helper/TextureHelper.h"
+
+#include "Carp/carp_font.hpp"
 
 namespace ALittle
 {
@@ -232,7 +233,7 @@ void TextEdit::Draw()
 	if (!m_font || m_linechar_list.size() == 0 || m_size.x <= 0 || m_size.y <= 0) return;
 
 	// get line gap
-	int line_skip = FontHelper::GetFontLineGap(m_font) + FontHelper::GetFontHeight(m_font);
+	int line_skip = m_font->GetLineSkip();
 
 	// create surface
 	SDL_Surface* total_surface = TextureHelper::CreateSurface((int)m_size.x, (int)m_size.y);
@@ -264,10 +265,10 @@ void TextEdit::Draw()
 		// If there is a text, then perform rendering, copying the surface
 		if (content.size())
 		{
-			SDL_Surface* surface = FontHelper::CreateSurface(m_font, content.c_str());
+			SDL_Surface* surface = g_DisplaySystem.CreateSurface(m_font, content.c_str());
 			if (!surface)
 			{
-				ALITTLE_ERROR("FontHelper::CreateSurface failed!");
+				ALITTLE_ERROR("g_DisplaySystem.CreateSurface failed!");
 				SDL_FreeSurface(total_surface);
 				return;
 			}

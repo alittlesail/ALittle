@@ -1,10 +1,11 @@
 
 #include "TextEdit.h"
-#include "ALittle/LibClient/Helper/FontHelper.h"
 
 #include "ALittle/LibCommon/Helper/LogHelper.h"
 #include "ALittle/LibClient/RenderSystem/DisplaySystem.h"
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"
+
+#include "Carp/carp_font.hpp"
 
 namespace ALittle
 {
@@ -19,7 +20,7 @@ void TextEdit::SetFont(const char* font_path, unsigned int font_size)
 	m_cursor_width = GetCursorWidth(font_size);
 
 	if (m_font)
-		m_cursor.SetHeight((float)(FontHelper::GetFontHeight(m_font)));
+		m_cursor.SetHeight((float)(m_font->GetFontHeight()));
 
 	m_width_map.clear();
 

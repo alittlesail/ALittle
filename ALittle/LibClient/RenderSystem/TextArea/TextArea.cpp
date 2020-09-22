@@ -9,9 +9,7 @@ extern "C" {
 #include "ALittle/LibClient/RenderSystem/DisplaySystem.h"
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"
 #include "ALittle/LibClient/RenderSystem/Texture/SurfaceTexture.h"
-
-#include "ALittle/LibClient/Helper/FontHelper.h"
-
+#include "Carp/carp_font.hpp"
 #include <vector>
 
 namespace ALittle
@@ -96,13 +94,13 @@ void TextArea::Draw(bool draw)
 	int total_height = height;
 
 	// get font height
-	int font_height = FontHelper::GetFontHeight(m_font);
+	int font_height = m_font->GetFontHeight();
 	// start layout
 	const char* str = m_text.c_str();
 	// remain size
 	int width_offset = 0;
 	int height_offset = 0;
-	int gap = FontHelper::GetFontLineGap(m_font);
+	int gap = m_font->GetLineGap();
 	std::vector<int> height_offset_array, width_offset_array;
 	std::vector<std::string> string_array;
 	// calc text
@@ -150,7 +148,7 @@ void TextArea::Draw(bool draw)
 		else
 			next_calc_text.append(str, byte_count);
 
-		int text_width = FontHelper::CutTextWidth(next_calc_text.c_str(), m_font);
+		int text_width = m_font->CutTextWidth(next_calc_text.c_str());
 		int next_width_offset = text_width;
 
 		if (next_width_offset > total_width && calc_text.size())
@@ -218,7 +216,7 @@ void TextArea::Draw(bool draw)
 		if (current_height_offset > total_height || current_height_offset + font_height <= 0)
 			continue;
 		// create text surface
-		SDL_Surface* surface = FontHelper::CreateSurface(m_font, string_array[i].c_str());
+		SDL_Surface* surface = g_DisplaySystem.CreateSurface(m_font, string_array[i].c_str());
 		if (!surface) continue;
 		SDL_SetSurfaceBlendMode(surface, SDL_BLENDMODE_NONE);
 		// offset at width

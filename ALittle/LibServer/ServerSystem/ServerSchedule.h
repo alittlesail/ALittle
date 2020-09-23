@@ -11,8 +11,8 @@
 
 #include "Carp/carp_message.hpp"
 #include "Carp/carp_safe_id_creator.h"
+#include "Carp/carp_file_cache.hpp"
 
-#include "ALittle/LibServer/Tool/FileCacheSystem.h"
 #include "ALittle/LibServer/HttpSystem/Server/HttpServer.h"
 #include "ALittle/LibServer/ClientSystem/ClientServer.h"
 #include "ALittle/LibServer/RouteSystem/RouteSystem.h"
@@ -60,7 +60,7 @@ public:
 		* @return io service
 		*/
 	asio::io_service& GetIOService() { return m_io_service; }
-	FileCacheSystem& GetFileChacheSystem() { return m_file_cache; }
+	CarpFileCacheGroup& GetFileCacheGroup() { return m_file_cache; }
 	ScriptSystem& GetScriptSystem() { return m_script_system; }
 	const std::string& GetModuleTitle() const { return m_module_title; }
 
@@ -83,7 +83,7 @@ private:
 
 private:
 	asio::io_service m_io_service;
-	FileCacheSystem m_file_cache;
+	CarpFileCacheGroup m_file_cache;
 	ScriptSystem m_script_system;
 	MysqlThreadSystem m_mysql_system;
 	CarpSafeIDCreator<int> m_id_creator;

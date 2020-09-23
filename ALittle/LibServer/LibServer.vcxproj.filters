@@ -7,9 +7,6 @@
     <Filter Include="HttpSystem\Server">
       <UniqueIdentifier>{50f19811-ff72-411f-9ab5-d22d140c2fe3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Tool">
-      <UniqueIdentifier>{51e048a3-bdb0-4522-933e-4fe3869e0c96}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ServerSystem">
       <UniqueIdentifier>{e42ba274-3d66-48a6-8467-40e63b321136}</UniqueIdentifier>
     </Filter>
@@ -32,9 +29,6 @@
     </ClInclude>
     <ClInclude Include="HttpSystem\Server\HttpReceiver.h">
       <Filter>HttpSystem\Server</Filter>
-    </ClInclude>
-    <ClInclude Include="Tool\FileCacheSystem.h">
-      <Filter>Tool</Filter>
     </ClInclude>
     <ClInclude Include="ServerSystem\ServerSystem.h">
       <Filter>ServerSystem</Filter>
@@ -97,9 +91,6 @@
     </ClCompile>
     <ClCompile Include="HttpSystem\Server\HttpReceiver.cpp">
       <Filter>HttpSystem\Server</Filter>
-    </ClCompile>
-    <ClCompile Include="Tool\FileCacheSystem.cpp">
-      <Filter>Tool</Filter>
     </ClCompile>
     <ClCompile Include="ServerSystem\ServerSystem.cpp">
       <Filter>ServerSystem</Filter>

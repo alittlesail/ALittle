@@ -134,7 +134,7 @@ int ServerSchedule::Run()
 	m_script_system.Invoke("__ALITTLEAPI_ShutdownMainModule", m_module_name.c_str());
 
 	m_script_system.Release();
-	m_file_cache.Shutdown();
+	m_file_cache.ClearAll();
 
 	for (auto it = m_http_server_set.begin(); it != m_http_server_set.end(); ++it)
 		(*it)->Close();

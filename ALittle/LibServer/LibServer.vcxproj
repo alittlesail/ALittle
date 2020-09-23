@@ -31,7 +31,6 @@
     <ClInclude Include="RouteSystem\SessionConnection.h" />
     <ClInclude Include="ServerSystem\ServerSchedule.h" />
     <ClInclude Include="ServerSystem\ServerSystem.h" />
-    <ClInclude Include="Tool\FileCacheSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClientSystem\ClientReceiver.cpp" />
@@ -54,7 +53,6 @@
     <ClCompile Include="RouteSystem\SessionConnection.cpp" />
     <ClCompile Include="ServerSystem\ServerSchedule.cpp" />
     <ClCompile Include="ServerSystem\ServerSystem.cpp" />
-    <ClCompile Include="Tool\FileCacheSystem.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

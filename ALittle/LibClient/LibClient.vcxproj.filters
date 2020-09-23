@@ -246,6 +246,9 @@
     <ClInclude Include="..\..\Carp\carp_dump.hpp">
       <Filter>Carp</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_file_cache.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioSystem\AudioSystem.cpp">

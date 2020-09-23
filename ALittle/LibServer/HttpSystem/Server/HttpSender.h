@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#include "Carp/carp_file_cache.hpp"
+
 class CarpHttpSocket;
 typedef std::shared_ptr<CarpHttpSocket> CarpHttpSocketPtr;
 
@@ -86,7 +88,7 @@ private:
 	std::string m_http_content;	// send http response
 
 	// file info
-	FileCacheHelper* m_file;
+	CarpFileCachePtr m_file;
 	std::string m_file_path;
 	std::vector<char> m_file_buffer;
 
@@ -105,6 +107,7 @@ private:
 
 private:
 	HttpServerWeakPtr m_server_system;
+	ServerSchedule* m_schedule;
 
 public:
 	HttpReceiverWeakPtr m_receiver;

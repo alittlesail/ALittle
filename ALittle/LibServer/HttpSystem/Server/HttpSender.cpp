@@ -5,10 +5,10 @@
 
 #define CARP_HAS_SSL
 #include "Carp/carp_http.hpp"
-
-#include "ALittle/LibServer/Tool/FileCacheSystem.h"
-#include "ALittle/LibServer/ServerSystem/ServerSchedule.h"
 #include "Carp/carp_file_helper.hpp"
+#include "Carp/carp_file_cache.hpp"
+
+#include "ALittle/LibServer/ServerSystem/ServerSchedule.h"
 
 namespace ALittle
 {
@@ -19,12 +19,10 @@ void HttpSender_HandleSend(HttpSenderPtr self, const asio::error_code& ec, std::
 
 HttpSender::HttpSender(CarpHttpSocketPtr socket, HttpServerPtr server, ServerSchedule* schedule)
 : m_socket(socket), m_end_time(0), m_is_sending(false)
-, m_server_system(server)
+, m_server_system(server), m_schedule(schedule)
 , m_is_removed(false)
 , m_user_data(0), m_id(0)
 {
-	m_file = new FileCacheHelper(&schedule->GetFileChacheSystem());
-
 	// save target ip
 	CARPHTTPSOCKET_GetRemoteIp(socket, m_remote_ip);
 	CARPHTTPSOCKET_GetRemotePort(socket, m_remote_port);
@@ -33,13 +31,15 @@ HttpSender::HttpSender(CarpHttpSocketPtr socket, HttpServerPtr server, ServerSch
 HttpSender::~HttpSender()
 {
 	Clear();
-
-	delete m_file;
 }
 
 void HttpSender::Clear()
 {
-	m_file->Close();
+	if (m_file)
+	{
+		m_file->Close();
+		m_file = nullptr;
+	}
 	m_http_content = "";
 }
 
@@ -171,7 +171,7 @@ void HttpSender::SendFile(const char* path, const char* content_type, bool for_d
 	m_is_sending = true;
 
 	// open file
-	m_file->Open(path, use_cache);
+	m_file = m_schedule->GetFileCacheGroup().Create(path, use_cache);
 
 	// if file is open failed, then send error response
 	if (!m_file->IsOpen())

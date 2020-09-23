@@ -115,7 +115,7 @@ function SuperMarioBros.EditScene:Load(world, subworld)
 		end
 	end
 	self._scroll_screen.container.width = self._tile_linear.width + self._scroll_screen.view_width
-	self._scroll_screen:RejustScrollBar()
+	self._scroll_screen:AdjustScrollBar()
 end
 SuperMarioBros.EditScene.Load = Lua.CoWrap(SuperMarioBros.EditScene.Load)
 
@@ -234,7 +234,7 @@ function SuperMarioBros.EditScene:SetTileShow(row, col, show_row, show_col)
 			i = i+(1)
 		end
 		self._scroll_screen.container.width = self._tile_linear.width + self._scroll_screen.view_width
-		self._scroll_screen:RejustScrollBar()
+		self._scroll_screen:AdjustScrollBar()
 	end
 	local linear = self._tile_linear:GetChildByIndex(col + 1)
 	if linear == nil then
@@ -259,7 +259,7 @@ function SuperMarioBros.EditScene:SetTileShow(row, col, show_row, show_col)
 	sprite.row_index = show_row
 	sprite.col_index = show_col
 	sprite.visible = true
-	self._scroll_screen:RejustScrollBar()
+	self._scroll_screen:AdjustScrollBar()
 	self._scroll_screen:RefreshClipDisLine()
 end
 
@@ -331,7 +331,7 @@ function SuperMarioBros.EditScene:RemoveTileShow(row, col)
 		i = i+(-1)
 	end
 	self._scroll_screen.container.width = self._tile_linear.width + self._scroll_screen.view_width
-	self._scroll_screen:RejustScrollBar()
+	self._scroll_screen:AdjustScrollBar()
 	self._scroll_screen:RefreshClipDisLine()
 end
 

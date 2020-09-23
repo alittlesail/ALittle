@@ -5,15 +5,12 @@
 #include "ThreadSystem.h"
 
 #include <iostream>
-#include <time.h>
 
 namespace ALittle
 {
 
-Thread::Thread(ThreadGroup* group)
+Thread::Thread()
 {
-	// set thread group
-	m_group = group;
 	// flag to run
 	m_run = true;
 	// default not to auto release
@@ -61,7 +58,7 @@ int Thread::Run(void* data)
 		Task* task = 0;
 
 		// execute all list
-		while (self->m_group->m_task_list.try_dequeue(task))
+		while (g_ThreadSystem.m_task_list.try_dequeue(task))
 			task->Execute();
 	}
 

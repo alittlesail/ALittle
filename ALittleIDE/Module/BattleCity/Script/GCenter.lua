@@ -17,7 +17,7 @@ end
 function BattleCity.GCenter:Setup()
 	BattleCity.g_GConfig = ALittle.CreateConfigSystem(BattleCity.g_ModuleBasePath .. "/User.cfg")
 	ALittle.Math_RandomSeed(ALittle.Time_GetCurTime())
-	ALittle.System_SetThreadCount(1, 2)
+	ALittle.System_SetThreadCount(1)
 	self._main_layer = ALittle.DisplayLayout(BattleCity.g_Control)
 	self._main_layer.width_type = 4
 	self._main_layer.height_type = 4

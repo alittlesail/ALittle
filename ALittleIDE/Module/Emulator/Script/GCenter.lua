@@ -97,7 +97,7 @@ function Emulator.GCenter:Setup()
 	Emulator.g_GConfig = ALittle.CreateConfigSystem(Emulator.g_ModuleBasePath .. "/User.cfg")
 	Emulator.g_GProtoCache = ALittle.CreateConfigSystem(Emulator.g_ModuleBasePath .. "/ProtoCache.cfg")
 	ALittle.Math_RandomSeed(ALittle.Time_GetCurTime())
-	ALittle.System_SetThreadCount(1, 2)
+	ALittle.System_SetThreadCount(1)
 	self._main_layer = ALittle.DisplayLayout(Emulator.g_Control)
 	self._main_layer.width_type = 4
 	self._main_layer.height_type = 4

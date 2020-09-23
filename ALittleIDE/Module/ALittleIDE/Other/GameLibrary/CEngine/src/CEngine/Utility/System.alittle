@@ -237,25 +237,17 @@ public static System_GetAppPauseInterval() : int
 }
 
 ////线程部分//////////////////////////////////////////////////////////////////////
-public enum SystemThreadType // 这里的枚举值和C++部分一致，不要修改
-{
-    FAST = 0;
-    MIDDLE = 1;
-    SLOW = 2;
-}
 // 设置线程数
-public static System_SetThreadCount(int count, [Nullable] int thread_type)
+public static System_SetThreadCount(int count)
 {
-    if (thread_type == null) thread_type = SystemThreadType.SLOW;
     [Language(Lua)]
-    __CPPAPI_ThreadSystem.SetThreadCount(count, thread_type);
+    __CPPAPI_ThreadSystem.SetThreadCount(count);
 }
 // 获取线程数
 public static System_GetThreadCount(int thread_type) : int
 {
-    if (thread_type == null) thread_type = SystemThreadType.SLOW;
     [Language(Lua)]
-    return __CPPAPI_ThreadSystem.GetThreadCount(thread_type);
+    return __CPPAPI_ThreadSystem.GetThreadCount();
     [Language(JavaScript)]
     return 0;
 }

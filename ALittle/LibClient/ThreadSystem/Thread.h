@@ -15,7 +15,7 @@ class ThreadGroup;
 class Thread
 {
 public:
-	Thread(ThreadGroup* group);
+	Thread();
 	~Thread();
 
 public:
@@ -40,9 +40,6 @@ private:
 	bool m_run;				// flag to run
 	bool m_auto_release;	// auto release or not
 	SDL_Thread* m_thread;	// thread
-
-private:
-	ThreadGroup* m_group;
 };
 
 } // ALittle

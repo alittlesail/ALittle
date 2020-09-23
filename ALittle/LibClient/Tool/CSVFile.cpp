@@ -16,7 +16,7 @@ namespace ALittle
 
 void CsvFileLoader::Start()
 {
-    g_ThreadSystem.AddTask(this, ThreadSystem::THREAD_TYPE_FAST);
+    g_ThreadSystem.AddTask(this);
 }
 
 int CsvFileLoader::GetID() const

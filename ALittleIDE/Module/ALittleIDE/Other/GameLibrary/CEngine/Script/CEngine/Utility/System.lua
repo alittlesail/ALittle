@@ -122,24 +122,12 @@ function ALittle.System_GetAppPauseInterval()
 	return __CPPAPI_ScheduleSystem:GetAppPauseInterval()
 end
 
-ALittle.SystemThreadType = {
-	FAST = 0,
-	MIDDLE = 1,
-	SLOW = 2,
-}
-
-function ALittle.System_SetThreadCount(count, thread_type)
-	if thread_type == nil then
-		thread_type = ALittle.SystemThreadType.SLOW
-	end
-	__CPPAPI_ThreadSystem:SetThreadCount(count, thread_type)
+function ALittle.System_SetThreadCount(count)
+	__CPPAPI_ThreadSystem:SetThreadCount(count)
 end
 
 function ALittle.System_GetThreadCount(thread_type)
-	if thread_type == nil then
-		thread_type = ALittle.SystemThreadType.SLOW
-	end
-	return __CPPAPI_ThreadSystem:GetThreadCount(thread_type)
+	return __CPPAPI_ThreadSystem:GetThreadCount()
 end
 
 function ALittle.System_GetIMESelectList()

@@ -14,7 +14,7 @@ end
 function FlappyBird.GCenter:Setup()
 	FlappyBird.g_GConfig = ALittle.CreateConfigSystem(FlappyBird.g_ModuleBasePath .. "/User.cfg")
 	ALittle.Math_RandomSeed(ALittle.Time_GetCurTime())
-	ALittle.System_SetThreadCount(5, 2)
+	ALittle.System_SetThreadCount(1)
 	self._main_layer = ALittle.DisplayLayout(FlappyBird.g_Control)
 	self._main_layer.width_type = 4
 	self._main_layer.height_type = 4

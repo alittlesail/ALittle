@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="alittle_schedule.hpp" />
+    <ClInclude Include="alittle_thread.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="alittle_main.cpp" />

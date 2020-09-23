@@ -60,7 +60,7 @@ class GCenter
         // 生成随机数种子
         ALittle.Math_RandomSeed(ALittle.Time_GetCurTime());
         // 设置5个线程
-        ALittle.System_SetThreadCount(5, ALittle.SystemThreadType.SLOW);
+        ALittle.System_SetThreadCount(1);
     
         // 创建主层
         this._main_layer = new ALittle.DisplayLayout(g_Control);

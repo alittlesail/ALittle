@@ -11,6 +11,15 @@
 #include "sokol/sokol_glue.h"
 
 #include "alittle_schedule.hpp"
+#include "Carp/carp_file_helper.hpp"
+
+#define CARP_CONSOLE_IMPL
+#include "Carp/carp_console.hpp"
+#define CARP_DUMP_IMPL
+#include "Carp/carp_dump.hpp"
+#define CARP_LOG_IMPL
+#include "Carp/carp_log.hpp"
+
 
 static ALittleSchedule schedule;
 

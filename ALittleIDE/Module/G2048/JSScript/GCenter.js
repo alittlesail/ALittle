@@ -25,7 +25,7 @@ G2048.GCenter = JavaScript.Class(undefined, {
 	Setup : function() {
 		G2048.g_GConfig = ALittle.CreateConfigSystem(G2048.g_ModuleBasePath + "/User.cfg");
 		ALittle.Math_RandomSeed(ALittle.Time_GetCurTime());
-		ALittle.System_SetThreadCount(5, 2);
+		ALittle.System_SetThreadCount(1);
 		this._main_layer = ALittle.NewObject(ALittle.DisplayLayout, G2048.g_Control);
 		this._main_layer.width_type = 4;
 		this._main_layer.height_type = 4;

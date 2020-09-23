@@ -153,7 +153,7 @@ public class EditScene : ALittle.DisplayLayout
             }
         }
         this._scroll_screen.container.width = this._tile_linear.width + this._scroll_screen.view_width;
-        this._scroll_screen.RejustScrollBar();
+        this._scroll_screen.AdjustScrollBar();
     }
 
     public fun Save()
@@ -291,7 +291,7 @@ public class EditScene : ALittle.DisplayLayout
             }
 
             this._scroll_screen.container.width = this._tile_linear.width + this._scroll_screen.view_width;
-            this._scroll_screen.RejustScrollBar();
+            this._scroll_screen.AdjustScrollBar();
         }
 
         var linear = cast<ALittle.Linear>(this._tile_linear.GetChildByIndex(col + 1));
@@ -317,7 +317,7 @@ public class EditScene : ALittle.DisplayLayout
         sprite.col_index = show_col;
         sprite.visible = true;
 
-        this._scroll_screen.RejustScrollBar();
+        this._scroll_screen.AdjustScrollBar();
         this._scroll_screen.RefreshClipDisLine();
     }
 
@@ -388,7 +388,7 @@ public class EditScene : ALittle.DisplayLayout
         }
 
         this._scroll_screen.container.width = this._tile_linear.width + this._scroll_screen.view_width;
-        this._scroll_screen.RejustScrollBar();
+        this._scroll_screen.AdjustScrollBar();
         this._scroll_screen.RefreshClipDisLine();
     }
 

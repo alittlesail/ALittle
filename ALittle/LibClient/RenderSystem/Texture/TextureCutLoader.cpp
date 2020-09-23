@@ -23,7 +23,7 @@ void TextureCutLoader::SetPath(const char* file_path, int max_width, int max_hei
 
 void TextureCutLoader::Start()
 {
-    g_ThreadSystem.AddTask(this, ThreadSystem::THREAD_TYPE_FAST);
+    g_ThreadSystem.AddTask(this);
 }
 
 void TextureCutLoader::Execute()

@@ -3,8 +3,8 @@ register namespace lua;
 
 public class __CPPAPIThreadSystem
 {
-    public fun SetThreadCount(int count, int thread_type) {}
-    public fun GetThreadCount(int thread_type) : int {}
+    public fun SetThreadCount(int count) {}
+    public fun GetThreadCount() : int {}
 }
 
 public var __CPPAPI_ThreadSystem:__CPPAPIThreadSystem;

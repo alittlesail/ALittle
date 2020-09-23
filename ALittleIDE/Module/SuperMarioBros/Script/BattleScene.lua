@@ -65,7 +65,7 @@ function SuperMarioBros.BattleScene:SetTileShow(row, col, show_row, show_col)
 			i = i+(1)
 		end
 		self._scroll_screen.container.width = self._tile_linear.width + self._scroll_screen.view_width
-		self._scroll_screen:RejustScrollBar()
+		self._scroll_screen:AdjustScrollBar()
 	end
 	local linear = self._tile_linear:GetChildByIndex(col + 1)
 	if linear == nil then

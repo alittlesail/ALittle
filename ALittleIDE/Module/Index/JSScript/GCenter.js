@@ -34,7 +34,7 @@ Index.GCenter = JavaScript.Class(undefined, {
 	Setup : function() {
 		Index.g_GConfig = ALittle.CreateConfigSystem(Index.g_ModuleBasePath + "/User.cfg");
 		ALittle.Math_RandomSeed(ALittle.Time_GetCurTime());
-		ALittle.System_SetThreadCount(1, 2);
+		ALittle.System_SetThreadCount(1);
 		this._main_layer = ALittle.NewObject(ALittle.DisplayLayout, Index.g_Control);
 		this._main_layer.width_type = 4;
 		this._main_layer.height_type = 4;
@@ -85,14 +85,14 @@ Index.GCenter = JavaScript.Class(undefined, {
 		if (this._item_width > 0 && this._item_tiletable !== undefined) {
 			this._item_tiletable.col_count = ALittle.Math_Floor(this._item_container.width / this._item_width);
 		}
-		this._item_container.RejustScrollBar();
+		this._item_container.AdjustScrollBar();
 		A_UISystem.view_resize_callback = this.HandleViewResized.bind(this);
 	},
 	HandleViewResized : function(width, height) {
 		if (this._item_width > 0 && this._item_tiletable !== undefined) {
 			this._item_tiletable.col_count = ALittle.Math_Floor(this._item_container.width / this._item_width);
 		}
-		this._item_container.RejustScrollBar();
+		this._item_container.AdjustScrollBar();
 	},
 	HandleImageClick : function(event) {
 		let data = event.target._user_data;

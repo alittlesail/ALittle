@@ -159,7 +159,7 @@ void TextureLoader::HandleEvent(unsigned int event_type, void* data1, void* data
 
 void TextureLoader::Start()
 {
-    g_ThreadSystem.AddTask(this, ThreadSystem::THREAD_TYPE_FAST);
+    g_ThreadSystem.AddTask(this);
 }
 
 } // ALittle

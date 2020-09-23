@@ -93,7 +93,7 @@ end
 function GBRMaker.GCenter:Setup()
 	GBRMaker.g_GConfig = ALittle.CreateConfigSystem(GBRMaker.g_ModuleBasePath .. "/User.cfg")
 	ALittle.Math_RandomSeed(ALittle.Time_GetCurTime())
-	ALittle.System_SetThreadCount(1, 2)
+	ALittle.System_SetThreadCount(1)
 	self._main_layer = ALittle.DisplayLayout(GBRMaker.g_Control)
 	self._main_layer.width_type = 4
 	self._main_layer.height_type = 4
@@ -433,7 +433,7 @@ function GBRMaker.GCenter:StartEdit(file_info)
 	self._cur_layer.width = layer_width
 	self._cur_layer.height = layer_height
 	self._edit_scroll_screen:AddChild(self._cur_layer)
-	self._edit_scroll_screen:RejustScrollBar()
+	self._edit_scroll_screen:AdjustScrollBar()
 	self._layer_list:Init()
 end
 

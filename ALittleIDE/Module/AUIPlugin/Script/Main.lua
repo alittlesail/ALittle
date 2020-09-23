@@ -53,8 +53,7 @@ function AUIPlugin.__Plugin_Setup(control, module_base_path, script_base_path)
 		, "AUICodeLanguage.alittle", "AUICodeFilterScreen.alittle", "AUICodeEdit.alittle"
 		, "AUICodeDefine.alittle", "AUICodeCursor.alittle", "AUICodeComponent.alittle"
 		, "AUICodeCompleteScreen.alittle", "ABnf/AUICodeCommon.alittle", "ABnf/AUICodeALittleScript.alittle"
-		, "ABnf/AUICodeABnf.alittle", "Lua/alittlescript.alittle", "Lua/alanguage.alittle"
-		, "Lua/abnf.alittle"})
+		, "ABnf/AUICodeABnf.alittle"})
 	AUIPlugin.g_AUIIMEManager:Setup()
 end
 

@@ -147,6 +147,9 @@ bool ALittleScriptIndex::GetDeepFilePaths(ABnfProject* project, const std::strin
     {
         auto full_path = cur_path + "/" + file;
 
+        auto* abnf_file = project->GetFile(full_path);
+        if (abnf_file == nullptr || ALittleScriptUtility::IsRegister(abnf_file)) continue;
+
         auto& relay_info = relay_map[full_path];
         std::set<std::string> relay_set;
         FindDefineRelay(project, full_path, relay_info.relay_set);

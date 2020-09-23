@@ -679,6 +679,16 @@ bool ALittleScriptUtility::IsRegister(std::shared_ptr<ABnfElement> element)
     return IsRegister(namespace_dec->GetModifierList());
 }
 
+// 判断某个是不是register
+bool ALittleScriptUtility::IsRegister(ABnfFile* file)
+{
+    if (file == nullptr) return false;
+    auto namespace_dec = GetNamespaceDec(file);
+    if (namespace_dec == nullptr) return false;
+
+    return IsRegister(namespace_dec->GetModifierList());
+}
+
 // 获取某个元素的命名域名
 const std::string& ALittleScriptUtility::GetNamespaceName(std::shared_ptr<ABnfElement> element)
 {

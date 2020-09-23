@@ -117,6 +117,7 @@ public:
 
     // 判断某个是不是register
     static bool IsRegister(std::shared_ptr<ABnfElement> element);
+    static bool IsRegister(ABnfFile* file);
 
     // 获取某个元素的命名域名
     static const std::string& GetNamespaceName(std::shared_ptr<ABnfElement> element);

@@ -2,11 +2,6 @@
 #include "TextureCutLoader.h"
 #include "SurfaceTexture.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/StringHelper.h"
-#include "ALittle/LibCommon/Helper/CryptHelper.h"
-#include "ALittle/LibCommon/Helper/FileHelper.h"
-
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
 #include "ALittle/LibClient/ScheduleSystem/EventDefine.h"
 #include "ALittle/LibClient/ThreadSystem/ThreadSystem.h"
@@ -46,7 +41,7 @@ void TextureCutLoader::Execute()
 		local_file.SetPath(m_file_path.c_str());
 		if (local_file.Load() == false)
 		{
-			ALITTLE_ERROR("LocalFile load failed, " << m_file_path);
+			CARP_ERROR("LocalFile load failed, " << m_file_path);
 			g_ScheduleSystem.PushUserEvent(TEXTURECUT_LOAD_FAILED, this);
 			return;
 		}
@@ -59,7 +54,7 @@ void TextureCutLoader::Execute()
 
 	if (!surface)
 	{
-		ALITTLE_ERROR("LoadImageFromMemory failed:" << m_file_path);
+		CARP_ERROR("LoadImageFromMemory failed:" << m_file_path);
 		g_ScheduleSystem.PushUserEvent(TEXTURECUT_LOAD_FAILED, this);
 		return;
 	}

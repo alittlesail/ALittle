@@ -6,14 +6,9 @@
 #define CARP_HAS_SSL
 #include "Carp/carp_http.hpp"
 
-#include "ALittle/LibCommon/Helper/HttpHelper.h"
-#include "ALittle/LibCommon/Helper/FileHelper.h"
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/TimeHelper.h"
-#include "ALittle/LibCommon/Helper/StringHelper.h"
-
 #include "ALittle/LibServer/Tool/FileCacheSystem.h"
 #include "ALittle/LibServer/ServerSystem/ServerSchedule.h"
+#include "Carp/carp_file_helper.hpp"
 
 namespace ALittle
 {
@@ -53,7 +48,7 @@ void HttpSender::SendString(const std::string& message)
 	// if in sending, then return
 	if (m_is_sending)
 	{
-		ALITTLE_ERROR("Https Sender already in sending");
+		CARP_ERROR("Https Sender already in sending");
 		Close();
 		return;
 	}
@@ -84,7 +79,7 @@ void HttpSender_HandleSend(HttpSenderPtr self, const asio::error_code& ec, std::
 {
 	if (ec)
 	{
-		ALITTLE_INFO("error info:" << SUTF8(asio::system_error(ec).what()));
+		CARP_INFO("error info:" << ec.value());
 		self->Close();
 		return;
 	}
@@ -107,7 +102,7 @@ void HttpSender::HandleSend(std::size_t bytes_transferred)
 			// close file
 			m_file->Close();
 			// send completed do not affect by heart beat
-			m_end_time = TimeHelper::GetCurTime();
+			m_end_time = CarpTimeHelper::GetCurTime();
 		}
 		else
 		{
@@ -119,7 +114,7 @@ void HttpSender::HandleSend(std::size_t bytes_transferred)
 	else
 	{
 		// send completed do not affect by heart beat
-		m_end_time = TimeHelper::GetCurTime();
+		m_end_time = CarpTimeHelper::GetCurTime();
 	}
 }
 
@@ -164,7 +159,7 @@ void HttpSender::SendFile(const char* path, const char* content_type, bool for_d
 	// if in sending, then return
 	if (m_is_sending)
 	{
-		ALITTLE_ERROR("Https Sender already in sending");
+		CARP_ERROR("Https Sender already in sending");
 		Close();
 		return;
 	}
@@ -203,7 +198,7 @@ void HttpSender::SendFile(const char* path, const char* content_type, bool for_d
 	
 	if (start_size > size)
 	{
-		ALITTLE_ERROR("Https Sender start size:("<< start_size << ") is large than file size:" << size);
+		CARP_ERROR("Https Sender start size:("<< start_size << ") is large than file size:" << size);
 		Close();
 		return;
 	}
@@ -230,9 +225,9 @@ void HttpSender::SendFile(const char* path, const char* content_type, bool for_d
 	{
 		m_http_content += "Content-Disposition: attachment;filename=";
 		if (show_name && strlen(show_name) > 0)
-			m_http_content += HttpHelper::UrlEncode(show_name);
+			m_http_content += CarpHttpHelper::UrlEncode(show_name);
 		else
-			m_http_content += HttpHelper::UrlEncode(FileHelper::GetFileNameByPath(path));
+			m_http_content += CarpHttpHelper::UrlEncode(CarpFileHelper::GetFileNameByPath(path));
 		m_http_content += "\r\n";
 	}
 	if (content_type == 0 || content_type[0] == 0)
@@ -265,7 +260,7 @@ void HttpSender::Heartbeat(int second)
 	if (m_end_time == 0) return;
 
 	// not wait second
-	if (TimeHelper::GetCurTime() - m_end_time < second) return;
+	if (CarpTimeHelper::GetCurTime() - m_end_time < second) return;
 
 	// close
 	Close();

@@ -9,10 +9,9 @@
 #include "ALittle/LibClient/Helper/FileHelperEx.h"
 
 #include "ALittle/LibCommon/ScriptSystem/ScriptSystem.h"
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/FileHelper.h"
 
 #define CARP_FONT_IMPL
+#include "Carp/carp_file_helper.hpp"
 #include "Carp/carp_font.hpp"
 
 #include "DisplayObject/DisplayView.h"
@@ -568,7 +567,7 @@ CarpFont* DisplaySystem::GetFont(const char* font_path, unsigned int font_style,
 		return size_it->second;
 
 	// get file name
-	std::string font_just_name = FileHelper::GetFileNameByPath(font_full_path);
+	std::string font_just_name = CarpFileHelper::GetFileNameByPath(font_full_path);
 	std::string font_just_path = font_full_path.substr(0, font_full_path.size() - font_just_name.size());
 
 // special in android
@@ -595,7 +594,7 @@ CarpFont* DisplaySystem::GetFont(const char* font_path, unsigned int font_style,
 	{
 		// if create failed then use system font
 #ifdef _WIN32
-		ALITTLE_ERROR("create font failed: path(" << font_path << ") can't find or font_size(" << font_size << ") not support " << ", and try C:\\Windows\\Fonts\\msyhbd.ttf");
+		CARP_ERROR("create font failed: path(" << font_path << ") can't find or font_size(" << font_size << ") not support " << ", and try C:\\Windows\\Fonts\\msyhbd.ttf");
 		std::string new_font_path = "C:\\Windows\\Fonts\\";
 		new_font_path += font_just_name;
 		font = LoadFont(new_font_path, font_size, font_style);
@@ -608,7 +607,7 @@ CarpFont* DisplaySystem::GetFont(const char* font_path, unsigned int font_style,
 	}
 	if (font == nullptr)
 	{
-		ALITTLE_ERROR("Load font failed:" << font_path);
+		CARP_ERROR("Load font failed:" << font_path);
 		return nullptr;
 	}
 

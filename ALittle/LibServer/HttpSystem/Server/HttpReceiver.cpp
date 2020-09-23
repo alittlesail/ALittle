@@ -2,13 +2,11 @@
 #include "HttpReceiver.h"
 #include "HttpServer.h"
 #include "HttpSender.h"
+
 #define CARP_HAS_SSL
 #include "Carp/carp_http.hpp"
-
-#include "ALittle/LibCommon/Helper/HttpHelper.h"
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/TimeHelper.h"
-#include "ALittle/LibCommon/Helper/StringHelper.h"
+#include "Carp/carp_log.hpp"
+#include "Carp/carp_time_helper.hpp"
 
 namespace ALittle
 {
@@ -54,7 +52,7 @@ void HttpReceiver::HandleJustWait(const asio::error_code& ec, std::size_t actual
 void HttpReceiver::NextRead()
 {
 	// update to current time
-	m_receive_time = TimeHelper::GetCurTime();
+	m_receive_time = CarpTimeHelper::GetCurTime();
 
 	// read next bytes
 	CARPHTTPSOCKET_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
@@ -70,7 +68,7 @@ void HttpReceiver::HandleRead(const asio::error_code& ec, std::size_t actual_siz
 	}
 	
 	// update to current time
-	m_receive_time = TimeHelper::GetCurTime();
+	m_receive_time = CarpTimeHelper::GetCurTime();
 
 	// store current size
 	int current_size = (int)m_http_head.size();
@@ -80,7 +78,7 @@ void HttpReceiver::HandleRead(const asio::error_code& ec, std::size_t actual_siz
 	// stop receive if lager than max size
 	if (m_http_head.size() > HTTP_HEAD_BUFFER_SIZE_MAX)
 	{
-		ALITTLE_ERROR("HTTP head is large than " << HTTP_HEAD_BUFFER_SIZE_MAX);
+		CARP_ERROR("HTTP head is large than " << HTTP_HEAD_BUFFER_SIZE_MAX);
 		Close();
 		return;
 	}
@@ -122,20 +120,20 @@ void HttpReceiver::HandleRead(const asio::error_code& ec, std::size_t actual_siz
 		if (m_http_head.substr(0, 4) == "POST")
 		{
 			// get content size from head
-			HttpHelper::ResponseType response_type = HttpHelper::ResponseType::RESPONSE_TYPE_CONTENT_LENGTH;
-			if (!HttpHelper::CalcFileSizeFromHttp(m_http_head, m_receive_size, response_type)
-				|| response_type != HttpHelper::ResponseType::RESPONSE_TYPE_CONTENT_LENGTH)
+			CarpHttpHelper::ResponseType response_type = CarpHttpHelper::ResponseType::RESPONSE_TYPE_CONTENT_LENGTH;
+			if (!CarpHttpHelper::CalcFileSizeFromHttp(m_http_head, m_receive_size, response_type)
+				|| response_type != CarpHttpHelper::ResponseType::RESPONSE_TYPE_CONTENT_LENGTH)
 			{
-				ALITTLE_ERROR("can't find Content-Length: in http head:" << m_http_head);
+				CARP_ERROR("can't find Content-Length: in http head:" << m_http_head);
 				Close();
 				return;
 			}
 
 			// get content type from head
 			std::string content_type = "";
-			if (!HttpHelper::CalcContentTypeFromHttp(m_http_head, content_type))
+			if (!CarpHttpHelper::CalcContentTypeFromHttp(m_http_head, content_type))
 			{
-				ALITTLE_ERROR("can't find Content-Type: in http head:" << m_http_head);
+				CARP_ERROR("can't find Content-Type: in http head:" << m_http_head);
 				Close();
 				return;
 			}
@@ -170,7 +168,7 @@ void HttpReceiver::HandleRead(const asio::error_code& ec, std::size_t actual_siz
 				size_t boundary_pos = content_type.find("boundary=");
 				if (boundary_pos == std::string::npos)
 				{
-					ALITTLE_ERROR("can't find boundary in Content-Type:" << m_http_head);
+					CARP_ERROR("can't find boundary in Content-Type:" << m_http_head);
 					Close();
 					return;
 				}
@@ -207,7 +205,7 @@ void HttpReceiver::HandleRead(const asio::error_code& ec, std::size_t actual_siz
 				return;
 			}
 
-			ALITTLE_ERROR("unknow Content-Type: in http head:" << m_http_head);
+			CARP_ERROR("unknow Content-Type: in http head:" << m_http_head);
 			Close();
 			return;
 		}
@@ -226,7 +224,7 @@ void HttpReceiver::HandleRead(const asio::error_code& ec, std::size_t actual_siz
 			return;
 		}
 
-		ALITTLE_ERROR("unknow http method!" << m_http_head);
+		CARP_ERROR("unknow http method!" << m_http_head);
 
 		Close();
 		return;
@@ -239,7 +237,7 @@ void HttpReceiver::HandleRead(const asio::error_code& ec, std::size_t actual_siz
 void HttpReceiver::NextReadFile()
 {
 	// update to current time
-	m_receive_time = TimeHelper::GetCurTime();
+	m_receive_time = CarpTimeHelper::GetCurTime();
 
 	CARPHTTPSOCKET_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
 		, std::bind(&HttpReceiver::HandleReadFile, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
@@ -257,7 +255,7 @@ void HttpReceiver::HandleReadFile(const asio::error_code& ec, std::size_t actual
 			// receive completed and do not affect by heart beat
 			m_receive_time = 0;
 
-			std::string reason = "HttpReceiver::HandleReadFile failed:" + SUTF8(asio::system_error(ec).what());
+			std::string reason = "HttpReceiver::HandleReadFile failed:" + std::to_string(ec.value());
 			HttpServerPtr server = m_server_system.lock();
 			if (server) server->HandleHttpFileCompletedMessage(m_sender, m_http_head, m_file_path, &reason);
 		}
@@ -266,7 +264,7 @@ void HttpReceiver::HandleReadFile(const asio::error_code& ec, std::size_t actual
 	}
 
 	// update current time
-	m_receive_time = TimeHelper::GetCurTime();
+	m_receive_time = CarpTimeHelper::GetCurTime();
 
 	// if last size lager than 0, then handle new bytes
 	if (m_receive_size > 0)
@@ -359,7 +357,7 @@ void HttpReceiver::HandleReadFile(const asio::error_code& ec, std::size_t actual
 void HttpReceiver::NextReadPost()
 {
 	// update to current time
-	m_receive_time = TimeHelper::GetCurTime();
+	m_receive_time = CarpTimeHelper::GetCurTime();
 
 	CARPHTTPSOCKET_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
 		, std::bind(&HttpReceiver::HandleReadPost, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
@@ -374,7 +372,7 @@ void HttpReceiver::HandleReadPost(const asio::error_code& ec, std::size_t actual
 	}
 
 	// update current time
-	m_receive_time = TimeHelper::GetCurTime();
+	m_receive_time = CarpTimeHelper::GetCurTime();
 	// add to buffer
 	m_http_head.append(m_http_buffer, actual_size);
 
@@ -416,7 +414,7 @@ void HttpReceiver::Heartbeat(int second)
 	if (m_receive_time == 0) return;
 
 	// not wait second
-	if (TimeHelper::GetCurTime() - m_receive_time < second) return;
+	if (CarpTimeHelper::GetCurTime() - m_receive_time < second) return;
 
 	// close
 	Close();

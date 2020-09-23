@@ -7,7 +7,7 @@
 #include <Mysql/mysql.h>
 #include <Mysql/errmsg.h>
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
+#include "Carp/carp_log.hpp"
 
 namespace ALittle
 {
@@ -16,7 +16,7 @@ void MysqlConnection::Setup()
 {
 	if (mysql_library_init(0, NULL, NULL))
 	{
-		ALITTLE_ERROR("could not initialize MySQL library");
+		CARP_ERROR("could not initialize MySQL library");
 	}
 }
 
@@ -43,10 +43,10 @@ bool MysqlConnection::Open(const char* ip
 							, const char* db_name)
 {
 	// check param
-    if (ip == nullptr) { ALITTLE_ERROR("ip == nullptr"); return false; }
-    if (username == nullptr) { ALITTLE_ERROR("username == nullptr"); return false; }
-    if (password == nullptr) { ALITTLE_ERROR("password == nullptr"); return false; }
-    if (db_name == nullptr) { ALITTLE_ERROR("db_name == nullptr"); return false; }
+    if (ip == nullptr) { CARP_ERROR("ip == nullptr"); return false; }
+    if (username == nullptr) { CARP_ERROR("username == nullptr"); return false; }
+    if (password == nullptr) { CARP_ERROR("password == nullptr"); return false; }
+    if (db_name == nullptr) { CARP_ERROR("db_name == nullptr"); return false; }
 
 	if (m_mysql) return true;
 
@@ -56,7 +56,7 @@ bool MysqlConnection::Open(const char* ip
 	// check create succeed or not
 	if (!m_mysql)
 	{
-		ALITTLE_ERROR("mysql_init failed: out of memory");
+		CARP_ERROR("mysql_init failed: out of memory");
 		return false;
 	}
 
@@ -65,14 +65,14 @@ bool MysqlConnection::Open(const char* ip
 	if (mysql_options(m_mysql, MYSQL_REPORT_DATA_TRUNCATION, &bool_option))
 	{
 		mysql_close(m_mysql); m_mysql = 0;
-		ALITTLE_ERROR("mysql_options failed: MYSQL_REPORT_DATA_TRUNCATION is unknow option");
+		CARP_ERROR("mysql_options failed: MYSQL_REPORT_DATA_TRUNCATION is unknow option");
 		return false;
 	}
 	// use utf8
 	if (mysql_options(m_mysql, MYSQL_SET_CHARSET_NAME, "utf8mb4"))
 	{
 		mysql_close(m_mysql); m_mysql = 0;
-		ALITTLE_ERROR("mysql_options failed: MYSQL_SET_CHARSET_NAME is unknow option");
+		CARP_ERROR("mysql_options failed: MYSQL_SET_CHARSET_NAME is unknow option");
 		return false;
 	}
 	// can auto reconnect
@@ -80,7 +80,7 @@ bool MysqlConnection::Open(const char* ip
 	if (mysql_options(m_mysql, MYSQL_OPT_RECONNECT, &bool_option))
 	{
 		mysql_close(m_mysql); m_mysql = 0;
-		ALITTLE_ERROR("mysql_options failed: MYSQL_OPT_RECONNECT is unknow option");
+		CARP_ERROR("mysql_options failed: MYSQL_OPT_RECONNECT is unknow option");
 		return false;
 	}
 
@@ -109,7 +109,7 @@ bool MysqlConnection::Open(const char* ip
 		return true;
 	}
 
-	ALITTLE_ERROR("mysql_real_connect failed:" << mysql_error(m_mysql));
+	CARP_ERROR("mysql_real_connect failed:" << mysql_error(m_mysql));
 	// connect failed
 	mysql_close(m_mysql); m_mysql = 0;
 
@@ -152,7 +152,7 @@ bool MysqlConnection::ReleaseStmt(const char* sql)
 	StmtMap::iterator it = m_stmt_map.find(sql);
 	if (it == m_stmt_map.end())
 	{
-		ALITTLE_ERROR("can't find stmt by sql:" << sql);
+		CARP_ERROR("can't find stmt by sql:" << sql);
 		return false;
 	}
 	for (size_t i = 0; i < it->second->bind_output.size(); ++i)
@@ -198,14 +198,14 @@ bool MysqlConnection::Ping()
 {
 	if (!m_mysql)
 	{
-		ALITTLE_ERROR("m_mysql is null!");
+		CARP_ERROR("m_mysql is null!");
 		return false;
 	}
 
 	// check disconnect
 	if (mysql_ping(m_mysql))
 	{
-		ALITTLE_ERROR("mysql_ping failed: " << mysql_error(m_mysql));
+		CARP_ERROR("mysql_ping failed: " << mysql_error(m_mysql));
 		return false;
 	}
 
@@ -217,7 +217,7 @@ MysqlConnection::MysqlStmtInfoPtr MysqlConnection::GetStmt(const std::string& sq
 	need_reconnect = false;
 	if (!m_mysql)
 	{
-		ALITTLE_ERROR("m_mysql is null!");
+		CARP_ERROR("m_mysql is null!");
 		return MysqlStmtInfoPtr();
 	}
 	
@@ -233,7 +233,7 @@ MysqlConnection::MysqlStmtInfoPtr MysqlConnection::GetStmt(const std::string& sq
 	info->stmt = mysql_stmt_init(m_mysql);
 	if (!info->stmt)
 	{
-		ALITTLE_ERROR("mysql_stmt_init failed: out of memory!");
+		CARP_ERROR("mysql_stmt_init failed: out of memory!");
 		return MysqlStmtInfoPtr();
 	}
 
@@ -242,7 +242,7 @@ MysqlConnection::MysqlStmtInfoPtr MysqlConnection::GetStmt(const std::string& sq
 	{
 		auto error = mysql_stmt_errno(info->stmt);
 		need_reconnect = error == CR_SERVER_GONE_ERROR || error == CR_SERVER_LOST;
-		ALITTLE_ERROR("mysql_stmt_prepare failed: code:" << mysql_stmt_errno(info->stmt) << ", reason:" << mysql_stmt_error(info->stmt));
+		CARP_ERROR("mysql_stmt_prepare failed: code:" << mysql_stmt_errno(info->stmt) << ", reason:" << mysql_stmt_error(info->stmt));
 		mysql_stmt_close(info->stmt);
 		return MysqlStmtInfoPtr();
 	}
@@ -264,7 +264,7 @@ MysqlConnection::MysqlStmtInfoPtr MysqlConnection::GetStmt(const std::string& sq
 			MYSQL_FIELD* field_list = mysql_fetch_field(field_meta_result);
 			if (field_list == nullptr)
 			{
-				ALITTLE_ERROR("mysql_fetch_field failed: " << mysql_stmt_error(info->stmt));
+				CARP_ERROR("mysql_fetch_field failed: " << mysql_stmt_error(info->stmt));
 				mysql_free_result(field_meta_result);
 				mysql_stmt_close(info->stmt);
 				return MysqlStmtInfoPtr();

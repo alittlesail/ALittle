@@ -1,7 +1,6 @@
 
 #include "FileCacheSystem.h"
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/TimeHelper.h"
+#include "Carp/carp_log.hpp"
 
 #include <list>
 #include <memory>
@@ -316,7 +315,7 @@ bool FileCacheSystem::Create(const std::string& file_path, FileCachePtr& file_ca
 
 			it->second.file_cache->SetStatus(FileCache::FILECACHESTATUS_LOADING);
 			file_cache = it->second.file_cache;
-			it->second.update_time = TimeHelper::GetCurTime();
+			it->second.update_time = CarpTimeHelper::GetCurTime();
 		}
 		else if (it->second.file_cache->GetStatus() == FileCache::FILECACHESTATUS_LOADING)
 		{
@@ -334,7 +333,7 @@ bool FileCacheSystem::Create(const std::string& file_path, FileCachePtr& file_ca
 		}
 		else
 		{
-			it->second.update_time = TimeHelper::GetCurTime();
+			it->second.update_time = CarpTimeHelper::GetCurTime();
 			file_cache = it->second.file_cache;
 		}
 	}
@@ -342,7 +341,7 @@ bool FileCacheSystem::Create(const std::string& file_path, FileCachePtr& file_ca
 	{
 		// create info and set status
 		FileCacheInfo info;
-		info.create_time = TimeHelper::GetCurTime();
+		info.create_time = CarpTimeHelper::GetCurTime();
 		info.update_time = info.create_time;
 		info.file_cache = FileCachePtr(new FileCache(-1)); // use default unit size
 		info.file_cache->SetStatus(FileCache::FILECACHESTATUS_LOADING);

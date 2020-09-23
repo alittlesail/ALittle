@@ -2,14 +2,13 @@
 #include "RouteSystem.h"
 #include "ALittle/LibServer/ServerSystem/ServerSchedule.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/StringHelper.h"
-
 #include "ConnectClient.h"
 #include "ConnectServer.h"
 #include "RouteMessage.h"
 #include "ConnectMessage.h"
 #include "RouteDefine.h"
+
+#include "Carp/carp_log.hpp"
 
 namespace ALittle
 {
@@ -18,7 +17,7 @@ void RouteSystem::SearchRoute(ROUTE_ID route_id, SearchRouteCallback callback)
 {
 	if (!callback)
 	{
-		ALITTLE_ERROR("callback is null");
+		CARP_ERROR("callback is null");
 		return;
 	}
 	
@@ -31,7 +30,7 @@ void RouteSystem::SearchRoute(ROUTE_ID route_id, SearchRouteCallback callback)
 		return;
 	}
 #ifdef SEARCH_ROUTE_LOG
-	ALITTLE_INFO(m_route_id << u8" 发起SearchRoute:" << search_key);
+	CARP_INFO(m_route_id << u8" 发起SearchRoute:" << search_key);
 #endif // SEARCH_ROUTE_LOG
 
 	// 创建一个搜索
@@ -43,7 +42,7 @@ void RouteSystem::SearchRoute(ROUTE_ID route_id, SearchRouteCallback callback)
 	for (auto it = m_endpoint_map.begin(); it != m_endpoint_map.end(); ++it)
 	{
 #ifdef SEARCH_ROUTE_LOG
-		ALITTLE_INFO(search_key << u8" SearchRoute添加第一批节点:" << it->second->GetTargetRouteId());
+		CARP_INFO(search_key << u8" SearchRoute添加第一批节点:" << it->second->GetTargetRouteId());
 #endif // SEARCH_ROUTE_LOG
 		info.AddRoute(it->second->GetTargetRouteId(), true);
 	}
@@ -62,7 +61,7 @@ void RouteSystem::SearchRouteImpl(ROUTE_ID search_key, const std::string* reason
 	if (search_it->second.cur_index >= static_cast<int>(search_it->second.search_path.size()))
 	{
 #ifdef SEARCH_ROUTE_LOG
-		ALITTLE_INFO(search_key << u8" SearchRoute没有节点可以继续搜索了:");
+		CARP_INFO(search_key << u8" SearchRoute没有节点可以继续搜索了:");
 #endif // SEARCH_ROUTE_LOG
 
 		std::string real_reason;
@@ -86,7 +85,7 @@ void RouteSystem::SearchRouteImpl(ROUTE_ID search_key, const std::string* reason
 	if (search_it->second.route_id != 0 && search_it->second.route_id == info.route_id)
 	{
 #ifdef SEARCH_ROUTE_LOG
-		ALITTLE_INFO(search_key << u8" SearchRoute找到符合条件的了:");
+		CARP_INFO(search_key << u8" SearchRoute找到符合条件的了:");
 #endif // SEARCH_ROUTE_LOG
 
 		std::list<ROUTE_ID> temp;
@@ -122,7 +121,7 @@ void RouteSystem::SearchRouteImpl(ROUTE_ID search_key, const std::string* reason
 	if (endpoint_it == m_endpoint_map.end())
 	{
 #ifdef SEARCH_ROUTE_LOG
-		ALITTLE_INFO(search_key << u8" SearchRoute搜索的初始节点找不到了，跳到下一个");
+		CARP_INFO(search_key << u8" SearchRoute搜索的初始节点找不到了，跳到下一个");
 #endif // SEARCH_ROUTE_LOG
 		++ search_it->second.cur_index;
 		std::string tmp = "route_id:" + ROUTE2S(m_route_id) + u8" 找不到route_id:" + ROUTE2S(msg.route_path.front());
@@ -131,7 +130,7 @@ void RouteSystem::SearchRouteImpl(ROUTE_ID search_key, const std::string* reason
 	}
 
 #ifdef SEARCH_ROUTE_LOG
-	ALITTLE_INFO(search_key << u8" SearchRoute发起可靠性请求向" << endpoint_it->second->m_target_route_id
+	CARP_INFO(search_key << u8" SearchRoute发起可靠性请求向" << endpoint_it->second->m_target_route_id
 				<< u8", 路径为:" << StringHelper::JoinString(msg.route_path, "->"));
 #endif // SEARCH_ROUTE_LOG
 	// 开始询问
@@ -145,7 +144,7 @@ void RouteSystem::SearchRouteImplCallback(const std::string* reason, int message
 										, ROUTE_ID search_key)
 {
 #ifdef SEARCH_ROUTE_LOG
-	ALITTLE_INFO(search_key << u8" SearchRoute收到可靠性应答");
+	CARP_INFO(search_key << u8" SearchRoute收到可靠性应答");
 #endif // SEARCH_ROUTE_LOG
 
 	auto it = m_search_route_map.find(search_key);
@@ -162,8 +161,8 @@ void RouteSystem::SearchRouteImplCallback(const std::string* reason, int message
 	// 检查是否是正确的应答包
 	if (message_id != ASearchRouteInfo::GetStaticID())
 	{
-		std::string tmp = "route_id:" + ROUTE2S(m_route_id) + u8"应答包不是一个ASearchRouteInfo! message_id:" + X2S(message_id);
-		ALITTLE_ERROR(tmp);
+		std::string tmp = "route_id:" + ROUTE2S(m_route_id) + u8"应答包不是一个ASearchRouteInfo! message_id:" + std::to_string(message_id);
+		CARP_ERROR(tmp);
 		++it->second.cur_index;
 		SearchRouteImpl(search_key, &tmp);
 		return;
@@ -174,7 +173,7 @@ void RouteSystem::SearchRouteImplCallback(const std::string* reason, int message
 	if (msg.Deserialize(memory, memroy_size) < 0)
 	{
 		std::string tmp = "route_id:" + ROUTE2S(m_route_id) + u8"ASearchRouteInfo Deserialize 失败!";
-		ALITTLE_ERROR(tmp);
+		CARP_ERROR(tmp);
 		++it->second.cur_index;
 		SearchRouteImpl(search_key, &tmp);
 		return;
@@ -185,7 +184,7 @@ void RouteSystem::SearchRouteImplCallback(const std::string* reason, int message
 	while (id_list_it != msg.route_id_list.end())
 	{
 #ifdef SEARCH_ROUTE_LOG
-		ALITTLE_INFO(search_key << u8" SearchRoute新增节点:" << *id_list_it);
+		CARP_INFO(search_key << u8" SearchRoute新增节点:" << *id_list_it);
 #endif // SEARCH_ROUTE_LOG
 		it->second.AddRoute(*id_list_it, false);
 		++ id_list_it;
@@ -203,14 +202,14 @@ void RouteSystem::SearchRouteTransCallback(const std::string* reason, int messag
 	ConnectEndpointPtr endpoint = src_endpoint.lock();
 	if (!endpoint)
 	{
-		ALITTLE_SYSTEM(u8"连接已经不存在了");
+		CARP_SYSTEM(u8"连接已经不存在了");
 		return;
 	}
 
 	// 如果已经断开连接了，那么直接返回
 	if (endpoint->IsConnected() == false)
 	{
-		ALITTLE_SYSTEM(u8"连接断开了");
+		CARP_SYSTEM(u8"连接断开了");
 		return;
 	}
 
@@ -224,15 +223,15 @@ void RouteSystem::SearchRouteTransCallback(const std::string* reason, int messag
 
 	if (message_id != ASearchRouteInfo::GetStaticID())
 	{
-		std::string reason = "route_id:" + ROUTE2S(m_route_id) + u8"应答包不是一个ASearchRouteInfo! message_id:" + X2S(message_id);
-		ALITTLE_ERROR(reason);
+		std::string reason = "route_id:" + ROUTE2S(m_route_id) + u8"应答包不是一个ASearchRouteInfo! message_id:" + std::to_string(message_id);
+		CARP_ERROR(reason);
 		endpoint->SendError(src_rpcid, reason);
 		return;
 	}
 	if (msg.Deserialize(memory, memroy_size) < 0)
 	{
 		std::string reason = "route_id:" + ROUTE2S(m_route_id) + u8"ASearchRouteInfo Deserialize 失败!";
-		ALITTLE_ERROR(reason);
+		CARP_ERROR(reason);
 		endpoint->SendError(src_rpcid, reason);
 		return;
 	}

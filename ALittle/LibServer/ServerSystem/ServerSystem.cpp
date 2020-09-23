@@ -6,12 +6,15 @@
 
 #include "ALittle/LibServer/MysqlSystem/MysqlConnection.h"
 
-#include "ALittle/LibCommon/Helper/TimeHelper.h"
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/DumpHelper.h"
-#include "ALittle/LibCommon/Helper/StringHelper.h"
-#include "ALittle/LibCommon/Tool/LogSystem.h"
-#include "ALittle/LibCommon/Tool/ConsoleSystem.h"
+#define CARP_CONSOLE_IMPL
+#include "Carp/carp_console.hpp"
+#define CARP_DUMP_IMPL
+#include "Carp/carp_dump.hpp"
+
+#include "Carp/carp_file_helper.hpp"
+
+#define CARP_LOG_IMPL
+#include "Carp/carp_log.hpp"
 
 namespace ALittle
 {
@@ -30,11 +33,11 @@ BOOL CtrlHandler(DWORD fdwCtrlType)
 		// case CTRL_LOGOFF_EVENT:
 		// case CTRL_SHUTDOWN_EVENT:
 	case CTRL_CLOSE_EVENT:
-		ALITTLE_INFO("CTRL_CLOSE_EVENT->Exit");
+		CARP_INFO("CTRL_CLOSE_EVENT->Exit");
 		ServerSystem::Instance().Close();
 		break;
 	case CTRL_C_EVENT:
-		ALITTLE_INFO("CTRL_C_EVENT->Exit");
+		CARP_INFO("CTRL_C_EVENT->Exit");
 		ServerSystem::Instance().Close();
 		break;
 	}
@@ -48,17 +51,18 @@ void ServerSystem::Setup(const std::map<std::string, ModuleInfo>& modules)
 	std::vector<std::string> module_name_list;
 	for (auto it = modules.begin(); it != modules.end(); ++it)
 		module_name_list.push_back(it->first);
-	std::string module_name = StringHelper::Join(module_name_list, "-");
+	std::string module_name = CarpStringHelper::Join(module_name_list, "-");
 
 #ifdef _WIN32
-    DumpHelper::Setup(module_name);
+	s_carp_dump.Setup(module_name, []() {s_carp_dump.Shutdown(); });
 #endif // _WIN32
 
 	// set prename of log file from config
-	g_LogSystem.Setup("Log/", module_name);
+	CarpFileHelper::CreateDeepFolder("Log");
+	s_carp_log.Setup("Log/", module_name);
 	
 #ifdef _WIN32
-	g_ConsoleSystem.Setup(module_name, std::bind(&ServerSystem::HandleConsoleCmd, this, std::placeholders::_1, std::placeholders::_2)
+	s_carp_console.Setup(module_name, std::bind(&ServerSystem::HandleConsoleCmd, this, std::placeholders::_1, std::placeholders::_2)
 		, std::bind(&ServerSystem::HandleConsoleExit, this), std::bind(&ServerSystem::HandleConsoleHelp, this));
 	// disabled the close button
 	DeleteMenu(GetSystemMenu(GetConsoleWindow(), FALSE), SC_CLOSE, MF_BYCOMMAND);
@@ -67,10 +71,10 @@ void ServerSystem::Setup(const std::map<std::string, ModuleInfo>& modules)
 	// hook the Ctrl Message
 #ifdef _DEBUG
 	if (SetConsoleCtrlHandler((PHANDLER_ROUTINE)CtrlHandler, TRUE) == FALSE)
-		ALITTLE_ERROR("SetConsoleCtrlHandler failed");
+		CARP_ERROR("SetConsoleCtrlHandler failed");
 #else
 	if (SetConsoleCtrlHandler(NULL, TRUE) == FALSE)
-		ALITTLE_ERROR("SetConsoleCtrlHandler failed");
+		CARP_ERROR("SetConsoleCtrlHandler failed");
 #endif // _DEBUG
 #endif // _WIN32
 
@@ -80,11 +84,11 @@ void ServerSystem::Setup(const std::map<std::string, ModuleInfo>& modules)
 
 void ServerSystem::Shutdown()
 {
-	g_LogSystem.Shutdown();
+	s_carp_log.Shutdown();
 	MysqlConnection::Shutdown();
 
 #ifdef _WIN32
-	DumpHelper::Shutdown();
+	s_carp_dump.Shutdown();
 #endif // _WIN32
 }
 
@@ -150,7 +154,7 @@ void ServerSystem::HandleConsoleCmd(const std::string& module_title, const std::
 			return;
 		}
 	}
-	ALITTLE_WARN(u8"没有找到模块:" << module_title);
+	CARP_WARN(u8"没有找到模块:" << module_title);
 }
 
 void ServerSystem::HandleConsoleExit()
@@ -164,7 +168,7 @@ void ServerSystem::HandleConsoleHelp()
 	std::list<std::string> name_list;
 	for (auto it = m_map.begin(); it != m_map.end(); ++it)
 		name_list.push_back(it->second->GetModuleTitle());
-	ALITTLE_INFO(u8"模块列表:" << StringHelper::Join(name_list, " "));
+	CARP_INFO(u8"模块列表:" << CarpStringHelper::Join(name_list, " "));
 }
 
 int ServerSystem::ScheduleRun(ServerSchedule* self)

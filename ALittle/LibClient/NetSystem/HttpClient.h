@@ -6,8 +6,7 @@
 #include <vector>
 
 #include "Carp/carp_http.hpp"
-
-#include "ALittle/LibCommon/Tool/SafeIDCreator.h"
+#include "Carp/carp_safe_id_creator.h"
 #include "ALittle/LibClient/Helper/NetHelper.h"
 #include "ALittle/LibClient/ThreadSystem/Task.h"
 
@@ -76,7 +75,7 @@ private:
 	std::string m_response;		// repones
 	std::string m_failed_reason;	//  ß∞‹‘≠“Ú
 
-	static SafeIDCreator<int> s_id_creator;
+	static CarpSafeIDCreator<int> s_id_creator;
 
 private:
 	CarpHttpClientTextPtr m_client;

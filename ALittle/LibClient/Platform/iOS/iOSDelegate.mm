@@ -9,8 +9,6 @@
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"
 #include "ALittle/LibClient/ScriptSystem/ScriptSystemEx.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-
 #import "iOSDelegate.h"
 #import "Reachability.h"
 #import "iOSSystem.h"

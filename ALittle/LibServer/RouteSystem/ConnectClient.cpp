@@ -5,8 +5,7 @@
 #include "RouteSystem.h"
 #include "ALittle/LibServer/ServerSystem/ServerSchedule.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/StringHelper.h"
+#include "Carp/carp_log.hpp"
 
 namespace ALittle
 {
@@ -34,7 +33,7 @@ void ConnectClient::Connect(ROUTE_ID route_id
 	// 检查是否正在连接
 	if (m_is_connecting)
 	{
-		ALITTLE_ERROR(u8"ConnectClient:Connect 正在连接的时候，不能再进行连接，" << "ip:" << ip << ", port:" << port);
+		CARP_ERROR(u8"ConnectClient:Connect 正在连接的时候，不能再进行连接，" << "ip:" << ip << ", port:" << port);
 		return;
 	}
 
@@ -67,7 +66,7 @@ void ConnectClient::HandleAsyncConnect(const asio::error_code& ec)
 	if (ec)
 	{
 		// 这个日志不打印，因为会出现太多，又不重要
-		// ALITTLE_SYSTEM(u8"ConnectClient 连接失败: " << SUTF8(asio::system_error(ec).what()) << ", ip:" << m_ip << ", port:" << m_port);
+		// CARP_SYSTEM(u8"ConnectClient 连接失败: " << SUTF8(asio::system_error(ec).what()) << ", ip:" << m_ip << ", port:" << m_port);
 		
 		// 处理连接失败
 		HandleConnectFailed();
@@ -107,7 +106,7 @@ void ConnectClient::HandleReconnectTimer(const asio::error_code& ec)
 	if (ec == asio::error::operation_aborted) return;
 
 	// 其他错误，一定要打印一下
-	if (ec) ALITTLE_ERROR(u8"定时器出现未知的错误类型，一定要检查解决一下:" << SUTF8(ec.message().c_str()));
+	if (ec) CARP_ERROR(u8"定时器出现未知的错误类型，一定要检查解决一下:" << ec.value());
 
 	// 关闭，释放
 	Close("route_id:" + ROUTE2S(m_route_id) + u8":ConnectClient:HandleReconnectTimer 主动连接失败的时候调用Close，触发ClearRPC");
@@ -122,7 +121,7 @@ void ConnectClient::HandleHeartbeatTimer(const asio::error_code& ec)
 	if (ec == asio::error::operation_aborted) return;
 
 	// 其他错误，一定要打印一下
-	if (ec) ALITTLE_ERROR(u8"定时器出现未知的错误类型，一定要检查解决一下:" << SUTF8(ec.message().c_str()));
+	if (ec) CARP_ERROR(u8"定时器出现未知的错误类型，一定要检查解决一下:" << ec.value());
 
 	// 发送心跳包
 	HeartbeatMessage msg;
@@ -219,7 +218,7 @@ void ConnectClient::HandleReadHead(const asio::error_code& ec, std::size_t actua
 		// 释放内存
 		if (m_memory) { free(m_memory); m_memory = 0; }
 		// 数据包接受失败，说明是断开连接了
-		ALITTLE_SYSTEM("route_id:" + ROUTE2S(m_route_id) + u8" ConnectClient:HandleReadHead 消息包接收失败，连接断开了:" << SUTF8(ec.message().c_str()));
+		CARP_SYSTEM("route_id:" + ROUTE2S(m_route_id) + u8" ConnectClient:HandleReadHead 消息包接收失败，连接断开了:" << ec.value());
 		ExecuteDisconnectCallback();
 		return;
 	}
@@ -255,7 +254,7 @@ void ConnectClient::HandleReadBody(const asio::error_code& ec, std::size_t actua
 		// 释放内存
 		if (m_memory) { free(m_memory); m_memory = 0; }
 		// 数据包接受失败，说明是断开连接了
-		ALITTLE_INFO("route_id:" + ROUTE2S(m_route_id) + u8" ConnectClient:HandleReadBody 消息包接收失败:" << SUTF8(ec.message().c_str()));
+		CARP_INFO("route_id:" + ROUTE2S(m_route_id) + u8" ConnectClient:HandleReadBody 消息包接收失败:" << ec.value());
 		// 通知断开连接
 		ExecuteDisconnectCallback();
 		return;
@@ -354,7 +353,7 @@ void ConnectClient::HandleSend(const asio::error_code& ec, std::size_t bytes_tra
 	if (ec)
 	{
 		// 发送失败说明断开连接了，但是这里不做通知，统一在读取那个位置进行通知
-		ALITTLE_SYSTEM("route_id:" << ROUTE2S(m_route_id) + u8" ConnectClient:HandleSend 消息包发送失败:" << SUTF8(ec.message().c_str()));
+		CARP_SYSTEM("route_id:" << ROUTE2S(m_route_id) + u8" ConnectClient:HandleSend 消息包发送失败:" << ec.value());
 		// 这里不通知断开连接，等待接受那部分通知断开
 		ExecuteDisconnectCallback();
 		return;

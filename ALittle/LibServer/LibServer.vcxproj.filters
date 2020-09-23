@@ -4,9 +4,6 @@
     <Filter Include="HttpSystem">
       <UniqueIdentifier>{c5b5f4d9-1718-48b2-b6b6-cd1ce9254446}</UniqueIdentifier>
     </Filter>
-    <Filter Include="HttpSystem\Client">
-      <UniqueIdentifier>{7dd3ba41-6a60-476e-b730-663629164946}</UniqueIdentifier>
-    </Filter>
     <Filter Include="HttpSystem\Server">
       <UniqueIdentifier>{50f19811-ff72-411f-9ab5-d22d140c2fe3}</UniqueIdentifier>
     </Filter>
@@ -27,12 +24,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="HttpSystem\Client\HttpClientPost.h">
-      <Filter>HttpSystem\Client</Filter>
-    </ClInclude>
-    <ClInclude Include="HttpSystem\Client\HttpClientText.h">
-      <Filter>HttpSystem\Client</Filter>
-    </ClInclude>
     <ClInclude Include="HttpSystem\Server\HttpSender.h">
       <Filter>HttpSystem\Server</Filter>
     </ClInclude>
@@ -98,12 +89,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="HttpSystem\Client\HttpClientText.cpp">
-      <Filter>HttpSystem\Client</Filter>
-    </ClCompile>
-    <ClCompile Include="HttpSystem\Client\HttpClientPost.cpp">
-      <Filter>HttpSystem\Client</Filter>
-    </ClCompile>
     <ClCompile Include="HttpSystem\Server\HttpSender.cpp">
       <Filter>HttpSystem\Server</Filter>
     </ClCompile>

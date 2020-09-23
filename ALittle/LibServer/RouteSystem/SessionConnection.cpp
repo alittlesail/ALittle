@@ -2,8 +2,7 @@
 #include "SessionConnection.h"
 #include "ALittle/LibServer/ServerSystem/ServerSchedule.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/StringHelper.h"
+#include "Carp/carp_string_helper.hpp"
 
 #include "RouteMessage.h"
 #include "ConnectEndpoint.h"
@@ -20,7 +19,7 @@ bool SessionConnection::Send(const CarpMessage& msg)
 	// 如果本节点不是起始点或者终点，那么就没有权利发送数据包
 	if (m_connect_index > 0 && m_connect_index + 1 < (int)m_vector_route_path.size())
 	{
-		ALITTLE_ERROR(u8"本节点不是这个会话连接的端点，不能发送数据包 " << GetConnectKey());
+		CARP_ERROR(u8"本节点不是这个会话连接的端点，不能发送数据包 " << GetConnectKey());
 		return false;
 	}
 
@@ -29,7 +28,7 @@ bool SessionConnection::Send(const CarpMessage& msg)
 	if (!target_endpoint) target_endpoint = m_next_endpoint.lock();
 	if (!target_endpoint)
 	{
-		ALITTLE_ERROR(u8"pre_endpoint和next_endpoint都是空指针，不能发送数据包 " << CONNECT2S(GetConnectKey()));
+		CARP_ERROR(u8"pre_endpoint和next_endpoint都是空指针，不能发送数据包 " << CONNECT2S(GetConnectKey()));
 		return false;
 	}
 

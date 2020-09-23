@@ -4,9 +4,6 @@
 #include "ALittle/LibClient/RenderSystem/DisplaySystem.h"
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"
 
-#include "ALittle/LibCommon/Helper/StringHelper.h"
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-
 namespace ALittle
 {
 

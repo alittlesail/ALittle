@@ -1,11 +1,11 @@
 
 #include "Text.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
 #include "ALittle/LibClient/RenderSystem/DisplaySystem.h"
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"
 #include "ALittle/LibClient/RenderSystem/Texture/SurfaceTexture.h"
 
+#include "Carp/carp_log.hpp"
 #include "Carp/carp_font.hpp"
 
 namespace ALittle
@@ -27,13 +27,13 @@ TextTextureInfo* Text::CreateTextureInfo(CarpFont* font, const std::string& text
 	SDL_Surface* surface = g_DisplaySystem.CreateSurface(font, text.c_str());
 	if (!surface)
 	{
-		ALITTLE_ERROR("Font Helper create surface failed!");
+		CARP_ERROR("Font Helper create surface failed!");
 		return 0;
 	}
 
 	if (surface->w <= 0 || surface->h <= 0)
 	{
-		ALITTLE_ERROR("surface:(w, h)=(" << surface->w << ", " << surface->h << ")");
+		CARP_ERROR("surface:(w, h)=(" << surface->w << ", " << surface->h << ")");
 		return 0;
 	}
 

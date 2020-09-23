@@ -8,8 +8,6 @@
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
 #include "ALittle/LibClient/Tool/MemoryPool.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-
 namespace ALittle
 {
 
@@ -243,7 +241,7 @@ void Java_org_libsdl_app_GlobalFunc_SurfaceResize(JNIEnv * env, jobject obj )
 
 void Java_org_libsdl_app_GlobalFunc_J2CLog(JNIEnv * env, jobject obj, jstring content )
 {
-	ALITTLE_INFO(ALittle::Android_jstring2stdstring(env, content));
+	CARP_INFO(ALittle::Android_jstring2stdstring(env, content));
 }
 
 void Java_org_libsdl_app_GlobalFunc_Invoke(JNIEnv * env, jobject obj, jstring method, jstring content )

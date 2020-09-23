@@ -2,17 +2,13 @@
 #include "TextureLoader.h"
 #include "SurfaceTexture.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/StringHelper.h"
-#include "ALittle/LibCommon/Helper/CryptHelper.h"
-#include "ALittle/LibCommon/Helper/FileHelper.h"
-
 #include "ALittle/LibClient/ScriptSystem/ScriptSystemEx.h"
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
 #include "ALittle/LibClient/ScheduleSystem/EventDefine.h"
 #include "ALittle/LibClient/ThreadSystem/ThreadSystem.h"
 #include "ALittle/LibClient/Helper/TextureHelper.h"
 #include "ALittle/LibClient/Helper/FileHelperEx.h"
+#include "Carp/carp_crypt_helper.hpp"
 
 namespace ALittle
 {
@@ -36,42 +32,42 @@ void TextureLoader::Execute()
 	}
 
 	std::vector<std::string> atlas_list;
-	StringHelper::Split(m_atlas_info, ";", atlas_list);
+	CarpStringHelper::Split(m_atlas_info, ";", atlas_list);
 	for (unsigned int i = 0; i < atlas_list.size(); ++i)
 	{
 		std::vector<std::string> atlas_info;
-		StringHelper::Split(atlas_list[i], ",", atlas_info);
+		CarpStringHelper::Split(atlas_list[i], ",", atlas_info);
 		if (atlas_info.size() < 1) continue;
 		std::string file_path = atlas_info[0];
 		if (atlas_info.size() < 2) continue;
-		int t = S2I(atlas_info[1].c_str());
+		int t = std::atoi(atlas_info[1].c_str());
 		if (atlas_info.size() < 3) continue;
-		int b = S2I(atlas_info[2].c_str());
+		int b = std::atoi(atlas_info[2].c_str());
 		if (atlas_info.size() < 4) continue;
-		int l = S2I(atlas_info[3].c_str());
+		int l = std::atoi(atlas_info[3].c_str());
 		if (atlas_info.size() < 5) continue;
-		int r = S2I(atlas_info[4].c_str());
+		int r = std::atoi(atlas_info[4].c_str());
 		if (atlas_info.size() < 6) continue;
-		int w = S2I(atlas_info[5].c_str());
+		int w = std::atoi(atlas_info[5].c_str());
 		if (atlas_info.size() < 7) continue;
-		int h = S2I(atlas_info[6].c_str());
+		int h = std::atoi(atlas_info[6].c_str());
 
 		std::vector<char> file_content;
 		if (!FileHelperEx::LoadFile(file_path, false, file_content))
 		{
 			if (surface) SDL_FreeSurface(surface);
-			ALITTLE_ERROR("LocalFile load failed, " << file_path);
+			CARP_ERROR("LocalFile load failed, " << file_path);
 			g_ScheduleSystem.PushUserEvent(TEXTURE_LOAD_FAILED, this);
 			return;
 		}
-		if (m_crypt_mode) CryptHelper::XXTeaDecodeMemory(&(file_content[0]), static_cast<int>(file_content.size()), 0);
+		if (m_crypt_mode) CarpCryptHelper::XXTeaDecodeMemory(&(file_content[0]), static_cast<int>(file_content.size()), 0);
 
 		// create surface
 		SDL_Surface* child_surface = TextureHelper::LoadImageFromMemory(file_content.data(), file_content.size());
 		if (!child_surface)
 		{
 			if (surface) SDL_FreeSurface(surface);
-			ALITTLE_ERROR("LoadImageFromMemory failed:" << file_path);
+			CARP_ERROR("LoadImageFromMemory failed:" << file_path);
 			g_ScheduleSystem.PushUserEvent(TEXTURE_LOAD_FAILED, this);
 			return;
 		}

@@ -2,7 +2,6 @@
 #include "CsvFile.h"
 #include "LocalFile.h"
 
-#include "ALittle/LibCommon/Helper/StringHelper.h"
 extern "C" {
 #include "ALittle/LibCommon/ThirdParty/csv/csv.h"
 }

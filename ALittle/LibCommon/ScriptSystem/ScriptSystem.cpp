@@ -1,23 +1,22 @@
 
 #include "ScriptSystem.h"
 
+#include "Carp/carp_crypt_helper.hpp"
+#include "Carp/carp_file_helper.hpp"
+
 extern "C" {
 #include "ALittle/LibCommon/ThirdParty/json/lua_cjson.h"
 #include "ALittle/LibCommon/ThirdParty/json/lua_ajson.h"
 #include "ALittle/LibCommon/ThirdParty/lfs/lfs.h"
-#include "ALittle/LibCommon/ThirdParty/base64/base64lib.h"
 #include "ALittle/LibCommon/ThirdParty/csv/csvlib.h"
 #include "ALittle/LibCommon/ThirdParty/md5/md5.h"
 #include "ALittle/LibCommon/ThirdParty/utf8/utf8lib.h"
 #include "ALittle/LibCommon/ThirdParty/timer/timerlib.h"
 #include "ALittle/LibCommon/ThirdParty/sqlite3/lsqlite3.h"
+#include "ALittle/LibCommon/ThirdParty/base64/base64lib.h"
 }
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/FileHelper.h"
-#include "ALittle/LibCommon/Helper/CryptHelper.h"
-#include "ALittle/LibCommon/Tool/LogSystem.h"
-
+#include "Carp/carp_log.hpp"
 #include "Carp/carp_message.hpp"
 
 namespace ALittle
@@ -31,7 +30,7 @@ void ScriptSystem::Init(const std::string& module_title)
 	m_L = ::luaL_newstate();
 	if (!m_L)
 	{
-		ALITTLE_SCRIPT_ERROR("lua_open failed!");
+		CARP_SCRIPT_ERROR("lua_open failed!");
 		return;
 	}
 
@@ -40,12 +39,12 @@ void ScriptSystem::Init(const std::string& module_title)
 	luaopen_json(m_L); lua_settop(m_L, 0);
 	luaopen_ajson(m_L); lua_settop(m_L, 0);
 	luaopen_lfs(m_L); lua_settop(m_L, 0);
-	luaopen_base64(m_L); lua_settop(m_L, 0);
 	luaopen_csv(m_L); lua_settop(m_L, 0);
 	luaopen_md5(m_L); lua_settop(m_L, 0);
 	luaopen_utf8(m_L); lua_settop(m_L, 0);
 	luaopen_timer(m_L); lua_settop(m_L, 0);
 	luaopen_sqlite3(m_L); lua_settop(m_L, 0);
+	luaopen_base64(m_L); lua_settop(m_L, 0);
 
 	luabridge::getGlobalNamespace(m_L)
 		.beginClass<CarpMessageReadFactory>("__CPPAPIMessageReadFactory")
@@ -103,13 +102,13 @@ void ScriptSystem::Log(const char* content, short level)
 	std::string real;
 	real.append("[").append(m_module_title).append("] ");
 	real.append(content);
-	if (level == LogHelper::LL_ERROR)
+	if (level == CARP_LOG_LEVEL_ERROR)
 	{
 		real.append("\n");
 		CallStack(m_L, 0, real);
 	}
 	
-	g_LogSystem.Log(real.c_str(), level);
+	s_carp_log.Log(real.c_str(), level);
 }
 
 void ScriptSystem::CallStack(lua_State* L, int n, std::string& stack_info)
@@ -144,7 +143,7 @@ int ScriptSystem::OnError(lua_State* L)
 
 	content.append("\n");
 	CallStack(L, 0, content);
-	ALITTLE_SCRIPT_ERROR(content);
+	CARP_SCRIPT_ERROR(content);
 
 	return 0;
 }
@@ -157,7 +156,7 @@ void ScriptSystem::PrintError(lua_State* L, const char* name, const char* messag
 	lua_pop(L, 1);
 	content.append("\n");
 	CallStack(L, 0, content);
-	ALITTLE_SCRIPT_ERROR(content);
+	CARP_SCRIPT_ERROR(content);
 }
 
 void ScriptSystem::RunScript(const char* script, size_t len, const char* file_path)
@@ -189,13 +188,13 @@ bool ScriptSystem::Require(const char* file_path)
 	std::vector<char> content;
 	if (!LoadFile(lua_path.c_str(), content))
 	{
-		ALITTLE_ERROR("can't find lua file:" << lua_path);
+		CARP_ERROR("can't find lua file:" << lua_path);
 		return false;
 	}
 
 	std::string start_text = "-- ALittle Generate Lua";
 	if (content.size() < start_text.size() || start_text != std::string(content.data(), start_text.size()))
-		CryptHelper::XXTeaDecodeMemory(content.data(), static_cast<int>(content.size()), 0);
+		CarpCryptHelper::XXTeaDecodeMemory(content.data(), static_cast<int>(content.size()), 0);
 	RunScript(content.data(), content.size(), lua_path.c_str());
 	return true;
 }
@@ -219,12 +218,12 @@ void ScriptSystem::RegisterImpl()
 
 bool ScriptSystem::LoadFile(const char* file_path, std::vector<char>& content)
 {
-	return FileHelper::LoadStdFile(file_path, content);
+	return CarpFileHelper::LoadStdFile(file_path, content);
 }
 
 int ScriptSystem::JSHash(const char* value)
 {
-	return CryptHelper::JSHash(value);
+	return CarpCryptHelper::JSHash(value);
 }
 
 } // ALittle

@@ -2,12 +2,11 @@
 #include "ClientReceiver.h"
 #include "ClientServer.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/StringHelper.h"
-#include "ALittle/LibCommon/Helper/CryptHelper.h"
 #include "ALittle/LibServer/ServerSystem/ServerSchedule.h"
 
 #include <functional>
+
+#include "Carp/carp_crypt_helper.hpp"
 
 namespace ALittle
 {
@@ -26,7 +25,7 @@ void ClientReceiver::HandleWebSocketHandShakeReceive( const asio::error_code& ec
 {
 	if (ec)
 	{
-		ALITTLE_SYSTEM("receive failed:" << SUTF8(ec.message().c_str()));
+		CARP_SYSTEM("receive failed:" << ec.value());
 		ClientServerPtr server = m_server.lock();
 		if (server)	server->HandleOuterDisconnected(this->shared_from_this());
 		return;
@@ -40,7 +39,7 @@ void ClientReceiver::HandleWebSocketHandShakeReceive( const asio::error_code& ec
 	// stop receive if lager than max size
 	if (m_websocket_handshake.size() > WEBSOCKET_HEAD_BUFFER_SIZE_MAX)
 	{
-		ALITTLE_SYSTEM("websocket hand shake is large than " << WEBSOCKET_HEAD_BUFFER_SIZE_MAX);
+		CARP_SYSTEM("websocket hand shake is large than " << WEBSOCKET_HEAD_BUFFER_SIZE_MAX);
 		ClientServerPtr server = m_server.lock();
 		if (server)	server->HandleOuterDisconnected(this->shared_from_this());
 		return;
@@ -63,7 +62,7 @@ void ClientReceiver::HandleWebSocketHandShakeReceive( const asio::error_code& ec
 		std::string::size_type pos = m_websocket_handshake.find("Sec-WebSocket-Key:");
 		if (pos == std::string::npos)
 		{
-			ALITTLE_SYSTEM("can't find Sec-WebSocket-Key in web socket head");
+			CARP_SYSTEM("can't find Sec-WebSocket-Key in web socket head");
 			ClientServerPtr server = m_server.lock();
 			if (server)	server->HandleOuterDisconnected(this->shared_from_this());
 			return;
@@ -74,7 +73,7 @@ void ClientReceiver::HandleWebSocketHandShakeReceive( const asio::error_code& ec
 		std::string::size_type end_pos = m_websocket_handshake.find("\r\n", pos);
 		if (pos == std::string::npos)
 		{
-			ALITTLE_SYSTEM("can't find end of Sec-WebSocket-Key in web socket head");
+			CARP_SYSTEM("can't find end of Sec-WebSocket-Key in web socket head");
 			ClientServerPtr server = m_server.lock();
 			if (server)	server->HandleOuterDisconnected(this->shared_from_this());
 			return;
@@ -82,12 +81,12 @@ void ClientReceiver::HandleWebSocketHandShakeReceive( const asio::error_code& ec
 
 		// encode the key
 		std::string key = m_websocket_handshake.substr(pos, end_pos - pos);
-		StringHelper::TrimLeft(key);
-		StringHelper::TrimRight(key);
+		CarpStringHelper::TrimLeft(key);
+		CarpStringHelper::TrimRight(key);
 		key.append("258EAFA5-E914-47DA-95CA-C5AB0DC85B11");
 
 		unsigned int digest[5];
-		CryptHelper::Sha1(key, digest);
+		CarpCryptHelper::Sha1(key, digest);
 
 		char* tmp = (char*)digest;
 		char new_digest[20] = { 0 };
@@ -99,7 +98,7 @@ void ClientReceiver::HandleWebSocketHandShakeReceive( const asio::error_code& ec
 			new_digest[i*4+3]	= tmp[i*4];
 		}
 
-		key = CryptHelper::Base64Encode(new_digest, 20);
+		key = CarpCryptHelper::Base64Encode(new_digest, 20);
 
 		m_websocket_handshake = "";
 		m_websocket_handshake.append("HTTP/1.1 101 Switching Protocols\r\n");
@@ -124,7 +123,7 @@ void ClientReceiver::HandleWebSocketHandShakeSend( const asio::error_code& ec, s
 {
 	if (ec)
 	{
-		ALITTLE_SYSTEM("websocket hand shake send failed!, " << SUTF8(ec.message().c_str()));
+		CARP_SYSTEM("websocket hand shake send failed!, " << ec.value());
 		ClientServerPtr server = m_server.lock();
 		if (server)	server->HandleOuterDisconnected(this->shared_from_this());
 		return;
@@ -144,7 +143,7 @@ void ClientReceiver::HandleNextWebSocketRead1( const asio::error_code& ec, std::
 {
 	if (ec)
 	{
-		ALITTLE_SYSTEM("receive failed!, " << SUTF8(ec.message().c_str()));
+		CARP_SYSTEM("receive failed!, " << ec.value());
 		ClientServerPtr server = m_server.lock();
 		if (server)	server->HandleOuterDisconnected(this->shared_from_this());
 		return;
@@ -161,7 +160,7 @@ void ClientReceiver::HandleNextWebSocketRead1( const asio::error_code& ec, std::
 	case 2: m_current_is_message = true; break;	// binary message
 	case 8:
 		{
-			ALITTLE_INFO("websocket client send to server close");
+			CARP_INFO("websocket client send to server close");
 			ClientServerPtr server = m_server.lock();
 			if (server)	server->HandleOuterDisconnected(this->shared_from_this());
 			return;
@@ -173,7 +172,7 @@ void ClientReceiver::HandleNextWebSocketRead1( const asio::error_code& ec, std::
 	int payload_len = m_frame_buffer[1] & 0x7F;
 	if (payload_len < 0)
 	{
-		ALITTLE_SYSTEM("payload len < 0");
+		CARP_SYSTEM("payload len < 0");
 		ClientServerPtr server = m_server.lock();
 		if (server)	server->HandleOuterDisconnected(this->shared_from_this());
 		return;
@@ -206,7 +205,7 @@ void ClientReceiver::HandleNextWebSocketRead2( const asio::error_code& ec, std::
 {
 	if (ec)
 	{
-		ALITTLE_SYSTEM("receive failed!, " << SUTF8(ec.message().c_str()));
+		CARP_SYSTEM("receive failed!, " << ec.value());
 		ClientServerPtr server = m_server.lock();
 		if (server)	server->HandleOuterDisconnected(this->shared_from_this());
 		return;
@@ -232,7 +231,7 @@ void ClientReceiver::HandleNextWebSocketRead2( const asio::error_code& ec, std::
 
 	if (m_data_length < 0)
 	{
-		ALITTLE_SYSTEM("m_data_length < 0");
+		CARP_SYSTEM("m_data_length < 0");
 		ClientServerPtr server = m_server.lock();
 		if (server)	server->HandleOuterDisconnected(this->shared_from_this());
 		return;
@@ -255,7 +254,7 @@ void ClientReceiver::HandleNextWebSocketReadMark( const asio::error_code& ec, st
 {
 	if (ec)
 	{
-		ALITTLE_SYSTEM("receive failed!, " << SUTF8(ec.message().c_str()));
+		CARP_SYSTEM("receive failed!, " << ec.value());
 		ClientServerPtr server = m_server.lock();
 		if (server)	server->HandleOuterDisconnected(this->shared_from_this());
 		return;
@@ -280,7 +279,7 @@ void ClientReceiver::HandleNextWebSocketReadData( const asio::error_code& ec, st
 {
 	if (ec)
 	{
-		ALITTLE_SYSTEM("receive failed!, " << SUTF8(ec.message().c_str()));
+		CARP_SYSTEM("receive failed!, " << ec.value());
 		ClientServerPtr server = m_server.lock();
 		if (server)	server->HandleOuterDisconnected(this->shared_from_this());
 		return;
@@ -350,7 +349,7 @@ void ClientReceiver::HandleWebSocketReadData( int total_size, int offset )
 
 			if (message_size > MESSAGE_BUFFER_SIZE)
 			{
-				ALITTLE_ERROR("message_size(" << message_size << ") is large then " << MESSAGE_BUFFER_SIZE);
+				CARP_ERROR("message_size(" << message_size << ") is large then " << MESSAGE_BUFFER_SIZE);
 				ClientServerPtr server = m_server.lock();
 				if (server)	server->HandleOuterDisconnected(this->shared_from_this());
 				return;

@@ -2,8 +2,7 @@
 #include "ClientReceiver.h"
 #include "ClientServer.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/StringHelper.h"
+#include "Carp/carp_log.hpp"
 #include "ALittle/LibServer/ServerSystem/ServerSchedule.h"
 
 namespace ALittle
@@ -26,7 +25,7 @@ bool ClientServer::Start(const std::string& yun_ip, const std::string& ip, int p
 	// 如果已经开启了就直接返回
 	if (m_acceptor)
 	{
-		ALITTLE_ERROR("Client server already started(ip: " << m_ip << ", port:" << m_port << ")");
+		CARP_ERROR("Client server already started(ip: " << m_ip << ", port:" << m_port << ")");
 		return false;
 	}
 
@@ -40,10 +39,10 @@ bool ClientServer::Start(const std::string& yun_ip, const std::string& ip, int p
 			m_acceptor = AcceptorPtr(new asio::ip::tcp::acceptor(schedule->GetIOService()
 			, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port), false));
 	}
-	catch (std::exception& e)
+	catch (asio::error_code& ec)
 	{
 		m_acceptor = AcceptorPtr();
-		ALITTLE_ERROR("ClientServer: " << ip << " start failed at port: " << port << " error: " << SUTF8(e.what()));
+		CARP_ERROR("ClientServer: " << ip << " start failed at port: " << port << " error: " << ec.value());
 		return false;
 	}
 
@@ -58,7 +57,7 @@ bool ClientServer::Start(const std::string& yun_ip, const std::string& ip, int p
 	m_ip = ip;
 	m_port = port;
 	
-	ALITTLE_SYSTEM("ClientServer: start succeed at " << m_ip << ":" << m_port);
+	CARP_SYSTEM("ClientServer: start succeed at " << m_ip << ":" << m_port);
 	return true;
 }
 
@@ -84,7 +83,7 @@ void ClientServer::Close()
 		(*it)->Close();
 	m_outer_set.clear();
 
-	ALITTLE_SYSTEM("ClientServer: stop succeed.");
+	CARP_SYSTEM("ClientServer: stop succeed.");
 }
 
 void ClientServer::NextAccept(int error_count)
@@ -103,7 +102,7 @@ void ClientServer::HandleAccept(const asio::error_code& ec, SocketPtr socket, in
 {
 	if (ec)
 	{
-		ALITTLE_ERROR("ClientServer accept failed: " << SUTF8(ec.message().c_str()));
+		CARP_ERROR("ClientServer accept failed: " << ec.value());
 		if (error_count > 100)
 			Close();
 		else

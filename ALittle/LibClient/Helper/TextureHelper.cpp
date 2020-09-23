@@ -1,9 +1,6 @@
 
 #include "TextureHelper.h"
 
-#include "ALittle/LibCommon/Helper/StringHelper.h"
-#include "ALittle/LibCommon/Helper/FileHelper.h"
-
 #include <SDL_surface.h>
 #include <vector>
 #include "ALittle/LibClient/Platform/iOS/iOSSystem.h"
@@ -11,6 +8,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "Carp/carp_string_helper.hpp"
 #include "stb/stb_image_write.h"
 
 namespace ALittle
@@ -46,11 +44,11 @@ void TextureHelper::BlitSurface(SDL_Surface* dest, SDL_Surface* src, unsigned in
 bool TextureHelper::CutBlitSurface(SDL_Surface* dest, SDL_Surface* src, const char* to, const char* from)
 {
 	std::vector<std::string> to_list;
-	StringHelper::Split(to, ",", to_list);
+	CarpStringHelper::Split(to, ",", to_list);
 	if (to_list.size() < 4 ) return false;
 
 	std::vector<std::string> from_list;
-	StringHelper::Split(from, ",", from_list);
+	CarpStringHelper::Split(from, ",", from_list);
 	if (from_list.size() < 4 ) return false;
 
 	SDL_Rect dst_rect;

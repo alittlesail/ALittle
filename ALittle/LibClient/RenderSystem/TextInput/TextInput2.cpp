@@ -1,8 +1,6 @@
 
 #include "TextInput.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/StringHelper.h"
 extern "C" {
 #include "ALittle/LibCommon/ThirdParty/utf8/utf8.h"
 }

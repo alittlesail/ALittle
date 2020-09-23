@@ -10,7 +10,7 @@
 #include "LuaBridge/Source/LuaBridge/LuaBridge.h"
 #include <string>
 #include <set>
-#include "ALittle/LibCommon/Helper/LogHelper.h"
+#include "Carp/carp_log.hpp"
 
 namespace ALittle
 {
@@ -66,7 +66,7 @@ public:
 			content.append("attempt to call global '");
 			content.append(name);
 			content.append("' (not a function)");
-			ALITTLE_SCRIPT_ERROR(content);
+			CARP_SCRIPT_ERROR(content);
 		}
 
 		lua_remove(m_L, errfunc);
@@ -102,7 +102,7 @@ public:
 			content.append("attempt to call global '");
 			content.append(name);
 			content.append("' (not a function)");
-			ALITTLE_SCRIPT_ERROR(content);
+			CARP_SCRIPT_ERROR(content);
 		}
 
 		lua_remove(m_L, errfunc);

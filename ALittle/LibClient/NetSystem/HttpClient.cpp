@@ -7,12 +7,12 @@
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
 #include "ALittle/LibClient/ScriptSystem/ScriptSystemEx.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
+#include "Carp/carp_log.hpp"
 
 namespace ALittle
 {
 
-SafeIDCreator<int> HttpClient::s_id_creator;
+CarpSafeIDCreator<int> HttpClient::s_id_creator;
 
 HttpClient::HttpClient()
 {
@@ -29,7 +29,7 @@ void HttpClient::SetURL(const char* url, const char* content)
 {
 	if (m_client)
 	{
-		ALITTLE_ERROR("socket already exist!");
+		CARP_ERROR("socket already exist!");
 		return;
 	}
 

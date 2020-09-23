@@ -6,8 +6,7 @@
 #include "RouteSystem.h"
 #include "ALittle/LibServer/ServerSystem/ServerSchedule.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/StringHelper.h"
+#include "Carp/carp_log.hpp"
 
 namespace ALittle
 {
@@ -29,7 +28,7 @@ bool ConnectServer::Start(ROUTE_ID route_id, const std::string& yun_ip, const st
 	// 检查是否已经创建了接收器
 	if (m_acceptor)
 	{
-		ALITTLE_ERROR(u8"ConnectServer 已经启动了，不能再启动(ip: " << m_ip << ", port:" << m_port << ")");
+		CARP_ERROR(u8"ConnectServer 已经启动了，不能再启动(ip: " << m_ip << ", port:" << m_port << ")");
 		return false;
 	}
 
@@ -43,10 +42,10 @@ bool ConnectServer::Start(ROUTE_ID route_id, const std::string& yun_ip, const st
 			m_acceptor = AcceptorPtr(new asio::ip::tcp::acceptor(route_system->GetSchedule()->GetIOService()
 			, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port), false));
 	}
-	catch (std::exception& e)
+	catch (asio::error_code& ec)
 	{
 		m_acceptor = AcceptorPtr();
-		ALITTLE_ERROR("ConnectServer: " << ip << u8" 启动失败 at port: " << port << " error: " << SUTF8(e.what()));
+		CARP_ERROR("ConnectServer: " << ip << u8" 启动失败 at port: " << port << " error: " << ec.value());
 		return false;
 	}
 
@@ -64,7 +63,7 @@ bool ConnectServer::Start(ROUTE_ID route_id, const std::string& yun_ip, const st
 	m_route_id = route_id;
 	
 	// 打印一下
-	ALITTLE_SYSTEM("ConnectServer: start succeed, " << "route_id:" << ROUTE2S(m_route_id) << " at " << m_ip << ":" << m_port);
+	CARP_SYSTEM("ConnectServer: start succeed, " << "route_id:" << ROUTE2S(m_route_id) << " at " << m_ip << ":" << m_port);
 	return true;
 }
 
@@ -94,7 +93,7 @@ void ConnectServer::Close()
 	m_outer_set.clear();
 
 	// 打印一下
-	ALITTLE_SYSTEM("ConnectServer: stop succeed, " << " route_id:" << ROUTE2S(m_route_id) << " at " << m_ip << ":" << m_port);
+	CARP_SYSTEM("ConnectServer: stop succeed, " << " route_id:" << ROUTE2S(m_route_id) << " at " << m_ip << ":" << m_port);
 }
 
 void ConnectServer::NextAccept(int error_count)
@@ -114,7 +113,7 @@ void ConnectServer::HandleAccept(const asio::error_code& ec, SocketPtr socket, i
 	{
 		// 这个错误一般不容易出现。
 		// 目前发现的是，1.主动修改服务器的ip会触发这个异常  2.服务器刚刚启动网络模块还没有初始化好
-		ALITTLE_ERROR("route_id:" + ROUTE2S(m_route_id) + " ConnectServer accept failed: " << SUTF8(ec.message().c_str()));
+		CARP_ERROR("route_id:" + ROUTE2S(m_route_id) + " ConnectServer accept failed: " << ec.value());
 		if (error_count > 100)
 			Close();
 		else
@@ -157,7 +156,7 @@ void ConnectServer::ServerSendHeatbeat(const asio::error_code& ec, int interval)
 	if (ec == asio::error::operation_aborted) return;
 
 	// 其他错误，一定要打印一下
-	if (ec) ALITTLE_ERROR(u8"定时器出现未知的错误类型，一定要检查解决一下:" << SUTF8(ec.message().c_str()));
+	if (ec) CARP_ERROR(u8"定时器出现未知的错误类型，一定要检查解决一下:" << ec.value());
 
 	HeartbeatMessage msg;
 	for (auto it = m_outer_set.begin(); it != m_outer_set.end(); ++it)

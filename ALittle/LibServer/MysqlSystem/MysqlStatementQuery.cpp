@@ -1,12 +1,13 @@
 
 #include "MysqlStatementQuery.h"
-#include "ALittle/LibCommon/Helper/LogHelper.h"
 
 #ifdef _WIN32
 #include <WinSock2.h>
 #endif
 #include <Mysql/mysql.h>
 #include <Mysql/errmsg.h>
+
+#include "Carp/carp_log.hpp"
 
 namespace ALittle
 {
@@ -72,16 +73,16 @@ bool MysqlStatementQuery::Begin(std::string& reason)
             return false;
     	}
     	
-        ALITTLE_WARN("try reconnect mysql");
+        CARP_WARN("try reconnect mysql");
         if (!m_conn->ReOpen())
         {
             reason = "reconnect mysql failed!";
             reason += " stmt create failed:" + m_sql;
-            ALITTLE_WARN(reason);
+            CARP_WARN(reason);
             End();
             return false;
         }
-        ALITTLE_WARN("reconnect succeed");
+        CARP_WARN("reconnect succeed");
 
         stmt_info = m_conn->GetStmt(m_sql, need_reconnect);
         if (!stmt_info)
@@ -110,15 +111,15 @@ bool MysqlStatementQuery::Begin(std::string& reason)
         unsigned int exe_errno = mysql_stmt_errno(stmt_info->stmt);
         if (exe_errno == CR_SERVER_GONE_ERROR || exe_errno == CR_SERVER_LOST)
         {
-            ALITTLE_WARN("try reconnect mysql");
+            CARP_WARN("try reconnect mysql");
             if (!m_conn->ReOpen())
 			{
 				reason = "reconnect mysql failed!";
-                ALITTLE_WARN(reason);
+                CARP_WARN(reason);
                 End();
                 return false;
 			}
-			ALITTLE_WARN("reconnect succeed");
+			CARP_WARN("reconnect succeed");
 
             // create stmt
             stmt_info = m_conn->GetStmt(m_sql, need_reconnect);
@@ -309,12 +310,12 @@ bool MysqlStatementQuery::ReadBool()
 {
 	if (m_col_index >= m_col_count)
 	{
-		ALITTLE_ERROR("m_col_index out of range:" << m_col_index << " >= " << m_col_count);
+		CARP_ERROR("m_col_index out of range:" << m_col_index << " >= " << m_col_count);
 		return false;
     }
     if (m_row_index >= m_row_count)
     {
-        ALITTLE_ERROR("m_row_index out of range:" << m_row_index << " >= " << m_row_count);
+        CARP_ERROR("m_row_index out of range:" << m_row_index << " >= " << m_row_count);
         return false;
     }
 
@@ -323,12 +324,12 @@ bool MysqlStatementQuery::ReadBool()
 	bool result;
 	if (data.value_length < sizeof(result))
 	{
-		ALITTLE_ERROR("field length is too small:" << data.value_length);
+		CARP_ERROR("field length is too small:" << data.value_length);
 		return false;
 	}
 	if (data.buffer_type != ALITTLE_MYSQL_TYPE_TINY)
 	{
-		ALITTLE_ERROR("field type is not ALITTLE_MYSQL_TYPE_TINY, is:" << data.buffer_type);
+		CARP_ERROR("field type is not ALITTLE_MYSQL_TYPE_TINY, is:" << data.buffer_type);
 		return false;
 	}
 	memcpy(&result, data.buffer.data(), sizeof(result));
@@ -341,12 +342,12 @@ char MysqlStatementQuery::ReadChar()
 {
     if (m_col_index >= m_col_count)
     {
-        ALITTLE_ERROR("m_col_index out of range:" << m_col_index << " >= " << m_col_count);
+        CARP_ERROR("m_col_index out of range:" << m_col_index << " >= " << m_col_count);
         return '?';
     }
     if (m_row_index >= m_row_count)
     {
-        ALITTLE_ERROR("m_row_index out of range:" << m_row_index << " >= " << m_row_count);
+        CARP_ERROR("m_row_index out of range:" << m_row_index << " >= " << m_row_count);
         return '?';
     }
 
@@ -355,12 +356,12 @@ char MysqlStatementQuery::ReadChar()
     char result;
     if (data.value_length < sizeof(result))
     {
-        ALITTLE_ERROR("field length is too small:" << data.value_length);
+        CARP_ERROR("field length is too small:" << data.value_length);
         return '?';
     }
 	if (data.buffer_type != ALITTLE_MYSQL_TYPE_TINY)
 	{
-		ALITTLE_ERROR("field type is not ALITTLE_MYSQL_TYPE_TINY, is:" << data.buffer_type);
+		CARP_ERROR("field type is not ALITTLE_MYSQL_TYPE_TINY, is:" << data.buffer_type);
 		return '?';
 	}
 	memcpy(&result, data.buffer.data(), sizeof(result));
@@ -373,12 +374,12 @@ short MysqlStatementQuery::ReadShort()
 {
 	if (m_col_index >= m_col_count)
 	{
-		ALITTLE_ERROR("out of range:" << m_col_index << " >= " << m_col_count);
+		CARP_ERROR("out of range:" << m_col_index << " >= " << m_col_count);
 		return 0;
     }
     if (m_row_index >= m_row_count)
     {
-        ALITTLE_ERROR("m_row_index out of range:" << m_row_index << " >= " << m_row_count);
+        CARP_ERROR("m_row_index out of range:" << m_row_index << " >= " << m_row_count);
         return 0;
     }
 
@@ -387,12 +388,12 @@ short MysqlStatementQuery::ReadShort()
 	short result;
 	if (data.value_length < sizeof(result))
 	{
-		ALITTLE_ERROR("field length is too small:" << data.value_length);
+		CARP_ERROR("field length is too small:" << data.value_length);
 		return 0;
 	}
 	if (data.buffer_type != ALITTLE_MYSQL_TYPE_SHORT)
 	{
-		ALITTLE_ERROR("field type is not ALITTLE_MYSQL_TYPE_SHORT, is:" << data.buffer_type);
+		CARP_ERROR("field type is not ALITTLE_MYSQL_TYPE_SHORT, is:" << data.buffer_type);
 		return 0;
     }
     memcpy(&result, data.buffer.data(), sizeof(result));
@@ -405,12 +406,12 @@ int MysqlStatementQuery::ReadInt()
 {
     if (m_col_index >= m_col_count)
     {
-        ALITTLE_ERROR("out of range:" << m_col_index << " >= " << m_col_count);
+        CARP_ERROR("out of range:" << m_col_index << " >= " << m_col_count);
         return 0;
     }
     if (m_row_index >= m_row_count)
     {
-        ALITTLE_ERROR("m_row_index out of range:" << m_row_index << " >= " << m_row_count);
+        CARP_ERROR("m_row_index out of range:" << m_row_index << " >= " << m_row_count);
         return 0;
     }
 
@@ -419,12 +420,12 @@ int MysqlStatementQuery::ReadInt()
     int result;
     if (data.value_length < sizeof(result))
     {
-        ALITTLE_ERROR("field length is too small:" << data.value_length);
+        CARP_ERROR("field length is too small:" << data.value_length);
         return 0;
     }
 	if (data.buffer_type != ALITTLE_MYSQL_TYPE_LONG)
 	{
-		ALITTLE_ERROR("field type is not ALITTLE_MYSQL_TYPE_LONG, is:" << data.buffer_type);
+		CARP_ERROR("field type is not ALITTLE_MYSQL_TYPE_LONG, is:" << data.buffer_type);
 		return 0;
     }
     memcpy(&result, data.buffer.data(), sizeof(result));
@@ -437,12 +438,12 @@ long MysqlStatementQuery::ReadLong()
 {
     if (m_col_index >= m_col_count)
     {
-        ALITTLE_ERROR("out of range:" << m_col_index << " >= " << m_col_count);
+        CARP_ERROR("out of range:" << m_col_index << " >= " << m_col_count);
         return 0;
     }
     if (m_row_index >= m_row_count)
     {
-        ALITTLE_ERROR("m_row_index out of range:" << m_row_index << " >= " << m_row_count);
+        CARP_ERROR("m_row_index out of range:" << m_row_index << " >= " << m_row_count);
         return 0;
     }
 
@@ -451,12 +452,12 @@ long MysqlStatementQuery::ReadLong()
     long result;
     if (data.value_length < sizeof(result))
     {
-        ALITTLE_ERROR("field length is too small:" << data.value_length);
+        CARP_ERROR("field length is too small:" << data.value_length);
         return 0;
     }
 	if (data.buffer_type != ALITTLE_MYSQL_TYPE_LONG)
 	{
-		ALITTLE_ERROR("field type is not ALITTLE_MYSQL_TYPE_LONG, is:" << data.buffer_type);
+		CARP_ERROR("field type is not ALITTLE_MYSQL_TYPE_LONG, is:" << data.buffer_type);
 		return 0;
     }
     memcpy(&result, data.buffer.data(), sizeof(result));
@@ -469,12 +470,12 @@ int MysqlStatementQuery::ReadLongLong()
 {
     if (m_col_index >= m_col_count)
     {
-        ALITTLE_ERROR("out of range:" << m_col_index << " >= " << m_col_count);
+        CARP_ERROR("out of range:" << m_col_index << " >= " << m_col_count);
         return 0;
     }
     if (m_row_index >= m_row_count)
     {
-        ALITTLE_ERROR("m_row_index out of range:" << m_row_index << " >= " << m_row_count);
+        CARP_ERROR("m_row_index out of range:" << m_row_index << " >= " << m_row_count);
         return 0;
     }
 
@@ -483,12 +484,12 @@ int MysqlStatementQuery::ReadLongLong()
     long long result;
     if (data.value_length < sizeof(result))
     {
-        ALITTLE_ERROR("field length is too small:" << data.value_length);
+        CARP_ERROR("field length is too small:" << data.value_length);
         return 0;
     }
 	if (data.buffer_type != ALITTLE_MYSQL_TYPE_LONGLONG)
 	{
-		ALITTLE_ERROR("field type is not ALITTLE_MYSQL_TYPE_LONGLONG, is:" << data.buffer_type);
+		CARP_ERROR("field type is not ALITTLE_MYSQL_TYPE_LONGLONG, is:" << data.buffer_type);
 		return 0;
     }
     memcpy(&result, data.buffer.data(), sizeof(result));
@@ -501,12 +502,12 @@ float MysqlStatementQuery::ReadFloat()
 {
     if (m_col_index >= m_col_count)
     {
-        ALITTLE_ERROR("out of range:" << m_col_index << " >= " << m_col_count);
+        CARP_ERROR("out of range:" << m_col_index << " >= " << m_col_count);
         return 0;
     }
     if (m_row_index >= m_row_count)
     {
-        ALITTLE_ERROR("m_row_index out of range:" << m_row_index << " >= " << m_row_count);
+        CARP_ERROR("m_row_index out of range:" << m_row_index << " >= " << m_row_count);
         return 0;
     }
 
@@ -515,12 +516,12 @@ float MysqlStatementQuery::ReadFloat()
     float result;
     if (data.value_length < sizeof(result))
     {
-        ALITTLE_ERROR("field length is too small:" << data.value_length);
+        CARP_ERROR("field length is too small:" << data.value_length);
         return 0;
     }
 	if (data.buffer_type != ALITTLE_MYSQL_TYPE_FLOAT)
 	{
-		ALITTLE_ERROR("field type is not ALITTLE_MYSQL_TYPE_FLOAT, is:" << data.buffer_type);
+		CARP_ERROR("field type is not ALITTLE_MYSQL_TYPE_FLOAT, is:" << data.buffer_type);
 		return 0;
     }
     memcpy(&result, data.buffer.data(), sizeof(result));
@@ -533,12 +534,12 @@ double MysqlStatementQuery::ReadDouble()
 {
     if (m_col_index >= m_col_count)
     {
-        ALITTLE_ERROR("out of range:" << m_col_index << " >= " << m_col_count);
+        CARP_ERROR("out of range:" << m_col_index << " >= " << m_col_count);
         return 0;
     }
     if (m_row_index >= m_row_count)
     {
-        ALITTLE_ERROR("m_row_index out of range:" << m_row_index << " >= " << m_row_count);
+        CARP_ERROR("m_row_index out of range:" << m_row_index << " >= " << m_row_count);
         return 0;
     }
 
@@ -547,12 +548,12 @@ double MysqlStatementQuery::ReadDouble()
     double result;
     if (data.value_length < sizeof(result))
     {
-        ALITTLE_ERROR("field length is too small:" << data.value_length);
+        CARP_ERROR("field length is too small:" << data.value_length);
         return 0;
     }
 	if (data.buffer_type != ALITTLE_MYSQL_TYPE_DOUBLE)
 	{
-		ALITTLE_ERROR("field type is not ALITTLE_MYSQL_TYPE_DOUBLE, is:" << data.buffer_type);
+		CARP_ERROR("field type is not ALITTLE_MYSQL_TYPE_DOUBLE, is:" << data.buffer_type);
 		return 0;
     }
     memcpy(&result, data.buffer.data(), sizeof(result));
@@ -565,13 +566,13 @@ const char* MysqlStatementQuery::ReadString()
 {
     if (m_col_index >= m_col_count)
     {
-        ALITTLE_ERROR("out of range:" << m_col_index << " >= " << m_col_count);
+        CARP_ERROR("out of range:" << m_col_index << " >= " << m_col_count);
         m_temp_string.resize(0);
         return m_temp_string.c_str();
     }
     if (m_row_index >= m_row_count)
     {
-        ALITTLE_ERROR("m_row_index out of range:" << m_row_index << " >= " << m_row_count);
+        CARP_ERROR("m_row_index out of range:" << m_row_index << " >= " << m_row_count);
 		m_temp_string.resize(0);
 		return m_temp_string.c_str();
     }
@@ -598,12 +599,12 @@ int MysqlStatementQuery::ReadType()
 {
     if (m_col_index >= m_col_count)
     {
-        ALITTLE_ERROR("out of range:" << m_col_index << " >= " << m_col_count);
+        CARP_ERROR("out of range:" << m_col_index << " >= " << m_col_count);
         return -1;
     }
     if (m_row_index >= m_row_count)
     {
-        ALITTLE_ERROR("m_row_index out of range:" << m_row_index << " >= " << m_row_count);
+        CARP_ERROR("m_row_index out of range:" << m_row_index << " >= " << m_row_count);
         return -1;
     }
 

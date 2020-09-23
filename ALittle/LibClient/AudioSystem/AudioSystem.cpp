@@ -10,9 +10,8 @@
 #include "ALittle/LibClient/Tool/MemoryPool.h"
 #include "ALittle/LibClient/Tool/LocalFile.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-
 #define CARP_MIXER_IMPL
+#include "Carp/carp_log.hpp"
 #include "Carp/carp_mixer.hpp"
 
 namespace ALittle
@@ -20,12 +19,10 @@ namespace ALittle
 
 AudioSystem::AudioSystem()
 {
-	m_mixer = new CarpMixer();
 }
 
 AudioSystem::~AudioSystem()
 {
-	delete m_mixer;
 }
 
 AudioSystem& AudioSystem::Instance()
@@ -50,7 +47,7 @@ void AudioSystem::Shutdown()
 	{
 		if (m_channel_list[i].chunk)
 		{
-			m_mixer->FreeChunk(m_channel_list[i].chunk);
+			s_carp_mixer.FreeChunk(m_channel_list[i].chunk);
 			m_cache_map.erase(m_channel_list[i].file_path);
 		}
 		m_channel_list[i].chunk = nullptr;
@@ -58,11 +55,11 @@ void AudioSystem::Shutdown()
 	}
 	// 释放缓存
 	for (auto it = m_cache_map.begin(); it != m_cache_map.end(); ++it)
-		m_mixer->FreeChunk(it->second);
+		s_carp_mixer.FreeChunk(it->second);
 	m_cache_map.clear();
 
 	// 关闭音效系统
-	m_mixer->Shutdown();
+	s_carp_mixer.Shutdown();
 }
 
 //=========================================================================
@@ -112,14 +109,14 @@ void AudioSystem::RemoveChunkCache(const char* file_path)
 			return;
 	}
 
-	m_mixer->FreeChunk(chunk);
+	s_carp_mixer.FreeChunk(chunk);
 }
 
 int AudioSystem::StartChunk(const char* file_path, int loop)
 {
 	if (file_path == nullptr)
 	{
-		ALITTLE_ERROR("file_path is nil");
+		CARP_ERROR("file_path is nil");
 		return -1;
 	}
 	
@@ -135,7 +132,7 @@ int AudioSystem::StartChunk(const char* file_path, int loop)
 		chunk = LoadChunk(file_path);
 		if (chunk == nullptr)
 		{
-			ALITTLE_ERROR("chunk load failed:" << file_path);
+			CARP_ERROR("chunk load failed:" << file_path);
 			return -1;
 		}
 
@@ -145,11 +142,11 @@ int AudioSystem::StartChunk(const char* file_path, int loop)
 	}
 
 	// 播放音效
-	int channel = m_mixer->PlayChunk(chunk, 1.0f, loop, HandleChunkStoppedForMixer);
+	int channel = s_carp_mixer.PlayChunk(chunk, 1.0f, loop, HandleChunkStoppedForMixer);
 	if (channel < 0)
 	{
-		ALITTLE_ERROR("chunk play fialed:" << file_path);
-		if (cache_it == m_cache_map.end()) m_mixer->FreeChunk(chunk);
+		CARP_ERROR("chunk play fialed:" << file_path);
+		if (cache_it == m_cache_map.end()) s_carp_mixer.FreeChunk(chunk);
 		return -1;
 	}
 
@@ -162,7 +159,7 @@ int AudioSystem::StartChunk(const char* file_path, int loop)
 
 bool AudioSystem::StopChunk(int channel)
 {
-	m_mixer->StopChannel(channel);
+	s_carp_mixer.StopChannel(channel);
 	return true;
 }
 
@@ -170,13 +167,13 @@ bool AudioSystem::SetChunkVolume(int channel, float volume)
 {
 	if (volume < 0.0f) volume = 0.0f;
 	else if (volume > 1.0f) volume = 1.0f;
-	m_mixer->SetVolume(channel, volume);
+	s_carp_mixer.SetVolume(channel, volume);
 	return true;
 }
 
 float AudioSystem::GetChunkVolume(int channel)
 {
-	return m_mixer->GetVolume(channel);
+	return s_carp_mixer.GetVolume(channel);
 }
 
 CarpMixerChunk* AudioSystem::LoadChunk(const std::string& file_path)
@@ -184,7 +181,7 @@ CarpMixerChunk* AudioSystem::LoadChunk(const std::string& file_path)
 	LocalFile file;
 	file.SetPath(file_path.c_str());
 	if (!file.Load()) return nullptr;
-	return m_mixer->LoadChunk(file.GetContent(), file.GetSize());
+	return s_carp_mixer.LoadChunk(file.GetContent(), file.GetSize());
 }
 
 void AudioSystem::HandleChunkStoppedForMixer(int channel)
@@ -208,7 +205,7 @@ void AudioSystem::HandleChunkStoppedForLua(unsigned int event_type, void* data1,
 		MixChunkCache::iterator it = g_AudioSystem.m_cache_map.find(info.file_path);
 		if (it == g_AudioSystem.m_cache_map.end())
 		{
-			g_AudioSystem.m_mixer->FreeChunk(info.chunk);
+			s_carp_mixer.FreeChunk(info.chunk);
 		}
 		// 如果需要缓存，那么就放进缓存区
 		else
@@ -216,7 +213,7 @@ void AudioSystem::HandleChunkStoppedForLua(unsigned int event_type, void* data1,
 			if (it->second == nullptr)
 				it->second = info.chunk;
 			else if (it->second != info.chunk)
-				g_AudioSystem.m_mixer->FreeChunk(info.chunk);
+				s_carp_mixer.FreeChunk(info.chunk);
 		}
 	}
 	// 初始化通道数据

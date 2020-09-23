@@ -3,9 +3,10 @@
 
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"
 #include "ALittle/LibClient/RenderSystem/DisplaySystem.h"
-#include "ALittle/LibCommon/Helper/LogHelper.h"
 
 #include "ALittle/LibClient/Helper/TextureHelper.h"
+
+#include "Carp/carp_log.hpp"
 
 namespace ALittle
 {
@@ -132,14 +133,14 @@ bool RenderTexture::Save(const char* file_path, DisplayObject* object, int width
 		if (read_result == 0)
 		{
 			if (!TextureHelper::SaveSurface(surface, file_path))
-				ALITTLE_ERROR("SaveSurface failed:" << file_path);
+				CARP_ERROR("SaveSurface failed:" << file_path);
 		}
 		else
-			ALITTLE_ERROR("SDL_RenderReadPixels failed:" << renderer_width << ", " << renderer_height);
+			CARP_ERROR("SDL_RenderReadPixels failed:" << renderer_width << ", " << renderer_height);
 		SDL_FreeSurface(surface);
 	}
 	else
-		ALITTLE_ERROR("SDL_CreateRGBSurface failed:" << renderer_width << ", " << renderer_height);
+		CARP_ERROR("SDL_CreateRGBSurface failed:" << renderer_width << ", " << renderer_height);
 
 	SDL_SetRenderTarget(g_RenderSystem.GetRender(), old_texture);
 	g_RenderSystem.DestroyTexture(texture);

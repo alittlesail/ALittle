@@ -6,8 +6,7 @@
 #include <vector>
 
 #include "Carp/carp_http.hpp"
-
-#include "ALittle/LibCommon/Tool/SafeIDCreator.h"
+#include "Carp/carp_safe_id_creator.h"
 
 namespace ALittle
 {
@@ -65,7 +64,7 @@ private:
 	std::string m_failed_reason;
 
 private:
-	static SafeIDCreator<int> s_id_creator;
+	static CarpSafeIDCreator<int> s_id_creator;
 
 private:
 	CarpHttpClientPostPtr m_upload_client;

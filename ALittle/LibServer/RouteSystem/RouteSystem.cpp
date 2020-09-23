@@ -3,8 +3,7 @@
 #include "SessionConnection.h"
 #include "ALittle/LibServer/ServerSystem/ServerSchedule.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/StringHelper.h"
+#include "Carp/carp_log.hpp"
 
 #include "ConnectClient.h"
 #include "ConnectServer.h"
@@ -51,7 +50,7 @@ bool RouteSystem::CreateConnectServer(const std::string& yun_ip, const std::stri
 	bool result = server->Start(m_route_id, yun_ip, ip, port, m_heartbeat_interval, this);
 	if (result == false) return false;
 	
-	std::string key = ip + ":" + X2S(port);
+	std::string key = ip + ":" + std::to_string(port);
 	m_connect_server_map[key] = server;
 	return true;
 }
@@ -59,7 +58,7 @@ bool RouteSystem::CreateConnectServer(const std::string& yun_ip, const std::stri
 // 关闭服务端
 void RouteSystem::ReleaseConnectServer(const std::string& ip, unsigned int port)
 {
-	std::string key = ip + ":" + X2S(port);
+	std::string key = ip + ":" + std::to_string(port);
 	auto it = m_connect_server_map.find(key);
 	if (it == m_connect_server_map.end()) return;
 
@@ -73,7 +72,7 @@ bool RouteSystem::CreateConnectClient(const std::string& ip, unsigned int port)
 	ConnectClientPtr client = ConnectClientPtr(new ConnectClient(this));
 	client->Connect(m_route_id, ip, port, m_heartbeat_interval, m_reconnect_interval);
 	
-	std::string key = ip + ":" + X2S(port);
+	std::string key = ip + ":" + std::to_string(port);
 	m_connect_client_map[key] = client;
 	
 	return true;
@@ -82,7 +81,7 @@ bool RouteSystem::CreateConnectClient(const std::string& ip, unsigned int port)
 // 释放客户端连接点
 void RouteSystem::ReleaseConnectClient(const std::string& ip, unsigned int port)
 {
-	std::string key = ip + ":" + X2S(port);
+	std::string key = ip + ":" + std::to_string(port);
 	auto it = m_connect_client_map.find(key);
 	if (it == m_connect_client_map.end()) return;
 
@@ -98,7 +97,7 @@ bool RouteSystem::AddConnectEndpoint(ConnectEndpointPtr endpoint, ROUTE_ID targe
 	if (it != m_endpoint_map.end()) return it->second == endpoint;
 
 	// 打印一下，表示有新的连接点
-	ALITTLE_INFO("RouteSystem::AddConnectEndpoint route_id:" << ROUTE2S(target_route_id));
+	CARP_INFO("RouteSystem::AddConnectEndpoint route_id:" << ROUTE2S(target_route_id));
 	endpoint->m_target_route_id = target_route_id;
 	m_endpoint_map[target_route_id] = endpoint;
 
@@ -112,7 +111,7 @@ void RouteSystem::RemoveConnectEndpoint(ConnectEndpointPtr endpoint)
 	auto it = m_endpoint_map.find(endpoint->GetTargetRouteId());
 	if (it != m_endpoint_map.end() && it->second == endpoint)
 	{
-		ALITTLE_INFO("RouteSystem::RemoveConnectEndpoint:" << ROUTE2S(endpoint->GetTargetRouteId()));
+		CARP_INFO("RouteSystem::RemoveConnectEndpoint:" << ROUTE2S(endpoint->GetTargetRouteId()));
 		m_endpoint_map.erase(it);
 	}
 
@@ -196,7 +195,7 @@ void RouteSystem::RemoveConnectEndpoint(ConnectEndpointPtr endpoint)
 	// 如果断开的连接点是本地创建的客户端连接点，那么就要重新创建一个
 	// 因为当前连接点已经断开连接，这样依赖连接点的流程和数据包会正常结束和终止
 	// 重新创建一个之后，新的相关流程会走新创建的对象
-	std::string key = endpoint->GetIP() + ":" + X2S(endpoint->GetPort());
+	std::string key = endpoint->GetIP() + ":" + std::to_string(endpoint->GetPort());
 	auto client_it = m_connect_client_map.find(key);
 	if (client_it != m_connect_client_map.end() && client_it->second == endpoint)
 	{
@@ -224,7 +223,7 @@ void RouteSystem::HandleQConnect2ConnectRPC(ConnectEndpointPtr endpoint, int src
 		if (msg.Deserialize(message_body, message_size) < 0)
 		{
 			std::string reason = "route_id:" + ROUTE2S(m_route_id) + u8":QSearchRouteInfo Deserialize 失败!";
-			ALITTLE_ERROR(reason);
+			CARP_ERROR(reason);
 			endpoint->SendError(src_rpcid, reason);
 			return;
 		}
@@ -239,7 +238,7 @@ void RouteSystem::HandleQConnect2ConnectRPC(ConnectEndpointPtr endpoint, int src
 		if (msg.route_path.front() != m_route_id)
 		{
 			std::string reason = "route_id:" + ROUTE2S(m_route_id) + u8":QSearchRouteInfo 请求包的route_path的当前节点不是当前连接点, " + " request_route_id:" + ROUTE2S(msg.route_path.front());
-			ALITTLE_ERROR(reason);
+			CARP_ERROR(reason);
 			endpoint->SendError(src_rpcid, reason);
 			return;
 		}
@@ -289,7 +288,7 @@ void RouteSystem::HandleQConnect2ConnectRPC(ConnectEndpointPtr endpoint, int src
 		if (msg.Deserialize(message_body, message_size) < 0)
 		{
 			std::string reason = "route_id:" + ROUTE2S(m_route_id) + u8":QConnectRouteInfo Deserialize 失败!";
-			ALITTLE_ERROR(reason);
+			CARP_ERROR(reason);
 			endpoint->SendError(src_rpcid, reason);
 			return;
 		}
@@ -297,7 +296,7 @@ void RouteSystem::HandleQConnect2ConnectRPC(ConnectEndpointPtr endpoint, int src
 		if (msg.route_path.empty())
 		{
 			std::string reason = "route_id:" + ROUTE2S(m_route_id) + u8":QConnectRouteInfo 请求包的route_path是空的!";
-			ALITTLE_ERROR(reason);
+			CARP_ERROR(reason);
 			endpoint->SendError(src_rpcid, reason);
 			return;
 		}
@@ -305,16 +304,16 @@ void RouteSystem::HandleQConnect2ConnectRPC(ConnectEndpointPtr endpoint, int src
 		if (msg.connect_index < 0 || msg.connect_index >= static_cast<int>(msg.route_path.size()))
 		{
 			std::string reason = "route_id:" + ROUTE2S(m_route_id) + u8"连接下标超出了route_path的范围了, ";
-			reason += "connect_index:" + X2S(msg.connect_index) + "route_path's size:" + X2S(msg.route_path.size());
-			ALITTLE_ERROR(reason);
+			reason += "connect_index:" + std::to_string(msg.connect_index) + "route_path's size:" + std::to_string(msg.route_path.size());
+			CARP_ERROR(reason);
 			endpoint->SendError(src_rpcid, reason);
 			return;
 		}
 
 		if (msg.route_path[msg.connect_index] != m_route_id)
 		{
-			std::string reason = "route_id:" + ROUTE2S(m_route_id) + u8" QConnectRouteInfo 请求包的route_path的当前节点不是当前连接点, " + " request_route_id:" + X2S(msg.route_path[msg.connect_index]);
-			ALITTLE_ERROR(reason);
+			std::string reason = "route_id:" + ROUTE2S(m_route_id) + u8" QConnectRouteInfo 请求包的route_path的当前节点不是当前连接点, " + " request_route_id:" + std::to_string(msg.route_path[msg.connect_index]);
+			CARP_ERROR(reason);
 			endpoint->SendError(src_rpcid, reason);
 			return;
 		}
@@ -324,7 +323,7 @@ void RouteSystem::HandleQConnect2ConnectRPC(ConnectEndpointPtr endpoint, int src
 		if (m_connect_route_map.find(connect_key) != m_connect_route_map.end())
 		{
 			std::string reason = "route_id:" + ROUTE2S(m_route_id) + u8" QConnectRouteInfo 请求的路径当前节点已经存在，不可以再请求";
-			ALITTLE_ERROR(reason);
+			CARP_ERROR(reason);
 			endpoint->SendError(src_rpcid, reason);
 			return;
 		}
@@ -352,7 +351,7 @@ void RouteSystem::HandleQConnect2ConnectRPC(ConnectEndpointPtr endpoint, int src
 		auto endpoint_it = m_endpoint_map.find(msg.route_path[static_cast<size_t>(msg.connect_index) + 1]);
 		if (endpoint_it == m_endpoint_map.end())
 		{
-			std::string reason  = "route_id:" + ROUTE2S(m_route_id) + u8" 找不到下一个节点 route_id:" + X2S(msg.route_path[static_cast<size_t>(msg.connect_index) + 1]);
+			std::string reason  = "route_id:" + ROUTE2S(m_route_id) + u8" 找不到下一个节点 route_id:" + std::to_string(msg.route_path[static_cast<size_t>(msg.connect_index) + 1]);
 			endpoint->SendError(src_rpcid, reason);
 			return;
 		}
@@ -382,8 +381,8 @@ void RouteSystem::HandleQConnect2ConnectRPC(ConnectEndpointPtr endpoint, int src
 	}
 
 	// 执行到这里说明框架流程有问题
-	endpoint->SendError(src_rpcid, "route_id:" + ROUTE2S(m_route_id) + " unknow message_id:" + X2S(message_id));
-	ALITTLE_ERROR("unknow message_id:" << message_id);
+	endpoint->SendError(src_rpcid, "route_id:" + ROUTE2S(m_route_id) + " unknow message_id:" + std::to_string(message_id));
+	CARP_ERROR("unknow message_id:" << message_id);
 }
 
 void RouteSystem::HandleConnectRouteDisconnected(ConnectEndpointPtr endpoint, const ConnectRouteDisconnected& msg)
@@ -429,7 +428,7 @@ void RouteSystem::HandleConnectRouteMessage(ConnectEndpointPtr endpoint, CONNECT
 	auto it = m_connect_route_map.find(connect_key);
 	if (it == m_connect_route_map.end())
 	{
-		ALITTLE_WARN(u8"unknow connect key 可能是由于数据发送过程中会话连接正好断开了:" << connect_key);
+		CARP_WARN(u8"unknow connect key 可能是由于数据发送过程中会话连接正好断开了:" << connect_key);
 		return;
 	}
 

@@ -2,19 +2,17 @@
 #include "HttpFile.h"
 #include "NetSystem.h"
 #include "Carp/carp_schedule.hpp"
-
-#include "ALittle/LibCommon/Helper/LogHelper.h"
+#include "Carp/carp_log.hpp"
 
 #include "ALittle/LibClient/ScheduleSystem/EventDefine.h"
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
 #include "ALittle/LibClient/ScriptSystem/ScriptSystemEx.h"
-
-#include "ALittle/LibCommon/Helper/FileHelper.h"
+#include "Carp/carp_file_helper.hpp"
 
 namespace ALittle
 {
 
-SafeIDCreator<int> HttpFile::s_id_creator;
+CarpSafeIDCreator<int> HttpFile::s_id_creator;
 
 HttpFile::HttpFile()
 : m_total_size(0)
@@ -41,7 +39,7 @@ void HttpFile::SetURL(const char* url, const char* file_path, bool download, int
 {
 	if (m_upload_client || m_download_client)
 	{
-		ALITTLE_ERROR("socket already exist!");
+		CARP_ERROR("socket already exist!");
 		return;
 	}
 
@@ -97,7 +95,7 @@ void HttpFile::Start()
 	{
 		m_upload_client->SendRequest(m_url
 			, std::map<std::string, std::string>()
-			, FileHelper::GetFileNameByPath(m_file_path), m_file_path, m_start_size
+			, CarpFileHelper::GetFileNameByPath(m_file_path), m_file_path, m_start_size
 			, [this](bool result, const std::string& head, const std::string& body, const std::string& error)
 			{
 				if (result)

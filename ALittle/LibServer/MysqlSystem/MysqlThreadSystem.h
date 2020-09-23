@@ -9,7 +9,7 @@
 #include <list>
 #include <mutex>
 
-#include "ALittle/LibCommon/Tool/ThreadConsumer.h"
+#include "Carp/carp_thread_consumer.hpp"
 #include "MysqlConnection.h"
 
 namespace ALittle
@@ -27,7 +27,7 @@ struct MysqlTask
     ServerSchedule* schedule;
 };
 
-class MysqlThread : ThreadConsumer<MysqlTask>
+class MysqlThread : CarpThreadConsumer<MysqlTask>
 {
 public:
     MysqlThread();

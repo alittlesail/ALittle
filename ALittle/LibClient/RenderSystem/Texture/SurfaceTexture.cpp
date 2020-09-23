@@ -1,15 +1,12 @@
 
 #include "SurfaceTexture.h"
 
-#include "ALittle/LibCommon/Helper/StringHelper.h"
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/ScriptSystem/ScriptSystem.h"
-
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"
 #include "ALittle/LibClient/ScheduleSystem/EventDefine.h"
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
 
 #include "ALittle/LibClient/Platform/iOS/iOSSystem.h"
+#include "Carp/carp_log.hpp"
 
 namespace ALittle
 {
@@ -54,7 +51,7 @@ void SurfaceTexture::GenerateImpl()
 		return;
 	}
 
-	ALITTLE_ERROR("surface is too large:" << m_surface->w << "," << m_surface->h);
+	CARP_ERROR("surface is too large:" << m_surface->w << "," << m_surface->h);
 
 	SDL_FreeSurface(m_surface);
 	m_surface = 0;

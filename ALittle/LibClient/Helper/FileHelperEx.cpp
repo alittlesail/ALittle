@@ -1,8 +1,8 @@
 
 #include "FileHelperEx.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/FileHelper.h"
+#include "Carp/carp_log.hpp"
+
 extern "C" {
 #include "ALittle/LibCommon/ThirdParty/md5/md5.h"
 }
@@ -155,7 +155,7 @@ std::string FileHelperEx::FileMD5(const std::string& file_path)
 	SDL_RWops* file = FileHelperEx::OpenFile(file_path, false, "rb");
 	if (file == 0)
 	{
-		ALITTLE_ERROR("file_path is open failed!" << file_path);
+		CARP_ERROR("file_path is open failed!" << file_path);
 		return "";
 	}
 

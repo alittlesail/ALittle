@@ -5,8 +5,7 @@
 #include "RouteDefine.h"
 #include "RouteSystem.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/StringHelper.h"
+#include "Carp/carp_log.hpp"
 
 #include <chrono>
 
@@ -20,7 +19,7 @@ ConnectEndpoint::ConnectEndpoint(RouteSystem* route_system) : m_route_id(0), m_t
 ConnectEndpoint::~ConnectEndpoint()
 {
 #ifdef CONNECT_INVOKE_LOG
-	ALITTLE_INFO(u8"ConnectEndpoint 析构函数，ClearRPC");
+	CARP_INFO(u8"ConnectEndpoint 析构函数，ClearRPC");
 #endif // CONNECT_INVOKE_LOG
 	ClearRPC("route_id:" + ROUTE2S(m_route_id) + u8" ConnectEndpoint:~ConnectEndpoint 调用析构函数的时候触发ClearRPC");
 }
@@ -43,7 +42,7 @@ void ConnectEndpoint::SendWithCallback(const CarpMessage& msg, RPCCallback& call
 	m_rpc_map[rpc_id] = callback;
 	
 #ifdef CONNECT_INVOKE_LOG
-	ALITTLE_INFO(u8"ConnectEndpoint SendWithCallback 向:" << ROUTE2S(m_target_route_id) << " rpc_id:" << rpc_id);
+	CARP_INFO(u8"ConnectEndpoint SendWithCallback 向:" << ROUTE2S(m_target_route_id) << " rpc_id:" << rpc_id);
 #endif // CONNECT_INVOKE_LOG
 
 	QConnect2ConnectRPCWrite wrap_msg;
@@ -56,7 +55,7 @@ void ConnectEndpoint::SendWithCallback(const CarpMessage& msg, RPCCallback& call
 void ConnectEndpoint::SendError(int rpc_id, const std::string& reason)
 {
 #ifdef CONNECT_INVOKE_LOG
-	ALITTLE_INFO(u8"ConnectEndpoint SendError 向:" << ROUTE2S(m_target_route_id) << ", rpc_id:" << rpc_id << ", reason:" << reason);
+	CARP_INFO(u8"ConnectEndpoint SendError 向:" << ROUTE2S(m_target_route_id) << ", rpc_id:" << rpc_id << ", reason:" << reason);
 #endif // CONNECT_INVOKE_LOG
 
 	RpcErrorMessage wrap_msg;
@@ -68,7 +67,7 @@ void ConnectEndpoint::SendError(int rpc_id, const std::string& reason)
 void ConnectEndpoint::SendResponse(int rpc_id, const CarpMessage& msg)
 {
 #ifdef CONNECT_INVOKE_LOG
-	ALITTLE_INFO(u8"ConnectEndpoint SendResponse 向:" << ROUTE2S(m_target_route_id) << ", rpc_id:" << rpc_id << ", message_id:" << msg.GetID());
+	CARP_INFO(u8"ConnectEndpoint SendResponse 向:" << ROUTE2S(m_target_route_id) << ", rpc_id:" << rpc_id << ", message_id:" << msg.GetID());
 #endif // CONNECT_INVOKE_LOG
 
 	AConnect2ConnectRPCWrite wrap_msg;
@@ -89,7 +88,7 @@ void ConnectEndpoint::HandleConnectFailed()
 void ConnectEndpoint::HandleDisconnected()
 {
 #ifdef CONNECT_INVOKE_LOG
-	ALITTLE_INFO(u8"ConnectEndpoint HandleDisconnected，ClearRPC");
+	CARP_INFO(u8"ConnectEndpoint HandleDisconnected，ClearRPC");
 #endif // CONNECT_INVOKE_LOG
 
 	// 清理所有的调用
@@ -151,7 +150,7 @@ void ConnectEndpoint::HandleMessageImpl(void* memory, size_t memory_size, bool& 
 		QConnectRegister msg;
 		if (msg.Deserialize(body_memory, message_size) < 0)
 		{
-			ALITTLE_ERROR(u8"QConnectRegister Deserialize 失败!");
+			CARP_ERROR(u8"QConnectRegister Deserialize 失败!");
 			Close(u8"QConnectRegister Deserialize 失败!");
 			return;
 		}
@@ -159,7 +158,7 @@ void ConnectEndpoint::HandleMessageImpl(void* memory, size_t memory_size, bool& 
 		// 如果已经收到过了，那么就直接应答
 		if (m_target_route_id != 0)
 		{
-			ALITTLE_ERROR(u8"不能重复注册");
+			CARP_ERROR(u8"不能重复注册");
 			Close(u8"不能重复注册");
 			return;
 		}
@@ -167,7 +166,7 @@ void ConnectEndpoint::HandleMessageImpl(void* memory, size_t memory_size, bool& 
 		// 检查发过来的路由ID
 		if (msg.route_id == 0)
 		{
-			ALITTLE_ERROR(u8"发过来的route_id不能是0");
+			CARP_ERROR(u8"发过来的route_id不能是0");
 			Close(u8"发过来的route_id不能是0");
 			return;
 		}
@@ -175,8 +174,8 @@ void ConnectEndpoint::HandleMessageImpl(void* memory, size_t memory_size, bool& 
 		// 尝试锁定
 		if (!m_route_system->AddConnectEndpoint(this->shared_from_this(), msg.route_id))
 		{
-			ALITTLE_ERROR(X2S(msg.route_id) + u8"已存在");
-			Close(X2S(msg.route_id) + u8"已存在");
+			CARP_ERROR(std::to_string(msg.route_id) + u8"已存在");
+			Close(std::to_string(msg.route_id) + u8"已存在");
 			return;
 		}
 
@@ -193,7 +192,7 @@ void ConnectEndpoint::HandleMessageImpl(void* memory, size_t memory_size, bool& 
 		AConnectRegister msg;
 		if (msg.Deserialize(body_memory, message_size) < 0)
 		{
-			ALITTLE_ERROR(u8"AConnectRegister Deserialize 失败!");
+			CARP_ERROR(u8"AConnectRegister Deserialize 失败!");
 			Close(u8"AConnectRegister Deserialize 失败!");
 			return;
 		}
@@ -201,7 +200,7 @@ void ConnectEndpoint::HandleMessageImpl(void* memory, size_t memory_size, bool& 
 		// 如果已经收到过了，那么就直接返回成功
 		if (m_target_route_id != 0)
 		{
-			ALITTLE_ERROR(u8"不能重复注册");
+			CARP_ERROR(u8"不能重复注册");
 			Close(u8"不能重复注册");
 			return;
 		}
@@ -209,8 +208,8 @@ void ConnectEndpoint::HandleMessageImpl(void* memory, size_t memory_size, bool& 
 		// 检查是否被其他节点锁定了
 		if (!m_route_system->AddConnectEndpoint(this->shared_from_this(), msg.route_id))
 		{
-			ALITTLE_ERROR(X2S(msg.route_id) + u8"已存在");
-			Close(X2S(msg.route_id) + u8"已存在");
+			CARP_ERROR(std::to_string(msg.route_id) + u8"已存在");
+			Close(std::to_string(msg.route_id) + u8"已存在");
 			return;
 		}
 		return;
@@ -222,7 +221,7 @@ void ConnectEndpoint::HandleMessageImpl(void* memory, size_t memory_size, bool& 
 		// 如果m_target_route_id还没赋值，那说明注册流程还没走通
 		if (m_target_route_id == 0)
 		{
-			ALITTLE_ERROR(u8"m_target_route_id是0，所以不执行QConnect2ConnectRPC操作!");
+			CARP_ERROR(u8"m_target_route_id是0，所以不执行QConnect2ConnectRPC操作!");
 			Close(u8"m_target_route_id是0，所以不执行QConnect2ConnectRPC操作!");
 			return;
 		}
@@ -232,13 +231,13 @@ void ConnectEndpoint::HandleMessageImpl(void* memory, size_t memory_size, bool& 
 		int deser_size = msg.Deserialize(body_memory, message_size);
 		if (deser_size < 0)
 		{
-			ALITTLE_ERROR(u8"QConnect2ConnectRPC Deserialize 失败!");
+			CARP_ERROR(u8"QConnect2ConnectRPC Deserialize 失败!");
 			Close(u8"QConnect2ConnectRPC Deserialize 失败!");
 			return;
 		}
 
 #ifdef CONNECT_INVOKE_LOG
-		ALITTLE_INFO(u8"收到QConnect2ConnectRPC来自:" << m_target_route_id << ", rpc_id:" << message_rpcid);
+		CARP_INFO(u8"收到QConnect2ConnectRPC来自:" << m_target_route_id << ", rpc_id:" << message_rpcid);
 #endif // CONNECT_INVOKE_LOG
 
 		// 把携带的协议交给route_system处理
@@ -250,13 +249,13 @@ void ConnectEndpoint::HandleMessageImpl(void* memory, size_t memory_size, bool& 
 	if (message_id == RpcErrorMessage::GetStaticID())
 	{
 #ifdef CONNECT_INVOKE_LOG
-		ALITTLE_INFO(u8"收到AConnect2ConnectRPC来自 route_id:" << ROUTE2S(m_target_route_id));
+		CARP_INFO(u8"收到AConnect2ConnectRPC来自 route_id:" << ROUTE2S(m_target_route_id));
 #endif // CONNECT_INVOKE_LOG
 
 		// 如果m_target_route_id还没赋值，那说明注册流程还没走通
 		if (m_target_route_id == 0)
 		{
-			ALITTLE_ERROR(u8"m_target_route_id是0，所以不执行AConnect2ConnectRPC操作!");
+			CARP_ERROR(u8"m_target_route_id是0，所以不执行AConnect2ConnectRPC操作!");
 			Close(u8"m_target_route_id是0，所以不执行AConnect2ConnectRPC操作!");
 			return;
 		}
@@ -265,7 +264,7 @@ void ConnectEndpoint::HandleMessageImpl(void* memory, size_t memory_size, bool& 
 		int deser_size = msg.Deserialize(body_memory, message_size);
 		if (deser_size < 0)
 		{
-			ALITTLE_ERROR(u8"AConnect2ConnectRPC Deserialize 失败!");
+			CARP_ERROR(u8"AConnect2ConnectRPC Deserialize 失败!");
 			Close(u8"AConnect2ConnectRPC Deserialize 失败!");
 			return;
 		}
@@ -286,7 +285,7 @@ void ConnectEndpoint::HandleMessageImpl(void* memory, size_t memory_size, bool& 
 		}
 		else
 		{
-			ALITTLE_ERROR(u8"为什么没有找到对应的rpc回调，框架肯定有问题! rpc_id:" << rpc_id);
+			CARP_ERROR(u8"为什么没有找到对应的rpc回调，框架肯定有问题! rpc_id:" << rpc_id);
 		}
 		return;
 	}
@@ -295,13 +294,13 @@ void ConnectEndpoint::HandleMessageImpl(void* memory, size_t memory_size, bool& 
 	if (message_id == AConnect2ConnectRPCRead::GetStaticID())
 	{
 #ifdef CONNECT_INVOKE_LOG
-		ALITTLE_INFO(u8"收到AConnect2ConnectRPC来自 route_id:" << ROUTE2S(m_target_route_id));
+		CARP_INFO(u8"收到AConnect2ConnectRPC来自 route_id:" << ROUTE2S(m_target_route_id));
 #endif // CONNECT_INVOKE_LOG
 
 		// 如果m_target_route_id还没赋值，那说明注册流程还没走通
 		if (m_target_route_id == 0)
 		{
-			ALITTLE_ERROR(u8"m_target_route_id 是0，所以不执行AConnect2ConnectRPC操作!");
+			CARP_ERROR(u8"m_target_route_id 是0，所以不执行AConnect2ConnectRPC操作!");
 			Close(u8"m_target_route_id 是0，所以不执行AConnect2ConnectRPC操作!");
 			return;
 		}
@@ -310,7 +309,7 @@ void ConnectEndpoint::HandleMessageImpl(void* memory, size_t memory_size, bool& 
 		int deser_size = msg.Deserialize(body_memory, message_size);
 		if (deser_size < 0)
 		{
-			ALITTLE_ERROR(u8"AConnect2ConnectRPC Deserialize 失败!");
+			CARP_ERROR(u8"AConnect2ConnectRPC Deserialize 失败!");
 			Close(u8"AConnect2ConnectRPC Deserialize 失败!");
 			return;
 		}
@@ -331,7 +330,7 @@ void ConnectEndpoint::HandleMessageImpl(void* memory, size_t memory_size, bool& 
 		}
 		else
 		{
-			ALITTLE_ERROR(u8"为什么没有找到对应的rpc回调，框架肯定有问题! rpc_id:" << rpc_id);
+			CARP_ERROR(u8"为什么没有找到对应的rpc回调，框架肯定有问题! rpc_id:" << rpc_id);
 		}
 		return;
 	}
@@ -342,7 +341,7 @@ void ConnectEndpoint::HandleMessageImpl(void* memory, size_t memory_size, bool& 
 		// 如果m_target_route_id还没赋值，那说明注册流程还没走通
 		if (m_target_route_id == 0)
 		{
-			ALITTLE_ERROR(u8"m_target_route_id 是0，所以不执行ConnectRouteDisconnected操作!");
+			CARP_ERROR(u8"m_target_route_id 是0，所以不执行ConnectRouteDisconnected操作!");
 			Close(u8"m_target_route_id 是0，所以不执行ConnectRouteDisconnected操作!");
 			return;
 		}
@@ -350,7 +349,7 @@ void ConnectEndpoint::HandleMessageImpl(void* memory, size_t memory_size, bool& 
 		ConnectRouteDisconnected msg;
 		if (msg.Deserialize(body_memory, message_size) < 0)
 		{
-			ALITTLE_ERROR(u8"ConnectRouteDisconnected Deserialize 失败!");
+			CARP_ERROR(u8"ConnectRouteDisconnected Deserialize 失败!");
 			Close(u8"ConnectRouteDisconnected Deserialize 失败!");
 			return;
 		}
@@ -366,7 +365,7 @@ void ConnectEndpoint::HandleMessageImpl(void* memory, size_t memory_size, bool& 
 		// 如果m_target_route_id还没赋值，那说明注册流程还没走通
 		if (m_target_route_id == 0)
 		{
-			ALITTLE_ERROR(u8"m_target_route_id 是0，所以不执行ConnectRouteMessage操作!");
+			CARP_ERROR(u8"m_target_route_id 是0，所以不执行ConnectRouteMessage操作!");
 			Close(u8"m_target_route_id 是0，所以不执行ConnectRouteMessage操作!");
 			return;
 		}
@@ -375,7 +374,7 @@ void ConnectEndpoint::HandleMessageImpl(void* memory, size_t memory_size, bool& 
 		int deser_size = msg.Deserialize(body_memory, message_size);
 		if (deser_size < 0)
 		{
-			ALITTLE_ERROR(u8"ConnectRouteMessage Deserialize 失败!");
+			CARP_ERROR(u8"ConnectRouteMessage Deserialize 失败!");
 			Close(u8"ConnectRouteMessage Deserialize 失败!");
 			return;
 		}
@@ -388,7 +387,7 @@ void ConnectEndpoint::HandleMessageImpl(void* memory, size_t memory_size, bool& 
 	}
 
 	// 打印一下未知协议ID
-	ALITTLE_ERROR("unknow message id:" + std::to_string(message_id));
+	CARP_ERROR("unknow message id:" + std::to_string(message_id));
 	Close("unknow message id:" + std::to_string(message_id));
 }
 

@@ -2,8 +2,7 @@
 #include "RouteSystem.h"
 #include "ALittle/LibServer/ServerSystem/ServerSchedule.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/StringHelper.h"
+#include "Carp/carp_log.hpp"
 
 #include "ConnectClient.h"
 #include "ConnectServer.h"
@@ -50,7 +49,7 @@ void RouteSystem::ConnectRoute(const std::list<ROUTE_ID>& route_id_list, Session
 {
 	if (!callback)
 	{
-		ALITTLE_ERROR("callback is null");
+		CARP_ERROR("callback is null");
 		return;
 	}
 
@@ -174,8 +173,8 @@ void RouteSystem::ConnectRouteImplCallback(const std::string* reason, int messag
 	// 检查是否是正确的应答包
 	if (message_id != AConnectRouteInfo::GetStaticID())
 	{
-		std::string tmp = "route_id:" + ROUTE2S(m_route_id) + u8" 应答包不是一个AConnectRouteInfo! message_id:" + X2S(message_id);
-		ALITTLE_ERROR(tmp);
+		std::string tmp = "route_id:" + ROUTE2S(m_route_id) + u8" 应答包不是一个AConnectRouteInfo! message_id:" + std::to_string(message_id);
+		CARP_ERROR(tmp);
 		std::vector<SessionConnection::ConnectRouteCallback> callback_list = it->second->callback_list;
 		m_connect_route_map.erase(it);
 		for (size_t i = 0; i < callback_list.size(); ++i)
@@ -188,7 +187,7 @@ void RouteSystem::ConnectRouteImplCallback(const std::string* reason, int messag
 	if (msg.Deserialize(memory, memroy_size) < 0)
 	{
 		std::string tmp = "route_id:" + ROUTE2S(m_route_id) + u8" AConnectRouteInfo Deserialize 失败!";
-		ALITTLE_ERROR(tmp);
+		CARP_ERROR(tmp);
 		std::vector<SessionConnection::ConnectRouteCallback> callback_list = it->second->callback_list;
 		m_connect_route_map.erase(it);
 		for (size_t i = 0; i < callback_list.size(); ++i)
@@ -234,8 +233,8 @@ void RouteSystem::ConnectRouteTransCallback(const std::string* reason, int messa
 
 	if (message_id != AConnectRouteInfo::GetStaticID())
 	{
-		std::string tmp = "route_id:" + ROUTE2S(m_route_id) + u8"应答包不是一个AConnectRouteInfo! message_id:" + X2S(message_id);
-		ALITTLE_ERROR(tmp);
+		std::string tmp = "route_id:" + ROUTE2S(m_route_id) + u8"应答包不是一个AConnectRouteInfo! message_id:" + std::to_string(message_id);
+		CARP_ERROR(tmp);
 		m_connect_route_map.erase(connect_key);
 		endpoint->SendError(src_rpcid, tmp);
 		return;
@@ -245,7 +244,7 @@ void RouteSystem::ConnectRouteTransCallback(const std::string* reason, int messa
 	if (msg.Deserialize(memory, memroy_size) < 0)
 	{
 		std::string tmp = "route_id:" + ROUTE2S(m_route_id) + u8"AConnectRouteInfo Deserialize 失败!";
-		ALITTLE_ERROR(tmp);
+		CARP_ERROR(tmp);
 		m_connect_route_map.erase(connect_key);
 		endpoint->SendError(src_rpcid, tmp);
 		return;
@@ -256,7 +255,7 @@ void RouteSystem::ConnectRouteTransCallback(const std::string* reason, int messa
 	if (it == m_connect_route_map.end())
 	{
 		std::string tmp = "route_id:" + ROUTE2S(m_route_id) + u8" connect_key 不存在:" + CONNECT2S(connect_key);
-		ALITTLE_ERROR(tmp);
+		CARP_ERROR(tmp);
 		endpoint->SendError(src_rpcid, tmp);
 		return;
 	}

@@ -2,8 +2,7 @@
 #include "ClientReceiver.h"
 #include "ClientServer.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/StringHelper.h"
+#include "Carp/carp_log.hpp"
 #include "ALittle/LibServer/ServerSystem/ServerSchedule.h"
 
 #include <functional>
@@ -15,6 +14,7 @@ ClientReceiver::ClientReceiver(SocketPtr socket, ClientServerWeakPtr server, Ser
     : m_socket(socket), m_server(server), m_memory(0), m_excuting(false), m_is_connected(true), m_schedule(schedule)
 	, m_is_websocket(false), m_websocket_buffer(0), m_frame_buffer(), m_has_mark(false), m_opcode(0), m_data_length(0)
 	, m_head_size(0), m_body_size(0), m_current_is_message(false)
+	, m_mark(), m_message_head()
 {
 	// 获取客户端的公网IP
 	m_remote_ip = socket->remote_endpoint().address().to_string();
@@ -41,7 +41,7 @@ void ClientReceiver::HandleReadHeadFirst(const asio::error_code& ec, std::size_t
 {
 	if (ec)
 	{
-		ALITTLE_SYSTEM("receive failed:" << SUTF8(ec.message().c_str()));
+		CARP_SYSTEM("receive failed:" << ec.value());
 		ClientServerPtr server = m_server.lock();
 		if (server)	server->HandleOuterDisconnected(this->shared_from_this());
 		return;
@@ -161,7 +161,7 @@ void ClientReceiver::HandleSend(const asio::error_code& ec, std::size_t bytes_tr
 	if (ec)
 	{
 		// 如果发送失败了，说明已经断开连接了
-		ALITTLE_SYSTEM("send failed:" << SUTF8(ec.message().c_str()));
+		CARP_SYSTEM("send failed:" << ec.value());
 		ClientServerPtr server = m_server.lock();
 		if (server) server->HandleOuterDisconnected(this->shared_from_this());
 		return;

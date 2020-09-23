@@ -13,8 +13,6 @@
   <ItemGroup>
     <ClInclude Include="ClientSystem\ClientReceiver.h" />
     <ClInclude Include="ClientSystem\ClientServer.h" />
-    <ClInclude Include="HttpSystem\Client\HttpClientPost.h" />
-    <ClInclude Include="HttpSystem\Client\HttpClientText.h" />
     <ClInclude Include="HttpSystem\Server\HttpReceiver.h" />
     <ClInclude Include="HttpSystem\Server\HttpSender.h" />
     <ClInclude Include="HttpSystem\Server\HttpServer.h" />
@@ -40,8 +38,6 @@
     <ClCompile Include="ClientSystem\ClientReceiverBinary.cpp" />
     <ClCompile Include="ClientSystem\ClientReceiverWebSocket.cpp" />
     <ClCompile Include="ClientSystem\ClientServer.cpp" />
-    <ClCompile Include="HttpSystem\Client\HttpClientPost.cpp" />
-    <ClCompile Include="HttpSystem\Client\HttpClientText.cpp" />
     <ClCompile Include="HttpSystem\Server\HttpReceiver.cpp" />
     <ClCompile Include="HttpSystem\Server\HttpSender.cpp" />
     <ClCompile Include="HttpSystem\Server\HttpServer.cpp" />

@@ -5,8 +5,7 @@
 #include "RouteSystem.h"
 #include "ALittle/LibServer/ServerSystem/ServerSchedule.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/StringHelper.h"
+#include "Carp/carp_log.hpp"
 
 namespace ALittle
 {
@@ -44,7 +43,7 @@ void ConnectReceiver::HandleReadHead(const asio::error_code& ec, std::size_t act
 	{
 		// 释放内存，标记为未连接
 		if (m_memory) { free(m_memory); m_memory = 0; }
-		ALITTLE_SYSTEM("route_id:" + ROUTE2S(m_route_id) + u8" ConnectReceiver 消息包接收失败:" << SUTF8(ec.message().c_str()));
+		CARP_SYSTEM("route_id:" + ROUTE2S(m_route_id) + u8" ConnectReceiver 消息包接收失败:" << ec.value());
 
 		// 如果当前还是连接状态，那么才调用HandleOuterDisconnected
 		// 避免多次调用HandleOuterDisconnected而引起的框架问题
@@ -64,7 +63,7 @@ void ConnectReceiver::HandleReadHead(const asio::error_code& ec, std::size_t act
 	{
 		// 释放内存，标记为未连接
 		if (m_memory) { free(m_memory); m_memory = 0; }
-		ALITTLE_SYSTEM("route_id:" + ROUTE2S(m_route_id) + u8" ConnectReceiver 消息头超过100M数据 message_size:" << message_size);
+		CARP_SYSTEM("route_id:" + ROUTE2S(m_route_id) + u8" ConnectReceiver 消息头超过100M数据 message_size:" << message_size);
 
 		// 如果当前还是连接状态，那么才调用HandleOuterDisconnected
 		// 避免多次调用HandleOuterDisconnected而引起的框架问题
@@ -104,7 +103,7 @@ void ConnectReceiver::HandleReadBody(const asio::error_code& ec, std::size_t act
 	{
 		// 释放内存，并且设置为未连接
 		if (m_memory) { free(m_memory); m_memory = 0; }
-		ALITTLE_SYSTEM("route_id:" + ROUTE2S(m_route_id) + u8" ConnectReceiver 消息包接收失败:" << SUTF8(ec.message().c_str()));
+		CARP_SYSTEM("route_id:" + ROUTE2S(m_route_id) + u8" ConnectReceiver 消息包接收失败:" << ec.value());
 
 		// 如果当前还是连接状态，那么才调用HandleOuterDisconnected
 		// 避免多次调用HandleOuterDisconnected而引起的框架问题
@@ -237,7 +236,7 @@ void ConnectReceiver::HandleSend(const asio::error_code& ec, std::size_t bytes_t
 	if (ec)
 	{
 		//  消息包发送失败，并通知断开连接
-		ALITTLE_SYSTEM("route_id:" + ROUTE2S(m_route_id) + u8" ConnectReceiver 消息包发送失败，并通知断开连接:" << SUTF8(ec.message().c_str()));
+		CARP_SYSTEM("route_id:" + ROUTE2S(m_route_id) + u8" ConnectReceiver 消息包发送失败，并通知断开连接:" << ec.value());
 
 		// 如果当前还是连接状态，那么才调用HandleOuterDisconnected
 		// 避免多次调用HandleOuterDisconnected而引起的框架问题

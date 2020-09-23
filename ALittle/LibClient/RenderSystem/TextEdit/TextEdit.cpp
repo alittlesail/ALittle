@@ -1,13 +1,13 @@
 
 #include "TextEdit.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
 #include "ALittle/LibClient/RenderSystem/DisplaySystem.h"
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"
 #include "ALittle/LibClient/RenderSystem/Texture/SurfaceTexture.h"
 #include "ALittle/LibClient/Helper/TextureHelper.h"
 
 #include "Carp/carp_font.hpp"
+#include "Carp/carp_log.hpp"
 
 namespace ALittle
 {
@@ -239,7 +239,7 @@ void TextEdit::Draw()
 	SDL_Surface* total_surface = TextureHelper::CreateSurface((int)m_size.x, (int)m_size.y);
 	if (!total_surface)
 	{
-		ALITTLE_ERROR(SDL_GetError());
+		CARP_ERROR(SDL_GetError());
 		return;
 	}
 
@@ -268,7 +268,7 @@ void TextEdit::Draw()
 			SDL_Surface* surface = g_DisplaySystem.CreateSurface(m_font, content.c_str());
 			if (!surface)
 			{
-				ALITTLE_ERROR("g_DisplaySystem.CreateSurface failed!");
+				CARP_ERROR("g_DisplaySystem.CreateSurface failed!");
 				SDL_FreeSurface(total_surface);
 				return;
 			}

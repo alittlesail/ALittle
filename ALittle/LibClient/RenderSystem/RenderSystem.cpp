@@ -6,13 +6,13 @@
 #include <SDL_syswm.h>
 
 #include "DisplaySystem.h"
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/FileHelper.h"
 
 #include "ALittle/LibClient/ScriptSystem/ScriptSystemEx.h"
 #include "ALittle/LibClient/Platform/iOS/iOSSystem.h"
 #include "ALittle/LibClient/Helper/FileHelperEx.h"
 #include "ALittle/LibClient/Helper/TextureHelper.h"
+
+#include "Carp/carp_log.hpp"
 
 namespace ALittle
 {
@@ -46,7 +46,7 @@ RenderSystem& RenderSystem::Instance()
 
 void RenderSystem::Setup()
 {
-	ALITTLE_INFO("SDL Setup");
+	CARP_INFO("SDL Setup");
 
 	g_DisplaySystem.Setup();
 }
@@ -165,7 +165,7 @@ bool RenderSystem::CreateView(const char* title, unsigned int width, unsigned in
 	}
 	if (!m_window)
 	{
-		ALITTLE_ERROR("window recreate failed:" << SDL_GetError());
+		CARP_ERROR("window recreate failed:" << SDL_GetError());
 		return false;
 	}
 
@@ -173,7 +173,7 @@ bool RenderSystem::CreateView(const char* title, unsigned int width, unsigned in
 	m_render = SDL_CreateRenderer(m_window, -1, 0);
 	if (!m_render)
 	{
-		ALITTLE_ERROR(SDL_GetError());
+		CARP_ERROR(SDL_GetError());
 		return false;
 	}
 
@@ -183,7 +183,7 @@ bool RenderSystem::CreateView(const char* title, unsigned int width, unsigned in
 	// get render info
 	SDL_GetRendererInfo(m_render, &m_render_info);
 	if (m_render_info.name)
-		ALITTLE_INFO("rederer:" << m_render_info.name);
+		CARP_INFO("rederer:" << m_render_info.name);
 
     m_title = title;			// save title
     m_logic_width = width;		// save logic width
@@ -192,9 +192,9 @@ bool RenderSystem::CreateView(const char* title, unsigned int width, unsigned in
     SDL_GL_GetDrawableSize(m_window, (int*)&m_view_width, (int*)&m_view_height);
     SDL_GetWindowSize(m_window, (int*)&m_window_width, (int*)&m_window_height);
 
-    ALITTLE_INFO("logic_width:" << m_logic_width << ", logic_height:" << m_logic_height);
-	ALITTLE_INFO("view_width:" << m_view_width << ", view_height:" << m_view_height);
-	ALITTLE_INFO("window_width:" << m_window_width << ", window_height:" << m_window_height);
+    CARP_INFO("logic_width:" << m_logic_width << ", logic_height:" << m_logic_height);
+	CARP_INFO("view_width:" << m_view_width << ", view_height:" << m_view_height);
+	CARP_INFO("window_width:" << m_window_width << ", window_height:" << m_window_height);
     m_flag = SDL_GetWindowFlags(m_window);
     
     // init scale
@@ -210,8 +210,8 @@ bool RenderSystem::CreateView(const char* title, unsigned int width, unsigned in
 
 	float scale_x, scale_y;
     SDL_RenderGetScale(m_render, &scale_x, &scale_y);
-    ALITTLE_INFO("render logic scale_x:" << m_scale_x << ", scale_y:" << m_scale_y);
-	ALITTLE_INFO("render real scale_x:" << scale_x << ", scale_y:" << scale_y);
+    CARP_INFO("render logic scale_x:" << m_scale_x << ", scale_y:" << m_scale_y);
+	CARP_INFO("render real scale_x:" << scale_x << ", scale_y:" << scale_y);
 	
 	// set render blend
 	SDL_SetRenderDrawBlendMode(m_render, SDL_BLENDMODE_BLEND);
@@ -251,7 +251,7 @@ bool RenderSystem::SetViewShape(const char* file_path)
 	// check load succeed or not
 	if (surface == 0)
 	{
-		ALITTLE_ERROR("LoadImageFromMemory failed:" << file_path);
+		CARP_ERROR("LoadImageFromMemory failed:" << file_path);
 		return false;
 	}
 
@@ -292,7 +292,7 @@ bool RenderSystem::SetViewShape(const char* file_path)
 
 	int result = SDL_SetWindowShape(m_window, surface, &shape_mode);
 	if (result == -2)
-		ALITTLE_ERROR("SDL_INVALID_SHAPE_ARGUMENT");
+		CARP_ERROR("SDL_INVALID_SHAPE_ARGUMENT");
 	SDL_FreeSurface(surface);
 	return result == 0;
 }
@@ -365,7 +365,7 @@ void RenderSystem::HandleViewResized(unsigned int width, unsigned int height)
 
 void RenderSystem::HandleDeviceReset()
 {
-	ALITTLE_INFO("device reset"); 
+	CARP_INFO("device reset"); 
 
 	if (m_render)
 	{
@@ -439,7 +439,7 @@ bool RenderSystem::SetViewIcon(const char* path)
 	// check load succeed or not
 	if (m_icon == 0)
 	{
-		ALITTLE_ERROR("LoadImageFromMemory failed:" << path);
+		CARP_ERROR("LoadImageFromMemory failed:" << path);
 		return false;
 	}
 

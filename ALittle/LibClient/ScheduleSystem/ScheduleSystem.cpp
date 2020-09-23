@@ -3,12 +3,6 @@
 #include "EventDefine.h"
 #include <asio.hpp>
 
-#include "ALittle/LibCommon/Helper/FileHelper.h"
-#include "ALittle/LibCommon/Helper/DumpHelper.h"
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/StringHelper.h"
-#include "ALittle/LibCommon/Tool/LogSystem.h"
-#include "ALittle/LibCommon/Tool/ConsoleSystem.h"
 #include "ALittle/LibClient/Tool/MemoryPool.h"
 
 #include "ALittle/LibClient/ThreadSystem/ThreadSystem.h"
@@ -30,6 +24,16 @@
 #ifdef __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
 #endif
+
+#define CARP_CONSOLE_IMPL
+#include "Carp/carp_console.hpp"
+#define CARP_DUMP_IMPL
+#include "Carp/carp_dump.hpp"
+
+#include "Carp/carp_file_helper.hpp"
+
+#define CARP_LOG_IMPL
+#include "Carp/carp_log.hpp"
 
 namespace ALittle
 {
@@ -57,7 +61,7 @@ ScheduleSystem& ScheduleSystem::Instance()
 void ScheduleSystem::Setup(int argc, char* argv[])
 {
 	// 初始化日志系统
-	ALITTLE_INFO("==>ScheduleSystem Setup Begin<==");
+	CARP_INFO("==>ScheduleSystem Setup Begin<==");
 
 	// set up instance
 	g_MemoryPoolGroup;				// memory pool
@@ -75,16 +79,16 @@ void ScheduleSystem::Setup(int argc, char* argv[])
 	NetSystem::RegisterToScript(g_ScriptSystem);
 
 	// load engine
-	ALITTLE_INFO("==>ScheduleSystem Lua Init Begin<==");
+	CARP_INFO("==>ScheduleSystem Lua Init Begin<==");
 	std::string main_path;
 	if (argc >= 2) main_path = argv[1];
 	std::string debug_info;
 	if (argc >= 3) debug_info = argv[2];
 	g_ScriptSystem.StartScript(main_path, debug_info);
-	ALITTLE_INFO("==>ScheduleSystem Lua Init Completed<==");
+	CARP_INFO("==>ScheduleSystem Lua Init Completed<==");
 	m_has_updater = g_ScriptSystem.IsFunction("__ALITTLEAPI_Update");
-	if (!m_has_updater) ALITTLE_ERROR("can't find __ALITTLEAPI_Update in _G");
-	ALITTLE_INFO("==>ScheduleSystem Setup Completed<==");
+	if (!m_has_updater) CARP_ERROR("can't find __ALITTLEAPI_Update in _G");
+	CARP_INFO("==>ScheduleSystem Setup Completed<==");
 }
 
 bool ScheduleSystem::SetFPS(int fps)
@@ -117,12 +121,12 @@ int ScheduleSystem::Run(int argc, char* argv[])
 {
 	// set dump info
 #ifdef _WIN32
-    DumpHelper::Setup("ALittleClient");
+	s_carp_dump.Setup("ALittleClient", []() { s_carp_log.Shutdown(); });
 #endif
 
 	// init SDL
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_AUDIO) == -1)
-		ALITTLE_ERROR(SDL_GetError());
+		CARP_ERROR(SDL_GetError());
 	
 	// enable drop file
 	SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
@@ -130,15 +134,16 @@ int ScheduleSystem::Run(int argc, char* argv[])
 	SDL_SetHint(SDL_HINT_ANDROID_BLOCK_ON_PAUSE, "0");
 
 #ifndef __EMSCRIPTEN__
-	g_LogSystem.Setup(FileHelperEx::ExternalFilePath() + "Log/", "ALittleClient");
+	CarpFileHelper::CreateDeepFolder(FileHelperEx::ExternalFilePath() + "Log");
+	s_carp_log.Setup(FileHelperEx::ExternalFilePath() + "Log/", "ALittleClient");
 #endif
 #ifdef _WIN32
-	g_ConsoleSystem.Setup("ALittleClient", std::bind(&ScheduleSystem::PushConsoleEvent, this, std::placeholders::_1, std::placeholders::_2)
+	s_carp_console.Setup("ALittleClient", std::bind(&ScheduleSystem::PushConsoleEvent, this, std::placeholders::_1, std::placeholders::_2)
 						, std::bind(&ScheduleSystem::Exit, this), std::bind(&ScheduleSystem::PushConsoleHelp, this));
 #endif
 
 	// print current platform
-	ALITTLE_INFO("current platform is " << SDL_GetPlatform());
+	CARP_INFO("current platform is " << SDL_GetPlatform());
 
 	do
 	{
@@ -160,7 +165,7 @@ int ScheduleSystem::Run(int argc, char* argv[])
 		while (run) MainLoop(run);
 #endif		
 
-		ALITTLE_INFO("===============ScheduleSystem Shutdown Begin============");
+		CARP_INFO("===============ScheduleSystem Shutdown Begin============");
 		
 		SDL_Event event;
 
@@ -189,7 +194,7 @@ int ScheduleSystem::Run(int argc, char* argv[])
 		g_RenderSystem.Shutdown();
 		NetSystem::Shutdown();
 
-		ALITTLE_INFO("===============ScheduleSystem Shutdown Completed============");
+		CARP_INFO("===============ScheduleSystem Shutdown Completed============");
 	}
 	while(m_restart);
 
@@ -197,14 +202,14 @@ int ScheduleSystem::Run(int argc, char* argv[])
 	SDL_Quit();
 
 #ifdef _WIN32
-	g_ConsoleSystem.Shutdown();
+	s_carp_console.Shutdown();
 #endif
 
-	g_LogSystem.Shutdown();
+	s_carp_log.Shutdown();
 
 	// set dump info
 #ifdef _WIN32
-	DumpHelper::Shutdown();
+	s_carp_dump.Shutdown();
 #endif
 #if (defined __ANDROID__) || (defined __IPHONEOS__)
 	exit(0);
@@ -479,7 +484,7 @@ void ScheduleSystem::PushConsoleEvent(const std::string& module, const std::stri
 
 void ScheduleSystem::PushConsoleHelp()
 {
-	ALITTLE_INFO(u8"模块列表:Client");
+	CARP_INFO(u8"模块列表:Client");
 }
 
 //===============================================================

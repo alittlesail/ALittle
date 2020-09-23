@@ -171,7 +171,7 @@ void NetSystem::Connect(const char* ip, unsigned int port)
 	// if connecting then return
 	if (m_state == CONNECT_ING)
 	{
-		ALITTLE_WARN("net system already connecting:" << m_ip << ":" << m_port);
+		CARP_WARN("net system already connecting:" << m_ip << ":" << m_port);
 		return;
 	}
 

@@ -1,7 +1,6 @@
 
 #include "MysqlThreadSystem.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
 #include "ALittle/LibServer/MysqlSystem/MysqlStatementQuery.h"
 #include "ALittle/LibServer/ServerSystem/ServerSchedule.h"
 
@@ -97,7 +96,7 @@ void MysqlThreadSystem::Setup(int thread_count
 
     if (thread_count <= 0)
     {
-        ALITTLE_ERROR("thread_count <= 0");
+        CARP_ERROR("thread_count <= 0");
         return;
     }
 
@@ -107,7 +106,7 @@ void MysqlThreadSystem::Setup(int thread_count
     {
         if (!conn.Open(ip, username, password, port, "mysql"))
         {
-            ALITTLE_ERROR("can't not connect db_name:mysql for create db_name:" << db_name);
+            CARP_ERROR("can't not connect db_name:mysql for create db_name:" << db_name);
             return;
         }
 
@@ -118,7 +117,7 @@ void MysqlThreadSystem::Setup(int thread_count
         std::string reason;
         if (!conn.ExecuteQuery(create_sql.c_str(), reason))
         {
-            ALITTLE_ERROR("sql(" << create_sql << ") execute failed:" << reason);
+            CARP_ERROR("sql(" << create_sql << ") execute failed:" << reason);
             return;
         }
     }

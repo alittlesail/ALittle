@@ -2,7 +2,7 @@
 #ifndef _ALITTLE_ROUTEIDDEFINE_H_
 #define _ALITTLE_ROUTEIDDEFINE_H_
 
-#include "ALittle/LibCommon/Helper/StringHelper.h"
+#include <string>
 
 typedef unsigned char ROUTE_TYPE;
 typedef unsigned char ROUTE_NUM;
@@ -42,7 +42,7 @@ public:
 	{
 		unsigned short route_type = CalcRouteType(route_id);
 		unsigned short route_num = CalcRouteNum(route_id);
-		return X2S(route_type) + "_" + X2S(route_num);
+		return std::to_string(route_type) + "_" + std::to_string(route_num);
 	}
 
 	// 计算连接信息

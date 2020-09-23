@@ -1,7 +1,7 @@
 
 #include "InputHelper.h"
 
-#include "ALittle/LibCommon/Helper/StringHelper.h"
+#include "Carp/carp_string_helper.hpp"
 
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"
 #include "ALittle/LibClient/Platform/Android/AndroidSystem.h"
@@ -28,24 +28,24 @@ const char* InputHelper::GetIMESelectList()
 	HIMC hImc = ImmGetContext(info.info.win.window);
 	if (hImc == NULL) return s_content.c_str();
 
-	DWORD dwSize = ImmGetCandidateList(hImc, 0, 0, 0);
+	DWORD dwSize = ImmGetCandidateListW(hImc, 0, 0, 0);
 	if (dwSize == 0)
 	{
 		ImmReleaseContext(info.info.win.window, hImc);
 		return s_content.c_str();
 	}
 
-	char* pBuf = new char[dwSize];   
+	wchar_t* pBuf = new wchar_t[dwSize];
 	LPCANDIDATELIST pList = (LPCANDIDATELIST)pBuf;  
-	dwSize = ImmGetCandidateList(hImc, 0, pList, dwSize);
+	dwSize = ImmGetCandidateListW(hImc, 0, pList, dwSize);
 	if (dwSize)
 	{
 		for (DWORD i = 0; i < pList->dwCount; ++i)   
 		{
-			char* content = (char*)(pBuf+pList->dwOffset[pList->dwPageStart+i]);   
+			wchar_t* content = (wchar_t*)(pBuf+pList->dwOffset[pList->dwPageStart+i]);
 			if (content == NULL) continue;
 
-			s_content += StringHelper::ANSI2UTF8(content);
+			s_content += CarpStringHelper::Unicode2UTF8(content);
 			if (i+1 < pList->dwCount) s_content.push_back(' ');
 		}
 	}

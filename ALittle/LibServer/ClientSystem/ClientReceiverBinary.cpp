@@ -2,8 +2,7 @@
 #include "ClientReceiver.h"
 #include "ClientServer.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/StringHelper.h"
+#include "Carp/carp_log.hpp"
 #include "ALittle/LibServer/ServerSystem/ServerSchedule.h"
 
 #include <functional>
@@ -29,7 +28,7 @@ void ClientReceiver::HandleReadHeadBinary(const asio::error_code& ec, std::size_
 		// 释放内存
 		if (m_memory) { free(m_memory); m_memory = 0; }
 		// 读取失败了说明是连接断开了，通知给server
-		ALITTLE_SYSTEM("ClientReceiver::HandleReadHead receive failed:" << SUTF8(ec.message().c_str()));
+		CARP_SYSTEM("ClientReceiver::HandleReadHead receive failed:" << ec.value());
 		ClientServerPtr server = m_server.lock();
 		if (server)	server->HandleOuterDisconnected(this->shared_from_this());
 		return;
@@ -64,7 +63,7 @@ void ClientReceiver::HandleReadBodyBinary(const asio::error_code& ec, std::size_
 		// 释放内存
 		if (m_memory) { free(m_memory); m_memory = 0; }
 		// 读取失败了说明是断开了，通知给server
-		ALITTLE_SYSTEM("ClientReceiver::HandleReadBody receive failed:" << SUTF8(ec.message().c_str()));
+		CARP_SYSTEM("ClientReceiver::HandleReadBody receive failed:" << ec.value());
 		ClientServerPtr server = m_server.lock();
 		if (server) server->HandleOuterDisconnected(this->shared_from_this());
 		return;
@@ -95,7 +94,7 @@ void ClientReceiver::SendBinary(const CarpMessage& message)
 	void* memory = malloc(memory_size);
     if (memory == nullptr)
     {
-        ALITTLE_ERROR("memory is null");
+        CARP_ERROR("memory is null");
         return;
     }
 	char* body_memory = static_cast<char*>(memory);

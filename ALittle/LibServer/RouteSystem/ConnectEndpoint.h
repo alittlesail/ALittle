@@ -4,7 +4,7 @@
 
 #include <asio.hpp>
 #include "Carp/carp_message.hpp"
-#include "ALittle/LibCommon/Tool/SafeIDCreator.h"
+#include "Carp/carp_safe_id_creator.h"
 #include "RouteIdDefine.h"
 
 #include <memory>
@@ -75,7 +75,7 @@ public:
 	void ClearRPC(const std::string& reason);
 
 private:
-	SafeIDCreator<int> m_id_creator;
+	CarpSafeIDCreator<int> m_id_creator;
 	std::map<int, RPCCallback> m_rpc_map;
 };
 

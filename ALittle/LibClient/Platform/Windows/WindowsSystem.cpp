@@ -7,7 +7,7 @@
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
 #include "ALittle/LibClient/ScriptSystem/ScriptSystemEx.h"
 
-#include "ALittle/LibCommon/Helper/StringHelper.h"
+#include "Carp/carp_string_helper.hpp"
 
 #include <Windows.h>
 #include <Iphlpapi.h>
@@ -139,24 +139,24 @@ int Windows_GetScreenHeight()
 
 void Windows_SystemSelectFile(const char* init_dir)
 {
-	char path_name[MAX_PATH] = {0};
-	OPENFILENAME ofn = { OPENFILENAME_SIZE_VERSION_400 };				// or {sizeof (OPENFILENAME)}
+	wchar_t path_name[MAX_PATH] = {0};
+	OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400 };				// or {sizeof (OPENFILENAME)}
 	ofn.hwndOwner = g_RenderSystem.GetSysWMinfo().info.win.window;	// set parent window
 	ofn.lpstrFilter = NULL;				// not set filter
 	ofn.lpstrFile = path_name;			// set path
 	ofn.nMaxFile = sizeof(path_name);	// size of buffer
-	ofn.lpstrTitle = "选择文件";			// set title
-	char cur_dir[MAX_PATH] = {0};
-	GetCurrentDirectory(sizeof(cur_dir), cur_dir);	// get current path
-	std::string gbk_dir = cur_dir;
+	ofn.lpstrTitle = L"选择文件";			// set title
+	wchar_t cur_dir[MAX_PATH] = {0};
+	GetCurrentDirectoryW(sizeof(cur_dir), cur_dir);	// get current path
+	std::wstring gbk_dir = cur_dir;
 	if (init_dir)
-		gbk_dir = StringHelper::UTF82ANSI(init_dir);
+		gbk_dir = CarpStringHelper::UTF82Unicode(init_dir);
 	ofn.lpstrInitialDir = gbk_dir.c_str();			// init first dir
 	ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST;
-	BOOL bOk = GetOpenFileName(&ofn);				// open dialog
-	SetCurrentDirectory(cur_dir);					// reset old dir
+	BOOL bOk = GetOpenFileNameW(&ofn);				// open dialog
+	SetCurrentDirectoryW(cur_dir);					// reset old dir
 
-	std::string utf8_path_name = StringHelper::ANSI2UTF8(path_name);
+	std::string utf8_path_name = CarpStringHelper::Unicode2UTF8(path_name);
 	if (bOk)
 		g_ScriptSystem.Invoke("__ALITTLEAPI_SystemSelectFile", utf8_path_name.c_str());
 	else
@@ -165,17 +165,17 @@ void Windows_SystemSelectFile(const char* init_dir)
 
 void Windows_SystemSelectDirectory(const char* init_dir)
 {
-	char path_name[MAX_PATH] = { 0 };
-	BROWSEINFO bInfo = { 0 };				// or {sizeof (OPENFILENAME)}
+	wchar_t path_name[MAX_PATH] = { 0 };
+	BROWSEINFOW bInfo = { 0 };				// or {sizeof (OPENFILENAME)}
 	bInfo.hwndOwner = g_RenderSystem.GetSysWMinfo().info.win.window;	// set parent window
-	bInfo.lpszTitle = "选择文件夹";			// set title
+	bInfo.lpszTitle = L"选择文件夹";			// set title
 	bInfo.pszDisplayName = path_name;
 	bInfo.ulFlags = BIF_RETURNONLYFSDIRS | BIF_USENEWUI; /*包含一个编辑框 用户可以手动填写路径 对话框可以调整大小之类的..*/
-	LPITEMIDLIST lpDlist = SHBrowseForFolder(&bInfo);
+	LPITEMIDLIST lpDlist = SHBrowseForFolderW(&bInfo);
 	if (lpDlist != NULL)
 	{
-		SHGetPathFromIDList(lpDlist, path_name);
-		std::string utf8_path_name = StringHelper::ANSI2UTF8(path_name);
+		SHGetPathFromIDListW(lpDlist, path_name);
+		std::string utf8_path_name = CarpStringHelper::Unicode2UTF8(path_name);
 		g_ScriptSystem.Invoke("__ALITTLEAPI_SystemSelectDirectory", utf8_path_name.c_str());
 	}
 	else
@@ -187,37 +187,37 @@ void Windows_SystemSelectDirectory(const char* init_dir)
 
 void Windows_SystemSaveFile(const char* utf8_file_name, const char* init_dir)
 {
-	std::string file_name;
-	if (utf8_file_name) file_name = StringHelper::UTF82ANSI(utf8_file_name);
+	std::wstring file_name;
+	if (utf8_file_name) file_name = CarpStringHelper::UTF82Unicode(utf8_file_name);
 	
-	char path_name[MAX_PATH];
-	OPENFILENAME ofn = { OPENFILENAME_SIZE_VERSION_400 };//or  {sizeof (OPENFILENAME)}  
+	wchar_t path_name[MAX_PATH];
+	OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400 };//or  {sizeof (OPENFILENAME)}  
 	// lStructSize  
 	// 指定这个结构的大小，以字节为单位。  
 	// Windows 95/98和Windows NT 4.0：特意为Windows 95/98或Windows NT 4.0，及带有WINVER和_WIN32_WINNT >= 0x0500编译时，  
 	//  为这个成员使用OPENFILENAME_SIZE_VERSION_400。  
 	// Windows 2000及更高版本：这个参数使用sizeof (OPENFILENAME) 。  
-	ofn.hwndOwner =GetForegroundWindow();// 打开OR保存文件对话框的父窗口  
+	ofn.hwndOwner = GetForegroundWindow();// 打开OR保存文件对话框的父窗口  
 	ofn.lpstrFilter = NULL; 
 	//过滤器 如果为 NULL 不使用过滤器  
 	//具体用法看上面  注意 /0  
 	path_name[0] =  0;
-	strcpy_s(path_name, file_name.c_str());
+	wcscpy_s(path_name, file_name.c_str());
 	ofn.lpstrFile = path_name;  
 	ofn.nMaxFile = sizeof(path_name);//存放用户选择文件的 路径及文件名 缓冲区  
-	ofn.lpstrTitle = "保存文件";//选择文件对话框标题  
-	char szCurDir[MAX_PATH];
-	GetCurrentDirectory(sizeof(szCurDir),szCurDir);
-	std::string gbk_dir = szCurDir;
+	ofn.lpstrTitle = L"保存文件";//选择文件对话框标题  
+	wchar_t szCurDir[MAX_PATH];
+	GetCurrentDirectoryW(sizeof(szCurDir),szCurDir);
+	std::wstring gbk_dir = szCurDir;
 	if (init_dir)
-		gbk_dir = StringHelper::UTF82ANSI(init_dir);
+		gbk_dir = CarpStringHelper::UTF82Unicode(init_dir);
 	ofn.lpstrInitialDir = gbk_dir.c_str();			// init first dir
 	ofn.Flags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;//如果需要选择多个文件 则必须带有  OFN_ALLOWMULTISELECT标志  
 
-	BOOL bOk = GetSaveFileName(&ofn);//调用对话框打开文件
-	SetCurrentDirectory(szCurDir); 
+	BOOL bOk = GetSaveFileNameW(&ofn);//调用对话框打开文件
+	SetCurrentDirectoryW(szCurDir); 
 
-	std::string utf8_path_name = StringHelper::ANSI2UTF8(path_name);
+	std::string utf8_path_name = CarpStringHelper::Unicode2UTF8(path_name);
 	if (bOk)
 		g_ScriptSystem.Invoke("__ALITTLEAPI_SystemSaveFile", utf8_path_name.c_str());
 	else
@@ -230,9 +230,7 @@ void Windows_OpenUrlBySystemBrowser(const char* url)
 
 	std::string commond = "start \"\" ";
 	commond.append("\"").append(url).append("\"");
-	
-	commond = StringHelper::UTF82ANSI(commond.c_str());
-	system(commond.c_str());
+	_wsystem(CarpStringHelper::UTF82Unicode(commond.c_str()).c_str());
 }
 
 bool Windows_HasClipboardImage()

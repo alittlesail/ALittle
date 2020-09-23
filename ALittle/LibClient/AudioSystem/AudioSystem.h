@@ -7,7 +7,6 @@
 #include <vector>
 
 struct CarpMixerChunk;
-class CarpMixer;
 
 namespace ALittle
 {
@@ -53,8 +52,6 @@ private:
 private:
 	typedef std::map<std::string, CarpMixerChunk*> MixChunkCache;
 	MixChunkCache m_cache_map;
-
-	CarpMixer* m_mixer = nullptr;
 
 private:
 	AudioSystem();

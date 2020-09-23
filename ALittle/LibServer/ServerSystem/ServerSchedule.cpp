@@ -3,23 +3,13 @@
 
 #include "ServerSchedule.h"
 
-#include "ALittle/LibServer/MysqlSystem/MysqlConnection.h"
 #include "ALittle/LibServer/HttpSystem/Server/HttpServer.h"
 #include "ALittle/LibServer/HttpSystem/Server/HttpSender.h"
 #include "ALittle/LibServer/ClientSystem/ClientReceiver.h"
 
-#include "ALittle/LibCommon/Helper/TimeHelper.h"
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/DumpHelper.h"
-#include "ALittle/LibCommon/Helper/StringHelper.h"
-#include "ALittle/LibCommon/Helper/HttpHelper.h"
-#include "ALittle/LibCommon/Helper/FileHelper.h"
-#include "ALittle/LibCommon/Tool/LogSystem.h"
-
-#include "ALittle/LibServer/HttpSystem/Client/HttpClientText.h"
-#include "ALittle/LibServer/HttpSystem/Client/HttpClientPost.h"
-#include "ALittle/LibServer/MysqlSystem/MysqlConnection.h"
 #include "ALittle/LibServer/MysqlSystem/MysqlStatementQuery.h"
+#include "Carp/carp_file_helper.hpp"
+#include "Carp/carp_http.hpp"
 
 namespace ALittle
 {
@@ -130,7 +120,7 @@ int ServerSchedule::Run()
 	m_script_system.Invoke("__ALITTLEAPI_SetupMainModule", m_sengine_path.c_str(), m_module_path.c_str(), m_module_name.c_str(), m_config_path.c_str());
 
 	// 创建定时器
-	m_current_time = TimeHelper::GetCurMSTime();
+	m_current_time = CarpTimeHelper::GetCurMSTime();
 	const int HEARTBEAT = 20;
 	m_timer = AsioTimerPtr(new AsioTimer(m_io_service, std::chrono::milliseconds(HEARTBEAT)));
 	m_timer->async_wait(std::bind(&ServerSchedule::Update, this, std::placeholders::_1, HEARTBEAT));
@@ -138,7 +128,7 @@ int ServerSchedule::Run()
 	// run
 	asio::error_code ec;
 	m_io_service.run(ec);
-	if (ec) ALITTLE_ERROR("io server run error: " << SUTF8(asio::system_error(ec).what()));
+	if (ec) CARP_ERROR("io server run error: " << ec.value());
 
 	m_mysql_system.Shutdown();
 	m_script_system.Invoke("__ALITTLEAPI_ShutdownMainModule", m_module_name.c_str());
@@ -171,7 +161,7 @@ void ServerSchedule::Update(const asio::error_code& ec, int interval)
 {
 	if (m_is_exit) return;
 
-	time_t time = TimeHelper::GetCurMSTime();
+	time_t time = CarpTimeHelper::GetCurMSTime();
 
 	// update script logic
 	m_script_system.Invoke("__ALITTLEAPI_Update", time - m_current_time);
@@ -271,9 +261,9 @@ void ServerSchedule::HandleHttpMessage(HttpSenderPtr sender, const std::string& 
 	std::string param;
 	std::string content_type;
 	std::string content;
-	if (!HttpHelper::AnalysisRequest(msg, method, path, &param, &content_type, &content))
+	if (!CarpHttpHelper::AnalysisRequest(msg, method, path, &param, &content_type, &content))
 	{
-		ALITTLE_WARN("error request:\n" << msg);
+		CARP_WARN("error request:\n" << msg);
 		sender->Close();
 		return;
 	}
@@ -291,9 +281,9 @@ bool ServerSchedule::HandleHttpFileMessage(HttpSenderPtr sender, const std::stri
 	std::string param;
 	std::string content_type;
 	std::string content;
-	if (!HttpHelper::AnalysisRequest(msg, method, path, &param, &content_type, &content))
+	if (!CarpHttpHelper::AnalysisRequest(msg, method, path, &param, &content_type, &content))
 	{
-		ALITTLE_WARN("error request:\n" << msg);
+		CARP_WARN("error request:\n" << msg);
 		return false;
 	}
 
@@ -310,28 +300,28 @@ bool ServerSchedule::HandleHttpFileMessage(HttpSenderPtr sender, const std::stri
 
 void ServerSchedule::HttpGet(int id, const char* url)
 {
-	HttpClientTextPtr client = HttpClientTextPtr(new HttpClientText);
+	CarpHttpClientTextPtr client = CarpHttpClientTextPtr(new CarpHttpClientText);
 	client->SendRequest(url, true, "text/html", "", 0
-		, [this, id](bool result, const std::string& body, const std::string& head)
+		, [this, id](bool result, const std::string& body, const std::string& head, const std::string& error)
 		{
 			if (result)
 				m_script_system.Invoke("__ALITTLEAPI_HttpSucceed", id, body.c_str());
 			else
 				m_script_system.Invoke("__ALITTLEAPI_HttpFailed", id, head.c_str());
-		}, &m_io_service, "", "");
+		}, nullptr, &m_io_service, "", 0, "");
 }
 
 void ServerSchedule::HttpPost(int id, const char* url, const char* type, const char* content)
 {
-	HttpClientTextPtr client = HttpClientTextPtr(new HttpClientText);
+	CarpHttpClientTextPtr client = CarpHttpClientTextPtr(new CarpHttpClientText);
 	client->SendRequest(url, false, type, content, strlen(content)
-		, [this, id](bool result, const std::string& body, const std::string& head)
+		, [this, id](bool result, const std::string& body, const std::string& head, const std::string& error)
 		{
 			if (result)
 				m_script_system.Invoke("__ALITTLEAPI_HttpSucceed", id, body.c_str());
 			else
 				m_script_system.Invoke("__ALITTLEAPI_HttpFailed", id, head.c_str());
-		}, &m_io_service, "", "");
+		}, nullptr, &m_io_service, "", 0, "");
 }
 
 void ServerSchedule::HttpClose(int id)
@@ -373,8 +363,8 @@ void ServerSchedule::HttpSendFile(int id, const char* file_path, int start_size)
 	m_id_map_http.erase(it);
 	if (!sender) return;
 
-	std::string content_type = HttpHelper::GetContentTypeByExt(FileHelper::GetFileExtByPath(file_path));
-	std::string show_name = FileHelper::GetFileNameByPath(file_path);
+	std::string content_type = CarpHttpHelper::GetContentTypeByExt(CarpFileHelper::GetFileExtByPath(file_path));
+	std::string show_name = CarpFileHelper::GetFileNameByPath(file_path);
 	sender->SendFile(file_path, content_type.c_str(), false, start_size, true, show_name.c_str());
 }
 
@@ -508,7 +498,7 @@ void ServerSchedule::StartRouteSystem(int route_type, int route_num)
 {
 	if (m_route_system != nullptr)
 	{
-		ALITTLE_ERROR(u8"RouteSystem 已经初始化");
+		CARP_ERROR(u8"RouteSystem 已经初始化");
 		return;
 	}
 
@@ -522,7 +512,7 @@ int ServerSchedule::GetRouteType()
 {
 	if (m_route_system == nullptr)
 	{
-		ALITTLE_ERROR(u8"RouteSystem还未初始化，请调用StartRouteSystem进行初始化");
+		CARP_ERROR(u8"RouteSystem还未初始化，请调用StartRouteSystem进行初始化");
 		return 0;
 	}
 
@@ -533,7 +523,7 @@ int ServerSchedule::GetRouteNum()
 {
 	if (m_route_system == nullptr)
 	{
-		ALITTLE_ERROR(u8"RouteSystem还未初始化，请调用StartRouteSystem进行初始化");
+		CARP_ERROR(u8"RouteSystem还未初始化，请调用StartRouteSystem进行初始化");
 		return 0;
 	}
 
@@ -544,7 +534,7 @@ int ServerSchedule::GetRouteId()
 {
 	if (m_route_system == nullptr)
 	{
-		ALITTLE_ERROR(u8"RouteSystem还未初始化，请调用StartRouteSystem进行初始化");
+		CARP_ERROR(u8"RouteSystem还未初始化，请调用StartRouteSystem进行初始化");
 		return 0;
 	}
 
@@ -556,7 +546,7 @@ bool ServerSchedule::CreateConnectServer(const char* yun_ip, const char* ip, int
 {
 	if (m_route_system == nullptr)
 	{
-		ALITTLE_ERROR(u8"RouteSystem还未初始化，请调用StartRouteSystem进行初始化");
+		CARP_ERROR(u8"RouteSystem还未初始化，请调用StartRouteSystem进行初始化");
 		return false;
 	}
 
@@ -571,7 +561,7 @@ bool ServerSchedule::CreateConnectClient(const char* ip, int port)
 {
 	if (m_route_system == nullptr)
 	{
-		ALITTLE_ERROR(u8"RouteSystem还未初始化，请调用StartRouteSystem进行初始化");
+		CARP_ERROR(u8"RouteSystem还未初始化，请调用StartRouteSystem进行初始化");
 		return false;
 	}
 
@@ -584,7 +574,7 @@ void ServerSchedule::ConnectSession(int route_type, int route_num)
 {
 	if (m_route_system == nullptr)
 	{
-		ALITTLE_ERROR(u8"RouteSystem还未初始化，请调用StartRouteSystem进行初始化");
+		CARP_ERROR(u8"RouteSystem还未初始化，请调用StartRouteSystem进行初始化");
 		m_script_system.Invoke("__ALITTLEAPI_ConnectSessionFailed", route_type, route_num, "RouteSystem还未初始化，请调用StartRouteSystem进行初始化");
 		return;
 	}

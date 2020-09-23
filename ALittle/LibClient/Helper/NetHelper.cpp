@@ -1,8 +1,6 @@
 
 #include "NetHelper.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-
 #include "ALittle/LibClient/Platform/Android/AndroidSystem.h"
 #include "ALittle/LibClient/Platform/iOS/iOSSystem.h"
 #include "ALittle/LibClient/Platform/Windows/WindowsSystem.h"

@@ -6,8 +6,7 @@
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"
 
 #include "Carp/carp_font.hpp"
-
-#include "ALittle/LibCommon/Helper/LogHelper.h"
+#include "Carp/carp_log.hpp"
 
 namespace ALittle
 {
@@ -235,7 +234,7 @@ void TextInput::Draw()
 	SDL_Surface* surface = g_DisplaySystem.CreateSurface(m_font, content.c_str());
 	if (!surface)
 	{
-		ALITTLE_ERROR("CreateSurface failed!");
+		CARP_ERROR("CreateSurface failed!");
 		return;
 	}
 

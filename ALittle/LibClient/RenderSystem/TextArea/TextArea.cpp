@@ -1,7 +1,8 @@
 
 #include "TextArea.h"
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/StringHelper.h"
+
+#include "Carp/carp_log.hpp"
+
 extern "C" {
 #include "ALittle/LibCommon/ThirdParty/utf8/utf8.h"
 }
@@ -195,7 +196,7 @@ void TextArea::Draw(bool draw)
 	SDL_Surface* total_surface = SDL_CreateRGBSurface(0, total_width, total_height, 32, rmask, gmask, bmask, amask);
 	if (!total_surface)
 	{
-		ALITTLE_ERROR(SDL_GetError());
+		CARP_ERROR(SDL_GetError());
 		return;
 	}
 

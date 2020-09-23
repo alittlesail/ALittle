@@ -1,7 +1,6 @@
 
 #include "TextInput.h"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
 #include "ALittle/LibClient/RenderSystem/DisplaySystem.h"
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"
 

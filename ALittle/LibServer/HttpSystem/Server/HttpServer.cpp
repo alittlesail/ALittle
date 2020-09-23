@@ -6,9 +6,6 @@
 #define CARP_HAS_SSL
 #include "Carp/carp_http.hpp"
 
-#include "ALittle/LibCommon/Helper/LogHelper.h"
-#include "ALittle/LibCommon/Helper/StringHelper.h"
-
 #include "ALittle/LibServer/ServerSystem/ServerSchedule.h"
 
 namespace ALittle
@@ -38,7 +35,7 @@ bool HttpServer::Start(const std::string& yun_ip, const std::string& ip, unsigne
 	// check is already started
 	if (m_acceptor)
 	{
-		ALITTLE_ERROR("http server already started(ip: " << m_ip << ", port:" << m_port << ")");
+		CARP_ERROR("http server already started(ip: " << m_ip << ", port:" << m_port << ")");
 		return false;
 	}
 
@@ -135,10 +132,10 @@ bool HttpServer::Start(const std::string& yun_ip, const std::string& ip, unsigne
 			m_acceptor = AcceptorPtr(new asio::ip::tcp::acceptor(schedule->GetIOService()
 			, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port), false));
 	}
-	catch (std::exception& e)
+	catch (asio::error_code& ec)
 	{
 		m_acceptor = AcceptorPtr();
-		ALITTLE_SYSTEM("HttpServer: start failed at " << ip << ":" << port << " error: " << SUTF8(e.what()));
+		CARP_SYSTEM("HttpServer: start failed at " << ip << ":" << port << " error: " << ec.value());
 		return false;
 	}
 
@@ -156,7 +153,7 @@ bool HttpServer::Start(const std::string& yun_ip, const std::string& ip, unsigne
 	// start to accept next connect
 	NextAccept(0);
 
-	ALITTLE_SYSTEM("HttpServer: start succeed at " << ip << ":" << port);
+	CARP_SYSTEM("HttpServer: start succeed at " << ip << ":" << port);
 	return true;
 }
 
@@ -185,7 +182,7 @@ void HttpServer::Close()
 	m_receiver_socket_map.clear();
 	m_sender_socket_map.clear();
 
-	ALITTLE_SYSTEM("HttpServer stop succeed.");
+	CARP_SYSTEM("HttpServer stop succeed.");
 }
 
 void HttpServer::CloseClient(CarpHttpSocketPtr socket)
@@ -203,7 +200,7 @@ void HttpServer::CloseClient(CarpHttpSocketPtr socket)
 		it->second->m_is_removed = true;
 		m_sender_socket_map.erase(it);
 	}
-	// ALITTLE_INFO("HttpServer ##CLOSE, socket count : " << m_receiver_socket_map.size());
+	// CARP_INFO("HttpServer ##CLOSE, socket count : " << m_receiver_socket_map.size());
 }
 
 void HttpServer::ExecuteRemoveCallBack(CarpHttpSocketPtr socket)
@@ -235,7 +232,7 @@ void HttpServer::HandleAccept(CarpHttpSocketPtr socket, const asio::error_code& 
 {
 	if (ec)
 	{
-		ALITTLE_ERROR("https server accept failed: " << SUTF8(asio::system_error(ec).what()));
+		CARP_ERROR("https server accept failed: " << ec.value());
 		if (error_count > 100)
 			Close();
 		else
@@ -259,7 +256,7 @@ void HttpServer::HandleHandShake(CarpHttpSocketPtr socket, const asio::error_cod
 {
 	if (ec)
 	{
-		ALITTLE_ERROR("server hand shake failed: " << SUTF8(asio::system_error(ec).what()));
+		CARP_ERROR("server hand shake failed: " << ec.value());
 		return;
 	}
 

@@ -24,7 +24,7 @@ int NetSystem_EventFilter(void* userdata, SDL_Event* event)
 	if (event->type != SDL_USEREVENT) return 1;
 
 	if (event->user.code == NET_MESSAGE
-		|| event->user.code == NET_DISCONNECT
+		|| event->user.code == NET_DISCONNECTED
 		|| event->user.code == NET_CONNECT_SUCCEED
 		|| event->user.code == NET_CONNECT_FAILED)
 	{
@@ -65,7 +65,7 @@ void NetSystem::Setup()
 	g_ScheduleSystem.RegisterHandle(NET_HTTP_FAILED, HttpClient::HandleEvent);
 
 	g_ScheduleSystem.RegisterHandle(NET_MESSAGE, NetSystem::HandleMessageEvent);
-	g_ScheduleSystem.RegisterHandle(NET_DISCONNECT, NetSystem::HandleConnectEvent);
+	g_ScheduleSystem.RegisterHandle(NET_DISCONNECTED, NetSystem::HandleConnectEvent);
 	g_ScheduleSystem.RegisterHandle(NET_CONNECT_SUCCEED, NetSystem::HandleConnectEvent);
 	g_ScheduleSystem.RegisterHandle(NET_CONNECT_FAILED, NetSystem::HandleConnectEvent);
 
@@ -150,7 +150,7 @@ void NetSystem::HandleConnectEvent( unsigned int event_type, void* data1, void* 
 
 		g_ScriptSystem.Invoke("__ALITTLEAPI_ConnectFailed", self);
 	}
-	else if (event_type == NET_DISCONNECT)
+	else if (event_type == NET_DISCONNECTED)
 	{
 		++self->m_netsystem_filter_handle;
 		// flag to idle
@@ -159,7 +159,7 @@ void NetSystem::HandleConnectEvent( unsigned int event_type, void* data1, void* 
 		self->m_ip = "";
 		self->m_client = CarpConnectClientPtr();
 
-		g_ScriptSystem.Invoke("__ALITTLEAPI_Disconnect", self->GetID());
+		g_ScriptSystem.Invoke("__ALITTLEAPI_Disconnected", self->GetID());
 	}
 }
 
@@ -268,7 +268,7 @@ void NetSystem::HandleConnectSucceed()
 void NetSystem::HandleDisconnected()
 {
 	++m_netsystem_filter_push;
-	g_ScheduleSystem.PushUserEvent(NET_DISCONNECT, (void*)this, NULL);
+	g_ScheduleSystem.PushUserEvent(NET_DISCONNECTED, (void*)this, NULL);
 }
 
 void NetSystem::HandleMessage(void* message, int size)

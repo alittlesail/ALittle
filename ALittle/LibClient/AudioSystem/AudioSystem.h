@@ -6,9 +6,8 @@
 #include <string>
 #include <vector>
 
-#include <SDL.h>
-
-typedef struct _carp_mixer_chunk_t carp_mixer_chunk_t;
+struct CarpMixerChunk;
+class CarpMixer;
 
 namespace ALittle
 {
@@ -33,28 +32,29 @@ public:
 	float GetChunkVolume(int channel);
 
 private:
-	carp_mixer_chunk_t* LoadChunk(const std::string& file_path);
+	CarpMixerChunk* LoadChunk(const std::string& file_path);
 
 public:
 	void AddChunkCache(const char* file_path);
 	void RemoveChunkCache(const char* file_path);
 
 public:
-	static void HandleChunkStopedForMixer(int channel);
-	static void HandleChunkStopedForLua(unsigned int event_type, void* data1, void* data2);
+	static void HandleChunkStoppedForMixer(int channel);
+	static void HandleChunkStoppedForLua(unsigned int event_type, void* data1, void* data2);
 
 private:
 	struct ChannelInfo
 	{
-		ChannelInfo() : chunk(nullptr) {}
-		carp_mixer_chunk_t* chunk;
+		CarpMixerChunk* chunk = nullptr;
 		std::string file_path;
 	};
 	std::vector<ChannelInfo> m_channel_list;
 
 private:
-	typedef std::map<std::string, carp_mixer_chunk_t*> MixChunkCache;
+	typedef std::map<std::string, CarpMixerChunk*> MixChunkCache;
 	MixChunkCache m_cache_map;
+
+	CarpMixer* m_mixer = nullptr;
 
 private:
 	AudioSystem();

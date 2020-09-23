@@ -146,7 +146,7 @@ class AudioSystem
         return info.volume;
     }
     
-    public fun HandleAudioChunkStopedEvent(int channel)
+    public fun HandleAudioChunkStoppedEvent(int channel)
     {
         var info = this._chunk_map[channel];
         if (info == null)

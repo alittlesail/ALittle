@@ -221,11 +221,11 @@ _G.__ALITTLEAPI_HttpFileProcess = ALittle.__ALITTLEAPI_HttpFileProcess
 _G.__ALITTLEAPI_HttpClientSucceed = ALittle.__ALITTLEAPI_HttpClientSucceed
 _G.__ALITTLEAPI_HttpClientFailed = ALittle.__ALITTLEAPI_HttpClientFailed
 _G.__ALITTLEAPI_ConnectSucceed = ALittle.__ALITTLEAPI_ConnectSucceed
-_G.__ALITTLEAPI_Disconnect = ALittle.__ALITTLEAPI_Disconnect
+_G.__ALITTLEAPI_Disconnected = ALittle.__ALITTLEAPI_Disconnected
 _G.__ALITTLEAPI_ConnectFailed = ALittle.__ALITTLEAPI_ConnectFailed
 _G.__ALITTLEAPI_Message = ALittle.__ALITTLEAPI_Message
-function _G.__ALITTLEAPI_AudioChunkStopedEvent(id)
-	A_AudioSystem:HandleAudioChunkStopedEvent(id)
+function _G.__ALITTLEAPI_AudioChunkStoppedEvent(id)
+	A_AudioSystem:HandleAudioChunkStoppedEvent(id)
 end
 
 function _G.__ALITTLEAPI_NetworkChanged(net_type)

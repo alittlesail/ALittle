@@ -138,7 +138,7 @@ function ALittle.AudioSystem:GetChunkVolume(channel)
 	return info.volume
 end
 
-function ALittle.AudioSystem:HandleAudioChunkStopedEvent(channel)
+function ALittle.AudioSystem:HandleAudioChunkStoppedEvent(channel)
 	local info = self._chunk_map[channel]
 	if info == nil then
 		return

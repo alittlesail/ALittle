@@ -20,7 +20,7 @@ namespace ALittle
 // ///////////////////////////////////////////////////////////////////
 
 #define NET_MESSAGE					31	// net message for NetSystem
-#define NET_DISCONNECT				32	// NetSystem disconnected
+#define NET_DISCONNECTED			32	// NetSystem disconnected
 #define NET_CONNECT_SUCCEED			33	// NetSystem connect succeed
 #define NET_CONNECT_FAILED			34	// NetSystem connect failed
 #define NET_HTTP_SUCCEED			35	// HTTP Request GET or POST succeed

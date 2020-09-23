@@ -198,16 +198,7 @@
     <ClInclude Include="Tool\concurrentqueue.h">
       <Filter>Tool</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Carp\carp_mixer.h">
-      <Filter>Carp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Carp\carp_string.h">
-      <Filter>Carp</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Carp\carp_win_ime.h">
-      <Filter>Carp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Carp\carp_array.h">
       <Filter>Carp</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Carp\carp_string_helper.hpp">
@@ -229,6 +220,9 @@
       <Filter>Carp</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Carp\carp_font.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_mixer.hpp">
       <Filter>Carp</Filter>
     </ClInclude>
   </ItemGroup>

@@ -33,9 +33,6 @@
     <ClInclude Include="ServerSystem\ServerSystem.h">
       <Filter>ServerSystem</Filter>
     </ClInclude>
-    <ClInclude Include="MysqlSystem\MysqlConnection.h">
-      <Filter>MysqlSystem</Filter>
-    </ClInclude>
     <ClInclude Include="ServerSystem\ServerSchedule.h">
       <Filter>ServerSystem</Filter>
     </ClInclude>
@@ -75,9 +72,6 @@
     <ClInclude Include="RouteSystem\SessionConnection.h">
       <Filter>RouteSystem</Filter>
     </ClInclude>
-    <ClInclude Include="MysqlSystem\MysqlStatementQuery.h">
-      <Filter>MysqlSystem</Filter>
-    </ClInclude>
     <ClInclude Include="MysqlSystem\MysqlThreadSystem.h">
       <Filter>MysqlSystem</Filter>
     </ClInclude>
@@ -94,9 +88,6 @@
     </ClCompile>
     <ClCompile Include="ServerSystem\ServerSystem.cpp">
       <Filter>ServerSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="MysqlSystem\MysqlConnection.cpp">
-      <Filter>MysqlSystem</Filter>
     </ClCompile>
     <ClCompile Include="ServerSystem\ServerSchedule.cpp">
       <Filter>ServerSystem</Filter>
@@ -130,9 +121,6 @@
     </ClCompile>
     <ClCompile Include="RouteSystem\SessionConnection.cpp">
       <Filter>RouteSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="MysqlSystem\MysqlStatementQuery.cpp">
-      <Filter>MysqlSystem</Filter>
     </ClCompile>
     <ClCompile Include="MysqlSystem\MysqlThreadSystem.cpp">
       <Filter>MysqlSystem</Filter>

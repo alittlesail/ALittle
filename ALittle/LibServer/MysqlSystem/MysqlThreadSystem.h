@@ -3,28 +3,25 @@
 #define _ALITTLE_MYSQLTHREADSYSTEM_H_
 
 #include <string>
-#include <map>
-#include <memory>
 #include <vector>
-#include <list>
-#include <mutex>
 
 #include "Carp/carp_thread_consumer.hpp"
-#include "MysqlConnection.h"
+
+class MysqlConnection;
+class MysqlStatementQuery;
 
 namespace ALittle
 {
 
-class MysqlStatementQuery;
 class ServerSchedule;
 
 struct MysqlTask
 {
-    int query_id;
-    bool empty;                 // 如果empty为true，那么就是一个空请求
-    MysqlStatementQuery* query; // 如果query为空，那么就使用sql
+    int query_id = 0;
+    bool empty = false;                 // 如果empty为true，那么就是一个空请求
+    MysqlStatementQuery* query = nullptr; // 如果query为空，那么就使用sql
     std::string sql;
-    ServerSchedule* schedule;
+    ServerSchedule* schedule = nullptr;
 };
 
 class MysqlThread : CarpThreadConsumer<MysqlTask>
@@ -49,7 +46,7 @@ protected:
     virtual void Flush(MysqlTask& info) override;
 
 private:
-    MysqlConnection m_conn;
+    MysqlConnection* m_conn;
 };
 
 class MysqlThreadSystem

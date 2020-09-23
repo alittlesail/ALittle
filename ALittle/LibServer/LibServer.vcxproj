@@ -16,8 +16,6 @@
     <ClInclude Include="HttpSystem\Server\HttpReceiver.h" />
     <ClInclude Include="HttpSystem\Server\HttpSender.h" />
     <ClInclude Include="HttpSystem\Server\HttpServer.h" />
-    <ClInclude Include="MysqlSystem\MysqlConnection.h" />
-    <ClInclude Include="MysqlSystem\MysqlStatementQuery.h" />
     <ClInclude Include="MysqlSystem\MysqlThreadSystem.h" />
     <ClInclude Include="RouteSystem\ConnectClient.h" />
     <ClInclude Include="RouteSystem\ConnectEndpoint.h" />
@@ -40,8 +38,6 @@
     <ClCompile Include="HttpSystem\Server\HttpReceiver.cpp" />
     <ClCompile Include="HttpSystem\Server\HttpSender.cpp" />
     <ClCompile Include="HttpSystem\Server\HttpServer.cpp" />
-    <ClCompile Include="MysqlSystem\MysqlConnection.cpp" />
-    <ClCompile Include="MysqlSystem\MysqlStatementQuery.cpp" />
     <ClCompile Include="MysqlSystem\MysqlThreadSystem.cpp" />
     <ClCompile Include="RouteSystem\ConnectClient.cpp" />
     <ClCompile Include="RouteSystem\ConnectEndpoint.cpp" />

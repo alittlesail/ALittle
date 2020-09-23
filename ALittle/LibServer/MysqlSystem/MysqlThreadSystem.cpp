@@ -1,23 +1,27 @@
 
 #include "MysqlThreadSystem.h"
 
-#include "ALittle/LibServer/MysqlSystem/MysqlStatementQuery.h"
+#include <functional>
+
 #include "ALittle/LibServer/ServerSystem/ServerSchedule.h"
+#include "Carp/carp_mysql.hpp"
 
 namespace ALittle
 {
 
 MysqlThread::MysqlThread()
 {
+    m_conn = new MysqlConnection();
 }
 
 MysqlThread::~MysqlThread()
 {
+    delete m_conn;
 }
 
 bool MysqlThread::Init(const char* ip, const char* username, const char* password, unsigned int port, const char* db_name)
 {
-    if (!m_conn.Open(ip, username, password, port, db_name))
+    if (!m_conn->Open(ip, username, password, port, db_name))
         return false;
 
     Start();
@@ -66,12 +70,12 @@ void MysqlThread::Flush(MysqlTask& info)
     }
     else if (info.query != nullptr)
     {
-        info.query->SetConnection(&m_conn);
+        info.query->SetConnection(m_conn);
         result = info.query->Execute(reason);
     }
     else
     {
-        result = m_conn.ExecuteQuery(info.sql.c_str(), reason);
+        result = m_conn->ExecuteQuery(info.sql.c_str(), reason);
     }
 
     info.schedule->Execute(std::bind(&ServerSchedule::HandleMysqlQuery, info.schedule, info.query_id, result, reason));

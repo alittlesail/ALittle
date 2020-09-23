@@ -4,7 +4,7 @@
 #include "ServerSystem.h"
 #include "ServerSchedule.h"
 
-#include "ALittle/LibServer/MysqlSystem/MysqlConnection.h"
+#include "Carp/carp_mysql.hpp"
 
 #define CARP_CONSOLE_IMPL
 #include "Carp/carp_console.hpp"

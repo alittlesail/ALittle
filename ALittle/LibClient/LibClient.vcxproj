@@ -17,6 +17,7 @@
     <ClInclude Include="..\..\Carp\carp_csv.hpp" />
     <ClInclude Include="..\..\Carp\carp_csv_bind.hpp" />
     <ClInclude Include="..\..\Carp\carp_dump.hpp" />
+    <ClInclude Include="..\..\Carp\carp_file_bind.hpp" />
     <ClInclude Include="..\..\Carp\carp_file_cache.hpp" />
     <ClInclude Include="..\..\Carp\carp_file.hpp" />
     <ClInclude Include="..\..\Carp\carp_font.hpp" />

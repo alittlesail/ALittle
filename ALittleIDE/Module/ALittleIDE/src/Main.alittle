@@ -46,11 +46,6 @@ protected var g_DialogLayer:ALittle.DisplayLayout;
 public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.ControlSystem control
                             , string module_base_path, string script_base_path)
 {
-
-    var a = "{\"a\":110010}";
-    var map:Map<string, int> = lua.json.decode(a);
-    ALittle.Log(map["a"]);
-
     // 把resource, layer_group变量保存到全局，便于使用
     g_Control = control;
     g_LayerGroup = layer_group;

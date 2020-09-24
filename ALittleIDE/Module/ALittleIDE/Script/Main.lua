@@ -31,9 +31,6 @@ ALittleIDE.g_IDEServerConfig = nil
 ALittleIDE.g_MainLayer = nil
 ALittleIDE.g_DialogLayer = nil
 function ALittleIDE.__Module_Setup(layer_group, control, module_base_path, script_base_path)
-	local a = "{\"a\":110010}"
-	local map = json.decode(a)
-	ALittle.Log(map["a"])
 	ALittleIDE.g_Control = control
 	ALittleIDE.g_LayerGroup = layer_group
 	ALittleIDE.g_ModuleBasePath = module_base_path

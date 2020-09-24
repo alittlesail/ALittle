@@ -2,10 +2,7 @@
 #include "TextArea.h"
 
 #include "Carp/carp_log.hpp"
-
-extern "C" {
-#include "ALittle/LibCommon/ThirdParty/utf8/utf8.h"
-}
+#include "Carp/carp_string.hpp"
 
 #include "ALittle/LibClient/RenderSystem/DisplaySystem.h"
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"
@@ -108,7 +105,7 @@ void TextArea::Draw(bool draw)
 	std::string calc_text;
 	while(true)
 	{
-		int byte_count = utf8_GetByteCountOfOneWord(*str);
+		int byte_count = CarpString::UTF8GetByteCountOfOneWord(*str);
 		
 		// check char
 		if (byte_count == 1)

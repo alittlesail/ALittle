@@ -1,14 +1,11 @@
 
 #include "TextEdit.h"
 
-extern "C" {
-#include "ALittle/LibCommon/ThirdParty/utf8/utf8.h"
-}
-
 #include "ALittle/LibClient/RenderSystem/DisplaySystem.h"
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"
 
 #include "Carp/carp_font.hpp"
+#include "Carp/carp_string.hpp"
 
 namespace ALittle
 {
@@ -510,7 +507,7 @@ void TextEdit::InsertTextUtil(const char* text, LineCharInfoList::iterator* line
 	while (*str)
 	{
 		// get utf8 byte count
-		int byte_count = utf8_GetByteCountOfOneWord(*str);
+		int byte_count = CarpString::UTF8GetByteCountOfOneWord(*str);
 		current_char.assign(str, byte_count);
 
 		// if is \n

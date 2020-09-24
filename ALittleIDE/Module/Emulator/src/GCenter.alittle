@@ -267,7 +267,7 @@ class GCenter
     public fun HandleSettingConfirmClick(ALittle.UIClickEvent event)
     {
         var attr = ALittle.File_GetFileAttr(this._proto_root_input.text);
-        if (attr == null || attr.mode != "directory")
+        if (attr == null || attr.directory != true)
         {
             g_AUITool.ShowNotice("错误", "文件夹不存在");
             return;

@@ -2,10 +2,7 @@
 #include "FileHelperEx.h"
 
 #include "Carp/carp_log.hpp"
-
-extern "C" {
-#include "ALittle/LibCommon/ThirdParty/md5/md5.h"
-}
+#include "Carp/carp_crypto.hpp"
 
 #include <SDL.h>
 
@@ -159,26 +156,22 @@ std::string FileHelperEx::FileMD5(const std::string& file_path)
 		return "";
 	}
 
-	md5_t info;
-	md5_init(&info);
+	CarpCrypto::MD5_HASH Digest;
+	CarpCrypto::Md5Context context;
+
+	CarpCrypto::Md5Initialise(&context);
 
 	unsigned char buffer[1024];
 	while (true)
 	{
 		size_t read_size = SDL_RWread(file, buffer, 1, sizeof(buffer));
 		if (read_size == 0) break;
-		md5_update(&info, (char*)buffer, read_size);
+		CarpCrypto::Md5Update(&context, buffer, (int)read_size);
 	}
 	SDL_RWclose(file);
 
-	char output[HASHSIZE] = { 0 };
-	md5_finish(&info, output);
-	char value[32] = { 0 };
-	md5_tostring(output, value);
-
-	std::string result;
-	result.assign(value, 32);
-	return result;
+	CarpCrypto::Md5Finalise(&context, &Digest);
+	return CarpCrypto::Md4HashToString(&Digest);
 }
 
 } // ALittle

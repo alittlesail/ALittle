@@ -7,13 +7,7 @@
 extern "C" {
 #include "ALittle/LibCommon/ThirdParty/json/lua_cjson.h"
 #include "ALittle/LibCommon/ThirdParty/json/lua_ajson.h"
-#include "ALittle/LibCommon/ThirdParty/lfs/lfs.h"
-#include "ALittle/LibCommon/ThirdParty/csv/csvlib.h"
-#include "ALittle/LibCommon/ThirdParty/md5/md5.h"
-#include "ALittle/LibCommon/ThirdParty/utf8/utf8lib.h"
-#include "ALittle/LibCommon/ThirdParty/timer/timerlib.h"
 #include "ALittle/LibCommon/ThirdParty/sqlite3/lsqlite3.h"
-#include "ALittle/LibCommon/ThirdParty/base64/base64lib.h"
 }
 
 

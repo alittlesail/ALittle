@@ -216,7 +216,7 @@ end
 
 function Emulator.GCenter:HandleSettingConfirmClick(event)
 	local attr = ALittle.File_GetFileAttr(self._proto_root_input.text)
-	if attr == nil or attr.mode ~= "directory" then
+	if attr == nil or attr.directory ~= true then
 		g_AUITool:ShowNotice("错误", "文件夹不存在")
 		return
 	end

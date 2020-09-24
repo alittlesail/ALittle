@@ -2,15 +2,11 @@
 #ifndef _ALITTLE_CSVFILE_H_
 #define _ALITTLE_CSVFILE_H_
 
-#include <stdio.h>
-#include <time.h>
 #include <string>
-#include <vector>
-
-#include <SDL.h>
 #include "ALittle/LibClient/ThreadSystem/Task.h"
+#include "Carp/carp_csv.hpp"
 
-struct _csv;
+class CarpCsv;
 
 namespace ALittle
 {
@@ -41,7 +37,7 @@ private:
 class CsvFile
 {
 public:
-	CsvFile() : m_csv(0) {}
+	CsvFile() {}
 	~CsvFile() { Close(); }
 
 public:
@@ -60,7 +56,7 @@ public:
 
 private:
 	std::string m_file_path;
-	_csv* m_csv;
+	CarpCsv m_csv;
 	std::string m_empty_string;
 };
 

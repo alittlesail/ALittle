@@ -1189,7 +1189,12 @@ static void ajson_parse_object_context(lua_State *l, ajson_parse_t *ajson)
         if (token.type == T_STRING)
             lua_pushlstring(l, token.value.string, token.string_len);
         else if (token.type == T_NUMBER)
-            lua_pushnumber(l, token.value.number);
+        {
+            if (floor(token.value.number) == token.value.number)
+                lua_pushinteger(l, (lua_Integer)token.value.number);
+            else
+                lua_pushnumber(l, token.value.number);
+        }   
         else
             ajson_throw_parse_error(l, ajson, "object key string or number", &token);
 
@@ -1265,7 +1270,10 @@ static void ajson_process_value(lua_State *l, ajson_parse_t *ajson,
         lua_pushlstring(l, token->value.string, token->string_len);
         break;;
     case T_NUMBER:
-        lua_pushnumber(l, token->value.number);
+        if (floor(token->value.number) == token->value.number)
+            lua_pushinteger(l, (lua_Integer)token->value.number);
+        else
+            lua_pushnumber(l, token->value.number);
         break;;
     case T_BOOLEAN:
         lua_pushboolean(l, token->value.boolean);

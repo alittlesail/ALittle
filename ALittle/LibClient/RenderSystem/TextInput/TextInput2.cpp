@@ -1,13 +1,10 @@
 
 #include "TextInput.h"
 
-extern "C" {
-#include "ALittle/LibCommon/ThirdParty/utf8/utf8.h"
-}
-
 #include "ALittle/LibClient/RenderSystem/DisplaySystem.h"
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"
 #include "Carp/carp_font.hpp"
+#include "Carp/carp_string.hpp"
 
 namespace ALittle
 {
@@ -181,7 +178,7 @@ void TextInput::InsertTextImpl(const char* text)
 	while(*str)
 	{
 		// Forward migration
-		int byte_count = utf8_GetByteCountOfOneWord(*str);
+		int byte_count = CarpString::UTF8GetByteCountOfOneWord(*str);
 		// Save the information
 		m_cursor_it = m_char_list.insert(m_cursor_it, CharInfo());
 		if (adjust_start_it) { -- m_start_it; adjust_start_it = false; }

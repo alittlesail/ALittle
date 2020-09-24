@@ -1253,7 +1253,10 @@ static void json_process_value(lua_State *l, json_parse_t *json,
         lua_pushlstring(l, token->value.string, token->string_len);
         break;;
     case T_NUMBER:
-        lua_pushnumber(l, token->value.number);
+    	if (floor(token->value.number) == token->value.number)
+            lua_pushinteger(l, (lua_Integer)token->value.number);
+        else
+	        lua_pushnumber(l, token->value.number);
         break;;
     case T_BOOLEAN:
         lua_pushboolean(l, token->value.boolean);

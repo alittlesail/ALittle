@@ -2,10 +2,6 @@
 #include "CsvFile.h"
 #include "LocalFile.h"
 
-extern "C" {
-#include "ALittle/LibCommon/ThirdParty/csv/csv.h"
-}
-
 #include "ALittle/LibClient/ThreadSystem/ThreadSystem.h"
 #include "ALittle/LibClient/ScheduleSystem/EventDefine.h"
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
@@ -87,35 +83,29 @@ bool CsvFile::Load(const char* file_path, bool only_from_asset)
     file.SetPath(file_path);
     if (!file.Open(only_from_asset)) return false;
 
-    m_csv = csv_create();
-    return csv_load(m_csv, file_path, csv_sdl_fread, &file, 0) != 0;
+    return m_csv.ReadFromCustomFile(file_path, csv_sdl_fread, &file, 0);
 }
 
 void CsvFile::Close()
 {
-    if (m_csv)
-    {
-        csv_destroy(m_csv);
-        m_csv = 0;
-    }   
+    m_csv.Clear();
 }
 
 const char* CsvFile::ReadCell(int row, int col)
 {
-    if (m_csv == 0) return m_empty_string.c_str();
-    return csv_readcell(m_csv, row - 1, col - 1);
+    const char* cell = m_csv.GetCell(row, col);
+    if (cell) return cell;
+    return m_empty_string.c_str();
 }
 
 int CsvFile::GetColCount() const
 {
-    if (m_csv == 0) return 0;
-    return csv_colcount(m_csv);
+    return m_csv.GetColCount();
 }
 
 int CsvFile::GetRowCount() const
 {
-    if (m_csv == 0) return 0;
-    return csv_rowcount(m_csv);
+    return m_csv.GetRowCount();
 }
 
 } // ALittle

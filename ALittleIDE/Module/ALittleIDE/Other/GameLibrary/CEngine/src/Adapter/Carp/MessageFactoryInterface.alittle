@@ -1,0 +1,31 @@
+
+register namespace carp;
+
+public class CarpMessageWriteFactory : ALittle.IMessageWriteFactory
+{
+    public fun WriteToStdFile(string file_path) : bool {}
+    public fun SetID(int id) {}
+    public fun SetRpcID(int id) {}
+    public fun ResetOffset() {}
+    public fun GetOffset() : int {}
+    public fun SetInt(int offset, int value) {}
+
+    public fun WriteBool(bool value) : int {}
+    public fun WriteInt(int value) : int {}
+    public fun WriteI64(long value) : int {}
+    public fun WriteString(string value) : int {}
+    public fun WriteDouble(double value) : int {}
+}
+
+public class CarpMessageReadFactory : ALittle.IMessageReadFactory
+{
+    public fun ReadFromStdFile(string file_path) : bool {}
+    public fun GetDataSize() : int {}
+
+    public fun ReadBool() : bool {}
+    public fun ReadInt() : int {}
+    public fun ReadI64() : long {}
+    public fun ReadString() : string {}
+    public fun ReadDouble() : double {}
+    public fun GetReadSize() : int {}
+}

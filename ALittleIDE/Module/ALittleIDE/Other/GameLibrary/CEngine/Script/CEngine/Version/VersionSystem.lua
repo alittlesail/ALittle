@@ -5,9 +5,21 @@ local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-ALittle.RegStruct(2129851601, "ALittle.VersionInstallInfo", {
-name = "ALittle.VersionInstallInfo", ns_name = "ALittle", rl_name = "VersionInstallInfo", hash_code = 2129851601,
-name_list = {"c_file_path","c_file_size","start_size"},
+ALittle.RegStruct(-245594234, "ALittle.VersionDownloadInfo", {
+name = "ALittle.VersionDownloadInfo", ns_name = "ALittle", rl_name = "VersionDownloadInfo", hash_code = -245594234,
+name_list = {"c_file_path","c_file_size","c_type","c_width","c_height","c_md5","c_update_time","c_update_index","c_is_delete","start_size"},
+type_list = {"string","int","string","int","int","string","int","int","int","int"},
+option_map = {}
+})
+ALittle.RegStruct(-600814285, "ALittle.SmallVersionInfo", {
+name = "ALittle.SmallVersionInfo", ns_name = "ALittle", rl_name = "SmallVersionInfo", hash_code = -600814285,
+name_list = {"c_file_path","c_file_size","c_type","c_width","c_height","c_md5","c_update_time","c_update_index","c_is_delete"},
+type_list = {"string","int","string","int","int","string","int","int","int"},
+option_map = {}
+})
+ALittle.RegStruct(-1881042933, "ALittle.VersionLogInfo", {
+name = "ALittle.VersionLogInfo", ns_name = "ALittle", rl_name = "VersionLogInfo", hash_code = -1881042933,
+name_list = {"c_content","c_create_time","c_create_index"},
 type_list = {"string","int","int"},
 option_map = {}
 })
@@ -17,22 +29,10 @@ name_list = {"c_big_version","c_install_version","c_db_version"},
 type_list = {"string","string","string"},
 option_map = {}
 })
-ALittle.RegStruct(-1881042933, "ALittle.VersionLogInfo", {
-name = "ALittle.VersionLogInfo", ns_name = "ALittle", rl_name = "VersionLogInfo", hash_code = -1881042933,
-name_list = {"c_content","c_create_time","c_create_index"},
+ALittle.RegStruct(2129851601, "ALittle.VersionInstallInfo", {
+name = "ALittle.VersionInstallInfo", ns_name = "ALittle", rl_name = "VersionInstallInfo", hash_code = 2129851601,
+name_list = {"c_file_path","c_file_size","start_size"},
 type_list = {"string","int","int"},
-option_map = {}
-})
-ALittle.RegStruct(-600814285, "ALittle.SmallVersionInfo", {
-name = "ALittle.SmallVersionInfo", ns_name = "ALittle", rl_name = "SmallVersionInfo", hash_code = -600814285,
-name_list = {"c_file_path","c_file_size","c_type","c_width","c_height","c_md5","c_update_time","c_update_index","c_is_delete"},
-type_list = {"string","int","string","int","int","string","int","int","int"},
-option_map = {}
-})
-ALittle.RegStruct(-245594234, "ALittle.VersionDownloadInfo", {
-name = "ALittle.VersionDownloadInfo", ns_name = "ALittle", rl_name = "VersionDownloadInfo", hash_code = -245594234,
-name_list = {"c_file_path","c_file_size","c_type","c_width","c_height","c_md5","c_update_time","c_update_index","c_is_delete","start_size"},
-type_list = {"string","int","string","int","int","string","int","int","int","int"},
 option_map = {}
 })
 

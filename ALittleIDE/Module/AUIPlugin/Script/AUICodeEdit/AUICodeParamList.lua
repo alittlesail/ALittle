@@ -115,7 +115,7 @@ function AUIPlugin.AUICodeParamList:ReInit()
 			elseif char ~= "\r" and char ~= "\n" then
 				local is_asicc = true
 				do
-					local byte_count = utf8.bytecount(char, 0, 1)
+					local byte_count = carp.UTF8ByteCount(char, 0, 1)
 					if byte_count > 1 then
 						is_asicc = false
 					end

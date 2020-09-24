@@ -359,7 +359,7 @@ function ALittle.System_GetSurfaceGrid9(surface, type)
 end
 
 function ALittle.CreateMsgSender(heartbeat, check_heartbeat, callback)
-	return Lua.Template(ALittle.MsgSenderTemplate, "ALittle.MsgSenderTemplate<lua.__CPPAPIMsgInterface, lua.__CPPAPIMessageWriteFactory>", __CPPAPIMsgInterface, __CPPAPIMessageWriteFactory)(heartbeat, check_heartbeat, A_LuaLoopSystem, callback)
+	return Lua.Template(ALittle.MsgSenderTemplate, "ALittle.MsgSenderTemplate<lua.__CPPAPIMsgInterface, carp.CarpMessageWriteFactory>", __CPPAPIMsgInterface, carp.CarpMessageWriteFactory)(heartbeat, check_heartbeat, A_LuaLoopSystem, callback)
 end
 
 function ALittle.CreateHttpSender(ip, port)

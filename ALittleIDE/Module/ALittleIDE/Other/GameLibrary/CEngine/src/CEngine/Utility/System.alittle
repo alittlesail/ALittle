@@ -701,7 +701,7 @@ public static System_GetSurfaceGrid9(lua.__CPPAPISurface surface, string type) :
 public static CreateMsgSender(int heartbeat, bool check_heartbeat, [Nullable] Functor<()> callback) : IMsgCommonTemplate
 {
     [Language(Lua)]
-    return new MsgSenderTemplate<lua.__CPPAPIMsgInterface, lua.__CPPAPIMessageWriteFactory>(heartbeat, check_heartbeat, A_LuaLoopSystem, callback);
+    return new MsgSenderTemplate<lua.__CPPAPIMsgInterface, carp.CarpMessageWriteFactory>(heartbeat, check_heartbeat, A_LuaLoopSystem, callback);
     [Language(JavaScript)]
     return new MsgSenderTemplate<JavaScript.JMsgInterface, JavaScript.JMessageWriteFactory>(heartbeat, check_heartbeat, A_JLoopSystem, callback);
 }

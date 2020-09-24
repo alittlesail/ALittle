@@ -11,9 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Carp\carp_bit_bind.hpp" />
     <ClInclude Include="..\..\Carp\carp_console.hpp" />
-    <ClInclude Include="..\..\Carp\carp_crypt.hpp" />
-    <ClInclude Include="..\..\Carp\carp_crypt_bind.hpp" />
+    <ClInclude Include="..\..\Carp\carp_crypto.hpp" />
+    <ClInclude Include="..\..\Carp\carp_crypto_bind.hpp" />
     <ClInclude Include="..\..\Carp\carp_csv.hpp" />
     <ClInclude Include="..\..\Carp\carp_csv_bind.hpp" />
     <ClInclude Include="..\..\Carp\carp_dump.hpp" />
@@ -34,6 +35,7 @@
     <ClInclude Include="..\..\Carp\carp_schedule.hpp" />
     <ClInclude Include="..\..\Carp\carp_script.hpp" />
     <ClInclude Include="..\..\Carp\carp_string.hpp" />
+    <ClInclude Include="..\..\Carp\carp_string_bind.hpp" />
     <ClInclude Include="..\..\Carp\carp_thread_consumer.hpp" />
     <ClInclude Include="..\..\Carp\carp_time.hpp" />
     <ClInclude Include="..\..\Carp\carp_timer.hpp" />

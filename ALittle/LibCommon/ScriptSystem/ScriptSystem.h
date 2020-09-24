@@ -2,11 +2,11 @@
 #ifndef _ALITTLE_SCRIPTSYSTEM_H_
 #define _ALITTLE_SCRIPTSYSTEM_H_
 
-#ifdef __EMSCRIPTEN__
-#include "lua.hpp"
-#else
-#include "LuaJIT-2.1.0-beta3/src/lua.hpp"
-#endif
+extern "C" {
+#include "lua/lua.h"
+#include "lua/lauxlib.h"
+#include "lua/lualib.h"
+}
 #include "LuaBridge/Source/LuaBridge/LuaBridge.h"
 #include <string>
 #include <set>

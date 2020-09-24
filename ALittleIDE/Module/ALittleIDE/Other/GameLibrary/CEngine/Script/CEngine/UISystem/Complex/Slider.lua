@@ -194,7 +194,7 @@ function ALittle.Slider.__setter:fixed(value)
 			self._grade_list[i + 1] = i * dist
 			i = i+(1)
 		end
-		local num = table.maxn(self._grade_list)
+		local num = ALittle.List_MaxN(self._grade_list)
 		self._grade_list[num + 1] = 1
 	end
 	self:AdjustBarButton()
@@ -219,7 +219,7 @@ function ALittle.Slider.__setter:grade(value)
 			self._grade_list[i + 1] = i * dist
 			i = i+(1)
 		end
-		local num = table.maxn(self._grade_list)
+		local num = ALittle.List_MaxN(self._grade_list)
 		self._grade_list[num + 1] = 1
 	end
 	self:AdjustBarButton()

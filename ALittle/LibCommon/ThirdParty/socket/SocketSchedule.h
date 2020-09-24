@@ -10,8 +10,11 @@
 #include <unordered_map>
 #include <asio.hpp>
 
-#include "lua.hpp"
-
+extern "C" {
+#include "lua.h"
+#include "lauxlib.h"
+#include "lualib.h"
+}
 struct _socket;
 
 namespace ALittle

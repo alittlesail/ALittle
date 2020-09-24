@@ -86,7 +86,7 @@ function ALittle.ControlSystem:LoadMessageFromFile(T, path)
 	local module_path = "Module/" .. self._module_name .. "/" .. path
 	local factory = nil
 	do
-		local lua_factory = __CPPAPIMessageReadFactory()
+		local lua_factory = carp.CarpMessageReadFactory()
 		if not lua_factory:ReadFromStdFile(module_path) then
 			return nil
 		end

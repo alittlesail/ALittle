@@ -1402,7 +1402,7 @@ function AUIPlugin.AUICodeEdit:CreateLines(content)
 		local byte_count = 1
 		local char_text = nil
 		do
-			byte_count = utf8.bytecount(content, index - 1, 1)
+			byte_count = carp.UTF8ByteCount(content, index - 1, 1)
 			if byte_count > 1 then
 				is_asicc = false
 			end

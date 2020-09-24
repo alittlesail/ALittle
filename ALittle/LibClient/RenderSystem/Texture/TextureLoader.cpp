@@ -8,7 +8,7 @@
 #include "ALittle/LibClient/ThreadSystem/ThreadSystem.h"
 #include "ALittle/LibClient/Helper/TextureHelper.h"
 #include "ALittle/LibClient/Helper/FileHelperEx.h"
-#include "Carp/carp_crypt.hpp"
+#include "Carp/carp_crypto.hpp"
 
 namespace ALittle
 {
@@ -60,7 +60,7 @@ void TextureLoader::Execute()
 			g_ScheduleSystem.PushUserEvent(TEXTURE_LOAD_FAILED, this);
 			return;
 		}
-		if (m_crypt_mode) CarpCrypt::XXTeaDecodeMemory(&(file_content[0]), static_cast<int>(file_content.size()), 0);
+		if (m_crypt_mode) CarpCrypto::XXTeaDecodeMemory(&(file_content[0]), static_cast<int>(file_content.size()), 0);
 
 		// create surface
 		SDL_Surface* child_surface = TextureHelper::LoadImageFromMemory(file_content.data(), file_content.size());

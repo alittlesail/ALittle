@@ -215,12 +215,12 @@ end
 function AUIPlugin.AUIFileSelectLayout:BrowserCollect(browser_path)
 	local item_list_dir = {}
 	local item_list_img = {}
-	local file_map = ALittle.File_GetFileNameListByDir(browser_path)
+	local file_map = ALittle.File_GetNameListByDir(browser_path)
 	for file, info in ___pairs(file_map) do
 		local path = browser_path .. "/" .. file
 		local rel_path = ALittle.String_Sub(path, ALittle.String_Len(self._base_path) + 2)
 		local attr = ALittle.File_GetFileAttr(path)
-		if attr.mode == "directory" then
+		if attr.directory then
 			local item = self:CreateDirItem(file, rel_path, path)
 			if item ~= nil then
 				ALittle.List_Push(item_list_dir, item)
@@ -247,12 +247,12 @@ function AUIPlugin.AUIFileSelectLayout:SearchCollect(search_path, name, item_lis
 	if name == "" or name == nil then
 		return item_list, run_time
 	end
-	local file_map = ALittle.File_GetFileNameListByDir(search_path)
+	local file_map = ALittle.File_GetNameListByDir(search_path)
 	for file, info in ___pairs(file_map) do
 		local path = search_path .. "/" .. file
 		local rel_path = ALittle.String_Sub(path, ALittle.String_Len(self._base_path) + 2)
 		local attr = ALittle.File_GetFileAttr(path)
-		if attr.mode == "directory" then
+		if attr.directory then
 			self:SearchCollect(path, name, item_list, run_time)
 		elseif ALittle.String_Find(file, name) ~= nil then
 			local item = self:CreateFileItem(file, rel_path, path)
@@ -318,7 +318,7 @@ end
 
 function AUIPlugin.AUIFileSelectLayout:SetPath(base_path, rel_path)
 	local attr = ALittle.File_GetFileAttr(base_path .. "/" .. rel_path)
-	if attr == nil or attr.mode ~= "directory" then
+	if attr == nil or attr.directory ~= true then
 		g_AUITool:ShowNotice("错误", "无效路径")
 		return false
 	end
@@ -370,13 +370,12 @@ function AUIPlugin.AUIFileSelectLayout:HandleItemDropFile(event)
 		real_path = self._base_path .. "/" .. user_data.path
 	end
 	local name = ALittle.File_GetFileNameByPath(event.path)
-	local ansi_path = event.path
-	ansi_path = utf8.ansi2utf8(ansi_path)
-	local attr = ALittle.File_GetFileAttr(ansi_path)
+	local path = event.path
+	local attr = ALittle.File_GetFileAttr(path)
 	if attr == nil then
 		return
 	end
-	if attr.mode == "directory" then
+	if attr.directory then
 		local check, error = self:CheckResourceName(name)
 		if not check then
 			g_AUITool:ShowNotice("提示", error)
@@ -384,10 +383,10 @@ function AUIPlugin.AUIFileSelectLayout:HandleItemDropFile(event)
 		end
 		ALittle.File_MakeDir(real_path .. "/" .. name)
 		if self._ext_map == nil then
-			ALittle.File_CopyDeepDir(ansi_path, real_path .. "/" .. name)
+			ALittle.File_CopyDeepDir(path, real_path .. "/" .. name)
 		else
 			for ext, _ in ___pairs(self._ext_map) do
-				ALittle.File_CopyDeepDir(ansi_path, real_path .. "/" .. name, ext)
+				ALittle.File_CopyDeepDir(path, real_path .. "/" .. name, ext)
 			end
 		end
 	else
@@ -417,8 +416,8 @@ function AUIPlugin.AUIFileSelectLayout:HandleNewDirectoryClick(event)
 		g_AUITool:ShowNotice("错误", error)
 		return
 	end
-	local result = ALittle.File_MakeDir(self._real_path .. "/" .. name)
-	if not result then
+	ALittle.File_MakeDir(self._real_path .. "/" .. name)
+	if ALittle.File_GetFileAttr(self._real_path .. "/" .. name) == nil then
 		g_AUITool:ShowNotice("错误", "文件夹创建失败")
 		return
 	end

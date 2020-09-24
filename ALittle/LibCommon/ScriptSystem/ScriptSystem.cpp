@@ -1,7 +1,7 @@
 
 #include "ScriptSystem.h"
 
-#include "Carp/carp_crypt.hpp"
+#include "Carp/carp_crypto.hpp"
 #include "Carp/carp_file.hpp"
 
 extern "C" {
@@ -16,8 +16,15 @@ extern "C" {
 #include "ALittle/LibCommon/ThirdParty/base64/base64lib.h"
 }
 
-#include "Carp/carp_log.hpp"
-#include "Carp/carp_message.hpp"
+
+#include "Carp/carp_message_bind.hpp"
+#include "Carp/carp_crypto_bind.hpp"
+#include "Carp/carp_log_bind.hpp"
+#include "Carp/carp_csv_bind.hpp"
+#include "Carp/carp_timer_bind.hpp"
+#include "Carp/carp_file_bind.hpp"
+#include "Carp/carp_string_bind.hpp"
+#include "Carp/carp_bit_bind.hpp"
 
 namespace ALittle
 {
@@ -38,42 +45,16 @@ void ScriptSystem::Init(const std::string& module_title)
 	luaL_openlibs(m_L); lua_settop(m_L, 0);
 	luaopen_json(m_L); lua_settop(m_L, 0);
 	luaopen_ajson(m_L); lua_settop(m_L, 0);
-	luaopen_lfs(m_L); lua_settop(m_L, 0);
-	luaopen_csv(m_L); lua_settop(m_L, 0);
-	luaopen_md5(m_L); lua_settop(m_L, 0);
-	luaopen_utf8(m_L); lua_settop(m_L, 0);
-	luaopen_timer(m_L); lua_settop(m_L, 0);
 	luaopen_sqlite3(m_L); lua_settop(m_L, 0);
-	luaopen_base64(m_L); lua_settop(m_L, 0);
 
-	luabridge::getGlobalNamespace(m_L)
-		.beginClass<CarpMessageReadFactory>("__CPPAPIMessageReadFactory")
-		.addConstructor<void(*)()>()
-		.addFunction("ReadFromStdFile", &CarpMessageReadFactory::ReadFromStdFile)
-		.addFunction("ReadBool", &CarpMessageReadFactory::ReadBool)
-		.addFunction("ReadInt", &CarpMessageReadFactory::ReadInt)
-		.addFunction("ReadI64", &CarpMessageReadFactory::ReadLongLong)
-		.addFunction("ReadString", &CarpMessageReadFactory::ReadString)
-		.addFunction("ReadDouble", &CarpMessageReadFactory::ReadDouble)
-		.addFunction("GetReadSize", &CarpMessageReadFactory::GetReadSize)
-		.addFunction("GetDataSize", &CarpMessageReadFactory::GetDataSize)
-		.endClass();
-
-	luabridge::getGlobalNamespace(m_L)
-		.beginClass<CarpMessageWriteFactory>("__CPPAPIMessageWriteFactory")
-		.addConstructor<void(*)()>()
-		.addFunction("WriteToStdFile", &CarpMessageWriteFactory::WriteToStdFile)
-		.addFunction("SetID", &CarpMessageWriteFactory::SetID)
-		.addFunction("SetRpcID", &CarpMessageWriteFactory::SetRpcID)
-		.addFunction("ResetOffset", &CarpMessageWriteFactory::ResetOffset)
-		.addFunction("WriteBool", &CarpMessageWriteFactory::WriteBool)
-		.addFunction("WriteInt", &CarpMessageWriteFactory::WriteInt)
-		.addFunction("WriteI64", &CarpMessageWriteFactory::WriteLongLong)
-		.addFunction("WriteString", &CarpMessageWriteFactory::WriteString)
-		.addFunction("WriteDouble", &CarpMessageWriteFactory::WriteDouble)
-		.addFunction("SetInt", &CarpMessageWriteFactory::SetInt)
-		.addFunction("GetOffset", &CarpMessageWriteFactory::GetOffset)
-		.endClass();
+	CarpMessageBind::Bind(m_L);
+	CarpCryptoBind::Bind(m_L);
+	CarpLogBind::Bind(m_L);
+	CarpCsvBind::Bind(m_L);
+	CarpTimerBind::Bind(m_L);
+	CarpFileBind::Bind(m_L);
+	CarpStringBind::Bind(m_L);
+	CarpBitBind::Bind(m_L);
 
 	RegisterImpl();
 }
@@ -165,7 +146,7 @@ void ScriptSystem::RunScript(const char* script, size_t len, const char* file_pa
 	int errfunc = lua_gettop(m_L);
 	std::string show_path;
 	if (file_path != nullptr) show_path = file_path;
-	if (show_path.size() > 48) show_path = show_path.substr(show_path.size() - 48);
+	if (show_path.size() > 44) show_path = show_path.substr(show_path.size() - 44);
 	if (luaL_loadbuffer(m_L, script, len, show_path.c_str()) == 0)
 	{
 		lua_pushstring(m_L, file_path);
@@ -194,7 +175,7 @@ bool ScriptSystem::Require(const char* file_path)
 
 	std::string start_text = "-- ALittle Generate Lua";
 	if (content.size() < start_text.size() || start_text != std::string(content.data(), start_text.size()))
-		CarpCrypt::XXTeaDecodeMemory(content.data(), static_cast<int>(content.size()), 0);
+		CarpCrypto::XXTeaDecodeMemory(content.data(), static_cast<int>(content.size()), 0);
 	RunScript(content.data(), content.size(), lua_path.c_str());
 	return true;
 }
@@ -223,7 +204,7 @@ bool ScriptSystem::LoadFile(const char* file_path, std::vector<char>& content)
 
 int ScriptSystem::JSHash(const char* value)
 {
-	return CarpCrypt::JSHash(value);
+	return CarpCrypto::JSHash(value);
 }
 
 } // ALittle

@@ -1,7 +1,7 @@
 
 #include "LocalFile.h"
 #include "ALittle/LibClient/Helper/FileHelperEx.h"
-#include "Carp/carp_crypt.hpp"
+#include "Carp/carp_crypto.hpp"
 
 namespace ALittle
 {
@@ -125,14 +125,14 @@ void LocalFile::Decrypt(const char* key)
 {
 	if (!m_memory) return;
 
-	CarpCrypt::XXTeaDecodeMemory(m_memory, m_size, key);
+	CarpCrypto::XXTeaDecodeMemory(m_memory, m_size, key);
 }
 
 void LocalFile::Encrypt(const char* key)
 {
 	if (!m_memory) return;
 
-	CarpCrypt::XXTeaEncodeMemory(m_memory, m_size, key);
+	CarpCrypto::XXTeaEncodeMemory(m_memory, m_size, key);
 }
 
 bool LocalFile::Open(bool only_from_asset)

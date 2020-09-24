@@ -118,7 +118,7 @@ function AUIPlugin.AUICodeABnf:GenerateABnf()
 		return
 	end
 	local attr = ALittle.File_GetFileAttr(path)
-	if attr == nil or attr.mode ~= "directory" then
+	if attr == nil or attr.directory ~= true then
 		g_AUITool:ShowNotice("错误", "文件夹不存在")
 		return
 	end

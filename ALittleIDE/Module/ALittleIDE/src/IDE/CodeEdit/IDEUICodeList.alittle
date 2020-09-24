@@ -144,9 +144,9 @@ public class IDEUICodeList : ALittle.DisplayLayout
 
     public fun AddLibrary(string name) : bool
     {
-        var file_map = ALittle.File_GetFileNameListByDir(ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary");
+        var file_map = ALittle.File_GetNameListByDir(ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameLibrary");
         var attr = file_map[name];
-        if (attr == null || attr.mode != "directory") return false;
+        if (attr == null || !attr.directory) return false;
 
 		var module_map = g_IDEProject.project.config.GetConfig("code_module", new Map<string, IDECodeModuleInfo>());
 

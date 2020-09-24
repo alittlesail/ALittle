@@ -10,7 +10,11 @@
 #include <mutex>
 #include <unordered_map>
 
-#include <lua.hpp>
+extern "C" {
+#include "lua.h"
+#include "lauxlib.h"
+#include "lualib.h"
+}
 #include "../Model/ABnf.h"
 #include "ABnfFactory.h"
 

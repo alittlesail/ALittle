@@ -4,6 +4,6 @@
 
 #include "lua.h"
 
-LUALIB_API int luaopen_utf8(lua_State* l);
+LUALIB_API int luaopen_utf8ex(lua_State* l);
 
 #endif // _ALITTLE_JSONLIB_H

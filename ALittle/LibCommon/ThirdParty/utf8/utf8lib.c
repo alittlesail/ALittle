@@ -83,11 +83,11 @@ static void set_info(lua_State* L) {
     lua_settable(L, -3);
 }
 
-int luaopen_utf8 (lua_State *L) {
+int luaopen_utf8ex (lua_State *L) {
   lua_newtable(L);
   luaL_setfuncs(L, utf8lib, 0);
   set_info(L);
   lua_pushvalue(L, -1);
-  lua_setglobal(L, "utf8");
+  lua_setglobal(L, "utf8ex");
   return 1;
 }

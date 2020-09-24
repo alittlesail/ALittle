@@ -76,35 +76,32 @@ public static File_CopyDeepDir(string src_path, string dest_path, [Nullable] str
         if (ext != null) upper_ext = lua.String.upper(ext);
     
         // 遍历源文件夹
-        for (var file in lua.lfs.dir(src_path))
+        var file_list = carp.GetFileNameListInFolder(src_path);
+        for (var index, file in file_list)
         {
-            // 跳过当前目录，父级目录
-            if (file != "." && file != "..")
+            // 源文件路径
+            var src_file_path = src_path .. "/" .. file;
+            // 目标文件路径
+            var dest_file_path = dest_path .. "/" .. file;
+
+            if (upper_ext == null || File_GetFileExtByPathAndUpper(src_file_path) == upper_ext)
             {
-                // 源文件路径
-                var src_file_path = src_path .. "/" .. file;
-                // 目标文件路径
-                var dest_file_path = dest_path .. "/" .. file;
-                // 获取源文件属性
-                var attr = lua.lfs.attributes(src_file_path);
-                // 如果是目录进行递归复制
-                if (attr.mode == "directory")
-                {
-                    // 创建文件夹
-                    lua.lfs.mkdir(dest_file_path);
-                    // 开始复制
-                    File_CopyDeepDir(src_file_path, dest_file_path, upper_ext, log);
-                }
-                // 如果是文件，就直接复制文件
-                else
-                {
-                    if (upper_ext == null || File_GetFileExtByPathAndUpper(src_file_path) == upper_ext)
-                    {
-                        File_CopyFile(src_file_path, dest_file_path);
-                        if (log) Log("copy file:", src_file_path, dest_file_path);
-                    }
-                }
+                File_CopyFile(src_file_path, dest_file_path);
+                if (log) Log("copy file:", src_file_path, dest_file_path);
             }
+        }
+        var folder_list = carp.GetFolderNameListInFolder(src_path);
+        for (var index, file in folder_list)
+        {
+            // 源文件路径
+            var src_file_path = src_path .. "/" .. file;
+            // 目标文件路径
+            var dest_file_path = dest_path .. "/" .. file;
+
+            // 创建文件夹
+            carp.CreateFolder(dest_file_path);
+            // 开始复制
+            File_CopyDeepDir(src_file_path, dest_file_path, upper_ext, log);
         }
     }
 
@@ -217,17 +214,15 @@ public static DeleteLog(int day_count_before)
         time_table.day = time_table.day - day_count_before;
         var time_string = lua.os.date("%Y-%m-%d", lua.os.time(time_table))..".log";
     
+        var file_list = carp.GetFileNameListInFolder(log_path);
         var delete_list = new List<string>();
         var delete_count = 0;
-        for (var file in lua.lfs.dir(log_path))
+        for (var index, file in file_list)
         {
-            if (file != "." && file != "..")
+            if (file <= time_string)
             {
-                if (file <= time_string)
-                {
-                    ++ delete_count;
-                    delete_list[delete_count] = file;
-                }
+                ++ delete_count;
+                delete_list[delete_count] = file;
             }
         }
         

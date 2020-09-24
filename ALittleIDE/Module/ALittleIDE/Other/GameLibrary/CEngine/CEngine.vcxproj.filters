@@ -44,6 +44,9 @@
     <Filter Include="Adapter\SDL">
       <UniqueIdentifier>{80b79e99-d532-444f-b8b7-3054f1f0b95a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Adapter\Carp">
+      <UniqueIdentifier>{25cfa0d3-e1b3-462d-bd7c-af5e2978b26c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\CEngine\LoopSystem\LoopLinear.alittle">
@@ -310,6 +313,9 @@
     </None>
     <None Include="src\CEngine\Utility\Revocation.alittle">
       <Filter>CEngine\Utility</Filter>
+    </None>
+    <None Include="src\Adapter\Carp\MessageFactoryInterface.alittle">
+      <Filter>Adapter\Carp</Filter>
     </None>
   </ItemGroup>
 </Project>

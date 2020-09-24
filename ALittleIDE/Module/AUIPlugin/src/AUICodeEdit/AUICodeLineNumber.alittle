@@ -57,7 +57,7 @@ public class AUICodeLineNumber : ALittle.DisplayLayout
                 var is_asicc = true;
                 [Language(Lua)]
                 {
-                    var byte_count = lua.utf8.bytecount(char, 0, 1);
+                    var byte_count = carp.UTF8ByteCount(char, 0, 1);
                     if (byte_count > 1) is_asicc = false;
                 }
                 [Language(JavaScript)]

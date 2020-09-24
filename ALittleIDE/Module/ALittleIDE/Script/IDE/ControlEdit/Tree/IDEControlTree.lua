@@ -140,7 +140,7 @@ function ALittleIDE.IDEControlTree.__getter:is_tree()
 end
 
 function ALittleIDE.IDEControlTree:Refresh()
-	local map = ALittle.File_GetFileNameListByDir(self._user_info.path)
+	local map = ALittle.File_GetNameListByDir(self._user_info.path)
 	local remove = nil
 	for index, child in ___ipairs(self.childs) do
 		local attr = map[child._user_info.name]
@@ -161,7 +161,7 @@ function ALittleIDE.IDEControlTree:Refresh()
 	local add_file = nil
 	local add_dir = nil
 	for name, attr in ___pairs(map) do
-		if attr.mode == "directory" then
+		if attr.directory then
 			if add_dir == nil then
 				add_dir = {}
 			end

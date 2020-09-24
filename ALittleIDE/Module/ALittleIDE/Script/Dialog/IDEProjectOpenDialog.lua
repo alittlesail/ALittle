@@ -15,9 +15,9 @@ function ALittleIDE.IDEProjectOpenDialog:ShowOpenProject()
 	self._project_open_name.text = ""
 	self._project_open_dialog.visible = true
 	local module_list = {}
-	local file_map = ALittle.File_GetFileNameListByDir(ALittleIDE.g_ModuleBasePath .. "..")
+	local file_map = ALittle.File_GetNameListByDir(ALittleIDE.g_ModuleBasePath .. "..")
 	for name, info in ___pairs(file_map) do
-		if info.mode == "directory" then
+		if info.directory then
 			ALittle.List_Push(module_list, name)
 		end
 	end

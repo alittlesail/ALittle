@@ -170,7 +170,7 @@ public class ControlSystem
 
         [Language(Lua)]
         {
-            var lua_factory = new lua.__CPPAPIMessageReadFactory();
+            var lua_factory = new carp.CarpMessageReadFactory();
             if (!lua_factory.ReadFromStdFile(module_path)) return null;
             factory = lua_factory;
         }

@@ -35,23 +35,23 @@ function ALittle.File_CopyDeepDir(src_path, dest_path, ext, log)
 		if ext ~= nil then
 			upper_ext = string.upper(ext)
 		end
-		for file in lfs.dir(src_path) do
-			if file ~= "." and file ~= ".." then
-				local src_file_path = src_path .. "/" .. file
-				local dest_file_path = dest_path .. "/" .. file
-				local attr = lfs.attributes(src_file_path)
-				if attr.mode == "directory" then
-					lfs.mkdir(dest_file_path)
-					ALittle.File_CopyDeepDir(src_file_path, dest_file_path, upper_ext, log)
-				else
-					if upper_ext == nil or ALittle.File_GetFileExtByPathAndUpper(src_file_path) == upper_ext then
-						ALittle.File_CopyFile(src_file_path, dest_file_path)
-						if log then
-							ALittle.Log("copy file:", src_file_path, dest_file_path)
-						end
-					end
+		local file_list = carp.GetFileNameListInFolder(src_path)
+		for index, file in ___ipairs(file_list) do
+			local src_file_path = src_path .. "/" .. file
+			local dest_file_path = dest_path .. "/" .. file
+			if upper_ext == nil or ALittle.File_GetFileExtByPathAndUpper(src_file_path) == upper_ext then
+				ALittle.File_CopyFile(src_file_path, dest_file_path)
+				if log then
+					ALittle.Log("copy file:", src_file_path, dest_file_path)
 				end
 			end
+		end
+		local folder_list = carp.GetFolderNameListInFolder(src_path)
+		for index, file in ___ipairs(folder_list) do
+			local src_file_path = src_path .. "/" .. file
+			local dest_file_path = dest_path .. "/" .. file
+			carp.CreateFolder(dest_file_path)
+			ALittle.File_CopyDeepDir(src_file_path, dest_file_path, upper_ext, log)
 		end
 	end
 end
@@ -132,14 +132,13 @@ function ALittle.DeleteLog(day_count_before)
 		local time_table = os.date("*t")
 		time_table.day = time_table.day - day_count_before
 		local time_string = os.date("%Y-%m-%d", os.time(time_table)) .. ".log"
+		local file_list = carp.GetFileNameListInFolder(log_path)
 		local delete_list = {}
 		local delete_count = 0
-		for file in lfs.dir(log_path) do
-			if file ~= "." and file ~= ".." then
-				if file <= time_string then
-					delete_count = delete_count + 1
-					delete_list[delete_count] = file
-				end
+		for index, file in ___ipairs(file_list) do
+			if file <= time_string then
+				delete_count = delete_count + 1
+				delete_list[delete_count] = file
 			end
 		end
 		for k, v in ___ipairs(delete_list) do

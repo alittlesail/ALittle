@@ -40,7 +40,7 @@ public class AUIFileSelectLayout : ALittle.DisplayLayout
 	private ALittle.Thread _thread;
 	private string _base_path;
 	private string _real_path;
-
+    
 	private ALittle.ScrollList _scroll_list;
 
 	private ALittle.DisplayObject _path_input;
@@ -198,7 +198,7 @@ public class AUIFileSelectLayout : ALittle.DisplayLayout
 		var item_list_dir = new List<ALittle.DisplayObject>();
 		var item_list_img = new List<ALittle.DisplayObject>();
 		// 遍历文件夹
-		var file_map = ALittle.File_GetFileNameListByDir(browser_path);
+		var file_map = ALittle.File_GetNameListByDir(browser_path);
 		for (var file, info in file_map)
 		{
 			var path = browser_path.."/"..file;
@@ -206,7 +206,7 @@ public class AUIFileSelectLayout : ALittle.DisplayLayout
 			var rel_path = ALittle.String_Sub(path, ALittle.String_Len(this._base_path) + 2);
 			// 检查路径类型
 			var attr = ALittle.File_GetFileAttr(path);
-			if (attr.mode == "directory")
+			if (attr.directory)
 			{
 				var item = this.CreateDirItem(file, rel_path, path);
 				if (item != null) ALittle.List_Push(item_list_dir, item);
@@ -232,7 +232,7 @@ public class AUIFileSelectLayout : ALittle.DisplayLayout
 		if (name == "" || name == null) return item_list, run_time;
         
             // 遍历文件夹
-		var file_map = ALittle.File_GetFileNameListByDir(search_path);
+		var file_map = ALittle.File_GetNameListByDir(search_path);
 		for (var file, info in file_map)
 		{
 			var path = search_path.."/"..file;
@@ -240,7 +240,7 @@ public class AUIFileSelectLayout : ALittle.DisplayLayout
 			var rel_path = ALittle.String_Sub(path, ALittle.String_Len(this._base_path) + 2);
 			// 检查路径类型
 			var attr = ALittle.File_GetFileAttr(path);
-			if (attr.mode == "directory")
+			if (attr.directory)
 				this.SearchCollect(path, name, item_list, run_time);
 			elseif (ALittle.String_Find(file, name) != null)
 			{
@@ -329,7 +329,7 @@ public class AUIFileSelectLayout : ALittle.DisplayLayout
 	{
 		// 检查路径是否存在
 		var attr = ALittle.File_GetFileAttr(base_path.."/"..rel_path);
-		if (attr == null || attr.mode != "directory")
+		if (attr == null || attr.directory != true)
 		{
 			g_AUITool.ShowNotice("错误", "无效路径");
 			return false;
@@ -392,16 +392,13 @@ public class AUIFileSelectLayout : ALittle.DisplayLayout
 
 		var name = ALittle.File_GetFileNameByPath(event.path);
     
-		// 因为lua内部文件系统以来ansi编码
-		var ansi_path = event.path;
-		[Language(Lua)]
-		ansi_path = lua.utf8.ansi2utf8(ansi_path);
+		var path = event.path;
 
 		// 判断是文件夹还是文件名
-		var attr = ALittle.File_GetFileAttr(ansi_path);
+		var attr = ALittle.File_GetFileAttr(path);
 		if (attr == null) return;
 
-		if (attr.mode == "directory")
+		if (attr.directory)
 		{
 			var check, error = this.CheckResourceName(name);
 			if (!check)
@@ -414,12 +411,12 @@ public class AUIFileSelectLayout : ALittle.DisplayLayout
 			ALittle.File_MakeDir(real_path.."/"..name);
 			if (this._ext_map == null)
 			{
-				ALittle.File_CopyDeepDir(ansi_path, real_path.."/"..name);
+				ALittle.File_CopyDeepDir(path, real_path.."/"..name);
             }
 			else
 			{
                 for (var ext, _ in this._ext_map)
-					ALittle.File_CopyDeepDir(ansi_path, real_path.."/"..name, ext);
+					ALittle.File_CopyDeepDir(path, real_path.."/"..name, ext);
             }
         }
 		else
@@ -456,8 +453,8 @@ public class AUIFileSelectLayout : ALittle.DisplayLayout
             g_AUITool.ShowNotice("错误", error);
 			return;
         }
-		var result = ALittle.File_MakeDir(this._real_path.."/"..name);
-		if (!result)
+		ALittle.File_MakeDir(this._real_path.."/"..name);
+		if (ALittle.File_GetFileAttr(this._real_path.."/"..name) == null)
 		{
             g_AUITool.ShowNotice("错误", "文件夹创建失败");
 			return;

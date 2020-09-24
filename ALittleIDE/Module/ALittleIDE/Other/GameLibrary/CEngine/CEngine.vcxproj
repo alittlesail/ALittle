@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\Adapter\Carp\MessageFactoryInterface.alittle" />
     <None Include="src\Adapter\PIXI\JCsvLoader.alittle" />
     <None Include="src\Adapter\PIXI\JShow.alittle" />
     <None Include="src\Adapter\PIXI\JSystem.alittle" />

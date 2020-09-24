@@ -6,32 +6,8 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(1818243950, "ALittle.RichInputCharInfo", {
-name = "ALittle.RichInputCharInfo", ns_name = "ALittle", rl_name = "RichInputCharInfo", hash_code = 1818243950,
-name_list = {"acc_width","pre_width","text_info","text","password_text","text_object","ctrl_info","ctrl"},
-type_list = {"double","double","ALittle.DisplayInfo","string","string","ALittle.Text","ALittle.DisplayInfo","ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(1640499878, "ALittle.UIRichInputLongClickEvent", {
-name = "ALittle.UIRichInputLongClickEvent", ns_name = "ALittle", rl_name = "UIRichInputLongClickEvent", hash_code = 1640499878,
-name_list = {"target","abs_x","abs_y","rel_x","rel_y"},
-type_list = {"ALittle.DisplayObject","double","double","double","double"},
-option_map = {}
-})
-ALittle.RegStruct(1424993548, "ALittle.RichInputMultiDragBeginEvent", {
-name = "ALittle.RichInputMultiDragBeginEvent", ns_name = "ALittle", rl_name = "RichInputMultiDragBeginEvent", hash_code = 1424993548,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(-884368490, "ALittle.RichInputMultiDragEndEvent", {
-name = "ALittle.RichInputMultiDragEndEvent", ns_name = "ALittle", rl_name = "RichInputMultiDragEndEvent", hash_code = -884368490,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(-683607428, "ALittle.RichInputCursorClickEvent", {
-name = "ALittle.RichInputCursorClickEvent", ns_name = "ALittle", rl_name = "RichInputCursorClickEvent", hash_code = -683607428,
+ALittle.RegStruct(-256576702, "ALittle.RichInputFontChangedEvent", {
+name = "ALittle.RichInputFontChangedEvent", ns_name = "ALittle", rl_name = "RichInputFontChangedEvent", hash_code = -256576702,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
@@ -42,10 +18,34 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(-256576702, "ALittle.RichInputFontChangedEvent", {
-name = "ALittle.RichInputFontChangedEvent", ns_name = "ALittle", rl_name = "RichInputFontChangedEvent", hash_code = -256576702,
+ALittle.RegStruct(-683607428, "ALittle.RichInputCursorClickEvent", {
+name = "ALittle.RichInputCursorClickEvent", ns_name = "ALittle", rl_name = "RichInputCursorClickEvent", hash_code = -683607428,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(-884368490, "ALittle.RichInputMultiDragEndEvent", {
+name = "ALittle.RichInputMultiDragEndEvent", ns_name = "ALittle", rl_name = "RichInputMultiDragEndEvent", hash_code = -884368490,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(1424993548, "ALittle.RichInputMultiDragBeginEvent", {
+name = "ALittle.RichInputMultiDragBeginEvent", ns_name = "ALittle", rl_name = "RichInputMultiDragBeginEvent", hash_code = 1424993548,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(1640499878, "ALittle.UIRichInputLongClickEvent", {
+name = "ALittle.UIRichInputLongClickEvent", ns_name = "ALittle", rl_name = "UIRichInputLongClickEvent", hash_code = 1640499878,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double"},
+option_map = {}
+})
+ALittle.RegStruct(1818243950, "ALittle.RichInputCharInfo", {
+name = "ALittle.RichInputCharInfo", ns_name = "ALittle", rl_name = "RichInputCharInfo", hash_code = 1818243950,
+name_list = {"acc_width","pre_width","text_info","text","password_text","text_object","ctrl_info","ctrl"},
+type_list = {"double","double","ALittle.DisplayInfo","string","string","ALittle.Text","ALittle.DisplayInfo","ALittle.DisplayObject"},
 option_map = {}
 })
 
@@ -2182,7 +2182,7 @@ function ALittle.RichInput:HandleKeyDown(event)
 	local is_change = false
 	if event.sym == 1073741904 then
 		if self._multi_cursor == false then
-			if bit.band(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
+			if ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
 				self._is_selecting = false
 				self:CursorOffsetLR(true)
 			else
@@ -2193,7 +2193,7 @@ function ALittle.RichInput:HandleKeyDown(event)
 		event.handled = true
 	elseif event.sym == 1073741903 then
 		if self._multi_cursor == false then
-			if bit.band(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
+			if ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
 				self._is_selecting = false
 				self:CursorOffsetLR(false)
 			else
@@ -2244,7 +2244,7 @@ function ALittle.RichInput:HandleKeyDown(event)
 			self:DispatchEvent(___all_struct[776398171], {})
 			event.handled = true
 		end
-	elseif event.sym == 120 and bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 120 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
 		if self._multi_cursor == false then
 			if (self._editable or event.custom) and not self._password_mode then
 				self._is_selecting = false
@@ -2266,7 +2266,7 @@ function ALittle.RichInput:HandleKeyDown(event)
 			end
 		end
 		event.handled = true
-	elseif event.sym == 99 and bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 99 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
 		if not self._password_mode then
 			local select_text = self:GetSelectText()
 			if select_text[1] ~= nil then
@@ -2274,7 +2274,7 @@ function ALittle.RichInput:HandleKeyDown(event)
 			end
 		end
 		event.handled = true
-	elseif event.sym == 118 and bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 118 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
 		if self._multi_cursor == false then
 			if self._editable or event.custom then
 				self._is_selecting = false
@@ -2310,7 +2310,7 @@ function ALittle.RichInput:HandleKeyDown(event)
 			end
 		end
 		event.handled = true
-	elseif event.sym == 97 and bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 97 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
 		self._is_selecting = true
 		self:SelectAll()
 		event.handled = true

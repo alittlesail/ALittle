@@ -125,7 +125,7 @@ public class AUICodeABnf : AUICodeLanguage
         if (path == null) return;
 
         var attr = ALittle.File_GetFileAttr(path);
-        if (attr == null || attr.mode != "directory")
+        if (attr == null || attr.directory != true)
         {
             g_AUITool.ShowNotice("错误", "文件夹不存在");
             return;

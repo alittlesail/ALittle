@@ -5,10 +5,10 @@ local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-ALittle.RegStruct(-1741432339, "ALittle.LoopListInfo", {
-name = "ALittle.LoopListInfo", ns_name = "ALittle", rl_name = "LoopListInfo", hash_code = -1741432339,
-name_list = {"link","attribute","init","childs"},
-type_list = {"string","string","any","List<ALittle.LoopChildInfo>"},
+ALittle.RegStruct(-925381158, "ALittle.LoopChildInfo", {
+name = "ALittle.LoopChildInfo", ns_name = "ALittle", rl_name = "LoopChildInfo", hash_code = -925381158,
+name_list = {"clazz","target","total_time","delay_time"},
+type_list = {"string","any","int","int"},
 option_map = {}
 })
 ALittle.RegStruct(1653869333, "ALittle.LoopGroupInfo", {
@@ -17,10 +17,10 @@ name_list = {"childs"},
 type_list = {"List<ALittle.LoopListInfo>"},
 option_map = {}
 })
-ALittle.RegStruct(-925381158, "ALittle.LoopChildInfo", {
-name = "ALittle.LoopChildInfo", ns_name = "ALittle", rl_name = "LoopChildInfo", hash_code = -925381158,
-name_list = {"clazz","target","total_time","delay_time"},
-type_list = {"string","any","int","int"},
+ALittle.RegStruct(-1741432339, "ALittle.LoopListInfo", {
+name = "ALittle.LoopListInfo", ns_name = "ALittle", rl_name = "LoopListInfo", hash_code = -1741432339,
+name_list = {"link","attribute","init","childs"},
+type_list = {"string","string","any","List<ALittle.LoopChildInfo>"},
 option_map = {}
 })
 

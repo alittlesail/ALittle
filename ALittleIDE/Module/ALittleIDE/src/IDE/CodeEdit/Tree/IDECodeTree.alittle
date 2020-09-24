@@ -181,7 +181,7 @@ public class IDECodeTree : IDECodeTreeLogic
 	// 刷新子节点
 	public fun Refresh()
 	{
-		var map = ALittle.File_GetFileNameListByDir(this._user_info.path);
+		var map = ALittle.File_GetNameListByDir(this._user_info.path);
 
 		// 刷新已存在
 		var remove:List<IDECodeTreeLogic> = null;
@@ -214,7 +214,7 @@ public class IDECodeTree : IDECodeTreeLogic
 		var add_dir:List<string> = null;
 		for (var name, attr in map)
 		{
-			if (attr.mode == "directory")
+			if (attr.directory)
 			{
                 if (add_dir == null) add_dir = new List<string>();
                 ALittle.List_Push(add_dir, name);

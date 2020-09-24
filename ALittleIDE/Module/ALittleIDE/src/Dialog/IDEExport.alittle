@@ -38,7 +38,7 @@ public struct IDEPackageInfo
 
 struct IDEExportFileAttr
 {
-	lua.fileattr attr;
+	ALittle.PathAttribute attr;
 	string md5;
 	string file_type;
 	string file_path;
@@ -1119,7 +1119,7 @@ class IDEExport
 		template = ALittle.String_Replace(template, "VERSION_NUMBER", package_info.version_info.version_number);
 	
 		// 替换安装包名
-		var install_name_gbk = lua.utf8.utf82ansi(package_info.install_info.install_name);
+		var install_name_gbk = package_info.install_info.install_name;
 		template = ALittle.String_Replace(template, "INSTALL_NAME", install_name_gbk);
 		
 		// 替换安装唯一ID
@@ -1268,7 +1268,7 @@ class IDEExport
 		var javac_string = "";
 	
 		// 遍历org.libsdl.app中的java文件，添加到编译文件列表中
-		var java_file_map = new Map<string, lua.fileattr>();
+		var java_file_map = new Map<string, ALittle.PathAttribute>();
 		ALittle.File_GetFileAttrByDir(default_src_path, java_file_map);
 		for (var file_path, java_file in java_file_map)
 		{
@@ -1280,7 +1280,7 @@ class IDEExport
 		}
 	
 		// 打开项目包名下的java文件，修改包名相关代码，添加到编译文件列表中
-		java_file_map = new Map<string, lua.fileattr>();
+		java_file_map = new Map<string, ALittle.PathAttribute>();
 		ALittle.File_GetFileAttrByDir(package_src_path, java_file_map);
 		for (var file_path, java_file in java_file_map)
 		{

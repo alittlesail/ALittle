@@ -22,10 +22,10 @@ public class IDEProjectOpenDialog
 		this._project_open_dialog.visible = true;
 		// 显示项目列表
 		var module_list = new List<string>();
-		var file_map = ALittle.File_GetFileNameListByDir(g_ModuleBasePath.."..");
+		var file_map = ALittle.File_GetNameListByDir(g_ModuleBasePath.."..");
 		for (var name, info in file_map)
 		{
-			if (info.mode == "directory")
+			if (info.directory)
 				ALittle.List_Push(module_list, name);
         }
 		this._project_dropdown.data_list = module_list;

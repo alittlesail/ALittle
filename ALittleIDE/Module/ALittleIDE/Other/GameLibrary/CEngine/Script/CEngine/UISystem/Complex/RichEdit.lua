@@ -6,38 +6,8 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(1949279026, "ALittle.RichEditFontChangedEvent", {
-name = "ALittle.RichEditFontChangedEvent", ns_name = "ALittle", rl_name = "RichEditFontChangedEvent", hash_code = 1949279026,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(-1053992999, "ALittle.RichEditCursorClickEvent", {
-name = "ALittle.RichEditCursorClickEvent", ns_name = "ALittle", rl_name = "RichEditCursorClickEvent", hash_code = -1053992999,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(-923963966, "ALittle.RichEditCharInfo", {
-name = "ALittle.RichEditCharInfo", ns_name = "ALittle", rl_name = "RichEditCharInfo", hash_code = -923963966,
-name_list = {"acc_width","pre_width","text_info","text_object","text","ctrl_info","ctrl"},
-type_list = {"double","double","ALittle.DisplayInfo","ALittle.Text","string","ALittle.DisplayInfo","ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(774620468, "ALittle.UIRichEditLongClickEvent", {
-name = "ALittle.UIRichEditLongClickEvent", ns_name = "ALittle", rl_name = "UIRichEditLongClickEvent", hash_code = 774620468,
-name_list = {"target","abs_x","abs_y","rel_x","rel_y"},
-type_list = {"ALittle.DisplayObject","double","double","double","double"},
-option_map = {}
-})
-ALittle.RegStruct(556044369, "ALittle.RichEditLineInfo", {
-name = "ALittle.RichEditLineInfo", ns_name = "ALittle", rl_name = "RichEditLineInfo", hash_code = 556044369,
-name_list = {"char_list","char_count","child_list","child_count","container","acc_height","pre_height","force_line"},
-type_list = {"List<ALittle.RichEditCharInfo>","int","List<ALittle.DisplayObject>","int","ALittle.DisplayLayout","double","double","bool"},
-option_map = {}
-})
-ALittle.RegStruct(291295687, "ALittle.RichEditMultiDragEvent", {
-name = "ALittle.RichEditMultiDragEvent", ns_name = "ALittle", rl_name = "RichEditMultiDragEvent", hash_code = 291295687,
+ALittle.RegStruct(9565867, "ALittle.RichEditMultiDragBeginEvent", {
+name = "ALittle.RichEditMultiDragBeginEvent", ns_name = "ALittle", rl_name = "RichEditMultiDragBeginEvent", hash_code = 9565867,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
@@ -48,8 +18,38 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(9565867, "ALittle.RichEditMultiDragBeginEvent", {
-name = "ALittle.RichEditMultiDragBeginEvent", ns_name = "ALittle", rl_name = "RichEditMultiDragBeginEvent", hash_code = 9565867,
+ALittle.RegStruct(291295687, "ALittle.RichEditMultiDragEvent", {
+name = "ALittle.RichEditMultiDragEvent", ns_name = "ALittle", rl_name = "RichEditMultiDragEvent", hash_code = 291295687,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(556044369, "ALittle.RichEditLineInfo", {
+name = "ALittle.RichEditLineInfo", ns_name = "ALittle", rl_name = "RichEditLineInfo", hash_code = 556044369,
+name_list = {"char_list","char_count","child_list","child_count","container","acc_height","pre_height","force_line"},
+type_list = {"List<ALittle.RichEditCharInfo>","int","List<ALittle.DisplayObject>","int","ALittle.DisplayLayout","double","double","bool"},
+option_map = {}
+})
+ALittle.RegStruct(774620468, "ALittle.UIRichEditLongClickEvent", {
+name = "ALittle.UIRichEditLongClickEvent", ns_name = "ALittle", rl_name = "UIRichEditLongClickEvent", hash_code = 774620468,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double"},
+option_map = {}
+})
+ALittle.RegStruct(-923963966, "ALittle.RichEditCharInfo", {
+name = "ALittle.RichEditCharInfo", ns_name = "ALittle", rl_name = "RichEditCharInfo", hash_code = -923963966,
+name_list = {"acc_width","pre_width","text_info","text_object","text","ctrl_info","ctrl"},
+type_list = {"double","double","ALittle.DisplayInfo","ALittle.Text","string","ALittle.DisplayInfo","ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(-1053992999, "ALittle.RichEditCursorClickEvent", {
+name = "ALittle.RichEditCursorClickEvent", ns_name = "ALittle", rl_name = "RichEditCursorClickEvent", hash_code = -1053992999,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(1949279026, "ALittle.RichEditFontChangedEvent", {
+name = "ALittle.RichEditFontChangedEvent", ns_name = "ALittle", rl_name = "RichEditFontChangedEvent", hash_code = 1949279026,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
@@ -3233,7 +3233,7 @@ function ALittle.RichEdit:HandleKeyDown(event)
 		end
 	elseif event.sym == 1073741904 then
 		if self._multi_cursor == false then
-			if bit.band(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
+			if ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
 				self._is_selecting = false
 				self:CursorOffsetLR(true)
 				self:UpdateFontText()
@@ -3245,7 +3245,7 @@ function ALittle.RichEdit:HandleKeyDown(event)
 		event.handled = true
 	elseif event.sym == 1073741903 then
 		if self._multi_cursor == false then
-			if bit.band(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
+			if ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
 				self._is_selecting = false
 				self:CursorOffsetLR(false)
 				self:UpdateFontText()
@@ -3257,7 +3257,7 @@ function ALittle.RichEdit:HandleKeyDown(event)
 		event.handled = true
 	elseif event.sym == 1073741906 then
 		if self._multi_cursor == false then
-			if bit.band(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
+			if ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
 				self._is_selecting = false
 				self:CursorOffsetUD(true)
 				self:UpdateFontText()
@@ -3269,7 +3269,7 @@ function ALittle.RichEdit:HandleKeyDown(event)
 		event.handled = true
 	elseif event.sym == 1073741905 then
 		if self._multi_cursor == false then
-			if bit.band(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
+			if ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
 				self._is_selecting = false
 				self:CursorOffsetUD(false)
 				self:UpdateFontText()
@@ -3340,7 +3340,7 @@ function ALittle.RichEdit:HandleKeyDown(event)
 				self._multi_cursor = false
 			end
 		end
-	elseif event.sym == 120 and bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 120 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
 		if self._multi_cursor == false then
 			if self._editable or event.custom then
 				self._is_selecting = false
@@ -3365,13 +3365,13 @@ function ALittle.RichEdit:HandleKeyDown(event)
 				self._multi_cursor = false
 			end
 		end
-	elseif event.sym == 99 and bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 99 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
 		local select_text = self:GetSelectText()
 		if select_text[1] ~= nil then
 			ALittle.System_SetClipboardText(json.encode(select_text))
 		end
 		event.handled = true
-	elseif event.sym == 118 and bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 118 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
 		if self._multi_cursor == false then
 			if self._editable or event.custom then
 				self._is_selecting = false
@@ -3407,7 +3407,7 @@ function ALittle.RichEdit:HandleKeyDown(event)
 				self._multi_cursor = false
 			end
 		end
-	elseif event.sym == 97 and bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 97 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
 		self._is_selecting = true
 		self:SelectAll()
 		event.handled = true

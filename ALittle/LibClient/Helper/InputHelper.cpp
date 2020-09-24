@@ -35,7 +35,7 @@ const char* InputHelper::GetIMESelectList()
 		return s_content.c_str();
 	}
 
-	wchar_t* pBuf = new wchar_t[dwSize];
+	char* pBuf = new char[dwSize];
 	LPCANDIDATELIST pList = (LPCANDIDATELIST)pBuf;  
 	dwSize = ImmGetCandidateListW(hImc, 0, pList, dwSize);
 	if (dwSize)

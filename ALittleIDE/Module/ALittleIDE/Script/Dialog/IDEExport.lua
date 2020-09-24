@@ -35,12 +35,6 @@ name_list = {"upload_list","project_path","export_module_path","is_login","modul
 type_list = {"List<string>","string","string","bool","string","string","int","int","int","int","string","string","string","string","List<string>","string","int","bool","string"},
 option_map = {}
 })
-ALittle.RegStruct(1089261655, "lua.fileattr", {
-name = "lua.fileattr", ns_name = "lua", rl_name = "fileattr", hash_code = 1089261655,
-name_list = {"mode","size"},
-type_list = {"string","int"},
-option_map = {}
-})
 ALittle.RegStruct(1084005584, "ALittleIDE.IDEExportFileInfo", {
 name = "ALittleIDE.IDEExportFileInfo", ns_name = "ALittleIDE", rl_name = "IDEExportFileInfo", hash_code = 1084005584,
 name_list = {"path","crypt_mode"},
@@ -56,7 +50,13 @@ option_map = {}
 ALittle.RegStruct(900617833, "ALittleIDE.IDEExportFileAttr", {
 name = "ALittleIDE.IDEExportFileAttr", ns_name = "ALittleIDE", rl_name = "IDEExportFileAttr", hash_code = 900617833,
 name_list = {"attr","md5","file_type","file_path"},
-type_list = {"lua.fileattr","string","string","string"},
+type_list = {"ALittle.PathAttribute","string","string","string"},
+option_map = {}
+})
+ALittle.RegStruct(839664979, "ALittle.PathAttribute", {
+name = "ALittle.PathAttribute", ns_name = "ALittle", rl_name = "PathAttribute", hash_code = 839664979,
+name_list = {"directory","size"},
+type_list = {"bool","int"},
 option_map = {}
 })
 ALittle.RegStruct(-600814285, "ALittle.SmallVersionInfo", {
@@ -823,7 +823,6 @@ function ALittleIDE.IDEExport:GenerateExe(package_info)
 	ALittle.File_CopyFile("ALittleClient.exe", "Export/Windows/Engine/ALittleClient.exe")
 	ALittle.File_CopyFile("ALittleClientWin.exe", "Export/Windows/Engine/ALittleClientWin.exe")
 	ALittle.File_CopyFile("ALittleServer.exe", "Export/Windows/Engine/ALittleServer.exe")
-	ALittle.File_CopyFile("lua51.dll", "Export/Windows/Engine/lua51.dll")
 	ALittle.File_CopyFile("SDL2.dll", "Export/Windows/Engine/SDL2.dll")
 	ALittle.File_CopyFile("libcrypto-1_1-x64.dll", "Export/Windows/Engine/libcrypto-1_1-x64.dll")
 	ALittle.File_CopyFile("libssl-1_1-x64.dll", "Export/Windows/Engine/libssl-1_1-x64.dll")
@@ -843,7 +842,7 @@ function ALittleIDE.IDEExport:GenerateExe(package_info)
 		return nil
 	end
 	template = ALittle.String_Replace(template, "VERSION_NUMBER", package_info.version_info.version_number)
-	local install_name_gbk = utf8.utf82ansi(package_info.install_info.install_name)
+	local install_name_gbk = package_info.install_info.install_name
 	template = ALittle.String_Replace(template, "INSTALL_NAME", install_name_gbk)
 	local guid = ALittle.String_MD5(package_info.project_name .. "-" .. package_info.install_info.install_name)
 	guid = ALittle.String_Upper(guid)

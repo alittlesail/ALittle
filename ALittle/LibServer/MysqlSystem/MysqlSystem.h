@@ -1,6 +1,6 @@
 
-#ifndef _ALITTLE_MYSQLTHREADSYSTEM_H_
-#define _ALITTLE_MYSQLTHREADSYSTEM_H_
+#ifndef _ALITTLE_MYSQLSYSTEM_H_
+#define _ALITTLE_MYSQLSYSTEM_H_
 
 #include <string>
 #include <vector>
@@ -49,11 +49,11 @@ private:
     MysqlConnection* m_conn;
 };
 
-class MysqlThreadSystem
+class MysqlSystem
 {
 public:
-    MysqlThreadSystem();
-    ~MysqlThreadSystem();
+    MysqlSystem();
+    ~MysqlSystem();
 
 public:
     void Setup(int thread_count
@@ -75,4 +75,4 @@ private:
 
 } // ALittle
 
-#endif // _ALITTLE_MYSQLTHREADSYSTEM_H_
+#endif // _ALITTLE_MYSQLSYSTEM_H_

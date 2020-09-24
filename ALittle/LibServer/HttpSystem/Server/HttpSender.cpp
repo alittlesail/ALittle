@@ -5,7 +5,7 @@
 
 #define CARP_HAS_SSL
 #include "Carp/carp_http.hpp"
-#include "Carp/carp_file_helper.hpp"
+#include "Carp/carp_file.hpp"
 #include "Carp/carp_file_cache.hpp"
 
 #include "ALittle/LibServer/ServerSystem/ServerSchedule.h"
@@ -102,7 +102,7 @@ void HttpSender::HandleSend(std::size_t bytes_transferred)
 			// close file
 			m_file->Close();
 			// send completed do not affect by heart beat
-			m_end_time = CarpTimeHelper::GetCurTime();
+			m_end_time = CarpTime::GetCurTime();
 		}
 		else
 		{
@@ -114,7 +114,7 @@ void HttpSender::HandleSend(std::size_t bytes_transferred)
 	else
 	{
 		// send completed do not affect by heart beat
-		m_end_time = CarpTimeHelper::GetCurTime();
+		m_end_time = CarpTime::GetCurTime();
 	}
 }
 
@@ -227,7 +227,7 @@ void HttpSender::SendFile(const char* path, const char* content_type, bool for_d
 		if (show_name && strlen(show_name) > 0)
 			m_http_content += CarpHttpHelper::UrlEncode(show_name);
 		else
-			m_http_content += CarpHttpHelper::UrlEncode(CarpFileHelper::GetFileNameByPath(path));
+			m_http_content += CarpHttpHelper::UrlEncode(CarpFile::GetFileNameByPath(path));
 		m_http_content += "\r\n";
 	}
 	if (content_type == 0 || content_type[0] == 0)
@@ -260,7 +260,7 @@ void HttpSender::Heartbeat(int second)
 	if (m_end_time == 0) return;
 
 	// not wait second
-	if (CarpTimeHelper::GetCurTime() - m_end_time < second) return;
+	if (CarpTime::GetCurTime() - m_end_time < second) return;
 
 	// close
 	Close();

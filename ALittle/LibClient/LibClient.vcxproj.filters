@@ -201,12 +201,6 @@
     <ClInclude Include="..\..\Carp\carp_win_ime.h">
       <Filter>Carp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Carp\carp_string_helper.hpp">
-      <Filter>Carp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Carp\carp_file_helper.hpp">
-      <Filter>Carp</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Carp\carp_message.hpp">
       <Filter>Carp</Filter>
     </ClInclude>
@@ -231,15 +225,6 @@
     <ClInclude Include="..\..\Carp\carp_log.hpp">
       <Filter>Carp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Carp\carp_time_helper.hpp">
-      <Filter>Carp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Carp\carp_safe_id_creator.h">
-      <Filter>Carp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Carp\carp_crypt_helper.hpp">
-      <Filter>Carp</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Carp\carp_console.hpp">
       <Filter>Carp</Filter>
     </ClInclude>
@@ -250,6 +235,42 @@
       <Filter>Carp</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Carp\carp_mysql.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_csv.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_script.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_message_bind.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_crypt.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_string.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_file.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_crypt_bind.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_time.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_log_bind.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_csv_bind.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_miniheap.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_safe_id_creator.hpp">
       <Filter>Carp</Filter>
     </ClInclude>
   </ItemGroup>

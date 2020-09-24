@@ -71,8 +71,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>LibCommond.lib;LibServerd.lib;libssl.lib;libcrypto.lib;lua51.lib;libmysql.lib;libprotobufd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib/ALittle;$(SolutionDir)lib/LuaJIT;$(SolutionDir)lib/openssl;$(SolutionDir)lib/Mysql;$(SolutionDir)LibCommon/ThirdParty/protobuf/lib/protobuf;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>LibServerd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib/ALittle;$(SolutionDir)lib/lua;$(SolutionDir)lib/openssl;$(SolutionDir)lib/mysql;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -93,8 +93,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib/ALittle;$(SolutionDir)lib/LuaJIT;$(SolutionDir)lib/openssl;$(SolutionDir)lib/Mysql;$(SolutionDir)lib/tcmalloc;$(SolutionDir)LibCommon/ThirdParty/protobuf/lib/protobuf;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>LibCommon.lib;LibServer.lib;libssl.lib;libcrypto.lib;libtcmalloc_minimal.lib;lua51.lib;libmysql.lib;libprotobuf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib/ALittle;$(SolutionDir)lib/lua;$(SolutionDir)lib/openssl;$(SolutionDir)lib/mysql;$(SolutionDir)lib/tcmalloc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>LibServer.lib;libtcmalloc_minimal.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
     </Link>
   </ItemDefinitionGroup>

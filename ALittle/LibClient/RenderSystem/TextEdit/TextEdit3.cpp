@@ -3,7 +3,7 @@
 
 #include "ALittle/LibClient/RenderSystem/DisplaySystem.h"
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"
-#include "Carp/carp_string_helper.hpp"
+#include "Carp/carp_string.hpp"
 
 namespace ALittle
 {
@@ -131,8 +131,8 @@ bool TextEdit::ClickWordCursor(float offset_x, float offset_y)
 		{
 			if (m_char_cursor_it->str.size() == 1
 				&& m_char_cursor_it->str[0] != '_'
-				&& !CarpStringHelper::IsNumber(m_char_cursor_it->str[0])
-				&& !CarpStringHelper::IsLetter(m_char_cursor_it->str[0]))
+				&& !CarpString::IsNumber(m_char_cursor_it->str[0])
+				&& !CarpString::IsLetter(m_char_cursor_it->str[0]))
 			{
 				has_find = true;
 				break;
@@ -162,8 +162,8 @@ bool TextEdit::ClickWordCursor(float offset_x, float offset_y)
 		}
 		if (cursor_tmp->str.size() == 1
 			&& cursor_tmp->str[0] != '_'
-			&& !CarpStringHelper::IsNumber(cursor_tmp->str[0])
-			&& !CarpStringHelper::IsLetter(cursor_tmp->str[0]))
+			&& !CarpString::IsNumber(cursor_tmp->str[0])
+			&& !CarpString::IsLetter(cursor_tmp->str[0]))
 			break;
 		m_char_select_it = cursor_tmp;
 		m_line_select_it = line_cursor_tmp;

@@ -7,7 +7,7 @@
 #include "ALittle/LibClient/ScheduleSystem/EventDefine.h"
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
 #include "ALittle/LibClient/ScriptSystem/ScriptSystemEx.h"
-#include "Carp/carp_file_helper.hpp"
+#include "Carp/carp_file.hpp"
 
 namespace ALittle
 {
@@ -95,7 +95,7 @@ void HttpFile::Start()
 	{
 		m_upload_client->SendRequest(m_url
 			, std::map<std::string, std::string>()
-			, CarpFileHelper::GetFileNameByPath(m_file_path), m_file_path, m_start_size
+			, CarpFile::GetFileNameByPath(m_file_path), m_file_path, m_start_size
 			, [this](bool result, const std::string& head, const std::string& body, const std::string& error)
 			{
 				if (result)

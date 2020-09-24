@@ -11,7 +11,7 @@
 #define CARP_DUMP_IMPL
 #include "Carp/carp_dump.hpp"
 
-#include "Carp/carp_file_helper.hpp"
+#include "Carp/carp_file.hpp"
 
 #define CARP_LOG_IMPL
 #include "Carp/carp_log.hpp"
@@ -51,14 +51,14 @@ void ServerSystem::Setup(const std::map<std::string, ModuleInfo>& modules)
 	std::vector<std::string> module_name_list;
 	for (auto it = modules.begin(); it != modules.end(); ++it)
 		module_name_list.push_back(it->first);
-	std::string module_name = CarpStringHelper::Join(module_name_list, "-");
+	std::string module_name = CarpString::Join(module_name_list, "-");
 
 #ifdef _WIN32
 	s_carp_dump.Setup(module_name, []() {s_carp_dump.Shutdown(); });
 #endif // _WIN32
 
 	// set prename of log file from config
-	CarpFileHelper::CreateDeepFolder("Log");
+	CarpFile::CreateDeepFolder("Log");
 	s_carp_log.Setup("Log/", module_name);
 	
 #ifdef _WIN32
@@ -168,7 +168,7 @@ void ServerSystem::HandleConsoleHelp()
 	std::list<std::string> name_list;
 	for (auto it = m_map.begin(); it != m_map.end(); ++it)
 		name_list.push_back(it->second->GetModuleTitle());
-	CARP_INFO(u8"模块列表:" << CarpStringHelper::Join(name_list, " "));
+	CARP_INFO(u8"模块列表:" << CarpString::Join(name_list, " "));
 }
 
 int ServerSystem::ScheduleRun(ServerSchedule* self)

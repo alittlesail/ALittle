@@ -8,7 +8,8 @@
 #include "ALittle/LibServer/ClientSystem/ClientReceiver.h"
 
 #include "Carp/carp_mysql.hpp"
-#include "Carp/carp_file_helper.hpp"
+#include "Carp/carp_file.hpp"
+#define CARP_HAS_SSL
 #include "Carp/carp_http.hpp"
 
 namespace ALittle
@@ -105,7 +106,7 @@ void ServerSchedule::RegisterToScript()
 int ServerSchedule::Run()
 {
 	// 初始化脚本系统
-	m_script_system.Init(m_module_title);
+	m_script_system.Init();
 	
 	// 把相关接口注册到脚本
 	RegisterToScript();
@@ -120,7 +121,7 @@ int ServerSchedule::Run()
 	m_script_system.Invoke("__ALITTLEAPI_SetupMainModule", m_sengine_path.c_str(), m_module_path.c_str(), m_module_name.c_str(), m_config_path.c_str());
 
 	// 创建定时器
-	m_current_time = CarpTimeHelper::GetCurMSTime();
+	m_current_time = CarpTime::GetCurMSTime();
 	const int HEARTBEAT = 20;
 	m_timer = AsioTimerPtr(new AsioTimer(m_io_service, std::chrono::milliseconds(HEARTBEAT)));
 	m_timer->async_wait(std::bind(&ServerSchedule::Update, this, std::placeholders::_1, HEARTBEAT));
@@ -161,7 +162,7 @@ void ServerSchedule::Update(const asio::error_code& ec, int interval)
 {
 	if (m_is_exit) return;
 
-	time_t time = CarpTimeHelper::GetCurMSTime();
+	time_t time = CarpTime::GetCurMSTime();
 
 	// update script logic
 	m_script_system.Invoke("__ALITTLEAPI_Update", time - m_current_time);
@@ -363,8 +364,8 @@ void ServerSchedule::HttpSendFile(int id, const char* file_path, int start_size)
 	m_id_map_http.erase(it);
 	if (!sender) return;
 
-	std::string content_type = CarpHttpHelper::GetContentTypeByExt(CarpFileHelper::GetFileExtByPath(file_path));
-	std::string show_name = CarpFileHelper::GetFileNameByPath(file_path);
+	std::string content_type = CarpHttpHelper::GetContentTypeByExt(CarpFile::GetFileExtByPath(file_path));
+	std::string show_name = CarpFile::GetFileNameByPath(file_path);
 	sender->SendFile(file_path, content_type.c_str(), false, start_size, true, show_name.c_str());
 }
 

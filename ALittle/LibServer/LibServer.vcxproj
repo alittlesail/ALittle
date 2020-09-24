@@ -16,7 +16,7 @@
     <ClInclude Include="HttpSystem\Server\HttpReceiver.h" />
     <ClInclude Include="HttpSystem\Server\HttpSender.h" />
     <ClInclude Include="HttpSystem\Server\HttpServer.h" />
-    <ClInclude Include="MysqlSystem\MysqlThreadSystem.h" />
+    <ClInclude Include="MysqlSystem\MysqlSystem.h" />
     <ClInclude Include="RouteSystem\ConnectClient.h" />
     <ClInclude Include="RouteSystem\ConnectEndpoint.h" />
     <ClInclude Include="RouteSystem\ConnectMessage.h" />
@@ -27,6 +27,7 @@
     <ClInclude Include="RouteSystem\RouteMessage.h" />
     <ClInclude Include="RouteSystem\RouteSystem.h" />
     <ClInclude Include="RouteSystem\SessionConnection.h" />
+    <ClInclude Include="ScriptSystem\ScriptSystem.h" />
     <ClInclude Include="ServerSystem\ServerSchedule.h" />
     <ClInclude Include="ServerSystem\ServerSystem.h" />
   </ItemGroup>
@@ -38,7 +39,7 @@
     <ClCompile Include="HttpSystem\Server\HttpReceiver.cpp" />
     <ClCompile Include="HttpSystem\Server\HttpSender.cpp" />
     <ClCompile Include="HttpSystem\Server\HttpServer.cpp" />
-    <ClCompile Include="MysqlSystem\MysqlThreadSystem.cpp" />
+    <ClCompile Include="MysqlSystem\MysqlSystem.cpp" />
     <ClCompile Include="RouteSystem\ConnectClient.cpp" />
     <ClCompile Include="RouteSystem\ConnectEndpoint.cpp" />
     <ClCompile Include="RouteSystem\ConnectReceiver.cpp" />
@@ -47,6 +48,7 @@
     <ClCompile Include="RouteSystem\RouteSystemConnect.cpp" />
     <ClCompile Include="RouteSystem\RouteSystemSearch.cpp" />
     <ClCompile Include="RouteSystem\SessionConnection.cpp" />
+    <ClCompile Include="ScriptSystem\ScriptSystem.cpp" />
     <ClCompile Include="ServerSystem\ServerSchedule.cpp" />
     <ClCompile Include="ServerSystem\ServerSystem.cpp" />
   </ItemGroup>

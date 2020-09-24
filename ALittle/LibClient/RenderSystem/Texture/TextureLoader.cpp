@@ -8,7 +8,7 @@
 #include "ALittle/LibClient/ThreadSystem/ThreadSystem.h"
 #include "ALittle/LibClient/Helper/TextureHelper.h"
 #include "ALittle/LibClient/Helper/FileHelperEx.h"
-#include "Carp/carp_crypt_helper.hpp"
+#include "Carp/carp_crypt.hpp"
 
 namespace ALittle
 {
@@ -32,11 +32,11 @@ void TextureLoader::Execute()
 	}
 
 	std::vector<std::string> atlas_list;
-	CarpStringHelper::Split(m_atlas_info, ";", atlas_list);
+	CarpString::Split(m_atlas_info, ";", atlas_list);
 	for (unsigned int i = 0; i < atlas_list.size(); ++i)
 	{
 		std::vector<std::string> atlas_info;
-		CarpStringHelper::Split(atlas_list[i], ",", atlas_info);
+		CarpString::Split(atlas_list[i], ",", atlas_info);
 		if (atlas_info.size() < 1) continue;
 		std::string file_path = atlas_info[0];
 		if (atlas_info.size() < 2) continue;
@@ -60,7 +60,7 @@ void TextureLoader::Execute()
 			g_ScheduleSystem.PushUserEvent(TEXTURE_LOAD_FAILED, this);
 			return;
 		}
-		if (m_crypt_mode) CarpCryptHelper::XXTeaDecodeMemory(&(file_content[0]), static_cast<int>(file_content.size()), 0);
+		if (m_crypt_mode) CarpCrypt::XXTeaDecodeMemory(&(file_content[0]), static_cast<int>(file_content.size()), 0);
 
 		// create surface
 		SDL_Surface* child_surface = TextureHelper::LoadImageFromMemory(file_content.data(), file_content.size());

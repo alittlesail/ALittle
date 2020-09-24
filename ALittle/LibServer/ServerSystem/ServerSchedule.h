@@ -10,14 +10,14 @@
 #include <asio.hpp>
 
 #include "Carp/carp_message.hpp"
-#include "Carp/carp_safe_id_creator.h"
+#include "Carp/carp_safe_id_creator.hpp"
 #include "Carp/carp_file_cache.hpp"
 
 #include "ALittle/LibServer/HttpSystem/Server/HttpServer.h"
 #include "ALittle/LibServer/ClientSystem/ClientServer.h"
 #include "ALittle/LibServer/RouteSystem/RouteSystem.h"
-#include "ALittle/LibServer/MysqlSystem/MysqlThreadSystem.h"
-#include "ALittle/LibCommon/ScriptSystem/ScriptSystem.h"
+#include "ALittle/LibServer/MysqlSystem/MysqlSystem.h"
+#include "ALittle/LibServer/ScriptSystem/ScriptSystem.h"
 
 typedef asio::basic_waitable_timer<std::chrono::system_clock> AsioTimer;
 typedef std::shared_ptr<AsioTimer> AsioTimerPtr;
@@ -85,7 +85,7 @@ private:
 	asio::io_service m_io_service;
 	CarpFileCacheGroup m_file_cache;
 	ScriptSystem m_script_system;
-	MysqlThreadSystem m_mysql_system;
+	MysqlSystem m_mysql_system;
 	CarpSafeIDCreator<int> m_id_creator;
 
 private:

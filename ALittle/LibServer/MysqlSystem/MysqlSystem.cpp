@@ -1,5 +1,5 @@
 
-#include "MysqlThreadSystem.h"
+#include "MysqlSystem.h"
 
 #include <functional>
 
@@ -81,15 +81,15 @@ void MysqlThread::Flush(MysqlTask& info)
     info.schedule->Execute(std::bind(&ServerSchedule::HandleMysqlQuery, info.schedule, info.query_id, result, reason));
 }
 
-MysqlThreadSystem::MysqlThreadSystem()
+MysqlSystem::MysqlSystem()
 {
 }
 
-MysqlThreadSystem::~MysqlThreadSystem()
+MysqlSystem::~MysqlSystem()
 {
 }
 
-void MysqlThreadSystem::Setup(int thread_count
+void MysqlSystem::Setup(int thread_count
     , const char* ip
     , const char* username
     , const char* password
@@ -138,14 +138,14 @@ void MysqlThreadSystem::Setup(int thread_count
     }
 }
 
-void MysqlThreadSystem::Shutdown()
+void MysqlSystem::Shutdown()
 {
     for (size_t i = 0; i < m_threads.size(); ++i)
         delete m_threads[i];
     m_threads.clear();
 }
 
-bool MysqlThreadSystem::AddTask(int thread_id, int query_id, MysqlStatementQuery* query, ServerSchedule* schedule)
+bool MysqlSystem::AddTask(int thread_id, int query_id, MysqlStatementQuery* query, ServerSchedule* schedule)
 {
     if (m_threads.empty()) return false;
     if (thread_id < 0) thread_id = 0;
@@ -153,7 +153,7 @@ bool MysqlThreadSystem::AddTask(int thread_id, int query_id, MysqlStatementQuery
     return true;
 }
 
-bool MysqlThreadSystem::AddTask(int thread_id, int query_id, const char* sql, ServerSchedule* schedule)
+bool MysqlSystem::AddTask(int thread_id, int query_id, const char* sql, ServerSchedule* schedule)
 {
     if (m_threads.empty()) return false;
     if (thread_id < 0) thread_id = 0;
@@ -161,7 +161,7 @@ bool MysqlThreadSystem::AddTask(int thread_id, int query_id, const char* sql, Se
     return true;
 }
 
-bool MysqlThreadSystem::AddTask(int thread_id, int query_id, ServerSchedule* schedule)
+bool MysqlSystem::AddTask(int thread_id, int query_id, ServerSchedule* schedule)
 {
 	if (m_threads.empty()) return false;
 	if (thread_id < 0) thread_id = 0;

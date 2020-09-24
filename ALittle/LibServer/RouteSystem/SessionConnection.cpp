@@ -2,7 +2,7 @@
 #include "SessionConnection.h"
 #include "ALittle/LibServer/ServerSystem/ServerSchedule.h"
 
-#include "Carp/carp_string_helper.hpp"
+#include "Carp/carp_string.hpp"
 
 #include "RouteMessage.h"
 #include "ConnectEndpoint.h"

@@ -6,7 +6,7 @@
 #define CARP_HAS_SSL
 #include "Carp/carp_http.hpp"
 #include "Carp/carp_log.hpp"
-#include "Carp/carp_time_helper.hpp"
+#include "Carp/carp_time.hpp"
 
 namespace ALittle
 {
@@ -52,7 +52,7 @@ void HttpReceiver::HandleJustWait(const asio::error_code& ec, std::size_t actual
 void HttpReceiver::NextRead()
 {
 	// update to current time
-	m_receive_time = CarpTimeHelper::GetCurTime();
+	m_receive_time = CarpTime::GetCurTime();
 
 	// read next bytes
 	CARPHTTPSOCKET_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
@@ -68,7 +68,7 @@ void HttpReceiver::HandleRead(const asio::error_code& ec, std::size_t actual_siz
 	}
 	
 	// update to current time
-	m_receive_time = CarpTimeHelper::GetCurTime();
+	m_receive_time = CarpTime::GetCurTime();
 
 	// store current size
 	int current_size = (int)m_http_head.size();
@@ -237,7 +237,7 @@ void HttpReceiver::HandleRead(const asio::error_code& ec, std::size_t actual_siz
 void HttpReceiver::NextReadFile()
 {
 	// update to current time
-	m_receive_time = CarpTimeHelper::GetCurTime();
+	m_receive_time = CarpTime::GetCurTime();
 
 	CARPHTTPSOCKET_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
 		, std::bind(&HttpReceiver::HandleReadFile, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
@@ -264,7 +264,7 @@ void HttpReceiver::HandleReadFile(const asio::error_code& ec, std::size_t actual
 	}
 
 	// update current time
-	m_receive_time = CarpTimeHelper::GetCurTime();
+	m_receive_time = CarpTime::GetCurTime();
 
 	// if last size lager than 0, then handle new bytes
 	if (m_receive_size > 0)
@@ -357,7 +357,7 @@ void HttpReceiver::HandleReadFile(const asio::error_code& ec, std::size_t actual
 void HttpReceiver::NextReadPost()
 {
 	// update to current time
-	m_receive_time = CarpTimeHelper::GetCurTime();
+	m_receive_time = CarpTime::GetCurTime();
 
 	CARPHTTPSOCKET_AsyncReadSome(m_socket, m_http_buffer, sizeof(m_http_buffer)
 		, std::bind(&HttpReceiver::HandleReadPost, this->shared_from_this(), std::placeholders::_1, std::placeholders::_2));
@@ -372,7 +372,7 @@ void HttpReceiver::HandleReadPost(const asio::error_code& ec, std::size_t actual
 	}
 
 	// update current time
-	m_receive_time = CarpTimeHelper::GetCurTime();
+	m_receive_time = CarpTime::GetCurTime();
 	// add to buffer
 	m_http_head.append(m_http_buffer, actual_size);
 
@@ -414,7 +414,7 @@ void HttpReceiver::Heartbeat(int second)
 	if (m_receive_time == 0) return;
 
 	// not wait second
-	if (CarpTimeHelper::GetCurTime() - m_receive_time < second) return;
+	if (CarpTime::GetCurTime() - m_receive_time < second) return;
 
 	// close
 	Close();

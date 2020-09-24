@@ -11,7 +11,7 @@
 #include "ALittle/LibCommon/ScriptSystem/ScriptSystem.h"
 
 #define CARP_FONT_IMPL
-#include "Carp/carp_file_helper.hpp"
+#include "Carp/carp_file.hpp"
 #include "Carp/carp_font.hpp"
 
 #include "DisplayObject/DisplayView.h"
@@ -567,7 +567,7 @@ CarpFont* DisplaySystem::GetFont(const char* font_path, unsigned int font_style,
 		return size_it->second;
 
 	// get file name
-	std::string font_just_name = CarpFileHelper::GetFileNameByPath(font_full_path);
+	std::string font_just_name = CarpFile::GetFileNameByPath(font_full_path);
 	std::string font_just_path = font_full_path.substr(0, font_full_path.size() - font_just_name.size());
 
 // special in android

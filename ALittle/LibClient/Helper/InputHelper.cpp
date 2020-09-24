@@ -1,7 +1,7 @@
 
 #include "InputHelper.h"
 
-#include "Carp/carp_string_helper.hpp"
+#include "Carp/carp_string.hpp"
 
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"
 #include "ALittle/LibClient/Platform/Android/AndroidSystem.h"
@@ -45,7 +45,7 @@ const char* InputHelper::GetIMESelectList()
 			wchar_t* content = (wchar_t*)(pBuf+pList->dwOffset[pList->dwPageStart+i]);
 			if (content == NULL) continue;
 
-			s_content += CarpStringHelper::Unicode2UTF8(content);
+			s_content += CarpString::Unicode2UTF8(content);
 			if (i+1 < pList->dwCount) s_content.push_back(' ');
 		}
 	}

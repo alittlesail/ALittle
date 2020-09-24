@@ -19,6 +19,9 @@
     <Filter Include="RouteSystem">
       <UniqueIdentifier>{bec30482-4d9f-4b24-9250-6888d99de42a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ScriptSystem">
+      <UniqueIdentifier>{965239d5-9ffb-4365-90bb-cc841cdaed9b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HttpSystem\Server\HttpSender.h">
@@ -72,8 +75,11 @@
     <ClInclude Include="RouteSystem\SessionConnection.h">
       <Filter>RouteSystem</Filter>
     </ClInclude>
-    <ClInclude Include="MysqlSystem\MysqlThreadSystem.h">
+    <ClInclude Include="MysqlSystem\MysqlSystem.h">
       <Filter>MysqlSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptSystem\ScriptSystem.h">
+      <Filter>ScriptSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -122,14 +128,17 @@
     <ClCompile Include="RouteSystem\SessionConnection.cpp">
       <Filter>RouteSystem</Filter>
     </ClCompile>
-    <ClCompile Include="MysqlSystem\MysqlThreadSystem.cpp">
-      <Filter>MysqlSystem</Filter>
-    </ClCompile>
     <ClCompile Include="ClientSystem\ClientReceiverWebSocket.cpp">
       <Filter>ClientSystem</Filter>
     </ClCompile>
     <ClCompile Include="ClientSystem\ClientReceiverBinary.cpp">
       <Filter>ClientSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="MysqlSystem\MysqlSystem.cpp">
+      <Filter>MysqlSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptSystem\ScriptSystem.cpp">
+      <Filter>ScriptSystem</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

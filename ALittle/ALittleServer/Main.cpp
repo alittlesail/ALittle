@@ -8,7 +8,7 @@
 #include <vector>
 #include <string>
 
-#include "Carp/carp_file_helper.hpp"
+#include "Carp/carp_file.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -24,18 +24,18 @@ int main(int argc, char* argv[])
 	std::map<std::string, ALittle::ModuleInfo> module_map;
 
 	std::vector<std::string> module_split;
-	CarpStringHelper::Split(argv[4], ";", module_split);
+	CarpString::Split(argv[4], ";", module_split);
 	for (auto& module : module_split)
 	{
 		std::vector<std::string> info_split;
-		CarpStringHelper::Split(module, ",", info_split);
+		CarpString::Split(module, ",", info_split);
 		if (info_split.size() < 2 || info_split.size() > 4)
 		{
 			CARP_WARN(u8"错误的格式:" << module);
 			continue;
 		}
 		module_map[info_split[0]].module_name = info_split[1];
-		module_map[info_split[0]].module_path = CarpFileHelper::TryAddFileSeparator(info_split[2]);
+		module_map[info_split[0]].module_path = CarpFile::TryAddFileSeparator(info_split[2]);
 		module_map[info_split[0]].config_path = info_split[3];
 	}
 

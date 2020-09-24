@@ -1,8 +1,8 @@
 
 #include "ScriptSystem.h"
 
-#include "Carp/carp_crypt_helper.hpp"
-#include "Carp/carp_file_helper.hpp"
+#include "Carp/carp_crypt.hpp"
+#include "Carp/carp_file.hpp"
 
 extern "C" {
 #include "ALittle/LibCommon/ThirdParty/json/lua_cjson.h"
@@ -194,7 +194,7 @@ bool ScriptSystem::Require(const char* file_path)
 
 	std::string start_text = "-- ALittle Generate Lua";
 	if (content.size() < start_text.size() || start_text != std::string(content.data(), start_text.size()))
-		CarpCryptHelper::XXTeaDecodeMemory(content.data(), static_cast<int>(content.size()), 0);
+		CarpCrypt::XXTeaDecodeMemory(content.data(), static_cast<int>(content.size()), 0);
 	RunScript(content.data(), content.size(), lua_path.c_str());
 	return true;
 }
@@ -218,12 +218,12 @@ void ScriptSystem::RegisterImpl()
 
 bool ScriptSystem::LoadFile(const char* file_path, std::vector<char>& content)
 {
-	return CarpFileHelper::LoadStdFile(file_path, content);
+	return CarpFile::LoadStdFile(file_path, content);
 }
 
 int ScriptSystem::JSHash(const char* value)
 {
-	return CarpCryptHelper::JSHash(value);
+	return CarpCrypt::JSHash(value);
 }
 
 } // ALittle

@@ -7,7 +7,7 @@
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
 #include "ALittle/LibClient/ScriptSystem/ScriptSystemEx.h"
 
-#include "Carp/carp_string_helper.hpp"
+#include "Carp/carp_string.hpp"
 
 #include <Windows.h>
 #include <Iphlpapi.h>
@@ -150,13 +150,13 @@ void Windows_SystemSelectFile(const char* init_dir)
 	GetCurrentDirectoryW(sizeof(cur_dir), cur_dir);	// get current path
 	std::wstring gbk_dir = cur_dir;
 	if (init_dir)
-		gbk_dir = CarpStringHelper::UTF82Unicode(init_dir);
+		gbk_dir = CarpString::UTF82Unicode(init_dir);
 	ofn.lpstrInitialDir = gbk_dir.c_str();			// init first dir
 	ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST;
 	BOOL bOk = GetOpenFileNameW(&ofn);				// open dialog
 	SetCurrentDirectoryW(cur_dir);					// reset old dir
 
-	std::string utf8_path_name = CarpStringHelper::Unicode2UTF8(path_name);
+	std::string utf8_path_name = CarpString::Unicode2UTF8(path_name);
 	if (bOk)
 		g_ScriptSystem.Invoke("__ALITTLEAPI_SystemSelectFile", utf8_path_name.c_str());
 	else
@@ -175,7 +175,7 @@ void Windows_SystemSelectDirectory(const char* init_dir)
 	if (lpDlist != NULL)
 	{
 		SHGetPathFromIDListW(lpDlist, path_name);
-		std::string utf8_path_name = CarpStringHelper::Unicode2UTF8(path_name);
+		std::string utf8_path_name = CarpString::Unicode2UTF8(path_name);
 		g_ScriptSystem.Invoke("__ALITTLEAPI_SystemSelectDirectory", utf8_path_name.c_str());
 	}
 	else
@@ -188,7 +188,7 @@ void Windows_SystemSelectDirectory(const char* init_dir)
 void Windows_SystemSaveFile(const char* utf8_file_name, const char* init_dir)
 {
 	std::wstring file_name;
-	if (utf8_file_name) file_name = CarpStringHelper::UTF82Unicode(utf8_file_name);
+	if (utf8_file_name) file_name = CarpString::UTF82Unicode(utf8_file_name);
 	
 	wchar_t path_name[MAX_PATH];
 	OPENFILENAMEW ofn = { OPENFILENAME_SIZE_VERSION_400 };//or  {sizeof (OPENFILENAME)}  
@@ -210,14 +210,14 @@ void Windows_SystemSaveFile(const char* utf8_file_name, const char* init_dir)
 	GetCurrentDirectoryW(sizeof(szCurDir),szCurDir);
 	std::wstring gbk_dir = szCurDir;
 	if (init_dir)
-		gbk_dir = CarpStringHelper::UTF82Unicode(init_dir);
+		gbk_dir = CarpString::UTF82Unicode(init_dir);
 	ofn.lpstrInitialDir = gbk_dir.c_str();			// init first dir
 	ofn.Flags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;//如果需要选择多个文件 则必须带有  OFN_ALLOWMULTISELECT标志  
 
 	BOOL bOk = GetSaveFileNameW(&ofn);//调用对话框打开文件
 	SetCurrentDirectoryW(szCurDir); 
 
-	std::string utf8_path_name = CarpStringHelper::Unicode2UTF8(path_name);
+	std::string utf8_path_name = CarpString::Unicode2UTF8(path_name);
 	if (bOk)
 		g_ScriptSystem.Invoke("__ALITTLEAPI_SystemSaveFile", utf8_path_name.c_str());
 	else
@@ -230,7 +230,7 @@ void Windows_OpenUrlBySystemBrowser(const char* url)
 
 	std::string commond = "start \"\" ";
 	commond.append("\"").append(url).append("\"");
-	_wsystem(CarpStringHelper::UTF82Unicode(commond.c_str()).c_str());
+	_wsystem(CarpString::UTF82Unicode(commond.c_str()).c_str());
 }
 
 bool Windows_HasClipboardImage()

@@ -6,7 +6,7 @@
 
 #include <functional>
 
-#include "Carp/carp_crypt_helper.hpp"
+#include "Carp/carp_crypt.hpp"
 
 namespace ALittle
 {
@@ -81,12 +81,12 @@ void ClientReceiver::HandleWebSocketHandShakeReceive( const asio::error_code& ec
 
 		// encode the key
 		std::string key = m_websocket_handshake.substr(pos, end_pos - pos);
-		CarpStringHelper::TrimLeft(key);
-		CarpStringHelper::TrimRight(key);
+		CarpString::TrimLeft(key);
+		CarpString::TrimRight(key);
 		key.append("258EAFA5-E914-47DA-95CA-C5AB0DC85B11");
 
 		unsigned int digest[5];
-		CarpCryptHelper::Sha1(key, digest);
+		CarpCrypt::Sha1(key, digest);
 
 		char* tmp = (char*)digest;
 		char new_digest[20] = { 0 };
@@ -98,7 +98,7 @@ void ClientReceiver::HandleWebSocketHandShakeReceive( const asio::error_code& ec
 			new_digest[i*4+3]	= tmp[i*4];
 		}
 
-		key = CarpCryptHelper::Base64Encode(new_digest, 20);
+		key = CarpCrypt::Base64Encode(new_digest, 20);
 
 		m_websocket_handshake = "";
 		m_websocket_handshake.append("HTTP/1.1 101 Switching Protocols\r\n");

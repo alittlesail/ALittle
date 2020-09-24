@@ -30,7 +30,7 @@
 #define CARP_DUMP_IMPL
 #include "Carp/carp_dump.hpp"
 
-#include "Carp/carp_file_helper.hpp"
+#include "Carp/carp_file.hpp"
 
 #define CARP_LOG_IMPL
 #include "Carp/carp_log.hpp"
@@ -134,7 +134,7 @@ int ScheduleSystem::Run(int argc, char* argv[])
 	SDL_SetHint(SDL_HINT_ANDROID_BLOCK_ON_PAUSE, "0");
 
 #ifndef __EMSCRIPTEN__
-	CarpFileHelper::CreateDeepFolder(FileHelperEx::ExternalFilePath() + "Log");
+	CarpFile::CreateDeepFolder(FileHelperEx::ExternalFilePath() + "Log");
 	s_carp_log.Setup(FileHelperEx::ExternalFilePath() + "Log/", "ALittleClient");
 #endif
 #ifdef _WIN32

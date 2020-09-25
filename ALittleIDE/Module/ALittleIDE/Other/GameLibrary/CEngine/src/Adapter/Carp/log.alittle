@@ -1,0 +1,4 @@
+
+register namespace carp;
+
+public static Log(string content, int level) {}

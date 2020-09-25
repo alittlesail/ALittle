@@ -5,7 +5,6 @@ public class __CPPAPIScriptSystem
 {
     public fun Log(string c, int level) {}
     public fun Require(string path) {}
-    public fun JSHash(string path) : int {}
 }
 
 public var __CPPAPI_ScriptSystem:__CPPAPIScriptSystem;

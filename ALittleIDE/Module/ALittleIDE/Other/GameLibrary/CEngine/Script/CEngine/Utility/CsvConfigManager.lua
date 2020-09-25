@@ -5,16 +5,16 @@ local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 
-ALittle.RegStruct(332955965, "ALittle.CsvPreloadInfoDetail", {
-name = "ALittle.CsvPreloadInfoDetail", ns_name = "ALittle", rl_name = "CsvPreloadInfoDetail", hash_code = 332955965,
-name_list = {"loader","config"},
-type_list = {"ALittle.ICsvFileLoader","ALittle.CsvConfig"},
-option_map = {}
-})
 ALittle.RegStruct(-1040774381, "ALittle.CsvPreloadInfo", {
 name = "ALittle.CsvPreloadInfo", ns_name = "ALittle", rl_name = "CsvPreloadInfo", hash_code = -1040774381,
 name_list = {"total","succeed","failed","loader_map","callback"},
 type_list = {"int","int","int","Map<int,ALittle.CsvPreloadInfoDetail>","Functor<(int,int,int)>"},
+option_map = {}
+})
+ALittle.RegStruct(332955965, "ALittle.CsvPreloadInfoDetail", {
+name = "ALittle.CsvPreloadInfoDetail", ns_name = "ALittle", rl_name = "CsvPreloadInfoDetail", hash_code = 332955965,
+name_list = {"loader","config"},
+type_list = {"ALittle.ICsvFileLoader","ALittle.CsvConfig"},
 option_map = {}
 })
 

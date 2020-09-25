@@ -12,7 +12,7 @@
 namespace ALittle
 {
 
-class ScriptSystem;
+class ScriptSystemEx;
 
 class RenderSystem
 {
@@ -22,7 +22,7 @@ public:
 public:
 	void Setup();
 	void Shutdown();
-	void RegisterToScript(ScriptSystem& script_system);
+	void RegisterToScript(ScriptSystemEx& script_system);
 	
 public:
 	/**

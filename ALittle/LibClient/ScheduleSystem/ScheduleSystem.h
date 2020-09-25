@@ -12,7 +12,7 @@ namespace ALittle
 {
 
 class Application;
-class ScriptSystem;
+class ScriptSystemEx;
 
 class ScheduleSystem
 {
@@ -21,7 +21,7 @@ public:
 
 private:
 	void Setup(int argc, char* argv[]);
-	void RegisterToScript(ScriptSystem& script_system);
+	void RegisterToScript(ScriptSystemEx& script_system);
 
 public:
 	/**

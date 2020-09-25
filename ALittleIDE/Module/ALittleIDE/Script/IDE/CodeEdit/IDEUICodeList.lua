@@ -133,7 +133,7 @@ end
 function ALittleIDE.IDEUICodeList:AddLibrary(name)
 	local file_map = ALittle.File_GetNameListByDir(ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary")
 	local attr = file_map[name]
-	if attr == nil or attr.directory ~= true then
+	if attr == nil or not attr.directory then
 		return false
 	end
 	local module_map = ALittleIDE.g_IDEProject.project.config:GetConfig("code_module", {})

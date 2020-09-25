@@ -14,7 +14,7 @@ extern CarpSchedule& CarpScheduleInstance();
 namespace ALittle
 {
 
-class ScriptSystem;
+class ScriptSystemEx;
 
 class NetSystem
 {
@@ -29,7 +29,7 @@ public:
 public:
 	static void Setup();
 	static void Shutdown();
-	static void RegisterToScript(ScriptSystem& script_system);
+	static void RegisterToScript(ScriptSystemEx& script_system);
 
 public:
 	enum ConnectState

@@ -6,20 +6,20 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(-256576702, "ALittle.RichInputFontChangedEvent", {
-name = "ALittle.RichInputFontChangedEvent", ns_name = "ALittle", rl_name = "RichInputFontChangedEvent", hash_code = -256576702,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
+ALittle.RegStruct(1818243950, "ALittle.RichInputCharInfo", {
+name = "ALittle.RichInputCharInfo", ns_name = "ALittle", rl_name = "RichInputCharInfo", hash_code = 1818243950,
+name_list = {"acc_width","pre_width","text_info","text","password_text","text_object","ctrl_info","ctrl"},
+type_list = {"double","double","ALittle.DisplayInfo","string","string","ALittle.Text","ALittle.DisplayInfo","ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(-605767802, "ALittle.RichInputMultiDragEvent", {
-name = "ALittle.RichInputMultiDragEvent", ns_name = "ALittle", rl_name = "RichInputMultiDragEvent", hash_code = -605767802,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
+ALittle.RegStruct(1640499878, "ALittle.UIRichInputLongClickEvent", {
+name = "ALittle.UIRichInputLongClickEvent", ns_name = "ALittle", rl_name = "UIRichInputLongClickEvent", hash_code = 1640499878,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double"},
 option_map = {}
 })
-ALittle.RegStruct(-683607428, "ALittle.RichInputCursorClickEvent", {
-name = "ALittle.RichInputCursorClickEvent", ns_name = "ALittle", rl_name = "RichInputCursorClickEvent", hash_code = -683607428,
+ALittle.RegStruct(1424993548, "ALittle.RichInputMultiDragBeginEvent", {
+name = "ALittle.RichInputMultiDragBeginEvent", ns_name = "ALittle", rl_name = "RichInputMultiDragBeginEvent", hash_code = 1424993548,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
@@ -30,22 +30,22 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(1424993548, "ALittle.RichInputMultiDragBeginEvent", {
-name = "ALittle.RichInputMultiDragBeginEvent", ns_name = "ALittle", rl_name = "RichInputMultiDragBeginEvent", hash_code = 1424993548,
+ALittle.RegStruct(-683607428, "ALittle.RichInputCursorClickEvent", {
+name = "ALittle.RichInputCursorClickEvent", ns_name = "ALittle", rl_name = "RichInputCursorClickEvent", hash_code = -683607428,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(1640499878, "ALittle.UIRichInputLongClickEvent", {
-name = "ALittle.UIRichInputLongClickEvent", ns_name = "ALittle", rl_name = "UIRichInputLongClickEvent", hash_code = 1640499878,
-name_list = {"target","abs_x","abs_y","rel_x","rel_y"},
-type_list = {"ALittle.DisplayObject","double","double","double","double"},
+ALittle.RegStruct(-605767802, "ALittle.RichInputMultiDragEvent", {
+name = "ALittle.RichInputMultiDragEvent", ns_name = "ALittle", rl_name = "RichInputMultiDragEvent", hash_code = -605767802,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(1818243950, "ALittle.RichInputCharInfo", {
-name = "ALittle.RichInputCharInfo", ns_name = "ALittle", rl_name = "RichInputCharInfo", hash_code = 1818243950,
-name_list = {"acc_width","pre_width","text_info","text","password_text","text_object","ctrl_info","ctrl"},
-type_list = {"double","double","ALittle.DisplayInfo","string","string","ALittle.Text","ALittle.DisplayInfo","ALittle.DisplayObject"},
+ALittle.RegStruct(-256576702, "ALittle.RichInputFontChangedEvent", {
+name = "ALittle.RichInputFontChangedEvent", ns_name = "ALittle", rl_name = "RichInputFontChangedEvent", hash_code = -256576702,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
 

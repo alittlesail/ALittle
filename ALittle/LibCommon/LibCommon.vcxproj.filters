@@ -12,9 +12,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ScriptSystem\ScriptSystem.cpp">
-      <Filter>ScriptSystem</Filter>
-    </ClCompile>
     <ClCompile Include="ThirdParty\json\fpconv.c">
       <Filter>ScriptSystem\json</Filter>
     </ClCompile>
@@ -35,9 +32,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ScriptSystem\ScriptSystem.h">
-      <Filter>ScriptSystem</Filter>
-    </ClInclude>
     <ClInclude Include="ThirdParty\json\strbuf.h">
       <Filter>ScriptSystem\json</Filter>
     </ClInclude>

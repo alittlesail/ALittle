@@ -76,7 +76,7 @@ void NetSystem::Shutdown()
 {
 }
 
-void NetSystem::RegisterToScript(ScriptSystem& script_system)
+void NetSystem::RegisterToScript(ScriptSystemEx& script_system)
 {
 	lua_State* L = script_system.GetLuaState();
 

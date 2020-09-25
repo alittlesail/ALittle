@@ -63,7 +63,7 @@ void AudioSystem::Shutdown()
 }
 
 //=========================================================================
-void AudioSystem::RegisterToScript(ScriptSystem& script_system)
+void AudioSystem::RegisterToScript(ScriptSystemEx& script_system)
 {
 	lua_State* l = script_system.GetLuaState();
 

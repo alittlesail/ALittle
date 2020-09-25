@@ -3,7 +3,6 @@ register namespace lua;
 
 public class __CPPAPIScriptSystemEx
 {
-    public fun Log(string c, int level) {}
     public fun Require(string path) {}
     public fun RunScript(string script, string path) {}
     public fun FileMD5(string path) : string {}

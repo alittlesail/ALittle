@@ -11,7 +11,7 @@ struct CarpMixerChunk;
 namespace ALittle
 {
 
-class ScriptSystem;
+class ScriptSystemEx;
 
 class AudioSystem
 {
@@ -21,7 +21,7 @@ public:
 public:
 	void Setup();
 	void Shutdown();
-	void RegisterToScript(ScriptSystem& script_system);
+	void RegisterToScript(ScriptSystemEx& script_system);
 
 public:
 	// 请使用最新版本的ogg音频转换器（比如https://convertio.co/），否则会播放失败

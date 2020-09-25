@@ -7,8 +7,7 @@
 
 #include "ALittle/LibClient/Helper/TextureHelper.h"
 #include "ALittle/LibClient/Helper/FileHelperEx.h"
-
-#include "ALittle/LibCommon/ScriptSystem/ScriptSystem.h"
+#include "ALittle/LibClient/ScriptSystem/ScriptSystemEx.h"
 
 #define CARP_FONT_IMPL
 #include "Carp/carp_file.hpp"
@@ -70,7 +69,7 @@ void DisplaySystem::Shutdown()
 	ClearFont();
 }
 
-void DisplaySystem::RegisterToScript(ScriptSystem& script_system)
+void DisplaySystem::RegisterToScript(ScriptSystemEx& script_system)
 {
 	lua_State* lstate = script_system.GetLuaState();
 

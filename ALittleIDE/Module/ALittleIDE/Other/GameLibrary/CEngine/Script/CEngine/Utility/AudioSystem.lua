@@ -6,16 +6,16 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(384201948, "ALittle.ChunkInfo", {
-name = "ALittle.ChunkInfo", ns_name = "ALittle", rl_name = "ChunkInfo", hash_code = 384201948,
-name_list = {"file_path","callback","channel","volume","mute"},
-type_list = {"string","Functor<(string,int)>","int","double","bool"},
-option_map = {}
-})
 ALittle.RegStruct(1715346212, "ALittle.Event", {
 name = "ALittle.Event", ns_name = "ALittle", rl_name = "Event", hash_code = 1715346212,
 name_list = {"target"},
 type_list = {"ALittle.EventDispatcher"},
+option_map = {}
+})
+ALittle.RegStruct(384201948, "ALittle.ChunkInfo", {
+name = "ALittle.ChunkInfo", ns_name = "ALittle", rl_name = "ChunkInfo", hash_code = 384201948,
+name_list = {"file_path","callback","channel","volume","mute"},
+type_list = {"string","Functor<(string,int)>","int","double","bool"},
 option_map = {}
 })
 

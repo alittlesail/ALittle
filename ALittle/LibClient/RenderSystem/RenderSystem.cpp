@@ -571,7 +571,7 @@ void RenderSystem::DestroyTextureList()
 #endif
 }
 
-void RenderSystem::RegisterToScript(ScriptSystem& script_system)
+void RenderSystem::RegisterToScript(ScriptSystemEx& script_system)
 {
 	g_DisplaySystem.RegisterToScript(script_system);
 

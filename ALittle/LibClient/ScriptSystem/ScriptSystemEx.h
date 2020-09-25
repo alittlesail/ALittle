@@ -2,13 +2,13 @@
 #ifndef _ALITTLE_SCRIPTSYSTEMEX_H_
 #define _ALITTLE_SCRIPTSYSTEMEX_H_
 
-#include "ALittle/LibCommon/ScriptSystem/ScriptSystem.h"
+#include "Carp/carp_script.hpp"
 #include <map>
 
 namespace ALittle
 {
 
-class ScriptSystemEx : public ScriptSystem
+class ScriptSystemEx : public CarpScript
 {
 public:
 	static ScriptSystemEx& Instance();
@@ -27,18 +27,19 @@ public:
 	const char* ExternalFilePath();
 
 #ifdef __EMSCRIPTEN__
-	void Log(const char* content, short level) { ScriptSystem::Log(content, level); }
 	bool Require(const char* file_path) { return ScriptSystem::Require(file_path); }
 	void RunScriptForLua(const char* script, const char* file_path) { ScriptSystem::RunScriptForLua(file_path); }
 #endif
 	
 protected:
-	virtual void RegisterImpl() override;
 	virtual bool LoadFile(const char* file_path, std::vector<char>& content) override;
 
 private:
 	ScriptSystemEx();
 	~ScriptSystemEx();
+
+private:
+	std::string m_string;
 };
 
 } // ALittle

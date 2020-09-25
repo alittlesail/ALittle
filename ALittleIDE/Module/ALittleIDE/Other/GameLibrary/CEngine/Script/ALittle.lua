@@ -4,12 +4,7 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-local __Log
-__Log = function(content, level)
-	__CPPAPI_ScriptSystemEx:Log(content, level)
-end
-
-ALittle.SetLogFunc(__Log)
+ALittle.SetLogFunc(carp.Log)
 function _G.RequireCEngine(base_path)
 	local ___COROUTINE = coroutine.running()
 	Require(base_path, "CEngine/UISystem/IShow")

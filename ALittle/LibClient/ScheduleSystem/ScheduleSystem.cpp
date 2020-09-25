@@ -489,7 +489,7 @@ void ScheduleSystem::PushConsoleHelp()
 
 //===============================================================
 
-void ScheduleSystem::RegisterToScript(ScriptSystem& script_system)
+void ScheduleSystem::RegisterToScript(ScriptSystemEx& script_system)
 {
 	lua_State* L = script_system.GetLuaState();
 

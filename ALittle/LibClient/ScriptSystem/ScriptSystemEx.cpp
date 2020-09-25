@@ -12,9 +12,24 @@
 #include "ALittle/LibClient/ScheduleSystem/EventDefine.h"
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
 
+extern "C" {
+#include "ALittle/LibCommon/ThirdParty/json/lua_cjson.h"
+#include "ALittle/LibCommon/ThirdParty/json/lua_ajson.h"
+#include "ALittle/LibCommon/ThirdParty/sqlite3/lsqlite3.h"
+}
+
 #include <vector>
 #include "SDL.h"
 #include "LuaBridge/LuaBridge.h"
+
+#include "Carp/carp_message_bind.hpp"
+#include "Carp/carp_crypto_bind.hpp"
+#include "Carp/carp_log_bind.hpp"
+#include "Carp/carp_csv_bind.hpp"
+#include "Carp/carp_timer_bind.hpp"
+#include "Carp/carp_file_bind.hpp"
+#include "Carp/carp_string_bind.hpp"
+#include "Carp/carp_bit_bind.hpp"
 
 namespace ALittle
 {
@@ -27,7 +42,34 @@ ScriptSystemEx& ScriptSystemEx::Instance()
 
 void ScriptSystemEx::Setup()
 {
-	Init("Client");
+	Init();
+	luaopen_json(m_L); lua_settop(m_L, 0);
+	luaopen_ajson(m_L); lua_settop(m_L, 0);
+	luaopen_sqlite3(m_L); lua_settop(m_L, 0);
+
+	CarpMessageBind::Bind(m_L);
+	CarpCryptoBind::Bind(m_L);
+	CarpLogBind::Bind(m_L);
+	CarpCsvBind::Bind(m_L);
+	CarpTimerBind::Bind(m_L);
+	CarpFileBind::Bind(m_L);
+	CarpStringBind::Bind(m_L);
+	CarpBitBind::Bind(m_L);
+
+	// register script system
+	luabridge::getGlobalNamespace(m_L)
+		.beginClass<ScriptSystemEx>("__CPPAPIScriptSystemEx")
+		.addFunction("Require", &ScriptSystemEx::Require)
+		.addFunction("RunScript", &ScriptSystemEx::RunScriptForLua)
+		.addFunction("FileMD5", &ScriptSystemEx::FileMD5)
+		.addFunction("BaseFilePath", &ScriptSystemEx::BaseFilePath)
+		.addFunction("ExternalFilePath", &ScriptSystemEx::ExternalFilePath)
+		.endClass();
+
+	luabridge::setGlobal(m_L, this, "__CPPAPI_ScriptSystemEx");
+
+	std::string require = "core_require = function(path) return __CPPAPI_ScriptSystemEx:Require(path) end";
+	RunScript(require.c_str(), require.size(), "ALittleBuild");
 
 	luabridge::getGlobalNamespace(m_L)
 		.beginClass<SDL_Surface>("__CPPAPISurface")
@@ -225,25 +267,6 @@ void ScriptSystemEx::StartScript(std::string module_name, const std::string& deb
 
 	// Æô¶¯
 	g_ScriptSystem.Invoke("__ALITTLEAPI_SetupMainModule", base_path.c_str(), module_name.c_str(), debug_info.c_str());
-}
-
-void ScriptSystemEx::RegisterImpl()
-{
-	// register script system
-	luabridge::getGlobalNamespace(m_L)
-		.beginClass<ScriptSystemEx>("__CPPAPIScriptSystemEx")
-		.addFunction("Log", &ScriptSystemEx::Log)
-		.addFunction("Require", &ScriptSystemEx::Require)
-		.addFunction("RunScript", &ScriptSystemEx::RunScriptForLua)
-		.addFunction("FileMD5", &ScriptSystemEx::FileMD5)
-		.addFunction("BaseFilePath", &ScriptSystemEx::BaseFilePath)
-		.addFunction("ExternalFilePath", &ScriptSystemEx::ExternalFilePath)
-		.endClass();
-
-	luabridge::setGlobal(m_L, this, "__CPPAPI_ScriptSystemEx");
-
-	std::string require = "core_require = function(path) return __CPPAPI_ScriptSystemEx:Require(path) end";
-	RunScript(require.c_str(), require.size(), "ALittleBuild");
 }
 
 bool ScriptSystemEx::LoadFile(const char* file_path, std::vector<char>& content)

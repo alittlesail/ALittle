@@ -1,11 +1,12 @@
 
 #include "CsvFile.h"
-#include "LocalFile.h"
 
 #include "ALittle/LibClient/ThreadSystem/ThreadSystem.h"
 #include "ALittle/LibClient/ScheduleSystem/EventDefine.h"
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
 #include "ALittle/LibClient/ScriptSystem/ScriptSystem.h"
+
+#include "Carp/carp_rwops.hpp"
 
 namespace ALittle
 {
@@ -66,11 +67,6 @@ void CsvFileLoader::Abandon()
     g_ScheduleSystem.PushUserEvent(CSV_LOAD_FAILED, this);
 }
 
-size_t csv_sdl_fread(void* buffer, size_t element_size, size_t count, void* file)
-{
-    return ((LocalFile*)file)->Read((char*)buffer, (int)(element_size * count), false);
-}
-
 bool CsvFile::Load(const char* file_path, bool only_from_asset)
 {
 	Close();
@@ -79,11 +75,12 @@ bool CsvFile::Load(const char* file_path, bool only_from_asset)
 	if (file_path == nullptr) return false;
 	m_file_path = file_path;
 
-    LocalFile file;
-    file.SetPath(file_path);
-    if (!file.Open(only_from_asset)) return false;
-
-    return m_csv.ReadFromCustomFile(file_path, csv_sdl_fread, &file, 0);
+    CARP_RWops* file = CARP_RWFromFile(file_path, "rb", false);
+    if (file == nullptr) return false;
+    
+    bool result = m_csv.ReadFromCustomFile(file_path, (CarpCsv::read_file)CARP_RWread, file, 0);
+    CARP_RWclose(file);
+    return result;
 }
 
 void CsvFile::Close()

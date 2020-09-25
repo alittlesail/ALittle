@@ -163,9 +163,9 @@ function ALittleIDE.IDEExport:PackagePath(src_path, dst_path, file_type, crypt_m
 		local rel_path = ALittle.String_Sub(file_path, start_index + ALittle.String_Len(src_path))
 		local ext = ALittle.File_GetFileExtByPath(file_path)
 		ext = ALittle.String_Upper(ext)
-		local file = __CPPAPILocalFile()
+		local file = carp.CarpLocalFile()
 		file:SetPath(file_path)
-		Lua.Assert(file:Load(), "IDEExport:PackagePath, 文件加载失败:" .. file_path)
+		Lua.Assert(file:Load(false), "IDEExport:PackagePath, 文件加载失败:" .. file_path)
 		if crypt_mode then
 			file:Encrypt(nil)
 		end
@@ -872,9 +872,9 @@ function ALittleIDE.IDEExport:GenerateApk(package_info)
 		ALittle.Log("IDEExport:GenerateApk install_name is null")
 		return nil
 	end
-	local file = __CPPAPILocalFile()
+	local file = carp.CarpLocalFile()
 	file:SetPath(ALittle.File_BaseFilePath() .. "Export/Android/AndroidManifestTemplate.xml")
-	if file:Load() then
+	if file:Load(false) then
 		local content = file:GetContent()
 		content = ALittle.String_Replace(content, "abcd@package_name@abcd", package_info.install_info.package_name)
 		content = ALittle.String_Replace(content, "abcd@version_number@abcd", package_info.version_info.version_number)
@@ -1101,23 +1101,23 @@ function ALittleIDE.IDEExport:GenerateIpa(package_info)
 		ALittle.System_FreeSurface(new_surface)
 		ALittle.System_FreeSurface(surface)
 	end
-	local share_file = __CPPAPILocalFile()
+	local share_file = carp.CarpLocalFile()
 	share_file:SetPath(package_info.export_path .. "/ALittleClient.xcodeproj/project.pbxproj")
-	if share_file:Load() then
+	if share_file:Load(false) then
 		local content = share_file:GetContent()
 		content = ALittle.String_Replace(content, "abcd@package_name@abcd", package_info.install_info.package_name)
 		ALittle.File_SaveFile(package_info.export_path .. "/ALittleClient.xcodeproj/project.pbxproj", content, -1)
 	end
-	share_file = __CPPAPILocalFile()
+	share_file = carp.CarpLocalFile()
 	share_file:SetPath(package_info.export_path .. "/ALittleClient/ALittleClient.entitlements")
-	if share_file:Load() then
+	if share_file:Load(false) then
 		local content = share_file:GetContent()
 		content = ALittle.String_Replace(content, "abcd@package_name@abcd", package_info.install_info.package_name)
 		ALittle.File_SaveFile(package_info.export_path .. "/ALittleClient/ALittleClient.entitlements", content, -1)
 	end
-	share_file = __CPPAPILocalFile()
+	share_file = carp.CarpLocalFile()
 	share_file:SetPath(package_info.export_path .. "/ALittleClient/Info.plist")
-	if share_file:Load() then
+	if share_file:Load(false) then
 		local content = share_file:GetContent()
 		content = ALittle.String_Replace(content, "abcd@version_number@abcd", package_info.version_info.version_number)
 		content = ALittle.String_Replace(content, "abcd@app_name@abcd", package_info.install_info.install_name)
@@ -1154,9 +1154,9 @@ function ALittleIDE.IDEExport:GenerateWeb(package_info)
 	else
 		ALittle.File_CopyFile(install_ico, package_info.project_path .. "/Export/Web/favicon.ico")
 	end
-	local file = __CPPAPILocalFile()
+	local file = carp.CarpLocalFile()
 	file:SetPath(ALittle.File_BaseFilePath() .. "Export/Web/index.html")
-	if file:Load() then
+	if file:Load(false) then
 		local content = file:GetContent()
 		content = ALittle.String_Replace(content, "abcd@project_name@abcd", package_info.project_name)
 		ALittle.File_SaveFile(package_info.project_path .. "/Export/Web/" .. package_info.project_name .. ".html", content, -1)
@@ -1177,9 +1177,9 @@ function ALittleIDE.IDEExport:GenerateWeChat(package_info)
 	else
 		ALittle.File_CopyFile(install_ico, package_info.project_path .. "/Export/WeChat/favicon.ico")
 	end
-	local game_js = __CPPAPILocalFile()
+	local game_js = carp.CarpLocalFile()
 	game_js:SetPath(ALittle.File_BaseFilePath() .. "Export/WeChat/game.js")
-	if game_js:Load() then
+	if game_js:Load(false) then
 		local content = game_js:GetContent()
 		content = ALittle.String_Replace(content, "abcd@project_name@abcd", package_info.project_name)
 		content = ALittle.String_Replace(content, "abcd@res_ip@abcd", package_info.install_info.res_ip)
@@ -1188,9 +1188,9 @@ function ALittleIDE.IDEExport:GenerateWeChat(package_info)
 		ALittle.File_SaveFile(package_info.project_path .. "/Export/WeChat/game.js", content, -1)
 		ALittle.File_SaveFile(package_info.project_path .. "/Export/Install.js", content, -1)
 	end
-	local game_json = __CPPAPILocalFile()
+	local game_json = carp.CarpLocalFile()
 	game_json:SetPath(ALittle.File_BaseFilePath() .. "Export/WeChat/game.json")
-	if game_json:Load() then
+	if game_json:Load(false) then
 		local content = game_json:GetContent()
 		if package_info.install_info.screen == "竖屏" then
 			content = ALittle.String_Replace(content, "abcd@screen@abcd", "portrait")
@@ -1199,9 +1199,9 @@ function ALittleIDE.IDEExport:GenerateWeChat(package_info)
 		end
 		ALittle.File_SaveFile(package_info.project_path .. "/Export/WeChat/game.json", content, -1)
 	end
-	local project_config_json = __CPPAPILocalFile()
+	local project_config_json = carp.CarpLocalFile()
 	project_config_json:SetPath(ALittle.File_BaseFilePath() .. "Export/WeChat/project.config.json")
-	if project_config_json:Load() then
+	if project_config_json:Load(false) then
 		local content = project_config_json:GetContent()
 		ALittle.File_SaveFile(package_info.project_path .. "/Export/WeChat/project.config.json", content, -1)
 	end

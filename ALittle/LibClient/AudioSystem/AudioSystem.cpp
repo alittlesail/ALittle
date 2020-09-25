@@ -5,14 +5,13 @@
 
 #include "ALittle/LibClient/ScheduleSystem/EventDefine.h"
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
-#include "ALittle/LibClient/Helper/FileHelperEx.h"
 #include "ALittle/LibClient/ScriptSystem/ScriptSystem.h"
 #include "ALittle/LibClient/Tool/MemoryPool.h"
-#include "ALittle/LibClient/Tool/LocalFile.h"
 
 #define CARP_MIXER_IMPL
 #include "Carp/carp_log.hpp"
 #include "Carp/carp_mixer.hpp"
+#include "Carp/carp_rwops.hpp"
 
 namespace ALittle
 {
@@ -178,9 +177,9 @@ float AudioSystem::GetChunkVolume(int channel)
 
 CarpMixerChunk* AudioSystem::LoadChunk(const std::string& file_path)
 {
-	LocalFile file;
+	CarpLocalFile file;
 	file.SetPath(file_path.c_str());
-	if (!file.Load()) return nullptr;
+	if (!file.Load(false)) return nullptr;
 	return s_carp_mixer.LoadChunk(file.GetContent(), file.GetSize());
 }
 

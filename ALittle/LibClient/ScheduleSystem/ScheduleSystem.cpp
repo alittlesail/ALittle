@@ -11,7 +11,6 @@
 #include "ALittle/LibClient/AudioSystem/AudioSystem.h"
 #include "ALittle/LibClient/NetSystem/NetSystem.h"
 #include "ALittle/LibClient/ScriptSystem/ScriptSystem.h"
-#include "ALittle/LibClient/Helper/FileHelperEx.h"
 #include "ALittle/LibClient/Helper/InputHelper.h"
 
 #include "ALittle/LibClient/Platform/Windows/WindowsSystem.h"
@@ -34,6 +33,10 @@
 
 #define CARP_LOG_IMPL
 #include "Carp/carp_log.hpp"
+
+#include "Carp/carp_rwops.hpp"
+#define CARP_RWOPS_IMPL
+#include "Carp/carp_rwops.h"
 
 namespace ALittle
 {
@@ -134,8 +137,8 @@ int ScheduleSystem::Run(int argc, char* argv[])
 	SDL_SetHint(SDL_HINT_ANDROID_BLOCK_ON_PAUSE, "0");
 
 #ifndef __EMSCRIPTEN__
-	CarpFile::CreateDeepFolder(FileHelperEx::ExternalFilePath() + "Log");
-	s_carp_log.Setup(FileHelperEx::ExternalFilePath() + "Log/", "ALittleClient");
+	CarpFile::CreateDeepFolder(CarpRWops::ExternalFilePath() + "Log");
+	s_carp_log.Setup(CarpRWops::ExternalFilePath() + "Log/", "ALittleClient");
 #endif
 #ifdef _WIN32
 	s_carp_console.Setup("ALittleClient", std::bind(&ScheduleSystem::PushConsoleEvent, this, std::placeholders::_1, std::placeholders::_2)

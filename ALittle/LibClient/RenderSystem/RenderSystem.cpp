@@ -9,10 +9,10 @@
 
 #include "ALittle/LibClient/ScriptSystem/ScriptSystem.h"
 #include "ALittle/LibClient/Platform/iOS/iOSSystem.h"
-#include "ALittle/LibClient/Helper/FileHelperEx.h"
 #include "ALittle/LibClient/Helper/TextureHelper.h"
 
 #include "Carp/carp_log.hpp"
+#include "Carp/carp_rwops.hpp"
 
 namespace ALittle
 {
@@ -244,7 +244,7 @@ bool RenderSystem::SetViewShape(const char* file_path)
 
 	// load icon from file
 	std::vector<char> file_content;
-	if (!FileHelperEx::LoadFile(file_path, false, file_content)) return false;
+	if (!CarpRWops::LoadFile(file_path, false, file_content)) return false;
 
 	// create surface
 	SDL_Surface* surface = TextureHelper::LoadImageFromMemory(file_content.data(), file_content.size());
@@ -431,7 +431,7 @@ bool RenderSystem::SetViewIcon(const char* path)
 
 	// load icon from file
 	std::vector<char> file_content;
-	if (!FileHelperEx::LoadFile(path, false, file_content)) return false;
+	if (!CarpRWops::LoadFile(path, false, file_content)) return false;
 
 	// create surface
 	m_icon = TextureHelper::LoadImageFromMemory(file_content.data(), file_content.size());

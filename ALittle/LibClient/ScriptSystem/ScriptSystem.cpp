@@ -1,13 +1,11 @@
 
 #include "ScriptSystem.h"
 
-#include "ALittle/LibClient/Helper/FileHelperEx.h"
 #include "ALittle/LibClient/Helper/TextureHelper.h"
 #include "ALittle/LibClient/Helper/NetHelper.h"
 #include "ALittle/LibClient/Helper/SystemHelper.h"
 #include "ALittle/LibClient/Helper/InputHelper.h"
 
-#include "ALittle/LibClient/Tool/LocalFile.h"
 #include "ALittle/LibClient/Tool/CsvFile.h"
 #include "ALittle/LibClient/ScheduleSystem/EventDefine.h"
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
@@ -58,18 +56,6 @@ void ScriptSystem::Setup()
 	CarpBitBind::Bind(m_L);
 	CarpRWopsBind::Bind(m_L);
 
-	// register script system
-	luabridge::getGlobalNamespace(m_L)
-		.beginClass<ScriptSystem>("__CPPAPIScriptSystem")
-		.addFunction("Require", &ScriptSystem::Require)
-		.addFunction("RunScript", &ScriptSystem::RunScriptForLua)
-		.endClass();
-
-	luabridge::setGlobal(m_L, this, "__CPPAPI_ScriptSystem");
-
-	std::string require = "core_require = function(path) return __CPPAPI_ScriptSystem:Require(path) end";
-	RunScript(require.c_str(), require.size(), "ALittleBuild");
-
 	luabridge::getGlobalNamespace(m_L)
 		.beginClass<SDL_Surface>("__CPPAPISurface")
 		.endClass();
@@ -116,29 +102,7 @@ void ScriptSystem::Setup()
 		.addFunction("__CPPAPI_OpenUrlBySystemBrowser", SystemHelper::OpenUrlBySystemBrowser)
 		.addFunction("__CPPAPI_Alert", SystemHelper::Alert)
 		//////////////////////////////////////////////////////////////////////////
-		.addFunction("__CPPAPI_CopyFile", FileHelperEx::CpFile)
-		.addFunction("__CPPAPI_SaveFile", FileHelperEx::SaveFile)
 		;
-
-	luabridge::getGlobalNamespace(m_L)
-		.beginClass<LocalFile>("__CPPAPILocalFile")
-		.addConstructor<void(*)()>()
-		.addFunction("SetPath", &LocalFile::SetPath)
-		.addFunction("Load", &LocalFile::Load)
-		.addFunction("LoadBySDL", &LocalFile::LoadBySDL)
-		.addFunction("Clear", &LocalFile::Clear)
-		.addFunction("Decrypt", &LocalFile::Decrypt)
-		.addFunction("Encrypt", &LocalFile::Encrypt)
-		.addFunction("Save", &LocalFile::Save)
-		.addFunction("GetContent", &LocalFile::GetContent)
-		.addFunction("GetPath", &LocalFile::GetPath)
-		.addFunction("GetSize", &LocalFile::GetSize)
-		.addFunction("ReadChar", &LocalFile::ReadChar)
-		.addFunction("ReadUInt", &LocalFile::ReadUInt)
-		.addFunction("ReadInt", &LocalFile::ReadInt)
-		.addFunction("ReadFloat", &LocalFile::ReadFloat)
-		.addFunction("ReadDouble", &LocalFile::ReadDouble)
-		.endClass();
 
 	luabridge::getGlobalNamespace(m_L)
 		.beginClass<CsvFileLoader>("__CPPAPICsvFileLoader")
@@ -224,14 +188,14 @@ void ScriptSystem::StartScript(std::string module_name, const std::string& debug
 	{
 		module_name = "ALittleIDE";
 		std::vector<char> enter_content;
-		if (FileHelperEx::LoadFile("Module/Enter.ali", false, enter_content))
+		if (CarpRWops::LoadFile("Module/Enter.ali", false, enter_content))
 			module_name.assign(enter_content.data(), enter_content.size());
 	}
 	base_path = "Module/" + module_name + "/";
 	
 	// 检查模块内是否有引起代码，否则加载Core
 	std::vector<char> enter_content;
-	if (FileHelperEx::LoadFile(base_path + "Core/ALittle.lua", false, enter_content))
+	if (CarpRWops::LoadFile(base_path + "Core/ALittle.lua", false, enter_content))
 	{
 		Require((base_path + "Core/ALittle").c_str());
 		Invoke("RequireCore", (base_path + "Core/").c_str());
@@ -242,7 +206,7 @@ void ScriptSystem::StartScript(std::string module_name, const std::string& debug
 		Invoke("RequireCore", "Module/ALittleIDE/Other/GameLibrary/Core/Script/");
 	}
 
-	if (FileHelperEx::LoadFile(base_path + "Std/ALittle.lua", false, enter_content))
+	if (CarpRWops::LoadFile(base_path + "Std/ALittle.lua", false, enter_content))
 	{
 		Require((base_path + "Std/ALittle").c_str());
 		Invoke("RequireStd", (base_path + "Std/").c_str());
@@ -253,7 +217,7 @@ void ScriptSystem::StartScript(std::string module_name, const std::string& debug
 		Invoke("RequireStd", "Module/ALittleIDE/Other/GameLibrary/Std/Script/");
 	}
 
-	if (FileHelperEx::LoadFile(base_path + "CEngine/ALittle.lua", false, enter_content))
+	if (CarpRWops::LoadFile(base_path + "CEngine/ALittle.lua", false, enter_content))
 	{
 		Require((base_path + "CEngine/ALittle").c_str());
 		Invoke("RequireCEngine", (base_path + "CEngine/").c_str());
@@ -268,29 +232,5 @@ void ScriptSystem::StartScript(std::string module_name, const std::string& debug
 	g_ScriptSystem.Invoke("__ALITTLEAPI_SetupMainModule", base_path.c_str(), module_name.c_str(), debug_info.c_str());
 }
 
-bool ScriptSystem::LoadFile(const char* file_path, std::vector<char>& content)
-{
-	return FileHelperEx::LoadFile(file_path, false, content);
-}
-
-const char* ScriptSystem::FileMD5(const char* value)
-{
-	m_string = "";
-	if (value == nullptr) return m_string.c_str();
-	m_string = FileHelperEx::FileMD5(value);
-	return m_string.c_str();
-}
-
-const char* ScriptSystem::BaseFilePath()
-{
-	m_string = FileHelperEx::BaseFilePath();
-	return m_string.c_str();
-}
-
-const char* ScriptSystem::ExternalFilePath()
-{
-	m_string = FileHelperEx::ExternalFilePath();
-	return m_string.c_str();
-}
 
 } // ALittle

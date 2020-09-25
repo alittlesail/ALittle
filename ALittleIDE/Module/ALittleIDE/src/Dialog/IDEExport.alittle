@@ -221,9 +221,9 @@ class IDEExport
             // 如果是图片，那么就获取一下宽高
             var ext = ALittle.File_GetFileExtByPath(file_path);
             ext = ALittle.String_Upper(ext);
-            var file = new lua.__CPPAPILocalFile();
+            var file = new carp.CarpLocalFile();
             file.SetPath(file_path);
-            assert(file.Load(), "IDEExport:PackagePath, 文件加载失败:"..file_path);
+            assert(file.Load(false), "IDEExport:PackagePath, 文件加载失败:"..file_path);
 
             if (crypt_mode) file.Encrypt(null);
             ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(dst_path..rel_path));
@@ -1165,9 +1165,9 @@ class IDEExport
 		}
         
 		// 生成AndroidManifest.xml文件
-		var file = new lua.__CPPAPILocalFile();
+		var file = new carp.CarpLocalFile();
 		file.SetPath(ALittle.File_BaseFilePath().."Export/Android/AndroidManifestTemplate.xml");
-		if (file.Load())
+		if (file.Load(false))
 		{
 			var content = file.GetContent();
 			content = ALittle.String_Replace(content, "abcd@package_name@abcd", package_info.install_info.package_name);
@@ -1470,9 +1470,9 @@ class IDEExport
 		}
 	
 		// 修改文件
-		var share_file = new lua.__CPPAPILocalFile();
+		var share_file = new carp.CarpLocalFile();
 		share_file.SetPath(package_info.export_path.."/ALittleClient.xcodeproj/project.pbxproj");
-		if (share_file.Load())
+		if (share_file.Load(false))
 		{
 			var content = share_file.GetContent();
 			content = ALittle.String_Replace(content, "abcd@package_name@abcd", package_info.install_info.package_name);
@@ -1480,9 +1480,9 @@ class IDEExport
 		}
 	
 		// 修改文件
-		share_file = new lua.__CPPAPILocalFile();
+		share_file = new carp.CarpLocalFile();
 		share_file.SetPath(package_info.export_path.."/ALittleClient/ALittleClient.entitlements");
-		if (share_file.Load())
+		if (share_file.Load(false))
 		{
 			var content = share_file.GetContent();
 			content = ALittle.String_Replace(content, "abcd@package_name@abcd", package_info.install_info.package_name);
@@ -1490,9 +1490,9 @@ class IDEExport
 		}
 	
 		// 修改文件
-		share_file = new lua.__CPPAPILocalFile();
+		share_file = new carp.CarpLocalFile();
 		share_file.SetPath(package_info.export_path.."/ALittleClient/Info.plist");
-		if (share_file.Load())
+		if (share_file.Load(false))
 		{
 			var content = share_file.GetContent();
 			content = ALittle.String_Replace(content, "abcd@version_number@abcd", package_info.version_info.version_number);
@@ -1548,9 +1548,9 @@ class IDEExport
 			ALittle.File_CopyFile(install_ico, package_info.project_path.."/Export/Web/favicon.ico");
 	
 		// 生成html
-		var file = new lua.__CPPAPILocalFile();
+		var file = new carp.CarpLocalFile();
 		file.SetPath(ALittle.File_BaseFilePath().."Export/Web/index.html");
-		if (file.Load())
+		if (file.Load(false))
 		{
 			var content = file.GetContent();
 			content = ALittle.String_Replace(content, "abcd@project_name@abcd", package_info.project_name);
@@ -1582,9 +1582,9 @@ class IDEExport
 			ALittle.File_CopyFile(install_ico, package_info.project_path.."/Export/WeChat/favicon.ico");
 	
 		// 生成game.js
-		var game_js = new lua.__CPPAPILocalFile();
+		var game_js = new carp.CarpLocalFile();
 		game_js.SetPath(ALittle.File_BaseFilePath().."Export/WeChat/game.js");
-		if (game_js.Load())
+		if (game_js.Load(false))
 		{
 			var content = game_js.GetContent();
 			content = ALittle.String_Replace(content, "abcd@project_name@abcd", package_info.project_name);
@@ -1598,9 +1598,9 @@ class IDEExport
 
 		
 		// 生成game.json
-		var game_json = new lua.__CPPAPILocalFile();
+		var game_json = new carp.CarpLocalFile();
 		game_json.SetPath(ALittle.File_BaseFilePath().."Export/WeChat/game.json");
-		if (game_json.Load())
+		if (game_json.Load(false))
 		{
 			var content = game_json.GetContent();
 
@@ -1614,9 +1614,9 @@ class IDEExport
 		
 		
 		// 生成game.json
-		var project_config_json = new lua.__CPPAPILocalFile();
+		var project_config_json = new carp.CarpLocalFile();
 		project_config_json.SetPath(ALittle.File_BaseFilePath().."Export/WeChat/project.config.json");
-		if (project_config_json.Load())
+		if (project_config_json.Load(false))
 		{
 			var content = project_config_json.GetContent();
 

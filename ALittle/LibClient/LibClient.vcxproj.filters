@@ -78,9 +78,6 @@
     <ClInclude Include="Helper\TextureHelper.h">
       <Filter>Helper</Filter>
     </ClInclude>
-    <ClInclude Include="Helper\FileHelperEx.h">
-      <Filter>Helper</Filter>
-    </ClInclude>
     <ClInclude Include="NetSystem\NetSystem.h">
       <Filter>NetSystem</Filter>
     </ClInclude>
@@ -182,9 +179,6 @@
     </ClInclude>
     <ClInclude Include="ThreadSystem\Task.h">
       <Filter>ThreadSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="Tool\LocalFile.h">
-      <Filter>Tool</Filter>
     </ClInclude>
     <ClInclude Include="Tool\CsvFile.h">
       <Filter>Tool</Filter>
@@ -297,6 +291,9 @@
     <ClInclude Include="ScriptSystem\ScriptSystem.h">
       <Filter>ScriptSystem</Filter>
     </ClInclude>
+    <ClInclude Include="Helper\FileHelperEx.h">
+      <Filter>Helper</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioSystem\AudioSystem.cpp">
@@ -309,9 +306,6 @@
       <Filter>Helper</Filter>
     </ClCompile>
     <ClCompile Include="Helper\TextureHelper.cpp">
-      <Filter>Helper</Filter>
-    </ClCompile>
-    <ClCompile Include="Helper\FileHelperEx.cpp">
       <Filter>Helper</Filter>
     </ClCompile>
     <ClCompile Include="Helper\InputHelper.cpp">
@@ -419,14 +413,14 @@
     <ClCompile Include="ThreadSystem\Thread.cpp">
       <Filter>ThreadSystem</Filter>
     </ClCompile>
-    <ClCompile Include="Tool\LocalFile.cpp">
-      <Filter>Tool</Filter>
-    </ClCompile>
     <ClCompile Include="Tool\CsvFile.cpp">
       <Filter>Tool</Filter>
     </ClCompile>
     <ClCompile Include="ScriptSystem\ScriptSystem.cpp">
       <Filter>ScriptSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Helper\FileHelperEx.cpp">
+      <Filter>Helper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -9,9 +9,9 @@ assert(ALittle.IFileLoader, " extends class:ALittle.IFileLoader is nil")
 ALittle.LuaClientFileLoader = Lua.Class(ALittle.IFileLoader, "ALittle.LuaClientFileLoader")
 
 function ALittle.LuaClientFileLoader:Load(file_path)
-	local file = __CPPAPILocalFile()
+	local file = carp.CarpLocalFile()
 	file:SetPath(file_path)
-	if not file:Load() then
+	if not file:Load(false) then
 		return nil
 	end
 	local content = file:GetContent()

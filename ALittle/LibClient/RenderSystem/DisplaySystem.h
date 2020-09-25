@@ -1,7 +1,6 @@
 
 #ifndef _ALITTLE_DISPLAYSYSTEM_H_
 #define _ALITTLE_DISPLAYSYSTEM_H_
-#include "ALittle/LibClient/Tool/LocalFile.h"
 
 class CarpFont;
 
@@ -10,6 +9,9 @@ class CarpFont;
 
 #include "DisplayObject/DisplayObject.h"
 #include "DisplayObject/DisplayObjects.h"
+
+class CarpLocalFile;
+#include <SDL.h>
 
 namespace ALittle
 {
@@ -123,7 +125,7 @@ private:
 	// font path map TTF_FontMap
 	typedef std::map<std::string, TTF_FontStyleMap> TTF_FontMap;
 	TTF_FontMap m_font_map;
-	std::map<std::string, LocalFile*> m_font_file_map;
+	std::map<std::string, CarpLocalFile*> m_font_file_map;
 
 private:
 	DisplaySystem();

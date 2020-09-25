@@ -26,20 +26,6 @@ void ScriptSystem::Setup()
 	CarpStringBind::Bind(m_L);
 	CarpBitBind::Bind(m_L);
 	CarpRWopsBind::Bind(m_L);
-
-	// register script system
-	luabridge::getGlobalNamespace(m_L)
-		.beginNamespace("carp")
-		.beginClass<ScriptSystem>("ScriptSystem")
-		.addFunction("Require", &ScriptSystem::Require)
-		.addFunction("RunScript", &ScriptSystem::RunScriptForLua)
-		.endClass()
-		.endNamespace();
-
-	luabridge::setGlobal(m_L, this, "__CPPAPI_ScriptSystem");
-
-	std::string require = "core_require = function(path) return __CPPAPI_ScriptSystem:Require(path) end";
-	RunScript(require.c_str(), require.size(), "ALittleBuild");
 }
 
 void ScriptSystem::Shutdown()

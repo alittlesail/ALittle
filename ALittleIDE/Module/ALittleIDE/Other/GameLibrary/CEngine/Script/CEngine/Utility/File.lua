@@ -14,11 +14,11 @@ function ALittle.File_ExternalFilePath()
 end
 
 function ALittle.File_CopyFile(src_path, dst_path)
-	return carp.CpFile(src_path, dst_path, false)
+	return carp.CopyFile(src_path, dst_path, false)
 end
 
 function ALittle.File_CopyFileFromAsset(src_path, dst_path)
-	return carp.CpFile(src_path, dst_path, true)
+	return carp.CopyFile(src_path, dst_path, true)
 end
 
 function ALittle.File_SaveFile(target_path, content, size)
@@ -58,9 +58,9 @@ end
 
 function ALittle.File_ReadTextFromFile(file_path, crypt_mode)
 	do
-		local file = __CPPAPILocalFile()
+		local file = carp.CarpLocalFile()
 		file:SetPath(file_path)
-		if file:Load() == false then
+		if file:Load(false) == false then
 			return nil
 		end
 		if crypt_mode then
@@ -78,9 +78,9 @@ end
 
 function ALittle.File_ReadJsonFromFile(file_path, crypt_mode)
 	do
-		local file = __CPPAPILocalFile()
+		local file = carp.CarpLocalFile()
 		file:SetPath(file_path)
-		if file:Load() == false then
+		if file:Load(false) == false then
 			return nil, file_path .. " load failed"
 		end
 		if crypt_mode then
@@ -98,9 +98,9 @@ end
 
 function ALittle.File_ReadJsonFromAsset(file_path, crypt_mode)
 	do
-		local file = __CPPAPILocalFile()
+		local file = carp.CarpLocalFile()
 		file:SetPath(file_path)
-		if file:LoadBySDL() == false then
+		if file:Load(true) == false then
 			return nil, file_path .. " load failed!"
 		end
 		if crypt_mode then

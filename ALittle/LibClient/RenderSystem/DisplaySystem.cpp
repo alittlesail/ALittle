@@ -6,12 +6,12 @@
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
 
 #include "ALittle/LibClient/Helper/TextureHelper.h"
-#include "ALittle/LibClient/Helper/FileHelperEx.h"
 #include "ALittle/LibClient/ScriptSystem/ScriptSystem.h"
 
 #define CARP_FONT_IMPL
 #include "Carp/carp_file.hpp"
 #include "Carp/carp_font.hpp"
+#include "Carp/carp_rwops.hpp"
 
 #include "DisplayObject/DisplayView.h"
 
@@ -651,13 +651,13 @@ SDL_Surface* DisplaySystem::CreateSurface(CarpFont* font, const char* content)
 
 CarpFont* DisplaySystem::LoadFont(const std::string& font_path, unsigned int font_size, unsigned int font_style)
 {
-	LocalFile* file = nullptr;
+	CarpLocalFile* file = nullptr;
 	auto it = m_font_file_map.find(font_path);
 	if (it == m_font_file_map.end())
 	{
-		file = new LocalFile();
+		file = new CarpLocalFile();
 		file->SetPath(font_path.c_str());
-		if (!file->Load())
+		if (!file->Load(false))
 		{
 			delete file;
 			return nullptr;

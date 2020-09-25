@@ -87,7 +87,6 @@
     <ClInclude Include="ThreadSystem\ThreadSystem.h" />
     <ClInclude Include="Tool\concurrentqueue.h" />
     <ClInclude Include="Tool\CsvFile.h" />
-    <ClInclude Include="Tool\LocalFile.h" />
     <ClInclude Include="Tool\MemoryPool.h" />
   </ItemGroup>
   <ItemGroup>
@@ -133,7 +132,6 @@
     <ClCompile Include="ThreadSystem\Thread.cpp" />
     <ClCompile Include="ThreadSystem\ThreadSystem.cpp" />
     <ClCompile Include="Tool\CsvFile.cpp" />
-    <ClCompile Include="Tool\LocalFile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Platform\iOS\iOSDelegate.mm" />

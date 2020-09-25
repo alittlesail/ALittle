@@ -25,14 +25,14 @@ public static File_ExternalFilePath() : string
 public static File_CopyFile(string src_path, string dst_path) : bool
 {
     [Language(Lua)]
-    return carp.CpFile(src_path, dst_path, false);
+    return carp.CopyFile(src_path, dst_path, false);
     [Language(JavaScript)]
     return JavaScript.File_CopyFile(src_path, dst_path);
 }
 public static File_CopyFileFromAsset(string src_path, string dst_path) : bool
 {
     [Language(Lua)]
-    return carp.CpFile(src_path, dst_path, true);
+    return carp.CopyFile(src_path, dst_path, true);
     [Language(JavaScript)]
     return JavaScript.File_CopyFile(src_path, dst_path);
 }
@@ -117,9 +117,9 @@ public static File_ReadTextFromFile(string file_path, [Nullable] bool crypt_mode
     // 读取文件
     [Language(Lua)]
     {
-        var file = new lua.__CPPAPILocalFile();
+        var file = new carp.CarpLocalFile();
         file.SetPath(file_path);
-        if (file.Load() == false) return null;
+        if (file.Load(false) == false) return null;
         if (crypt_mode) file.Decrypt(null);
         var content = file.GetContent();
         file.Clear();
@@ -149,9 +149,9 @@ public static File_ReadJsonFromFile(string file_path, [Nullable] bool crypt_mode
     // 读取文件
     [Language(Lua)]
     {
-        var file = new lua.__CPPAPILocalFile();
+        var file = new carp.CarpLocalFile();
         file.SetPath(file_path);
-        if (file.Load() == false) return null, file_path.." load failed";
+        if (file.Load(false) == false) return null, file_path.." load failed";
         if (crypt_mode) file.Decrypt(null);
     
         var content = file.GetContent();
@@ -173,9 +173,9 @@ public static File_ReadJsonFromAsset(string file_path, bool crypt_mode) : any, s
     // 读取文件
     [Language(Lua)]
     {
-        var file = new lua.__CPPAPILocalFile();
+        var file = new carp.CarpLocalFile();
         file.SetPath(file_path);
-        if (file.LoadBySDL() == false) return null, file_path.." load failed!";
+        if (file.Load(true) == false) return null, file_path.." load failed!";
         if (crypt_mode) file.Decrypt(null);
     
         var content = file.GetContent();

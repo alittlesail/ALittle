@@ -7,9 +7,9 @@
 #include "ALittle/LibClient/ScheduleSystem/EventDefine.h"
 #include "ALittle/LibClient/ThreadSystem/ThreadSystem.h"
 #include "ALittle/LibClient/Helper/TextureHelper.h"
-#include "ALittle/LibClient/Helper/FileHelperEx.h"
 #include "Carp/carp_crypto.hpp"
 #include "Carp/carp_string.hpp"
+#include "Carp/carp_rwops.hpp"
 
 namespace ALittle
 {
@@ -54,7 +54,7 @@ void TextureLoader::Execute()
 		int h = std::atoi(atlas_info[6].c_str());
 
 		std::vector<char> file_content;
-		if (!FileHelperEx::LoadFile(file_path, false, file_content))
+		if (!CarpRWops::LoadFile(file_path, false, file_content))
 		{
 			if (surface) SDL_FreeSurface(surface);
 			CARP_ERROR("LocalFile load failed, " << file_path);

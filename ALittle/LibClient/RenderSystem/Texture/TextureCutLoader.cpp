@@ -5,11 +5,12 @@
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
 #include "ALittle/LibClient/ScheduleSystem/EventDefine.h"
 #include "ALittle/LibClient/ThreadSystem/ThreadSystem.h"
-#include "ALittle/LibClient/Tool/LocalFile.h"
 #include "ALittle/LibClient/ScriptSystem/ScriptSystem.h"
 #include "ALittle/LibClient/Helper/TextureHelper.h"
 
 #include "ALittle/LibClient/Platform/iOS/iOSSystem.h"
+
+#include "Carp/carp_rwops.hpp"
 
 namespace ALittle
 {
@@ -32,14 +33,14 @@ void TextureCutLoader::Execute()
     SDL_Surface* surface = 0;
 
 	// load for local file
-	LocalFile local_file;
+	CarpLocalFile local_file;
 #ifdef __IPHONEOS__
     surface = iOS_GetPhoto(m_file_path.c_str());
 	if (surface == 0)
 	{
 #endif
 		local_file.SetPath(m_file_path.c_str());
-		if (local_file.Load() == false)
+		if (local_file.Load(false) == false)
 		{
 			CARP_ERROR("LocalFile load failed, " << m_file_path);
 			g_ScheduleSystem.PushUserEvent(TEXTURECUT_LOAD_FAILED, this);

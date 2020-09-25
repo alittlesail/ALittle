@@ -31,6 +31,8 @@
 #include "Texture/TextureLoader.h"
 #include "Texture/TextureCutLoader.h"
 
+#include "Carp/carp_rwops.hpp"
+
 namespace ALittle
 {
 
@@ -572,17 +574,17 @@ CarpFont* DisplaySystem::GetFont(const char* font_path, unsigned int font_style,
 // special in android
 #if (defined __ANDROID__) || (defined __IPHONEOS__)
 	// chcke font is already in internal storage
-	std::string internal_full_path = FileHelperEx::BaseFilePath();
+	std::string internal_full_path = CarpRWops::BaseFilePath();
 	internal_full_path.append(font_full_path);
 	// if not exist then copy
 	if (FileHelper::IsFileExist(internal_full_path) == false)
 	{
 		// create deep directory
-		std::string internal_path = FileHelperEx::BaseFilePath();
+		std::string internal_path = CarpRWops::BaseFilePath();
 		internal_path.append(font_just_path);
 		FileHelper::CreateDeepFolder(internal_path);
 
-		FileHelperEx::CpFile(font_full_path.c_str(), internal_full_path.c_str(), true);
+		CarpRWops::CopyFile(font_full_path.c_str(), internal_full_path.c_str(), true);
 	}
 
 	CarpFont* font = LoadFont(internal_full_path, font_size, font_style);

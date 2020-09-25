@@ -291,9 +291,6 @@
     <ClInclude Include="ScriptSystem\ScriptSystem.h">
       <Filter>ScriptSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Helper\FileHelperEx.h">
-      <Filter>Helper</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioSystem\AudioSystem.cpp">
@@ -418,9 +415,6 @@
     </ClCompile>
     <ClCompile Include="ScriptSystem\ScriptSystem.cpp">
       <Filter>ScriptSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="Helper\FileHelperEx.cpp">
-      <Filter>Helper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

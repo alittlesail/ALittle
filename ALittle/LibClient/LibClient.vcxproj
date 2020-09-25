@@ -45,7 +45,6 @@
     <ClInclude Include="..\..\Carp\carp_timer_bind.hpp" />
     <ClInclude Include="..\..\Carp\carp_win_ime.h" />
     <ClInclude Include="AudioSystem\AudioSystem.h" />
-    <ClInclude Include="Helper\FileHelperEx.h" />
     <ClInclude Include="Helper\InputHelper.h" />
     <ClInclude Include="Helper\NetHelper.h" />
     <ClInclude Include="Helper\SystemHelper.h" />
@@ -91,7 +90,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioSystem\AudioSystem.cpp" />
-    <ClCompile Include="Helper\FileHelperEx.cpp" />
     <ClCompile Include="Helper\InputHelper.cpp" />
     <ClCompile Include="Helper\NetHelper.cpp" />
     <ClCompile Include="Helper\SystemHelper.cpp" />

@@ -1,0 +1,11 @@
+
+register namespace carp;
+
+public static FileMd5(string file_path) : string {}
+public static CpFile(string src_path, string dst_path, bool only_assets) : bool {}
+
+// size <= 0 表示全部保存
+public static SaveFile(string target_path, string content, int size) : bool {}
+
+public static BaseFilePath() : string {}
+public static ExternalFilePath() : string {}

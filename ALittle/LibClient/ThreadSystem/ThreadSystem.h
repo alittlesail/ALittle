@@ -12,7 +12,7 @@ namespace ALittle
 {
 
 class Task;
-class ScriptSystemEx;
+class ScriptSystem;
 
 class ThreadSystem
 {
@@ -24,7 +24,7 @@ public:
 public:
 	void Setup();
 	void Shutdown();
-	void RegisterToScript(ScriptSystemEx& script_system);
+	void RegisterToScript(ScriptSystem& script_system);
 
 public:
 	/**

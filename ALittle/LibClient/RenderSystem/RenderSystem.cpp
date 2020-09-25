@@ -7,7 +7,7 @@
 
 #include "DisplaySystem.h"
 
-#include "ALittle/LibClient/ScriptSystem/ScriptSystemEx.h"
+#include "ALittle/LibClient/ScriptSystem/ScriptSystem.h"
 #include "ALittle/LibClient/Platform/iOS/iOSSystem.h"
 #include "ALittle/LibClient/Helper/FileHelperEx.h"
 #include "ALittle/LibClient/Helper/TextureHelper.h"
@@ -571,7 +571,7 @@ void RenderSystem::DestroyTextureList()
 #endif
 }
 
-void RenderSystem::RegisterToScript(ScriptSystemEx& script_system)
+void RenderSystem::RegisterToScript(ScriptSystem& script_system)
 {
 	g_DisplaySystem.RegisterToScript(script_system);
 

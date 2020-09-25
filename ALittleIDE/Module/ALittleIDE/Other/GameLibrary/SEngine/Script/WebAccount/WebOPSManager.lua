@@ -103,7 +103,7 @@ function ALittle.HandleQVersionCreateAccount(client, msg)
 	local base_info = {}
 	base_info.account_id = ALittle.String_GenerateID("account_id")
 	base_info.account_name = msg.account_name
-	base_info.account_pwd = ALittle.String_MD5("ALittle" .. ALittle.String_MD5(msg.account_pwd) .. "ALittle")
+	base_info.account_pwd = ALittle.String_Md5("ALittle" .. ALittle.String_Md5(msg.account_pwd) .. "ALittle")
 	local time, index = ALittle.NewTimeAndIndex()
 	base_info.create_time = time
 	base_info.create_index = index
@@ -142,7 +142,7 @@ function ALittle.HandleQVersionSetAccountPwd(client, msg)
 		Lua.Throw("数据库操作失败:" .. error)
 	end
 	Lua.Assert(base_info ~= nil, "账号不存在")
-	local password = ALittle.String_MD5("ALittle" .. ALittle.String_MD5(msg.account_pwd) .. "ALittle")
+	local password = ALittle.String_Md5("ALittle" .. ALittle.String_Md5(msg.account_pwd) .. "ALittle")
 	error = A_MysqlSystem:UpdateSet(___all_struct[-192825113], "account_pwd", password, "account_id", msg.account_id)
 	if error ~= nil then
 		Lua.Throw("数据库操作失败:" .. error)

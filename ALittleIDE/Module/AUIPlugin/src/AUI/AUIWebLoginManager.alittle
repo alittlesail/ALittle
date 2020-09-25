@@ -203,7 +203,7 @@ public class AUIWebLoginManager : ALittle.EventDispatcher
 	
 		this._account_name = this._login_account.text;
 		if (this._login_password.text != "")
-			this._account_pwd = ALittle.String_MD5(this._login_password.text);
+			this._account_pwd = ALittle.String_Md5(this._login_password.text);
 
 		this._save_password = this._save_password_check.selected;
 		this._auto_login = this._auto_login_check.selected;
@@ -307,8 +307,8 @@ public class AUIWebLoginManager : ALittle.EventDispatcher
 		}
 		this._change_pas_confirm.disabled = true;
 		var param = new ALittle.QWebChangePassword();
-		param.old_password = ALittle.String_MD5(old_password);
-		param.new_password = ALittle.String_MD5(new_password);
+		param.old_password = ALittle.String_Md5(old_password);
+		param.new_password = ALittle.String_Md5(new_password);
 		var error, result = ALittle.HandleQWebChangePassword(this._msg_client, param);
 		this._change_pas_confirm.disabled = false;
 		if (this._change_pas_confirm != null)

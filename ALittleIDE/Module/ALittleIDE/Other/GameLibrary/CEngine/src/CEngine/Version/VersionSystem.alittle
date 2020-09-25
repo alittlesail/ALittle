@@ -576,10 +576,10 @@ public class VersionSystem
                     this._total_update_size = this._total_update_size + v.c_file_size;
 
                 // 之前如果有下载，并且没有下载完成，就检查一下下载进度，从上次结束的点继续下载
-                var new_md5 = __CPPAPI_ScriptSystemEx.FileMD5(File_BaseFilePath() .. this._update_path .. this._new_in_version);
+                var new_md5 = File_Md5(File_BaseFilePath() .. this._update_path .. this._new_in_version);
                 var tmp_md5:string = null;
                 if (File_GetFileAttr(File_BaseFilePath() .. this._update_path .. this._tmp_in_version) != null)
-                    tmp_md5 = __CPPAPI_ScriptSystemEx.FileMD5(File_BaseFilePath() .. this._update_path .. this._tmp_in_version);
+                    tmp_md5 = File_Md5(File_BaseFilePath() .. this._update_path .. this._tmp_in_version);
                 if (new_md5 == tmp_md5)
                 {
                     // 把已经下载好的移除列表，下载到一半的标记大小

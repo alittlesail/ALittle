@@ -6,7 +6,7 @@
 #include "ALittle/LibClient/ScheduleSystem/EventDefine.h"
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
 #include "ALittle/LibClient/Helper/FileHelperEx.h"
-#include "ALittle/LibClient/ScriptSystem/ScriptSystemEx.h"
+#include "ALittle/LibClient/ScriptSystem/ScriptSystem.h"
 #include "ALittle/LibClient/Tool/MemoryPool.h"
 #include "ALittle/LibClient/Tool/LocalFile.h"
 
@@ -63,7 +63,7 @@ void AudioSystem::Shutdown()
 }
 
 //=========================================================================
-void AudioSystem::RegisterToScript(ScriptSystemEx& script_system)
+void AudioSystem::RegisterToScript(ScriptSystem& script_system)
 {
 	lua_State* l = script_system.GetLuaState();
 

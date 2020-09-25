@@ -2,7 +2,7 @@
 #include "TextureLoader.h"
 #include "SurfaceTexture.h"
 
-#include "ALittle/LibClient/ScriptSystem/ScriptSystemEx.h"
+#include "ALittle/LibClient/ScriptSystem/ScriptSystem.h"
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
 #include "ALittle/LibClient/ScheduleSystem/EventDefine.h"
 #include "ALittle/LibClient/ThreadSystem/ThreadSystem.h"

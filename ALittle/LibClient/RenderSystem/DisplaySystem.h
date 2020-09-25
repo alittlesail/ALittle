@@ -15,7 +15,7 @@ namespace ALittle
 {
 
 class Texture;
-class ScriptSystemEx;
+class ScriptSystem;
 
 class DisplaySystem
 {
@@ -25,7 +25,7 @@ public:
 public:
 	void Setup();
 	void Shutdown();
-	void RegisterToScript(ScriptSystemEx& script_system);
+	void RegisterToScript(ScriptSystem& script_system);
 
 public:
 	void Render();

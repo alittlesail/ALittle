@@ -10,7 +10,7 @@
 #include "ALittle/LibClient/RenderSystem/DisplaySystem.h"
 #include "ALittle/LibClient/AudioSystem/AudioSystem.h"
 #include "ALittle/LibClient/NetSystem/NetSystem.h"
-#include "ALittle/LibClient/ScriptSystem/ScriptSystemEx.h"
+#include "ALittle/LibClient/ScriptSystem/ScriptSystem.h"
 #include "ALittle/LibClient/Helper/FileHelperEx.h"
 #include "ALittle/LibClient/Helper/InputHelper.h"
 
@@ -489,7 +489,7 @@ void ScheduleSystem::PushConsoleHelp()
 
 //===============================================================
 
-void ScheduleSystem::RegisterToScript(ScriptSystemEx& script_system)
+void ScheduleSystem::RegisterToScript(ScriptSystem& script_system)
 {
 	lua_State* L = script_system.GetLuaState();
 

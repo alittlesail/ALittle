@@ -1,5 +1,5 @@
 
-#include "ScriptSystemEx.h"
+#include "ScriptSystem.h"
 
 #include "ALittle/LibClient/Helper/FileHelperEx.h"
 #include "ALittle/LibClient/Helper/TextureHelper.h"
@@ -11,6 +11,7 @@
 #include "ALittle/LibClient/Tool/CsvFile.h"
 #include "ALittle/LibClient/ScheduleSystem/EventDefine.h"
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
+#include "Carp/carp_rwops_bind.hpp"
 
 extern "C" {
 #include "ALittle/LibCommon/ThirdParty/json/lua_cjson.h"
@@ -34,13 +35,13 @@ extern "C" {
 namespace ALittle
 {
 
-ScriptSystemEx& ScriptSystemEx::Instance()
+ScriptSystem& ScriptSystem::Instance()
 {
-	static ScriptSystemEx instance;
+	static ScriptSystem instance;
 	return instance;
 }
 
-void ScriptSystemEx::Setup()
+void ScriptSystem::Setup()
 {
 	Init();
 	luaopen_json(m_L); lua_settop(m_L, 0);
@@ -55,20 +56,18 @@ void ScriptSystemEx::Setup()
 	CarpFileBind::Bind(m_L);
 	CarpStringBind::Bind(m_L);
 	CarpBitBind::Bind(m_L);
+	CarpRWopsBind::Bind(m_L);
 
 	// register script system
 	luabridge::getGlobalNamespace(m_L)
-		.beginClass<ScriptSystemEx>("__CPPAPIScriptSystemEx")
-		.addFunction("Require", &ScriptSystemEx::Require)
-		.addFunction("RunScript", &ScriptSystemEx::RunScriptForLua)
-		.addFunction("FileMD5", &ScriptSystemEx::FileMD5)
-		.addFunction("BaseFilePath", &ScriptSystemEx::BaseFilePath)
-		.addFunction("ExternalFilePath", &ScriptSystemEx::ExternalFilePath)
+		.beginClass<ScriptSystem>("__CPPAPIScriptSystem")
+		.addFunction("Require", &ScriptSystem::Require)
+		.addFunction("RunScript", &ScriptSystem::RunScriptForLua)
 		.endClass();
 
-	luabridge::setGlobal(m_L, this, "__CPPAPI_ScriptSystemEx");
+	luabridge::setGlobal(m_L, this, "__CPPAPI_ScriptSystem");
 
-	std::string require = "core_require = function(path) return __CPPAPI_ScriptSystemEx:Require(path) end";
+	std::string require = "core_require = function(path) return __CPPAPI_ScriptSystem:Require(path) end";
 	RunScript(require.c_str(), require.size(), "ALittleBuild");
 
 	luabridge::getGlobalNamespace(m_L)
@@ -201,7 +200,7 @@ void ScriptSystemEx::Setup()
 		;
 }
 
-void ScriptSystemEx::Shutdown()
+void ScriptSystem::Shutdown()
 {
 	g_ScriptSystem.Invoke("__ALITTLEAPI_ShutdownMainModule");
 	Release();
@@ -209,16 +208,16 @@ void ScriptSystemEx::Shutdown()
 	m_script_set.clear();
 }
 
-ScriptSystemEx::ScriptSystemEx()
+ScriptSystem::ScriptSystem()
 {
 }
 
-ScriptSystemEx::~ScriptSystemEx()
+ScriptSystem::~ScriptSystem()
 {
 	Shutdown();
 }
 
-void ScriptSystemEx::StartScript(std::string module_name, const std::string& debug_info)
+void ScriptSystem::StartScript(std::string module_name, const std::string& debug_info)
 {
 	std::string base_path;
 	if (module_name.empty())
@@ -269,12 +268,12 @@ void ScriptSystemEx::StartScript(std::string module_name, const std::string& deb
 	g_ScriptSystem.Invoke("__ALITTLEAPI_SetupMainModule", base_path.c_str(), module_name.c_str(), debug_info.c_str());
 }
 
-bool ScriptSystemEx::LoadFile(const char* file_path, std::vector<char>& content)
+bool ScriptSystem::LoadFile(const char* file_path, std::vector<char>& content)
 {
 	return FileHelperEx::LoadFile(file_path, false, content);
 }
 
-const char* ScriptSystemEx::FileMD5(const char* value)
+const char* ScriptSystem::FileMD5(const char* value)
 {
 	m_string = "";
 	if (value == nullptr) return m_string.c_str();
@@ -282,13 +281,13 @@ const char* ScriptSystemEx::FileMD5(const char* value)
 	return m_string.c_str();
 }
 
-const char* ScriptSystemEx::BaseFilePath()
+const char* ScriptSystem::BaseFilePath()
 {
 	m_string = FileHelperEx::BaseFilePath();
 	return m_string.c_str();
 }
 
-const char* ScriptSystemEx::ExternalFilePath()
+const char* ScriptSystem::ExternalFilePath()
 {
 	m_string = FileHelperEx::ExternalFilePath();
 	return m_string.c_str();

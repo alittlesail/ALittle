@@ -173,7 +173,7 @@ function ALittleIDE.IDEExport:PackagePath(src_path, dst_path, file_type, crypt_m
 		file:Save(dst_path .. rel_path)
 		local new_attr = {}
 		new_attr.attr = attr
-		new_attr.md5 = __CPPAPI_ScriptSystemEx:FileMD5(dst_path .. rel_path)
+		new_attr.md5 = ALittle.File_Md5(dst_path .. rel_path)
 		new_attr.file_type = file_type
 		new_attr.file_path = file_type .. rel_path
 		out_file_map[file_path] = new_attr
@@ -844,7 +844,7 @@ function ALittleIDE.IDEExport:GenerateExe(package_info)
 	template = ALittle.String_Replace(template, "VERSION_NUMBER", package_info.version_info.version_number)
 	local install_name_gbk = package_info.install_info.install_name
 	template = ALittle.String_Replace(template, "INSTALL_NAME", install_name_gbk)
-	local guid = ALittle.String_MD5(package_info.project_name .. "-" .. package_info.install_info.install_name)
+	local guid = ALittle.String_Md5(package_info.project_name .. "-" .. package_info.install_info.install_name)
 	guid = ALittle.String_Upper(guid)
 	guid = ALittle.String_Sub(guid, 1, 8) .. "-" .. ALittle.String_Sub(guid, 9, 13) .. "-" .. ALittle.String_Sub(guid, 14, 18) .. "-" .. ALittle.String_Sub(guid, 19, 23) .. "-" .. ALittle.String_Sub(guid, 24, 32)
 	template = ALittle.String_Replace(template, "INSTALL_GUID", guid)

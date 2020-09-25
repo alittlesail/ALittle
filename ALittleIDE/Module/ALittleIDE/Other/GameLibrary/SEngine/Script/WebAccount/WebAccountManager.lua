@@ -102,9 +102,9 @@ function ALittle.WebAccountManager:Setup()
 	end
 	if count == 0 then
 		local base_info = {}
-		base_info.account_id = ALittle.String_MD5("alittle")
+		base_info.account_id = ALittle.String_Md5("alittle")
 		base_info.account_name = "alittle"
-		base_info.account_pwd = ALittle.String_MD5("ALittle" .. ALittle.String_MD5("alittle") .. "ALittle")
+		base_info.account_pwd = ALittle.String_Md5("ALittle" .. ALittle.String_Md5("alittle") .. "ALittle")
 		base_info.role_id = "alittle"
 		local time, index = ALittle.NewTimeAndIndex()
 		base_info.create_time = time
@@ -199,7 +199,7 @@ function ALittle.HandleQWebLogin(client, msg)
 		Lua.Throw("数据库操作失败:" .. error)
 	end
 	Lua.Assert(base_info ~= nil, "账号或密码错误")
-	Lua.Assert(base_info.account_pwd == ALittle.String_MD5("ALittle" .. msg.account_pwd .. "ALittle"), "账号或密码错误")
+	Lua.Assert(base_info.account_pwd == ALittle.String_Md5("ALittle" .. msg.account_pwd .. "ALittle"), "账号或密码错误")
 	local role_info = nil
 	error, role_info = A_MysqlSystem:SelectOneFromByKey(___all_struct[-699725823], "role_id", base_info.role_id)
 	if error ~= nil then
@@ -253,8 +253,8 @@ function ALittle.HandleQWebChangePassword(client, msg)
 		Lua.Throw("数据库操作失败:" .. error)
 	end
 	Lua.Assert(base_info ~= nil, "账号不存在")
-	Lua.Assert(ALittle.String_MD5("ALittle" .. msg.old_password .. "ALittle") == base_info.account_pwd, "原密码错误")
-	local new_password = ALittle.String_MD5("ALittle" .. msg.new_password .. "ALittle")
+	Lua.Assert(ALittle.String_Md5("ALittle" .. msg.old_password .. "ALittle") == base_info.account_pwd, "原密码错误")
+	local new_password = ALittle.String_Md5("ALittle" .. msg.new_password .. "ALittle")
 	error = A_MysqlSystem:UpdateSet(___all_struct[-192825113], "account_pwd", new_password, "account_id", base_info.account_id)
 	if error ~= nil then
 		Lua.Throw("数据库操作失败:" .. error)

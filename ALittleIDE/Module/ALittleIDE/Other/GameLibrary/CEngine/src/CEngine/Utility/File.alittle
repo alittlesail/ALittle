@@ -5,7 +5,7 @@ namespace ALittle;
 public static File_BaseFilePath() : string
 {
     [Language(Lua)]
-    return __CPPAPI_ScriptSystemEx.BaseFilePath();
+    return carp.BaseFilePath();
     [Language(JavaScript)]
     return "";
 }
@@ -14,7 +14,7 @@ public static File_BaseFilePath() : string
 public static File_ExternalFilePath() : string
 {
     [Language(Lua)]
-    return __CPPAPI_ScriptSystemEx.ExternalFilePath();
+    return carp.ExternalFilePath();
     [Language(JavaScript)]
     return "";
 }
@@ -25,14 +25,14 @@ public static File_ExternalFilePath() : string
 public static File_CopyFile(string src_path, string dst_path) : bool
 {
     [Language(Lua)]
-    return lua.__CPPAPI_CopyFile(src_path, dst_path, false);
+    return carp.CpFile(src_path, dst_path, false);
     [Language(JavaScript)]
     return JavaScript.File_CopyFile(src_path, dst_path);
 }
 public static File_CopyFileFromAsset(string src_path, string dst_path) : bool
 {
     [Language(Lua)]
-    return lua.__CPPAPI_CopyFile(src_path, dst_path, true);
+    return carp.CpFile(src_path, dst_path, true);
     [Language(JavaScript)]
     return JavaScript.File_CopyFile(src_path, dst_path);
 }
@@ -44,16 +44,16 @@ public static File_CopyFileFromAsset(string src_path, string dst_path) : bool
 public static File_SaveFile(string target_path, string content, int size) : bool
 {
     [Language(Lua)]
-    return lua.__CPPAPI_SaveFile(target_path, content, size);
+    return carp.SaveFile(target_path, content, size);
     [Language(JavaScript)]
     return JavaScript.File_SaveFile(target_path, content, null);
 }
 
 // 文件MD5
-public static File_MD5(string path) : string
+public static File_Md5(string path) : string
 {
     [Language(Lua)]
-    return __CPPAPI_ScriptSystemEx.FileMD5(path);
+    return carp.FileMd5(path);
 
     [Language(JavaScript)]
     var content = JavaScript.File_LoadFile(path);

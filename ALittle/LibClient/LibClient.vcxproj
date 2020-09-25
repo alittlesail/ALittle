@@ -32,6 +32,8 @@
     <ClInclude Include="..\..\Carp\carp_connect_client.hpp" />
     <ClInclude Include="..\..\Carp\carp_mysql.hpp" />
     <ClInclude Include="..\..\Carp\carp_rwops.h" />
+    <ClInclude Include="..\..\Carp\carp_rwops.hpp" />
+    <ClInclude Include="..\..\Carp\carp_rwops_bind.hpp" />
     <ClInclude Include="..\..\Carp\carp_safe_id_creator.hpp" />
     <ClInclude Include="..\..\Carp\carp_schedule.hpp" />
     <ClInclude Include="..\..\Carp\carp_script.hpp" />
@@ -79,7 +81,7 @@
     <ClInclude Include="RenderSystem\Text\Text.h" />
     <ClInclude Include="ScheduleSystem\EventDefine.h" />
     <ClInclude Include="ScheduleSystem\ScheduleSystem.h" />
-    <ClInclude Include="ScriptSystem\ScriptSystemEx.h" />
+    <ClInclude Include="ScriptSystem\ScriptSystem.h" />
     <ClInclude Include="ThreadSystem\Task.h" />
     <ClInclude Include="ThreadSystem\Thread.h" />
     <ClInclude Include="ThreadSystem\ThreadSystem.h" />
@@ -127,7 +129,7 @@
     <ClCompile Include="RenderSystem\Texture\TextureLoader.cpp" />
     <ClCompile Include="RenderSystem\Text\Text.cpp" />
     <ClCompile Include="ScheduleSystem\ScheduleSystem.cpp" />
-    <ClCompile Include="ScriptSystem\ScriptSystemEx.cpp" />
+    <ClCompile Include="ScriptSystem\ScriptSystem.cpp" />
     <ClCompile Include="ThreadSystem\Thread.cpp" />
     <ClCompile Include="ThreadSystem\ThreadSystem.cpp" />
     <ClCompile Include="Tool\CsvFile.cpp" />

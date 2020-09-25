@@ -80,9 +80,9 @@ public class WebAccountManager
         if (count == 0)
         {
             var base_info = new WebBaseInfo();
-            base_info.account_id = String_MD5("alittle");
+            base_info.account_id = String_Md5("alittle");
             base_info.account_name = "alittle";
-            base_info.account_pwd = String_MD5("ALittle"..String_MD5("alittle").."ALittle");
+            base_info.account_pwd = String_Md5("ALittle"..String_Md5("alittle").."ALittle");
             base_info.role_id = "alittle";
             var time, index = NewTimeAndIndex();
             base_info.create_time = time;
@@ -227,7 +227,7 @@ public await static HandleQWebLogin(IMsgCommon client, QWebLogin msg) : AWebLogi
     assert(base_info != null, "账号或密码错误");
     
     // 检查密码
-    assert(base_info.account_pwd == String_MD5("ALittle"..msg.account_pwd.."ALittle"), "账号或密码错误");
+    assert(base_info.account_pwd == String_Md5("ALittle"..msg.account_pwd.."ALittle"), "账号或密码错误");
     
     // 检查角色是否存在
     var role_info:WebRoleInfo = null;
@@ -320,8 +320,8 @@ public await static HandleQWebChangePassword(IMsgCommon client, QWebChangePasswo
     if (error != null) throw("数据库操作失败:"..error);
     assert(base_info != null, "账号不存在");
     // 检查密码
-    assert(String_MD5("ALittle"..msg.old_password.."ALittle") == base_info.account_pwd, "原密码错误");
-    var new_password = String_MD5("ALittle"..msg.new_password.."ALittle");
+    assert(String_Md5("ALittle"..msg.old_password.."ALittle") == base_info.account_pwd, "原密码错误");
+    var new_password = String_Md5("ALittle"..msg.new_password.."ALittle");
     error = A_MysqlSystem.UpdateSet{WebBaseInfo}("account_pwd", new_password,
                                 "account_id", base_info.account_id);
     if (error != null) throw("数据库操作失败:"..error);

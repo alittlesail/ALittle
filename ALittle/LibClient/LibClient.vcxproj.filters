@@ -174,9 +174,6 @@
     <ClInclude Include="ScheduleSystem\EventDefine.h">
       <Filter>ScheduleSystem</Filter>
     </ClInclude>
-    <ClInclude Include="ScriptSystem\ScriptSystemEx.h">
-      <Filter>ScriptSystem</Filter>
-    </ClInclude>
     <ClInclude Include="ThreadSystem\Thread.h">
       <Filter>ThreadSystem</Filter>
     </ClInclude>
@@ -290,6 +287,15 @@
     </ClInclude>
     <ClInclude Include="..\..\Carp\carp_rwops.h">
       <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_rwops_bind.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_rwops.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptSystem\ScriptSystem.h">
+      <Filter>ScriptSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -407,9 +413,6 @@
     <ClCompile Include="ScheduleSystem\ScheduleSystem.cpp">
       <Filter>ScheduleSystem</Filter>
     </ClCompile>
-    <ClCompile Include="ScriptSystem\ScriptSystemEx.cpp">
-      <Filter>ScriptSystem</Filter>
-    </ClCompile>
     <ClCompile Include="ThreadSystem\ThreadSystem.cpp">
       <Filter>ThreadSystem</Filter>
     </ClCompile>
@@ -421,6 +424,9 @@
     </ClCompile>
     <ClCompile Include="Tool\CsvFile.cpp">
       <Filter>Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptSystem\ScriptSystem.cpp">
+      <Filter>ScriptSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

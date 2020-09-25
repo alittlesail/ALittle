@@ -231,7 +231,7 @@ class IDEExport
 
             var new_attr = new IDEExportFileAttr();
             new_attr.attr = attr;
-            new_attr.md5 = __CPPAPI_ScriptSystemEx.FileMD5(dst_path..rel_path);
+            new_attr.md5 = ALittle.File_Md5(dst_path..rel_path);
             new_attr.file_type = file_type;
             new_attr.file_path = file_type..rel_path;
             out_file_map[file_path] = new_attr;
@@ -1122,7 +1122,7 @@ class IDEExport
 		template = ALittle.String_Replace(template, "INSTALL_NAME", install_name_gbk);
 		
 		// 替换安装唯一ID
-		var guid = ALittle.String_MD5(package_info.project_name.."-"..package_info.install_info.install_name);
+		var guid = ALittle.String_Md5(package_info.project_name.."-"..package_info.install_info.install_name);
 		guid = ALittle.String_Upper(guid);
 		guid = ALittle.String_Sub(guid, 1, 8).."-"..ALittle.String_Sub(guid, 9, 13).."-"..ALittle.String_Sub(guid, 14, 18).."-"..ALittle.String_Sub(guid, 19, 23).."-"..ALittle.String_Sub(guid, 24, 32);
 		template = ALittle.String_Replace(template, "INSTALL_GUID", guid);

@@ -28,7 +28,7 @@ public await static HandleQVersionCreateAccount(IMsgCommon client, QVersionCreat
     var base_info = new WebBaseInfo();
     base_info.account_id = String_GenerateID("account_id");
     base_info.account_name = msg.account_name;
-    base_info.account_pwd = String_MD5("ALittle"..String_MD5(msg.account_pwd).."ALittle");
+    base_info.account_pwd = String_Md5("ALittle"..String_Md5(msg.account_pwd).."ALittle");
     var time, index = NewTimeAndIndex();
     base_info.create_time = time;
     base_info.create_index = index;
@@ -89,7 +89,7 @@ public await static HandleQVersionSetAccountPwd(IMsgCommon client, QVersionSetAc
     if (error != null) throw("数据库操作失败:"..error);
     assert(base_info != null, "账号不存在");
 
-    var password = String_MD5("ALittle"..String_MD5(msg.account_pwd).."ALittle");
+    var password = String_Md5("ALittle"..String_Md5(msg.account_pwd).."ALittle");
     error = A_MysqlSystem.UpdateSet{WebBaseInfo}("account_pwd", password,
                                 "account_id", msg.account_id);
     if (error != null) throw("数据库操作失败:"..error);

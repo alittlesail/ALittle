@@ -8,10 +8,10 @@
 namespace ALittle
 {
 
-class ScriptSystemEx : public CarpScript
+class ScriptSystem : public CarpScript
 {
 public:
-	static ScriptSystemEx& Instance();
+	static ScriptSystem& Instance();
 
 public:
 	void Setup();
@@ -35,8 +35,8 @@ protected:
 	virtual bool LoadFile(const char* file_path, std::vector<char>& content) override;
 
 private:
-	ScriptSystemEx();
-	~ScriptSystemEx();
+	ScriptSystem();
+	~ScriptSystem();
 
 private:
 	std::string m_string;
@@ -44,6 +44,6 @@ private:
 
 } // ALittle
 
-#define g_ScriptSystem	ALittle::ScriptSystemEx::Instance()
+#define g_ScriptSystem	ALittle::ScriptSystem::Instance()
 
 #endif // _ALITTLE_SCRIPTSYSTEMEX_H_

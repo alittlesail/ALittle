@@ -15,13 +15,13 @@ option_map = {}
 ALittle.RegStruct(-1221484301, "ALittle.ClientConnectEvent", {
 name = "ALittle.ClientConnectEvent", ns_name = "ALittle", rl_name = "ClientConnectEvent", hash_code = -1221484301,
 name_list = {"target","msg_receiver"},
-type_list = {"ALittle.EventDispatcher","ALittle.MsgReceiverTemplate<ALittle.MsgReceiverNative,lua.__CPPAPIMessageWriteFactory>"},
+type_list = {"ALittle.EventDispatcher","ALittle.MsgReceiverTemplate<ALittle.MsgReceiverNative,carp.CarpMessageWriteFactory>"},
 option_map = {}
 })
 ALittle.RegStruct(-245025090, "ALittle.ClientDisconnectEvent", {
 name = "ALittle.ClientDisconnectEvent", ns_name = "ALittle", rl_name = "ClientDisconnectEvent", hash_code = -245025090,
 name_list = {"target","msg_receiver"},
-type_list = {"ALittle.EventDispatcher","ALittle.MsgReceiverTemplate<ALittle.MsgReceiverNative,lua.__CPPAPIMessageWriteFactory>"},
+type_list = {"ALittle.EventDispatcher","ALittle.MsgReceiverTemplate<ALittle.MsgReceiverNative,carp.CarpMessageWriteFactory>"},
 option_map = {}
 })
 
@@ -45,7 +45,7 @@ function ALittle.MsgReceiverNative:Close()
 	A_ClientSystem:RemoveMsgServer(self._client_id)
 end
 
-ALittle.MsgReceiver = Lua.Template(ALittle.MsgReceiverTemplate, "ALittle.MsgReceiverTemplate<ALittle.MsgReceiverNative, lua.__CPPAPIMessageWriteFactory>", ALittle.MsgReceiverNative, __CPPAPIMessageWriteFactory);
+ALittle.MsgReceiver = Lua.Template(ALittle.MsgReceiverTemplate, "ALittle.MsgReceiverTemplate<ALittle.MsgReceiverNative, carp.CarpMessageWriteFactory>", ALittle.MsgReceiverNative, carp.CarpMessageWriteFactory);
 assert(ALittle.EventDispatcher, " extends class:ALittle.EventDispatcher is nil")
 ALittle.ClientSystem = Lua.Class(ALittle.EventDispatcher, "ALittle.ClientSystem")
 

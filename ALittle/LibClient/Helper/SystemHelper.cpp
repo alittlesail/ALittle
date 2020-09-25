@@ -1,7 +1,7 @@
 
 #include "SystemHelper.h"
 
-#include "ALittle/LibClient/ScriptSystem/ScriptSystemEx.h"
+#include "ALittle/LibClient/ScriptSystem/ScriptSystem.h"
 #include "ALittle/LibClient/Tool/MemoryPool.h"
 #include "ALittle/LibClient/Platform/Windows/WindowsSystem.h"
 #include <SDL.h>

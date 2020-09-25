@@ -223,7 +223,7 @@ function AUIPlugin.AUIWebLoginManager:HandleLoginClick(event)
 	end
 	self._account_name = self._login_account.text
 	if self._login_password.text ~= "" then
-		self._account_pwd = ALittle.String_MD5(self._login_password.text)
+		self._account_pwd = ALittle.String_Md5(self._login_password.text)
 	end
 	self._save_password = self._save_password_check.selected
 	self._auto_login = self._auto_login_check.selected
@@ -336,8 +336,8 @@ function AUIPlugin.AUIWebLoginManager:HandlePasswordAlterClick(event)
 	end
 	self._change_pas_confirm.disabled = true
 	local param = {}
-	param.old_password = ALittle.String_MD5(old_password)
-	param.new_password = ALittle.String_MD5(new_password)
+	param.old_password = ALittle.String_Md5(old_password)
+	param.new_password = ALittle.String_Md5(new_password)
 	local error, result = ALittle.IMsgCommon.InvokeRPC(-1373673802, self._msg_client, param)
 	self._change_pas_confirm.disabled = false
 	if self._change_pas_confirm ~= nil then

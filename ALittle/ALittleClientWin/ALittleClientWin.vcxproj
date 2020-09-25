@@ -107,8 +107,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>LibCommon.lib;LibClient.lib;SDL2.lib;SDL2main.lib;lua51.lib;Iphlpapi.lib;Wininet.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib/SDL2;$(SolutionDir)lib/ALittle;$(SolutionDir)lib/LuaJIT;$(SolutionDir)lib/mysql;$(SolutionDir)lib/openssl;$(SolutionDir)LibCommon/ThirdParty/protobuf/lib/protobuf;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>LibCommon.lib;LibClient.lib;SDL2.lib;SDL2main.lib;Iphlpapi.lib;Wininet.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib/SDL2;$(SolutionDir)lib/ALittle;$(SolutionDir)lib/lua;$(SolutionDir)lib/mysql;$(SolutionDir)lib/openssl;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

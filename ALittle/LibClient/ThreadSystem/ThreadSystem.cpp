@@ -1,7 +1,7 @@
 
 #include "ThreadSystem.h"
 #include "Task.h"
-#include "ALittle/LibClient/ScriptSystem/ScriptSystemEx.h"
+#include "ALittle/LibClient/ScriptSystem/ScriptSystem.h"
 
 namespace ALittle
 {
@@ -36,7 +36,7 @@ void ThreadSystem::Shutdown()
 		task->Execute();
 }
 
-void ThreadSystem::RegisterToScript(ScriptSystemEx& script_system)
+void ThreadSystem::RegisterToScript(ScriptSystem& script_system)
 {
 	lua_State* L = script_system.GetLuaState();
 

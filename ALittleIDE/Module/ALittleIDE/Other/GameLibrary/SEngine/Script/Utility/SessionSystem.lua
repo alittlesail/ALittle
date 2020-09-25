@@ -21,13 +21,13 @@ option_map = {}
 ALittle.RegStruct(888437463, "ALittle.SessionConnectEvent", {
 name = "ALittle.SessionConnectEvent", ns_name = "ALittle", rl_name = "SessionConnectEvent", hash_code = 888437463,
 name_list = {"target","connect_key","route_type","route_num","session"},
-type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>"},
+type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,carp.CarpMessageWriteFactory>"},
 option_map = {}
 })
 ALittle.RegStruct(-36908822, "ALittle.SessionDisconnectEvent", {
 name = "ALittle.SessionDisconnectEvent", ns_name = "ALittle", rl_name = "SessionDisconnectEvent", hash_code = -36908822,
 name_list = {"target","connect_key","route_type","route_num","session"},
-type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>"},
+type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,carp.CarpMessageWriteFactory>"},
 option_map = {}
 })
 
@@ -51,7 +51,7 @@ function ALittle.MsgSessionNative:Close()
 	A_SessionSystem:RemoveSessionServer(self._connect_key)
 end
 
-ALittle.MsgSession = Lua.Template(ALittle.MsgSessionTemplate, "ALittle.MsgSessionTemplate<ALittle.MsgSessionNative, lua.__CPPAPIMessageWriteFactory>", ALittle.MsgSessionNative, __CPPAPIMessageWriteFactory);
+ALittle.MsgSession = Lua.Template(ALittle.MsgSessionTemplate, "ALittle.MsgSessionTemplate<ALittle.MsgSessionNative, carp.CarpMessageWriteFactory>", ALittle.MsgSessionNative, carp.CarpMessageWriteFactory);
 assert(ALittle.EventDispatcher, " extends class:ALittle.EventDispatcher is nil")
 ALittle.SessionSystem = Lua.Class(ALittle.EventDispatcher, "ALittle.SessionSystem")
 

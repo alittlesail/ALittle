@@ -15,7 +15,7 @@ option_map = {}
 ALittle.RegStruct(1860871079, "ALittle.GameLeaseInfo", {
 name = "ALittle.GameLeaseInfo", ns_name = "ALittle", rl_name = "GameLeaseInfo", hash_code = 1860871079,
 name_list = {"account_id","session","timer"},
-type_list = {"int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>","int"},
+type_list = {"int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,carp.CarpMessageWriteFactory>","int"},
 option_map = {}
 })
 ALittle.RegStruct(-1627449907, "ALittle.DATA2GS_QEmpty", {

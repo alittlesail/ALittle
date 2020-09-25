@@ -9,6 +9,7 @@
 #include "Carp/carp_timer_bind.hpp"
 #include "Carp/carp_file_bind.hpp"
 #include "Carp/carp_string_bind.hpp"
+#include "Carp/carp_rwops_bind.hpp"
 
 namespace ALittle
 {
@@ -24,6 +25,7 @@ void ScriptSystem::Setup()
 	CarpFileBind::Bind(m_L);
 	CarpStringBind::Bind(m_L);
 	CarpBitBind::Bind(m_L);
+	CarpRWopsBind::Bind(m_L);
 
 	// register script system
 	luabridge::getGlobalNamespace(m_L)

@@ -393,10 +393,10 @@ function ALittle.VersionSystem:UpdateVersion(ip, port, callback, check, repeat_c
 			for k, v in ___ipairs(self._download_list) do
 				self._total_update_size = self._total_update_size + v.c_file_size
 			end
-			local new_md5 = __CPPAPI_ScriptSystemEx:FileMD5(ALittle.File_BaseFilePath() .. self._update_path .. self._new_in_version)
+			local new_md5 = ALittle.File_Md5(ALittle.File_BaseFilePath() .. self._update_path .. self._new_in_version)
 			local tmp_md5 = nil
 			if ALittle.File_GetFileAttr(ALittle.File_BaseFilePath() .. self._update_path .. self._tmp_in_version) ~= nil then
-				tmp_md5 = __CPPAPI_ScriptSystemEx:FileMD5(ALittle.File_BaseFilePath() .. self._update_path .. self._tmp_in_version)
+				tmp_md5 = ALittle.File_Md5(ALittle.File_BaseFilePath() .. self._update_path .. self._tmp_in_version)
 			end
 			if new_md5 == tmp_md5 then
 				local new_download_list = {}

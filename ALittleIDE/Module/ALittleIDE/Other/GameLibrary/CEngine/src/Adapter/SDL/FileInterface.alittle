@@ -47,6 +47,3 @@ public class __CPPAPICsvFileWrap : ALittle.ICsvFile
     public fun GetRowCount() : int {}
     public fun GetColCount() : int {}
 }
-
-public static __CPPAPI_CopyFile(string src_path, string dst_path, bool only_from_asset) : bool {}
-public static __CPPAPI_SaveFile(string target_path, string content, int size) : bool {}

@@ -3,7 +3,7 @@
 #include "HttpClient.h"
 #include "HttpFile.h"
 
-#include "ALittle/LibClient/ScriptSystem/ScriptSystemEx.h"
+#include "ALittle/LibClient/ScriptSystem/ScriptSystem.h"
 #include "ALittle/LibClient/ScheduleSystem/EventDefine.h"
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
 
@@ -76,7 +76,7 @@ void NetSystem::Shutdown()
 {
 }
 
-void NetSystem::RegisterToScript(ScriptSystemEx& script_system)
+void NetSystem::RegisterToScript(ScriptSystem& script_system)
 {
 	lua_State* L = script_system.GetLuaState();
 

@@ -5,7 +5,7 @@
 
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
-#include "ALittle/LibClient/ScriptSystem/ScriptSystemEx.h"
+#include "ALittle/LibClient/ScriptSystem/ScriptSystem.h"
 
 #include "Carp/carp_string.hpp"
 

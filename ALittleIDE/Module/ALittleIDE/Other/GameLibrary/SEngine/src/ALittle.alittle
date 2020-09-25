@@ -1,9 +1,7 @@
 namespace alittle;
 
 [Language(Lua)]
-private static __Log(string content, int level) { __CPPAPI_ScriptSystem.Log(content, level); }
-[Language(Lua)]
-ALittle.SetLogFunc(__Log);
+ALittle.SetLogFunc(carp.Log);
 
 public await static RequireSEngine(string base_path)
 {

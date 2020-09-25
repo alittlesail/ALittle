@@ -6,7 +6,7 @@
 #include "ALittle/LibClient/ScheduleSystem/EventDefine.h"
 #include "ALittle/LibClient/ThreadSystem/ThreadSystem.h"
 #include "ALittle/LibClient/Tool/LocalFile.h"
-#include "ALittle/LibClient/ScriptSystem/ScriptSystemEx.h"
+#include "ALittle/LibClient/ScriptSystem/ScriptSystem.h"
 #include "ALittle/LibClient/Helper/TextureHelper.h"
 
 #include "ALittle/LibClient/Platform/iOS/iOSSystem.h"

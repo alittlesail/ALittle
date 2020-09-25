@@ -6,27 +6,27 @@ local ___ipairs = ipairs
 
 
 function ALittle.File_BaseFilePath()
-	return __CPPAPI_ScriptSystemEx:BaseFilePath()
+	return carp.BaseFilePath()
 end
 
 function ALittle.File_ExternalFilePath()
-	return __CPPAPI_ScriptSystemEx:ExternalFilePath()
+	return carp.ExternalFilePath()
 end
 
 function ALittle.File_CopyFile(src_path, dst_path)
-	return __CPPAPI_CopyFile(src_path, dst_path, false)
+	return carp.CpFile(src_path, dst_path, false)
 end
 
 function ALittle.File_CopyFileFromAsset(src_path, dst_path)
-	return __CPPAPI_CopyFile(src_path, dst_path, true)
+	return carp.CpFile(src_path, dst_path, true)
 end
 
 function ALittle.File_SaveFile(target_path, content, size)
-	return __CPPAPI_SaveFile(target_path, content, size)
+	return carp.SaveFile(target_path, content, size)
 end
 
-function ALittle.File_MD5(path)
-	return __CPPAPI_ScriptSystemEx:FileMD5(path)
+function ALittle.File_Md5(path)
+	return carp.FileMd5(path)
 end
 
 function ALittle.File_CopyDeepDir(src_path, dest_path, ext, log)

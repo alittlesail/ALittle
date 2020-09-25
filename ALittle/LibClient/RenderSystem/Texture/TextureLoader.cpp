@@ -9,6 +9,7 @@
 #include "ALittle/LibClient/Helper/TextureHelper.h"
 #include "ALittle/LibClient/Helper/FileHelperEx.h"
 #include "Carp/carp_crypto.hpp"
+#include "Carp/carp_string.hpp"
 
 namespace ALittle
 {

@@ -7,6 +7,7 @@
 #include <functional>
 
 #include "Carp/carp_crypto.hpp"
+#include "Carp/carp_string.hpp"
 
 namespace ALittle
 {

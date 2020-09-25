@@ -31,6 +31,7 @@
     <ClInclude Include="..\..\Carp\carp_http.hpp" />
     <ClInclude Include="..\..\Carp\carp_connect_client.hpp" />
     <ClInclude Include="..\..\Carp\carp_mysql.hpp" />
+    <ClInclude Include="..\..\Carp\carp_rwops.h" />
     <ClInclude Include="..\..\Carp\carp_safe_id_creator.hpp" />
     <ClInclude Include="..\..\Carp\carp_schedule.hpp" />
     <ClInclude Include="..\..\Carp\carp_script.hpp" />

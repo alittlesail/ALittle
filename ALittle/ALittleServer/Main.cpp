@@ -3,6 +3,7 @@
 
 #include "ALittle/LibServer/ServerSystem/ServerSystem.h"
 #include "Carp/carp_log.hpp"
+#include "Carp/carp_string.hpp"
 
 #include <map>
 #include <vector>

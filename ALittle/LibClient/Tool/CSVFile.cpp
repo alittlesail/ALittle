@@ -100,12 +100,12 @@ const char* CsvFile::ReadCell(int row, int col)
 
 int CsvFile::GetColCount() const
 {
-    return m_csv.GetColCount();
+    return (int)m_csv.GetColCount();
 }
 
 int CsvFile::GetRowCount() const
 {
-    return m_csv.GetRowCount();
+    return (int)m_csv.GetRowCount();
 }
 
 } // ALittle

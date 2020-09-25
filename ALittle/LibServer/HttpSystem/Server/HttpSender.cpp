@@ -3,8 +3,6 @@
 #include "HttpServer.h"
 #include "HttpReceiver.h"
 
-#define CARP_HAS_SSL
-#include "Carp/carp_http.hpp"
 #include "Carp/carp_file.hpp"
 #include "Carp/carp_file_cache.hpp"
 

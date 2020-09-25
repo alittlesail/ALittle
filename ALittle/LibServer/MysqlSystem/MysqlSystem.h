@@ -43,7 +43,7 @@ public:
 
 protected:
     // ÷¥––»’÷æ
-    virtual void Flush(MysqlTask& info) override;
+    virtual void Execute(MysqlTask& info) override;
 
 private:
     MysqlConnection* m_conn;

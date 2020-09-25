@@ -123,11 +123,11 @@ function ALittle.System_GetAppPauseInterval()
 end
 
 function ALittle.System_SetThreadCount(count)
-	__CPPAPI_ThreadSystem:SetThreadCount(count)
+	carp.SetThreadCount(count)
 end
 
 function ALittle.System_GetThreadCount(thread_type)
-	return __CPPAPI_ThreadSystem:GetThreadCount()
+	return carp.GetThreadCount()
 end
 
 function ALittle.System_GetIMESelectList()

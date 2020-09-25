@@ -5,11 +5,11 @@
 #include "ALittle/LibClient/ScriptSystem/ScriptSystem.h"
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
 #include "ALittle/LibClient/ScheduleSystem/EventDefine.h"
-#include "ALittle/LibClient/ThreadSystem/ThreadSystem.h"
 #include "ALittle/LibClient/Helper/TextureHelper.h"
 #include "Carp/carp_crypto.hpp"
 #include "Carp/carp_string.hpp"
 #include "Carp/carp_rwops.hpp"
+#include "Carp/carp_task_consumer.hpp"
 
 namespace ALittle
 {
@@ -160,7 +160,7 @@ void TextureLoader::HandleEvent(unsigned int event_type, void* data1, void* data
 
 void TextureLoader::Start()
 {
-    g_ThreadSystem.AddTask(this);
+	s_carp_task_consumer.AddTask(this);
 }
 
 } // ALittle

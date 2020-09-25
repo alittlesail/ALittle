@@ -5,12 +5,12 @@
 #include <SDL.h>
 #include <vector>
 #include <string>
-#include "ALittle/LibClient/ThreadSystem/Task.h"
+#include "Carp/carp_task_consumer.hpp"
 
 namespace ALittle
 {
 
-class TextureLoader : public Task
+class TextureLoader : public CarpTask
 {
 public:
 	TextureLoader() : m_crypt_mode(0), m_width(0), m_height(0) {}
@@ -26,8 +26,8 @@ public:
 	const char* GetPath() const { return m_file_path.c_str(); }
 	
 public:
-	void Execute();
-	void Abandon();
+	void Execute() override;
+	void Abandon() override;
 
 private:
 	std::string m_file_path;

@@ -4,13 +4,13 @@
 
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
 #include "ALittle/LibClient/ScheduleSystem/EventDefine.h"
-#include "ALittle/LibClient/ThreadSystem/ThreadSystem.h"
 #include "ALittle/LibClient/ScriptSystem/ScriptSystem.h"
 #include "ALittle/LibClient/Helper/TextureHelper.h"
 
 #include "ALittle/LibClient/Platform/iOS/iOSSystem.h"
 
 #include "Carp/carp_rwops.hpp"
+#include "Carp/carp_task_consumer.hpp"
 
 namespace ALittle
 {
@@ -24,7 +24,7 @@ void TextureCutLoader::SetPath(const char* file_path, int max_width, int max_hei
 
 void TextureCutLoader::Start()
 {
-    g_ThreadSystem.AddTask(this);
+    s_carp_task_consumer.AddTask(this);
 }
 
 void TextureCutLoader::Execute()

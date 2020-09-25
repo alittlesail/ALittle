@@ -52,9 +52,6 @@
     <Filter Include="ScriptSystem">
       <UniqueIdentifier>{4ebaf0a4-49d1-4a52-8c67-21be59b4fe2f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ThreadSystem">
-      <UniqueIdentifier>{f265c66f-108d-484e-8c09-e366b455f6ef}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Tool">
       <UniqueIdentifier>{b239759e-fac4-4750-bb3f-b926a755c2ed}</UniqueIdentifier>
     </Filter>
@@ -171,15 +168,6 @@
     <ClInclude Include="ScheduleSystem\EventDefine.h">
       <Filter>ScheduleSystem</Filter>
     </ClInclude>
-    <ClInclude Include="ThreadSystem\Thread.h">
-      <Filter>ThreadSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="ThreadSystem\ThreadSystem.h">
-      <Filter>ThreadSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="ThreadSystem\Task.h">
-      <Filter>ThreadSystem</Filter>
-    </ClInclude>
     <ClInclude Include="Tool\CsvFile.h">
       <Filter>Tool</Filter>
     </ClInclude>
@@ -290,6 +278,12 @@
     </ClInclude>
     <ClInclude Include="ScriptSystem\ScriptSystem.h">
       <Filter>ScriptSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_task_consumer_bind.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_task_consumer.hpp">
+      <Filter>Carp</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -403,12 +397,6 @@
     </ClCompile>
     <ClCompile Include="ScheduleSystem\ScheduleSystem.cpp">
       <Filter>ScheduleSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="ThreadSystem\ThreadSystem.cpp">
-      <Filter>ThreadSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="ThreadSystem\Thread.cpp">
-      <Filter>ThreadSystem</Filter>
     </ClCompile>
     <ClCompile Include="Tool\CsvFile.cpp">
       <Filter>Tool</Filter>

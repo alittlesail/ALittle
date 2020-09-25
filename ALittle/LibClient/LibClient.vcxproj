@@ -39,6 +39,8 @@
     <ClInclude Include="..\..\Carp\carp_script.hpp" />
     <ClInclude Include="..\..\Carp\carp_string.hpp" />
     <ClInclude Include="..\..\Carp\carp_string_bind.hpp" />
+    <ClInclude Include="..\..\Carp\carp_task_consumer.hpp" />
+    <ClInclude Include="..\..\Carp\carp_task_consumer_bind.hpp" />
     <ClInclude Include="..\..\Carp\carp_thread_consumer.hpp" />
     <ClInclude Include="..\..\Carp\carp_time.hpp" />
     <ClInclude Include="..\..\Carp\carp_timer.hpp" />
@@ -81,9 +83,6 @@
     <ClInclude Include="ScheduleSystem\EventDefine.h" />
     <ClInclude Include="ScheduleSystem\ScheduleSystem.h" />
     <ClInclude Include="ScriptSystem\ScriptSystem.h" />
-    <ClInclude Include="ThreadSystem\Task.h" />
-    <ClInclude Include="ThreadSystem\Thread.h" />
-    <ClInclude Include="ThreadSystem\ThreadSystem.h" />
     <ClInclude Include="Tool\concurrentqueue.h" />
     <ClInclude Include="Tool\CsvFile.h" />
     <ClInclude Include="Tool\MemoryPool.h" />
@@ -127,8 +126,6 @@
     <ClCompile Include="RenderSystem\Text\Text.cpp" />
     <ClCompile Include="ScheduleSystem\ScheduleSystem.cpp" />
     <ClCompile Include="ScriptSystem\ScriptSystem.cpp" />
-    <ClCompile Include="ThreadSystem\Thread.cpp" />
-    <ClCompile Include="ThreadSystem\ThreadSystem.cpp" />
     <ClCompile Include="Tool\CsvFile.cpp" />
   </ItemGroup>
   <ItemGroup>

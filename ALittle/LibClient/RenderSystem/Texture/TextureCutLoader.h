@@ -5,13 +5,13 @@
 #include <SDL.h>
 #include <vector>
 #include <string>
-#include "ALittle/LibClient/ThreadSystem/Task.h"
+#include "Carp/carp_task_consumer.hpp"
 
 namespace ALittle
 {
 
 
-class TextureCutLoader : public Task
+class TextureCutLoader : public CarpTask
 {
 public:
 	TextureCutLoader() : m_max_width(0), m_max_height(0) {}
@@ -29,8 +29,8 @@ public:
 	int GetMaxHeight() const { return m_max_height; }
 	
 public:
-	void Execute();
-	void Abandon();
+	void Execute() override;
+	void Abandon() override;
 
 private:
 	std::string m_file_path;

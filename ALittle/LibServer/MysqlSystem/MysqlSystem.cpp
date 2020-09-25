@@ -59,7 +59,7 @@ void MysqlThread::AddTask(int query_id, ServerSchedule* schedule)
 	Add(info);
 }
 
-void MysqlThread::Flush(MysqlTask& info)
+void MysqlThread::Execute(MysqlTask& info)
 {
     bool result = false;
     std::string reason;

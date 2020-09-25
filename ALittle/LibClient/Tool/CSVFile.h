@@ -3,7 +3,7 @@
 #define _ALITTLE_CSVFILE_H_
 
 #include <string>
-#include "ALittle/LibClient/ThreadSystem/Task.h"
+#include "Carp/carp_task_consumer.hpp"
 #include "Carp/carp_csv.hpp"
 
 class CarpCsv;
@@ -11,7 +11,7 @@ class CarpCsv;
 namespace ALittle
 {
 
-class CsvFileLoader : public Task
+class CsvFileLoader : public CarpTask
 {
 public:
 	static void HandleEvent(unsigned int event_type, void* data1, void* data2);
@@ -25,12 +25,12 @@ public:
 	int GetID() const;
 
 public:
-	void Execute();
-	void Abandon();
+	void Execute() override;
+	void Abandon() override;
 
 private:
 	std::string m_file_path_param;
-	bool m_only_from_asset_param;
+	bool m_only_from_asset_param = false;
 	std::string m_empty_string;
 };
 

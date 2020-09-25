@@ -5,7 +5,6 @@
 
 #include "ALittle/LibClient/Tool/MemoryPool.h"
 
-#include "ALittle/LibClient/ThreadSystem/ThreadSystem.h"
 #include "ALittle/LibClient/RenderSystem/RenderSystem.h"
 #include "ALittle/LibClient/RenderSystem/DisplaySystem.h"
 #include "ALittle/LibClient/AudioSystem/AudioSystem.h"
@@ -38,6 +37,9 @@
 #define CARP_RWOPS_IMPL
 #include "Carp/carp_rwops.h"
 
+#define CARP_TASK_CONSUMER_IMPL
+#include "Carp/carp_task_consumer.hpp"
+
 namespace ALittle
 {
 
@@ -68,7 +70,7 @@ void ScheduleSystem::Setup(int argc, char* argv[])
 
 	// set up instance
 	g_MemoryPoolGroup;				// memory pool
-	g_ThreadSystem.Setup();			// thread system
+	s_carp_task_consumer.SetThreadCount(1);
 	g_RenderSystem.Setup();			// render system
 	g_AudioSystem.Setup();			// audio system
 	NetSystem::Setup();				// net system
@@ -76,7 +78,6 @@ void ScheduleSystem::Setup(int argc, char* argv[])
 
 	// register to script
 	RegisterToScript(g_ScriptSystem);
-	g_ThreadSystem.RegisterToScript(g_ScriptSystem);
 	g_RenderSystem.RegisterToScript(g_ScriptSystem);
 	g_AudioSystem.RegisterToScript(g_ScriptSystem);
 	NetSystem::RegisterToScript(g_ScriptSystem);
@@ -178,7 +179,7 @@ int ScheduleSystem::Run(int argc, char* argv[])
 		while (SDL_PollEvent(&event))
 			HandleEvent(event);
 
-		g_ThreadSystem.Shutdown();
+		s_carp_task_consumer.Shutdown();
 
 		// handle last event
 		while (SDL_PollEvent(&event))

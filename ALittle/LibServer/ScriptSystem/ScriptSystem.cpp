@@ -10,6 +10,7 @@
 #include "Carp/carp_file_bind.hpp"
 #include "Carp/carp_string_bind.hpp"
 #include "Carp/carp_rwops_bind.hpp"
+#include "Carp/carp_task_consumer_bind.hpp"
 
 namespace ALittle
 {
@@ -26,6 +27,7 @@ void ScriptSystem::Setup()
 	CarpStringBind::Bind(m_L);
 	CarpBitBind::Bind(m_L);
 	CarpRWopsBind::Bind(m_L);
+	CarpTaskConsumerBind::Bind(m_L);
 }
 
 void ScriptSystem::Shutdown()

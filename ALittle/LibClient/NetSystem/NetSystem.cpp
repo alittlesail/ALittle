@@ -6,6 +6,7 @@
 #include "ALittle/LibClient/ScriptSystem/ScriptSystem.h"
 #include "ALittle/LibClient/ScheduleSystem/EventDefine.h"
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
+#include <SDL.h>
 
 #include "Carp/carp_schedule.hpp"
 

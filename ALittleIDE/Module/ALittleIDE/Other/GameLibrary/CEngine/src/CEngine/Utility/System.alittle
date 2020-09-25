@@ -241,13 +241,13 @@ public static System_GetAppPauseInterval() : int
 public static System_SetThreadCount(int count)
 {
     [Language(Lua)]
-    __CPPAPI_ThreadSystem.SetThreadCount(count);
+    carp.SetThreadCount(count);
 }
 // 获取线程数
 public static System_GetThreadCount(int thread_type) : int
 {
     [Language(Lua)]
-    return __CPPAPI_ThreadSystem.GetThreadCount();
+    return carp.GetThreadCount();
     [Language(JavaScript)]
     return 0;
 }

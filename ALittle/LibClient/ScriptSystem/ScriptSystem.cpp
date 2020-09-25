@@ -9,7 +9,6 @@
 #include "ALittle/LibClient/Tool/CsvFile.h"
 #include "ALittle/LibClient/ScheduleSystem/EventDefine.h"
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
-#include "Carp/carp_rwops_bind.hpp"
 
 extern "C" {
 #include "ALittle/LibCommon/ThirdParty/json/lua_cjson.h"
@@ -29,6 +28,8 @@ extern "C" {
 #include "Carp/carp_file_bind.hpp"
 #include "Carp/carp_string_bind.hpp"
 #include "Carp/carp_bit_bind.hpp"
+#include "Carp/carp_rwops_bind.hpp"
+#include "Carp/carp_task_consumer_bind.hpp"
 
 namespace ALittle
 {
@@ -55,6 +56,7 @@ void ScriptSystem::Setup()
 	CarpStringBind::Bind(m_L);
 	CarpBitBind::Bind(m_L);
 	CarpRWopsBind::Bind(m_L);
+	CarpTaskConsumerBind::Bind(m_L);
 
 	luabridge::getGlobalNamespace(m_L)
 		.beginClass<SDL_Surface>("__CPPAPISurface")

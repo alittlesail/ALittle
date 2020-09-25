@@ -24,7 +24,7 @@ public:
 
 protected:
 	// Ö´ÐÐÈÕÖ¾
-	void Flush(ALittleTask*& task) override { task->Execute(); }
+	void Execute(ALittleTask*& task) override { task->Execute(); }
 };
 
 class ThreadSystem

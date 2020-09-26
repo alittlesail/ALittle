@@ -55,7 +55,7 @@
 #endif
 
 #ifndef CJSON_MODNAME
-#define CJSON_MODNAME   "json"
+#define CJSON_MODNAME   "cjson"
 #endif
 
 #ifndef CJSON_VERSION
@@ -1430,7 +1430,7 @@ static int lua_cjson_safe_new(lua_State *l)
 }
 #define ENABLE_CJSON_GLOBAL
 
-int luaopen_json(lua_State *l)
+int luaopen_cjson(lua_State *l)
 {
     lua_cjson_new(l);
 #ifdef ENABLE_CJSON_GLOBAL

@@ -16,6 +16,10 @@
 #define CARP_LOG_IMPL
 #include "Carp/carp_log.hpp"
 
+#include "Carp/carp_rwops.hpp"
+#define CARP_RWOPS_IMPL
+#include "Carp/carp_rwops.h"
+
 namespace ALittle
 {
 

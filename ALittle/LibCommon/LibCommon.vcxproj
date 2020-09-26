@@ -11,18 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ThirdParty\json\fpconv.c" />
-    <ClCompile Include="ThirdParty\json\lua_ajson.c" />
-    <ClCompile Include="ThirdParty\json\lua_cjson.c" />
-    <ClCompile Include="ThirdParty\json\strbuf.c" />
     <ClCompile Include="ThirdParty\sqlite3\lsqlite3.c" />
     <ClCompile Include="ThirdParty\sqlite3\sqlite3.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ThirdParty\json\fpconv.h" />
-    <ClInclude Include="ThirdParty\json\lua_ajson.h" />
-    <ClInclude Include="ThirdParty\json\lua_cjson.h" />
-    <ClInclude Include="ThirdParty\json\strbuf.h" />
     <ClInclude Include="ThirdParty\sqlite3\lsqlite3.h" />
     <ClInclude Include="ThirdParty\sqlite3\sqlite3.h" />
     <ClInclude Include="ThirdParty\sqlite3\sqlite3ext.h" />

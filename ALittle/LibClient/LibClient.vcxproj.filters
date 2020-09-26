@@ -58,6 +58,15 @@
     <Filter Include="Carp">
       <UniqueIdentifier>{38371269-9ab7-4708-b2b7-12acedd3e2c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ScriptSystem\ajson">
+      <UniqueIdentifier>{59b913cb-83d6-4400-a40d-8ad5a563742b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScriptSystem\cjson">
+      <UniqueIdentifier>{bd0f94e7-3fb8-4092-aa70-b368550a0fc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScriptSystem\sqlite3">
+      <UniqueIdentifier>{594d409a-6400-4eef-8a06-7c8f5b0f059f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioSystem\AudioSystem.h">
@@ -285,6 +294,30 @@
     <ClInclude Include="..\..\Carp\carp_task_consumer.hpp">
       <Filter>Carp</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\lualib\sqlite3\sqlite3.h">
+      <Filter>ScriptSystem\sqlite3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\sqlite3\sqlite3ext.h">
+      <Filter>ScriptSystem\sqlite3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\sqlite3\lsqlite3.h">
+      <Filter>ScriptSystem\sqlite3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\cjson\lua_cjson.h">
+      <Filter>ScriptSystem\cjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\cjson\strbuf.h">
+      <Filter>ScriptSystem\cjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\cjson\fpconv.h">
+      <Filter>ScriptSystem\cjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\ajson\lua_ajson.h">
+      <Filter>ScriptSystem\ajson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_socket_client.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioSystem\AudioSystem.cpp">
@@ -403,6 +436,24 @@
     </ClCompile>
     <ClCompile Include="ScriptSystem\ScriptSystem.cpp">
       <Filter>ScriptSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\sqlite3\sqlite3.c">
+      <Filter>ScriptSystem\sqlite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\sqlite3\lsqlite3.c">
+      <Filter>ScriptSystem\sqlite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\cjson\strbuf.c">
+      <Filter>ScriptSystem\cjson</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\cjson\fpconv.c">
+      <Filter>ScriptSystem\cjson</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\cjson\lua_cjson.c">
+      <Filter>ScriptSystem\cjson</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\ajson\lua_ajson.c">
+      <Filter>ScriptSystem\ajson</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

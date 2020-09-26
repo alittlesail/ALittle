@@ -12,12 +12,21 @@
 #include "Carp/carp_rwops_bind.hpp"
 #include "Carp/carp_task_consumer_bind.hpp"
 
+extern "C" {
+#include "lualib/ajson/lua_ajson.h"
+#include "lualib/cjson/lua_cjson.h"
+#include "lualib/sqlite3/lsqlite3.h"
+}
+
 namespace ALittle
 {
 	
 void ScriptSystem::Setup()
 {
 	Init();
+	luaopen_cjson(m_L); lua_settop(m_L, 0);
+	luaopen_ajson(m_L); lua_settop(m_L, 0);
+	luaopen_sqlite3(m_L); lua_settop(m_L, 0);
 	CarpMessageBind::Bind(m_L);
 	CarpCryptoBind::Bind(m_L);
 	CarpLogBind::Bind(m_L);

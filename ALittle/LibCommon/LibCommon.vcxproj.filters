@@ -12,18 +12,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ThirdParty\json\fpconv.c">
-      <Filter>ScriptSystem\json</Filter>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\json\lua_ajson.c">
-      <Filter>ScriptSystem\json</Filter>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\json\lua_cjson.c">
-      <Filter>ScriptSystem\json</Filter>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\json\strbuf.c">
-      <Filter>ScriptSystem\json</Filter>
-    </ClCompile>
     <ClCompile Include="ThirdParty\sqlite3\lsqlite3.c">
       <Filter>ScriptSystem\sqlite3</Filter>
     </ClCompile>
@@ -32,18 +20,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ThirdParty\json\strbuf.h">
-      <Filter>ScriptSystem\json</Filter>
-    </ClInclude>
-    <ClInclude Include="ThirdParty\json\fpconv.h">
-      <Filter>ScriptSystem\json</Filter>
-    </ClInclude>
-    <ClInclude Include="ThirdParty\json\lua_ajson.h">
-      <Filter>ScriptSystem\json</Filter>
-    </ClInclude>
-    <ClInclude Include="ThirdParty\json\lua_cjson.h">
-      <Filter>ScriptSystem\json</Filter>
-    </ClInclude>
     <ClInclude Include="ThirdParty\sqlite3\sqlite3ext.h">
       <Filter>ScriptSystem\sqlite3</Filter>
     </ClInclude>

@@ -37,6 +37,7 @@
     <ClInclude Include="..\..\Carp\carp_safe_id_creator.hpp" />
     <ClInclude Include="..\..\Carp\carp_schedule.hpp" />
     <ClInclude Include="..\..\Carp\carp_script.hpp" />
+    <ClInclude Include="..\..\Carp\carp_socket_client.hpp" />
     <ClInclude Include="..\..\Carp\carp_string.hpp" />
     <ClInclude Include="..\..\Carp\carp_string_bind.hpp" />
     <ClInclude Include="..\..\Carp\carp_task_consumer.hpp" />
@@ -46,6 +47,13 @@
     <ClInclude Include="..\..\Carp\carp_timer.hpp" />
     <ClInclude Include="..\..\Carp\carp_timer_bind.hpp" />
     <ClInclude Include="..\..\Carp\carp_win_ime.h" />
+    <ClInclude Include="..\..\lualib\ajson\lua_ajson.h" />
+    <ClInclude Include="..\..\lualib\cjson\fpconv.h" />
+    <ClInclude Include="..\..\lualib\cjson\lua_cjson.h" />
+    <ClInclude Include="..\..\lualib\cjson\strbuf.h" />
+    <ClInclude Include="..\..\lualib\sqlite3\lsqlite3.h" />
+    <ClInclude Include="..\..\lualib\sqlite3\sqlite3.h" />
+    <ClInclude Include="..\..\lualib\sqlite3\sqlite3ext.h" />
     <ClInclude Include="AudioSystem\AudioSystem.h" />
     <ClInclude Include="Helper\InputHelper.h" />
     <ClInclude Include="Helper\NetHelper.h" />
@@ -88,6 +96,12 @@
     <ClInclude Include="Tool\MemoryPool.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\lualib\ajson\lua_ajson.c" />
+    <ClCompile Include="..\..\lualib\cjson\fpconv.c" />
+    <ClCompile Include="..\..\lualib\cjson\lua_cjson.c" />
+    <ClCompile Include="..\..\lualib\cjson\strbuf.c" />
+    <ClCompile Include="..\..\lualib\sqlite3\lsqlite3.c" />
+    <ClCompile Include="..\..\lualib\sqlite3\sqlite3.c" />
     <ClCompile Include="AudioSystem\AudioSystem.cpp" />
     <ClCompile Include="Helper\InputHelper.cpp" />
     <ClCompile Include="Helper\NetHelper.cpp" />
@@ -187,7 +201,7 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;_CRTDBG_MAP_ALLOC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\SDL\include\;$(SolutionDir)..\LuaJIT-2.1.0-beta3\src\;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)..\asio\asio\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\SDL\include\;$(SolutionDir)..\lua\;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)..\asio\asio\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -205,7 +219,7 @@
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\SDL\include\;$(SolutionDir)..\LuaJIT-2.1.0-beta3\src\;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)..\asio\asio\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\SDL\include\;$(SolutionDir)..\lua\;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)..\asio\asio\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

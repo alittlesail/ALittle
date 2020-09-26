@@ -22,6 +22,15 @@
     <Filter Include="ScriptSystem">
       <UniqueIdentifier>{965239d5-9ffb-4365-90bb-cc841cdaed9b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ScriptSystem\ajson">
+      <UniqueIdentifier>{cafdf296-ae6b-4777-b59b-04be0baf8872}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScriptSystem\cjson">
+      <UniqueIdentifier>{a8fc9e46-10b2-4d32-8bdc-9ce77074949b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScriptSystem\sqlite3">
+      <UniqueIdentifier>{8c2ed422-b085-4c80-8d2b-6a1276bb30ce}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HttpSystem\Server\HttpSender.h">
@@ -81,6 +90,27 @@
     <ClInclude Include="ScriptSystem\ScriptSystem.h">
       <Filter>ScriptSystem</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\lualib\cjson\lua_cjson.h">
+      <Filter>ScriptSystem\cjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\cjson\strbuf.h">
+      <Filter>ScriptSystem\cjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\cjson\fpconv.h">
+      <Filter>ScriptSystem\cjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\ajson\lua_ajson.h">
+      <Filter>ScriptSystem\ajson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\sqlite3\sqlite3.h">
+      <Filter>ScriptSystem\sqlite3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\sqlite3\sqlite3ext.h">
+      <Filter>ScriptSystem\sqlite3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\sqlite3\lsqlite3.h">
+      <Filter>ScriptSystem\sqlite3</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HttpSystem\Server\HttpSender.cpp">
@@ -139,6 +169,24 @@
     </ClCompile>
     <ClCompile Include="ScriptSystem\ScriptSystem.cpp">
       <Filter>ScriptSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\cjson\strbuf.c">
+      <Filter>ScriptSystem\cjson</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\cjson\fpconv.c">
+      <Filter>ScriptSystem\cjson</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\cjson\lua_cjson.c">
+      <Filter>ScriptSystem\cjson</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\ajson\lua_ajson.c">
+      <Filter>ScriptSystem\ajson</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\sqlite3\sqlite3.c">
+      <Filter>ScriptSystem\sqlite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\sqlite3\lsqlite3.c">
+      <Filter>ScriptSystem\sqlite3</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

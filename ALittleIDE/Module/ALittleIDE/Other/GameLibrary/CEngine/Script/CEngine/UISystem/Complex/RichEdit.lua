@@ -3346,7 +3346,7 @@ function ALittle.RichEdit:HandleKeyDown(event)
 				self._is_selecting = false
 				local select_text = self:GetSelectText()
 				if select_text[1] ~= nil then
-					ALittle.System_SetClipboardText(json.encode(select_text))
+					ALittle.System_SetClipboardText(ALittle.String_JsonEncode(select_text))
 					is_change = self:DeleteSelectText()
 				end
 				self:UpdateFontText()
@@ -3357,7 +3357,7 @@ function ALittle.RichEdit:HandleKeyDown(event)
 				self._is_selecting = false
 				local select_text = self:GetSelectText()
 				if select_text[1] ~= nil then
-					ALittle.System_SetClipboardText(json.encode(select_text))
+					ALittle.System_SetClipboardText(ALittle.String_JsonEncode(select_text))
 					is_change = self:DeleteSelectText()
 				end
 				self:UpdateFontText()
@@ -3368,7 +3368,7 @@ function ALittle.RichEdit:HandleKeyDown(event)
 	elseif event.sym == 99 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
 		local select_text = self:GetSelectText()
 		if select_text[1] ~= nil then
-			ALittle.System_SetClipboardText(json.encode(select_text))
+			ALittle.System_SetClipboardText(ALittle.String_JsonEncode(select_text))
 		end
 		event.handled = true
 	elseif event.sym == 118 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
@@ -3377,7 +3377,7 @@ function ALittle.RichEdit:HandleKeyDown(event)
 				self._is_selecting = false
 				if ALittle.System_HasClipboardText() then
 					local content = ALittle.System_GetClipboardText()
-					local error, new_content = Lua.TCall(json.decode, content)
+					local error, new_content = Lua.TCall(ALittle.String_JsonDecode, content)
 					if error == nil and __type(new_content) == "table" and self:CheckDisplayList(new_content) then
 						if self:CheckAtKeyInput(new_content) then
 							return
@@ -3396,7 +3396,7 @@ function ALittle.RichEdit:HandleKeyDown(event)
 				self._is_selecting = false
 				if ALittle.System_HasClipboardText() then
 					local content = ALittle.System_GetClipboardText()
-					local error, new_content = Lua.TCall(json.decode, content)
+					local error, new_content = Lua.TCall(ALittle.String_JsonDecode, content)
 					if error == nil and __type(new_content) == "table" and self:CheckDisplayList(new_content) then
 						is_change = self:InsertDisplayListNative(new_content, false)
 					else
@@ -3448,7 +3448,7 @@ end
 function ALittle.RichEdit:CopyText(return_cursor)
 	local select_text = self:GetSelectText()
 	if select_text[1] ~= nil then
-		ALittle.System_SetClipboardText(json.encode(select_text))
+		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(select_text))
 	end
 	if return_cursor then
 		self:TransToCursor()
@@ -3477,7 +3477,7 @@ function ALittle.RichEdit:CutText()
 	self._is_selecting = false
 	local select_text = self:GetSelectText()
 	if select_text[1] ~= nil then
-		ALittle.System_SetClipboardText(json.encode(select_text))
+		ALittle.System_SetClipboardText(ALittle.String_JsonEncode(select_text))
 		self:DeleteSelectText()
 		self:UpdateFontText()
 		self:TransToCursor()
@@ -3513,7 +3513,7 @@ function ALittle.RichEdit:PasteText()
 	self._is_selecting = false
 	if ALittle.System_HasClipboardText() then
 		local content = ALittle.System_GetClipboardText()
-		local error, new_content = Lua.TCall(json.decode, content)
+		local error, new_content = Lua.TCall(ALittle.String_JsonDecode, content)
 		if error == nil and __type(new_content) == "table" and self:CheckDisplayList(new_content) then
 			if self:CheckAtKeyInput(new_content) then
 				return

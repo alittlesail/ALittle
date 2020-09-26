@@ -4587,7 +4587,7 @@ public class RichEdit : DisplayLayout
                     var select_text = this.GetSelectText();
                     if (select_text[1] != null)
                     {
-                        System_SetClipboardText(lua.json.encode(select_text));
+                        System_SetClipboardText(ALittle.String_JsonEncode(select_text));
                         is_change = this.DeleteSelectText();
                     }
                     this.UpdateFontText();
@@ -4602,7 +4602,7 @@ public class RichEdit : DisplayLayout
                     var select_text = this.GetSelectText();
                     if (select_text[1] != null)
                     {
-                        System_SetClipboardText(lua.json.encode(select_text));
+                        System_SetClipboardText(ALittle.String_JsonEncode(select_text));
                         is_change = this.DeleteSelectText();
                     }
                     this.UpdateFontText();
@@ -4616,7 +4616,7 @@ public class RichEdit : DisplayLayout
             // c键
             var select_text = this.GetSelectText();
             if (select_text[1] != null)
-                System_SetClipboardText(lua.json.encode(select_text));
+                System_SetClipboardText(ALittle.String_JsonEncode(select_text));
 			event.handled = true;
         }
         elseif (event.sym == 118 && BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) != 0)
@@ -4631,7 +4631,7 @@ public class RichEdit : DisplayLayout
                     if (System_HasClipboardText())
                     {
                         var content = System_GetClipboardText();
-                        var error, new_content = tcall(lua.json.decode, content);
+                        var error, new_content = tcall(ALittle.String_JsonDecode, content);
                         if (error == null && __type(new_content) == "table" && this.CheckDisplayList(new_content))
                         {
                             if (this.CheckAtKeyInput(new_content))
@@ -4655,7 +4655,7 @@ public class RichEdit : DisplayLayout
                     if (System_HasClipboardText())
                     {
                         var content = System_GetClipboardText();
-                        var error, new_content = tcall(lua.json.decode, content);
+                        var error, new_content = tcall(ALittle.String_JsonDecode, content);
                         if (error == null && __type(new_content) == "table" && this.CheckDisplayList(new_content))
                             is_change = this.InsertDisplayListNative(new_content, false);
                         else
@@ -4729,7 +4729,7 @@ public class RichEdit : DisplayLayout
         var select_text = this.GetSelectText();
     
         if (select_text[1] != null)
-            System_SetClipboardText(lua.json.encode(select_text));
+            System_SetClipboardText(ALittle.String_JsonEncode(select_text));
         if (return_cursor)
             this.TransToCursor();
         this.ShowDefaultText();
@@ -4760,7 +4760,7 @@ public class RichEdit : DisplayLayout
         var select_text = this.GetSelectText();
         if (select_text[1] != null)
         {
-            System_SetClipboardText(lua.json.encode(select_text));
+            System_SetClipboardText(ALittle.String_JsonEncode(select_text));
             this.DeleteSelectText();
             this.UpdateFontText();
             this.TransToCursor();
@@ -4803,7 +4803,7 @@ public class RichEdit : DisplayLayout
         if (System_HasClipboardText())
         {
             var content = System_GetClipboardText();
-            var error, new_content = tcall(lua.json.decode, content);
+            var error, new_content = tcall(ALittle.String_JsonDecode, content);
             if (error == null && __type(new_content) == "table" && this.CheckDisplayList(new_content))
             {
                 if (this.CheckAtKeyInput(new_content))

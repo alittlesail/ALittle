@@ -70,7 +70,7 @@ void NetSystem::Setup()
 	g_ScheduleSystem.RegisterHandle(NET_CONNECT_SUCCEED, NetSystem::HandleConnectEvent);
 	g_ScheduleSystem.RegisterHandle(NET_CONNECT_FAILED, NetSystem::HandleConnectEvent);
 
-	CarpScheduleInstance().Start(true, nullptr);
+	CarpScheduleInstance().Run(true);
 }
 
 void NetSystem::Shutdown()
@@ -230,25 +230,9 @@ void NetSystem::HandleMessageEvent(unsigned int event_type, void* data1, void* d
 	if (data2 == 0) return;
 	++self->m_netsystem_filter_handle;
 
-	// save memory
-	char* memory = (char*)data2;
-
-	// get message size
-	CARP_MESSAGE_SIZE len = 0;
-	memcpy(&len, memory, sizeof(CARP_MESSAGE_SIZE));
-	memory += sizeof(CARP_MESSAGE_SIZE);
-	CARP_MESSAGE_ID head_id = 0;
-	memcpy(&head_id, memory, sizeof(CARP_MESSAGE_ID));
-	memory += sizeof(CARP_MESSAGE_ID);
-	CARP_MESSAGE_RPCID head_rpc_id = 0;
-    memcpy(&head_rpc_id, memory, sizeof(CARP_MESSAGE_RPCID));
-	memory += sizeof(CARP_MESSAGE_RPCID);
-
 	// If is unknown packets, then handed over to read the data factory processing, and then to the script
-	self->m_read_factory.SetID(head_id);
-    self->m_read_factory.SetRpcID(head_rpc_id);
-	self->m_read_factory.Deserialize(memory, len);
-	g_ScriptSystem.Invoke("__ALITTLEAPI_Message", self->GetID(), head_id, head_rpc_id, &self->m_read_factory);
+	self->m_read_factory.DeserializeFromTotalMessage(data2);
+    g_ScriptSystem.Invoke("__ALITTLEAPI_Message", self->GetID(), self->m_read_factory.GetID(), self->m_read_factory.GetRpcID(), &self->m_read_factory);
 
 	// release memory
 	free(data2);

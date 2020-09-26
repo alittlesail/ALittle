@@ -88,7 +88,7 @@ function ALittle.File_ReadJsonFromFile(file_path, crypt_mode)
 		end
 		local content = file:GetContent()
 		file:Clear()
-		local error, new_content = Lua.TCall(json.decode, content)
+		local error, new_content = Lua.TCall(cjson.decode, content)
 		if error == nil then
 			return new_content, content
 		end
@@ -108,7 +108,7 @@ function ALittle.File_ReadJsonFromAsset(file_path, crypt_mode)
 		end
 		local content = file:GetContent()
 		file:Clear()
-		local error, new_content = Lua.TCall(json.decode, content)
+		local error, new_content = Lua.TCall(cjson.decode, content)
 		if error == nil then
 			return new_content, content
 		end
@@ -117,7 +117,7 @@ function ALittle.File_ReadJsonFromAsset(file_path, crypt_mode)
 end
 
 function ALittle.File_WriteJsonToFile(content, file_path)
-	return ALittle.File_SaveFile(file_path, json.encode(content), -1)
+	return ALittle.File_SaveFile(file_path, cjson.encode(content), -1)
 end
 
 function ALittle.DeleteLog(day_count_before)

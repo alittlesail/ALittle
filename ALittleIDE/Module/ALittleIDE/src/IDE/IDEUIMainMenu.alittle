@@ -250,7 +250,6 @@ protected class IDEUIMainMenu : ALittle.Linear
             ALittle.List_Push(file_list, base_path.."Net/Lua/LuaHttpFileInterface.lua");
             ALittle.List_Push(file_list, base_path.."Net/Lua/LuaHttpInterface.lua");
             ALittle.List_Push(file_list, base_path.."Net/Lua/LuaMsgInterface.lua");
-            ALittle.List_Push(file_list, base_path.."Net/Lua/LuaMessageFactory.lua");
             ALittle.List_Push(file_list, base_path.."Schedule/Lua/LuaSchedule.lua");
         
             ALittle.List_Push(file_list, base_path.."Loop/LoopSystem.lua");

@@ -156,7 +156,7 @@ public static File_ReadJsonFromFile(string file_path, [Nullable] bool crypt_mode
     
         var content = file.GetContent();
         file.Clear();
-        var error, new_content = tcall(lua.json.decode, content);
+        var error, new_content = tcall(lua.cjson.decode, content);
         if (error == null) return new_content, content;
         return null, new_content;
     }
@@ -180,7 +180,7 @@ public static File_ReadJsonFromAsset(string file_path, bool crypt_mode) : any, s
     
         var content = file.GetContent();
         file.Clear();
-        var error, new_content = tcall(lua.json.decode, content);
+        var error, new_content = tcall(lua.cjson.decode, content);
         if (error == null) return new_content, content;
         return null, new_content;
     }
@@ -194,7 +194,7 @@ public static File_ReadJsonFromAsset(string file_path, bool crypt_mode) : any, s
 // file_path 文件路径
 public static File_WriteJsonToFile(any content, string file_path) : bool
 {
-    return File_SaveFile(file_path, lua.json.encode(content), -1);
+    return File_SaveFile(file_path, lua.cjson.encode(content), -1);
 }
 
 // 删除指定时间之前的日志文件

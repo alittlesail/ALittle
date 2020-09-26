@@ -168,10 +168,8 @@ void ScriptSystem::Setup()
 
 void ScriptSystem::Shutdown()
 {
-	g_ScriptSystem.Invoke("__ALITTLEAPI_ShutdownMainModule");
+	Invoke("__ALITTLEAPI_ShutdownMainModule");
 	Release();
-
-	m_script_set.clear();
 }
 
 ScriptSystem::ScriptSystem()
@@ -231,7 +229,7 @@ void ScriptSystem::StartScript(std::string module_name, const std::string& debug
 	}
 
 	// Æô¶¯
-	g_ScriptSystem.Invoke("__ALITTLEAPI_SetupMainModule", base_path.c_str(), module_name.c_str(), debug_info.c_str());
+	Invoke("__ALITTLEAPI_SetupMainModule", base_path.c_str(), module_name.c_str(), debug_info.c_str());
 }
 
 

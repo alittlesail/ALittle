@@ -72,7 +72,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)lib/SDL2;$(SolutionDir)lib/ALittle;$(SolutionDir)lib/lua;$(SolutionDir)lib/mysql;$(SolutionDir)lib/openssl;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>LibClientd.lib;SDL2.lib;SDL2main.lib;luad.lib;Iphlpapi.lib;Wininet.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>LibClientd.lib;SDL2.lib;SDL2main.lib;luad.lib;Iphlpapi.lib;Wininet.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -94,7 +94,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)lib/SDL2;$(SolutionDir)lib/ALittle;$(SolutionDir)lib/lua;$(SolutionDir)lib/mysql;$(SolutionDir)lib/openssl;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>LibClient.lib;SDL2.lib;SDL2main.lib;lua.lib;Iphlpapi.lib;Wininet.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>LibClient.lib;SDL2.lib;SDL2main.lib;lua.lib;Iphlpapi.lib;Wininet.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

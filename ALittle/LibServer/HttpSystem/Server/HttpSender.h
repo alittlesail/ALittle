@@ -6,7 +6,6 @@
 #include <string>
 #include <vector>
 
-#define CARP_HAS_SSL
 #include "Carp/carp_http.hpp"
 #include "Carp/carp_file_cache.hpp"
 

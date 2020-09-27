@@ -24,6 +24,7 @@
       <Filter>ScriptSystem\sqlite3</Filter>
     </ClInclude>
     <ClInclude Include="alittle_script.hpp" />
+    <ClInclude Include="alittle_audio.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="alittle_main.cpp" />

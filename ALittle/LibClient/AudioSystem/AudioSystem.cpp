@@ -9,8 +9,9 @@
 #include "ALittle/LibClient/Tool/MemoryPool.h"
 
 #define CARP_MIXER_IMPL
-#include "Carp/carp_log.hpp"
 #include "Carp/carp_mixer.hpp"
+
+#include "Carp/carp_log.hpp"
 #include "Carp/carp_rwops.hpp"
 
 namespace ALittle

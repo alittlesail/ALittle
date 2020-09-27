@@ -3,7 +3,6 @@
 #include "HttpReceiver.h"
 #include "HttpSender.h"
 
-#define CARP_HAS_SSL
 #include "Carp/carp_http.hpp"
 
 #include "ALittle/LibServer/ServerSystem/ServerSchedule.h"

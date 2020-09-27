@@ -9,7 +9,6 @@
 
 #include "Carp/carp_mysql.hpp"
 #include "Carp/carp_file.hpp"
-#define CARP_HAS_SSL
 #include "Carp/carp_http.hpp"
 
 namespace ALittle

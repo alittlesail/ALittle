@@ -5,6 +5,7 @@
 #include "Carp/carp_task_consumer.hpp"
 
 #include "alittle_script.hpp"
+#include "alittle_audio.hpp"
 
 class ALittleSchedule
 {
@@ -23,14 +24,14 @@ public:
 		// set up instance
 		s_carp_task_consumer.SetThreadCount(1);
 		// g_RenderSystem.Setup();			// render system
-		// g_AudioSystem.Setup();			// audio system
+		s_alittle_audio.Setup();			// audio system
 		// NetSystem::Setup();				// net system
 		s_alittle_script.Setup();			// script system
 
 		// register to script
 		// RegisterToScript(g_ScriptSystem);
 		// g_RenderSystem.RegisterToScript(g_ScriptSystem);
-		// g_AudioSystem.RegisterToScript(g_ScriptSystem);
+		s_alittle_audio.Bind(s_alittle_script.GetLuaState());
 		// NetSystem::RegisterToScript(g_ScriptSystem);
 
 		// load engine

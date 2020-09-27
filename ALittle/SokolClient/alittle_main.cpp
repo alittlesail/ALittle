@@ -1,4 +1,20 @@
 
+#define CARP_CONSOLE_IMPL
+#include "Carp/carp_console.hpp"
+#define CARP_DUMP_IMPL
+#include "Carp/carp_dump.hpp"
+#define CARP_LOG_IMPL
+#include "Carp/carp_log.hpp"
+#define CARP_TASK_CONSUMER_IMPL
+#include "Carp/carp_task_consumer.hpp"
+
+#define ALITTLE_SCHEDULE_IMPL
+#include "alittle_schedule.hpp"
+#define ALITTLE_SCRIPT_IMPL
+#include "alittle_script.hpp"
+#define ALITTLE_AUDIO_IMPL
+#include "alittle_audio.hpp"
+
 #define SOKOL_IMPL
 #define SOKOL_D3D11
 
@@ -10,21 +26,11 @@
 #include "sokol/sokol_gfx.h"
 #include "sokol/sokol_glue.h"
 
-#define ALITTLE_SCHEDULE_IMPL
-#include "alittle_schedule.hpp"
+#define CARP_RWOPS_HPP_IMPL
+#include "Carp/carp_rwops.hpp"
 
-#define CARP_CONSOLE_IMPL
-#include "Carp/carp_console.hpp"
-#define CARP_DUMP_IMPL
-#include "Carp/carp_dump.hpp"
-#define CARP_LOG_IMPL
-#include "Carp/carp_log.hpp"
-#define CARP_RWOPS_IMPL
-#include "Carp/carp_rwops.h"
-#define CARP_TASK_CONSUMER_IMPL
-#include "Carp/carp_task_consumer.hpp"
-
-static ALittleSchedule schedule;
+#define CARP_MIXER_IMPL
+#include "Carp/carp_mixer.hpp"
 
 void alittle_init()
 {
@@ -32,17 +38,17 @@ void alittle_init()
     desc.context = sapp_sgcontext();
     sg_setup(&desc);
 
-    schedule.Setup();
+    s_alittle_schedule.Setup();
 }
 
 void alittle_frame()
 {
-    schedule.Update();
+    s_alittle_schedule.Update();
 }
 
 void alittle_cleanup()
 {
-    schedule.Shutdown();
+    s_alittle_schedule.Shutdown();
 }
 
 void alittle_event(const sapp_event* event)

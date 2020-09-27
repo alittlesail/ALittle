@@ -4,12 +4,11 @@
 #include <string>
 
 extern "C" {
+#include "lua.h"
 #include "lualib/ajson/lua_ajson.h"
 #include "lualib/cjson/lua_cjson.h"
 #include "lualib/sqlite3/lsqlite3.h"
 }
-
-#include "LuaBridge/LuaBridge.h"
 
 #include "Carp/carp_script.hpp"
 #include "Carp/carp_message_bind.hpp"

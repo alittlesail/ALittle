@@ -34,8 +34,8 @@
 #include "Carp/carp_log.hpp"
 
 #include "Carp/carp_rwops.hpp"
-#define CARP_RWOPS_IMPL
-#include "Carp/carp_rwops.h"
+#define CARP_RWOPS_HPP_IMPL
+#include "Carp/carp_rwops.hpp"
 
 #define CARP_TASK_CONSUMER_IMPL
 #include "Carp/carp_task_consumer.hpp"
@@ -495,9 +495,9 @@ void ScheduleSystem::PushConsoleHelp()
 
 void ScheduleSystem::RegisterToScript(ScriptSystem& script_system)
 {
-	lua_State* L = script_system.GetLuaState();
+	lua_State* l_state = script_system.GetLuaState();
 
-	luabridge::getGlobalNamespace(L)
+	luabridge::getGlobalNamespace(l_state)
 		.beginClass<ScheduleSystem>("__CPPAPIScheduleSystem")
 		.addFunction("Exit", &ScheduleSystem::Exit)
 		.addFunction("ForceExit", &ScheduleSystem::ForceExit)
@@ -508,7 +508,7 @@ void ScheduleSystem::RegisterToScript(ScriptSystem& script_system)
 		.addFunction("GetCurrentMS", &ScheduleSystem::GetCurrentMS)
 		.endClass();
 
-	luabridge::setGlobal(L, this, "__CPPAPI_ScheduleSystem");
+	luabridge::setGlobal(l_state, this, "__CPPAPI_ScheduleSystem");
 
 	g_ScheduleSystem.RegisterHandle(EXTERNAL_INVOKE_LUA, ScheduleSystem::HandleExternalInvokeLua);
 	g_ScheduleSystem.RegisterHandle(CONSOLE_INVOKE_LUA, ScheduleSystem::HandleConsoleInvokeLua);

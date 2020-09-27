@@ -42,6 +42,7 @@
     <ClInclude Include="..\..\Carp\carp_string.hpp" />
     <ClInclude Include="..\..\Carp\carp_string_bind.hpp" />
     <ClInclude Include="..\..\Carp\carp_surface.h" />
+    <ClInclude Include="..\..\Carp\carp_system.hpp" />
     <ClInclude Include="..\..\Carp\carp_task_consumer.hpp" />
     <ClInclude Include="..\..\Carp\carp_task_consumer_bind.hpp" />
     <ClInclude Include="..\..\Carp\carp_thread_consumer.hpp" />

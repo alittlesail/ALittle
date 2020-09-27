@@ -5,13 +5,8 @@ extern "C" {
 #include "lua.h"
 }
 #include "LuaBridge/LuaBridge.h"
-#ifdef __ANDROID__
-#include "sokol/sokol_app.h"
-#endif
 
-#ifdef __APPLE__
-#include <TargetConditionals.h>
-#endif
+#include "Carp/carp_system.hpp"
 
 class ALittleSystem
 {
@@ -41,29 +36,10 @@ public:
 
 	static int GetPlatform(lua_State* l_state)
 	{
-#ifdef _WIN32
-		lua_pushstring(l_state, "Windows");
-#elif __ANDROID__
-		lua_pushstring(l_state, "Andoird");
-#elif __APPLE__
-#ifdef TARGET_OS_IPHONE
-		lua_pushstring(l_state, "iOS");
-#else
-		lua_pushstring(l_state, "Mac");
-#endif
-#elif __EMSCRIPTEN__
-		lua_pushstring(l_state, "Emscripten");
-#endif
+		lua_pushstring(l_state, CarpSystem::GetPlatform().c_str());
 		return 1;
 	}
 };
 
-extern ALittleSystem s_alittle_system;
-
-#endif
-
-
-#ifdef ALITTLE_SYSTEM_IMPL
-ALittleSystem s_alittle_system;
 #endif
 

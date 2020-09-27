@@ -68,7 +68,7 @@ public class LogEventSystem
     {
         var error, result = LogServer.HandleLogEventInfo(this._session, info);
         if (error != null)
-            Warn("日志发送失败:"..error.." 数据:"..lua.json.encode(info));
+            Warn("日志发送失败:"..error.." 数据:"..ALittle.String_JsonEncode(info));
     }
 
     // 发送日志事件
@@ -92,7 +92,7 @@ public class LogEventSystem
 
             if (this._count > 1000)
             {
-                Warn("消息队列太大，移除掉第一个, 数据:"..lua.json.encode(this._list[1]));
+                Warn("消息队列太大，移除掉第一个, 数据:"..ALittle.String_JsonEncode(this._list[1]));
                 lua.table.remove(this._list, 1);
                 -- this._count;
             }

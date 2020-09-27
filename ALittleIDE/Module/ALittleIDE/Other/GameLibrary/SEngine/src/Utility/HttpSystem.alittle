@@ -38,7 +38,7 @@ public class HttpSystem
         {
             var map = new Map<string, any>();
             map["error"] = error;
-            client.SendString(lua.json.encode(map));
+            client.SendString(ALittle.String_JsonEncode(map));
             return;
         }
         // 如果没有返回结果，那么就返回错误
@@ -46,12 +46,12 @@ public class HttpSystem
         {
             var map = new Map<string, any>();
             map["error"] = "接口没有返回任何内容";
-            client.SendString(lua.json.encode(map));
+            client.SendString(ALittle.String_JsonEncode(map));
             return;
         }
 
         // 发送结果
-        client.SendString(lua.json.encode(result));
+        client.SendString(ALittle.String_JsonEncode(result));
     }
 
     // 处理下载任务
@@ -99,7 +99,7 @@ public class HttpSystem
         var id = this._id_creator.CreateID();
         this._request_map[id] = co;
         // 开始请求
-        __CPPAPI_ServerSchedule.HttpPost(id, url, "application/json", lua.json.encode(content));
+        __CPPAPI_ServerSchedule.HttpPost(id, url, "application/json", ALittle.String_JsonEncode(content));
         return yield;
     }
 

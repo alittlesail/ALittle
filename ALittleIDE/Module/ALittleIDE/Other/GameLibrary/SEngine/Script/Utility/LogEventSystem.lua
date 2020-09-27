@@ -70,7 +70,7 @@ function ALittle.LogEventSystem:Send(info)
 	local ___COROUTINE = coroutine.running()
 	local error, result = ALittle.IMsgCommon.InvokeRPC(976782632, self._session, info)
 	if error ~= nil then
-		ALittle.Warn("日志发送失败:" .. error .. " 数据:" .. json.encode(info))
+		ALittle.Warn("日志发送失败:" .. error .. " 数据:" .. ALittle.String_JsonEncode(info))
 	end
 end
 
@@ -85,7 +85,7 @@ function ALittle.LogEventSystem:SendLogEvent(info)
 		ALittle.List_Push(self._list, info)
 		self._count = self._count + 1
 		if self._count > 1000 then
-			ALittle.Warn("消息队列太大，移除掉第一个, 数据:" .. json.encode(self._list[1]))
+			ALittle.Warn("消息队列太大，移除掉第一个, 数据:" .. ALittle.String_JsonEncode(self._list[1]))
 			table.remove(self._list, 1)
 			self._count = self._count - 1
 		end

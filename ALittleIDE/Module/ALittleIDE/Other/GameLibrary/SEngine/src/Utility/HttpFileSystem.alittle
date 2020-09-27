@@ -59,7 +59,7 @@ public class HttpFileSystem
         {
             var map = new Map<string, any>();
             map["error"] = error;
-            file_client.SendString(lua.json.encode(map));
+            file_client.SendString(ALittle.String_JsonEncode(map));
             return;
         }
 
@@ -68,12 +68,12 @@ public class HttpFileSystem
         {
             var map = new Map<string, any>();
             map["error"] = "接口没有返回任何内容";
-            file_client.SendString(lua.json.encode(map));
+            file_client.SendString(ALittle.String_JsonEncode(map));
             return;
         }
 
         // 返回结果
-        file_client.SendString(lua.json.encode(result));
+        file_client.SendString(ALittle.String_JsonEncode(result));
     }
     
     // 处理文件上传结束

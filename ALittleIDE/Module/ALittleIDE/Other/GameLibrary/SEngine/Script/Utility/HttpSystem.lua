@@ -35,16 +35,16 @@ function ALittle.HttpSystem.HandleHttpTask(http_id, callback, value_map)
 	if error ~= nil then
 		local map = {}
 		map["error"] = error
-		client:SendString(json.encode(map))
+		client:SendString(ALittle.String_JsonEncode(map))
 		return
 	end
 	if result == nil then
 		local map = {}
 		map["error"] = "接口没有返回任何内容"
-		client:SendString(json.encode(map))
+		client:SendString(ALittle.String_JsonEncode(map))
 		return
 	end
-	client:SendString(json.encode(result))
+	client:SendString(ALittle.String_JsonEncode(result))
 end
 ALittle.HttpSystem.HandleHttpTask = Lua.CoWrap(ALittle.HttpSystem.HandleHttpTask)
 
@@ -81,7 +81,7 @@ function ALittle.HttpSystem:PostJson(url, content)
 	end
 	local id = self._id_creator:CreateID()
 	self._request_map[id] = ___COROUTINE
-	__CPPAPI_ServerSchedule:HttpPost(id, url, "application/json", json.encode(content))
+	__CPPAPI_ServerSchedule:HttpPost(id, url, "application/json", ALittle.String_JsonEncode(content))
 	return coroutine.yield()
 end
 

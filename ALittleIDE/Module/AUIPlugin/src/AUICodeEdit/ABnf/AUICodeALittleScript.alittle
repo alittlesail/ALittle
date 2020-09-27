@@ -287,7 +287,6 @@ public class AUICodeALittleScriptProject : AUICodeProject
     // 生成目标语言
     public await fun Generate(string full_path) : lua.ALittleScriptGenerateError
     {
-        ALittle.Log(full_path);
         var query_id = this.Add(co);
         lua.alittlescript.alittlescriptproject_generate(this._project, query_id, full_path);
         return yield;

@@ -51,16 +51,16 @@ function ALittle.HttpFileSystem:HandleHttpFileTaskImpl(http_id, path, callback, 
 	if error ~= nil then
 		local map = {}
 		map["error"] = error
-		file_client:SendString(json.encode(map))
+		file_client:SendString(ALittle.String_JsonEncode(map))
 		return
 	end
 	if result == nil then
 		local map = {}
 		map["error"] = "接口没有返回任何内容"
-		file_client:SendString(json.encode(map))
+		file_client:SendString(ALittle.String_JsonEncode(map))
 		return
 	end
-	file_client:SendString(json.encode(result))
+	file_client:SendString(ALittle.String_JsonEncode(result))
 end
 
 function ALittle.HttpFileSystem:HandleHttpFileCompletedTask(http_id, reason)

@@ -270,7 +270,6 @@ end
 
 function AUIPlugin.AUICodeALittleScriptProject:Generate(full_path)
 	local ___COROUTINE = coroutine.running()
-	ALittle.Log(full_path)
 	local query_id = self:Add(___COROUTINE)
 	alittlescript.alittlescriptproject_generate(self._project, query_id, full_path)
 	return coroutine.yield()

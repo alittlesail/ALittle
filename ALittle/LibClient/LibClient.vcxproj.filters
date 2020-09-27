@@ -327,6 +327,9 @@
     <ClInclude Include="..\..\Carp\carp_system.hpp">
       <Filter>Carp</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_matrix_2d.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioSystem\AudioSystem.cpp">

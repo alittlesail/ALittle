@@ -24,6 +24,7 @@
     <ClInclude Include="..\..\Carp\carp_font.hpp" />
     <ClInclude Include="..\..\Carp\carp_log.hpp" />
     <ClInclude Include="..\..\Carp\carp_log_bind.hpp" />
+    <ClInclude Include="..\..\Carp\carp_matrix_2d.hpp" />
     <ClInclude Include="..\..\Carp\carp_message.hpp" />
     <ClInclude Include="..\..\Carp\carp_message_bind.hpp" />
     <ClInclude Include="..\..\Carp\carp_miniheap.hpp" />

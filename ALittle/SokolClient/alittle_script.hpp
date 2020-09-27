@@ -107,13 +107,12 @@ public:
 	}
 };
 
-extern ALittleScript& ALittleScriptInstance();
-#define s_alittle_script ALittleScriptInstance()
+extern ALittleScript s_alittle_script;
 
 #endif
 
 
 #ifdef ALITTLE_SCRIPT_IMPL
-ALittleScript& ALittleScriptInstance() { static ALittleScript instance; return instance; };
+ALittleScript s_alittle_script;
 #endif
 

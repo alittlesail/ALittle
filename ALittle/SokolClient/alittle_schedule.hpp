@@ -61,13 +61,12 @@ private:
 	bool m_has_updater = false;
 };
 
-extern ALittleSchedule& ALittleScheduleInstance();
-#define s_alittle_schedule ALittleScheduleInstance()
+extern ALittleSchedule s_alittle_schedule;
 
 #endif
 
 
 #ifdef ALITTLE_SCHEDULE_IMPL
-ALittleSchedule& ALittleScheduleInstance() { static ALittleSchedule instance; return instance; };
+ALittleSchedule s_alittle_schedule;
 #endif
 

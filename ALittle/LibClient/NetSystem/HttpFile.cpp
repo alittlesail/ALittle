@@ -89,7 +89,7 @@ void HttpFile::Start()
 				m_total_size = total_size;
 				m_cur_size = cur_size;
 				g_ScheduleSystem.PushUserEvent(HTTP_UPLOADING_EVENT, (void*)this);
-			}, &CarpScheduleInstance().GetIOService(), m_file_path, m_start_size, "");
+			}, &s_carp_schedule.GetIOService(), m_file_path, m_start_size, "");
 	}
 	else if (m_upload_client)
 	{
@@ -111,7 +111,7 @@ void HttpFile::Start()
 				m_total_size = total_size;
 				m_cur_size = cur_size;
 				g_ScheduleSystem.PushUserEvent(HTTP_UPLOADING_EVENT, (void*)this);
-			}, &CarpScheduleInstance().GetIOService(), "");
+			}, &s_carp_schedule.GetIOService(), "");
 	}
 }
 

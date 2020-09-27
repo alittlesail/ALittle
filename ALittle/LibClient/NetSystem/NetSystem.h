@@ -2,14 +2,11 @@
 #ifndef _ALITTLE_NETSYSTEM_H_
 #define _ALITTLE_NETSYSTEM_H_
 
-#include <vector>
 #include <string>
 
 #include "Carp/carp_connect_client.hpp"
 #include "Carp/carp_message.hpp"
 #include "Carp/carp_schedule.hpp"
-
-extern CarpSchedule& CarpScheduleInstance();
 
 namespace ALittle
 {
@@ -38,9 +35,6 @@ public:
 		CONNECT_ED,				// connected
 		CONNECT_ING				// connecting
 	};
-
-	void Execute();
-	void Abandon();
 	
 	int GetID() const;
 
@@ -98,9 +92,9 @@ public:
 	void SendFactory(const CarpMessageWriteFactory* message);
 	
 private:
-	ConnectState m_state;		// connect status
+	ConnectState m_state = CONNECT_IDLE;		// connect status
 	std::string m_ip;			// ip
-	unsigned int m_port;		// port
+	unsigned int m_port = 0;		// port
 
 private:
 	CarpMessageReadFactory m_read_factory;	// read factory

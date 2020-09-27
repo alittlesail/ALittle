@@ -1,4 +1,6 @@
 
+#include <asio.hpp>
+
 #define CARP_CONSOLE_IMPL
 #include "Carp/carp_console.hpp"
 #define CARP_DUMP_IMPL
@@ -7,6 +9,8 @@
 #include "Carp/carp_log.hpp"
 #define CARP_TASK_CONSUMER_IMPL
 #include "Carp/carp_task_consumer.hpp"
+#define CARP_SCHEDULE_IMPL
+#include "Carp/carp_schedule.hpp"
 
 #define ALITTLE_SCHEDULE_IMPL
 #include "alittle_schedule.hpp"
@@ -14,6 +18,8 @@
 #include "alittle_script.hpp"
 #define ALITTLE_AUDIO_IMPL
 #include "alittle_audio.hpp"
+#define ALITTLE_NET_IMPL
+#include "alittle_net.hpp"
 
 #define SOKOL_IMPL
 #define SOKOL_D3D11

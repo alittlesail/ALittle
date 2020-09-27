@@ -6,6 +6,8 @@
 
 #include "alittle_script.hpp"
 #include "alittle_audio.hpp"
+#include "alittle_net.hpp"
+#include "Carp/carp_schedule.hpp"
 
 class ALittleSchedule
 {
@@ -13,16 +15,19 @@ public:
 	void SetArgs(int argc, char* argv[])
 	{
 		for (int i = 0; i < argc; ++i)
-			m_args.push_back(argv[i]);
+			m_args.emplace_back(argv[i]);
 	}
 	
 	void Setup()
 	{
 		// 初始化日志系统
 		CARP_INFO("==>ScheduleSystem Setup Begin<==");
-		
-		// set up instance
+
+		// init net system
+		s_carp_schedule.Run(true);
+		// init task system
 		s_carp_task_consumer.SetThreadCount(1);
+		
 		// g_RenderSystem.Setup();			// render system
 		s_alittle_audio.Setup();			// audio system
 		// NetSystem::Setup();				// net system
@@ -32,7 +37,7 @@ public:
 		// RegisterToScript(g_ScriptSystem);
 		// g_RenderSystem.RegisterToScript(g_ScriptSystem);
 		s_alittle_audio.Bind(s_alittle_script.GetLuaState());
-		// NetSystem::RegisterToScript(g_ScriptSystem);
+		ALittleNet::Bind(s_alittle_script.GetLuaState());
 
 		// load engine
 		CARP_INFO("==>ScheduleSystem Lua Init Begin<==");

@@ -8,13 +8,8 @@
 #include "ALittle/LibClient/ScheduleSystem/ScheduleSystem.h"
 #include <SDL.h>
 
+#define CARP_SHCEDULE_IMPL
 #include "Carp/carp_schedule.hpp"
-
-CarpSchedule& CarpScheduleInstance()
-{
-	static CarpSchedule instance;
-	return instance;
-}
 
 namespace ALittle
 {
@@ -70,7 +65,7 @@ void NetSystem::Setup()
 	g_ScheduleSystem.RegisterHandle(NET_CONNECT_SUCCEED, NetSystem::HandleConnectEvent);
 	g_ScheduleSystem.RegisterHandle(NET_CONNECT_FAILED, NetSystem::HandleConnectEvent);
 
-	CarpScheduleInstance().Run(true);
+	s_carp_schedule.Run(true);
 }
 
 void NetSystem::Shutdown()
@@ -186,7 +181,7 @@ void NetSystem::Connect(const char* ip, unsigned int port)
 	m_state = CONNECT_ING;
 
 	m_client = CarpConnectClientPtr(new CarpConnectClient());
-	m_client->Connect(m_ip, m_port, &CarpScheduleInstance().GetIOService()
+	m_client->Connect(m_ip, m_port, &s_carp_schedule.GetIOService()
 		, std::bind(&NetSystem::HandleConnectFailed, this)
 		, std::bind(&NetSystem::HandleConnectSucceed, this)
 		, std::bind(&NetSystem::HandleDisconnected, this)

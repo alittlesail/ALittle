@@ -84,7 +84,7 @@ void HttpClient::Start()
 					g_ScheduleSystem.PushUserEvent(NET_HTTP_FAILED, (void*)this);
 				}
 			}
-			, nullptr, &CarpScheduleInstance().GetIOService(), "", 0, "");
+			, nullptr, &s_carp_schedule.GetIOService(), "", 0, "");
 	}
 }
 

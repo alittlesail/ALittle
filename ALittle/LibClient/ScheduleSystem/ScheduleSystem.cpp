@@ -27,6 +27,8 @@
 #include "Carp/carp_console.hpp"
 #define CARP_DUMP_IMPL
 #include "Carp/carp_dump.hpp"
+#define CARP_SCHEDULE_IMPL
+#include "Carp/carp_schedule.hpp"
 
 #include "Carp/carp_file.hpp"
 

@@ -20,6 +20,8 @@
 #include "alittle_audio.hpp"
 #define ALITTLE_NET_IMPL
 #include "alittle_net.hpp"
+#define ALITTLE_CSV_IMPL
+#include "alittle_csv.hpp"
 
 #define SOKOL_IMPL
 #define SOKOL_D3D11

@@ -19,6 +19,7 @@
     <ClInclude Include="..\..\lualib\sqlite3\sqlite3.h" />
     <ClInclude Include="..\..\lualib\sqlite3\sqlite3ext.h" />
     <ClInclude Include="alittle_audio.hpp" />
+    <ClInclude Include="alittle_csv.hpp" />
     <ClInclude Include="alittle_net.hpp" />
     <ClInclude Include="alittle_schedule.hpp" />
     <ClInclude Include="alittle_script.hpp" />

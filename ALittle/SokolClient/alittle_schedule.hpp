@@ -3,11 +3,12 @@
 
 #include "Carp/carp_log.hpp"
 #include "Carp/carp_task_consumer.hpp"
+#include "Carp/carp_schedule.hpp"
 
 #include "alittle_script.hpp"
 #include "alittle_audio.hpp"
 #include "alittle_net.hpp"
-#include "Carp/carp_schedule.hpp"
+#include "alittle_csv.hpp"
 
 class ALittleSchedule
 {
@@ -30,7 +31,6 @@ public:
 		
 		// g_RenderSystem.Setup();			// render system
 		s_alittle_audio.Setup();			// audio system
-		// NetSystem::Setup();				// net system
 		s_alittle_script.Setup();			// script system
 
 		// register to script
@@ -38,6 +38,7 @@ public:
 		// g_RenderSystem.RegisterToScript(g_ScriptSystem);
 		s_alittle_audio.Bind(s_alittle_script.GetLuaState());
 		ALittleNet::Bind(s_alittle_script.GetLuaState());
+		ALittleCsv::Bind(s_alittle_script.GetLuaState());
 
 		// load engine
 		CARP_INFO("==>ScheduleSystem Lua Init Begin<==");

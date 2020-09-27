@@ -26,6 +26,7 @@
     <ClInclude Include="alittle_script.hpp" />
     <ClInclude Include="alittle_audio.hpp" />
     <ClInclude Include="alittle_net.hpp" />
+    <ClInclude Include="alittle_csv.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="alittle_main.cpp" />

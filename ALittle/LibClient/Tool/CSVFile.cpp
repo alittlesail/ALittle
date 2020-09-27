@@ -85,12 +85,12 @@ bool CsvFile::Load(const char* file_path, bool only_from_asset)
 
 void CsvFile::Close()
 {
-    m_csv.Clear();
+    m_csv.Close();
 }
 
 const char* CsvFile::ReadCell(int row, int col)
 {
-    const char* cell = m_csv.GetCell(row, col);
+    const char* cell = m_csv.ReadCell(row, col);
     if (cell) return cell;
     return m_empty_string.c_str();
 }

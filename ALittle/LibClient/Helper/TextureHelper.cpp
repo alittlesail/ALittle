@@ -4,11 +4,11 @@
 #include <SDL_surface.h>
 #include <vector>
 #include "ALittle/LibClient/Platform/iOS/iOSSystem.h"
+#include "Carp/carp_string.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "Carp/carp_string.hpp"
 #include "stb/stb_image_write.h"
 
 namespace ALittle

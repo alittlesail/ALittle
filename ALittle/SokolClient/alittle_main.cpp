@@ -22,6 +22,8 @@
 #include "alittle_net.hpp"
 #define ALITTLE_CSV_IMPL
 #include "alittle_csv.hpp"
+#define ALITTLE_SURFACE_IMPL
+#include "alittle_surface.hpp"
 
 #define SOKOL_IMPL
 #define SOKOL_D3D11

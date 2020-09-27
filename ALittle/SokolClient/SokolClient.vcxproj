@@ -23,6 +23,7 @@
     <ClInclude Include="alittle_net.hpp" />
     <ClInclude Include="alittle_schedule.hpp" />
     <ClInclude Include="alittle_script.hpp" />
+    <ClInclude Include="alittle_surface.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\lualib\ajson\lua_ajson.c" />

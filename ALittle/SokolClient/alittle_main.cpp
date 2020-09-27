@@ -24,6 +24,8 @@
 #include "alittle_csv.hpp"
 #define ALITTLE_SURFACE_IMPL
 #include "alittle_surface.hpp"
+#define ALITTLE_FONT_IMPL
+#include "alittle_font.hpp"
 
 #define SOKOL_IMPL
 #define SOKOL_D3D11

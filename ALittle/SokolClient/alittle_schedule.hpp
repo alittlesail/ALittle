@@ -11,6 +11,8 @@
 #include "alittle_csv.hpp"
 #include "alittle_surface.hpp"
 
+#include "sokol/sokol_app.h"
+
 class ALittleSchedule
 {
 public:
@@ -22,8 +24,21 @@ public:
 	
 	void Setup()
 	{
+#ifdef _WIN32
+		s_carp_dump.Setup("ALittleClient", []() { s_carp_log.Shutdown(); });
+#endif
+
 		// 初始化日志系统
 		CARP_INFO("==>ScheduleSystem Setup Begin<==");
+
+#ifndef __EMSCRIPTEN__
+		CarpFile::CreateDeepFolder(CarpRWops::ExternalFilePath() + "Log");
+		s_carp_log.Setup(CarpRWops::ExternalFilePath() + "Log/", "ALittleClient");
+#endif
+#ifdef _WIN32
+		s_carp_console.Setup("ALittleClient", std::bind(&ALittleSchedule::PushConsoleEvent, this, std::placeholders::_1, std::placeholders::_2)
+			, std::bind(&ALittleSchedule::Exit, this), std::bind(&ALittleSchedule::PushConsoleHelp, this));
+#endif
 
 		// init net system
 		s_carp_schedule.Run(true);
@@ -62,9 +77,43 @@ public:
 
 	void Shutdown()
 	{
-		
+#ifdef _WIN32
+		s_carp_console.Shutdown();
+#endif
+
+		s_carp_log.Shutdown();
+
+		// set dump info
+#ifdef _WIN32
+		s_carp_dump.Shutdown();
+#endif
+#if (defined __ANDROID__) || (defined __IPHONEOS__)
+		exit(0);
+#endif
 	}
 
+	void Exit()
+	{
+		sapp_quit();
+	}
+
+private:
+	void PushConsoleHelp()
+	{
+		CARP_INFO(u8"模块列表:Client");
+	}
+
+	void PushConsoleEvent(const std::string& module, const std::string& cmd)
+	{
+		s_carp_task_consumer.PushEvent([module, cmd]()
+		{
+			if (module == "Client")
+			{
+				s_alittle_script.Invoke("__ALITTLEAPI_HandleConsoleCmd", cmd.c_str());
+			}
+		});
+	}
+	
 private:
 	std::vector<std::string> m_args;
 	bool m_has_updater = false;

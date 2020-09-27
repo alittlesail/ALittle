@@ -10,6 +10,7 @@
 #include "alittle_net.hpp"
 #include "alittle_csv.hpp"
 #include "alittle_surface.hpp"
+#include "alittle_system.hpp"
 
 #include "sokol/sokol_app.h"
 
@@ -50,12 +51,12 @@ public:
 		s_alittle_script.Setup();			// script system
 
 		// register to script
-		// RegisterToScript(g_ScriptSystem);
 		// g_RenderSystem.RegisterToScript(g_ScriptSystem);
 		s_alittle_audio.Bind(s_alittle_script.GetLuaState());
 		ALittleNet::Bind(s_alittle_script.GetLuaState());
 		ALittleCsv::Bind(s_alittle_script.GetLuaState());
 		ALittleSurface::Bind(s_alittle_script.GetLuaState());
+		ALittleSystem::Bind(s_alittle_script.GetLuaState());
 
 		// load engine
 		CARP_INFO("==>ScheduleSystem Lua Init Begin<==");

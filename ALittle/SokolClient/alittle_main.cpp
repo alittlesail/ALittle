@@ -26,6 +26,8 @@
 #include "alittle_surface.hpp"
 #define ALITTLE_FONT_IMPL
 #include "alittle_font.hpp"
+#include ALITTLE_SYSTEM_IMPL
+#include "alittle_system.hpp"
 
 #define SOKOL_IMPL
 #define SOKOL_D3D11

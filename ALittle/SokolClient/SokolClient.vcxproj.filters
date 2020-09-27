@@ -29,6 +29,7 @@
     <ClInclude Include="alittle_csv.hpp" />
     <ClInclude Include="alittle_surface.hpp" />
     <ClInclude Include="alittle_font.hpp" />
+    <ClInclude Include="alittle_system.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="alittle_main.cpp" />

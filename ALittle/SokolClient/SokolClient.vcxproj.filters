@@ -34,6 +34,7 @@
     <ClInclude Include="alittle_display.hpp" />
     <ClInclude Include="alittle_displayobject.hpp" />
     <ClInclude Include="alittle_displayobjects.hpp" />
+    <ClInclude Include="alittle_displayview.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="alittle_main.cpp" />

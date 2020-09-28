@@ -23,6 +23,7 @@
     <ClInclude Include="alittle_display.hpp" />
     <ClInclude Include="alittle_displayobject.hpp" />
     <ClInclude Include="alittle_displayobjects.hpp" />
+    <ClInclude Include="alittle_displayview.hpp" />
     <ClInclude Include="alittle_font.hpp" />
     <ClInclude Include="alittle_net.hpp" />
     <ClInclude Include="alittle_render.hpp" />

@@ -32,6 +32,8 @@
 #include "alittle_render.hpp"
 #define ALITTLE_DISPLAY_IMPL
 #include "alittle_display.hpp"
+#define ALITTLE_DISPLAYVIEW_IMPL
+#include "alittle_displayview.hpp"
 
 #define SOKOL_IMPL
 #define SOKOL_D3D11
@@ -74,11 +76,15 @@ sapp_desc sokol_main(int argc, char* argv[])
 {
 	// 保存参数，用于启动使用
     s_alittle_schedule.SetArgs(argc, argv);
+
+    static char empty_title[2] = " ";
 	
     sapp_desc desc = {0};
     desc.init_cb = alittle_init;
     desc.frame_cb = alittle_frame;
     desc.cleanup_cb = alittle_cleanup;
     desc.event_cb = alittle_event;
+    desc.window_title = empty_title;
+    desc.high_dpi = true;
     return desc;
 }

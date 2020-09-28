@@ -13,7 +13,7 @@ public:
 		m_pass_action.colors[0].action = SG_ACTION_CLEAR;
 		m_pass_action.colors[0].val[0] = 0.0f;
 		m_pass_action.colors[0].val[1] = 0.0f;
-		m_pass_action.colors[0].val[2] = 0.0f;
+		m_pass_action.colors[0].val[2] = 1.0f;
 		m_pass_action.colors[0].val[3] = 1.0f;
 
 		sg_desc desc = { 0 };

@@ -15,6 +15,7 @@
 #include "alittle_displayobject.hpp"
 #include "alittle_displayobjects.hpp"
 #include "alittle_display.hpp"
+#include "alittle_displayview.hpp"
 #include "alittle_render.hpp"
 
 #include "sokol/sokol_app.h"
@@ -67,6 +68,7 @@ public:
 		s_alittle_display.Bind(s_alittle_script.GetLuaState());
 		ALittleDisplayObject::Bind(s_alittle_script.GetLuaState());
 		ALittleDisplayObjects::Bind(s_alittle_script.GetLuaState());
+		ALittleDisplayView::Bind(s_alittle_script.GetLuaState());
 
 		// load engine
 		CARP_INFO("==>ScheduleSystem Lua Init Begin<==");

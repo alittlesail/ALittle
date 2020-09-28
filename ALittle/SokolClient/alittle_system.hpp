@@ -154,3 +154,7 @@ public:
 
 #endif
 
+#ifdef ALITTLE_SYSTEM_IMPL
+#define CARP_SYSTEM_IMPL
+#include "Carp/carp_system.h"
+#endif

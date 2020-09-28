@@ -12,6 +12,11 @@
 #include "alittle_surface.hpp"
 #include "alittle_system.hpp"
 
+#include "alittle_displayobject.hpp"
+#include "alittle_displayobjects.hpp"
+#include "alittle_display.hpp"
+#include "alittle_render.hpp"
+
 #include "sokol/sokol_app.h"
 
 class ALittleSchedule
@@ -46,17 +51,21 @@ public:
 		// init task system
 		s_carp_task_consumer.SetThreadCount(1);
 		
-		// g_RenderSystem.Setup();			// render system
+		s_alittle_render.Setup();			// render system
 		s_alittle_audio.Setup();			// audio system
 		s_alittle_script.Setup();			// script system
 
 		// register to script
-		// g_RenderSystem.RegisterToScript(g_ScriptSystem);
+		s_alittle_render.Bind(s_alittle_script.GetLuaState());
 		s_alittle_audio.Bind(s_alittle_script.GetLuaState());
 		ALittleNet::Bind(s_alittle_script.GetLuaState());
 		ALittleCsv::Bind(s_alittle_script.GetLuaState());
 		ALittleSurface::Bind(s_alittle_script.GetLuaState());
 		ALittleSystem::Bind(s_alittle_script.GetLuaState());
+
+		s_alittle_display.Bind(s_alittle_script.GetLuaState());
+		ALittleDisplayObject::Bind(s_alittle_script.GetLuaState());
+		ALittleDisplayObjects::Bind(s_alittle_script.GetLuaState());
 
 		// load engine
 		CARP_INFO("==>ScheduleSystem Lua Init Begin<==");
@@ -74,22 +83,24 @@ public:
 	void Update()
 	{
 		s_carp_task_consumer.HandleEvent();
+		s_alittle_render.Render();
 	}
 
 	void Shutdown()
 	{
+		s_alittle_script.Shutdown();
 #ifdef _WIN32
 		s_carp_console.Shutdown();
 #endif
 
+		s_alittle_audio.Shutdown();
+		s_alittle_display.Shutdown();
+		s_alittle_render.Shutdown();
 		s_carp_log.Shutdown();
 
 		// set dump info
 #ifdef _WIN32
 		s_carp_dump.Shutdown();
-#endif
-#if (defined __ANDROID__) || (defined __IPHONEOS__)
-		exit(0);
 #endif
 	}
 

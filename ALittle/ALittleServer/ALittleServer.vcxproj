@@ -71,7 +71,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>LibServerd.lib;libssl.lib;libcrypto.lib;luad.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>LibServerd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)lib/ALittle;$(SolutionDir)lib/lua;$(SolutionDir)lib/openssl;$(SolutionDir)lib/mysql;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -94,7 +94,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)lib/ALittle;$(SolutionDir)lib/lua;$(SolutionDir)lib/openssl;$(SolutionDir)lib/mysql;$(SolutionDir)lib/tcmalloc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>LibServer.lib;libtcmalloc_minimal.lib;libssl.lib;libcrypto.lib;lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>LibServer.lib;libtcmalloc_minimal.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
     </Link>
   </ItemDefinitionGroup>

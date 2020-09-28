@@ -142,19 +142,6 @@ public static System_InstallProgram(string file_path)
     lua.__CPPAPI_InstallProgram(file_path);
 }
 
-// 启动进程
-public static System_StartProgram(string package_name)
-{
-    [Language(Lua)]
-    lua.__CPPAPI_StartProgram(package_name);
-}
-// 切到后台
-public static System_BackProgram()
-{
-    [Language(Lua)]
-    lua.__CPPAPI_BackProgram();
-}
-
 // 获取屏幕宽度
 public static System_GetScreenWidth() : int
 {
@@ -184,15 +171,6 @@ public static System_GetScreenHeight() : int
     }
     else
         return window.innerHeight;
-}
-
-public static System_GetStatusBarHeight() : int
-{
-    [Language(Lua)]
-    return lua.__CPPAPI_GetStatusBarHeight();
-    
-    [Language(JavaScript)]
-    return 0;
 }
 
 ////调度系统部分////////////////////////////////////////////////////////////////////-
@@ -552,44 +530,6 @@ public static System_HasClipboardImage() : bool
 }
 
 ////系统提示////////////////////////////////////////////////////////////////////////-
-
-// 横竖屏枚举
-public enum SystemOrientationType
-{
-    SDL_ORIENTATION_UNKNOWN = 0;            //**< The display orientation can't be determined */
-    SDL_ORIENTATION_LANDSCAPE = 1;          //**< The display is in landscape mode, with the right side up, relative to portrait mode */
-    SDL_ORIENTATION_LANDSCAPE_FLIPPED = 2;  //**< The display is in landscape mode, with the left side up, relative to portrait mode */
-    SDL_ORIENTATION_PORTRAIT = 3;           //**< The display is in portrait mode */
-    SDL_ORIENTATION_PORTRAIT_FLIPPED = 4;   ///**< The display is in portrait mode, upside down */
-}
-
-// 获取横屏竖屏
-// 返回SystemOrientationType
-public static System_GetDisplayOrientation() : int
-{
-    [Language(Lua)]
-    return lua.__CPPAPI_GetDisplayOrientation();
-    
-    [Language(JavaScript)]
-    var match = javascript.matchMedia("(orientation: portrait)");
-    [Language(JavaScript)]
-    if (match != null && match.matches) return SystemOrientationType.SDL_ORIENTATION_PORTRAIT;
-    [Language(JavaScript)]
-    return SystemOrientationType.SDL_ORIENTATION_LANDSCAPE;
-}
-
-// 允许手机休眠
-public static System_EnableScreenSaver()
-{
-    [Language(Lua)]
-    lua.__CPPAPI_EnableScreenSaver();
-}
-// 阻止手机休眠
-public static System_DisableScreenSaver()
-{
-    [Language(Lua)]
-    lua.__CPPAPI_DisableScreenSaver();
-}
 
 // 使用系统浏览器打开某个网址
 // url 地址，一定要以http或者https开头，否则在android，ios平台是无效的

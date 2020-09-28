@@ -78,24 +78,12 @@ function ALittle.System_InstallProgram(file_path)
 	__CPPAPI_InstallProgram(file_path)
 end
 
-function ALittle.System_StartProgram(package_name)
-	__CPPAPI_StartProgram(package_name)
-end
-
-function ALittle.System_BackProgram()
-	__CPPAPI_BackProgram()
-end
-
 function ALittle.System_GetScreenWidth()
 	return __CPPAPI_GetScreenWidth()
 end
 
 function ALittle.System_GetScreenHeight()
 	return __CPPAPI_GetScreenHeight()
-end
-
-function ALittle.System_GetStatusBarHeight()
-	return __CPPAPI_GetStatusBarHeight()
 end
 
 function ALittle.System_ForceExit()
@@ -280,26 +268,6 @@ end
 
 function ALittle.System_HasClipboardImage()
 	return __CPPAPI_HasClipboardImage()
-end
-
-ALittle.SystemOrientationType = {
-	SDL_ORIENTATION_UNKNOWN = 0,
-	SDL_ORIENTATION_LANDSCAPE = 1,
-	SDL_ORIENTATION_LANDSCAPE_FLIPPED = 2,
-	SDL_ORIENTATION_PORTRAIT = 3,
-	SDL_ORIENTATION_PORTRAIT_FLIPPED = 4,
-}
-
-function ALittle.System_GetDisplayOrientation()
-	return __CPPAPI_GetDisplayOrientation()
-end
-
-function ALittle.System_EnableScreenSaver()
-	__CPPAPI_EnableScreenSaver()
-end
-
-function ALittle.System_DisableScreenSaver()
-	__CPPAPI_DisableScreenSaver()
 end
 
 function ALittle.System_OpenUrlBySystemBrowser(url)

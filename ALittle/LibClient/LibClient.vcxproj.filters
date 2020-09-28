@@ -324,10 +324,10 @@
     <ClInclude Include="..\..\Carp\carp_surface.h">
       <Filter>Carp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Carp\carp_system.hpp">
+    <ClInclude Include="..\..\Carp\carp_matrix_2d.hpp">
       <Filter>Carp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Carp\carp_matrix_2d.hpp">
+    <ClInclude Include="..\..\Carp\carp_system.h">
       <Filter>Carp</Filter>
     </ClInclude>
   </ItemGroup>

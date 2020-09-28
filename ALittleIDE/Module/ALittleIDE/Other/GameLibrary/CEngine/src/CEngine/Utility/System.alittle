@@ -389,40 +389,11 @@ public static System_SetViewIcon(string path) : bool
     [Language(JavaScript)]
     return false;
 }
-// 设置窗口形状，path是形状路径图片
-public static System_SetViewShape(string path) : bool
-{
-    [Language(Lua)]
-    return __CPPAPI_RenderSystem.SetViewShape(path);
-    
-    [Language(JavaScript)]
-    return false;
-}
 // 操作窗口大小
 public static System_SetViewSize(int width, int height)
 {
     [Language(Lua)]
     __CPPAPI_RenderSystem.SetViewSize(width, height);
-}
-public static System_SetMaxViewSize()
-{
-    [Language(Lua)]
-    __CPPAPI_RenderSystem.SetMaxViewSize();
-}
-public static System_SetMinViewSize()
-{
-    [Language(Lua)]
-    __CPPAPI_RenderSystem.SetMinViewSize();
-}
-public static System_SetRestoreViewSize()
-{
-    [Language(Lua)]
-    __CPPAPI_RenderSystem.SetRestoreViewSize();
-}
-public static System_RaiseView()
-{
-    [Language(Lua)]
-    __CPPAPI_RenderSystem.RaiseView();
 }
 public static System_ShowView()
 {
@@ -473,13 +444,13 @@ public static System_GetMaxTextureHeight() : int
     return 1024;
 }
 // 强制渲染
-public static System_Render() : bool
+public static System_Render()
 {
     [Language(Lua)]
-    return __CPPAPI_RenderSystem.Render();
+    __CPPAPI_RenderSystem.Render();
     
     [Language(JavaScript)]
-    return JavaScript.JSystem_Render();
+    JavaScript.JSystem_Render();
 }
 
 ////剪切板//////////////////////////////////////////////////////////////////////-

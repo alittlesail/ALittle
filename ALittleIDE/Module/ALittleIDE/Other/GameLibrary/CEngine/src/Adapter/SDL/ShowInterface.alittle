@@ -5,21 +5,16 @@ public class __CPPAPIRenderSystem
 {
     public fun CreateView(string title, int width, int height, int flag, double scale) : bool {}
     public fun SetViewSize(int width, int height) {}
-    public fun SetMaxViewSize() {}
-    public fun SetMinViewSize() {}
-    public fun SetRestoreViewSize() {}
     public fun GetViewX() : int {}
     public fun GetViewY() : int {}
     public fun SetViewPosition(int x, int y) {}
-    public fun RaiseView() {}
     public fun ShowView() {}
     public fun HideView() {}
     public fun SetViewTitle(string title) : bool {}
     public fun SetViewIcon(string path) : bool {}
-    public fun SetViewShape(string path) : bool {}
     public fun GetMaxTextureWidth() : int {}
     public fun GetMaxTextureHeight() : int {}
-    public fun Render() : bool {}
+    public fun Render() {}
 }
 
 public var __CPPAPI_RenderSystem:__CPPAPIRenderSystem;

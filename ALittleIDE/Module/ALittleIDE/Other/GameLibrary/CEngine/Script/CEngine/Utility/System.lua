@@ -190,28 +190,8 @@ function ALittle.System_SetViewIcon(path)
 	return __CPPAPI_RenderSystem:SetViewIcon(path)
 end
 
-function ALittle.System_SetViewShape(path)
-	return __CPPAPI_RenderSystem:SetViewShape(path)
-end
-
 function ALittle.System_SetViewSize(width, height)
 	__CPPAPI_RenderSystem:SetViewSize(width, height)
-end
-
-function ALittle.System_SetMaxViewSize()
-	__CPPAPI_RenderSystem:SetMaxViewSize()
-end
-
-function ALittle.System_SetMinViewSize()
-	__CPPAPI_RenderSystem:SetMinViewSize()
-end
-
-function ALittle.System_SetRestoreViewSize()
-	__CPPAPI_RenderSystem:SetRestoreViewSize()
-end
-
-function ALittle.System_RaiseView()
-	__CPPAPI_RenderSystem:RaiseView()
 end
 
 function ALittle.System_ShowView()
@@ -243,7 +223,7 @@ function ALittle.System_GetMaxTextureHeight()
 end
 
 function ALittle.System_Render()
-	return __CPPAPI_RenderSystem:Render()
+	__CPPAPI_RenderSystem:Render()
 end
 
 function ALittle.System_GetClipboardText()

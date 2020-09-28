@@ -34,13 +34,14 @@ public:
 		s_carp_dump.Setup("ALittleClient", []() { s_carp_log.Shutdown(); });
 #endif
 
-		// 初始化日志系统
-		CARP_INFO("==>ScheduleSystem Setup Begin<==");
-
 #ifndef __EMSCRIPTEN__
 		CarpFile::CreateDeepFolder(CarpRWops::ExternalFilePath() + "Log");
 		s_carp_log.Setup(CarpRWops::ExternalFilePath() + "Log/", "ALittleClient");
 #endif
+		
+		// 初始化日志系统
+		CARP_INFO("==>ScheduleSystem Setup Begin<==");
+
 #ifdef _WIN32
 		s_carp_console.Setup("ALittleClient", std::bind(&ALittleSchedule::PushConsoleEvent, this, std::placeholders::_1, std::placeholders::_2)
 			, std::bind(&ALittleSchedule::Exit, this), std::bind(&ALittleSchedule::PushConsoleHelp, this));
@@ -88,14 +89,15 @@ public:
 
 	void Shutdown()
 	{
+		s_alittle_audio.Shutdown();
+		s_alittle_display.Shutdown();
+		s_alittle_render.Shutdown();
+		
 		s_alittle_script.Shutdown();
 #ifdef _WIN32
 		s_carp_console.Shutdown();
 #endif
 
-		s_alittle_audio.Shutdown();
-		s_alittle_display.Shutdown();
-		s_alittle_render.Shutdown();
 		s_carp_log.Shutdown();
 
 		// set dump info

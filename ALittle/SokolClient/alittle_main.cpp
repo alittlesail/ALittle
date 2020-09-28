@@ -52,10 +52,6 @@
 
 void alittle_init()
 {
-    sg_desc desc = { 0 };
-    desc.context = sapp_sgcontext();
-    sg_setup(&desc);
-
     s_alittle_schedule.Setup();
 }
 

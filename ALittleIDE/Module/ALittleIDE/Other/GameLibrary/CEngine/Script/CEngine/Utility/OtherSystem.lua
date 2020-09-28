@@ -67,12 +67,6 @@ type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
 
-ALittle.NetworkType = {
-	NONE = "OtherSystem_NotifyNetwork_none",
-	WIFI = "OtherSystem_NotifyNetwork_wifi",
-	LINE = "OtherSystem_NotifyNetwork_line",
-}
-
 assert(ALittle.EventDispatcher, " extends class:ALittle.EventDispatcher is nil")
 ALittle.OtherSystem = Lua.Class(ALittle.EventDispatcher, "ALittle.OtherSystem")
 
@@ -110,30 +104,6 @@ function ALittle.OtherSystem:HandleNewIntent(url)
 	local event = {}
 	event.url = url
 	self:DispatchEvent(___all_struct[1720966934], event)
-end
-
-function ALittle.OtherSystem:AddEventListener(T, object, callback)
-	do
-		local rflt = T
-		local net_rflt = ___all_struct[708183011]
-		if rflt.hash_code == net_rflt.hash_code then
-			if self._network_started == false then
-				__CPPAPI_StartNetworkListener()
-				self._network_started = true
-			end
-		end
-	end
-	return ALittle.EventDispatcher.AddEventListener(self, T, object, callback)
-end
-
-function ALittle.OtherSystem:HandleNetworkChanged(net_type)
-	local event = {}
-	event.net_type = net_type
-	self:DispatchEvent(___all_struct[708183011], event)
-end
-
-function ALittle.OtherSystem:GetNetworkType()
-	return __CPPAPI_GetNetworkType()
 end
 
 function ALittle.OtherSystem:HandleALittleJsonRPC(json)

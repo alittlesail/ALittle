@@ -90,7 +90,7 @@ function Lua.ISocket:ReadStruct()
 		return error, nil
 	end
 	local content = protobuf.message_jsonencode(msg, true)
-	local result, object = Lua.TCall(json.decode, content)
+	local result, object = Lua.TCall(ALittle.String_JsonDecode, content)
 	if result ~= nil then
 		return result, nil
 	end
@@ -388,7 +388,7 @@ function Lua.ISocket:SendMessage(msg)
 end
 
 function Lua.ISocket:SendStruct(full_name, msg)
-	local protobuf_json = json.encode(msg)
+	local protobuf_json = ALittle.String_JsonEncode(msg)
 	local protobuf_msg = A_LuaProtobufSchedule:CreateMessage(full_name)
 	if protobuf_msg == nil then
 		return "CreateMessage failed"

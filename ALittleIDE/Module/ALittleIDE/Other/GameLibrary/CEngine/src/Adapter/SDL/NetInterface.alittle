@@ -1,8 +1,0 @@
-
-register namespace lua;
-
-public static __CPPAPI_GetLocalIPList() : string {}
-public static __CPPAPI_StartNetworkListener() {}
-public static __CPPAPI_GetNetworkType() : string {}
-public static __CPPAPI_SendWebJsonRPC(string method, string param) {}
-public static __CPPAPI_ClearAIFamily() {}

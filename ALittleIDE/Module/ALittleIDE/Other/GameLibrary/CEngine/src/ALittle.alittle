@@ -286,10 +286,6 @@ public static __ALITTLEAPI_AudioChunkStoppedEvent(int id)
     A_AudioSystem.HandleAudioChunkStoppedEvent(id);
 }
 //////////////////////////////////////////////////////////////////////////////////////
-public static __ALITTLEAPI_NetworkChanged(int net_type)
-{
-    A_OtherSystem.HandleNetworkChanged(net_type);
-}
 
 public static __ALITTLEAPI_ALittleJsonRPC(string json)
 {

@@ -223,10 +223,6 @@ function _G.__ALITTLEAPI_AudioChunkStoppedEvent(id)
 	A_AudioSystem:HandleAudioChunkStoppedEvent(id)
 end
 
-function _G.__ALITTLEAPI_NetworkChanged(net_type)
-	A_OtherSystem:HandleNetworkChanged(net_type)
-end
-
 function _G.__ALITTLEAPI_ALittleJsonRPC(json)
 	A_OtherSystem:HandleALittleJsonRPC(json)
 end

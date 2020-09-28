@@ -97,7 +97,7 @@ public class ISocket
 
 		var content = lua.protobuf.message_jsonencode(msg, true);
 		
-		var result, object = tcall(lua.json.decode, content);
+		var result, object = tcall(ALittle.String_JsonDecode, content);
 		if (result != null) return result, null;
 
 		return null, object;
@@ -350,7 +350,7 @@ public class ISocket
 	
     public fun SendStruct<T>(string full_name, T msg) : string
     {   
-        var protobuf_json = lua.json.encode(msg);
+        var protobuf_json = ALittle.String_JsonEncode(msg);
         
         var protobuf_msg = A_LuaProtobufSchedule.CreateMessage(full_name);
         if (protobuf_msg == null) return "CreateMessage failed";

@@ -5,6 +5,7 @@ if (typeof ALittle === "undefined") window.ALittle = {};
 ALittle.System_CalcPortrait = function(src_width, src_height, flag) {
 	let scale = 1.0;
 	let platform = ALittle.System_GetPlatform();
+	ALittle.Log(platform);
 	if (platform === "iOS" || platform === "Android") {
 		let screen_width = ALittle.System_GetScreenWidth();
 		let screen_height = ALittle.System_GetScreenHeight();
@@ -23,6 +24,7 @@ ALittle.System_CalcPortrait = function(src_width, src_height, flag) {
 		src_height = ALittle.Math_Floor(screen_height / screen_width * src_width);
 		scale = screen_width / src_width;
 	} else if (platform === "Windows") {
+		ALittle.Log(src_height, ALittle.System_GetScreenHeight());
 		if (src_height > ALittle.System_GetScreenHeight()) {
 			scale = 0.5;
 		}
@@ -70,25 +72,12 @@ ALittle.System_GetDeviceID = function() {
 	return JavaScript.JSystem_GetDeviceID();
 }
 
-ALittle.System_GetLocalIPList = function() {
-	return "[]";
-}
-
 ALittle.System_IsPhone = function() {
 	let user_agent = navigator.userAgent;
 	return ALittle.String_Find(user_agent, "Android") !== undefined || ALittle.String_Find(user_agent, "iPhone") !== undefined || ALittle.String_Find(user_agent, "iPad") !== undefined || ALittle.String_Find(user_agent, "iPod") !== undefined;
 }
 
 ALittle.System_InstallProgram = function(file_path) {
-}
-
-ALittle.System_ClearAIFamily = function() {
-}
-
-ALittle.System_StartProgram = function(package_name) {
-}
-
-ALittle.System_BackProgram = function() {
 }
 
 ALittle.System_GetScreenWidth = function() {
@@ -107,10 +96,6 @@ ALittle.System_GetScreenHeight = function() {
 	} else {
 		return window.innerHeight;
 	}
-}
-
-ALittle.System_GetStatusBarHeight = function() {
-	return 0;
 }
 
 ALittle.System_ForceExit = function() {
@@ -132,22 +117,10 @@ ALittle.System_GetAppPauseInterval = function() {
 	return 0;
 }
 
-ALittle.SystemThreadType = {
-	FAST : 0,
-	MIDDLE : 1,
-	SLOW : 2,
-}
-
-ALittle.System_SetThreadCount = function(count, thread_type) {
-	if (thread_type === undefined) {
-		thread_type = ALittle.SystemThreadType.SLOW;
-	}
+ALittle.System_SetThreadCount = function(count) {
 }
 
 ALittle.System_GetThreadCount = function(thread_type) {
-	if (thread_type === undefined) {
-		thread_type = ALittle.SystemThreadType.SLOW;
-	}
 	return 0;
 }
 
@@ -227,40 +200,13 @@ ALittle.System_SetViewIcon = function(path) {
 	return false;
 }
 
-ALittle.System_SetViewShape = function(path) {
-	return false;
-}
-
 ALittle.System_SetViewSize = function(width, height) {
-}
-
-ALittle.System_SetMaxViewSize = function() {
-}
-
-ALittle.System_SetMinViewSize = function() {
-}
-
-ALittle.System_SetRestoreViewSize = function() {
-}
-
-ALittle.System_RaiseView = function() {
 }
 
 ALittle.System_ShowView = function() {
 }
 
 ALittle.System_HideView = function() {
-}
-
-ALittle.System_GetViewX = function() {
-	return 0;
-}
-
-ALittle.System_GetViewY = function() {
-	return 0;
-}
-
-ALittle.System_SetViewPosition = function(x, y) {
 }
 
 ALittle.System_GetMaxTextureWidth = function() {
@@ -272,7 +218,7 @@ ALittle.System_GetMaxTextureHeight = function() {
 }
 
 ALittle.System_Render = function() {
-	return JavaScript.JSystem_Render();
+	JavaScript.JSystem_Render();
 }
 
 ALittle.System_GetClipboardText = function() {
@@ -284,39 +230,6 @@ ALittle.System_SetClipboardText = function(content) {
 
 ALittle.System_HasClipboardText = function() {
 	return false;
-}
-
-ALittle.System_GetClipboardImage = function() {
-	return undefined;
-}
-
-ALittle.System_SetClipboardImage = function(surface) {
-}
-
-ALittle.System_HasClipboardImage = function() {
-	return false;
-}
-
-ALittle.SystemOrientationType = {
-	SDL_ORIENTATION_UNKNOWN : 0,
-	SDL_ORIENTATION_LANDSCAPE : 1,
-	SDL_ORIENTATION_LANDSCAPE_FLIPPED : 2,
-	SDL_ORIENTATION_PORTRAIT : 3,
-	SDL_ORIENTATION_PORTRAIT_FLIPPED : 4,
-}
-
-ALittle.System_GetDisplayOrientation = function() {
-	let match = matchMedia("(orientation: portrait)");
-	if (match !== undefined && match.matches) {
-		return ALittle.SystemOrientationType.SDL_ORIENTATION_PORTRAIT;
-	}
-	return ALittle.SystemOrientationType.SDL_ORIENTATION_LANDSCAPE;
-}
-
-ALittle.System_EnableScreenSaver = function() {
-}
-
-ALittle.System_DisableScreenSaver = function() {
 }
 
 ALittle.System_OpenUrlBySystemBrowser = function(url) {

@@ -1835,7 +1835,7 @@ private:
 		int line_skip = m_font->GetLineSkip();
 
 		// create surface
-		SDL_Surface* total_surface = ALittleSurface::CreateSurface((int)m_size.x, (int)m_size.y);
+		auto* total_surface = Carp_CreateSurface((int)m_size.x, (int)m_size.y);
 		if (!total_surface)
 		{
 			CARP_ERROR(SDL_GetError());
@@ -1864,30 +1864,29 @@ private:
 			// If there is a text, then perform rendering, copying the surface
 			if (content.size())
 			{
-				SDL_Surface* surface = s_alittle_font.CreateSurface(m_font, content.c_str());
+				auto* surface = s_alittle_font.CreateSurface(m_font, content.c_str());
 				if (!surface)
 				{
 					CARP_ERROR("g_DisplaySystem.CreateSurface failed!");
-					SDL_FreeSurface(total_surface);
+					Carp_FreeSurface(total_surface);
 					return;
 				}
-				SDL_SetSurfaceBlendMode(surface, SDL_BLENDMODE_NONE);
 
 				// copy surface
-				SDL_Rect src_rect;
+				Carp_SurfaceRect src_rect;
 				src_rect.x = 0;
 				src_rect.w = (int)(surface->w < (int)m_size.x ? surface->w : (int)m_size.x);
 				src_rect.y = 0;
 				src_rect.h = (int)(surface->h < remain_height ? surface->h : remain_height);
 
-				SDL_Rect dst_rect;
+				Carp_SurfaceRect dst_rect;
 				dst_rect.x = 0;
 				dst_rect.y = (int)((int)m_size.y - remain_height);
 				dst_rect.w = src_rect.w;
 				dst_rect.h = src_rect.h;
 
-				SDL_BlitSurface(surface, &src_rect, total_surface, &dst_rect);
-				SDL_FreeSurface(surface);
+				Carp_CopySurface(surface, &src_rect, total_surface, dst_rect.x, dst_rect.y);
+				Carp_FreeSurface(surface);
 			}
 
 			// Remaining highly removes line_skip

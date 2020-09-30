@@ -1,15 +1,14 @@
 #ifndef ALITTLE_SURFACE_INCLUDED
 #define ALITTLE_SURFACE_INCLUDED (1)
 
-#include "SDL.h"
 #include <string>
 #include <vector>
 #include <stb/stb_image.h>
+#include <stb/stb_image_write.h>
 
 #include "Carp/carp_string.hpp"
-
+#include "Carp/carp_surface.h"
 #include "Carp/carp_rwops.hpp"
-#include "stb/stb_image_write.h"
 
 class ALittleSurface
 {
@@ -17,7 +16,7 @@ public:
 	static void Bind(lua_State* l_state)
 	{
 		luabridge::getGlobalNamespace(l_state)
-			.beginClass<SDL_Surface>("__CPPAPISurface")
+			.beginClass<Carp_Surface>("__CPPAPISurface")
 			.endClass();
 
 		luabridge::getGlobalNamespace(l_state)

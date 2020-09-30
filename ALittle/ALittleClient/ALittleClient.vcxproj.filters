@@ -29,16 +29,16 @@
       <UniqueIdentifier>{7a115f95-7cd7-4270-8436-eba1aefc6a5e}</UniqueIdentifier>
     </Filter>
     <Filter Include="lualib">
-      <UniqueIdentifier>{032a7755-8b8f-4ae0-9686-ff271e50df02}</UniqueIdentifier>
+      <UniqueIdentifier>{5e353435-16ca-49bf-92b7-2d7bfbdd65bb}</UniqueIdentifier>
     </Filter>
     <Filter Include="lualib\ajson">
-      <UniqueIdentifier>{4f2d7950-097b-4aeb-a6cd-c5083f58f122}</UniqueIdentifier>
+      <UniqueIdentifier>{7847a540-4172-42eb-b748-e43c9838236e}</UniqueIdentifier>
     </Filter>
     <Filter Include="lualib\cjson">
-      <UniqueIdentifier>{a4ced0d6-0a82-4ecf-94d3-d379827c1d1d}</UniqueIdentifier>
+      <UniqueIdentifier>{053fdcdb-9cd1-4c42-84e7-fbd56c4ce670}</UniqueIdentifier>
     </Filter>
     <Filter Include="lualib\sqlite3">
-      <UniqueIdentifier>{858cb6d5-af29-4911-877f-ccb3ee5a75e8}</UniqueIdentifier>
+      <UniqueIdentifier>{4d64c931-d0bd-432d-8bda-8985475e64cd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -103,9 +103,6 @@
       <Filter>Carp</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Carp\carp_string_bind.hpp">
-      <Filter>Carp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Carp\carp_surface.h">
       <Filter>Carp</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Carp\carp_system.h">
@@ -228,6 +225,9 @@
     <ClInclude Include="alittle_quad.hpp">
       <Filter>ALittle</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_lua.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\lualib\ajson\lua_ajson.h">
       <Filter>lualib\ajson</Filter>
     </ClInclude>
@@ -249,7 +249,10 @@
     <ClInclude Include="..\..\lualib\sqlite3\sqlite3.h">
       <Filter>lualib\sqlite3</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Carp\carp_lua.hpp">
+    <ClInclude Include="..\..\Carp\carp_surface_bind.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_surface.h">
       <Filter>Carp</Filter>
     </ClInclude>
   </ItemGroup>

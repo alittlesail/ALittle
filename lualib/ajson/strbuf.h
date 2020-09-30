@@ -22,6 +22,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#ifndef _ALITTLE_STRBUF_H_
+#define _ALITTLE_STRBUF_H_
+
 #include <stdlib.h>
 #include <stdarg.h>
 
@@ -152,3 +155,4 @@ static inline char *strbuf_string(strbuf_t *s, int *len)
 
 /* vi:ai et sw=4 ts=4:
  */
+#endif

@@ -4,6 +4,9 @@
  *
  * Longest double printed with %.14g is 21 characters long:
  * -1.7976931348623e+308 */
+#ifndef _ALITTLE_FPCONV_H_
+#define _ALITTLE_FPCONV_H_
+
 # define FPCONV_G_FMT_BUFSIZE   32
 
 #ifdef USE_INTERNAL_FPCONV
@@ -20,3 +23,5 @@ extern double fpconv_strtod(const char*, char**);
 
 /* vi:ai et sw=4 ts=4:
  */
+
+#endif

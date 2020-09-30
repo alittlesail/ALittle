@@ -8,6 +8,7 @@
 #include "Carp/carp_font.hpp"
 #include "Carp/carp_rwops.hpp"
 #include "alittle_surface.hpp"
+#include "Carp/carp_surface.h"
 
 class ALittleFont
 {
@@ -58,14 +59,14 @@ public:
 		return font;
 	}
 
-	SDL_Surface* CreateSurface(CarpFont* font, const char* content)
+	Carp_Surface* CreateSurface(CarpFont* font, const char* content)
 	{
 		if (content == 0 || font == 0) return nullptr;
 
 		CarpFontBitmap* carp_bitmap = font->CreateBitmapFromUTF8(content);
 		if (carp_bitmap == nullptr) return nullptr;
 
-		SDL_Surface* surface = ALittleSurface::CreateSurface(carp_bitmap->width, carp_bitmap->height);
+		Carp_Surface* surface = Carp_CreateSurface(carp_bitmap->width, carp_bitmap->height);
 		if (surface == nullptr)
 		{
 			delete carp_bitmap;
@@ -81,7 +82,7 @@ public:
 				if (value != 0)
 				{
 					const unsigned int color = value << 24 | 0x00FFFFFF;
-					ALittleSurface::SetSurfacePixel(surface, col, row, color);
+					Carp_SetSurfacePixel(surface, col, row, color);
 				}
 			}
 		}

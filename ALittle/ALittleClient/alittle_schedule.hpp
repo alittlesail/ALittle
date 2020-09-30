@@ -23,6 +23,7 @@
 #include "Carp/carp_console.hpp"
 #include "Carp/carp_dump.hpp"
 #include "Carp/carp_log.hpp"
+#include "Carp/carp_surface_bind.hpp"
 #include "Carp/carp_task_consumer.hpp"
 
 class Application;
@@ -63,12 +64,13 @@ private:
 		ALittleTextInput::Bind(s_alittle_script.GetLuaState());
 		ALittleTextEdit::Bind(s_alittle_script.GetLuaState());
 		ALittleTextureBind::Bind(s_alittle_script.GetLuaState());
-		ALittleSurface::Bind(s_alittle_script.GetLuaState());
+		/// ALittleSurface::Bind(s_alittle_script.GetLuaState());
 		s_alittle_system.Bind(s_alittle_script.GetLuaState());
 		s_alittle_render.Bind(s_alittle_script.GetLuaState());
 		s_alittle_audio.Bind(s_alittle_script.GetLuaState());
 		ALittleCsv::Bind(s_alittle_script.GetLuaState());
 		ALittleNet::Bind(s_alittle_script.GetLuaState());
+		CarpSurfaceBind::Bind(s_alittle_script.GetLuaState());
 
 
 		// load engine

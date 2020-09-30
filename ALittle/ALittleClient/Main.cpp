@@ -20,7 +20,6 @@ int main(int argc, char* argv[])
 	return s_alittle_schedule.Run(argc, argv);
 }
 
-
 #define ALITTLE_AUDIO_IMPL
 #include "alittle_audio.hpp"
 #define ALITTLE_CSV_IMPL
@@ -63,3 +62,5 @@ int main(int argc, char* argv[])
 #include "Carp/carp_task_consumer.hpp"
 #define CARP_SCHEDULE_IMPL
 #include "Carp/carp_schedule.hpp"
+#define CARP_SURFACE_IMPL
+#include "Carp/carp_surface.h"

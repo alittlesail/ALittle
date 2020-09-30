@@ -991,7 +991,7 @@ private:
 
 		// render text to surface
 		if (content.size() == 0) return;
-		SDL_Surface* surface = s_alittle_font.CreateSurface(m_font, content.c_str());
+		auto* surface = s_alittle_font.CreateSurface(m_font, content.c_str());
 		if (!surface)
 		{
 			CARP_ERROR("CreateSurface failed!");

@@ -149,7 +149,7 @@ public:
 	{
 		SDL_DisplayMode dm;
 		if (SDL_GetDesktopDisplayMode(0, &dm) != 0) return 0;
-		return dm.w;
+		return dm.h;
 	}
 
 	void SystemSelectFile(const char* init_dir)

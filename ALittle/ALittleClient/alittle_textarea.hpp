@@ -318,7 +318,7 @@ private:
 		if (total_width < 1 || total_height < 1) return;
 
 		// create surface
-		SDL_Surface* total_surface = ALittleSurface::CreateSurface(total_width, total_height);
+		auto* total_surface = Carp_CreateSurface(total_width, total_height);
 		if (!total_surface)
 		{
 			CARP_ERROR(SDL_GetError());
@@ -342,9 +342,9 @@ private:
 			if (current_height_offset > total_height || current_height_offset + font_height <= 0)
 				continue;
 			// create text surface
-			SDL_Surface* surface = s_alittle_font.CreateSurface(m_font, string_array[i].c_str());
+			auto* surface = s_alittle_font.CreateSurface(m_font, string_array[i].c_str());
 			if (!surface) continue;
-			SDL_SetSurfaceBlendMode(surface, SDL_BLENDMODE_NONE);
+			
 			// offset at width
 			width_offset = 0;
 			if (m_halign == HALIGN_CENTER)
@@ -352,20 +352,20 @@ private:
 			else if (m_halign == HALIGN_RIGHT)
 				width_offset = total_width - surface->w;
 			// copy surface
-			SDL_Rect src_rect;
+			Carp_SurfaceRect src_rect;
 			src_rect.x = width_offset < 0 ? -width_offset : 0;
 			src_rect.w = width_offset < 0 ? total_width : surface->w;
 			src_rect.y = current_height_offset < 0 ? -current_height_offset : 0;
 			src_rect.h = surface->h - src_rect.y;
 
-			SDL_Rect dst_rect;
+			Carp_SurfaceRect dst_rect;
 			dst_rect.x = width_offset < 0 ? 0 : width_offset;
 			dst_rect.y = current_height_offset < 0 ? 0 : current_height_offset;
 			dst_rect.w = src_rect.w;
 			dst_rect.h = src_rect.h;
 
-			SDL_BlitSurface(surface, &src_rect, total_surface, &dst_rect);
-			SDL_FreeSurface(surface);
+			Carp_CopySurface(surface, &src_rect, total_surface, dst_rect.x, dst_rect.y);
+			Carp_FreeSurface(surface);
 		}
 
 		m_texture = new ALittleSurfaceTexture(total_surface);

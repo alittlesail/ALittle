@@ -335,7 +335,7 @@ TextTextureInfo* CreateTextureInfo(CarpFont* font, const std::string& text)
 	}
 
 	// create surface
-	SDL_Surface* surface = s_alittle_font.CreateSurface(font, text.c_str());
+	auto* surface = s_alittle_font.CreateSurface(font, text.c_str());
 	if (!surface)
 	{
 		CARP_ERROR("Font Helper create surface failed!");

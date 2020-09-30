@@ -12,6 +12,7 @@
 #include "Carp/carp_log.hpp"
 #include "Carp/carp_lua.hpp"
 #include "Carp/carp_math_2d.hpp"
+#include "Carp/carp_surface_bind.hpp"
 
 class ALittleRender
 {
@@ -24,9 +25,6 @@ public:
 	{
 		// destroy texture list
 		DestroyTextureList();
-
-		// release icon
-		if (m_icon) { SDL_FreeSurface(m_icon); m_icon = nullptr; }
 
 		// release render
 		if (m_render)
@@ -359,18 +357,29 @@ public:
 	{
 		if (!m_window || path == 0) return false;
 
-		// free current icon
-		if (m_icon) { SDL_FreeSurface(m_icon); m_icon = 0; }
 		// create surface
-		m_icon = ALittleSurface::LoadSurface(path);
+		auto* icon = CarpSurfaceBind::LoadSurface(path);
 		// check load succeed or not
-		if (m_icon == 0)
+		if (icon == nullptr)
 		{
 			CARP_ERROR("CarpSurface::LoadSurface failed:" << path);
 			return false;
 		}
+
+		auto* surface = SDL_CreateRGBSurface(0, icon->w, icon->h, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+		if (surface) memcpy(surface->pixels, icon->pixels, icon->w * icon->h * 4);
+		Carp_FreeSurface(icon);
+		
+		// check load succeed or not
+		if (surface == nullptr)
+		{
+			CARP_ERROR("CarpSurface::LoadSurface failed:" << path);
+			return false;
+		}
+		
 		// set icon
-		SDL_SetWindowIcon(m_window, m_icon);
+		SDL_SetWindowIcon(m_window, surface);
+		SDL_FreeSurface(surface);
 		return true;
 	}
 	
@@ -392,7 +401,6 @@ private:
 	unsigned int m_logic_width = 0;		// logic view width
 	unsigned int m_logic_height = 0;	// logic view height
 
-	SDL_Surface* m_icon = nullptr;			// view icon
 	std::string m_title;			// title
 	bool m_fullscreen = false;				// fullscreen or not
 	int m_flag = 0;						// flag
@@ -413,7 +421,7 @@ private:
 public:
 	void DestroyTexture(SDL_Texture* texture) const
 	{
-		if (texture == nullptr) return;
+		if (texture == 0) return;
 
 #if (defined __ANDROID__) || (defined __IPHONEOS__)
 		if (!SDL_GL_GetCurrentContext())

@@ -2,5 +2,60 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\ALittleClient\Main.cpp" />
+    <ClCompile Include="..\..\lualib\ajson\lua_ajson.c">
+      <Filter>lualib\ajson</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\cjson\lua_cjson.c">
+      <Filter>lualib\cjson</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\cjson\strbuf.c">
+      <Filter>lualib\cjson</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\cjson\fpconv.c">
+      <Filter>lualib\cjson</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\sqlite3\lsqlite3.c">
+      <Filter>lualib\sqlite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\sqlite3\sqlite3.c">
+      <Filter>lualib\sqlite3</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="lualib">
+      <UniqueIdentifier>{e9672dfc-9c0b-493e-abbd-8903194807f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lualib\ajson">
+      <UniqueIdentifier>{597132b0-8a82-4fc7-a865-8e3f3e16043c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lualib\cjson">
+      <UniqueIdentifier>{369d0b0d-16fe-4d73-b914-ed7787d2d78c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lualib\sqlite3">
+      <UniqueIdentifier>{26fae395-fe3f-4e92-b2e4-590d3561894b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\lualib\ajson\lua_ajson.h">
+      <Filter>lualib\ajson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\cjson\lua_cjson.h">
+      <Filter>lualib\cjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\cjson\strbuf.h">
+      <Filter>lualib\cjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\cjson\fpconv.h">
+      <Filter>lualib\cjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\sqlite3\sqlite3ext.h">
+      <Filter>lualib\sqlite3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\sqlite3\lsqlite3.h">
+      <Filter>lualib\sqlite3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\sqlite3\sqlite3.h">
+      <Filter>lualib\sqlite3</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

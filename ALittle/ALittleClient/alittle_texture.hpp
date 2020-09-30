@@ -78,8 +78,11 @@ public:
 		if (m_surface->GetWidth() <= s_alittle_render.GetMaxTextureWidth() && m_surface->GetHeight() <= s_alittle_render.GetMaxTextureHeight())
 		{
 			m_texture = SDL_CreateTexture(s_alittle_render.GetRender(), SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC, m_surface->GetWidth(), m_surface->GetHeight());
-			if (m_texture) SDL_UpdateTexture(m_texture, nullptr, m_surface->GetPixels(), m_surface->GetPitch());
-			if (m_texture) SDL_SetTextureBlendMode(m_texture, SDL_BLENDMODE_BLEND);
+			if (m_texture)
+			{
+				SDL_UpdateTexture(m_texture, nullptr, m_surface->GetPixels(), m_surface->GetPitch());
+				SDL_SetTextureBlendMode(m_texture, SDL_BLENDMODE_BLEND);
+			}
 			CarpSurfaceBind::FreeCarpSurface(m_surface);
 			m_surface = nullptr;
 			return;

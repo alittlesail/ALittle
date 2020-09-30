@@ -1,22 +1,22 @@
 
 register namespace lua;
 
-public static __CPPAPI_SystemSelectFile(string init_dir) {}
-public static __CPPAPI_SystemSelectDirectory(string init_dir) {}
-public static __CPPAPI_SystemSaveFile(string file_name, string init_dir) {}
+public class __CPPAPISystem
+{
+    public fun SystemSelectFile(string init_dir) {}
+    public fun SystemSelectDirectory(string init_dir) {}
+    public fun SystemSaveFile(string file_name, string init_dir) {}
 
-public static __CPPAPI_GetPlatform() : string {}
-public static __CPPAPI_GetDeviceID() : string {}
-public static __CPPAPI_InstallProgram(string path) {}
-public static __CPPAPI_SelectOpenFileApp(string file_path, string type) {}
-public static __CPPAPI_GetScreenWidth() : int {}
-public static __CPPAPI_GetScreenHeight() : int {}
+    public fun GetPlatform() : string {}
+    public fun GetDeviceID() : string {}
+    public fun InstallProgram(string path) {}
+    public fun StartProgram(string path) {}
+    public fun GetScreenWidth() : int {}
+    public fun GetScreenHeight() : int {}
 
-public static __CPPAPI_GetClipboardText() : string {}
-public static __CPPAPI_SetClipboardText(string content) : bool {}
-public static __CPPAPI_HasClipboardText() : bool {}
+    public fun OpenUrlBySystemBrowser(string url) {}
+    public fun Alert(string msg) {}
 
-public static __CPPAPI_OpenUrlBySystemBrowser(string url) {}
-public static __CPPAPI_Alert(string msg) {}
+}
 
-public static __CPPAPI_ApplicationOpenURL(string host, string url) : bool {}
+public var __CPPAPI_System:__CPPAPISystem;

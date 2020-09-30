@@ -5,10 +5,10 @@
 #include "Carp/carp_task_consumer.hpp"
 #include "Carp/carp_schedule.hpp"
 
-#include "alittle_script.hpp"
-#include "alittle_audio.hpp"
-#include "alittle_net.hpp"
-#include "alittle_csv.hpp"
+#include "ALittle/LibClient/alittle_script.hpp"
+#include "ALittle/LibClient/alittle_audio.hpp"
+#include "ALittle/LibClient/alittle_net.hpp"
+#include "ALittle/LibClient/alittle_csv.hpp"
 #include "alittle_surface.hpp"
 #include "alittle_system.hpp"
 

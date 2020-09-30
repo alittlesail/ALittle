@@ -15,17 +15,15 @@
 #define ALITTLE_SCHEDULE_IMPL
 #include "alittle_schedule.hpp"
 #define ALITTLE_SCRIPT_IMPL
-#include "alittle_script.hpp"
-#define ALITTLE_AUDIO_IMPL
-#include "alittle_audio.hpp"
+#include "ALittle/LibClient/alittle_script.hpp"
 #define ALITTLE_NET_IMPL
-#include "alittle_net.hpp"
+#include "ALittle/LibClient/alittle_net.hpp"
 #define ALITTLE_CSV_IMPL
-#include "alittle_csv.hpp"
+#include "ALittle/LibClient/alittle_csv.hpp"
 #define ALITTLE_SURFACE_IMPL
 #include "alittle_surface.hpp"
 #define ALITTLE_FONT_IMPL
-#include "alittle_font.hpp"
+#include "ALittle/LibClient/alittle_font.hpp"
 #define ALITTLE_SYSTEM_IMPL
 #include "alittle_system.hpp"
 #define ALITTLE_RENDER_IMPL
@@ -48,9 +46,6 @@
 
 #define CARP_RWOPS_HPP_IMPL
 #include "Carp/carp_rwops.hpp"
-
-#define CARP_MIXER_IMPL
-#include "Carp/carp_mixer.hpp"
 
 void alittle_init()
 {
@@ -88,3 +83,6 @@ sapp_desc sokol_main(int argc, char* argv[])
     desc.high_dpi = true;
     return desc;
 }
+
+#define ALITTLE_AUDIO_IMPL
+#include "ALittle/LibClient/alittle_audio.hpp"

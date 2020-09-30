@@ -18,19 +18,12 @@
     <ClInclude Include="..\..\lualib\sqlite3\lsqlite3.h" />
     <ClInclude Include="..\..\lualib\sqlite3\sqlite3.h" />
     <ClInclude Include="..\..\lualib\sqlite3\sqlite3ext.h" />
-    <ClInclude Include="alittle_audio.hpp" />
-    <ClInclude Include="alittle_csv.hpp" />
-    <ClInclude Include="alittle_display.hpp" />
-    <ClInclude Include="alittle_displayobject.hpp" />
-    <ClInclude Include="alittle_displayobjects.hpp" />
-    <ClInclude Include="alittle_displayview.hpp" />
-    <ClInclude Include="alittle_font.hpp" />
-    <ClInclude Include="alittle_net.hpp" />
+    <ClInclude Include="..\LibClient\alittle_audio.hpp" />
+    <ClInclude Include="..\LibClient\alittle_script.hpp" />
+    <ClInclude Include="alittle_carp_surface.hpp" />
     <ClInclude Include="alittle_render.hpp" />
     <ClInclude Include="alittle_schedule.hpp" />
-    <ClInclude Include="alittle_script.hpp" />
-    <ClInclude Include="alittle_surface.hpp" />
-    <ClInclude Include="alittle_system.hpp" />
+    <ClInclude Include="alittle_texture.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\lualib\ajson\lua_ajson.c" />
@@ -92,7 +85,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRTDBG_MAP_ALLOC;_CRTDBG_MAP_ALLOC_NEW;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;ALITTLE_SOKOL_IMPL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\lua\;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)..\asio\asio\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -112,7 +105,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;ALITTLE_SOKOL_IMPL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\lua\;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)..\asio\asio\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>

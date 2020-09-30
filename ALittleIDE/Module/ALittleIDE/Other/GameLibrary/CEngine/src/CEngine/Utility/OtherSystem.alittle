@@ -105,7 +105,7 @@ class OtherSystem : EventDispatcher
         [Language(Lua)]
         this._system_select_directory = target;
         [Language(Lua)]
-        lua.__CPPAPI_SystemSelectDirectory(init_dir);
+        __CPPAPI_System.SystemSelectDirectory(init_dir);
         
         [Language(JavaScript)]
         Error("not support SystemSelectDirectory");
@@ -130,7 +130,7 @@ class OtherSystem : EventDispatcher
         [Language(Lua)]
         this._system_select_file = target;
         [Language(Lua)]
-        lua.__CPPAPI_SystemSelectFile(init_dir);
+        __CPPAPI_System.SystemSelectFile(init_dir);
         
         [Language(JavaScript)]
         Error("not support SystemSelectFile");
@@ -155,7 +155,7 @@ class OtherSystem : EventDispatcher
         [Language(Lua)]
         this._system_save_file = target;
         [Language(Lua)]
-        lua.__CPPAPI_SystemSaveFile(file_name, path);
+        __CPPAPI_System.SystemSaveFile(file_name, path);
         
         [Language(JavaScript)]
         Error("not support SystemSelectFile");

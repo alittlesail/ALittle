@@ -17,7 +17,3 @@ public static __CPPAPI_GetSurfacePixel(__CPPAPISurface surface, int x, int y) : 
 public static __CPPAPI_GetPixelAlpha(int color) : int {}
 public static __CPPAPI_SetPixelAlpha(int color, int alpha) : int {}
 public static __CPPAPI_GetSurfaceGrid9(__CPPAPISurface surface, string type) : int { }
-
-public static __CPPAPI_GetClipboardImage() : __CPPAPISurface {}
-public static __CPPAPI_SetClipboardImage(__CPPAPISurface surface) {}
-public static __CPPAPI_HasClipboardImage() : bool {}

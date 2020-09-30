@@ -519,8 +519,8 @@ function ALittle.UISystem:HandleViewResized(width, height)
 end
 
 function ALittle.UISystem:HandleDropFile(path)
-	local x = ALittle.System_GetCursorX() - ALittle.System_GetViewX()
-	local y = ALittle.System_GetCursorY() - ALittle.System_GetViewY()
+	local x = ALittle.System_GetCursorX()
+	local y = ALittle.System_GetCursorY()
 	self:HandleMouseMoved(x, y)
 	if self._mfc == nil then
 		return

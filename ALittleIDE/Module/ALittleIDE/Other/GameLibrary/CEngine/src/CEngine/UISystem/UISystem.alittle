@@ -743,8 +743,8 @@ class UISystem
     // 处理文件拖拽事件
     public fun HandleDropFile(string path)
     {
-        var x = System_GetCursorX() - System_GetViewX();
-        var y = System_GetCursorY() - System_GetViewY();
+        var x = System_GetCursorX();
+        var y = System_GetCursorY();
     
         this.HandleMouseMoved(x, y);
 

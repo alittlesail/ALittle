@@ -1,0 +1,30 @@
+
+register namespace lua;
+
+public class __CPPAPIInputSystem
+{
+    public fun GetIMESelectList() : string {}
+    public fun SetIMEPos(int x, int y) {}
+    public fun SetIMERect(int x, int y, int w, int h) {}
+    public fun OpenIME() {}
+    public fun CloseIME() {}
+
+    public fun GetClipboardText() : string {}
+    public fun SetClipboardText(string content) : bool {}
+    public fun HasClipboardText() : bool {}
+
+    public fun GetCursorX() : int {}
+    public fun GetCursorY() : int {}
+
+    public fun SetEditCursor() {}
+    public fun SetNormalCursor() {}
+    public fun SetHandCursor() {}
+    public fun SetHDragCursor() {}
+    public fun SetVDragCursor() {}
+    public fun SetHVDragCursor() {}
+    public fun SetHV2DragCursor() {}
+    public fun SetCrossDragCursor() {}
+
+}
+
+public var __CPPAPI_InputSystem:__CPPAPIInputSystem;

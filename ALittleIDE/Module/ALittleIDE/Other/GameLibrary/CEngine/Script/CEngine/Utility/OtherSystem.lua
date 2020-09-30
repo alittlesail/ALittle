@@ -127,7 +127,7 @@ end
 
 function ALittle.OtherSystem:SystemSelectDirectory(target, init_dir)
 	self._system_select_directory = target
-	__CPPAPI_SystemSelectDirectory(init_dir)
+	__CPPAPI_System:SystemSelectDirectory(init_dir)
 end
 
 function ALittle.OtherSystem:HandleSystemSelectDirectory(path)
@@ -144,7 +144,7 @@ end
 
 function ALittle.OtherSystem:SystemSelectFile(target, init_dir)
 	self._system_select_file = target
-	__CPPAPI_SystemSelectFile(init_dir)
+	__CPPAPI_System:SystemSelectFile(init_dir)
 end
 
 function ALittle.OtherSystem:HandleSystemSelectFile(path)
@@ -161,7 +161,7 @@ end
 
 function ALittle.OtherSystem:SystemSaveFile(target, file_name, path)
 	self._system_save_file = target
-	__CPPAPI_SystemSaveFile(file_name, path)
+	__CPPAPI_System:SystemSaveFile(file_name, path)
 end
 
 function ALittle.OtherSystem:HandleSystemSaveFile(path)

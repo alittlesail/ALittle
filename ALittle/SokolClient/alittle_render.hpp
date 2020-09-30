@@ -114,6 +114,11 @@ public:
 		luabridge::setGlobal(l_state, this, "__CPPAPI_RenderSystem");
 	}
 
+	void FlushRender()
+	{
+		
+	}
+
 	void Shutdown()
 	{
 		sg_shutdown();

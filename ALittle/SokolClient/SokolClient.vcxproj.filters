@@ -23,18 +23,11 @@
     <ClInclude Include="..\..\lualib\sqlite3\lsqlite3.h">
       <Filter>ScriptSystem\sqlite3</Filter>
     </ClInclude>
-    <ClInclude Include="alittle_script.hpp" />
-    <ClInclude Include="alittle_audio.hpp" />
-    <ClInclude Include="alittle_net.hpp" />
-    <ClInclude Include="alittle_csv.hpp" />
-    <ClInclude Include="alittle_surface.hpp" />
-    <ClInclude Include="alittle_font.hpp" />
-    <ClInclude Include="alittle_system.hpp" />
     <ClInclude Include="alittle_render.hpp" />
-    <ClInclude Include="alittle_display.hpp" />
-    <ClInclude Include="alittle_displayobject.hpp" />
-    <ClInclude Include="alittle_displayobjects.hpp" />
-    <ClInclude Include="alittle_displayview.hpp" />
+    <ClInclude Include="alittle_texture.hpp" />
+    <ClInclude Include="..\LibClient\alittle_script.hpp" />
+    <ClInclude Include="..\LibClient\alittle_audio.hpp" />
+    <ClInclude Include="alittle_carp_surface.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="alittle_main.cpp" />

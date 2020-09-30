@@ -2,5 +2,255 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="..\..\lualib\ajson\lua_ajson.c">
+      <Filter>lualib\ajson</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\cjson\lua_cjson.c">
+      <Filter>lualib\cjson</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\cjson\strbuf.c">
+      <Filter>lualib\cjson</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\cjson\fpconv.c">
+      <Filter>lualib\cjson</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\sqlite3\lsqlite3.c">
+      <Filter>lualib\sqlite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\sqlite3\sqlite3.c">
+      <Filter>lualib\sqlite3</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Carp">
+      <UniqueIdentifier>{5461b2af-6e35-407c-b32d-7abcf469f787}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ALittle">
+      <UniqueIdentifier>{7a115f95-7cd7-4270-8436-eba1aefc6a5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lualib">
+      <UniqueIdentifier>{032a7755-8b8f-4ae0-9686-ff271e50df02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lualib\ajson">
+      <UniqueIdentifier>{4f2d7950-097b-4aeb-a6cd-c5083f58f122}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lualib\cjson">
+      <UniqueIdentifier>{a4ced0d6-0a82-4ecf-94d3-d379827c1d1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lualib\sqlite3">
+      <UniqueIdentifier>{858cb6d5-af29-4911-877f-ccb3ee5a75e8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Carp\carp_file_bind.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_file_cache.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_font.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_http.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_log.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_log_bind.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_math_2d.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_message.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_message_bind.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_miniheap.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_mixer.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_mysql.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_net_bind.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_rwops.h">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_rwops.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_rwops_bind.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_safe_id_creator.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_schedule.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_script.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_string.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_string_bind.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_surface.h">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_system.h">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_task_consumer.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_task_consumer_bind.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_thread_consumer.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_time.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_timer.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_timer_bind.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_bit_bind.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_connect_client.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_console.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_crypto.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_crypto_bind.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_csv.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_csv_bind.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_dump.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_file.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="alittle_render.hpp">
+      <Filter>ALittle</Filter>
+    </ClInclude>
+    <ClInclude Include="alittle_schedule.hpp">
+      <Filter>ALittle</Filter>
+    </ClInclude>
+    <ClInclude Include="alittle_script.hpp">
+      <Filter>ALittle</Filter>
+    </ClInclude>
+    <ClInclude Include="alittle_sprite.hpp">
+      <Filter>ALittle</Filter>
+    </ClInclude>
+    <ClInclude Include="alittle_surface.hpp">
+      <Filter>ALittle</Filter>
+    </ClInclude>
+    <ClInclude Include="alittle_system.hpp">
+      <Filter>ALittle</Filter>
+    </ClInclude>
+    <ClInclude Include="alittle_text.hpp">
+      <Filter>ALittle</Filter>
+    </ClInclude>
+    <ClInclude Include="alittle_textarea.hpp">
+      <Filter>ALittle</Filter>
+    </ClInclude>
+    <ClInclude Include="alittle_textedit.hpp">
+      <Filter>ALittle</Filter>
+    </ClInclude>
+    <ClInclude Include="alittle_textinput.hpp">
+      <Filter>ALittle</Filter>
+    </ClInclude>
+    <ClInclude Include="alittle_texture.hpp">
+      <Filter>ALittle</Filter>
+    </ClInclude>
+    <ClInclude Include="alittle_triangle.hpp">
+      <Filter>ALittle</Filter>
+    </ClInclude>
+    <ClInclude Include="alittle_audio.hpp">
+      <Filter>ALittle</Filter>
+    </ClInclude>
+    <ClInclude Include="alittle_csv.hpp">
+      <Filter>ALittle</Filter>
+    </ClInclude>
+    <ClInclude Include="alittle_display.hpp">
+      <Filter>ALittle</Filter>
+    </ClInclude>
+    <ClInclude Include="alittle_displayobject.hpp">
+      <Filter>ALittle</Filter>
+    </ClInclude>
+    <ClInclude Include="alittle_displayobjects.hpp">
+      <Filter>ALittle</Filter>
+    </ClInclude>
+    <ClInclude Include="alittle_displayview.hpp">
+      <Filter>ALittle</Filter>
+    </ClInclude>
+    <ClInclude Include="alittle_font.hpp">
+      <Filter>ALittle</Filter>
+    </ClInclude>
+    <ClInclude Include="alittle_grid9image.hpp">
+      <Filter>ALittle</Filter>
+    </ClInclude>
+    <ClInclude Include="alittle_image.hpp">
+      <Filter>ALittle</Filter>
+    </ClInclude>
+    <ClInclude Include="alittle_input.hpp">
+      <Filter>ALittle</Filter>
+    </ClInclude>
+    <ClInclude Include="alittle_net.hpp">
+      <Filter>ALittle</Filter>
+    </ClInclude>
+    <ClInclude Include="alittle_quad.hpp">
+      <Filter>ALittle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\ajson\lua_ajson.h">
+      <Filter>lualib\ajson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\cjson\lua_cjson.h">
+      <Filter>lualib\cjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\cjson\strbuf.h">
+      <Filter>lualib\cjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\cjson\fpconv.h">
+      <Filter>lualib\cjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\sqlite3\sqlite3ext.h">
+      <Filter>lualib\sqlite3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\sqlite3\lsqlite3.h">
+      <Filter>lualib\sqlite3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\sqlite3\sqlite3.h">
+      <Filter>lualib\sqlite3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_lua.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

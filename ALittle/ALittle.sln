@@ -4,9 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.29306.81
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ALittleClient", "ALittleClient\ALittleClient.vcxproj", "{46D90FFA-C806-454F-BB1D-DB4B5FA38101}"
-	ProjectSection(ProjectDependencies) = postProject
-		{AD64F491-95B8-4E5D-BD5C-9DE55509538A} = {AD64F491-95B8-4E5D-BD5C-9DE55509538A}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ALittleServer", "ALittleServer\ALittleServer.vcxproj", "{99628BC2-B56F-42D5-B38A-E2A3CD20DAAC}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -15,14 +12,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ALittleServer", "ALittleSer
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibServer", "LibServer\LibServer.vcxproj", "{9A73516E-1ACC-4CB2-A890-419992F07B5E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibClient", "LibClient\LibClient.vcxproj", "{AD64F491-95B8-4E5D-BD5C-9DE55509538A}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ALittleClientWin", "ALittleClientWin\ALittleClientWin.vcxproj", "{9FFF70D9-F561-4870-801D-746D9343762C}"
-	ProjectSection(ProjectDependencies) = postProject
-		{AD64F491-95B8-4E5D-BD5C-9DE55509538A} = {AD64F491-95B8-4E5D-BD5C-9DE55509538A}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SokolClient", "SokolClient\SokolClient.vcxproj", "{A3A7CBA3-A6CD-48C2-A6D3-ACB7795F735D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lua", "lib\lua\lua.vcxproj", "{1DB2D189-2070-4410-82D0-D0330DADAF9B}"
 EndProject
@@ -52,12 +42,6 @@ Global
 		{9A73516E-1ACC-4CB2-A890-419992F07B5E}.Release|x64.ActiveCfg = Release|x64
 		{9A73516E-1ACC-4CB2-A890-419992F07B5E}.Release|x64.Build.0 = Release|x64
 		{9A73516E-1ACC-4CB2-A890-419992F07B5E}.Release|x86.ActiveCfg = Release|x64
-		{AD64F491-95B8-4E5D-BD5C-9DE55509538A}.Debug|x64.ActiveCfg = Debug|x64
-		{AD64F491-95B8-4E5D-BD5C-9DE55509538A}.Debug|x64.Build.0 = Debug|x64
-		{AD64F491-95B8-4E5D-BD5C-9DE55509538A}.Debug|x86.ActiveCfg = Debug|x64
-		{AD64F491-95B8-4E5D-BD5C-9DE55509538A}.Release|x64.ActiveCfg = Release|x64
-		{AD64F491-95B8-4E5D-BD5C-9DE55509538A}.Release|x64.Build.0 = Release|x64
-		{AD64F491-95B8-4E5D-BD5C-9DE55509538A}.Release|x86.ActiveCfg = Release|x64
 		{9FFF70D9-F561-4870-801D-746D9343762C}.Debug|x64.ActiveCfg = Debug|x64
 		{9FFF70D9-F561-4870-801D-746D9343762C}.Debug|x64.Build.0 = Debug|x64
 		{9FFF70D9-F561-4870-801D-746D9343762C}.Debug|x86.ActiveCfg = Debug|Win32
@@ -66,12 +50,6 @@ Global
 		{9FFF70D9-F561-4870-801D-746D9343762C}.Release|x64.Build.0 = Release|x64
 		{9FFF70D9-F561-4870-801D-746D9343762C}.Release|x86.ActiveCfg = Release|Win32
 		{9FFF70D9-F561-4870-801D-746D9343762C}.Release|x86.Build.0 = Release|Win32
-		{A3A7CBA3-A6CD-48C2-A6D3-ACB7795F735D}.Debug|x64.ActiveCfg = Debug|x64
-		{A3A7CBA3-A6CD-48C2-A6D3-ACB7795F735D}.Debug|x64.Build.0 = Debug|x64
-		{A3A7CBA3-A6CD-48C2-A6D3-ACB7795F735D}.Debug|x86.ActiveCfg = Debug|x64
-		{A3A7CBA3-A6CD-48C2-A6D3-ACB7795F735D}.Release|x64.ActiveCfg = Release|x64
-		{A3A7CBA3-A6CD-48C2-A6D3-ACB7795F735D}.Release|x64.Build.0 = Release|x64
-		{A3A7CBA3-A6CD-48C2-A6D3-ACB7795F735D}.Release|x86.ActiveCfg = Release|x64
 		{1DB2D189-2070-4410-82D0-D0330DADAF9B}.Debug|x64.ActiveCfg = Debug|x64
 		{1DB2D189-2070-4410-82D0-D0330DADAF9B}.Debug|x64.Build.0 = Debug|x64
 		{1DB2D189-2070-4410-82D0-D0330DADAF9B}.Debug|x86.ActiveCfg = Debug|Win32

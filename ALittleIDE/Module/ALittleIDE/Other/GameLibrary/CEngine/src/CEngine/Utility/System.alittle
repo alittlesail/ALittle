@@ -98,7 +98,7 @@ public static System_CalcLandscape(int src_width, int src_height, int flag) : in
 public static System_GetPlatform() : string
 {
     [Language(Lua)]
-    return lua.__CPPAPI_GetPlatform();
+    return __CPPAPI_System.GetPlatform();
     
     [Language(JavaScript)]
     if (window.wx != null)
@@ -111,7 +111,7 @@ public static System_GetPlatform() : string
 public static System_GetDeviceID() : string
 {
     [Language(Lua)]
-    return lua.__CPPAPI_GetDeviceID();
+    return __CPPAPI_System.GetDeviceID();
     
     // 先从cookie获取，如果没有就随机生成一个
     [Language(JavaScript)]
@@ -122,7 +122,7 @@ public static System_GetDeviceID() : string
 public static System_IsPhone() : bool
 {
     [Language(Lua)]
-    var platform = lua.__CPPAPI_GetPlatform();
+    var platform = __CPPAPI_System.GetPlatform();
     [Language(Lua)]
     return platform != "Windows" && platform != "Emscripten";
     
@@ -139,14 +139,14 @@ public static System_IsPhone() : bool
 public static System_InstallProgram(string file_path)
 {
     [Language(Lua)]
-    lua.__CPPAPI_InstallProgram(file_path);
+    __CPPAPI_System.InstallProgram(file_path);
 }
 
 // 获取屏幕宽度
 public static System_GetScreenWidth() : int
 {
     [Language(Lua)]
-    return lua.__CPPAPI_GetScreenWidth();
+    return __CPPAPI_System.GetScreenWidth();
     
     [Language(JavaScript)]
     if (window.wx != null)
@@ -161,7 +161,7 @@ public static System_GetScreenWidth() : int
 public static System_GetScreenHeight() : int
 {
     [Language(Lua)]
-    return lua.__CPPAPI_GetScreenHeight();
+    return __CPPAPI_System.GetScreenHeight();
     
     [Language(JavaScript)]
     if (window.wx != null)
@@ -235,7 +235,7 @@ public static System_GetThreadCount(int thread_type) : int
 public static System_GetIMESelectList() : string
 {
     [Language(Lua)]
-    return lua.__CPPAPI_GetIMESelectList();
+    return __CPPAPI_InputSystem.GetIMESelectList();
 
     [Language(JavaScript)]
     return "";
@@ -244,25 +244,25 @@ public static System_GetIMESelectList() : string
 public static System_SetIMEPos(int x, int y)
 {
     [Language(Lua)]
-    lua.__CPPAPI_SetIMSPos(x, y);
+    __CPPAPI_InputSystem.SetIMEPos(x, y);
 }
 // 设置IME候选框的位置，以及大小
 public static System_SetIMERect(int x, int y, int w, int h)
 {
     [Language(Lua)]
-    lua.__CPPAPI_SetIMSRect(x, y, w, h);
+    __CPPAPI_InputSystem.SetIMERect(x, y, w, h);
 }
 // 打开IME
 public static System_OpenIME()
 {
     [Language(Lua)]
-    lua.__CPPAPI_OpenIME();
+    __CPPAPI_InputSystem.OpenIME();
 }
 // 关闭IME
 public static System_CloseIME()
 {
     [Language(Lua)]
-    lua.__CPPAPI_CloseIME();
+    __CPPAPI_InputSystem.CloseIME();
 }
 
 ////光标部分////////////////////////////////////////////////////////////////////-
@@ -270,14 +270,14 @@ public static System_CloseIME()
 public static System_GetCursorX() : int
 {
     [Language(Lua)]
-    return lua.__CPPAPI_GetCursorX();
+    return __CPPAPI_InputSystem.GetCursorX();
     [Language(JavaScript)]
     return 0;
 }
 public static System_GetCursorY() : int
 {
     [Language(Lua)]
-    return lua.__CPPAPI_GetCursorY();
+    return __CPPAPI_InputSystem.GetCursorY();
     [Language(JavaScript)]
     return 0;
 }
@@ -285,7 +285,7 @@ public static System_GetCursorY() : int
 public static System_SetEditCursor()
 {
     [Language(Lua)]
-    lua.__CPPAPI_SetEditCursor();
+    __CPPAPI_InputSystem.SetEditCursor();
     [Language(JavaScript)]
     A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "text";
     [Language(JavaScript)]
@@ -295,7 +295,7 @@ public static System_SetEditCursor()
 public static System_SetNormalCursor()
 {
     [Language(Lua)]
-    lua.__CPPAPI_SetNormalCursor();
+    __CPPAPI_InputSystem.SetNormalCursor();
     [Language(JavaScript)]
     A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "auto";
     [Language(JavaScript)]
@@ -305,7 +305,7 @@ public static System_SetNormalCursor()
 public static System_SetHandCursor()
 {
     [Language(Lua)]
-    lua.__CPPAPI_SetHandCursor();
+    __CPPAPI_InputSystem.SetHandCursor();
     [Language(JavaScript)]
     A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "pointer";
     [Language(JavaScript)]
@@ -315,7 +315,7 @@ public static System_SetHandCursor()
 public static System_SetHDragCursor()
 {
     [Language(Lua)]
-    lua.__CPPAPI_SetHDragCursor();
+    __CPPAPI_InputSystem.SetHDragCursor();
     [Language(JavaScript)]
     A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "e-resize";
     [Language(JavaScript)]
@@ -325,7 +325,7 @@ public static System_SetHDragCursor()
 public static System_SetVDragCursor()
 {
     [Language(Lua)]
-    lua.__CPPAPI_SetVDragCursor();
+    __CPPAPI_InputSystem.SetVDragCursor();
     [Language(JavaScript)]
     A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "n-resize";
     [Language(JavaScript)]
@@ -335,7 +335,7 @@ public static System_SetVDragCursor()
 public static System_SetHVDragCursor()
 {
     [Language(Lua)]
-    lua.__CPPAPI_SetHVDragCursor();
+    __CPPAPI_InputSystem.SetHVDragCursor();
     [Language(JavaScript)]
     A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "nw-resize";
     [Language(JavaScript)]
@@ -345,7 +345,7 @@ public static System_SetHVDragCursor()
 public static System_SetHV2DragCursor()
 {
     [Language(Lua)]
-    lua.__CPPAPI_SetHV2DragCursor();
+    __CPPAPI_InputSystem.SetHV2DragCursor();
     [Language(JavaScript)]
     A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "ne-resize";
     [Language(JavaScript)]
@@ -355,7 +355,7 @@ public static System_SetHV2DragCursor()
 public static System_SetCrossDragCursor()
 {
     [Language(Lua)]
-    lua.__CPPAPI_SetCrossDragCursor();
+    __CPPAPI_InputSystem.SetCrossDragCursor();
     [Language(JavaScript)]
     A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "move";
     [Language(JavaScript)]
@@ -405,28 +405,6 @@ public static System_HideView()
     [Language(Lua)]
     __CPPAPI_RenderSystem.HideView();
 }
-// 获取窗口的位置
-public static System_GetViewX() : int
-{
-    [Language(Lua)]
-    return __CPPAPI_RenderSystem.GetViewX();
-    
-    [Language(JavaScript)]
-    return 0;
-}
-public static System_GetViewY() : int
-{
-    [Language(Lua)]
-    return __CPPAPI_RenderSystem.GetViewY();
-    
-    [Language(JavaScript)]
-    return 0;
-}
-public static System_SetViewPosition(int x, int y)
-{
-    [Language(Lua)]
-    __CPPAPI_RenderSystem.SetViewPosition(x, y);
-}
 public static System_GetMaxTextureWidth() : int
 {
     [Language(Lua)]
@@ -458,7 +436,7 @@ public static System_Render()
 public static System_GetClipboardText() : string
 {
     [Language(Lua)]
-    return lua.__CPPAPI_GetClipboardText();
+    return __CPPAPI_InputSystem.GetClipboardText();
     [Language(JavaScript)]
     return "";
 }
@@ -466,38 +444,15 @@ public static System_GetClipboardText() : string
 public static System_SetClipboardText(string content)
 {
     [Language(Lua)]
-    lua.__CPPAPI_SetClipboardText(content);
+    __CPPAPI_InputSystem.SetClipboardText(content);
 }
 // 剪切板是否有文本
 public static System_HasClipboardText() : bool
 {
     [Language(Lua)]
-    return lua.__CPPAPI_HasClipboardText();
+    return __CPPAPI_InputSystem.HasClipboardText();
     [Language(JavaScript)]
     return false;    
-}
-
-// 获取剪切板的图片内容，返回的是surface，最后必须使用__CPPAPI_FreeSurface释放
-public static System_GetClipboardImage() : lua.__CPPAPISurface
-{
-    [Language(Lua)]
-    return lua.__CPPAPI_GetClipboardImage();
-    [Language(JavaScript)]
-    return null;    
-}
-// 设置剪切板的图片内容，参数是surface
-public static System_SetClipboardImage(lua.__CPPAPISurface surface)
-{
-    [Language(Lua)]
-    lua.__CPPAPI_SetClipboardImage(surface);
-}
-// 剪切板是否有图片
-public static System_HasClipboardImage() : bool
-{
-    [Language(Lua)]
-    return lua.__CPPAPI_HasClipboardImage();
-    [Language(JavaScript)]
-    return false;
 }
 
 ////系统提示////////////////////////////////////////////////////////////////////////-
@@ -507,7 +462,7 @@ public static System_HasClipboardImage() : bool
 public static System_OpenUrlBySystemBrowser(string url)
 {
     [Language(Lua)]
-    lua.__CPPAPI_OpenUrlBySystemBrowser(url);
+    __CPPAPI_System.OpenUrlBySystemBrowser(url);
     [Language(JavaScript)]
     javascript.open(url);
 }
@@ -517,7 +472,7 @@ public static System_OpenUrlBySystemBrowser(string url)
 public static System_Alert(string msg)
 {
     [Language(Lua)]
-    lua.__CPPAPI_Alert(msg);
+    __CPPAPI_System.Alert(msg);
     [Language(JavaScript)]
     javascript.alert(msg);
 }

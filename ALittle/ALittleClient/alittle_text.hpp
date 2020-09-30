@@ -342,9 +342,9 @@ TextTextureInfo* CreateTextureInfo(CarpFont* font, const std::string& text)
 		return 0;
 	}
 
-	if (surface->w <= 0 || surface->h <= 0)
+	if (surface->GetWidth() <= 0 || surface->GetHeight() <= 0)
 	{
-		CARP_ERROR("surface:(w, h)=(" << surface->w << ", " << surface->h << ")");
+		CARP_ERROR("surface:(w, h)=(" << surface->GetWidth() << ", " << surface->GetHeight() << ")");
 		return 0;
 	}
 

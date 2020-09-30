@@ -1664,13 +1664,13 @@ function ALittleIDE.DisplayObjectS:ImagePathSelectCallback(text, callback, revok
 	local e = {}
 	e.target = display_object
 	callback(self, e)
-	local surface = ALittle.System_LoadSurface(ui_manager.texture_path .. "/" .. path)
+	local surface = carp.LoadCarpSurface(ui_manager.texture_path .. "/" .. path)
 	if surface == nil then
 		return
 	end
-	local w = ALittle.System_GetSurfaceWidth(surface)
-	local h = ALittle.System_GetSurfaceHeight(surface)
-	ALittle.System_FreeSurface(surface)
+	local w = carp.GetCarpSurfaceWidth(surface)
+	local h = carp.GetCarpSurfaceHeight(surface)
+	carp.FreeCarpSurface(surface)
 	local new_revoke = false
 	if revoke_bind == nil then
 		new_revoke = true

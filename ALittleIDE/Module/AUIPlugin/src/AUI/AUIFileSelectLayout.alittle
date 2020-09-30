@@ -116,12 +116,12 @@ public class AUIFileSelectLayout : ALittle.DisplayLayout
 			// 获取图片大小
 			var width:double = null;
 			var height:double = null;
-			var surface = ALittle.System_LoadSurface(abs_path);
+			var surface = carp.LoadCarpSurface(abs_path);
 			if (surface != null)
 			{
-				width = ALittle.System_GetSurfaceWidth(surface);
-				height = ALittle.System_GetSurfaceHeight(surface);
-				ALittle.System_FreeSurface(surface);
+				width = carp.GetCarpSurfaceWidth(surface);
+				height = carp.GetCarpSurfaceHeight(surface);
+				carp.FreeCarpSurface(surface);
 			}
 			if (width == null)
 			{

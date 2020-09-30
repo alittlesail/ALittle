@@ -1708,11 +1708,11 @@ public class DisplayObjectS
 		callback(this, e);
 
 		// 获取图片大小
-		var surface = ALittle.System_LoadSurface(ui_manager.texture_path.."/"..path);
+		var surface = carp.LoadCarpSurface(ui_manager.texture_path.."/"..path);
 		if (surface == null) return;
-		var w = ALittle.System_GetSurfaceWidth(surface);
-		var h = ALittle.System_GetSurfaceHeight(surface);
-		ALittle.System_FreeSurface(surface);
+		var w = carp.GetCarpSurfaceWidth(surface);
+		var h = carp.GetCarpSurfaceHeight(surface);
+		carp.FreeCarpSurface(surface);
 		var new_revoke = false;
 		if (revoke_bind == null) { new_revoke = true; revoke_bind = new ALittle.RevokeBind(); }
 		this.SetWType(ALittle.UIEnumTypes.SIZE_ABS, revoke_bind);

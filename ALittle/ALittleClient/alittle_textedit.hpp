@@ -1835,7 +1835,7 @@ private:
 		int line_skip = m_font->GetLineSkip();
 
 		// create surface
-		auto* total_surface = Carp_CreateSurface((int)m_size.x, (int)m_size.y);
+		auto* total_surface = CarpSurfaceBind::CreateCarpSurface((int)m_size.x, (int)m_size.y);
 		if (!total_surface)
 		{
 			CARP_ERROR(SDL_GetError());
@@ -1868,25 +1868,25 @@ private:
 				if (!surface)
 				{
 					CARP_ERROR("g_DisplaySystem.CreateSurface failed!");
-					Carp_FreeSurface(total_surface);
+					CarpSurfaceBind::FreeCarpSurface(total_surface);
 					return;
 				}
 
 				// copy surface
-				Carp_SurfaceRect src_rect;
+				CarpSurfaceRect src_rect;
 				src_rect.x = 0;
-				src_rect.w = (int)(surface->w < (int)m_size.x ? surface->w : (int)m_size.x);
+				src_rect.w = (int)(surface->GetWidth() < (int)m_size.x ? surface->GetWidth() : (int)m_size.x);
 				src_rect.y = 0;
-				src_rect.h = (int)(surface->h < remain_height ? surface->h : remain_height);
+				src_rect.h = (int)(surface->GetHeight() < remain_height ? surface->GetHeight() : remain_height);
 
-				Carp_SurfaceRect dst_rect;
+				CarpSurfaceRect dst_rect;
 				dst_rect.x = 0;
 				dst_rect.y = (int)((int)m_size.y - remain_height);
 				dst_rect.w = src_rect.w;
 				dst_rect.h = src_rect.h;
 
-				Carp_CopySurface(surface, &src_rect, total_surface, dst_rect.x, dst_rect.y);
-				Carp_FreeSurface(surface);
+				total_surface->CopyFrom(surface, &src_rect, dst_rect.x, dst_rect.y);
+				CarpSurfaceBind::FreeCarpSurface(surface);
 			}
 
 			// Remaining highly removes line_skip

@@ -40,8 +40,6 @@ int main(int argc, char* argv[])
 #include "alittle_schedule.hpp"
 #define ALITTLE_SCRIPT_IMPL
 #include "alittle_script.hpp"
-#define ALITTLE_SURFACE_IMPL
-#include "alittle_surface.hpp"
 #define ALITTLE_SYSTEM_IMPL
 #include "alittle_system.hpp"
 #define ALITTLE_TEXT_IMPL
@@ -50,8 +48,6 @@ int main(int argc, char* argv[])
 #include "alittle_displayview.hpp"
 #define ALITTLE_TEXTURE_IMPL
 #include "alittle_texture.hpp"
-#define CARP_MIXER_IMPL
-#include "Carp/carp_mixer.hpp"
 #define CARP_CONSOLE_IMPL
 #include "Carp/carp_console.hpp"
 #define CARP_DUMP_IMPL
@@ -63,4 +59,6 @@ int main(int argc, char* argv[])
 #define CARP_SCHEDULE_IMPL
 #include "Carp/carp_schedule.hpp"
 #define CARP_SURFACE_IMPL
-#include "Carp/carp_surface.h"
+#include "Carp/carp_surface_bind.hpp"
+#define CARP_MIXER_IMPL
+#include "Carp/carp_mixer.hpp"

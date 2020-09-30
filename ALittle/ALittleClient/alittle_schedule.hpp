@@ -70,9 +70,7 @@ private:
 		s_alittle_audio.Bind(s_alittle_script.GetLuaState());
 		ALittleCsv::Bind(s_alittle_script.GetLuaState());
 		ALittleNet::Bind(s_alittle_script.GetLuaState());
-		CarpSurfaceBind::Bind(s_alittle_script.GetLuaState());
-
-
+		
 		// load engine
 		CARP_INFO("==>ScheduleSystem Lua Init Begin<==");
 		std::string main_path;

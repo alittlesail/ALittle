@@ -55,12 +55,12 @@ public class IDEImageSelectDialog : AUIPlugin.AUIFileSelectDialog
 	{
 		var width = 100;
 		var height = 100;
-		var surface = ALittle.System_LoadSurface(this.base_path.."/"..event.path);
+		var surface = carp.LoadCarpSurface(this.base_path.."/"..event.path);
 		if (surface != null)
 		{
-			width = ALittle.System_GetSurfaceWidth(surface);
-			height = ALittle.System_GetSurfaceHeight(surface);
-			ALittle.System_FreeSurface(surface);
+			width = carp.GetCarpSurfaceWidth(surface);
+			height = carp.GetCarpSurfaceHeight(surface);
+			carp.FreeCarpSurface(surface);
 		}
 
 		var display_info = new ALittle.DisplayInfo();

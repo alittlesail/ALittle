@@ -66,11 +66,11 @@ end
 function ALittleIDE.IDEImageSelectDialog:HandleImageCopyImageCodeClick(event)
 	local width = 100
 	local height = 100
-	local surface = ALittle.System_LoadSurface(self.base_path .. "/" .. event.path)
+	local surface = carp.LoadCarpSurface(self.base_path .. "/" .. event.path)
 	if surface ~= nil then
-		width = ALittle.System_GetSurfaceWidth(surface)
-		height = ALittle.System_GetSurfaceHeight(surface)
-		ALittle.System_FreeSurface(surface)
+		width = carp.GetCarpSurfaceWidth(surface)
+		height = carp.GetCarpSurfaceHeight(surface)
+		carp.FreeCarpSurface(surface)
 	end
 	local display_info = {}
 	display_info.__class = "Image"

@@ -234,54 +234,6 @@ function ALittle.System_Alert(msg)
 	__CPPAPI_System:Alert(msg)
 end
 
-function ALittle.System_LoadSurface(path)
-	return __CPPAPI_LoadSurface(path)
-end
-
-function ALittle.System_CreateSurface(width, height)
-	return __CPPAPI_CreateSurface(width, height)
-end
-
-function ALittle.System_SaveSurface(surface, path)
-	return __CPPAPI_SaveSurface(surface, path)
-end
-
-function ALittle.System_FreeSurface(surface)
-	__CPPAPI_FreeSurface(surface)
-end
-
-function ALittle.System_GetSurfaceWidth(surface)
-	return __CPPAPI_GetSurfaceWidth(surface)
-end
-
-function ALittle.System_GetSurfaceHeight(surface)
-	return __CPPAPI_GetSurfaceHeight(surface)
-end
-
-function ALittle.System_CutBlitSurface(new_surface, surface, to, from)
-	return __CPPAPI_CutBlitSurface(new_surface, surface, to, from)
-end
-
-function ALittle.System_SetSurfacePixel(surface, x, y, color)
-	return __CPPAPI_SetSurfacePixel(surface, x, y, color)
-end
-
-function ALittle.System_GetSurfacePixel(surface, x, y)
-	return __CPPAPI_GetSurfacePixel(surface, x, y)
-end
-
-function ALittle.System_GetPixelAlpha(color)
-	return __CPPAPI_GetPixelAlpha(color)
-end
-
-function ALittle.System_SetPixelAlpha(color, alpha)
-	return __CPPAPI_SetPixelAlpha(color, alpha)
-end
-
-function ALittle.System_GetSurfaceGrid9(surface, type)
-	return __CPPAPI_GetSurfaceGrid9(surface, type)
-end
-
 function ALittle.CreateMsgSender(heartbeat, check_heartbeat, callback)
 	return Lua.Template(ALittle.MsgSenderTemplate, "ALittle.MsgSenderTemplate<lua.__CPPAPIMsgInterface, carp.CarpMessageWriteFactory>", __CPPAPIMsgInterface, carp.CarpMessageWriteFactory)(heartbeat, check_heartbeat, A_LuaLoopSystem, callback)
 end

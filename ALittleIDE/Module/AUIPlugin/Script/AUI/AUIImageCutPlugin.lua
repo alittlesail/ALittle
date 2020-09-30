@@ -71,12 +71,12 @@ function AUIPlugin.AUIImageCutPlugin:Cut(target_path)
 	if target_path == nil then
 		target_path = self._file_path
 	end
-	local surface = ALittle.System_LoadSurface(self._file_path)
+	local surface = carp.LoadCarpSurface(self._file_path)
 	if surface == nil then
 		return false
 	end
-	local width = ALittle.System_GetSurfaceWidth(surface)
-	local height = ALittle.System_GetSurfaceHeight(surface)
+	local width = carp.GetCarpSurfaceWidth(surface)
+	local height = carp.GetCarpSurfaceHeight(surface)
 	local rate_w = self._edit_container.width / width
 	local rate_h = self._edit_container.height / height
 	local cut_x = ALittle.Math_Floor(self._cut_center_x / rate_w)
@@ -91,9 +91,9 @@ function AUIPlugin.AUIImageCutPlugin:Cut(target_path)
 	if new_height > self._MAX_HEIGHT then
 		new_height = self._MAX_HEIGHT
 	end
-	local new_surface = ALittle.System_CreateSurface(ALittle.Math_Floor(new_width), ALittle.Math_Floor(new_height))
-	ALittle.System_CutBlitSurface(new_surface, surface, "0,0," .. new_width .. "," .. new_height, cut_x .. "," .. cut_y .. "," .. cut_width .. "," .. cut_height)
-	ALittle.System_FreeSurface(surface)
+	local new_surface = carp.CreateCarpSurface(ALittle.Math_Floor(new_width), ALittle.Math_Floor(new_height))
+	carp.CutBlitCarpSurface(new_surface, surface, "0,0," .. new_width .. "," .. new_height, cut_x .. "," .. cut_y .. "," .. cut_width .. "," .. cut_height)
+	carp.FreeCarpSurface(surface)
 	if self._is_circle then
 		local new_center = new_width / 2
 		local gradual_len = ALittle.Math_Floor(new_center * 0.05)
@@ -107,24 +107,24 @@ function AUIPlugin.AUIImageCutPlugin:Cut(target_path)
 				local y2 = (new_center - row) * (new_center - row)
 				local distance = ALittle.Math_Sqrt(x2 + y2)
 				if distance > new_center then
-					ALittle.System_SetSurfacePixel(new_surface, col, row, 0)
+					carp.SetCarpSurfacePixel(new_surface, col, row, 0)
 				elseif gradual_len > 0 and new_center - distance < gradual_len then
-					local color = ALittle.System_GetSurfacePixel(new_surface, col, row)
-					local src_alpha = ALittle.System_GetPixelAlpha(color)
+					local color = carp.GetCarpSurfacePixel(new_surface, col, row)
+					local src_alpha = carp.GetPixelAlpha(color)
 					local dst_alpha = ALittle.Math_Sin((3.14159625 / 2) * (new_center - distance) / gradual_len) * 255
 					if src_alpha < dst_alpha then
 						dst_alpha = src_alpha
 					end
-					color = ALittle.System_SetPixelAlpha(color, ALittle.Math_Ceil(dst_alpha))
-					ALittle.System_SetSurfacePixel(new_surface, col, row, color)
+					color = carp.SetPixelAlpha(color, ALittle.Math_Ceil(dst_alpha))
+					carp.SetCarpSurfacePixel(new_surface, col, row, color)
 				end
 				col = col+(1)
 			end
 			row = row+(1)
 		end
 	end
-	local result = ALittle.System_SaveSurface(new_surface, target_path)
-	ALittle.System_FreeSurface(new_surface)
+	local result = carp.SaveCarpSurface(new_surface, target_path)
+	carp.FreeCarpSurface(new_surface)
 	return result
 end
 

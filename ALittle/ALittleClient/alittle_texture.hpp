@@ -53,11 +53,11 @@ public:
 class ALittleSurfaceTexture : public ALittleTexture
 {
 public:
-	ALittleSurfaceTexture(Carp_Surface* surface)
+	ALittleSurfaceTexture(CarpSurface* surface)
 	{
 		m_surface = surface;
-		m_width = surface->w;
-		m_height = surface->h;
+		m_width = surface->GetWidth();
+		m_height = surface->GetHeight();
 	}
 	~ALittleSurfaceTexture()
 	{
@@ -75,21 +75,19 @@ public:
 #endif
 
 		// if surface small then max texture size then create single texture
-		if (m_surface->w <= s_alittle_render.GetMaxTextureWidth() && m_surface->h <= s_alittle_render.GetMaxTextureHeight())
+		if (m_surface->GetWidth() <= s_alittle_render.GetMaxTextureWidth() && m_surface->GetHeight() <= s_alittle_render.GetMaxTextureHeight())
 		{
-			m_texture = SDL_CreateTexture(s_alittle_render.GetRender(), SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC,
-				m_surface->w, m_surface->h);
-			if (m_texture) SDL_UpdateTexture(m_texture, nullptr, m_surface->pixels, m_surface->w * 4);
-			// m_texture = SDL_CreateTextureFromSurface(s_alittle_render.GetRender(), m_surface);
+			m_texture = SDL_CreateTexture(s_alittle_render.GetRender(), SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC, m_surface->GetWidth(), m_surface->GetHeight());
+			if (m_texture) SDL_UpdateTexture(m_texture, nullptr, m_surface->GetPixels(), m_surface->GetPitch());
 			if (m_texture) SDL_SetTextureBlendMode(m_texture, SDL_BLENDMODE_BLEND);
-			Carp_FreeSurface(m_surface);
+			CarpSurfaceBind::FreeCarpSurface(m_surface);
 			m_surface = nullptr;
 			return;
 		}
 
-		CARP_ERROR("surface is too large:" << m_surface->w << "," << m_surface->h);
+		CARP_ERROR("surface is too large:" << m_surface->GetWidth() << "," << m_surface->GetHeight());
 
-		Carp_FreeSurface(m_surface);
+		CarpSurfaceBind::FreeCarpSurface(m_surface);
 		m_surface = nullptr;
 	}
 
@@ -101,7 +99,7 @@ public:
 	{
 		if (m_surface)
 		{
-			Carp_FreeSurface(m_surface);
+			CarpSurfaceBind::FreeCarpSurface(m_surface);
 			m_surface = nullptr;
 		}
 
@@ -138,7 +136,7 @@ public:
 
 private:
 	SDL_Texture* m_texture = nullptr;
-	Carp_Surface* m_surface = nullptr;
+	CarpSurface* m_surface = nullptr;
 
 private:
 	int m_width = 0, m_height = 0;
@@ -232,18 +230,18 @@ public:
 		int renderer_width, renderer_height;
 		SDL_GetRendererOutputSize(s_alittle_render.GetRender(), &renderer_width, &renderer_height);
 
-		auto* surface = Carp_CreateSurface(renderer_width, renderer_height);
+		auto* surface = CarpSurfaceBind::CreateCarpSurface(renderer_width, renderer_height);
 		if (surface)
 		{
-			int read_result = SDL_RenderReadPixels(s_alittle_render.GetRender(), 0, format, surface->pixels, surface->w * 4);
+			int read_result = SDL_RenderReadPixels(s_alittle_render.GetRender(), 0, format, surface->GetPixels(), surface->GetPitch());
 			if (read_result == 0)
 			{
-				if (!CarpSurfaceBind::SaveSurface(surface, file_path))
-					CARP_ERROR("SaveSurface failed:" << file_path);
+				if (!CarpSurfaceBind::SaveCarpSurface(surface, file_path))
+					CARP_ERROR("SaveCarpSurface failed:" << file_path);
 			}
 			else
 				CARP_ERROR("SDL_RenderReadPixels failed:" << renderer_width << ", " << renderer_height);
-			Carp_FreeSurface(surface);
+			CarpSurfaceBind::FreeCarpSurface(surface);
 		}
 		else
 			CARP_ERROR("SDL_CreateRGBSurface failed:" << renderer_width << ", " << renderer_height);
@@ -315,10 +313,10 @@ public:
 public:
 	void Execute() override
 	{
-		Carp_Surface* surface = 0;
+		CarpSurface* surface = 0;
 		if (m_width > 0 && m_height > 0)
 		{
-			surface = Carp_CreateSurface(m_width, m_height);
+			surface = CarpSurfaceBind::CreateCarpSurface(m_width, m_height);
 		}
 
 		std::vector<std::string> atlas_list;
@@ -346,7 +344,7 @@ public:
 			file.SetPath(file_path.c_str());
 			if (!file.Load(false))
 			{
-				if (surface) Carp_FreeSurface(surface);
+				if (surface) CarpSurfaceBind::FreeCarpSurface(surface);
 				CARP_ERROR("LocalFile load failed, " << file_path);
 				s_carp_task_consumer.PushEvent([this]() { s_alittle_script.Invoke("__ALITTLEAPI_TextureLoadFailed", this); });
 				return;
@@ -357,7 +355,7 @@ public:
 			auto* child_surface = CarpSurfaceBind::LoadSurface(file);
 			if (!child_surface)
 			{
-				if (surface) Carp_FreeSurface(surface);
+				if (surface) CarpSurfaceBind::FreeCarpSurface(surface);
 				CARP_ERROR("LoadImageFromMemory failed:" << file_path);
 				s_carp_task_consumer.PushEvent([this]() { s_alittle_script.Invoke("__ALITTLEAPI_TextureLoadFailed", this); });
 				return;
@@ -365,49 +363,49 @@ public:
 			
 			if (surface == 0) { surface = child_surface; break; }
 
-			CarpSurfaceBind::BlitSurface(surface, child_surface, l, t);
+			CarpSurfaceBind::BlitCarpSurface(surface, child_surface, l, t);
 			// top
 			for (int i = 0; i < w; ++i)
 			{
-				unsigned int pixel = Carp_GetSurfacePixel(child_surface, i, 0);
-				Carp_SetSurfacePixel(surface, l + i, t - 1, pixel);
+				unsigned int pixel = CarpSurfaceBind::GetCarpSurfacePixel(child_surface, i, 0);
+				CarpSurfaceBind::SetCarpSurfacePixel(surface, l + i, t - 1, pixel);
 			}
 
 			// bottom
 			for (int i = 0; i < w; ++i)
 			{
-				unsigned int pixel = Carp_GetSurfacePixel(child_surface, i, h - 1);
-				Carp_SetSurfacePixel(surface, l + i, t + h, pixel);
+				unsigned int pixel = CarpSurfaceBind::GetCarpSurfacePixel(child_surface, i, h - 1);
+				CarpSurfaceBind::SetCarpSurfacePixel(surface, l + i, t + h, pixel);
 			}
 
 			// left
 			for (int i = 0; i < h; ++i)
 			{
-				unsigned int pixel = Carp_GetSurfacePixel(child_surface, 0, i);
-				Carp_SetSurfacePixel(surface, l - 1, t + i, pixel);
+				unsigned int pixel = CarpSurfaceBind::GetCarpSurfacePixel(child_surface, 0, i);
+				CarpSurfaceBind::SetCarpSurfacePixel(surface, l - 1, t + i, pixel);
 			}
 
 			// right
 			for (int i = 0; i < h; ++i)
 			{
-				unsigned int pixel = Carp_GetSurfacePixel(child_surface, w - 1, i);
-				Carp_SetSurfacePixel(surface, l + w, t + i, pixel);
+				unsigned int pixel = CarpSurfaceBind::GetCarpSurfacePixel(child_surface, w - 1, i);
+				CarpSurfaceBind::SetCarpSurfacePixel(surface, l + w, t + i, pixel);
 			}
 
 			// left-top
-			unsigned int pixel = Carp_GetSurfacePixel(child_surface, 0, 0);
-			Carp_SetSurfacePixel(surface, l - 1, t - 1, pixel);
+			unsigned int pixel = CarpSurfaceBind::GetCarpSurfacePixel(child_surface, 0, 0);
+			CarpSurfaceBind::SetCarpSurfacePixel(surface, l - 1, t - 1, pixel);
 			// right-top
-			pixel = Carp_GetSurfacePixel(child_surface, w - 1, 0);
-			Carp_SetSurfacePixel(surface, l + w, t - 1, pixel);
+			pixel = CarpSurfaceBind::GetCarpSurfacePixel(child_surface, w - 1, 0);
+			CarpSurfaceBind::SetCarpSurfacePixel(surface, l + w, t - 1, pixel);
 			// left-bottom
-			pixel = Carp_GetSurfacePixel(child_surface, 0, h - 1);
-			Carp_SetSurfacePixel(surface, l - 1, t + h, pixel);
+			pixel = CarpSurfaceBind::GetCarpSurfacePixel(child_surface, 0, h - 1);
+			CarpSurfaceBind::SetCarpSurfacePixel(surface, l - 1, t + h, pixel);
 			// right-bottom
-			pixel = Carp_GetSurfacePixel(child_surface, w - 1, h - 1);
-			Carp_SetSurfacePixel(surface, l + w, t + h, pixel);
+			pixel = CarpSurfaceBind::GetCarpSurfacePixel(child_surface, w - 1, h - 1);
+			CarpSurfaceBind::SetCarpSurfacePixel(surface, l + w, t + h, pixel);
 
-			Carp_FreeSurface(child_surface);
+			CarpSurfaceBind::FreeCarpSurface(child_surface);
 		}
 		
 		s_carp_task_consumer.PushEvent([this, surface]()
@@ -460,8 +458,8 @@ public:
 public:
 	void Execute() override
 	{
-		// sdl surface
-		Carp_Surface* surface = 0;
+		// surface
+		CarpSurface* surface = nullptr;
 
 		// load for local file
 		CarpLocalFile local_file;
@@ -482,22 +480,22 @@ public:
 			return;
 		}
 
-		if (m_max_width > 0 && m_max_height > 0 && (surface->w > m_max_width || surface->h > m_max_height))
+		if (m_max_width > 0 && m_max_height > 0 && (surface->GetWidth() > m_max_width || surface->GetHeight() > m_max_height))
 		{
-			float scale_x = (float)m_max_width / (float)surface->w;
-			float scale_y = (float)m_max_height / (float)surface->h;
+			float scale_x = (float)m_max_width / (float)surface->GetWidth();
+			float scale_y = (float)m_max_height / (float)surface->GetHeight();
 
 			float max_scale = scale_x;
 			if (max_scale > scale_y) max_scale = scale_y;
 
-			int adjust_width = int(max_scale * surface->w);
+			int adjust_width = int(max_scale * surface->GetWidth());
 			if (adjust_width == 0) adjust_width = 1;
-			int adjust_height = int(max_scale * surface->h);
+			int adjust_height = int(max_scale * surface->GetHeight());
 			if (adjust_height == 0) adjust_height = 1;
 
-			auto* new_surface = Carp_CreateSurface(adjust_width, adjust_height);
-			Carp_ScaleSurface(surface, 0, new_surface, 0);
-			Carp_FreeSurface(surface);
+			auto* new_surface = CarpSurfaceBind::CreateCarpSurface(adjust_width, adjust_height);
+			new_surface->ScaleFrom(surface, nullptr, nullptr);
+			CarpSurfaceBind::FreeCarpSurface(surface);
 			surface = new_surface;
 		}
 

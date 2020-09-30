@@ -3,7 +3,7 @@
 
 #include "alittle_texture.hpp"
 #include "alittle_image.hpp"
-#include "Carp/carp_surface.h"
+#include "Carp/carp_surface_bind.hpp"
 
 extern ALittleSurfaceTexture* GetQuadTexture();
 extern void ReleaseQuadTexture();
@@ -88,12 +88,12 @@ ALittleSurfaceTexture* GetQuadTexture()
 		return s_quad_texture_info.texture;
 	}
 
-	Carp_Surface* surface = Carp_CreateSurface(32, 32);
+	CarpSurface* surface = CarpSurfaceBind::CreateCarpSurface(32, 32);
 	if (surface == nullptr) return nullptr;
 
 	for (int i = 0; i < 32; ++i)
 		for (int j = 0; j < 32; ++j)
-			Carp_SetSurfacePixel(surface, i, j, 0xFFFFFFFF);
+			CarpSurfaceBind::SetCarpSurfacePixel(surface, i, j, 0xFFFFFFFF);
 
 	s_quad_texture_info.texture = new ALittleSurfaceTexture(surface);
 	s_quad_texture_info.ref_count = 1;

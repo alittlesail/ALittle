@@ -7,7 +7,6 @@
 #include <string>
 
 #include "alittle_script.hpp"
-#include "alittle_surface.hpp"
 #include "alittle_display.hpp"
 #include "Carp/carp_log.hpp"
 #include "Carp/carp_lua.hpp"
@@ -366,9 +365,9 @@ public:
 			return false;
 		}
 
-		auto* surface = SDL_CreateRGBSurface(0, icon->w, icon->h, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
-		if (surface) memcpy(surface->pixels, icon->pixels, icon->w * icon->h * 4);
-		Carp_FreeSurface(icon);
+		auto* surface = SDL_CreateRGBSurface(0, icon->GetWidth(), icon->GetHeight(), 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+		if (surface) memcpy(surface->pixels, icon->GetPixels(), icon->GetPitch() * icon->GetHeight());
+		CarpSurfaceBind::FreeCarpSurface(icon);
 		
 		// check load succeed or not
 		if (surface == nullptr)

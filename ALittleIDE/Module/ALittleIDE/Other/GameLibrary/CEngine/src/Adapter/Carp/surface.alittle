@@ -1,0 +1,21 @@
+
+register namespace carp;
+
+public class CarpSurface
+{
+
+}
+
+
+public static LoadCarpSurface(string path) : CarpSurface {}
+public static CreateCarpSurface(int width, int height) : CarpSurface {}
+public static SaveCarpSurface(CarpSurface surface, string path) : bool {}
+public static FreeCarpSurface(CarpSurface surface) {}
+public static GetCarpSurfaceWidth(CarpSurface surface) : int {}
+public static GetCarpSurfaceHeight(CarpSurface surface) : int {}
+public static CutBlitCarpSurface(CarpSurface new_surface, CarpSurface surface, string to, string from) : bool {}
+public static SetCarpSurfacePixel(CarpSurface surface, int x, int y, int color) : bool {}
+public static GetCarpSurfacePixel(CarpSurface surface, int x, int y) : int {}
+public static GetPixelAlpha(int color) : int {}
+public static SetPixelAlpha(int color, int alpha) : int {}
+public static GetCarpSurfaceGrid9(CarpSurface surface, string type) : int { }

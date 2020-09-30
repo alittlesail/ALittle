@@ -333,18 +333,18 @@ function ALittleIDE.IDEUIUtility_CreateTree(control, module, extends_v, object, 
 end
 
 function ALittleIDE.IDEUIUtility_GenerateGrid9ImageInfo(base_path, image_path)
-	local surface = ALittle.System_LoadSurface(base_path .. image_path)
+	local surface = carp.LoadCarpSurface(base_path .. image_path)
 	if surface == nil then
 		return nil
 	end
-	local width = ALittle.System_GetSurfaceWidth(surface)
-	local height = ALittle.System_GetSurfaceHeight(surface)
+	local width = carp.GetCarpSurfaceWidth(surface)
+	local height = carp.GetCarpSurfaceHeight(surface)
 	local helf_width = ALittle.Math_Floor(width / 2)
 	local helf_height = ALittle.Math_Floor(height / 2)
-	local left = ALittle.System_GetSurfaceGrid9(surface, "left")
-	local right = ALittle.System_GetSurfaceGrid9(surface, "right")
-	local top = ALittle.System_GetSurfaceGrid9(surface, "top")
-	local bottom = ALittle.System_GetSurfaceGrid9(surface, "bottom")
+	local left = carp.GetCarpSurfaceGrid9(surface, "left")
+	local right = carp.GetCarpSurfaceGrid9(surface, "right")
+	local top = carp.GetCarpSurfaceGrid9(surface, "top")
+	local bottom = carp.GetCarpSurfaceGrid9(surface, "bottom")
 	if left == 0 then
 		left = 1
 	elseif left == helf_width then
@@ -373,7 +373,7 @@ function ALittleIDE.IDEUIUtility_GenerateGrid9ImageInfo(base_path, image_path)
 	else
 		bottom = height - bottom + 1
 	end
-	ALittle.System_FreeSurface(surface)
+	carp.FreeCarpSurface(surface)
 	local display_info = {}
 	display_info.__class = "Grid9Image"
 	display_info.texture_name = image_path

@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "Carp/carp_surface_bind.hpp"
+
 extern "C" {
 #include "lua.h"
 #include "lualib/ajson/lua_ajson.h"
@@ -42,6 +44,7 @@ public:
 		CarpBitBind::Bind(m_L);
 		CarpRWopsBind::Bind(m_L);
 		CarpTaskConsumerBind::Bind(m_L);
+		CarpSurfaceBind::Bind(m_L);
 	}
 	
 	void Shutdown()

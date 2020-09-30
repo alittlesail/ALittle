@@ -415,19 +415,19 @@ public static IDEUIUtility_CreateTree(const ALittle.DisplayInfo control, string 
 // 生成九宫格信息
 public static IDEUIUtility_GenerateGrid9ImageInfo(string base_path, string image_path) : ALittle.DisplayInfo
 {
-	var surface = ALittle.System_LoadSurface(base_path..image_path);
+	var surface = carp.LoadCarpSurface(base_path..image_path);
 	if (surface == null) return null;
 
-	var width = ALittle.System_GetSurfaceWidth(surface);
-	var height = ALittle.System_GetSurfaceHeight(surface);
+	var width = carp.GetCarpSurfaceWidth(surface);
+	var height = carp.GetCarpSurfaceHeight(surface);
 
 	var helf_width = ALittle.Math_Floor(width / 2);
 	var helf_height = ALittle.Math_Floor(height / 2);
 
-	var left = ALittle.System_GetSurfaceGrid9(surface, "left");
-	var right = ALittle.System_GetSurfaceGrid9(surface, "right");
-	var top = ALittle.System_GetSurfaceGrid9(surface, "top");
-	var bottom = ALittle.System_GetSurfaceGrid9(surface, "bottom");
+	var left = carp.GetCarpSurfaceGrid9(surface, "left");
+	var right = carp.GetCarpSurfaceGrid9(surface, "right");
+	var top = carp.GetCarpSurfaceGrid9(surface, "top");
+	var bottom = carp.GetCarpSurfaceGrid9(surface, "bottom");
 
 	if (left == 0)
 		left = 1;
@@ -457,7 +457,7 @@ public static IDEUIUtility_GenerateGrid9ImageInfo(string base_path, string image
 	else
 		bottom = height - bottom + 1;
 
-	ALittle.System_FreeSurface(surface);
+	carp.FreeCarpSurface(surface);
 
 	var display_info = new ALittle.DisplayInfo();
 	display_info.__class = "Grid9Image";

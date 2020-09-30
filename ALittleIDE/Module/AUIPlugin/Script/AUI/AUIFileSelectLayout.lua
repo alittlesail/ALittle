@@ -150,11 +150,11 @@ function AUIPlugin.AUIFileSelectLayout:CreateFileItem(file_name, rel_path, abs_p
 	if ext == "PNG" or ext == "JPG" or ext == "BMP" then
 		local width = nil
 		local height = nil
-		local surface = ALittle.System_LoadSurface(abs_path)
+		local surface = carp.LoadCarpSurface(abs_path)
 		if surface ~= nil then
-			width = ALittle.System_GetSurfaceWidth(surface)
-			height = ALittle.System_GetSurfaceHeight(surface)
-			ALittle.System_FreeSurface(surface)
+			width = carp.GetCarpSurfaceWidth(surface)
+			height = carp.GetCarpSurfaceHeight(surface)
+			carp.FreeCarpSurface(surface)
 		end
 		if width == nil then
 			width = info.frame.width

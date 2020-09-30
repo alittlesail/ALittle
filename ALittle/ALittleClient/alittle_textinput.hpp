@@ -999,8 +999,8 @@ private:
 		}
 
 		// save size
-		m_real_width = surface->w;
-		m_real_height = surface->h;
+		m_real_width = surface->GetWidth();
+		m_real_height = surface->GetHeight();
 
 		m_texture = new ALittleSurfaceTexture(surface);
 		m_vertex_dirty = true;

@@ -146,7 +146,7 @@ DISKAUDIO_OpenDevice(_THIS, void *handle, const char *devname, int iscapture)
     }
 
     /* Open the audio device */
-    this->hidden->io = SDL_RWFromFile(fname, iscapture ? "rb" : "wb");
+    this->hidden->io = SDL_RWFromFile(fname, iscapture ? "rb" : "wb", 0);
     if (this->hidden->io == NULL) {
         return -1;
     }

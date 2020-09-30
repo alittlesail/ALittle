@@ -775,7 +775,7 @@ done:
 void *
 SDL_LoadFile(const char *file, size_t *datasize)
 {
-   return SDL_LoadFile_RW(SDL_RWFromFile(file, "rb"), datasize, 1);
+   return SDL_LoadFile_RW(SDL_RWFromFile(file, "rb", 0), datasize, 1);
 }
 
 Sint64

@@ -1,8 +1,8 @@
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
-LOCAL_MODULE := luajit
-LOCAL_SRC_FILES := libluajit.a
+LOCAL_MODULE := lua
+LOCAL_SRC_FILES := liblua.a
 include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)

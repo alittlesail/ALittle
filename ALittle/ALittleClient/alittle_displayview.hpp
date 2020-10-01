@@ -42,35 +42,33 @@ public:
 			.endClass();
 	}
 
-#ifdef __EMSCRIPTEN__
-	void SetX(float x) { ALittleDisplayObjects::SetX(x); }
-	void SetY(float y) { ALittleDisplayObjects::SetY(y); }
+	void SetX(float x) override { ALittleDisplayObjects::SetX(x); }
+	void SetY(float y) override { ALittleDisplayObjects::SetY(y); }
 
-	void SetWidth(float width) { ALittleDisplayObjects::SetWidth(width); }
-	void SetHeight(float height) { ALittleDisplayObjects::SetHeight(height); }
+	void SetWidth(float width) override { ALittleDisplayObjects::SetWidth(width); }
+	void SetHeight(float height) override { ALittleDisplayObjects::SetHeight(height); }
 
-	void SetAngle(float angle) { ALittleDisplayObjects::SetAngle(angle); }
+	void SetAngle(float angle) override { ALittleDisplayObjects::SetAngle(angle); }
 
-	void SetScaleX(float x) { ALittleDisplayObjects::SetScaleX(x); }
-	void SetScaleY(float y) { ALittleDisplayObjects::SetScaleY(y); }
+	void SetScaleX(float x) override { ALittleDisplayObjects::SetScaleX(x); }
+	void SetScaleY(float y) override { ALittleDisplayObjects::SetScaleY(y); }
 
-	void SetCenterX(float x) { ALittleDisplayObjects::SetCenterX(x); }
-	void SetCenterY(float y) { ALittleDisplayObjects::SetCenterY(y); }
+	void SetCenterX(float x) override { ALittleDisplayObjects::SetCenterX(x); }
+	void SetCenterY(float y) override { ALittleDisplayObjects::SetCenterY(y); }
 
-	void SetRed(float red) { ALittleDisplayObjects::SetRed(red); }
-	void SetGreen(float green) { ALittleDisplayObjects::SetGreen(green); }
-	void SetBlue(float blue) { ALittleDisplayObjects::SetBlue(blue); }
-	void SetAlpha(float alpha) { ALittleDisplayObjects::SetAlpha(alpha); }
+	void SetRed(float red) override { ALittleDisplayObjects::SetRed(red); }
+	void SetGreen(float green) override { ALittleDisplayObjects::SetGreen(green); }
+	void SetBlue(float blue) override { ALittleDisplayObjects::SetBlue(blue); }
+	void SetAlpha(float alpha) override { ALittleDisplayObjects::SetAlpha(alpha); }
 
-	void SetVisible(bool visible) { ALittleDisplayObjects::SetVisible(visible); }
-	void SetClip(bool clip) { ALittleDisplayObjects::SetClip(clip); }
+	void SetVisible(bool visible) override { ALittleDisplayObjects::SetVisible(visible); }
+	void SetClip(bool clip) override { ALittleDisplayObjects::SetClip(clip); }
 
-	void AddChild(ALittleDisplayObject* object) { ALittleDisplayObjects::AddChild(object); }
-	void AddChildAfter(ALittleDisplayObject* front_object, ALittleDisplayObject* target_object) { ALittleDisplayObjects::AddChildAfter(front_object, target_object); }
-	void AddChildBefore(ALittleDisplayObject* back_object, ALittleDisplayObject* target_object) { ALittleDisplayObjects::AddChildBefore(back_object, target_object); }
-	void RemoveChild(ALittleDisplayObject* object) { ALittleDisplayObjects::RemoveChild(object); }
-	void RemoveAllChild() { ALittleDisplayObjects::RemoveAllChild(); }
-#endif
+	void AddChild(ALittleDisplayObject* object) override { ALittleDisplayObjects::AddChild(object); }
+	void AddChildAfter(ALittleDisplayObject* front_object, ALittleDisplayObject* target_object) override { ALittleDisplayObjects::AddChildAfter(front_object, target_object); }
+	void AddChildBefore(ALittleDisplayObject* back_object, ALittleDisplayObject* target_object) override { ALittleDisplayObjects::AddChildBefore(back_object, target_object); }
+	void RemoveChild(ALittleDisplayObject* object) override { ALittleDisplayObjects::RemoveChild(object); }
+	void RemoveAllChild() override { ALittleDisplayObjects::RemoveAllChild(); }
 
 public:
 	void Render(const CarpMatrix2D& parent, bool parent_changed) override

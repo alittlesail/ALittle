@@ -98,7 +98,7 @@ public:
 	/**
 	 * clear texture
 	 */
-	void Clear()
+	void Clear() override
 	{
 		if (m_surface)
 		{
@@ -255,7 +255,7 @@ public:
 		return result;
 	}
 	
-	void Clear()
+	void Clear() override
 	{
 		if (m_texture)
 			s_alittle_render.DestroyTexture(m_texture);

@@ -37,33 +37,31 @@ public:
 			.addFunction("SetClip", &ALittleDisplayObjects::SetClip)
 			.endClass();
 	}
-	
-#ifdef __EMSCRIPTEN__
-	void SetX(float x) { ALittleDisplayObject::SetX(x); }
-	void SetY(float y) { ALittleDisplayObject::SetY(y); }
 
-	void SetWidth(float width) { ALittleDisplayObject::SetWidth(width); }
-	void SetHeight(float height) { ALittleDisplayObject::SetHeight(height); }
+	void SetX(float x) override { ALittleDisplayObject::SetX(x); }
+	void SetY(float y) override { ALittleDisplayObject::SetY(y); }
 
-	void SetAngle(float angle) { ALittleDisplayObject::SetAngle(angle); }
+	void SetWidth(float width) override { ALittleDisplayObject::SetWidth(width); }
+	void SetHeight(float height) override { ALittleDisplayObject::SetHeight(height); }
 
-	void SetScaleX(float x) { ALittleDisplayObject::SetScaleX(x); }
-	void SetScaleY(float y) { ALittleDisplayObject::SetScaleY(y); }
+	void SetAngle(float angle) override { ALittleDisplayObject::SetAngle(angle); }
 
-	void SetCenterX(float x) { ALittleDisplayObject::SetCenterX(x); }
-	void SetCenterY(float y) { ALittleDisplayObject::SetCenterY(y); }
+	void SetScaleX(float x) override { ALittleDisplayObject::SetScaleX(x); }
+	void SetScaleY(float y) override { ALittleDisplayObject::SetScaleY(y); }
 
-	void SetRed(float red) { ALittleDisplayObject::SetRed(red); }
-	void SetGreen(float green) { ALittleDisplayObject::SetGreen(green); }
-	void SetBlue(float blue) { ALittleDisplayObject::SetBlue(blue); }
-	void SetAlpha(float alpha) { ALittleDisplayObject::SetAlpha(alpha); }
+	void SetCenterX(float x) override { ALittleDisplayObject::SetCenterX(x); }
+	void SetCenterY(float y) override { ALittleDisplayObject::SetCenterY(y); }
 
-	void SetVisible(bool visible) { ALittleDisplayObject::SetVisible(visible); }
-	void SetClip(bool clip) { ALittleDisplayObject::SetClip(clip); }
-#endif
+	void SetRed(float red) override { ALittleDisplayObject::SetRed(red); }
+	void SetGreen(float green) override { ALittleDisplayObject::SetGreen(green); }
+	void SetBlue(float blue) override { ALittleDisplayObject::SetBlue(blue); }
+	void SetAlpha(float alpha) override { ALittleDisplayObject::SetAlpha(alpha); }
+
+	void SetVisible(bool visible) override { ALittleDisplayObject::SetVisible(visible); }
+	void SetClip(bool clip) override { ALittleDisplayObject::SetClip(clip); }
 
 public:
-	void AddChild(ALittleDisplayObject* object)
+	virtual void AddChild(ALittleDisplayObject* object)
 	{
 		if (object == nullptr) return;
 		object->SetSelfMatrixDirty();
@@ -80,7 +78,7 @@ public:
 		object->m_front_node = m_tail_node;
 		m_tail_node = object;
 	}
-	void AddChildAfter(ALittleDisplayObject* front_object, ALittleDisplayObject* target_object)
+	virtual void AddChildAfter(ALittleDisplayObject* front_object, ALittleDisplayObject* target_object)
 	{
 		if (target_object == nullptr) return;
 		target_object->SetSelfMatrixDirty();
@@ -105,7 +103,7 @@ public:
 		if (m_tail_node == front_object)
 			m_tail_node = target_object;
 	}
-	void AddChildBefore(ALittleDisplayObject* back_object, ALittleDisplayObject* target_object)
+	virtual void AddChildBefore(ALittleDisplayObject* back_object, ALittleDisplayObject* target_object)
 	{
 		if (target_object == nullptr) return;
 		target_object->SetSelfMatrixDirty();
@@ -130,7 +128,7 @@ public:
 		if (m_head_node == back_object)
 			m_head_node = target_object;
 	}
-	void RemoveChild(ALittleDisplayObject* object)
+	virtual void RemoveChild(ALittleDisplayObject* object)
 	{
 		if (object == nullptr) return;
 		object->SetSelfMatrixDirty();
@@ -152,7 +150,7 @@ public:
 		if (object == m_tail_node)
 			m_tail_node = front_node;
 	}
-	void RemoveAllChild()
+	virtual void RemoveAllChild()
 	{
 		SetSelfMatrixDirty();
 		ALittleDisplayObject* node = m_head_node;

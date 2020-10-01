@@ -52,24 +52,22 @@ public:
 
 	}
 
-#ifdef __EMSCRIPTEN__
-	void SetX(float x) { DisplayObjects::SetX(x); }
-	void SetY(float y) { DisplayObjects::SetY(y); }
+	void SetX(float x) override { ALittleDisplayObjects::SetX(x); }
+	void SetY(float y) override { ALittleDisplayObjects::SetY(y); }
 
-	void SetWidth(float width) { DisplayObjects::SetWidth(width); }
-	void SetHeight(float height) { DisplayObjects::SetHeight(height); }
+	void SetWidth(float width) override { ALittleDisplayObjects::SetWidth(width); }
+	void SetHeight(float height) override { ALittleDisplayObjects::SetHeight(height); }
 
-	void SetAngle(float angle) { DisplayObjects::SetAngle(angle); }
+	void SetAngle(float angle) override { ALittleDisplayObjects::SetAngle(angle); }
 
-	void SetScaleX(float x) { DisplayObjects::SetScaleX(x); }
-	void SetScaleY(float y) { DisplayObjects::SetScaleY(y); }
+	void SetScaleX(float x) override { ALittleDisplayObjects::SetScaleX(x); }
+	void SetScaleY(float y) override { ALittleDisplayObjects::SetScaleY(y); }
 
-	void SetCenterX(float x) { DisplayObjects::SetCenterX(x); }
-	void SetCenterY(float y) { DisplayObjects::SetCenterY(y); }
+	void SetCenterX(float x) override { ALittleDisplayObjects::SetCenterX(x); }
+	void SetCenterY(float y) override { ALittleDisplayObjects::SetCenterY(y); }
 
-	void SetVisible(bool visible) { DisplayObjects::SetVisible(visible); }
-	void SetClip(bool clip) { DisplayObjects::SetClip(clip); }
-#endif
+	void SetVisible(bool visible) override { ALittleDisplayObjects::SetVisible(visible); }
+	void SetClip(bool clip) override { ALittleDisplayObjects::SetClip(clip); }
 
 public:
 	void SetTopSize(float size) { m_logic_top = static_cast<int>(floor(size)); m_vertex_dirty = true; m_texture_dirty = true; }

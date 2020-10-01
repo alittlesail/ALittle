@@ -43,7 +43,7 @@ public:
 			new_font_path += font_just_name;
 			font = LoadFont(new_font_path, font_size, font_style);
 #elif __ANDROID__
-			ALITTLE_ERROR("create font failed: path(" << font_path << ") can't find or font_size(" << font_size << ") not support " << ", and try /system/fonts/Miui-Regular.ttf");
+			CARP_ERROR("create font failed: path(" << font_path << ") can't find or font_size(" << font_size << ") not support " << ", and try /system/fonts/Miui-Regular.ttf");
 			std::string new_font_path = "/system/fonts/";
 			new_font_path += font_just_name;
 			font = LoadFont(new_font_path, font_size, font_style);

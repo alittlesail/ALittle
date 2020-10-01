@@ -42,8 +42,9 @@ public:
 	{
 		if (m_client)
 		{
+			int id = m_id;
 			m_client->SendRequest(m_url, m_content.empty(), "application/json", m_content.c_str(), m_content.size()
-				, [this, id = m_id](bool result, const std::string& body, const std::string& head, const std::string& error)
+				, [this, id](bool result, const std::string& body, const std::string& head, const std::string& error)
 				{
 					if (result)
 					{
@@ -135,17 +136,18 @@ public:
 public:
 	void Start()
 	{
+		int id = m_id;
 		if (m_download_client)
 		{
 			m_download_client->SendRequest(m_url, true, "", nullptr, 0
-				, [this, id = m_id](bool result, const std::string& head, const std::string& body, const std::string& error)
+				, [this, id](bool result, const std::string& head, const std::string& body, const std::string& error)
 				{
 					if (result)
 						s_carp_task_consumer.PushEvent([id]() { s_alittle_script.Invoke("__ALITTLEAPI_HttpFileSucceed", id); });
 					else
 						s_carp_task_consumer.PushEvent([id, error]() { s_alittle_script.Invoke("__ALITTLEAPI_HttpFileFailed", id, error.c_str()); });
 				}
-				, [this, id = m_id](int total_size, int cur_size)
+				, [this, id](int total_size, int cur_size)
 				{
 					m_total_size = total_size;
 					m_cur_size = cur_size;
@@ -157,14 +159,14 @@ public:
 			m_upload_client->SendRequest(m_url
 				, std::map<std::string, std::string>()
 				, CarpFile::GetFileNameByPath(m_file_path), m_file_path, m_start_size
-				, [this, id = m_id](bool result, const std::string& head, const std::string& body, const std::string& error)
+				, [this, id](bool result, const std::string& head, const std::string& body, const std::string& error)
 				{
 					if (result)
 						s_carp_task_consumer.PushEvent([id]() { s_alittle_script.Invoke("__ALITTLEAPI_HttpFileSucceed", id); });
 					else
 						s_carp_task_consumer.PushEvent([id, error]() { s_alittle_script.Invoke("__ALITTLEAPI_HttpFileFailed", id, error.c_str()); });
 				}
-				, [this, id = m_id](int total_size, int cur_size)
+				, [this, id](int total_size, int cur_size)
 				{
 					m_total_size = total_size;
 					m_cur_size = cur_size;
@@ -277,7 +279,8 @@ public:
 private:
 	void HandleConnectFailed()
 	{
-		s_carp_task_consumer.PushEvent([this, id = m_id]()
+		int id = m_id;
+		s_carp_task_consumer.PushEvent([this, id]()
 		{
 			// 检查是否被析构了
 			if (s_alittle_net_id_set.find(id) == s_alittle_net_id_set.end()) return;
@@ -293,7 +296,8 @@ private:
 
 	void HandleConnectSucceed()
 	{
-		s_carp_task_consumer.PushEvent([this, id = m_id]()
+		int id = m_id;
+		s_carp_task_consumer.PushEvent([this, id]()
 		{
 			// 检查是否被析构了
 			if (s_alittle_net_id_set.find(id) == s_alittle_net_id_set.end()) return;
@@ -306,7 +310,8 @@ private:
 	
 	void HandleDisconnected()
 	{
-		s_carp_task_consumer.PushEvent([this, id = m_id]()
+		int id = m_id;
+		s_carp_task_consumer.PushEvent([this, id]()
 		{
 			// 检查是否被析构了
 			if (s_alittle_net_id_set.find(id) == s_alittle_net_id_set.end()) return;
@@ -321,7 +326,8 @@ private:
 	
 	void HandleMessage(void* message, int size)
 	{
-		s_carp_task_consumer.PushEvent([this, id = m_id, message]()
+		int id = m_id;
+		s_carp_task_consumer.PushEvent([this, id, message]()
 		{
 			// 检查是否被析构了
 			if (s_alittle_net_id_set.find(id) != s_alittle_net_id_set.end())

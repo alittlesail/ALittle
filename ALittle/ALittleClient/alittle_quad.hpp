@@ -44,29 +44,27 @@ public:
 			.endClass();
 	}
 
-#ifdef __EMSCRIPTEN__
-	void SetX(float x) { ALittleImage::SetX(x); }
-	void SetY(float y) { ALittleImage::SetY(y); }
+	void SetX(float x) override { ALittleImage::SetX(x); }
+	void SetY(float y) override { ALittleImage::SetY(y); }
 
-	void SetWidth(float width) { ALittleImage::SetWidth(width); }
-	void SetHeight(float height) { ALittleImage::SetHeight(height); }
+	void SetWidth(float width) override { ALittleImage::SetWidth(width); }
+	void SetHeight(float height) override { ALittleImage::SetHeight(height); }
 
-	void SetAngle(float angle) { ALittleImage::SetAngle(angle); }
+	void SetAngle(float angle) override { ALittleImage::SetAngle(angle); }
 
-	void SetScaleX(float x) { ALittleImage::SetScaleX(x); }
-	void SetScaleY(float y) { ALittleImage::SetScaleY(y); }
+	void SetScaleX(float x) override { ALittleImage::SetScaleX(x); }
+	void SetScaleY(float y) override { ALittleImage::SetScaleY(y); }
 
-	void SetCenterX(float x) { ALittleImage::SetCenterX(x); }
-	void SetCenterY(float y) { ALittleImage::SetCenterY(y); }
+	void SetCenterX(float x) override { ALittleImage::SetCenterX(x); }
+	void SetCenterY(float y) override { ALittleImage::SetCenterY(y); }
 
-	void SetRed(float red) { ALittleImage::SetRed(red); }
-	void SetGreen(float green) { ALittleImage::SetGreen(green); }
-	void SetBlue(float blue) { ALittleImage::SetBlue(blue); }
-	void SetAlpha(float alpha) { ALittleImage::SetAlpha(alpha); }
+	void SetRed(float red) override { ALittleImage::SetRed(red); }
+	void SetGreen(float green) override { ALittleImage::SetGreen(green); }
+	void SetBlue(float blue) override { ALittleImage::SetBlue(blue); }
+	void SetAlpha(float alpha) override { ALittleImage::SetAlpha(alpha); }
 
-	void SetVisible(bool visible) { ALittleImage::SetVisible(visible); }
-	void SetClip(bool clip) { ALittleImage::SetClip(clip); }
-#endif
+	void SetVisible(bool visible) override { ALittleImage::SetVisible(visible); }
+	void SetClip(bool clip) override { ALittleImage::SetClip(clip); }
 };
 
 #endif

@@ -75,31 +75,29 @@ public:
 			.endClass();
 	}
 
-#ifdef __EMSCRIPTEN__
-	void SetX(float x) { Image::SetX(x); }
-	void SetY(float y) { Image::SetY(y); }
+	void SetX(float x) override { ALittleImage::SetX(x); }
+	void SetY(float y) override { ALittleImage::SetY(y); }
 
-	void SetAngle(float angle) { Image::SetAngle(angle); }
+	void SetAngle(float angle) override { ALittleImage::SetAngle(angle); }
 
-	void SetScaleX(float x) { Image::SetScaleX(x); }
-	void SetScaleY(float y) { Image::SetScaleY(y); }
+	void SetScaleX(float x) override { ALittleImage::SetScaleX(x); }
+	void SetScaleY(float y) override { ALittleImage::SetScaleY(y); }
 
-	void SetCenterX(float x) { Image::SetCenterX(x); }
-	void SetCenterY(float y) { Image::SetCenterY(y); }
+	void SetCenterX(float x) override { ALittleImage::SetCenterX(x); }
+	void SetCenterY(float y) override { ALittleImage::SetCenterY(y); }
 
-	void SetRed(float red) { Image::SetRed(red); }
-	void SetGreen(float green) { Image::SetGreen(green); }
-	void SetBlue(float blue) { Image::SetBlue(blue); }
-	void SetAlpha(float alpha) { Image::SetAlpha(alpha); }
+	void SetRed(float red) override { ALittleImage::SetRed(red); }
+	void SetGreen(float green) override { ALittleImage::SetGreen(green); }
+	void SetBlue(float blue) override { ALittleImage::SetBlue(blue); }
+	void SetAlpha(float alpha) override { ALittleImage::SetAlpha(alpha); }
 
-	void SetVisible(bool visible) { Image::SetVisible(visible); }
-	void SetClip(bool clip) { Image::SetClip(clip); }
+	void SetVisible(bool visible) override { ALittleImage::SetVisible(visible); }
+	void SetClip(bool clip) override { ALittleImage::SetClip(clip); }
 
-	void SetFlip(int flip) { Image::SetFlip(flip); }
-#endif
+	void SetFlip(int flip) override { ALittleImage::SetFlip(flip); }
 
 public:
-	void SetWidth(float width)
+	void SetWidth(float width) override
 	{
 		width = floor(width);
 		if (m_size.x == width) return;
@@ -111,7 +109,7 @@ public:
 
 		m_self_matrix_dirty = true;
 	}
-	void SetHeight(float height)
+	void SetHeight(float height) override
 	{
 		height = floor(height);
 		m_size.y = height;
@@ -909,7 +907,7 @@ public:
 
 public:
 	void NeedDraw() { m_need_redraw = true; }
-	void Render(const CarpMatrix2D& parent, bool parent_changed)
+	void Render(const CarpMatrix2D& parent, bool parent_changed) override
 	{
 		if (m_clip) return;
 		if (!m_visible) return;
@@ -942,7 +940,7 @@ public:
 
 		m_cursor.Render(m_global_matrix, global_changed);
 	}
-	void UpdateVertexCoord()
+	void UpdateVertexCoord() override
 	{
 		if (!m_vertex_dirty) return;
 		m_vertex_dirty = false;

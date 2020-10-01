@@ -11,6 +11,13 @@ extern int s_alittle_csv_id_creator;
 class ALittleCsvFile : public CarpCsv
 {
 public:
+	size_t GetColCount() const override { return CarpCsv::GetColCount(); }
+	size_t GetRowCount() const override { return CarpCsv::GetRowCount(); }
+	
+	// 这个函数的下标从1开始
+	const char* ReadCell(size_t row, size_t col) override { return CarpCsv::ReadCell(row, col); }
+	const char* GetPath() const override { return CarpCsv::GetPath(); }
+	void Close() override { CarpCsv::Close(); }
 	// file_path 是文件路径
 	// only_from_asset 是否只从asset里面读取
 	bool Load(const char* file_path, bool only_assets)

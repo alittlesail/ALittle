@@ -102,7 +102,7 @@ private:
 
 	static void PushConsoleHelp()
 	{
-		CARP_INFO(u8"Ä£¿éÁÐ±í:Client");
+		CARP_INFO(u8"module list:Client");
 	}
 
 	static void PushConsoleEvent(const std::string& module, const std::string& cmd)

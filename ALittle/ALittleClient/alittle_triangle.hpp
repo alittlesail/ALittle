@@ -38,29 +38,27 @@ public:
 			.endClass();
 	}
 
-#ifdef __EMSCRIPTEN__
-	void SetX(float x) { DisplayObject::SetX(x); }
-	void SetY(float y) { DisplayObject::SetY(y); }
+	void SetX(float x) override { ALittleDisplayObject::SetX(x); }
+	void SetY(float y) override { ALittleDisplayObject::SetY(y); }
 
-	void SetWidth(float width) { DisplayObject::SetWidth(width); }
-	void SetHeight(float height) { DisplayObject::SetHeight(height); }
+	void SetWidth(float width) override { ALittleDisplayObject::SetWidth(width); }
+	void SetHeight(float height) override { ALittleDisplayObject::SetHeight(height); }
 
-	void SetAngle(float angle) { DisplayObject::SetAngle(angle); }
+	void SetAngle(float angle) override { ALittleDisplayObject::SetAngle(angle); }
 
-	void SetScaleX(float x) { DisplayObject::SetScaleX(x); }
-	void SetScaleY(float y) { DisplayObject::SetScaleY(y); }
+	void SetScaleX(float x) override { ALittleDisplayObject::SetScaleX(x); }
+	void SetScaleY(float y) override { ALittleDisplayObject::SetScaleY(y); }
 
-	void SetCenterX(float x) { DisplayObject::SetCenterX(x); }
-	void SetCenterY(float y) { DisplayObject::SetCenterY(y); }
+	void SetCenterX(float x) override { ALittleDisplayObject::SetCenterX(x); }
+	void SetCenterY(float y) override { ALittleDisplayObject::SetCenterY(y); }
 
-	void SetRed(float red) { DisplayObject::SetRed(red); }
-	void SetGreen(float green) { DisplayObject::SetGreen(green); }
-	void SetBlue(float blue) { DisplayObject::SetBlue(blue); }
-	void SetAlpha(float alpha) { DisplayObject::SetAlpha(alpha); }
+	void SetRed(float red) override { ALittleDisplayObject::SetRed(red); }
+	void SetGreen(float green) override { ALittleDisplayObject::SetGreen(green); }
+	void SetBlue(float blue) override { ALittleDisplayObject::SetBlue(blue); }
+	void SetAlpha(float alpha) override { ALittleDisplayObject::SetAlpha(alpha); }
 
-	void SetVisible(bool visible) { DisplayObject::SetVisible(visible); }
-	void SetClip(bool clip) { DisplayObject::SetClip(clip); }
-#endif
+	void SetVisible(bool visible) override { ALittleDisplayObject::SetVisible(visible); }
+	void SetClip(bool clip) override { ALittleDisplayObject::SetClip(clip); }
 
 public:
 	void SetTexture(ALittleTexture* texture)

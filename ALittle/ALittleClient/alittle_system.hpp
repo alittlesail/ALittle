@@ -15,6 +15,10 @@
 #pragma comment(lib, "Iphlpapi.lib")
 #endif
 
+#ifdef __ANDROID__
+#include <jni.h>
+#endif
+
 class ALittleSystem
 {
 public:
@@ -222,7 +226,7 @@ public:
 			s_alittle_script.Invoke("__ALITTLEAPI_SystemSelectDirectory");
 		}
 #else
-		g_ScriptSystem.Invoke("__ALITTLEAPI_SystemSelectFile");
+		s_alittle_script.Invoke("__ALITTLEAPI_SystemSelectDirectory");
 #endif
 	}
 

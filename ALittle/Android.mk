@@ -6,6 +6,7 @@ LOCAL_MODULE := main
 
 LOCAL_CFLAGS += -fexceptions
 LOCAL_CFLAGS += -D__STDC_CONSTANT_MACROS
+LOCAL_CFLAGS += -DMAKE_LIB
 LOCAL_CPPFLAGS += -std=c++11
 LOCAL_CPPFLAGS += -frtti
 
@@ -23,10 +24,11 @@ LOCAL_SRC_FILES := \
 	../lualib/cjson/strbuf.c \
 	../lualib/sqlite3/lsqlite3.c \
 	../lualib/sqlite3/sqlite3.c \
+	../lua/onelua.c \
 	ALittleClient/Main.cpp
 
 LOCAL_SHARED_LIBRARIES := SDL2
-LOCAL_STATIC_LIBRARIES := lua
+LOCAL_STATIC_LIBRARIES := 
 LOCAL_LDLIBS := -lGLESv1_CM -llog -lGLESv2 -lOpenSLES -lz -lm
 
 include $(BUILD_SHARED_LIBRARY)

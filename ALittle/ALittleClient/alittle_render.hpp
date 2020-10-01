@@ -203,7 +203,7 @@ public:
 	/**
 	 * render
 	 */
-	bool Render() const
+	bool Render()
 	{
 		if (!m_render) return false;
 
@@ -418,7 +418,7 @@ private:
 	void* m_parent_window = nullptr;		// web plugin root window object
 
 public:
-	void DestroyTexture(SDL_Texture* texture) const
+	void DestroyTexture(SDL_Texture* texture)
 	{
 		if (texture == 0) return;
 
@@ -431,7 +431,7 @@ public:
 		SDL_DestroyTexture(texture);
 #endif
 	}
-	void DestroyTextureList() const
+	void DestroyTextureList()
 	{
 #if (defined __ANDROID__) || (defined __IPHONEOS__)
 		while (m_texture_destroy_list.size())

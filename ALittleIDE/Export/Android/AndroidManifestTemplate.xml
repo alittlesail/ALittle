@@ -18,7 +18,13 @@
 
     <!-- Game controller support -->
     <uses-feature
+        android:name="android.hardware.bluetooth"
+        android:required="false" />
+    <uses-feature
         android:name="android.hardware.gamepad"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.usb.host"
         android:required="false" />
 
     <!-- External mouse input events -->
@@ -67,7 +73,6 @@
     <application android:label="abcd@app_name@abcd"
         android:icon="@drawable/icon"
         android:allowBackup="true"
-        android:name="org.libsdl.app.ALittleApplication"
         android:theme="@android:abcd@fullscreen@abcd"
         android:hardwareAccelerated="true" >
 
@@ -80,7 +85,7 @@
             android:alwaysRetainTaskState="true"
             android:launchMode="singleInstance"
             android:screenOrientation="abcd@screen@abcd"
-            android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:configChanges="layoutDirection|locale|orientation|uiMode|screenLayout|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

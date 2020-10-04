@@ -6,7 +6,7 @@
 
 #include "Carp/carp_file.hpp"
 #include "Carp/carp_font.hpp"
-#include "Carp/carp_rwops.hpp"
+#include "Carp/carp_rwops_bind.hpp"
 #include "Carp/carp_surface_bind.hpp"
 
 class ALittleFont

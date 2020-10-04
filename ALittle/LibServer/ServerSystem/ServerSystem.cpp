@@ -5,20 +5,11 @@
 #include "ServerSchedule.h"
 
 #include "Carp/carp_mysql.hpp"
-
-#define CARP_CONSOLE_IMPL
-#include "Carp/carp_console.hpp"
-#define CARP_DUMP_IMPL
-#include "Carp/carp_dump.hpp"
-
 #include "Carp/carp_file.hpp"
-
-#define CARP_LOG_IMPL
-#include "Carp/carp_log.hpp"
-
-#include "Carp/carp_rwops.hpp"
-#define CARP_RWOPS_IMPL
-#include "Carp/carp_rwops.h"
+#include "Carp/carp_rwops_bind.hpp"
+#include "Carp/carp_string.hpp"
+#include "Carp/carp_dump.hpp"
+#include "Carp/carp_console.hpp"
 
 namespace ALittle
 {

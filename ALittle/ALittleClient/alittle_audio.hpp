@@ -7,7 +7,7 @@
 #include "alittle_script.hpp"
 #include "Carp/carp_lua.hpp"
 #include "Carp/carp_mixer.hpp"
-#include "Carp/carp_rwops.hpp"
+#include "Carp/carp_rwops_bind.hpp"
 
 class ALittleAudio;
 extern ALittleAudio s_alittle_audio;

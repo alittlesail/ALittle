@@ -46,12 +46,13 @@
     <ClInclude Include="..\..\Carp\carp_mixer.hpp" />
     <ClInclude Include="..\..\Carp\carp_mysql.hpp" />
     <ClInclude Include="..\..\Carp\carp_net_bind.hpp" />
-    <ClInclude Include="..\..\Carp\carp_rwops.h" />
-    <ClInclude Include="..\..\Carp\carp_rwops.hpp" />
+    <ClInclude Include="..\..\Carp\carp_sokol_rwops.h" />
+    <ClInclude Include="..\..\Carp\carp_sdl_rwops.hpp" />
     <ClInclude Include="..\..\Carp\carp_rwops_bind.hpp" />
     <ClInclude Include="..\..\Carp\carp_safe_id_creator.hpp" />
     <ClInclude Include="..\..\Carp\carp_schedule.hpp" />
     <ClInclude Include="..\..\Carp\carp_script.hpp" />
+    <ClInclude Include="..\..\Carp\carp_sokol_rwops.hpp" />
     <ClInclude Include="..\..\Carp\carp_string.hpp" />
     <ClInclude Include="..\..\Carp\carp_string_bind.hpp" />
     <ClInclude Include="..\..\Carp\carp_surface.hpp" />
@@ -145,7 +146,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRTDBG_MAP_ALLOC;_CRTDBG_MAP_ALLOC_NEW;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRTDBG_MAP_ALLOC;_CRTDBG_MAP_ALLOC_NEW;ALITTLE_SDL_IMPL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\lua;$(SolutionDir)..\SDL\include;$(SolutionDir)..\LuaBridge\Source;$(SolutionDir)..\asio\asio\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -165,7 +166,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;ALITTLE_SDL_IMPL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\SDL\include;$(SolutionDir)..\lua;$(SolutionDir)..\LuaBridge\Source;$(SolutionDir)..\asio\asio\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>

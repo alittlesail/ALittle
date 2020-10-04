@@ -181,27 +181,8 @@ public:
 			s_alittle_script.Invoke("__ALITTLEAPI_SystemSelectFile", utf8_path_name.c_str());
 		else
 			s_alittle_script.Invoke("__ALITTLEAPI_SystemSelectFile");
-#elif __ANDROID__
-		JNIEnv* jni_env = (JNIEnv*)SDL_AndroidGetJNIEnv();
-		if (jni_env == 0)
-		{
-			s_alittle_script.Invoke("__ALITTLEAPI_SystemSelectFile");
-			return;
-		}
-
-		jclass login_api = jni_env->FindClass("org/libsdl/app/GlobalFunc");
-		jmethodID login_func = jni_env->GetStaticMethodID(login_api, "C2J_SystemSelectFile", "(Ljava/lang/String;)I");
-		jstring j_init_dir;
-		if (init_dir)
-			j_init_dir = Android_stdstring2jstring(jni_env, init_dir);
-		else
-			j_init_dir = Android_stdstring2jstring(jni_env, "");
-		int result = jni_env->CallStaticIntMethod(login_api, login_func, j_init_dir);
-
-		jni_env->DeleteLocalRef(login_api);
-		jni_env->DeleteLocalRef(j_init_dir);
 #else
-		g_ScriptSystem.Invoke("__ALITTLEAPI_SystemSelectFile");
+		s_alittle_script.Invoke("__ALITTLEAPI_SystemSelectFile");
 #endif
 	}
 
@@ -220,7 +201,7 @@ public:
 			SHGetPathFromIDListW(lpDlist, path_name);
 			std::string utf8_path_name = CarpString::Unicode2UTF8(path_name);
 			s_alittle_script.Invoke("__ALITTLEAPI_SystemSelectDirectory", utf8_path_name.c_str());
-	}
+		}
 		else
 		{
 			s_alittle_script.Invoke("__ALITTLEAPI_SystemSelectDirectory");

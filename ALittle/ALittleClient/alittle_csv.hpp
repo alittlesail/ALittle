@@ -3,7 +3,7 @@
 
 #include "Carp/carp_csv.hpp"
 #include "Carp/carp_task_consumer.hpp"
-#include "Carp/carp_rwops.hpp"
+#include "Carp/carp_rwops_bind.hpp"
 #include "alittle_script.hpp"
 
 extern int s_alittle_csv_id_creator;

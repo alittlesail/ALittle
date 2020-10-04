@@ -1,5 +1,5 @@
-﻿// ALittleServer.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
-//
+﻿
+#include <asio.hpp>
 
 #include "ALittle/LibServer/ServerSystem/ServerSystem.h"
 #include "Carp/carp_log.hpp"
@@ -45,3 +45,16 @@ int main(int argc, char* argv[])
 	ALittle::ServerSystem::Instance().Shutdown();
 	return 0;
 }
+
+#define CARP_CONSOLE_IMPL
+#include "Carp/carp_console.hpp"
+#define CARP_DUMP_IMPL
+#include "Carp/carp_dump.hpp"
+#define CARP_LOG_IMPL
+#include "Carp/carp_log.hpp"
+#define CARP_TASK_CONSUMER_IMPL
+#include "Carp/carp_task_consumer.hpp"
+#define CARP_SCHEDULE_IMPL
+#include "Carp/carp_schedule.hpp"
+#define CARP_SOKOL_RWOPS_IMPL
+#include "Carp/carp_sokol_rwops.h"

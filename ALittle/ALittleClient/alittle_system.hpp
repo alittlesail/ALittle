@@ -138,7 +138,7 @@ public:
 	{
 		if (!m_device_id.empty()) return m_device_id.c_str();
 		static char buffer[256] = { 0 };
-		CARP_GetDeviceID(buffer, sizeof(buffer));
+		Carp_GetDeviceID(buffer, sizeof(buffer));
 		m_device_id = buffer;
 		return m_device_id.c_str();
 	}

@@ -192,12 +192,6 @@ public static System_Restart()
     [Language(Lua)]
     __CPPAPI_ScheduleSystem.Restart();
 }
-// 设置FPS
-public static System_SetFPS(int fps)
-{
-    [Language(Lua)]
-    __CPPAPI_ScheduleSystem.SetFPS(fps);
-}
 // 设置框架在切到后台之后，死循环的每个循环的睡眠时间，单位毫秒（这个接口主要用于省电）
 public static System_SetAppPauseInterval(int interval)
 {

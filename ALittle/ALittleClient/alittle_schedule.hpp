@@ -1,5 +1,5 @@
 #ifndef ALITTLE_SCHEDULE_INCLUDED
-#define ALITTLE_SCHEDULE_INCLUDED (1)
+#define ALITTLE_SCHEDULE_INCLUDED
 
 #include <string>
 
@@ -91,10 +91,6 @@ private:
 			.addFunction("Exit", &ALittleSchedule::Exit)
 			.addFunction("ForceExit", &ALittleSchedule::ForceExit)
 			.addFunction("Restart", &ALittleSchedule::Restart)
-			.addFunction("SetFPS", &ALittleSchedule::SetFPS)
-			.addFunction("SetAppPauseInterval", &ALittleSchedule::SetAppPauseInterval)
-			.addFunction("GetAppPauseInterval", &ALittleSchedule::GetAppPauseInterval)
-			.addFunction("GetCurrentMS", &ALittleSchedule::GetCurrentMS)
 			.endClass();
 
 		luabridge::setGlobal(l_state, this, "__CPPAPI_ScheduleSystem");

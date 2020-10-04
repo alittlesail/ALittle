@@ -56,5 +56,5 @@ int main(int argc, char* argv[])
 #include "Carp/carp_task_consumer.hpp"
 #define CARP_SCHEDULE_IMPL
 #include "Carp/carp_schedule.hpp"
-#define CARP_SOKOL_RWOPS_IMPL
-#include "Carp/carp_sokol_rwops.h"
+#define CARP_RWOPS_BIND_IMPL
+#include "Carp/carp_rwops_bind.hpp"

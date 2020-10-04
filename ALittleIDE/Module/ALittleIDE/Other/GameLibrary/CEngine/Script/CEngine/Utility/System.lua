@@ -98,10 +98,6 @@ function ALittle.System_Restart()
 	__CPPAPI_ScheduleSystem:Restart()
 end
 
-function ALittle.System_SetFPS(fps)
-	__CPPAPI_ScheduleSystem:SetFPS(fps)
-end
-
 function ALittle.System_SetAppPauseInterval(interval)
 	__CPPAPI_ScheduleSystem:SetAppPauseInterval(interval)
 end

@@ -3,7 +3,7 @@
 
 #include "sokol/sokol_gfx.h"
 #include "sokol/sokol_glue.h"
-#include "alittle_display.hpp"
+#include "ALittle/ALittleClient/alittle_display.hpp"
 
 class ALittleRender
 {

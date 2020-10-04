@@ -43,9 +43,10 @@
     <ClInclude Include="..\..\Carp\carp_message.hpp" />
     <ClInclude Include="..\..\Carp\carp_message_bind.hpp" />
     <ClInclude Include="..\..\Carp\carp_miniheap.hpp" />
-    <ClInclude Include="..\..\Carp\carp_mixer.hpp" />
+    <ClInclude Include="..\..\Carp\carp_sdl_mixer.hpp" />
     <ClInclude Include="..\..\Carp\carp_mysql.hpp" />
     <ClInclude Include="..\..\Carp\carp_net_bind.hpp" />
+    <ClInclude Include="..\..\Carp\carp_sokol_mixer.hpp" />
     <ClInclude Include="..\..\Carp\carp_sokol_rwops.h" />
     <ClInclude Include="..\..\Carp\carp_sdl_rwops.hpp" />
     <ClInclude Include="..\..\Carp\carp_rwops_bind.hpp" />

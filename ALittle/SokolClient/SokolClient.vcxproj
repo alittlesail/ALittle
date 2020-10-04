@@ -18,9 +18,6 @@
     <ClInclude Include="..\..\lualib\sqlite3\lsqlite3.h" />
     <ClInclude Include="..\..\lualib\sqlite3\sqlite3.h" />
     <ClInclude Include="..\..\lualib\sqlite3\sqlite3ext.h" />
-    <ClInclude Include="..\LibClient\alittle_audio.hpp" />
-    <ClInclude Include="..\LibClient\alittle_script.hpp" />
-    <ClInclude Include="alittle_carp_surface.hpp" />
     <ClInclude Include="alittle_render.hpp" />
     <ClInclude Include="alittle_schedule.hpp" />
     <ClInclude Include="alittle_texture.hpp" />

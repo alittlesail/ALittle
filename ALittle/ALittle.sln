@@ -16,6 +16,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ALittleClientWin", "ALittle
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lua", "lib\lua\lua.vcxproj", "{1DB2D189-2070-4410-82D0-D0330DADAF9B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SokolClient", "SokolClient\SokolClient.vcxproj", "{A3A7CBA3-A6CD-48C2-A6D3-ACB7795F735D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -58,6 +60,12 @@ Global
 		{1DB2D189-2070-4410-82D0-D0330DADAF9B}.Release|x64.Build.0 = Release|x64
 		{1DB2D189-2070-4410-82D0-D0330DADAF9B}.Release|x86.ActiveCfg = Release|Win32
 		{1DB2D189-2070-4410-82D0-D0330DADAF9B}.Release|x86.Build.0 = Release|Win32
+		{A3A7CBA3-A6CD-48C2-A6D3-ACB7795F735D}.Debug|x64.ActiveCfg = Debug|x64
+		{A3A7CBA3-A6CD-48C2-A6D3-ACB7795F735D}.Debug|x64.Build.0 = Debug|x64
+		{A3A7CBA3-A6CD-48C2-A6D3-ACB7795F735D}.Debug|x86.ActiveCfg = Debug|x64
+		{A3A7CBA3-A6CD-48C2-A6D3-ACB7795F735D}.Release|x64.ActiveCfg = Release|x64
+		{A3A7CBA3-A6CD-48C2-A6D3-ACB7795F735D}.Release|x64.Build.0 = Release|x64
+		{A3A7CBA3-A6CD-48C2-A6D3-ACB7795F735D}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

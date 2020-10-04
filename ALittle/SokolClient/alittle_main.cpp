@@ -1,38 +1,6 @@
 
 #include <asio.hpp>
 
-#define CARP_CONSOLE_IMPL
-#include "Carp/carp_console.hpp"
-#define CARP_DUMP_IMPL
-#include "Carp/carp_dump.hpp"
-#define CARP_LOG_IMPL
-#include "Carp/carp_log.hpp"
-#define CARP_TASK_CONSUMER_IMPL
-#include "Carp/carp_task_consumer.hpp"
-#define CARP_SCHEDULE_IMPL
-#include "Carp/carp_schedule.hpp"
-
-#define ALITTLE_SCHEDULE_IMPL
-#include "alittle_schedule.hpp"
-#define ALITTLE_SCRIPT_IMPL
-#include "ALittle/LibClient/alittle_script.hpp"
-#define ALITTLE_NET_IMPL
-#include "ALittle/LibClient/alittle_net.hpp"
-#define ALITTLE_CSV_IMPL
-#include "ALittle/LibClient/alittle_csv.hpp"
-#define ALITTLE_SURFACE_IMPL
-#include "alittle_surface.hpp"
-#define ALITTLE_FONT_IMPL
-#include "ALittle/LibClient/alittle_font.hpp"
-#define ALITTLE_SYSTEM_IMPL
-#include "alittle_system.hpp"
-#define ALITTLE_RENDER_IMPL
-#include "alittle_render.hpp"
-#define ALITTLE_DISPLAY_IMPL
-#include "alittle_display.hpp"
-#define ALITTLE_DISPLAYVIEW_IMPL
-#include "alittle_displayview.hpp"
-
 #define SOKOL_IMPL
 #define SOKOL_D3D11
 
@@ -43,9 +11,6 @@
 #include "sokol/sokol_app.h"
 #include "sokol/sokol_gfx.h"
 #include "sokol/sokol_glue.h"
-
-#define CARP_RWOPS_HPP_IMPL
-#include "Carp/carp_rwops.hpp"
 
 void alittle_init()
 {
@@ -64,7 +29,8 @@ void alittle_cleanup()
 
 void alittle_event(const sapp_event* event)
 {
-	
+    if (event == nullptr) return;
+    s_alittle_schedule.HandleEvent(*event);
 }
 
 sapp_desc sokol_main(int argc, char* argv[])
@@ -84,5 +50,40 @@ sapp_desc sokol_main(int argc, char* argv[])
     return desc;
 }
 
+
+#define CARP_RWOPS_HPP_IMPL
+#include "Carp/carp_sokol_rwops.hpp"
+#define CARP_CONSOLE_IMPL
+#include "Carp/carp_console.hpp"
+#define CARP_DUMP_IMPL
+#include "Carp/carp_dump.hpp"
+#define CARP_LOG_IMPL
+#include "Carp/carp_log.hpp"
+#define CARP_TASK_CONSUMER_IMPL
+#include "Carp/carp_task_consumer.hpp"
+#define CARP_SCHEDULE_IMPL
+#include "Carp/carp_schedule.hpp"
+
+#define ALITTLE_SCHEDULE_IMPL
+#include "alittle_schedule.hpp"
+#define ALITTLE_SCRIPT_IMPL
+#include "ALittle/ALittleClient/alittle_script.hpp"
+#define ALITTLE_NET_IMPL
+#include "ALittle/ALittleClient/alittle_net.hpp"
+#define ALITTLE_CSV_IMPL
+#include "ALittle/ALittleClient/alittle_csv.hpp"
+#define ALITTLE_SURFACE_IMPL
+#include "alittle_surface.hpp"
+#define ALITTLE_FONT_IMPL
+#include "ALittle/LibClient/alittle_font.hpp"
+#define ALITTLE_SYSTEM_IMPL
+#include "alittle_system.hpp"
+#define ALITTLE_RENDER_IMPL
+#include "alittle_render.hpp"
+#define ALITTLE_DISPLAY_IMPL
+#include "alittle_display.hpp"
+#define ALITTLE_DISPLAYVIEW_IMPL
+#include "alittle_displayview.hpp"
+
 #define ALITTLE_AUDIO_IMPL
-#include "ALittle/LibClient/alittle_audio.hpp"
+#include "ALittle/ALittleClient/alittle_audio.hpp"

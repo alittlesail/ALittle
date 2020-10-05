@@ -13,11 +13,11 @@
 #include "Carp/carp_safe_id_creator.hpp"
 #include "Carp/carp_file_cache.hpp"
 
-#include "ALittle/LibServer/HttpSystem/Server/HttpServer.h"
-#include "ALittle/LibServer/ClientSystem/ClientServer.h"
-#include "ALittle/LibServer/RouteSystem/RouteSystem.h"
-#include "ALittle/LibServer/MysqlSystem/MysqlSystem.h"
-#include "ALittle/LibServer/ScriptSystem/ScriptSystem.h"
+#include "../HttpSystem/HttpServer.h"
+#include "../ClientSystem/ClientServer.h"
+#include "../RouteSystem/RouteSystem.h"
+#include "../MysqlSystem/MysqlSystem.h"
+#include "../ScriptSystem/ScriptSystem.h"
 
 typedef asio::basic_waitable_timer<std::chrono::system_clock> AsioTimer;
 typedef std::shared_ptr<AsioTimer> AsioTimerPtr;

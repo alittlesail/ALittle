@@ -3,7 +3,7 @@
 
 #include <functional>
 
-#include "ALittle/LibServer/ServerSystem/ServerSchedule.h"
+#include "../ServerSystem/ServerSchedule.h"
 #include "Carp/carp_mysql.hpp"
 
 namespace ALittle

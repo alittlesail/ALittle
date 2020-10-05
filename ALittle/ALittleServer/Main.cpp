@@ -1,7 +1,7 @@
 ﻿
 #include <asio.hpp>
 
-#include "ALittle/LibServer/ServerSystem/ServerSystem.h"
+#include "ServerSystem/ServerSystem.h"
 #include "Carp/carp_log.hpp"
 #include "Carp/carp_string.hpp"
 
@@ -56,5 +56,3 @@ int main(int argc, char* argv[])
 #include "Carp/carp_task_consumer.hpp"
 #define CARP_SCHEDULE_IMPL
 #include "Carp/carp_schedule.hpp"
-#define CARP_RWOPS_BIND_IMPL
-#include "Carp/carp_rwops_bind.hpp"

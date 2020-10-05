@@ -6,7 +6,6 @@
 
 #include "Carp/carp_mysql.hpp"
 #include "Carp/carp_file.hpp"
-#include "Carp/carp_rwops_bind.hpp"
 #include "Carp/carp_string.hpp"
 #include "Carp/carp_dump.hpp"
 #include "Carp/carp_console.hpp"

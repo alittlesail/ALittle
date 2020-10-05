@@ -9,7 +9,6 @@
 #include "Carp/carp_timer_bind.hpp"
 #include "Carp/carp_file_bind.hpp"
 #include "Carp/carp_string_bind.hpp"
-#include "Carp/carp_rwops_bind.hpp"
 #include "Carp/carp_task_consumer_bind.hpp"
 
 extern "C" {

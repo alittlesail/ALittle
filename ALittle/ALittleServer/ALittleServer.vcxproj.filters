@@ -2,5 +2,189 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="ClientSystem\ClientServer.cpp">
+      <Filter>ClientSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientSystem\ClientReceiver.cpp">
+      <Filter>ClientSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientSystem\ClientReceiverBinary.cpp">
+      <Filter>ClientSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientSystem\ClientReceiverWebSocket.cpp">
+      <Filter>ClientSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpSystem\HttpReceiver.cpp">
+      <Filter>HttpSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpSystem\HttpSender.cpp">
+      <Filter>HttpSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpSystem\HttpServer.cpp">
+      <Filter>HttpSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="MysqlSystem\MysqlSystem.cpp">
+      <Filter>MysqlSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="RouteSystem\RouteSystemConnect.cpp">
+      <Filter>RouteSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="RouteSystem\RouteSystemSearch.cpp">
+      <Filter>RouteSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="RouteSystem\SessionConnection.cpp">
+      <Filter>RouteSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="RouteSystem\ConnectClient.cpp">
+      <Filter>RouteSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="RouteSystem\ConnectEndpoint.cpp">
+      <Filter>RouteSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="RouteSystem\ConnectReceiver.cpp">
+      <Filter>RouteSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="RouteSystem\ConnectServer.cpp">
+      <Filter>RouteSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="RouteSystem\RouteSystem.cpp">
+      <Filter>RouteSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptSystem\ScriptSystem.cpp">
+      <Filter>ScriptSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\ajson\lua_ajson.c">
+      <Filter>ScriptSystem\ajson</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\cjson\fpconv.c">
+      <Filter>ScriptSystem\cjson</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\cjson\lua_cjson.c">
+      <Filter>ScriptSystem\cjson</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\cjson\strbuf.c">
+      <Filter>ScriptSystem\cjson</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\sqlite3\lsqlite3.c">
+      <Filter>ScriptSystem\sqlite3</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\sqlite3\sqlite3.c">
+      <Filter>ScriptSystem\sqlite3</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerSystem\ServerSchedule.cpp">
+      <Filter>ServerSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerSystem\ServerSystem.cpp">
+      <Filter>ServerSystem</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="ClientSystem">
+      <UniqueIdentifier>{c3ab0944-0086-4ad1-9b7e-cf25f541ef7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HttpSystem">
+      <UniqueIdentifier>{b8fb86c5-6e59-4fdc-b428-4488d04a6ddc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MysqlSystem">
+      <UniqueIdentifier>{be0588c1-808d-40e5-a78c-a87582a44c7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RouteSystem">
+      <UniqueIdentifier>{4a744b23-6af2-4403-82e4-8099562f7ac6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScriptSystem">
+      <UniqueIdentifier>{9df7a02d-4c20-4c1d-b3c0-83aab5d62d5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScriptSystem\ajson">
+      <UniqueIdentifier>{5dd1995a-d304-448a-ae54-52b0bd4ff6d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScriptSystem\cjson">
+      <UniqueIdentifier>{ef9061d3-dd63-4935-9321-a310f06cd1fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScriptSystem\sqlite3">
+      <UniqueIdentifier>{16da147f-53bd-468a-9aa8-25d75680ee56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ServerSystem">
+      <UniqueIdentifier>{583d2b78-83a0-411d-ba69-6d753f0cda86}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ClientSystem\ClientServer.h">
+      <Filter>ClientSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientSystem\ClientReceiver.h">
+      <Filter>ClientSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpSystem\HttpServer.h">
+      <Filter>HttpSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpSystem\HttpReceiver.h">
+      <Filter>HttpSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpSystem\HttpSender.h">
+      <Filter>HttpSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="MysqlSystem\MysqlSystem.h">
+      <Filter>MysqlSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteSystem\SessionConnection.h">
+      <Filter>RouteSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteSystem\ConnectClient.h">
+      <Filter>RouteSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteSystem\ConnectEndpoint.h">
+      <Filter>RouteSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteSystem\ConnectMessage.h">
+      <Filter>RouteSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteSystem\ConnectReceiver.h">
+      <Filter>RouteSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteSystem\ConnectServer.h">
+      <Filter>RouteSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteSystem\RouteDefine.h">
+      <Filter>RouteSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteSystem\RouteIdDefine.h">
+      <Filter>RouteSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteSystem\RouteMessage.h">
+      <Filter>RouteSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="RouteSystem\RouteSystem.h">
+      <Filter>RouteSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptSystem\ScriptSystem.h">
+      <Filter>ScriptSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\ajson\lua_ajson.h">
+      <Filter>ScriptSystem\ajson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\cjson\fpconv.h">
+      <Filter>ScriptSystem\cjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\cjson\lua_cjson.h">
+      <Filter>ScriptSystem\cjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\cjson\strbuf.h">
+      <Filter>ScriptSystem\cjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\sqlite3\lsqlite3.h">
+      <Filter>ScriptSystem\sqlite3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\sqlite3\sqlite3.h">
+      <Filter>ScriptSystem\sqlite3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\sqlite3\sqlite3ext.h">
+      <Filter>ScriptSystem\sqlite3</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerSystem\ServerSystem.h">
+      <Filter>ServerSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerSystem\ServerSchedule.h">
+      <Filter>ServerSystem</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

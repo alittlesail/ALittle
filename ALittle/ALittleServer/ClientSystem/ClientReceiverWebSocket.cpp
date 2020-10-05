@@ -2,7 +2,7 @@
 #include "ClientReceiver.h"
 #include "ClientServer.h"
 
-#include "ALittle/LibServer/ServerSystem/ServerSchedule.h"
+#include "../ServerSystem/ServerSchedule.h"
 
 #include <functional>
 

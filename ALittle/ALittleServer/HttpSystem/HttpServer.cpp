@@ -5,7 +5,7 @@
 
 #include "Carp/carp_http.hpp"
 
-#include "ALittle/LibServer/ServerSystem/ServerSchedule.h"
+#include "../ServerSystem/ServerSchedule.h"
 
 namespace ALittle
 {

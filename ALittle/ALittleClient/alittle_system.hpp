@@ -1,5 +1,5 @@
 #ifndef ALITTLE_SYSTEM_INCLUDED
-#define ALITTLE_SYSTEM_INCLUDED (1)
+#define ALITTLE_SYSTEM_INCLUDED
 
 #include <SDL.h>
 
@@ -224,7 +224,7 @@ public:
 		// Windows 95/98和Windows NT 4.0：特意为Windows 95/98或Windows NT 4.0，及带有WINVER和_WIN32_WINNT >= 0x0500编译时，  
 		//  为这个成员使用OPENFILENAME_SIZE_VERSION_400。  
 		// Windows 2000及更高版本：这个参数使用sizeof (OPENFILENAME) 。  
-		ofn.hwndOwner = GetForegroundWindow();// 打开OR保存文件对话框的父窗口  
+		ofn.hwndOwner = s_alittle_render.GetSysWMinfo().info.win.window;// 打开OR保存文件对话框的父窗口  
 		ofn.lpstrFilter = NULL;
 		//过滤器 如果为 NULL 不使用过滤器  
 		//具体用法看上面  注意 /0  

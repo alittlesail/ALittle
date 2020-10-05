@@ -98,14 +98,6 @@ function ALittle.System_Restart()
 	__CPPAPI_ScheduleSystem:Restart()
 end
 
-function ALittle.System_SetAppPauseInterval(interval)
-	__CPPAPI_ScheduleSystem:SetAppPauseInterval(interval)
-end
-
-function ALittle.System_GetAppPauseInterval()
-	return __CPPAPI_ScheduleSystem:GetAppPauseInterval()
-end
-
 function ALittle.System_SetThreadCount(count)
 	carp.SetThreadCount(count)
 end
@@ -224,10 +216,6 @@ end
 
 function ALittle.System_OpenUrlBySystemBrowser(url)
 	__CPPAPI_System:OpenUrlBySystemBrowser(url)
-end
-
-function ALittle.System_Alert(msg)
-	__CPPAPI_System:Alert(msg)
 end
 
 function ALittle.CreateMsgSender(heartbeat, check_heartbeat, callback)

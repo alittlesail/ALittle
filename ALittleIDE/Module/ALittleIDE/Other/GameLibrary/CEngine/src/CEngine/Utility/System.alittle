@@ -192,21 +192,6 @@ public static System_Restart()
     [Language(Lua)]
     __CPPAPI_ScheduleSystem.Restart();
 }
-// 设置框架在切到后台之后，死循环的每个循环的睡眠时间，单位毫秒（这个接口主要用于省电）
-public static System_SetAppPauseInterval(int interval)
-{
-    [Language(Lua)]
-    __CPPAPI_ScheduleSystem.SetAppPauseInterval(interval);
-}
-// 获取每个死循环的睡眠时间，单位毫秒
-public static System_GetAppPauseInterval() : int
-{
-    [Language(Lua)]
-    return __CPPAPI_ScheduleSystem.GetAppPauseInterval();
-
-    [Language(JavaScript)]
-    return 0;
-}
 
 ////线程部分//////////////////////////////////////////////////////////////////////
 // 设置线程数
@@ -459,16 +444,6 @@ public static System_OpenUrlBySystemBrowser(string url)
     __CPPAPI_System.OpenUrlBySystemBrowser(url);
     [Language(JavaScript)]
     javascript.open(url);
-}
-
-// 原声警告对话框
-// message
-public static System_Alert(string msg)
-{
-    [Language(Lua)]
-    __CPPAPI_System.Alert(msg);
-    [Language(JavaScript)]
-    javascript.alert(msg);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////

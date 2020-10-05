@@ -61,4 +61,4 @@ int main(int argc, char* argv[])
 #define CARP_SURFACE_IMPL
 #include "Carp/carp_surface_bind.hpp"
 #define CARP_MIXER_IMPL
-#include "Carp/carp_sdl_mixer.hpp"
+#include "Carp/carp_mixer.hpp"

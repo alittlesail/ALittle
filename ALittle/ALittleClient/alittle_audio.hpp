@@ -6,11 +6,7 @@
 
 #include "alittle_script.hpp"
 #include "Carp/carp_lua.hpp"
-#ifdef ALITTLE_SDL_IMPL
-#include "Carp/carp_sdl_mixer.hpp"
-#elif ALITTLE_SOKOL_IMPL
-#include "Carp/carp_sokol_mixer.hpp"
-#endif
+#include "Carp/carp_mixer.hpp"
 #include "Carp/carp_rwops_bind.hpp"
 
 class ALittleAudio;

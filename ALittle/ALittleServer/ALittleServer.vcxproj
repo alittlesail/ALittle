@@ -11,7 +11,60 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\lualib\ajson\lua_ajson.c" />
+    <ClCompile Include="..\..\lualib\cjson\fpconv.c" />
+    <ClCompile Include="..\..\lualib\cjson\lua_cjson.c" />
+    <ClCompile Include="..\..\lualib\cjson\strbuf.c" />
+    <ClCompile Include="..\..\lualib\sqlite3\lsqlite3.c" />
+    <ClCompile Include="..\..\lualib\sqlite3\sqlite3.c" />
+    <ClCompile Include="ClientSystem\ClientReceiver.cpp" />
+    <ClCompile Include="ClientSystem\ClientReceiverBinary.cpp" />
+    <ClCompile Include="ClientSystem\ClientReceiverWebSocket.cpp" />
+    <ClCompile Include="ClientSystem\ClientServer.cpp" />
+    <ClCompile Include="HttpSystem\HttpReceiver.cpp" />
+    <ClCompile Include="HttpSystem\HttpSender.cpp" />
+    <ClCompile Include="HttpSystem\HttpServer.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MysqlSystem\MysqlSystem.cpp" />
+    <ClCompile Include="RouteSystem\ConnectClient.cpp" />
+    <ClCompile Include="RouteSystem\ConnectEndpoint.cpp" />
+    <ClCompile Include="RouteSystem\ConnectReceiver.cpp" />
+    <ClCompile Include="RouteSystem\ConnectServer.cpp" />
+    <ClCompile Include="RouteSystem\RouteSystem.cpp" />
+    <ClCompile Include="RouteSystem\RouteSystemConnect.cpp" />
+    <ClCompile Include="RouteSystem\RouteSystemSearch.cpp" />
+    <ClCompile Include="RouteSystem\SessionConnection.cpp" />
+    <ClCompile Include="ScriptSystem\ScriptSystem.cpp" />
+    <ClCompile Include="ServerSystem\ServerSchedule.cpp" />
+    <ClCompile Include="ServerSystem\ServerSystem.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\lualib\ajson\lua_ajson.h" />
+    <ClInclude Include="..\..\lualib\cjson\fpconv.h" />
+    <ClInclude Include="..\..\lualib\cjson\lua_cjson.h" />
+    <ClInclude Include="..\..\lualib\cjson\strbuf.h" />
+    <ClInclude Include="..\..\lualib\sqlite3\lsqlite3.h" />
+    <ClInclude Include="..\..\lualib\sqlite3\sqlite3.h" />
+    <ClInclude Include="..\..\lualib\sqlite3\sqlite3ext.h" />
+    <ClInclude Include="ClientSystem\ClientReceiver.h" />
+    <ClInclude Include="ClientSystem\ClientServer.h" />
+    <ClInclude Include="HttpSystem\HttpReceiver.h" />
+    <ClInclude Include="HttpSystem\HttpSender.h" />
+    <ClInclude Include="HttpSystem\HttpServer.h" />
+    <ClInclude Include="MysqlSystem\MysqlSystem.h" />
+    <ClInclude Include="RouteSystem\ConnectClient.h" />
+    <ClInclude Include="RouteSystem\ConnectEndpoint.h" />
+    <ClInclude Include="RouteSystem\ConnectMessage.h" />
+    <ClInclude Include="RouteSystem\ConnectReceiver.h" />
+    <ClInclude Include="RouteSystem\ConnectServer.h" />
+    <ClInclude Include="RouteSystem\RouteDefine.h" />
+    <ClInclude Include="RouteSystem\RouteIdDefine.h" />
+    <ClInclude Include="RouteSystem\RouteMessage.h" />
+    <ClInclude Include="RouteSystem\RouteSystem.h" />
+    <ClInclude Include="RouteSystem\SessionConnection.h" />
+    <ClInclude Include="ScriptSystem\ScriptSystem.h" />
+    <ClInclude Include="ServerSystem\ServerSchedule.h" />
+    <ClInclude Include="ServerSystem\ServerSystem.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -64,14 +117,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;ASIO_STANDALONE;_WIN32_WINNT=0x0501;_CRTDBG_MAP_ALLOC;ALITTLE_SOKOL_IMPL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;ASIO_STANDALONE;_WIN32_WINNT=0x0601;_CRTDBG_MAP_ALLOC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)../asio/asio/include;$(SolutionDir)../lua;$(SolutionDir)..\LuaBridge\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\asio\asio\include;$(SolutionDir)..\lua;$(SolutionDir)..\LuaBridge\Source;$(SolutionDir)..\SDL\include;$(SolutionDir)..\mysql;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>LibServerd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)lib/ALittle;$(SolutionDir)lib/lua;$(SolutionDir)lib/openssl;$(SolutionDir)lib/mysql;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -84,9 +137,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;ASIO_STANDALONE;_WIN32_WINNT=0x0501;ALITTLE_SOKOL_IMPL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;ASIO_STANDALONE;_WIN32_WINNT=0x0601;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)../asio/asio/include;$(SolutionDir)../lua;$(SolutionDir)..\LuaBridge\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\asio\asio\include;$(SolutionDir)..\lua;$(SolutionDir)..\LuaBridge\Source;$(SolutionDir)..\SDL\include;$(SolutionDir)..\mysql;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -94,7 +147,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)lib/ALittle;$(SolutionDir)lib/lua;$(SolutionDir)lib/openssl;$(SolutionDir)lib/mysql;$(SolutionDir)lib/tcmalloc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>LibServer.lib;libtcmalloc_minimal.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;libtcmalloc_minimal.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
     </Link>
   </ItemDefinitionGroup>

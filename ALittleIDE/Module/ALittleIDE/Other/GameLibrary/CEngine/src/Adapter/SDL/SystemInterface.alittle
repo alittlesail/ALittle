@@ -15,8 +15,7 @@ public class __CPPAPISystem
     public fun GetScreenHeight() : int {}
 
     public fun OpenUrlBySystemBrowser(string url) {}
-    public fun Alert(string msg) {}
-
+    
 }
 
 public var __CPPAPI_System:__CPPAPISystem;

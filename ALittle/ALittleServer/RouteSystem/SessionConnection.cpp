@@ -1,6 +1,6 @@
 
 #include "SessionConnection.h"
-#include "ALittle/LibServer/ServerSystem/ServerSchedule.h"
+#include "../ServerSystem/ServerSchedule.h"
 
 #include "Carp/carp_string.hpp"
 

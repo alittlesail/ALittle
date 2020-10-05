@@ -346,7 +346,7 @@ public:
 #endif
 
 		// print current platform
-		CARP_INFO("current platform is " << SDL_GetPlatform());
+		CARP_INFO("current platform is " << s_alittle_system.GetPlatform());
 
 		do
 		{

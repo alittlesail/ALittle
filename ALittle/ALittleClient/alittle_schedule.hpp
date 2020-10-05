@@ -327,6 +327,10 @@ public:
 		s_carp_dump.Setup("ALittleClient", []() { s_carp_log.Shutdown(); });
 #endif
 
+#ifndef __EMSCRIPTEN__
+		CarpFile::CreateDeepFolder(CarpRWops::ExternalFilePath() + "Log");
+		s_carp_log.Setup(CarpRWops::ExternalFilePath() + "Log/", "ALittleClient");
+#endif
 		// init SDL
 		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_AUDIO) == -1)
 			CARP_ERROR(SDL_GetError());
@@ -336,10 +340,6 @@ public:
 		// Android do not pause
 		SDL_SetHint(SDL_HINT_ANDROID_BLOCK_ON_PAUSE, "0");
 
-#ifndef __EMSCRIPTEN__
-		CarpFile::CreateDeepFolder(CarpRWops::ExternalFilePath() + "Log");
-		s_carp_log.Setup(CarpRWops::ExternalFilePath() + "Log/", "ALittleClient");
-#endif
 #ifdef _WIN32
 		s_carp_console.Setup("ALittleClient", std::bind(ALittleSchedule::PushConsoleEvent, std::placeholders::_1, std::placeholders::_2)
 			, std::bind(&ALittleSchedule::Exit, this), ALittleSchedule::PushConsoleHelp);

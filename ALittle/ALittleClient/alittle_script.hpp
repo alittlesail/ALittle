@@ -30,6 +30,7 @@ public:
 	void Setup()
 	{
 		Init();
+
 		luaopen_cjson(m_L); lua_settop(m_L, 0);
 		luaopen_ajson(m_L); lua_settop(m_L, 0);
 		luaopen_sqlite3(m_L); lua_settop(m_L, 0);

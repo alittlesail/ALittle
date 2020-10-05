@@ -3,9 +3,9 @@
 
 #include "ServerSchedule.h"
 
-#include "ALittle/LibServer/HttpSystem/Server/HttpServer.h"
-#include "ALittle/LibServer/HttpSystem/Server/HttpSender.h"
-#include "ALittle/LibServer/ClientSystem/ClientReceiver.h"
+#include "../HttpSystem/HttpServer.h"
+#include "../HttpSystem/HttpSender.h"
+#include "../ClientSystem/ClientReceiver.h"
 
 #include "Carp/carp_mysql.hpp"
 #include "Carp/carp_file.hpp"

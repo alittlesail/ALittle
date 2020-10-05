@@ -7,8 +7,6 @@ public async static __Browser_Setup(ALittle.DisplayLayout layer_group
 {
     // 删除7天前的日志
     ALittle.DeleteLog(7);
-
-    ALittle.Log(lua.sqlite3, lua.cjson);
     
     // 创建窗口
     var window_width, window_height, flag, scale = ALittle.System_CalcLandscape(1200, 600

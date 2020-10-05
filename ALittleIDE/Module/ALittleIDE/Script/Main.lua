@@ -7,7 +7,6 @@ local ___ipairs = ipairs
 
 function ALittleIDE.__Browser_Setup(layer_group, control, module_base_path, script_base_path)
 	ALittle.DeleteLog(7)
-	ALittle.Log(sqlite3, cjson)
 	local window_width, window_height, flag, scale = ALittle.System_CalcLandscape(1200, 600, ALittle.BitOr(0x00000080, 0x00000020))
 	ALittle.System_CreateView("ALittleIDE", window_width, window_height, flag, scale)
 	ALittle.System_SetViewIcon(module_base_path .. "Other/ic_launcher.png")

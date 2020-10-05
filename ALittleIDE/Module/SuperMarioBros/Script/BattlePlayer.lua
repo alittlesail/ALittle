@@ -83,7 +83,7 @@ function SuperMarioBros.BattlePlayer:UpdateFrame(frame_time)
 	local jump = A_UISystem.sym_map[107] ~= nil
 	if jump then
 		if self._state == SuperMarioBros.PlayerState.PS_JUMP then
-			self._ud_speed_rate = self._ud_speed_rate + (0.001)
+			self._ud_speed_rate = self._ud_speed_rate - (0.001)
 			self._ud_speed = self._ud_speed + (self._ud_speed_rate * frame_time)
 			if self._jump_height < SuperMarioBros.PLAYER_MAX_JUMP_HEIGHT then
 				local delta = self._ud_speed
@@ -96,13 +96,12 @@ function SuperMarioBros.BattlePlayer:UpdateFrame(frame_time)
 			end
 		elseif self._state == SuperMarioBros.PlayerState.PS_WALK or self._state == SuperMarioBros.PlayerState.PS_IDLE then
 			self._state = SuperMarioBros.PlayerState.PS_JUMP
-			self._ud_speed_rate = 0.001
+			self._ud_speed_rate = 0.01
 			self._ud_speed = self._ud_speed + (self._ud_speed_rate * frame_time)
 			self._jump_height = self._ud_speed
 			self.y = self.y - (self._ud_speed)
 		end
-	end
-	if walk_left or walk_right then
+	elseif walk_left or walk_right then
 		if self._state == SuperMarioBros.PlayerState.PS_JUMP then
 			if self._level == 1 then
 				if self._right then

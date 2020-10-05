@@ -102,7 +102,7 @@ public class BattlePlayer : ALittle.DisplayLayout
         {
             if (this._state == PlayerState.PS_JUMP)
             {
-                this._ud_speed_rate += 0.001;
+                this._ud_speed_rate -= 0.001;
                 this._ud_speed += this._ud_speed_rate * frame_time;
                 
                 if (this._jump_height < PLAYER_MAX_JUMP_HEIGHT)
@@ -120,15 +120,14 @@ public class BattlePlayer : ALittle.DisplayLayout
             elseif (this._state == PlayerState.PS_WALK || this._state == PlayerState.PS_IDLE)
             {
                 this._state = PlayerState.PS_JUMP;
-                this._ud_speed_rate = 0.001;
+                this._ud_speed_rate = 0.01;
                 this._ud_speed += this._ud_speed_rate * frame_time;
 
                 this._jump_height = this._ud_speed;
                 this.y -= this._ud_speed;
             }
         }
-
-        if (walk_left || walk_right)
+        elseif (walk_left || walk_right)
         {
             // 如果是跳跃状态
             if (this._state == PlayerState.PS_JUMP)

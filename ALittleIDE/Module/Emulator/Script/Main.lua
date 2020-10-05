@@ -8,7 +8,7 @@ local ___ipairs = ipairs
 function Emulator.__Browser_Setup(layer_group, control, module_base_path, script_base_path)
 	local window_width, window_height, flag, scale = ALittle.System_CalcLandscape(1200, 600, 0x00000020)
 	ALittle.System_CreateView("Emulator", window_width, window_height, flag, scale)
-	ALittle.System_SetViewIcon(module_base_path .. "/Other/ic_launcher.png")
+	ALittle.System_SetViewIcon(module_base_path .. "Other/ic_launcher.png")
 	A_ModuleSystem:LoadModule(module_base_path, "Emulator")
 end
 Emulator.__Browser_Setup = Lua.CoWrap(Emulator.__Browser_Setup)

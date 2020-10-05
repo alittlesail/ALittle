@@ -2165,5 +2165,8 @@ LUALIB_API int luaopen_sqlite3(lua_State *L) {
     lua_pushvalue(L, -1);
     lua_setmetatable(L, -2);
 
+    /* Register a global "cjson" table. */
+    lua_pushvalue(L, -1);
+    lua_setglobal(L, "sqlite3");
     return 1;
 }

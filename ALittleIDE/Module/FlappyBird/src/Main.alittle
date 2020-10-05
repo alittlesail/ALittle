@@ -10,7 +10,7 @@ public async static __Browser_Setup(ALittle.DisplayLayout layer_group
 	// 创建窗口
 	var window_width, window_height, flag, scale = ALittle.System_CalcPortrait(288, 512, 0);
 	ALittle.System_CreateView("FlappyBird", window_width, window_height, flag, scale);
-	ALittle.System_SetViewIcon(module_base_path.."/Other/ic_launcher.png");
+	ALittle.System_SetViewIcon(module_base_path.."Other/ic_launcher.png");
 	// 加载模块
 	A_ModuleSystem.LoadModule(module_base_path, "FlappyBird");
 }

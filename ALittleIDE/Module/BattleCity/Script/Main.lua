@@ -14,7 +14,7 @@ function BattleCity.__Browser_Setup(layer_group, control, module_base_path, scri
 		scale = 1
 	end
 	ALittle.System_CreateView("BattleCity", window_width, window_height, flag, scale)
-	ALittle.System_SetViewIcon(module_base_path .. "/Other/ic_launcher.png")
+	ALittle.System_SetViewIcon(module_base_path .. "Other/ic_launcher.png")
 	A_ModuleSystem:LoadModule(module_base_path, "BattleCity")
 end
 BattleCity.__Browser_Setup = Lua.CoWrap(BattleCity.__Browser_Setup)

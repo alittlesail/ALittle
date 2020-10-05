@@ -44,7 +44,6 @@ function SuperMarioBros.BattlePlayer:Init(row, col, level)
 	self._ud_speed = 0
 	self._ud_speed_rate = 0
 	self._level = level
-	self._level = 3
 	if self._level == 1 then
 		self._level_1_sprite_right.visible = true
 		self.height = self._level_1_sprite_right.height
@@ -84,7 +83,7 @@ function SuperMarioBros.BattlePlayer:UpdateFrame(frame_time)
 	local jump = A_UISystem.sym_map[107] ~= nil
 	if jump then
 		if self._state == SuperMarioBros.PlayerState.PS_JUMP then
-			self._ud_speed_rate = self._ud_speed_rate + (0.01)
+			self._ud_speed_rate = self._ud_speed_rate + (0.001)
 			self._ud_speed = self._ud_speed + (self._ud_speed_rate * frame_time)
 			if self._jump_height < SuperMarioBros.PLAYER_MAX_JUMP_HEIGHT then
 				local delta = self._ud_speed
@@ -93,18 +92,37 @@ function SuperMarioBros.BattlePlayer:UpdateFrame(frame_time)
 					delta = SuperMarioBros.PLAYER_MAX_JUMP_HEIGHT - self._jump_height
 					self._jump_height = SuperMarioBros.PLAYER_MAX_JUMP_HEIGHT
 				end
-				self.y = self.y + (delta)
+				self.y = self.y - (delta)
 			end
 		elseif self._state == SuperMarioBros.PlayerState.PS_WALK or self._state == SuperMarioBros.PlayerState.PS_IDLE then
 			self._state = SuperMarioBros.PlayerState.PS_JUMP
-			self._ud_speed_rate = 0.01
+			self._ud_speed_rate = 0.001
 			self._ud_speed = self._ud_speed + (self._ud_speed_rate * frame_time)
 			self._jump_height = self._ud_speed
-			self.y = self.y + (self._ud_speed)
+			self.y = self.y - (self._ud_speed)
 		end
 	end
 	if walk_left or walk_right then
 		if self._state == SuperMarioBros.PlayerState.PS_JUMP then
+			if self._level == 1 then
+				if self._right then
+					self._level_1_sprite_right.col_index = 7
+				else
+					self._level_1_sprite_left.col_index = 1
+				end
+			elseif self._level == 2 then
+				if self._right then
+					self._level_2_sprite_right.col_index = 7
+				else
+					self._level_2_sprite_left.col_index = 1
+				end
+			elseif self._level == 3 then
+				if self._right then
+					self._level_3_sprite_right.col_index = 7
+				else
+					self._level_3_sprite_left.col_index = 1
+				end
+			end
 		elseif self._state == SuperMarioBros.PlayerState.PS_WALK or self._state == SuperMarioBros.PlayerState.PS_IDLE then
 			if walk_right then
 				if not self._right then
@@ -180,6 +198,26 @@ function SuperMarioBros.BattlePlayer:UpdateFrame(frame_time)
 				self._level_3_sprite_right.col_index = 2
 			else
 				self._level_3_sprite_left.col_index = 6
+			end
+		end
+	elseif self._state == SuperMarioBros.PlayerState.PS_JUMP then
+		if self._level == 1 then
+			if self._right then
+				self._level_1_sprite_right.col_index = 7
+			else
+				self._level_1_sprite_left.col_index = 1
+			end
+		elseif self._level == 2 then
+			if self._right then
+				self._level_2_sprite_right.col_index = 7
+			else
+				self._level_2_sprite_left.col_index = 1
+			end
+		elseif self._level == 3 then
+			if self._right then
+				self._level_3_sprite_right.col_index = 7
+			else
+				self._level_3_sprite_left.col_index = 1
 			end
 		end
 	end

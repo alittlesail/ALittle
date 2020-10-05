@@ -8,7 +8,7 @@ local ___ipairs = ipairs
 function G2048.__Browser_Setup(layer_group, control, module_base_path, script_base_path, debug)
 	local window_width, window_height, flag, scale = ALittle.System_CalcPortrait(720, 1280, 0)
 	ALittle.System_CreateView("2048", window_width, window_height, flag, scale)
-	ALittle.System_SetViewIcon(module_base_path .. "/Other/ic_launcher.png")
+	ALittle.System_SetViewIcon(module_base_path .. "Other/ic_launcher.png")
 	A_ModuleSystem:LoadModule(module_base_path, "G2048")
 end
 G2048.__Browser_Setup = Lua.CoWrap(G2048.__Browser_Setup)

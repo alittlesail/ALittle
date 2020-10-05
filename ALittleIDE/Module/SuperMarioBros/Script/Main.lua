@@ -8,7 +8,7 @@ local ___ipairs = ipairs
 function SuperMarioBros.__Browser_Setup(layer_group, control, module_base_path, script_base_path, debug)
 	local window_width, window_height, flag, scale = ALittle.System_CalcLandscape(560, 460, 0x00000020)
 	ALittle.System_CreateView("SuperMarioBros", window_width, window_height, flag, scale)
-	ALittle.System_SetViewIcon(module_base_path .. "/Other/ic_launcher.png")
+	ALittle.System_SetViewIcon(module_base_path .. "Other/ic_launcher.png")
 	A_ModuleSystem:LoadModule(module_base_path, "SuperMarioBros")
 end
 SuperMarioBros.__Browser_Setup = Lua.CoWrap(SuperMarioBros.__Browser_Setup)

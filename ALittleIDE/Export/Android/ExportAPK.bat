@@ -10,7 +10,7 @@ set package_path=%1
 echo %package_path%
 set base_path=../../../../Export/Android
 
-set path=%path%;%base_path%\build-tools\jdk\bin;
+set path=%base_path%\build-tools\jdk\bin
 echo %path%
 
 mkdir bin
@@ -22,7 +22,7 @@ echo begin R.java
 echo end R.java
 
 echo begin javac
-"%base_path%\build-tools\jdk\bin\javac"  -Xlint:unchecked -encoding UTF-8 -source 1.6 -target 1.6 -bootclasspath %base_path%\build-tools\platforms\android-29\android.jar -d bin\classes gen\%package_path%\R.java -cp %base_path%\libs\ShareSDK-Wechat-3.1.4.jar;%base_path%\libs\ShareSDK-Wechat-Moments-3.1.4.jar;%base_path%\libs\ShareSDK-Wechat-Favorite-3.1.4.jar;%base_path%\libs\ShareSDK-Wechat-Core-3.1.4.jar;%base_path%\libs\MobCommons-2018.0418.1102.jar;%base_path%\libs\MobTools-2018.0419.1211.jar;%base_path%\libs\ShareSDK-Core-3.1.4.jar;%base_path%\libs\ShareSDK-QQ-3.1.4.jar;%base_path%\libs\ShareSDK-SinaWeibo-3.1.4.jar @src_list.txt
+"%base_path%\build-tools\jdk\bin\javac"  -Xlint:unchecked -encoding UTF-8 -source 1.7 -target 1.7 -bootclasspath %base_path%\build-tools\platforms\android-29\android.jar -d bin\classes gen\%package_path%\R.java @src_list.txt
 echo end javac
 
 echo begin classes.dex

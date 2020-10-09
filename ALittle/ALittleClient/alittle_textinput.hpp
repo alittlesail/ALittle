@@ -1000,7 +1000,7 @@ private:
 		m_real_width = surface->GetWidth();
 		m_real_height = surface->GetHeight();
 
-		m_texture = new ALittleSurfaceTexture(surface);
+		m_texture = new ALittleSurfaceTexture(surface, ALittleTextureRenderMode::ATRM_NEAREST);
 		m_vertex_dirty = true;
 	}
 

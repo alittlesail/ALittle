@@ -93,7 +93,7 @@ ALittleSurfaceTexture* GetQuadTexture()
 		for (int j = 0; j < 32; ++j)
 			CarpSurfaceBind::SetCarpSurfacePixel(surface, i, j, 0xFFFFFFFF);
 
-	s_quad_texture_info.texture = new ALittleSurfaceTexture(surface);
+	s_quad_texture_info.texture = new ALittleSurfaceTexture(surface, ALittleTextureRenderMode::ATRM_NEAREST);
 	s_quad_texture_info.ref_count = 1;
 	return s_quad_texture_info.texture;
 }

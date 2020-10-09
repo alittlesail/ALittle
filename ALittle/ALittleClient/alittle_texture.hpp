@@ -6,6 +6,12 @@
 #include "Carp/carp_math_2d.hpp"
 #include "Carp/carp_surface_bind.hpp"
 
+enum class ALittleTextureRenderMode
+{
+	ATRM_NEAREST, /**< nearest pixel sampling */
+	ATRM_LINEAR,  /**< linear filtering */
+	ATRM_BEST     /**< anisotropic filtering */
+};
 
 class ALittleTexture
 {
@@ -53,9 +59,10 @@ public:
 class ALittleSurfaceTexture : public ALittleTexture
 {
 public:
-	ALittleSurfaceTexture(CarpSurface* surface)
+	ALittleSurfaceTexture(CarpSurface* surface, ALittleTextureRenderMode mode)
 	{
 		m_surface = surface;
+		m_mode = mode;
 		m_width = surface->GetWidth();
 		m_height = surface->GetHeight();
 	}
@@ -81,6 +88,18 @@ public:
 			if (m_texture)
 			{
 				SDL_UpdateTexture(m_texture, nullptr, m_surface->GetPixels(), m_surface->GetPitch());
+				switch (m_mode)
+				{
+				case ALittleTextureRenderMode::ATRM_NEAREST:
+					SDL_SetTextureScaleMode(m_texture, SDL_ScaleModeNearest);
+					break;
+				case ALittleTextureRenderMode::ATRM_BEST:
+					SDL_SetTextureScaleMode(m_texture, SDL_ScaleModeBest);
+					break;
+				default:
+					SDL_SetTextureScaleMode(m_texture, SDL_ScaleModeLinear);
+					break;
+				}
 				SDL_SetTextureBlendMode(m_texture, SDL_BLENDMODE_BLEND);
 			}
 			CarpSurfaceBind::FreeCarpSurface(m_surface);
@@ -143,6 +162,7 @@ private:
 
 private:
 	int m_width = 0, m_height = 0;
+	ALittleTextureRenderMode m_mode = ALittleTextureRenderMode::ATRM_LINEAR;
 };
 
 
@@ -413,7 +433,7 @@ public:
 		
 		s_carp_task_consumer.PushEvent([this, surface]()
 		{
-			ALittleSurfaceTexture* texture = new ALittleSurfaceTexture(surface);
+			ALittleSurfaceTexture* texture = new ALittleSurfaceTexture(surface, ALittleTextureRenderMode::ATRM_LINEAR);
 			texture->GenerateImpl();
 			s_alittle_script.Invoke("__ALITTLEAPI_TextureLoadSucceed", this, (ALittleTexture*)texture);
 		});
@@ -504,7 +524,7 @@ public:
 
 		s_carp_task_consumer.PushEvent([this, surface]()
 		{
-			ALittleTexture* texture = new ALittleSurfaceTexture(surface);
+			ALittleTexture* texture = new ALittleSurfaceTexture(surface, ALittleTextureRenderMode::ATRM_LINEAR);
 			s_alittle_script.Invoke("__ALITTLEAPI_TextureCutLoadSucceed", this, texture);
 		});
 	}

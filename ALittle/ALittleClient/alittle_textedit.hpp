@@ -1894,7 +1894,7 @@ private:
 			++line_start_it;
 		}
 
-		m_texture = new ALittleSurfaceTexture(total_surface);
+		m_texture = new ALittleSurfaceTexture(total_surface, ALittleTextureRenderMode::ATRM_NEAREST);
 	}
 
 private:

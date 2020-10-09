@@ -262,7 +262,7 @@ public:
 			SetSelfMatrixDirty();
 		}
 
-		if (m_texture == 0) return;
+		if (m_texture == nullptr) return;
 
 		UpdateGlobalMatrix2D(parent, parent_changed);
 		UpdateVertexCoord();
@@ -350,7 +350,7 @@ TextTextureInfo* CreateTextureInfo(CarpFont* font, const std::string& text)
 	info->font = font;
 	info->ref_count = 1;
 	info->text = text;
-	info->texture = new ALittleSurfaceTexture(surface);
+	info->texture = new ALittleSurfaceTexture(surface, ALittleTextureRenderMode::ATRM_NEAREST);
 	text_map[text] = info;
 
 	return info;

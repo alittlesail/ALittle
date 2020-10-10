@@ -1958,7 +1958,7 @@ private:
 			return;
 		}
 
-		width = m_font->CutTextWidth(text);
+		width = m_font->CutTextWidth(text, false);
 		// save size
 		m_width_map[text] = width;
 	}

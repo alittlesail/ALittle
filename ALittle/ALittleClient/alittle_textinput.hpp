@@ -354,19 +354,19 @@ private:
 		// Bridging the cursor to the end of the characters
 		int width_1 = 0;
 		if (m_password_mode)
-			width_1 = m_font->CutTextWidth("*a");
+			width_1 = m_font->CutTextWidth("*a", false);
 		else
-			width_1 = m_font->CutTextWidth((calc_it->str + "a").c_str());
+			width_1 = m_font->CutTextWidth((calc_it->str + "a").c_str(), false);
 		int width_2 = 0;
 		if (m_password_mode)
 		{
 			if (delete_end->str.size())
-				width_2 = m_font->CutTextWidth("**a");
+				width_2 = m_font->CutTextWidth("**a", false);
 			else
-				width_2 = m_font->CutTextWidth("*a");
+				width_2 = m_font->CutTextWidth("*a", false);
 		}
 		else
-			width_2 = m_font->CutTextWidth((calc_it->str + delete_end->str + "a").c_str());
+			width_2 = m_font->CutTextWidth((calc_it->str + delete_end->str + "a").c_str(), false);
 		int offset_width = (width_2 - width_1 + acc_width) - delete_end->acc_width;
 		// Recalculate, from the current cursor back until the end, the width of the characters
 		for (CharInfoList::iterator it = delete_end; it != m_char_list.end(); ++it)
@@ -413,12 +413,12 @@ private:
 				m_cursor_it->text_index = 0;
 				m_cursor_it->pre_width = 0;
 
-				int width_1 = m_font->CutTextWidth("a");
+				int width_1 = m_font->CutTextWidth("a", false);
 				int width_2 = 0;
 				if (m_password_mode)
-					width_2 = m_font->CutTextWidth("*a");
+					width_2 = m_font->CutTextWidth("*a", false);
 				else
-					width_2 = m_font->CutTextWidth((calc_it->str + "a").c_str());
+					width_2 = m_font->CutTextWidth((calc_it->str + "a").c_str(), false);
 				m_cursor_it->acc_width = width_2 - width_1;
 			}
 			else
@@ -429,14 +429,14 @@ private:
 
 				int width_1 = 0;
 				if (m_password_mode)
-					width_1 = m_font->CutTextWidth("*a");
+					width_1 = m_font->CutTextWidth("*a", false);
 				else
-					width_1 = m_font->CutTextWidth((calc_it->str + "a").c_str());
+					width_1 = m_font->CutTextWidth((calc_it->str + "a").c_str(), false);
 				int width_2 = 0;
 				if (m_password_mode)
-					width_2 = m_font->CutTextWidth("**a");
+					width_2 = m_font->CutTextWidth("**a", false);
 				else
-					width_2 = m_font->CutTextWidth((calc_it->str + m_cursor_it->str + "a").c_str());
+					width_2 = m_font->CutTextWidth((calc_it->str + m_cursor_it->str + "a").c_str(), false);
 				m_cursor_it->acc_width = width_2 - width_1 + calc_it->acc_width;
 			}
 			// The cursor backward step
@@ -449,19 +449,19 @@ private:
 		--calc_it;
 		int width_1 = 0;
 		if (m_password_mode)
-			width_1 = m_font->CutTextWidth("*a");
+			width_1 = m_font->CutTextWidth("*a", false);
 		else
-			width_1 = m_font->CutTextWidth((calc_it->str + "a").c_str());
+			width_1 = m_font->CutTextWidth((calc_it->str + "a").c_str(), false);
 		int width_2 = 0;
 		if (m_password_mode)
 		{
 			if (m_cursor_it->str.size())
-				width_2 = m_font->CutTextWidth("**a");
+				width_2 = m_font->CutTextWidth("**a", false);
 			else
-				width_2 = m_font->CutTextWidth("*a");
+				width_2 = m_font->CutTextWidth("*a", false);
 		}
 		else
-			width_2 = m_font->CutTextWidth((calc_it->str + m_cursor_it->str + "a").c_str());
+			width_2 = m_font->CutTextWidth((calc_it->str + m_cursor_it->str + "a").c_str(), false);
 		// Recalculate, from the current cursor back until the end, the width of the characters
 		int offset_width = width_2 - width_1 + calc_it->acc_width - m_cursor_it->acc_width;
 		for (CharInfoList::iterator it = m_cursor_it; it != m_char_list.end(); ++it)

@@ -283,7 +283,7 @@ private:
 			else
 				next_calc_text.append(str, byte_count);
 
-			int text_width = m_font->CutTextWidth(next_calc_text.c_str());
+			int text_width = m_font->CutTextWidth(next_calc_text.c_str(), false);
 			int next_width_offset = text_width;
 
 			if (next_width_offset > total_width && calc_text.size())

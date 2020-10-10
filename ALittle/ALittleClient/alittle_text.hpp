@@ -110,7 +110,7 @@ public:
 		if (m_font == nullptr) return 0;
 
 		// calc size
-		m_real_width = m_font->CutTextWidth(m_text.c_str());
+		m_real_width = m_font->CutTextWidth(m_text.c_str(), false);
 		m_real_height = m_font->GetFontHeight();
 
 		m_calc_real_size = true;
@@ -130,7 +130,7 @@ public:
 		if (m_font == nullptr) return 0;
 
 		// calc size
-		m_real_width = m_font->CutTextWidth(m_text.c_str());
+		m_real_width = m_font->CutTextWidth(m_text.c_str(), false);
 		m_real_height = m_font->GetFontHeight();
 
 		m_calc_real_size = true;
@@ -233,7 +233,7 @@ public:
 		if (m_font == nullptr) return 0;
 
 		m_calc_width_list.clear();
-		return m_font->CutTextByWidth(content, static_cast<int>(width), max_width, &m_calc_width_list);
+		return m_font->CutTextByWidth(content, static_cast<int>(width), max_width, false, &m_calc_width_list);
 	}
 	int GetCutWidthListCount() const { return static_cast<int>(m_calc_width_list.size()); }
 	int GetCutWidthByIndex(int index) const { return m_calc_width_list[index]; }
@@ -243,7 +243,7 @@ public:
 		if (m_font == nullptr) m_font = s_alittle_font.GetFont(m_font_path.c_str(), m_font_size, m_font_style);
 		if (m_font == nullptr) return 0;
 
-		return m_font->CutTextWidth(content);
+		return m_font->CutTextWidth(content, false);
 	}
 
 public:

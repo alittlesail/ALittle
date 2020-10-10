@@ -62,7 +62,7 @@ public:
 	{
 		if (content == 0 || font == 0) return nullptr;
 
-		CarpFontBitmap* carp_bitmap = font->CreateBitmapFromUTF8(content);
+		CarpFontBitmap* carp_bitmap = font->CreateBitmapFromUTF8(content, false);
 		if (carp_bitmap == nullptr) return nullptr;
 
 		CarpSurface* surface = CarpSurfaceBind::CreateCarpSurface(carp_bitmap->width, carp_bitmap->height);

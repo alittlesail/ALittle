@@ -33,9 +33,9 @@ public class IDECodeTree : IDECodeTreeLogic
 	
 		this.fold = false;
 		if (user_info.root)
-			this._item_title.text = "["..this._user_info.module_name.."] "..this._user_info.name;
+			this._item_button.text = "["..this._user_info.module_name.."] "..this._user_info.name;
 		else
-			this._item_title.text = this._user_info.name;
+			this._item_button.text = this._user_info.name;
 		this.Refresh();
 	}
 	

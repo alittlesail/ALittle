@@ -68,7 +68,7 @@ function ALittleIDE.IDEProjectFindFileDialog:HandleSearchClick(event)
 	end
 	local file_list = ALittleIDE.g_IDEProject.project.code:FindFile(text)
 	for index, file_path in ___ipairs(file_list) do
-		local item = ALittleIDE.g_Control:CreateControl("ide_common_item_checkbutton")
+		local item = ALittleIDE.g_Control:CreateControl("scroll_screen_item_checkbutton")
 		item:AddEventListener(___all_struct[-449066808], self, self.HandleItemClick)
 		item.text = file_path
 		item._user_data = file_path

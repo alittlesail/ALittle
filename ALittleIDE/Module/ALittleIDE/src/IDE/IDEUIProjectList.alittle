@@ -20,7 +20,7 @@ public class IDEUIProjectList : ALittle.DisplayLayout
 		{
 			if (key == "" || ALittle.String_Find(v, key) != null)
 			{
-				var item = g_Control.CreateControl{ALittle.DisplayObject}("ide_common_item_button");
+				var item = g_Control.CreateControl{ALittle.DisplayObject}("aui_menu_item_button");
 				item.text = v;
 				item.drag_trans_target = this._project_scroll_screen;
 				item.AddEventListener(this, this.HandleProjectItemRightClick);

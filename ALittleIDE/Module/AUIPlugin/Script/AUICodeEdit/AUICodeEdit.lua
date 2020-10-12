@@ -113,7 +113,7 @@ assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 AUIPlugin.AUICodeEdit = Lua.Class(ALittle.DisplayLayout, "AUIPlugin.AUICodeEdit")
 
 function AUIPlugin.AUICodeEdit.Create()
-	return AUIPlugin.g_Control:CreateControl("ide_code_tab_screen")
+	return AUIPlugin.g_Control:CreateControl("code_tab_screen")
 end
 
 function AUIPlugin.AUICodeEdit:Ctor(ctrl_sys)
@@ -590,7 +590,7 @@ function AUIPlugin.AUICodeEdit:UpdateErrorInfo()
 	local error_count = 0
 	for index, info in ___ipairs(list) do
 		local item_info = {}
-		local item = AUIPlugin.g_Control:CreateControl("ide_code_error_item", item_info)
+		local item = AUIPlugin.g_Control:CreateControl("code_error_item", item_info)
 		local line = self._line_list[info.line_start]
 		local char_end = info.char_end
 		if info.line_start ~= info.line_end then

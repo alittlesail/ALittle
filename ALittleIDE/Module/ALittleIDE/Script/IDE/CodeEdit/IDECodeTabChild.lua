@@ -36,7 +36,7 @@ ALittleIDE.IDECodeTabChild = Lua.Class(ALittleIDE.IDETabChild, "ALittleIDE.IDECo
 
 function ALittleIDE.IDECodeTabChild:Ctor(ctrl_sys, module, name, save, user_info)
 	___rawset(self, "_user_info", user_info)
-	___rawset(self, "_edit", ALittleIDE.g_AUIPluinControl:CreateControl("ide_code_tab_screen", self))
+	___rawset(self, "_edit", ALittleIDE.g_AUIPluinControl:CreateControl("code_tab_screen", self))
 	self._edit:AddEventListener(___all_struct[958494922], self, self.HandleChangedEvent)
 	self._edit:AddEventListener(___all_struct[631224630], self, self.HandleEditGotoEvent)
 	self._edit:AddEventListener(___all_struct[-1898137181], self, self.HandleJumpCodeEvent)

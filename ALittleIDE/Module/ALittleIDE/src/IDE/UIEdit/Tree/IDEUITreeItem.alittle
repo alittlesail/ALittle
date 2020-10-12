@@ -15,9 +15,9 @@ public class IDEUITreeItem : IDEUITreeLogic
 	public ctor(ALittle.ControlSystem ctrl_sys, IDEUITreeUserInfo user_info, IDEUITabChild tab_child)
 	{
 		if (this._user_info.extends)
-			this._item = ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_common_tree_item_disabled", this);
+			this._item = ctrl_sys.CreateControl{ALittle.DisplayObject}("tree_item_disabled", this);
 		else
-			this._item = ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_common_tree_item", this);
+			this._item = ctrl_sys.CreateControl{ALittle.DisplayObject}("tree_item", this);
 		this.AddChild(this._item);
 		this.width = this._item.width;
 		this.height = this._item.height;
@@ -99,7 +99,7 @@ public class IDEUITreeItem : IDEUITreeLogic
 		elseif (this._user_info.default.text != null)
 			title = title..this._user_info.default.text;
 
-		this._item_title.text = title;
+		this._item_button.text = title;
 	
 		if (this._user_info.child_type == null)
 			this._tab_child.UpdateTitle();

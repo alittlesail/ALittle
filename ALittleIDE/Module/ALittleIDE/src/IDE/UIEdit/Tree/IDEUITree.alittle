@@ -10,9 +10,9 @@ public class IDEUITree : IDEUITreeLogic
 	{
 		// 对树的头部进行处理
 		if (this._user_info.extends)
-			this._head = ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_common_tree_head_disabled", this);
+			this._head = ctrl_sys.CreateControl{ALittle.DisplayObject}("tree_head_disabled", this);
 		else
-			this._head = ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_common_tree_head", this);
+			this._head = ctrl_sys.CreateControl{ALittle.DisplayObject}("tree_head", this);
 		ALittle.DisplayGroup.AddChild(this, this._head);
 		
 		this._extends_icon.visible = this._user_info.extends_root;
@@ -70,7 +70,7 @@ public class IDEUITree : IDEUITreeLogic
 		elseif (this._user_info.default.text != null)
 			title = title..this._user_info.default.text;
 
-		this._item_title.text = title;
+		this._item_button.text = title;
 	
 		if (this._user_info.child_type == null)
 			this._tab_child.UpdateTitle();

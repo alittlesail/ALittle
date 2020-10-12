@@ -27,7 +27,7 @@ end
 
 function AUIPlugin.AUIVersionManager:CreateDialog()
 	if self._dialog == nil then
-		self._dialog = AUIPlugin.g_Control:CreateControl("ide_version_dialog", self)
+		self._dialog = AUIPlugin.g_Control:CreateControl("aui_version_dialog", self)
 		A_LayerManager:AddToModal(self._dialog)
 		self._notice_content.text = ""
 		self._notice_content.visible = true

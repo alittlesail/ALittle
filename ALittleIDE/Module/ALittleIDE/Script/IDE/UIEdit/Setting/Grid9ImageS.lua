@@ -35,7 +35,7 @@ function ALittleIDE.Grid9ImageS:HandleImageTextureNameSelect(event)
 	if path == nil then
 		return
 	end
-	self:ImagePathSelectCallback("texture_name", self.HandleImageTextureNameFOCUSOUT, nil, path)
+	self:ImagePathSelectCallback("texture_name", self.HandleImageTextureNameFOCUSOUT, nil, path, true)
 end
 ALittleIDE.Grid9ImageS.HandleImageTextureNameSelect = Lua.CoWrap(ALittleIDE.Grid9ImageS.HandleImageTextureNameSelect)
 

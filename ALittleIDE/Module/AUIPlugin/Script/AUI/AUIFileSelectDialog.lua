@@ -67,7 +67,7 @@ end
 
 function AUIPlugin.AUIFileSelectDialog:CreateDialog()
 	if self._dialog == nil then
-		self._dialog = AUIPlugin.g_Control:CreateControl("ide_file_select_dialog", self)
+		self._dialog = AUIPlugin.g_Control:CreateControl("file_select_dialog", self)
 		self._dialog.title = self._title
 		if self._layer ~= nil then
 			self._layer:AddChild(self._dialog)

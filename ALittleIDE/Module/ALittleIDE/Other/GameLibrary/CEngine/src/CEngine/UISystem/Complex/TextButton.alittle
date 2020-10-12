@@ -109,7 +109,7 @@ public class TextButton : DisplayLayout
             elseif (this._file_select == UIEnumTypes.SELECT_DIR)
                 A_OtherSystem.SystemSelectDirectory(this);
                 
-            if (System_IsPhone == false)
+            if (System_IsPhone() == false)
                 this.ShowOver();
             else
                 this.ShowUp(null);

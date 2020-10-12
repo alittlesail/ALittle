@@ -1,0 +1,1 @@
+{"aui_rename_image_input":{"__extends":"image_input","__event":[{"func":"HandleRenameConfirm","type":"ALittle.UIEnterKeyEvent"},{"func":"HandleRenameCancel","type":"ALittle.UIKeyDownEvent"},{"func":"HandleRenameConfirm","type":"ALittle.UIFocusOutEvent"}]}}

@@ -4,6 +4,7 @@ namespace ALittleIDE;
 public class IDEAttrControlDialog
 {
 	private ALittle.Dialog _dialog;
+    private ALittle.DisplayLayout _attr_container;
 
 	private fun CreateDialog()
 	{
@@ -12,10 +13,10 @@ public class IDEAttrControlDialog
         this._dialog.visible = false;
         this._dialog.close_callback = bind(this.HandleClose, this);
 	}
-    public get dialog() : ALittle.Dialog
+    public get attr_container() : ALittle.DisplayLayout
     {
-		if (this._dialog == null) this.CreateDialog();
-        return this._dialog;
+		if (this._attr_container == null) this.CreateDialog();
+        return this._attr_container;
     }
 
     private fun HandleClose()

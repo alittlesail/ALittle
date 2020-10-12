@@ -148,7 +148,7 @@ public class TextCheckButton : DisplayLayout
             e.is_drag = event.is_drag;
             this.DispatchEvent(e);
             this.DispatchEvent(new UIChangedEvent());
-            if (System_IsPhone == false)
+            if (System_IsPhone() == false)
                 this.ShowOver();
             else
                 this.ShowUp();

@@ -210,6 +210,7 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 	public fun ControlTreeJump(IDEUITreeLogic target)
 	{
         var extends_module = target.user_info.base.__module;
+        if (extends_module == null) extends_module = target.user_info.module;
 		var extends_name = target.user_info.base.__extends;
 
         var ui_manager = g_IDEProject.GetUIManager(extends_module);

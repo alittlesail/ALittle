@@ -1,1 +1,0 @@
-{"ide_alert_dialog":{"title":"正在上传","width_value":265,"__childs":[{"valign":1,"red":0.88,"height_value":10,"width_value":10,"halign":1,"width_type":4,"height_type":4,"font_path":"Miui-Regular.ttf","__class":"TextArea","green":0.88,"y_type":3,"font_size":12,"x_type":3,"text":"正在上传","__link":"_content","blue":0.88}],"__extends":"ide_common_dialog","height_value":160}}

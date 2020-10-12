@@ -19,6 +19,10 @@ public class DialogS : DisplayLayoutS
 		DisplayLayoutS.LoadNatureBase(this);
         
 		this.LoadValueData("head_size");
+		this.LoadValueData("head_top_margin");
+		this.LoadValueData("head_bottom_margin");
+		this.LoadValueData("head_left_margin");
+		this.LoadValueData("head_right_margin");
 		this.LoadDefaultNilString("title");
 		this.LoadShowTypeDataForImage("show_background");
 		this.LoadShowTypeDataForImage("show_head_drag");
@@ -29,6 +33,26 @@ public class DialogS : DisplayLayoutS
 	public fun HandleHeadSizeFOCUSOUT(ALittle.UIEvent event)
 	{
 		this.ValueNumInputChange("head_size", false);
+	}
+
+	public fun HandleHeadTopMarginFOCUSOUT(ALittle.UIEvent event)
+	{
+		this.ValueNumInputChange("head_top_margin", false);
+	}
+
+	public fun HandleHeadBottomMarginFOCUSOUT(ALittle.UIEvent event)
+	{
+		this.ValueNumInputChange("head_bottom_margin", false);
+	}
+
+	public fun HandleHeadLeftMarginFOCUSOUT(ALittle.UIEvent event)
+	{
+		this.ValueNumInputChange("head_left_margin", false);
+	}
+
+	public fun HandleHeadRightMarginFOCUSOUT(ALittle.UIEvent event)
+	{
+		this.ValueNumInputChange("head_right_margin", false);
 	}
 	
 	public fun HandleTitleFOCUSOUT(ALittle.UIEvent event)
@@ -57,7 +81,7 @@ public class DialogS : DisplayLayoutS
 		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
 		if (path == null) return;
-		this.ImagePathSelectCallback("show_background", this.HandleShowBackgroundFOCUSOUT, null, path);
+		this.ImagePathSelectCallback("show_background", this.HandleShowBackgroundFOCUSOUT, null, path, false);
 	}
 	public fun HandleShowHeadDragFOCUSOUT(ALittle.UIEvent event)
 	{
@@ -80,7 +104,7 @@ public class DialogS : DisplayLayoutS
 		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
 		if (path == null) return;
-		this.ImagePathSelectCallback("show_head_drag", this.HandleShowHeadDragFOCUSOUT, null, path);
+		this.ImagePathSelectCallback("show_head_drag", this.HandleShowHeadDragFOCUSOUT, null, path, false);
 	}
 	
 	public fun HandleShowCloseButtonFOCUSOUT(ALittle.UIEvent event)

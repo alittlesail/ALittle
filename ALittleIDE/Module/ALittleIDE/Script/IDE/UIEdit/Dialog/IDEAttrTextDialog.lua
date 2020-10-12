@@ -79,6 +79,9 @@ end
 function ALittleIDE.IDEAttrTextDialog:ResetText()
 	local info = self._target_panel.base[self._target_text]
 	if info == nil then
+		info = self._target_panel.default[self._target_text]
+	end
+	if info == nil then
 		info = {}
 	end
 	self._bold.text = "否"
@@ -114,17 +117,17 @@ function ALittleIDE.IDEAttrTextDialog:ResetText()
 	if info.red == nil then
 		self._red.text = 255
 	else
-		self._red.text = info.red * 255
+		self._red.text = ALittle.Math_Floor(info.red * 255)
 	end
 	if info.green == nil then
 		self._green.text = 255
 	else
-		self._green.text = info.green * 255
+		self._green.text = ALittle.Math_Floor(info.green * 255)
 	end
 	if info.blue == nil then
 		self._blue.text = 255
 	else
-		self._blue.text = info.blue * 255
+		self._blue.text = ALittle.Math_Floor(info.blue * 255)
 	end
 end
 

@@ -17,7 +17,7 @@ public class IDECodeTreeItem : IDECodeTreeLogic
 		this._item_button.AddEventListener(this, this.HandleKeyDown);
 		this._item_button._user_data = this;
 		
-		this._item_title.text = this._user_info.name;
+		this._item_button.text = this._user_info.name;
 	}
 	
 	public get is_tree() : bool { return false; }
@@ -124,7 +124,7 @@ public class IDECodeTreeItem : IDECodeTreeLogic
 		this._user_info.path = new_path;
 		this._user_info.name = new_name;
 
-		this._item_title.text = this._user_info.name;
+		this._item_button.text = this._user_info.name;
 
 		if (this._user_info.project != null && ALittle.File_GetFileExtByPathAndUpper(this._user_info.path) == this._user_info.project.upper_ext)
 			this._user_info.project.RemoveFile(old_path);

@@ -77,7 +77,7 @@ public class ImageEditS : TextEditS
 		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
 		if (path == null) return;
-		this.ImagePathSelectCallback("show_up", this.HandleShowUpFOCUSOUT, null, path);
+		this.ImagePathSelectCallback("show_up", this.HandleShowUpFOCUSOUT, null, path, true);
     }
     //show_over
     public fun HandleShowOverFOCUSOUT(ALittle.UIEvent event)
@@ -101,7 +101,7 @@ public class ImageEditS : TextEditS
 		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
 		if (path == null) return;
-		this.ImagePathSelectCallback("show_over", this.HandleShowOverFOCUSOUT, null, path);
+		this.ImagePathSelectCallback("show_over", this.HandleShowOverFOCUSOUT, null, path, true);
     }
     //show_down
     public fun HandleShowDownFOCUSOUT(ALittle.UIEvent event)
@@ -125,7 +125,7 @@ public class ImageEditS : TextEditS
 		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
 		if (path == null) return;
-		this.ImagePathSelectCallback("show_down", this.HandleShowDownFOCUSOUT, null, path);
+		this.ImagePathSelectCallback("show_down", this.HandleShowDownFOCUSOUT, null, path, true);
     }
     //show_disabled
     public fun HandleShowDisabledFOCUSOUT(ALittle.UIEvent event)
@@ -149,6 +149,6 @@ public class ImageEditS : TextEditS
 		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
 		if (path == null) return;
-		this.ImagePathSelectCallback("show_disabled", this.HandleShowDisabledFOCUSOUT, null, path);
+		this.ImagePathSelectCallback("show_disabled", this.HandleShowDisabledFOCUSOUT, null, path, true);
     }
 }

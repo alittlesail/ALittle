@@ -39,6 +39,7 @@ end
 
 function ALittleIDE.TextCheckButtonS:HandleMTextFOCUSOUT(event)
 	self:DefaultNoStringInputChange("text", false)
+	self._tree_logic:UpdateDesc()
 end
 
 function ALittleIDE.TextCheckButtonS:HandleTextXTypeSELECT_CHANGE(event)
@@ -80,7 +81,7 @@ function ALittleIDE.TextCheckButtonS:HandleShowUpSelect(event)
 	if path == nil then
 		return
 	end
-	self:ImagePathSelectCallback("show_up", self.HandleShowUpFOCUSOUT, nil, path)
+	self:ImagePathSelectCallback("show_up", self.HandleShowUpFOCUSOUT, nil, path, true)
 end
 ALittleIDE.TextCheckButtonS.HandleShowUpSelect = Lua.CoWrap(ALittleIDE.TextCheckButtonS.HandleShowUpSelect)
 
@@ -105,7 +106,7 @@ function ALittleIDE.TextCheckButtonS:HandleShowOverSelect(event)
 	if path == nil then
 		return
 	end
-	self:ImagePathSelectCallback("show_over", self.HandleShowOverFOCUSOUT, nil, path)
+	self:ImagePathSelectCallback("show_over", self.HandleShowOverFOCUSOUT, nil, path, true)
 end
 ALittleIDE.TextCheckButtonS.HandleShowOverSelect = Lua.CoWrap(ALittleIDE.TextCheckButtonS.HandleShowOverSelect)
 
@@ -130,7 +131,7 @@ function ALittleIDE.TextCheckButtonS:HandleShowDownSelect(event)
 	if path == nil then
 		return
 	end
-	self:ImagePathSelectCallback("show_down", self.HandleShowDownFOCUSOUT, nil, path)
+	self:ImagePathSelectCallback("show_down", self.HandleShowDownFOCUSOUT, nil, path, true)
 end
 ALittleIDE.TextCheckButtonS.HandleShowDownSelect = Lua.CoWrap(ALittleIDE.TextCheckButtonS.HandleShowDownSelect)
 
@@ -155,7 +156,7 @@ function ALittleIDE.TextCheckButtonS:HandleShowDisabledSelect(event)
 	if path == nil then
 		return
 	end
-	self:ImagePathSelectCallback("show_disabled", self.HandleShowDisabledFOCUSOUT, nil, path)
+	self:ImagePathSelectCallback("show_disabled", self.HandleShowDisabledFOCUSOUT, nil, path, true)
 end
 ALittleIDE.TextCheckButtonS.HandleShowDisabledSelect = Lua.CoWrap(ALittleIDE.TextCheckButtonS.HandleShowDisabledSelect)
 
@@ -180,7 +181,7 @@ function ALittleIDE.TextCheckButtonS:HandleShowSUpSelect(event)
 	if path == nil then
 		return
 	end
-	self:ImagePathSelectCallback("show_selected_up", self.HandleShowSUpFOCUSOUT, nil, path)
+	self:ImagePathSelectCallback("show_selected_up", self.HandleShowSUpFOCUSOUT, nil, path, true)
 end
 ALittleIDE.TextCheckButtonS.HandleShowSUpSelect = Lua.CoWrap(ALittleIDE.TextCheckButtonS.HandleShowSUpSelect)
 
@@ -205,7 +206,7 @@ function ALittleIDE.TextCheckButtonS:HandleShowSOverSelect(event)
 	if path == nil then
 		return
 	end
-	self:ImagePathSelectCallback("show_selected_over", self.HandleShowSOverFOCUSOUT, nil, path)
+	self:ImagePathSelectCallback("show_selected_over", self.HandleShowSOverFOCUSOUT, nil, path, true)
 end
 ALittleIDE.TextCheckButtonS.HandleShowSOverSelect = Lua.CoWrap(ALittleIDE.TextCheckButtonS.HandleShowSOverSelect)
 
@@ -230,7 +231,7 @@ function ALittleIDE.TextCheckButtonS:HandleShowSDownSelect(event)
 	if path == nil then
 		return
 	end
-	self:ImagePathSelectCallback("show_selected_down", self.HandleShowSDownFOCUSOUT, nil, path)
+	self:ImagePathSelectCallback("show_selected_down", self.HandleShowSDownFOCUSOUT, nil, path, true)
 end
 ALittleIDE.TextCheckButtonS.HandleShowSDownSelect = Lua.CoWrap(ALittleIDE.TextCheckButtonS.HandleShowSDownSelect)
 
@@ -255,7 +256,7 @@ function ALittleIDE.TextCheckButtonS:HandleShowSDisabledSelect(event)
 	if path == nil then
 		return
 	end
-	self:ImagePathSelectCallback("show_selected_disabled", self.HandleShowSDisabledFOCUSOUT, nil, path)
+	self:ImagePathSelectCallback("show_selected_disabled", self.HandleShowSDisabledFOCUSOUT, nil, path, true)
 end
 ALittleIDE.TextCheckButtonS.HandleShowSDisabledSelect = Lua.CoWrap(ALittleIDE.TextCheckButtonS.HandleShowSDisabledSelect)
 

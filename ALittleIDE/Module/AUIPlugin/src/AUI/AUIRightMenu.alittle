@@ -13,6 +13,7 @@ public class AUIRightMenu
 {
 	private ALittle.DisplayObject _menu;
 	private ALittle.Linear _linear;
+    private Functor<()> _hide_callback;
 
 	private List<AUIRightMenuInfo> _info_list = new List<AUIRightMenuInfo>();
 
@@ -29,15 +30,15 @@ public class AUIRightMenu
 		ALittle.List_Push(this._info_list, info);
     }
 
-	public fun Show([Nullable] ALittle.DisplayObject target)
+	public fun Show([Nullable] ALittle.DisplayObject target, [Nullable] Functor<()> hide_callback)
 	{
 		if (this._menu == null)
 		{
-			this._menu = g_Control.CreateControl{ALittle.DisplayObject}("ide_common_menu", this);
+			this._menu = g_Control.CreateControl{ALittle.DisplayObject}("aui_menu", this);
 			var max_width = 0.0;
 			for (var index, info in this._info_list)
 			{
-				var item = g_Control.CreateControl{ALittle.TextButton}("ide_common_item_button");
+				var item = g_Control.CreateControl{ALittle.TextButton}("aui_menu_item_button");
 				item.text = info.name;
 				if (item.show_text != null && item.show_text.width > max_width)
 					max_width = item.show_text.width;
@@ -45,17 +46,19 @@ public class AUIRightMenu
 				item._user_data = info;
 				item.AddEventListener(this, this.HandleItemClick);
 				this._linear.AddChild(item);
-			}   
+			}
 			
 			this._menu.width = max_width + 50;
 			this._menu.height = this._linear.height + 10;
+
+            this._menu.AddEventListener(this, this.HandleHideEvent);
         }
 		
 		// 设置菜单的位置
 		if (target != null)
 		{
 			var x, y = target.LocalToGlobal();
-			this._menu.x = x;
+			this._menu.x = x - 5;
 			this._menu.y = y + target.height;   
         }
 		else
@@ -69,6 +72,7 @@ public class AUIRightMenu
 		if (this._menu.y + this._menu.height > A_UISystem.view_height)
 			this._menu.y = A_UISystem.view_height - this._menu.height;
 
+        this._hide_callback = hide_callback;
         A_LayerManager.ShowFromRight(this._menu);
     }
 
@@ -76,6 +80,16 @@ public class AUIRightMenu
 	{
 		if (this._menu != null)
 			A_LayerManager.HideFromRight(this._menu);
+    }
+
+    private fun HandleHideEvent(ALittle.UIHideEvent event)
+    {
+        if (this._hide_callback != null)
+        {
+            var callback = this._hide_callback;
+            this._hide_callback = null;
+            callback();
+        }
     }
 
 	private fun HandleItemClick(ALittle.UIClickEvent event)

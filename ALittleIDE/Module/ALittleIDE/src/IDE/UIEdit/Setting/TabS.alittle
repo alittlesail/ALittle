@@ -77,7 +77,7 @@ public class TabS : DisplayLayoutS
 		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
 		if (path == null) return;
-		this.ImagePathSelectCallback("show_head_background", this.HandleShowHeadBFOCUSOUT, null, path);
+		this.ImagePathSelectCallback("show_head_background", this.HandleShowHeadBFOCUSOUT, null, path, false);
 	}
 	
 	public fun HandleBGapFOCUSOUT(ALittle.UIEvent event)

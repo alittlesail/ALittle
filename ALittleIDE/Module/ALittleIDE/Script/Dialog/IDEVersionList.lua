@@ -162,7 +162,7 @@ function ALittleIDE.IDEVersionList:HandleRefreshVersionList(event)
 	end
 	for k, v in ___ipairs(close_list) do
 		local control_line = {}
-		local item = self._ctrl_sys:CreateControl("ide_common_tree_item", control_line, self._close_list)
+		local item = self._ctrl_sys:CreateControl("tree_item", control_line, self._close_list)
 		control_line._item_button.group = group
 		local user_data = {}
 		control_line._item_button._user_data = user_data

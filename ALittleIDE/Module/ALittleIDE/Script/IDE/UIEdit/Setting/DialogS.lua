@@ -16,6 +16,10 @@ end
 function ALittleIDE.DialogS:LoadNatureBase()
 	ALittleIDE.DisplayLayoutS.LoadNatureBase(self)
 	self:LoadValueData("head_size")
+	self:LoadValueData("head_top_margin")
+	self:LoadValueData("head_bottom_margin")
+	self:LoadValueData("head_left_margin")
+	self:LoadValueData("head_right_margin")
 	self:LoadDefaultNilString("title")
 	self:LoadShowTypeDataForImage("show_background")
 	self:LoadShowTypeDataForImage("show_head_drag")
@@ -25,6 +29,22 @@ end
 
 function ALittleIDE.DialogS:HandleHeadSizeFOCUSOUT(event)
 	self:ValueNumInputChange("head_size", false)
+end
+
+function ALittleIDE.DialogS:HandleHeadTopMarginFOCUSOUT(event)
+	self:ValueNumInputChange("head_top_margin", false)
+end
+
+function ALittleIDE.DialogS:HandleHeadBottomMarginFOCUSOUT(event)
+	self:ValueNumInputChange("head_bottom_margin", false)
+end
+
+function ALittleIDE.DialogS:HandleHeadLeftMarginFOCUSOUT(event)
+	self:ValueNumInputChange("head_left_margin", false)
+end
+
+function ALittleIDE.DialogS:HandleHeadRightMarginFOCUSOUT(event)
+	self:ValueNumInputChange("head_right_margin", false)
 end
 
 function ALittleIDE.DialogS:HandleTitleFOCUSOUT(event)
@@ -52,7 +72,7 @@ function ALittleIDE.DialogS:HandleShowBackgroundSelect(event)
 	if path == nil then
 		return
 	end
-	self:ImagePathSelectCallback("show_background", self.HandleShowBackgroundFOCUSOUT, nil, path)
+	self:ImagePathSelectCallback("show_background", self.HandleShowBackgroundFOCUSOUT, nil, path, false)
 end
 ALittleIDE.DialogS.HandleShowBackgroundSelect = Lua.CoWrap(ALittleIDE.DialogS.HandleShowBackgroundSelect)
 
@@ -77,7 +97,7 @@ function ALittleIDE.DialogS:HandleShowHeadDragSelect(event)
 	if path == nil then
 		return
 	end
-	self:ImagePathSelectCallback("show_head_drag", self.HandleShowHeadDragFOCUSOUT, nil, path)
+	self:ImagePathSelectCallback("show_head_drag", self.HandleShowHeadDragFOCUSOUT, nil, path, false)
 end
 ALittleIDE.DialogS.HandleShowHeadDragSelect = Lua.CoWrap(ALittleIDE.DialogS.HandleShowHeadDragSelect)
 

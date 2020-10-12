@@ -1,0 +1,1 @@
+{"aui_menu":{"__class":"DisplayLayout","width_value":100,"__childs":[{"__class":"Grid9Image","left_size":17,"right_size":18,"width_type":4,"height_value":0,"bottom_size":28,"texture_name":"menu\/menu_bg.png","width_value":0,"height_type":4,"top_size":24},{"__class":"Linear","__link":"_linear","width_type":4,"width_value":10,"type":2,"y_type":3,"x_type":3}],"height_value":139}}

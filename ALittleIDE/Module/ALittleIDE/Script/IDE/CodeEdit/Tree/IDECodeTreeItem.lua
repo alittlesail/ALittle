@@ -63,7 +63,7 @@ function ALittleIDE.IDECodeTreeItem:Ctor(ctrl_sys, user_info)
 	self._item_button:AddEventListener(___all_struct[-641444818], self, self.HandleRButtonDown)
 	self._item_button:AddEventListener(___all_struct[-1604617962], self, self.HandleKeyDown)
 	self._item_button._user_data = self
-	self._item_title.text = self._user_info.name
+	self._item_button.text = self._user_info.name
 end
 
 function ALittleIDE.IDECodeTreeItem.__getter:is_tree()
@@ -166,7 +166,7 @@ function ALittleIDE.IDECodeTreeItem:HandleRenameFile()
 	local new_path = ALittle.File_GetFilePathByPath(old_path) .. "/" .. new_name
 	self._user_info.path = new_path
 	self._user_info.name = new_name
-	self._item_title.text = self._user_info.name
+	self._item_button.text = self._user_info.name
 	if self._user_info.project ~= nil and ALittle.File_GetFileExtByPathAndUpper(self._user_info.path) == self._user_info.project.upper_ext then
 		self._user_info.project:RemoveFile(old_path)
 	end

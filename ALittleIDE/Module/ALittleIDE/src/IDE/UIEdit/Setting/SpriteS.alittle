@@ -37,7 +37,7 @@ public class SpriteS : DisplayObjectS
 		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
 		if (path == null) return;
-		this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, null, path);
+		this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, null, path, true);
     }
     
     public fun HandleRowCountFOCUSOUT(ALittle.UIEvent event)

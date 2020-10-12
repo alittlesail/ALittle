@@ -48,7 +48,7 @@ function ALittleIDE.DropDownS:HandleShowBackGSelect(event)
 	if path == nil then
 		return
 	end
-	self:ImagePathSelectCallback("show_background", self.HandleShowBackGFOCUSOUT, nil, path)
+	self:ImagePathSelectCallback("show_background", self.HandleShowBackGFOCUSOUT, nil, path, false)
 end
 ALittleIDE.DropDownS.HandleShowBackGSelect = Lua.CoWrap(ALittleIDE.DropDownS.HandleShowBackGSelect)
 

@@ -16,7 +16,7 @@ end
 
 function AUIPlugin.AUIEditImageDialog:ShowDialog(path, save_dir)
 	if self._dialog == nil then
-		self._dialog = AUIPlugin.g_Control:CreateControl("ide_image_edit_dialog", self)
+		self._dialog = AUIPlugin.g_Control:CreateControl("aui_image_edit_dialog", self)
 		A_LayerManager:AddToModal(self._dialog)
 	end
 	self._save_dir = save_dir

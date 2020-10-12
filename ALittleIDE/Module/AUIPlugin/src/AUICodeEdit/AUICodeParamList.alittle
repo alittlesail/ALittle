@@ -104,7 +104,7 @@ protected class AUICodeParamList
         var x, y = this._edit.CalcPosition(this._param_info.line_start, this._param_info.char_start, true);
         if (this._dialog == null)
         {
-            this._dialog = g_Control.CreateControl{ALittle.DisplayLayout}("ide_tool_paramlist_tip", this);
+            this._dialog = g_Control.CreateControl{ALittle.DisplayLayout}("code_paramlist_tip", this);
             this._dialog.width = 200;
             this._dialog.height = CODE_LINE_HEIGHT + this._text_container.height_value;
         }
@@ -157,7 +157,7 @@ protected class AUICodeParamList
                     text.font_path = CODE_FONT_PATH;
                     text.font_size = CODE_FONT_SIZE;
                     this._text_container.AddChild(text);
-
+                    
                     if (is_asicc) offset += this._edit.ascii_width;
                     else offset += this._edit.word_width;
 

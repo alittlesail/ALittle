@@ -1,0 +1,1 @@
+{"aui_alert_dialog":{"width_value":265,"title":"正在上传","height_value":160,"__extends":"dialog","__childs":[{"valign":1,"red":0.88,"height_value":10,"y_type":3,"width_type":4,"__class":"TextArea","x_type":3,"text":"正在上传","width_value":10,"font_size":12,"height_type":4,"__link":"_content","font_path":"Miui-Regular.ttf","green":0.88,"halign":1,"blue":0.88}]}}

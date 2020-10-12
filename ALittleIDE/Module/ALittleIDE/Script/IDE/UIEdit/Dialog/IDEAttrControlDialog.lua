@@ -14,11 +14,11 @@ function ALittleIDE.IDEAttrControlDialog:CreateDialog()
 	self._dialog.close_callback = Lua.Bind(self.HandleClose, self)
 end
 
-function ALittleIDE.IDEAttrControlDialog.__getter:dialog()
-	if self._dialog == nil then
+function ALittleIDE.IDEAttrControlDialog.__getter:attr_container()
+	if self._attr_container == nil then
 		self:CreateDialog()
 	end
-	return self._dialog
+	return self._attr_container
 end
 
 function ALittleIDE.IDEAttrControlDialog:HandleClose()

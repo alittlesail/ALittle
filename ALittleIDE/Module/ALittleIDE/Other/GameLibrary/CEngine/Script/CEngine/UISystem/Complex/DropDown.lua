@@ -189,13 +189,13 @@ function ALittle.DropDown:HandleButtonChange(event)
 		A_LayerManager:HideFromRight(self._body)
 	else
 		local abs_x, abs_y = self:LocalToGlobal()
-		local rejust_y = abs_y + self.height * self.scale_y
-		if A_UISystem.view_height < rejust_y + self._scroll_screen.height * self.scale_y then
-			rejust_y = abs_y - self._scroll_screen.height * self.scale_y
+		local adjust_y = abs_y + self.height * self.scale_y
+		if A_UISystem.view_height < adjust_y + self._scroll_screen.height * self.scale_y then
+			adjust_y = abs_y - self._scroll_screen.height * self.scale_y
 		end
-		self._body.y = rejust_y
-		self._body.width = self.width + self._body_margin
-		self._body.x = abs_x - self._body_margin / 2
+		self._body.y = adjust_y
+		self._body.width = self.width - self._body_margin
+		self._body.x = abs_x + self._body_margin / 2
 		self._body.scale_x = self.scale_x
 		self._body.scale_y = self.scale_y
 		self._scroll_screen.x = self._screen_margin_left

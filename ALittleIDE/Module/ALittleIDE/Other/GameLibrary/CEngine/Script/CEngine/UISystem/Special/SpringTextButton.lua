@@ -65,7 +65,7 @@ function ALittle.SpringTextButton:HandleLButtonUp(event)
 		if self._file_select then
 			A_OtherSystem:SystemSelectFile(self)
 		end
-		if ALittle.System_IsPhone == false then
+		if ALittle.System_IsPhone() == false then
 			self:ShowOver()
 		else
 			self:ShowUp(nil)

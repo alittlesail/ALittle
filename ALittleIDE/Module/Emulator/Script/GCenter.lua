@@ -123,7 +123,7 @@ function Emulator.GCenter:Setup()
 	if ALittle.File_GetFileExtByPathAndUpper(plugin_path) == "LUA" then
 		local plugin_script = ALittle.File_ReadTextFromStdFile(plugin_path)
 		if plugin_script ~= nil then
-			__CPPAPI_ScriptSystemEx:RunScript(plugin_script, plugin_path)
+			RunScript(plugin_script, plugin_path)
 		else
 			self:HandleShowSettingDialog(nil)
 		end
@@ -233,7 +233,7 @@ function Emulator.GCenter:HandleSettingConfirmClick(event)
 		_G["__SOCKET_HandleMessage"] = nil
 		local plugin_script = ALittle.File_ReadTextFromStdFile(self._plugin_file_input.text)
 		if plugin_script ~= nil then
-			__CPPAPI_ScriptSystemEx:RunScript(plugin_script, self._plugin_file_input.text)
+			RunScript(plugin_script, self._plugin_file_input.text)
 		end
 	else
 		g_AUITool:ShowNotice("错误", "插件脚本必须是lua脚本")

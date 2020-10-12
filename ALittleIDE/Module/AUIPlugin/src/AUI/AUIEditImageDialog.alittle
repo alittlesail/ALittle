@@ -21,7 +21,7 @@ public class AUIEditImageDialog
 		// 创建模态提示对话框，并添加到模态层
 		if (this._dialog == null)
 		{
-			this._dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_image_edit_dialog", this);
+			this._dialog = g_Control.CreateControl{ALittle.DisplayObject}("aui_image_edit_dialog", this);
 			A_LayerManager.AddToModal(this._dialog);
 		}
 	

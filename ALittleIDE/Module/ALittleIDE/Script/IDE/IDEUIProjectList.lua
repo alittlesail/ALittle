@@ -33,7 +33,7 @@ function ALittleIDE.IDEUIProjectList:HandleProjectSearchClick(event)
 	local project_map = ALittleIDE.g_IDEConfig:GetConfig("project_map", {})
 	for k, v in ___pairs(project_map) do
 		if key == "" or ALittle.String_Find(v, key) ~= nil then
-			local item = ALittleIDE.g_Control:CreateControl("ide_common_item_button")
+			local item = ALittleIDE.g_Control:CreateControl("aui_menu_item_button")
 			item.text = v
 			item.drag_trans_target = self._project_scroll_screen
 			item:AddEventListener(___all_struct[-641444818], self, self.HandleProjectItemRightClick)

@@ -44,7 +44,7 @@ public class AUIVersionManager
 	{
 		if (this._dialog == null)
 		{
-			this._dialog = g_Control.CreateControl{ALittle.Dialog}("ide_version_dialog", this);
+			this._dialog = g_Control.CreateControl{ALittle.Dialog}("aui_version_dialog", this);
 			A_LayerManager.AddToModal(this._dialog);
 
 			// 初始化控件

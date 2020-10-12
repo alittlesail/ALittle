@@ -1606,7 +1606,7 @@ function ALittleIDE.DisplayObjectS:LoadColorData(text)
 	if color == nil then
 		color = self._default[text]
 	end
-	display_object.text = color * 255
+	display_object.text = ALittle.Math_Floor(color * 255)
 end
 
 function ALittleIDE.DisplayObjectS:LoadBoolData(text, default_bool, list)
@@ -1653,7 +1653,7 @@ function ALittleIDE.DisplayObjectS:LoadDefaultNilString(text)
 	end
 end
 
-function ALittleIDE.DisplayObjectS:ImagePathSelectCallback(text, callback, revoke_bind, path)
+function ALittleIDE.DisplayObjectS:ImagePathSelectCallback(text, callback, revoke_bind, path, need_reset)
 	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(self._tree_logic.user_info.module)
 	if ui_manager == nil then
 		g_AUITool:ShowNotice("错误", "模块不存在:" .. self._tree_logic.user_info.module)
@@ -1664,24 +1664,26 @@ function ALittleIDE.DisplayObjectS:ImagePathSelectCallback(text, callback, revok
 	local e = {}
 	e.target = display_object
 	callback(self, e)
-	local surface = carp.LoadCarpSurface(ui_manager.texture_path .. "/" .. path)
-	if surface == nil then
-		return
-	end
-	local w = carp.GetCarpSurfaceWidth(surface)
-	local h = carp.GetCarpSurfaceHeight(surface)
-	carp.FreeCarpSurface(surface)
-	local new_revoke = false
-	if revoke_bind == nil then
-		new_revoke = true
-		revoke_bind = ALittle.RevokeBind()
-	end
-	self:SetWType(1, revoke_bind)
-	self:SetHType(1, revoke_bind)
-	self:SetWValue(w, revoke_bind)
-	self:SetHValue(h, revoke_bind)
-	if new_revoke then
-		self._tab_child.revoke_list:PushRevoke(revoke_bind)
+	if need_reset then
+		local surface = carp.LoadCarpSurface(ui_manager.texture_path .. "/" .. path)
+		if surface == nil then
+			return
+		end
+		local w = carp.GetCarpSurfaceWidth(surface)
+		local h = carp.GetCarpSurfaceHeight(surface)
+		carp.FreeCarpSurface(surface)
+		local new_revoke = false
+		if revoke_bind == nil then
+			new_revoke = true
+			revoke_bind = ALittle.RevokeBind()
+		end
+		self:SetWType(1, revoke_bind)
+		self:SetHType(1, revoke_bind)
+		self:SetWValue(w, revoke_bind)
+		self:SetHValue(h, revoke_bind)
+		if new_revoke then
+			self._tab_child.revoke_list:PushRevoke(revoke_bind)
+		end
 	end
 end
 

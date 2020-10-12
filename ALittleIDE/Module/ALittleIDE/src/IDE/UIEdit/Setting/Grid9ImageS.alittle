@@ -35,7 +35,7 @@ public class Grid9ImageS : Grid9S
 		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
 		if (path == null) return;
-		this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, null, path);
+		this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, null, path, true);
     }
     public fun HandleFlipSELECT_CHANGE(ALittle.UIEvent event)
     {

@@ -52,7 +52,7 @@ public class SpringTextButtonS : DisplayLayoutS
 		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
 		if (path == null) return;
-		this.ImagePathSelectCallback("show_up", this.HandleShowUpFOCUSOUT, null, path);
+		this.ImagePathSelectCallback("show_up", this.HandleShowUpFOCUSOUT, null, path, true);
 	}
 	
 	public fun HandleShowDisabledFOCUSOUT(ALittle.UIEvent event)
@@ -76,7 +76,7 @@ public class SpringTextButtonS : DisplayLayoutS
 		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
 		if (path == null) return;
-		this.ImagePathSelectCallback("show_disabled", this.HandleShowDisabledFOCUSOUT, null, path);
+		this.ImagePathSelectCallback("show_disabled", this.HandleShowDisabledFOCUSOUT, null, path, true);
 	}
 	
 	public fun HandleShowTextFOCUSOUT(ALittle.UIEvent event)

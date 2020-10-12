@@ -15,7 +15,7 @@ function AUIPlugin.AUIIMEManager:Setup()
 		return
 	end
 	if self._ime_dialog == nil then
-		self._ime_dialog = AUIPlugin.g_Control:CreateControl("ide_ime_dialog", self)
+		self._ime_dialog = AUIPlugin.g_Control:CreateControl("aui_ime_dialog", self)
 		A_LayerManager:AddToTip(self._ime_dialog)
 		self._ime_dialog.visible = false
 		self._ime_dialog_init_width = self._ime_dialog.width

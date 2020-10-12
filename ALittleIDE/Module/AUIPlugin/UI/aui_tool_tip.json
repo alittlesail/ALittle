@@ -1,0 +1,1 @@
+{"aui_tool_tip":{"__childs":[{"texture_name":"menu\/menu_bg.png","top_size":23,"__class":"Grid9Image","right_size":17,"width_type":4,"left_size":16,"bottom_size":27,"height_type":4},{"x_type":3,"y_type":3,"font_path":"Miui-Regular.ttf","__class":"Text","font_size":12,"__link":"_tip_text","text":"name"}],"height_value":50,"__class":"DisplayLayout","width_value":100}}

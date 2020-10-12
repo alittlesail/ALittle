@@ -20,6 +20,11 @@ public class Dialog : DisplayLayout
     private Functor<()>     _close_callback;
     
     private DisplayLayout   _head;
+    private DisplayLayout   _head_container;
+    private double		  _head_left_margin;
+    private double		  _head_right_margin;
+    private double          _head_top_margin;
+    private double          _head_bottom_margin;
     private DisplayLayout   _body;
     
     private Grid3           _grid3;
@@ -43,6 +48,14 @@ public class Dialog : DisplayLayout
     
         // 对话框头部
         this._head = new DisplayLayout(this._ctrl_sys);
+        this._head_container = new DisplayLayout(this._ctrl_sys);
+        this._head_container.width_type = UIEnumTypes.SIZE_MARGIN;
+        this._head_container.height_type = UIEnumTypes.SIZE_MARGIN;
+        this._head.AddChild(this._head_container);
+        this._head_left_margin = 0;
+        this._head_right_margin = 0;
+        this._head_top_margin = 0;
+        this._head_bottom_margin = 0;
         // 对话框身体
         this._body = new DisplayLayout(this._ctrl_sys);
     
@@ -70,33 +83,42 @@ public class Dialog : DisplayLayout
             this._background.height_value = this._grid3.up_size;
         if (this._close_button != null)
             this._close_button.x_value = (value - this._close_button.height) / 2;
-        if (this._title != null)
-            this._title.x_value = (value - this._title.font_height);
     }
     public get head_size() : double
     {
         return this._grid3.up_size;
     }
-    
-    public fun ResetHeadOrder()
+
+    public get head_left_margin() : double { return this._head_left_margin; }
+    public set head_left_margin(double value)
     {
-        var index = 1;
-        if (this._head_drag != null)
-        {
-            this._head.SetChildIndex(this._head_drag, index);
-            ++ index;
-        }
-        if (this._title != null)
-        {
-            this._head.SetChildIndex(this._title, index);
-            ++ index;
-        }
-        if (this._close_button != null)
-        {
-            this._head.SetChildIndex(this._close_button, index);
-            ++ index;
-        }
+        this._head_left_margin = value;
+        this._head_container.x = value;
+        this._head_container.width_value = this._head_left_margin + this._head_right_margin;
     }
+
+    public get head_right_margin() : double { return this._head_right_margin; }
+    public set head_right_margin(double value)
+    {
+        this._head_right_margin = value;
+        this._head_container.width_value = this._head_left_margin + this._head_right_margin;
+    }
+
+    public get head_top_margin() : double { return this._head_top_margin; }
+    public set head_top_margin(double value)
+    {
+        this._head_top_margin = value;
+        this._head_container.y = value;
+        this._head_container.height_value = this._head_top_margin + this._head_bottom_margin;
+    }
+
+    public get head_bottom_margin() : double { return this._head_bottom_margin; }
+    public set head_bottom_margin(double value)
+    {
+        this._head_bottom_margin = value;
+        this._head_container.height_value = this._head_top_margin + this._head_bottom_margin;
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////-
     public set show_background(DisplayObject value)
     {
@@ -111,8 +133,6 @@ public class Dialog : DisplayLayout
             this._background.height_value = this._grid3.up_size;
             this._background.y_type = UIEnumTypes.POS_ALIGN_ENDING;
             DisplayLayout.AddChild(this, this._background, 1);
-            // 重置对话框头部顺序
-            this.ResetHeadOrder();
         }
     }
     public get show_background() : DisplayObject
@@ -136,9 +156,7 @@ public class Dialog : DisplayLayout
             this._head_drag.width_value = 0;
             this._head_drag.height_type = UIEnumTypes.SIZE_MARGIN;
             this._head_drag.height_value = 0;
-            this._head.AddChild(this._head_drag);
-            // 重置对话框头部顺序
-            this.ResetHeadOrder();
+            this._head.AddChild(this._head_drag, 1);
     
             this._head_drag.AddEventListener(this, this.HandleHeadDragBegin);
             this._head_drag.AddEventListener(this, this.HandleHeadDrag);
@@ -154,7 +172,7 @@ public class Dialog : DisplayLayout
         if (this._title != null)
         {
             this._title_text = this._title.text;
-            this._head.RemoveChild(this._title);
+            this._head_container.RemoveChild(this._title);
         }
     
         this._title = value;
@@ -164,11 +182,8 @@ public class Dialog : DisplayLayout
             this._title.disabled = true;
             this._title.y_type = UIEnumTypes.POS_ALIGN_CENTER;
             this._title.y_value = 0;
-            this._head.AddChild(this._title);
-            this._title.x_type = UIEnumTypes.POS_ABS;
-            this._title.x_value = (this._grid3.up_size - this._title.font_height);
-            // 重置对话框头部顺序
-            this.ResetHeadOrder();
+            this._title.x = 0;
+            this._head_container.AddChild(this._title);
         }
     }
     public get show_title() : DisplayObject
@@ -187,11 +202,12 @@ public class Dialog : DisplayLayout
             return this._title.text;
         return this._title_text;
     }
+
     public set show_close_button(DisplayObject value)
     {
         if (this._close_button != null)
         {
-            this._head.RemoveChild(this._close_button);
+            this._head_container.RemoveChild(this._close_button);
             this._close_button.RemoveEventListener(this, this.HandleCloseButtonClicked);
         }
         this._close_button = value;
@@ -199,12 +215,10 @@ public class Dialog : DisplayLayout
         {
             this._close_button.y_value = 0;
             this._close_button.y_type = UIEnumTypes.POS_ALIGN_CENTER;
-            this._head.AddChild(this._close_button);
+            this._head_container.AddChild(this._close_button);
     
             this._close_button.x_type = UIEnumTypes.POS_ALIGN_ENDING;
             this._close_button.x_value = (this._grid3.up_size - this._close_button.height) / 2;
-            // 重置对话框头部顺序
-            this.ResetHeadOrder();
     
             this._close_button.AddEventListener(this, this.HandleCloseButtonClicked);
         }

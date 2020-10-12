@@ -142,7 +142,7 @@ function AUIPlugin.AUIFileSelectLayout:CreateFileItem(file_name, rel_path, abs_p
 		end
 	end
 	local info = {}
-	local item = AUIPlugin.g_Control:CreateControl("ide_file_select_item", info)
+	local item = AUIPlugin.g_Control:CreateControl("file_select_item", info)
 	info.name.text = file_name
 	info.dir.visible = false
 	info.file.visible = false
@@ -195,7 +195,7 @@ end
 
 function AUIPlugin.AUIFileSelectLayout:CreateDirItem(file_name, rel_path, abs_path)
 	local info = {}
-	local item = AUIPlugin.g_Control:CreateControl("ide_file_select_item", info)
+	local item = AUIPlugin.g_Control:CreateControl("file_select_item", info)
 	info.name.text = file_name
 	info.image.visible = false
 	info.file.visible = false
@@ -443,7 +443,7 @@ end
 
 function AUIPlugin.AUIFileSelectLayout:HandleItemMoveIn(event)
 	if self._image_pre_dialog == nil then
-		self._image_pre_dialog = AUIPlugin.g_Control:CreateControl("ide_image_pre_dialog", self)
+		self._image_pre_dialog = AUIPlugin.g_Control:CreateControl("file_select_image_pre_dialog", self)
 	end
 	A_LayerManager:AddToTip(self._image_pre_dialog)
 	local user_data = event.target._user_data

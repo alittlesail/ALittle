@@ -46,9 +46,9 @@ function AUIPlugin.AUICodeLineNumber:UpdateShow()
 	local quad = ALittle.Quad(self._ctrl_sys)
 	quad.width_type = 4
 	quad.height_type = 4
-	quad.red = 43 / 255
-	quad.green = 43 / 255
-	quad.blue = 43 / 255
+	quad.red = 30 / 255
+	quad.green = 30 / 255
+	quad.blue = 30 / 255
 	self:AddChild(quad)
 	local offset = 0.0
 	local len = ALittle.List_MaxN(text_list)

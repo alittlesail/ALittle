@@ -176,7 +176,7 @@ end
 
 function AUIPlugin.AUIWebLoginManager:ShowLoginDialog()
 	if self._login_dialog == nil then
-		self._login_dialog = AUIPlugin.g_Control:CreateControl("ide_account_login_dialog", self)
+		self._login_dialog = AUIPlugin.g_Control:CreateControl("account_login_dialog", self)
 		A_LayerManager:AddToModal(self._login_dialog)
 		self._login_account.text = self._account_name
 		self._login_password.text = ""
@@ -196,7 +196,7 @@ end
 
 function AUIPlugin.AUIWebLoginManager:ShowPasswordDialog()
 	if self._password_dialog == nil then
-		self._password_dialog = AUIPlugin.g_Control:CreateControl("ide_account_password_dialog", self)
+		self._password_dialog = AUIPlugin.g_Control:CreateControl("account_password_dialog", self)
 		A_LayerManager:AddToModal(self._password_dialog)
 	end
 	self._password_dialog.visible = true

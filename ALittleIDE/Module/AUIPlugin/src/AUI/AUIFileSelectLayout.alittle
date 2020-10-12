@@ -105,7 +105,7 @@ public class AUIFileSelectLayout : ALittle.DisplayLayout
         }
     
 		var info = new AUIFileSelectItemInfo();
-		var item = g_Control.CreateControl{ALittle.DisplayObject}("ide_file_select_item", info);
+		var item = g_Control.CreateControl{ALittle.DisplayObject}("file_select_item", info);
 		info.name.text = file_name;
     
 		info.dir.visible = false;
@@ -173,7 +173,7 @@ public class AUIFileSelectLayout : ALittle.DisplayLayout
 	public fun CreateDirItem(string file_name, string rel_path, string abs_path) : ALittle.DisplayObject
 	{
 		var info = new AUIFileSelectItemInfo();
-		var item = g_Control.CreateControl{ALittle.DisplayObject}("ide_file_select_item", info);
+		var item = g_Control.CreateControl{ALittle.DisplayObject}("file_select_item", info);
 		info.name.text = file_name;
 		info.image.visible = false;
 		info.file.visible = false;
@@ -489,7 +489,7 @@ public class AUIFileSelectLayout : ALittle.DisplayLayout
 	public fun HandleItemMoveIn(ALittle.UIMoveInEvent event)
 	{
 		if (this._image_pre_dialog == null)
-			this._image_pre_dialog = g_Control.CreateControl{ALittle.Dialog}("ide_image_pre_dialog", this);
+			this._image_pre_dialog = g_Control.CreateControl{ALittle.Dialog}("file_select_image_pre_dialog", this);
     
 		A_LayerManager.AddToTip(this._image_pre_dialog);
 

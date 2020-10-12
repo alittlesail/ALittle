@@ -1,0 +1,1 @@
+{"file_select_image_pre_dialog":{"title":"图片预览","__extends":"dialog","__childs":[{"__class":"Image","__link":"_pre_image"}]}}

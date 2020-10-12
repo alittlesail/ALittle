@@ -1,1 +1,0 @@
-{"ide_code_scroll_screen":{"__class":"ScrollScreen","right_scrollbar":{"__extends":"ide_common_vscroll_bar"},"container":{"__extends":"ide_common_scroll_screen_linear"}}}

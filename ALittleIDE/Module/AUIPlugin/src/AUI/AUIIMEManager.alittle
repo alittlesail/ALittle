@@ -21,7 +21,7 @@ protected class AUIIMEManager
 		// 创建输入法界面
 		if (this._ime_dialog == null)
 		{
-			this._ime_dialog = g_Control.CreateControl{ALittle.Dialog}("ide_ime_dialog", this);
+			this._ime_dialog = g_Control.CreateControl{ALittle.Dialog}("aui_ime_dialog", this);
 			A_LayerManager.AddToTip(this._ime_dialog);
 			this._ime_dialog.visible = false;
 	

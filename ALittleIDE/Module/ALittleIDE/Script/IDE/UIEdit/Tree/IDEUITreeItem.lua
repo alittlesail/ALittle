@@ -54,9 +54,9 @@ ALittleIDE.IDEUITreeItem = Lua.Class(ALittleIDE.IDEUITreeLogic, "ALittleIDE.IDEU
 
 function ALittleIDE.IDEUITreeItem:Ctor(ctrl_sys, user_info, tab_child)
 	if self._user_info.extends then
-		___rawset(self, "_item", ctrl_sys:CreateControl("ide_common_tree_item_disabled", self))
+		___rawset(self, "_item", ctrl_sys:CreateControl("tree_item_disabled", self))
 	else
-		___rawset(self, "_item", ctrl_sys:CreateControl("ide_common_tree_item", self))
+		___rawset(self, "_item", ctrl_sys:CreateControl("tree_item", self))
 	end
 	self:AddChild(self._item)
 	self.width = self._item.width
@@ -130,7 +130,7 @@ function ALittleIDE.IDEUITreeItem:UpdateDesc()
 	elseif self._user_info.default.text ~= nil then
 		title = title .. self._user_info.default.text
 	end
-	self._item_title.text = title
+	self._item_button.text = title
 	if self._user_info.child_type == nil then
 		self._tab_child:UpdateTitle()
 	end

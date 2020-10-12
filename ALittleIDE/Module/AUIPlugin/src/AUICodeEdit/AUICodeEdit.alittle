@@ -64,7 +64,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
     private AUICodeCompleteScreen _complete_screen;
     private AUICodeParamList _param_dialog;
 
-    public static Create() : AUICodeEdit { return g_Control.CreateControl{AUICodeEdit}("ide_code_tab_screen"); }
+    public static Create() : AUICodeEdit { return g_Control.CreateControl{AUICodeEdit}("code_tab_screen"); }
 
     public ctor(ALittle.ControlSystem ctrl_sys)
     {
@@ -557,7 +557,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         for (var index, info in list)
         {
             var item_info = new AUICodeErrorInfo();
-            var item = g_Control.CreateControl{ALittle.DisplayObject}("ide_code_error_item", item_info);
+            var item = g_Control.CreateControl{ALittle.DisplayObject}("code_error_item", item_info);
             var line = this._line_list[info.line_start];
             var char_end = info.char_end;
             if (info.line_start != info.line_end) info.char_end = line.char_count;

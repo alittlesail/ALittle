@@ -43,13 +43,13 @@ public class TriangleS : DisplayObjectS
 		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
 		if (path == null) return;
-		this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, null, path);
+		this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, null, path, true);
 	}
 	//设置texture_name
 	public fun SetTextureName(string texture_name, [Nullable] ALittle.RevokeBind revoke_bind)
 	{
 		if (texture_name == null) return;
-		this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, revoke_bind, texture_name);
+		this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, revoke_bind, texture_name, true);
 	}
 	
 	//u1

@@ -47,7 +47,7 @@ function ALittleIDE.ScrollButtonS:HandleShowUpSelect(event)
 	if path == nil then
 		return
 	end
-	self:ImagePathSelectCallback("show_up", self.HandleShowUpFOCUSOUT, nil, path)
+	self:ImagePathSelectCallback("show_up", self.HandleShowUpFOCUSOUT, nil, path, true)
 end
 ALittleIDE.ScrollButtonS.HandleShowUpSelect = Lua.CoWrap(ALittleIDE.ScrollButtonS.HandleShowUpSelect)
 
@@ -72,7 +72,7 @@ function ALittleIDE.ScrollButtonS:HandleShowOverSelect(event)
 	if path == nil then
 		return
 	end
-	self:ImagePathSelectCallback("show_over", self.HandleShowOverFOCUSOUT, nil, path)
+	self:ImagePathSelectCallback("show_over", self.HandleShowOverFOCUSOUT, nil, path, true)
 end
 ALittleIDE.ScrollButtonS.HandleShowOverSelect = Lua.CoWrap(ALittleIDE.ScrollButtonS.HandleShowOverSelect)
 
@@ -97,7 +97,7 @@ function ALittleIDE.ScrollButtonS:HandleShowDownSelect(event)
 	if path == nil then
 		return
 	end
-	self:ImagePathSelectCallback("show_down", self.HandleShowDownFOCUSOUT, nil, path)
+	self:ImagePathSelectCallback("show_down", self.HandleShowDownFOCUSOUT, nil, path, true)
 end
 ALittleIDE.ScrollButtonS.HandleShowDownSelect = Lua.CoWrap(ALittleIDE.ScrollButtonS.HandleShowDownSelect)
 
@@ -122,7 +122,7 @@ function ALittleIDE.ScrollButtonS:HandleShowDisabledSelect(event)
 	if path == nil then
 		return
 	end
-	self:ImagePathSelectCallback("show_disabled", self.HandleShowDisabledFOCUSOUT, nil, path)
+	self:ImagePathSelectCallback("show_disabled", self.HandleShowDisabledFOCUSOUT, nil, path, true)
 end
 ALittleIDE.ScrollButtonS.HandleShowDisabledSelect = Lua.CoWrap(ALittleIDE.ScrollButtonS.HandleShowDisabledSelect)
 

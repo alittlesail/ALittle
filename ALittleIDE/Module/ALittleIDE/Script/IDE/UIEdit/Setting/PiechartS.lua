@@ -35,7 +35,7 @@ function ALittleIDE.PiechartS:HandleImageTextureNameSelect(event)
 	if path == nil then
 		return
 	end
-	self:ImagePathSelectCallback("texture_name", self.HandleImageTextureNameFOCUSOUT, nil, path)
+	self:ImagePathSelectCallback("texture_name", self.HandleImageTextureNameFOCUSOUT, nil, path, true)
 end
 ALittleIDE.PiechartS.HandleImageTextureNameSelect = Lua.CoWrap(ALittleIDE.PiechartS.HandleImageTextureNameSelect)
 

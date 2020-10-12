@@ -139,7 +139,7 @@ public class IDEVersionList : ALittle.DisplayLayout
 		{
 			// 创建子控件
 			var control_line = new IDEVersionInfoItem();
-			var item = this._ctrl_sys.CreateControl{ALittle.DisplayObject}("ide_common_tree_item", control_line, this._close_list);
+			var item = this._ctrl_sys.CreateControl{ALittle.DisplayObject}("tree_item", control_line, this._close_list);
 			control_line._item_button.group = group;
 			var user_data = new IDEVersionCloseItemUserData();
 			control_line._item_button._user_data = user_data;

@@ -57,7 +57,7 @@ protected class IDEProjectFindFileDialog
         var file_list = g_IDEProject.project.code.FindFile(text);
         for (var index, file_path in file_list)
         {
-            var item = g_Control.CreateControl{ALittle.DisplayObject}("ide_common_item_checkbutton");
+            var item = g_Control.CreateControl{ALittle.DisplayObject}("scroll_screen_item_checkbutton");
             // 添加点击事件
             item.AddEventListener(this, this.HandleItemClick);
             item.text = file_path;

@@ -33,6 +33,14 @@ function ALittle.Dialog:Ctor(ctrl_sys)
 	___rawset(self, "_pickup_child", true)
 	___rawset(self, "_title_text", "")
 	___rawset(self, "_head", ALittle.DisplayLayout(self._ctrl_sys))
+	___rawset(self, "_head_container", ALittle.DisplayLayout(self._ctrl_sys))
+	self._head_container.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	self._head_container.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	self._head:AddChild(self._head_container)
+	___rawset(self, "_head_left_margin", 0)
+	___rawset(self, "_head_right_margin", 0)
+	___rawset(self, "_head_top_margin", 0)
+	___rawset(self, "_head_bottom_margin", 0)
 	___rawset(self, "_body", ALittle.DisplayLayout(self._ctrl_sys))
 	___rawset(self, "_grid3", ALittle.Grid3(self._ctrl_sys))
 	self._grid3.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
@@ -57,29 +65,48 @@ function ALittle.Dialog.__setter:head_size(value)
 	if self._close_button ~= nil then
 		self._close_button.x_value = (value - self._close_button.height) / 2
 	end
-	if self._title ~= nil then
-		self._title.x_value = (value - self._title.font_height)
-	end
 end
 
 function ALittle.Dialog.__getter:head_size()
 	return self._grid3.up_size
 end
 
-function ALittle.Dialog:ResetHeadOrder()
-	local index = 1
-	if self._head_drag ~= nil then
-		self._head:SetChildIndex(self._head_drag, index)
-		index = index + 1
-	end
-	if self._title ~= nil then
-		self._head:SetChildIndex(self._title, index)
-		index = index + 1
-	end
-	if self._close_button ~= nil then
-		self._head:SetChildIndex(self._close_button, index)
-		index = index + 1
-	end
+function ALittle.Dialog.__getter:head_left_margin()
+	return self._head_left_margin
+end
+
+function ALittle.Dialog.__setter:head_left_margin(value)
+	self._head_left_margin = value
+	self._head_container.x = value
+	self._head_container.width_value = self._head_left_margin + self._head_right_margin
+end
+
+function ALittle.Dialog.__getter:head_right_margin()
+	return self._head_right_margin
+end
+
+function ALittle.Dialog.__setter:head_right_margin(value)
+	self._head_right_margin = value
+	self._head_container.width_value = self._head_left_margin + self._head_right_margin
+end
+
+function ALittle.Dialog.__getter:head_top_margin()
+	return self._head_top_margin
+end
+
+function ALittle.Dialog.__setter:head_top_margin(value)
+	self._head_top_margin = value
+	self._head_container.y = value
+	self._head_container.height_value = self._head_top_margin + self._head_bottom_margin
+end
+
+function ALittle.Dialog.__getter:head_bottom_margin()
+	return self._head_bottom_margin
+end
+
+function ALittle.Dialog.__setter:head_bottom_margin(value)
+	self._head_bottom_margin = value
+	self._head_container.height_value = self._head_top_margin + self._head_bottom_margin
 end
 
 function ALittle.Dialog.__setter:show_background(value)
@@ -94,7 +121,6 @@ function ALittle.Dialog.__setter:show_background(value)
 		self._background.height_value = self._grid3.up_size
 		self._background.y_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING
 		ALittle.DisplayLayout.AddChild(self, self._background, 1)
-		self:ResetHeadOrder()
 	end
 end
 
@@ -115,8 +141,7 @@ function ALittle.Dialog.__setter:show_head_drag(value)
 		self._head_drag.width_value = 0
 		self._head_drag.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
 		self._head_drag.height_value = 0
-		self._head:AddChild(self._head_drag)
-		self:ResetHeadOrder()
+		self._head:AddChild(self._head_drag, 1)
 		self._head_drag:AddEventListener(___all_struct[1301789264], self, self.HandleHeadDragBegin)
 		self._head_drag:AddEventListener(___all_struct[1337289812], self, self.HandleHeadDrag)
 		self._head_drag:AddEventListener(___all_struct[150587926], self, self.HandleHeadDragEnd)
@@ -130,7 +155,7 @@ end
 function ALittle.Dialog.__setter:show_title(value)
 	if self._title ~= nil then
 		self._title_text = self._title.text
-		self._head:RemoveChild(self._title)
+		self._head_container:RemoveChild(self._title)
 	end
 	self._title = value
 	if self._title ~= nil then
@@ -138,10 +163,8 @@ function ALittle.Dialog.__setter:show_title(value)
 		self._title.disabled = true
 		self._title.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
 		self._title.y_value = 0
-		self._head:AddChild(self._title)
-		self._title.x_type = ALittle.UIEnumTypes.POS_ABS
-		self._title.x_value = (self._grid3.up_size - self._title.font_height)
-		self:ResetHeadOrder()
+		self._title.x = 0
+		self._head_container:AddChild(self._title)
 	end
 end
 
@@ -165,17 +188,16 @@ end
 
 function ALittle.Dialog.__setter:show_close_button(value)
 	if self._close_button ~= nil then
-		self._head:RemoveChild(self._close_button)
+		self._head_container:RemoveChild(self._close_button)
 		self._close_button:RemoveEventListener(___all_struct[-449066808], self, self.HandleCloseButtonClicked)
 	end
 	self._close_button = value
 	if self._close_button ~= nil then
 		self._close_button.y_value = 0
 		self._close_button.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
-		self._head:AddChild(self._close_button)
+		self._head_container:AddChild(self._close_button)
 		self._close_button.x_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING
 		self._close_button.x_value = (self._grid3.up_size - self._close_button.height) / 2
-		self:ResetHeadOrder()
 		self._close_button:AddEventListener(___all_struct[-449066808], self, self.HandleCloseButtonClicked)
 	end
 end

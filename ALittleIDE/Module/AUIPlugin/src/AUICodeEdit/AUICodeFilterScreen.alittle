@@ -176,7 +176,7 @@ protected class AUICodeFilterScreen
 
         if (this._screen == null)
         {
-            this._screen = g_Control.CreateControl{ALittle.ScrollScreen}("ide_code_scroll_screen");
+            this._screen = g_Control.CreateControl{ALittle.ScrollScreen}("code_scroll_screen");
             this._screen.width = 200;
 
             this._screen.AddEventListener(this, this.HandleHide);
@@ -211,7 +211,7 @@ protected class AUICodeFilterScreen
             else
             {
                 item_info = new AUICodeFilterItemInfo();
-                item_info._item = g_Control.CreateControl{ALittle.DisplayObject}("ide_code_complete_item", item_info);
+                item_info._item = g_Control.CreateControl{ALittle.DisplayObject}("code_complete_item", item_info);
             }
             item_info._item_button.group = this._item_group;
             item_info._item_title.text = info.display;
@@ -312,17 +312,22 @@ protected class AUICodeFilterScreen
 		// 创建模态提示对话框，并添加到模态层
 		if (this._tip_dialog == null)
 		{
-			this._tip_dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_tool_area_tip", this);
+			this._tip_dialog = g_Control.CreateControl{ALittle.DisplayObject}("code_area_tip", this);
             this._tip_dialog.width = 200;
 		}
 
         A_LayerManager.AddToTip(this._tip_dialog);
 		this._tip_dialog.visible = true;
 		this._tip_text.text = content;
-		this._tip_dialog.height = this._tip_text.real_height + 6;
+		this._tip_dialog.height = this._tip_text.real_height + 16;
 
-		this._tip_dialog.x = this._screen.x;
-		this._tip_dialog.y = this._screen.y + this._screen.height;
+		this._tip_dialog.x = this._screen.x + this._screen.width;
+		this._tip_dialog.y = this._screen.y;
+        if (this._tip_dialog.x + this._tip_dialog.width > A_UISystem.view_width)
+        {
+            this._tip_dialog.x = this._screen.x;
+            this._tip_dialog.y = this._screen.y + this._screen.height;
+        }
 	}
 
 	// 隐藏TIP

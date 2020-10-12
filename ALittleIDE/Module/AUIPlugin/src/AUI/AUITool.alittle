@@ -96,7 +96,7 @@ public class AUITool
 		// 创建模态提示对话框，并添加到模态层
 		if (this._alert_dialog == null)
 		{
-			this._alert_dialog = g_Control.CreateControl{ALittle.Dialog}("ide_alert_dialog", this);
+			this._alert_dialog = g_Control.CreateControl{ALittle.Dialog}("aui_alert_dialog", this);
 			A_LayerManager.AddToModal(this._alert_dialog);
 		}
 		// 显示提示对话框，设置标题和内容
@@ -117,7 +117,7 @@ public class AUITool
 		// 创建模态提示对话框，并添加到模态层
 		if (this._notice_dialog == null)
 		{
-			this._notice_dialog = g_Control.CreateControl{ALittle.Dialog}("ide_notice_dialog", this);
+			this._notice_dialog = g_Control.CreateControl{ALittle.Dialog}("aui_notice_dialog", this);
 			A_LayerManager.AddToModal(this._notice_dialog);
 			this._notice_min_size = this._notice_content.height;
 		}
@@ -146,7 +146,7 @@ public class AUITool
 		// 创建保存提示对话框，并添加到模态层
 		if (this._save_dialog == null)
 		{
-			this._save_dialog = g_Control.CreateControl{ALittle.Dialog}("ide_save_dialog", this);
+			this._save_dialog = g_Control.CreateControl{ALittle.Dialog}("aui_save_dialog", this);
 			A_LayerManager.AddToModal(this._save_dialog);
 		}
 		// 显示提示框，设置标题和内容
@@ -202,7 +202,7 @@ public class AUITool
 		// 创建保存提示对话框，并添加到模态层
 		if (this._delete_dialog == null)
 		{
-			this._delete_dialog = g_Control.CreateControl{ALittle.Dialog}("ide_delete_dialog", this);
+			this._delete_dialog = g_Control.CreateControl{ALittle.Dialog}("aui_delete_dialog", this);
 			A_LayerManager.AddToModal(this._delete_dialog);
 			this._delete_delta_height = this._delete_dialog.height - this._delete_content.height;
 		}
@@ -244,7 +244,7 @@ public class AUITool
 		// 创建输入框，并加入模态层
 		if (this._rename_input == null)
 		{
-			this._rename_input = g_Control.CreateControl{ALittle.ImageInput}("ide_rename_image_input", this);
+			this._rename_input = g_Control.CreateControl{ALittle.ImageInput}("aui_rename_image_input", this);
 			A_LayerManager.AddToModal(this._rename_input);
 		}
 		// 显示输入框
@@ -302,7 +302,7 @@ public class AUITool
 		// 创建输入框，并加入模态层
 		if (this._selectdir_dialog == null)
 		{
-			this._selectdir_dialog = g_Control.CreateControl{ALittle.Dialog}("ide_common_selectdir_dialog", this);
+			this._selectdir_dialog = g_Control.CreateControl{ALittle.Dialog}("aui_selectdir_dialog", this);
 			A_LayerManager.AddToModal(this._selectdir_dialog);
 		}
             // 显示输入框
@@ -356,7 +356,7 @@ public class AUITool
 		// 创建保存提示对话框，并添加到模态层
 		if (this._tip_help_dialog == null)
 		{
-			this._tip_help_dialog = g_Control.CreateControl{ALittle.Dialog}("ide_tip_help", this);
+			this._tip_help_dialog = g_Control.CreateControl{ALittle.Dialog}("aui_tip_help", this);
 			A_LayerManager.AddToTip(this._tip_help_dialog);
 		}
 	
@@ -411,7 +411,7 @@ public class AUITool
 		// 创建模态提示对话框，并添加到模态层
 		if (this._tip_dialog == null)
 		{
-			this._tip_dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_tool_tip", this);
+			this._tip_dialog = g_Control.CreateControl{ALittle.DisplayObject}("aui_tool_tip", this);
 			A_LayerManager.AddToTip(this._tip_dialog);
 		}
 		

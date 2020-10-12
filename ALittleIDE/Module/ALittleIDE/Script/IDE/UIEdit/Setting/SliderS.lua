@@ -72,7 +72,7 @@ function ALittleIDE.SliderS:HandleBarBackSelect(event)
 	if path == nil then
 		return
 	end
-	self:ImagePathSelectCallback("bar_background", self.HandleBarBackFOCUSOUT, nil, path)
+	self:ImagePathSelectCallback("bar_background", self.HandleBarBackFOCUSOUT, nil, path, false)
 end
 ALittleIDE.SliderS.HandleBarBackSelect = Lua.CoWrap(ALittleIDE.SliderS.HandleBarBackSelect)
 

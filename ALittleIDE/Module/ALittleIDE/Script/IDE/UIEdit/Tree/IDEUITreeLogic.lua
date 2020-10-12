@@ -63,7 +63,7 @@ function ALittleIDE.IDEUITreeLogic.__getter:attr_panel()
 end
 
 function ALittleIDE.IDEUITreeLogic.__getter:title()
-	return self._item_title.text
+	return self._item_button.text
 end
 
 function ALittleIDE.IDEUITreeLogic:CanAddChild()

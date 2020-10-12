@@ -14,7 +14,7 @@
                                         "y_type":3,
                                         "text":"LoopLinear",
                                         "__link":"_class_name",
-                                        "__extends":"ide_common_tab_text_selected",
+                                        "__extends":"usual_label","__module":"AUIPlugin",
                                         "__module":"AUIPlugin",
                                         "x_value":6
                                     },
@@ -32,7 +32,7 @@
                                                 "func":"HandleTargetValueChanged"
                                             }
                                         ],
-                                        "__extends":"ide_common_image_input",
+                                        "__extends":"image_input","__module":"AUIPlugin",
                                         "__link":"_linear_target_value",
                                         "x_value":139
                                     },
@@ -40,14 +40,14 @@
                                         "y_type":3,
                                         "text":"目标值:",
                                         "__link":"_linear_attribute_name",
-                                        "__extends":"ide_common_tab_text_selected",
+                                        "__extends":"usual_label","__module":"AUIPlugin",
                                         "__module":"AUIPlugin",
                                         "x_value":97
                                     },
                                     {
                                         "y_type":3,
                                         "x_value":227,
-                                        "__extends":"ide_common_tab_text_selected",
+                                        "__extends":"usual_label","__module":"AUIPlugin",
                                         "__module":"AUIPlugin",
                                         "text":"动画时长:"
                                     },
@@ -65,7 +65,7 @@
                                                 "func":"HandleTotalTimeChanged"
                                             }
                                         ],
-                                        "__extends":"ide_common_image_input",
+                                        "__extends":"image_input","__module":"AUIPlugin",
                                         "__link":"_linear_total_time",
                                         "x_value":282
                                     },
@@ -73,7 +73,7 @@
                                         "y_type":3,
                                         "text":"延迟时长:",
                                         "__link":"_linear_attribute_name",
-                                        "__extends":"ide_common_tab_text_selected",
+                                        "__extends":"usual_label","__module":"AUIPlugin",
                                         "__module":"AUIPlugin",
                                         "x_value":374
                                     },
@@ -91,7 +91,7 @@
                                                 "func":"HandleDelayTimeChanged"
                                             }
                                         ],
-                                        "__extends":"ide_common_image_input",
+                                        "__extends":"image_input","__module":"AUIPlugin",
                                         "__link":"_linear_delay_time",
                                         "x_value":429
                                     },
@@ -105,7 +105,7 @@
                                                 "func":"HandleDeleteLoopClick"
                                             }
                                         ],
-                                        "__extends":"ide_common_usual_button",
+                                        "__extends":"usual_button","__module":"AUIPlugin",
                                         "__module":"AUIPlugin",
                                         "x_value":5
                                     }
@@ -121,7 +121,7 @@
                                         "y_type":3,
                                         "x_value":6,
                                         "__link":"_class_name",
-                                        "__extends":"ide_common_tab_text_selected",
+                                        "__extends":"usual_label","__module":"AUIPlugin",
                                         "__module":"AUIPlugin",
                                         "text":"LoopRit"
                                     },
@@ -130,7 +130,7 @@
                                         "y_type":3,
                                         "width_value":83,
                                         "__link":"_rit_target_value",
-                                        "__extends":"ide_common_image_input",
+                                        "__extends":"image_input","__module":"AUIPlugin",
                                         "__event":[
                                             {
                                                 "type":"ALittle.UIFocusOutEvent",
@@ -147,14 +147,14 @@
                                         "y_type":3,
                                         "x_value":97,
                                         "__link":"_linear_attribute_name",
-                                        "__extends":"ide_common_tab_text_selected",
+                                        "__extends":"usual_label","__module":"AUIPlugin",
                                         "__module":"AUIPlugin",
                                         "text":"目标值:"
                                     },
                                     {
                                         "y_type":3,
                                         "text":"动画时长:",
-                                        "__extends":"ide_common_tab_text_selected",
+                                        "__extends":"usual_label","__module":"AUIPlugin",
                                         "__module":"AUIPlugin",
                                         "x_value":227
                                     },
@@ -163,7 +163,7 @@
                                         "y_type":3,
                                         "width_value":83,
                                         "__link":"_rit_total_time",
-                                        "__extends":"ide_common_image_input",
+                                        "__extends":"image_input","__module":"AUIPlugin",
                                         "__event":[
                                             {
                                                 "type":"ALittle.UIFocusOutEvent",
@@ -180,7 +180,7 @@
                                         "y_type":3,
                                         "x_value":374,
                                         "__link":"_linear_attribute_name",
-                                        "__extends":"ide_common_tab_text_selected",
+                                        "__extends":"usual_label","__module":"AUIPlugin",
                                         "__module":"AUIPlugin",
                                         "text":"延迟时长:"
                                     },
@@ -189,7 +189,7 @@
                                         "y_type":3,
                                         "width_value":83,
                                         "__link":"_rit_delay_time",
-                                        "__extends":"ide_common_image_input",
+                                        "__extends":"image_input","__module":"AUIPlugin",
                                         "__event":[
                                             {
                                                 "type":"ALittle.UIFocusOutEvent",
@@ -212,7 +212,7 @@
                                                 "func":"HandleDeleteLoopClick"
                                             }
                                         ],
-                                        "__extends":"ide_common_usual_button",
+                                        "__extends":"usual_button","__module":"AUIPlugin",
                                         "__module":"AUIPlugin",
                                         "text":"删除"
                                     }
@@ -227,7 +227,7 @@
                                     {
                                         "y_type":3,
                                         "text":"LoopAttribute",
-                                        "__extends":"ide_common_tab_text_selected",
+                                        "__extends":"usual_label","__module":"AUIPlugin",
                                         "__module":"AUIPlugin",
                                         "x_value":6
                                     },
@@ -236,7 +236,7 @@
                                         "y_type":3,
                                         "width_value":83,
                                         "__link":"_attribute_target_value",
-                                        "__extends":"ide_common_image_input",
+                                        "__extends":"image_input","__module":"AUIPlugin",
                                         "__event":[
                                             {
                                                 "type":"ALittle.UIFocusOutEvent",
@@ -253,7 +253,7 @@
                                         "y_type":3,
                                         "text":"目标值:",
                                         "__link":"_linear_attribute_name",
-                                        "__extends":"ide_common_tab_text_selected",
+                                        "__extends":"usual_label","__module":"AUIPlugin",
                                         "__module":"AUIPlugin",
                                         "x_value":97
                                     },
@@ -261,7 +261,7 @@
                                         "y_type":3,
                                         "text":"延迟时长:",
                                         "__link":"_linear_attribute_name",
-                                        "__extends":"ide_common_tab_text_selected",
+                                        "__extends":"usual_label","__module":"AUIPlugin",
                                         "__module":"AUIPlugin",
                                         "x_value":374
                                     },
@@ -270,7 +270,7 @@
                                         "y_type":3,
                                         "width_value":83,
                                         "__link":"_attribute_delay_time",
-                                        "__extends":"ide_common_image_input",
+                                        "__extends":"image_input","__module":"AUIPlugin",
                                         "__event":[
                                             {
                                                 "type":"ALittle.UIFocusOutEvent",
@@ -293,7 +293,7 @@
                                                 "func":"HandleDeleteLoopClick"
                                             }
                                         ],
-                                        "__extends":"ide_common_usual_button",
+                                        "__extends":"usual_button","__module":"AUIPlugin",
                                         "__module":"AUIPlugin",
                                         "x_value":5
                                     }
@@ -337,7 +337,7 @@
                                     }
                                 ],
                                 "__class":"ScrollScreen",
-                                "__extends" : "ide_common_scroll_screen_no_container",
+                                "__extends" : "scroll_screen_no_container",
                                 "__module" : "AUIPlugin",
                                 "__link":"_anti_screen",
                                 "x_type":3
@@ -364,13 +364,13 @@
                                 "x_type":4,
                                 "y_value":5.416666666665,
                                 "width_value":49,
-                                "__extends":"ide_common_usual_button",
+                                "__extends":"usual_button","__module":"AUIPlugin",
                                 "__module":"AUIPlugin",
                                 "text":"停止"
                             },
                             {
                                 "width_value":49,
-                                "__extends":"ide_common_usual_button",
+                                "__extends":"usual_button","__module":"AUIPlugin",
                                 "__module":"AUIPlugin",
                                 "text":"播放",
                                 "x_type":4,
@@ -395,7 +395,7 @@
                                 "x_type":4,
                                 "width_value":69,
                                 "y_value":5.416666666665,
-                                "__extends":"ide_common_usual_button",
+                                "__extends":"usual_button","__module":"AUIPlugin",
                                 "__module":"AUIPlugin",
                                 "x_value":60
                             },
@@ -409,7 +409,7 @@
                                 ],
                                 "width_value":65,
                                 "__module":"AUIPlugin",
-                                "__extends":"ide_common_usual_button",
+                                "__extends":"usual_button","__module":"AUIPlugin",
                                 "__link":"_add_btn",
                                 "text":"添加属性"
                             },
@@ -419,7 +419,7 @@
                                 "__module":"AUIPlugin",
                                 "y_value":5.416666666665,
                                 "width_value":85,
-                                "__extends":"ide_common_usual_button",
+                                "__extends":"usual_button","__module":"AUIPlugin",
                                 "__event":[
                                     {
                                         "type":"ALittle.UIClickEvent",
@@ -458,7 +458,7 @@
                         {
                             "y_value":7.916666666665,
                             "text":"动画列表:",
-                            "__extends":"ide_common_tab_text_selected",
+                            "__extends":"usual_label","__module":"AUIPlugin",
                             "__module":"AUIPlugin",
                             "x_value":6
                         },
@@ -468,7 +468,7 @@
                             "x_type":4,
                             "y_value":5.416666666665,
                             "__module":"AUIPlugin",
-                            "__extends":"ide_common_usual_button",
+                            "__extends":"usual_button","__module":"AUIPlugin",
                             "__event":[
                                 {
                                     "type":"ALittle.UIClickEvent",
@@ -480,7 +480,7 @@
                         {
                             "height_value":42,
                             "width_value":14,
-                            "__extends":"ide_common_scroll_list",
+                            "__extends":"usual_scroll_list","__module":"AUIPlugin",
                             "__module":"AUIPlugin",
                             "x_type":3,
                             "y_value":35,

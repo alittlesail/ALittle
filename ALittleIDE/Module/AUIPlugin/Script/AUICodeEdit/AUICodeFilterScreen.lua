@@ -187,7 +187,7 @@ function AUIPlugin.AUICodeFilterScreen:ReInit(pre_input, input)
 	local x, y = self._edit:LocalToGlobal()
 	y = y + (self._edit.height)
 	if self._screen == nil then
-		self._screen = AUIPlugin.g_Control:CreateControl("ide_code_scroll_screen")
+		self._screen = AUIPlugin.g_Control:CreateControl("code_scroll_screen")
 		self._screen.width = 200
 		self._screen:AddEventListener(___all_struct[348388800], self, self.HandleHide)
 	end
@@ -211,7 +211,7 @@ function AUIPlugin.AUICodeFilterScreen:ReInit(pre_input, input)
 			self._item_pool_count = self._item_pool_count - (1)
 		else
 			item_info = {}
-			item_info._item = AUIPlugin.g_Control:CreateControl("ide_code_complete_item", item_info)
+			item_info._item = AUIPlugin.g_Control:CreateControl("code_complete_item", item_info)
 		end
 		item_info._item_button.group = self._item_group
 		item_info._item_title.text = info.display
@@ -304,15 +304,19 @@ end
 
 function AUIPlugin.AUICodeFilterScreen:ShowTip(content)
 	if self._tip_dialog == nil then
-		self._tip_dialog = AUIPlugin.g_Control:CreateControl("ide_tool_area_tip", self)
+		self._tip_dialog = AUIPlugin.g_Control:CreateControl("code_area_tip", self)
 		self._tip_dialog.width = 200
 	end
 	A_LayerManager:AddToTip(self._tip_dialog)
 	self._tip_dialog.visible = true
 	self._tip_text.text = content
-	self._tip_dialog.height = self._tip_text.real_height + 6
-	self._tip_dialog.x = self._screen.x
-	self._tip_dialog.y = self._screen.y + self._screen.height
+	self._tip_dialog.height = self._tip_text.real_height + 16
+	self._tip_dialog.x = self._screen.x + self._screen.width
+	self._tip_dialog.y = self._screen.y
+	if self._tip_dialog.x + self._tip_dialog.width > A_UISystem.view_width then
+		self._tip_dialog.x = self._screen.x
+		self._tip_dialog.y = self._screen.y + self._screen.height
+	end
 end
 
 function AUIPlugin.AUICodeFilterScreen:HideTip()

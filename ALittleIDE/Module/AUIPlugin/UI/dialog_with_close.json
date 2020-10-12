@@ -1,0 +1,1 @@
+{"dialog_with_close":{"__extends":"dialog","show_close_button":{"__extends":"dialog_close_button"}}}

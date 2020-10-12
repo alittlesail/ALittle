@@ -201,6 +201,9 @@ end
 
 function ALittleIDE.IDEUIControlTree:ControlTreeJump(target)
 	local extends_module = target.user_info.base.__module
+	if extends_module == nil then
+		extends_module = target.user_info.module
+	end
 	local extends_name = target.user_info.base.__extends
 	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(extends_module)
 	if ui_manager == nil then

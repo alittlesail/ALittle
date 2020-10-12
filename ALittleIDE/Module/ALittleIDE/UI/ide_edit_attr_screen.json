@@ -1,6 +1,6 @@
 {
     "ide_edit_attr_screen":{
-        "__extends" : "ide_common_scroll_screen_v_no_container",
-        "__module" : "AUIPlugin"
+        "__extends":"scroll_screen_v_no_container",
+        "__module":"AUIPlugin"
     }
 }

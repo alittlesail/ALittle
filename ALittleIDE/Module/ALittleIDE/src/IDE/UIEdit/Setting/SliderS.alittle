@@ -77,6 +77,6 @@ public class SliderS : DisplayLayoutS
 		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
 		if (path == null) return;
-		this.ImagePathSelectCallback("bar_background", this.HandleBarBackFOCUSOUT, null, path);
+		this.ImagePathSelectCallback("bar_background", this.HandleBarBackFOCUSOUT, null, path, false);
     }
 }

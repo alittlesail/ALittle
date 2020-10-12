@@ -1,0 +1,1 @@
+{"scroll_screen_no_container":{"__class":"ScrollScreen","height_type":4,"bottom_scrollbar":{"__extends":"usual_hscroll_bar","__module":"AUIPlugin"},"right_scrollbar":{"__extends":"usual_vscroll_bar","__module":"AUIPlugin"},"width_type":4}}

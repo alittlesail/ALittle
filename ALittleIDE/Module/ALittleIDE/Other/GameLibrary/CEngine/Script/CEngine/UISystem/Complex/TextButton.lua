@@ -84,7 +84,7 @@ function ALittle.TextButton:HandleLButtonUp(event)
 		elseif self._file_select == ALittle.UIEnumTypes.SELECT_DIR then
 			A_OtherSystem:SystemSelectDirectory(self)
 		end
-		if ALittle.System_IsPhone == false then
+		if ALittle.System_IsPhone() == false then
 			self:ShowOver()
 		else
 			self:ShowUp(nil)

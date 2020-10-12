@@ -8,6 +8,10 @@ protected class IDEUIMainMenu : ALittle.Linear
 
 	public fun TCtor()
 	{
+        var group = new ALittle.TextRadioButtonGroup();
+        for (var index, child in this._childs)
+        	child.group = group;
+
 		// 版本服务器
 		var version_ip = g_IDEServerConfig.GetConfig("version_ip", "139.159.176.119");
 		var version_port = g_IDEServerConfig.GetConfig("version_port", 1100);
@@ -24,6 +28,11 @@ protected class IDEUIMainMenu : ALittle.Linear
 		this._version_manager.Shutdown();
     }
 
+    private fun HandleMenuHide(ALittle.DisplayObject button)
+    {
+        button.selected = false;
+    }
+
 	//////////////////////////////////////////////////////////////////////////////////////////-
 	// 处理文件菜单
 	private fun HandleFileMenuClick(ALittle.UIClickEvent event)
@@ -35,7 +44,7 @@ protected class IDEUIMainMenu : ALittle.Linear
 		menu.AddItem("保存", bind(g_IDECenter.center.content_edit.SaveAllTab, g_IDECenter.center.content_edit));
 		menu.AddItem("刷新", bind(g_IDECenter.RefreshProject, g_IDECenter));
 		menu.AddItem("导出项目", bind(g_IDEProjectExportDialog.ShowExportProject, g_IDEProjectExportDialog));
-		menu.Show(event.target);
+		menu.Show(event.target, bind(this.HandleMenuHide, this, event.target));
 	}
 	// 处理编辑菜单
 	private fun HandleEditMenuClick(ALittle.UIClickEvent event)
@@ -44,7 +53,7 @@ protected class IDEUIMainMenu : ALittle.Linear
 		menu.AddItem("新建控件", bind(g_IDECenter.center.control_list.ShowNewControl, g_IDECenter.center.control_list, null));
 		menu.AddItem("重做", bind(g_IDECenter.center.HandleDoRevoke, g_IDECenter.center, null));
 		menu.AddItem("撤销", bind(g_IDECenter.center.HandleUndoRevoke, g_IDECenter.center, null));
-		menu.Show(event.target);
+		menu.Show(event.target, bind(this.HandleMenuHide, this, event.target));
 	}
 	// 处理工具菜单
 	private fun HandleToolMenuClick(ALittle.UIClickEvent event)
@@ -53,12 +62,24 @@ protected class IDEUIMainMenu : ALittle.Linear
 		menu.AddItem("生成core_all_in_one", bind(this.HandleGenCoreAllInOneClick, this));
 		menu.AddItem("生成std_all_in_one", bind(this.HandleGenStdAllInOneClick, this));
 		menu.AddItem("生成cengine_all_in_one", bind(this.HandleGenCEngineAllInOneClick, this));
-		menu.Show(event.target);
+		menu.Show(event.target, bind(this.HandleMenuHide, this, event.target));
 	}
 	// 处理版本菜单
-	private fun HandleVersionMenuClick(ALittle.UIClickEvent event) { [Language(Lua)]this._version_manager.ShowDialog(); }
+	private fun HandleHelpMenuClick(ALittle.UIClickEvent event)
+    {
+		var menu = new AUIPlugin.AUIRightMenu();
+        [Language(Lua)]
+		menu.AddItem("版本检查", bind(this._version_manager.ShowDialog, this._version_manager));
+		menu.Show(event.target, bind(this.HandleMenuHide, this, event.target));
+    }
 	// 处理运行
-	private fun HandleRunMenuClick(ALittle.UIClickEvent event) { g_IDEProject.RunProject(); }
+	private fun HandleRunMenuClick(ALittle.UIClickEvent event)
+    {
+		var menu = new AUIPlugin.AUIRightMenu();
+        [Language(Lua)]
+		menu.AddItem("启动", bind(g_IDEProject.RunProject, g_IDEProject));
+		menu.Show(event.target, bind(this.HandleMenuHide, this, event.target));
+    }
 
 	// 生成核心库Core
 	private fun HandleGenCoreAllInOneClick()

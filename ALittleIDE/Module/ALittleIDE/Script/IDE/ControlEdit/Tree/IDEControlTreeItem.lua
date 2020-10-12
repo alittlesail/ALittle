@@ -71,7 +71,7 @@ function ALittleIDE.IDEControlTreeItem:Ctor(ctrl_sys, user_info)
 	self._item_button:AddEventListener(___all_struct[1337289812], self, self.HandleControlDrag)
 	self._item_button:AddEventListener(___all_struct[150587926], self, self.HandleControlDragEnd)
 	self._item_button._user_data = self
-	self._item_title.text = self._user_info.name
+	self._item_button.text = self._user_info.name
 end
 
 function ALittleIDE.IDEControlTreeItem.__getter:is_tree()
@@ -205,7 +205,7 @@ function ALittleIDE.IDEControlTreeItem:HandleControlRename()
 	self._user_info.name = new_name
 	self._user_info.path = ALittle.File_GetFilePathByPath(self._user_info.path) .. "/" .. self._user_info.name
 	self._user_info.name = new_name
-	self._item_title.text = self._user_info.name
+	self._item_button.text = self._user_info.name
 	if tab_child ~= nil then
 		tab_child:Rename(self._user_info.name)
 	end

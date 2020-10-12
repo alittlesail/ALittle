@@ -48,7 +48,7 @@ function ALittleIDE.SpringTextButtonS:HandleShowUpSelect(event)
 	if path == nil then
 		return
 	end
-	self:ImagePathSelectCallback("show_up", self.HandleShowUpFOCUSOUT, nil, path)
+	self:ImagePathSelectCallback("show_up", self.HandleShowUpFOCUSOUT, nil, path, true)
 end
 ALittleIDE.SpringTextButtonS.HandleShowUpSelect = Lua.CoWrap(ALittleIDE.SpringTextButtonS.HandleShowUpSelect)
 
@@ -73,7 +73,7 @@ function ALittleIDE.SpringTextButtonS:HandleShowDisabledSelect(event)
 	if path == nil then
 		return
 	end
-	self:ImagePathSelectCallback("show_disabled", self.HandleShowDisabledFOCUSOUT, nil, path)
+	self:ImagePathSelectCallback("show_disabled", self.HandleShowDisabledFOCUSOUT, nil, path, true)
 end
 ALittleIDE.SpringTextButtonS.HandleShowDisabledSelect = Lua.CoWrap(ALittleIDE.SpringTextButtonS.HandleShowDisabledSelect)
 

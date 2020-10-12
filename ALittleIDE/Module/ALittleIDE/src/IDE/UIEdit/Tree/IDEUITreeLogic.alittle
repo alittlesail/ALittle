@@ -10,7 +10,6 @@ public class IDEUITreeLogic : ALittle.DisplayLayout
 	private ALittle.EffectImage _drag_effect;	// 拖拽特效
 	private bool _drag_ctrl;					// 拖拽时是否按下ctrl
 
-	private ALittle.DisplayObject _item_title;	// 标题
 	private ALittle.DisplayObject _item_button;	// 按钮
 
 	private ALittle.DisplayObject _head;			// 头部
@@ -31,7 +30,7 @@ public class IDEUITreeLogic : ALittle.DisplayLayout
 	public get is_root() : bool { return this._user_info.root; }
 	public get is_tree() : bool { return false; }
 	public get attr_panel() : DisplayObjectS { return this._attr_panel; }
-	public get title() : string	{ return this._item_title.text; }
+	public get title() : string	{ return this._item_button.text; }
 	public fun CanAddChild() : bool { return false; }
 	public set fold(bool value) { }
 

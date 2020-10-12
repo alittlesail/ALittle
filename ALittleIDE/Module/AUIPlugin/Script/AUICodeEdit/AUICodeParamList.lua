@@ -86,7 +86,7 @@ function AUIPlugin.AUICodeParamList:ReInit()
 	end
 	local x, y = self._edit:CalcPosition(self._param_info.line_start, self._param_info.char_start, true)
 	if self._dialog == nil then
-		self._dialog = AUIPlugin.g_Control:CreateControl("ide_tool_paramlist_tip", self)
+		self._dialog = AUIPlugin.g_Control:CreateControl("code_paramlist_tip", self)
 		self._dialog.width = 200
 		self._dialog.height = AUIPlugin.CODE_LINE_HEIGHT + self._text_container.height_value
 	end

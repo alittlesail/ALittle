@@ -46,7 +46,7 @@ end
 
 function AUIPlugin.AUITool:ShowAlertDialog(title, content)
 	if self._alert_dialog == nil then
-		self._alert_dialog = AUIPlugin.g_Control:CreateControl("ide_alert_dialog", self)
+		self._alert_dialog = AUIPlugin.g_Control:CreateControl("aui_alert_dialog", self)
 		A_LayerManager:AddToModal(self._alert_dialog)
 	end
 	self._alert_dialog.visible = true
@@ -61,7 +61,7 @@ end
 
 function AUIPlugin.AUITool:ShowNotice(title, content)
 	if self._notice_dialog == nil then
-		self._notice_dialog = AUIPlugin.g_Control:CreateControl("ide_notice_dialog", self)
+		self._notice_dialog = AUIPlugin.g_Control:CreateControl("aui_notice_dialog", self)
 		A_LayerManager:AddToModal(self._notice_dialog)
 		self._notice_min_size = self._notice_content.height
 	end
@@ -84,7 +84,7 @@ end
 function AUIPlugin.AUITool:SaveNotice(title, content)
 	local ___COROUTINE = coroutine.running()
 	if self._save_dialog == nil then
-		self._save_dialog = AUIPlugin.g_Control:CreateControl("ide_save_dialog", self)
+		self._save_dialog = AUIPlugin.g_Control:CreateControl("aui_save_dialog", self)
 		A_LayerManager:AddToModal(self._save_dialog)
 	end
 	self._save_dialog.visible = true
@@ -128,7 +128,7 @@ end
 function AUIPlugin.AUITool:DeleteNotice(title, content)
 	local ___COROUTINE = coroutine.running()
 	if self._delete_dialog == nil then
-		self._delete_dialog = AUIPlugin.g_Control:CreateControl("ide_delete_dialog", self)
+		self._delete_dialog = AUIPlugin.g_Control:CreateControl("aui_delete_dialog", self)
 		A_LayerManager:AddToModal(self._delete_dialog)
 		self._delete_delta_height = self._delete_dialog.height - self._delete_content.height
 	end
@@ -164,7 +164,7 @@ end
 function AUIPlugin.AUITool:ShowRename(text, x, y, width)
 	local ___COROUTINE = coroutine.running()
 	if self._rename_input == nil then
-		self._rename_input = AUIPlugin.g_Control:CreateControl("ide_rename_image_input", self)
+		self._rename_input = AUIPlugin.g_Control:CreateControl("aui_rename_image_input", self)
 		A_LayerManager:AddToModal(self._rename_input)
 	end
 	self._rename_input.visible = true
@@ -207,7 +207,7 @@ end
 function AUIPlugin.AUITool:ShowSelectDir(title, dir)
 	local ___COROUTINE = coroutine.running()
 	if self._selectdir_dialog == nil then
-		self._selectdir_dialog = AUIPlugin.g_Control:CreateControl("ide_common_selectdir_dialog", self)
+		self._selectdir_dialog = AUIPlugin.g_Control:CreateControl("aui_selectdir_dialog", self)
 		A_LayerManager:AddToModal(self._selectdir_dialog)
 	end
 	self._selectdir_dialog.visible = true
@@ -248,7 +248,7 @@ end
 
 function AUIPlugin.AUITool:ShowTipHelp(content, show_time)
 	if self._tip_help_dialog == nil then
-		self._tip_help_dialog = AUIPlugin.g_Control:CreateControl("ide_tip_help", self)
+		self._tip_help_dialog = AUIPlugin.g_Control:CreateControl("aui_tip_help", self)
 		A_LayerManager:AddToTip(self._tip_help_dialog)
 	end
 	if self._tip_help_loop ~= nil then
@@ -289,7 +289,7 @@ end
 
 function AUIPlugin.AUITool:ShowTip(content)
 	if self._tip_dialog == nil then
-		self._tip_dialog = AUIPlugin.g_Control:CreateControl("ide_tool_tip", self)
+		self._tip_dialog = AUIPlugin.g_Control:CreateControl("aui_tool_tip", self)
 		A_LayerManager:AddToTip(self._tip_dialog)
 	end
 	self._tip_dialog.visible = true

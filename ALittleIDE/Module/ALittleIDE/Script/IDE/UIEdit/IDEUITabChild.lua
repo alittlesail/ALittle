@@ -189,7 +189,7 @@ end
 
 function ALittleIDE.IDEUITabChild:OnClose()
 	ALittleIDE.g_IDECenter.center.control_tree:RemoveChild(self._tree_screen)
-	ALittleIDE.g_IDEAttrControlDialog.dialog:RemoveChild(self._attr_screen)
+	ALittleIDE.g_IDEAttrControlDialog.attr_container:RemoveChild(self._attr_screen)
 	ALittleIDE.g_IDECenter.center.control_anti:RemoveChild(self._anti_panel)
 	ALittleIDE.g_IDEProject:RemoveEventListener(___all_struct[1787992834], self, self.HandleProjectSettingChanged)
 	ALittleIDE.g_IDECenter.center:RemoveEventListener(___all_struct[1408180774], self, self.HandleEditScaleChanged)
@@ -200,7 +200,7 @@ end
 
 function ALittleIDE.IDEUITabChild:OnOpen()
 	ALittleIDE.g_IDECenter.center.control_tree:AddChild(self._tree_screen)
-	ALittleIDE.g_IDEAttrControlDialog.dialog:AddChild(self._attr_screen)
+	ALittleIDE.g_IDEAttrControlDialog.attr_container:AddChild(self._attr_screen)
 	ALittleIDE.g_IDECenter.center.control_anti:AddChild(self._anti_panel)
 	self:ShowInCenter()
 end
@@ -658,7 +658,7 @@ function ALittleIDE.IDEUITabChild:ShowHandleQuad(target, force_shift)
 	end
 	for index, child in ___ipairs(list) do
 		local control_line = {}
-		local handle_quad = ALittleIDE.g_Control:CreateControl("ide_common_handle_quad", control_line)
+		local handle_quad = ALittleIDE.g_Control:CreateControl("aui_handle_quad", control_line)
 		control_line.quad:AddEventListener(___all_struct[40651933], self, self.HandleHandleQuadLButtonUp)
 		control_line.quad:AddEventListener(___all_struct[1883782801], self, self.HandleHandleQuadLButtonDown)
 		control_line.quad:AddEventListener(___all_struct[1301789264], self, self.HandleHandleQuadDragBegin)
@@ -1383,6 +1383,9 @@ end
 
 function ALittleIDE.IDEUITabChild:Jump(target)
 	local extends_module = target.user_info.base.__module
+	if extends_module == nil then
+		extends_module = target.user_info.module
+	end
 	local extends_name = target.user_info.base.__extends
 	local ui_manager = ALittleIDE.g_IDEProject:GetUIManager(extends_module)
 	if ui_manager == nil then
@@ -1439,7 +1442,7 @@ ALittleIDE.IDEUITabChild.GenerateClassMember = Lua.CoWrap(ALittleIDE.IDEUITabChi
 function ALittleIDE.IDEUITabChild:TextEdit(target)
 	local object = target.user_info.object
 	if self._control_tabchild_textinput == nil then
-		self._control_tabchild_textinput = ALittleIDE.g_Control:CreateControl("ide_rename_image_input", self)
+		self._control_tabchild_textinput = ALittleIDE.g_Control:CreateControl("aui_rename_image_input", self)
 		self._control_tabchild_textinput.width = 200
 		A_LayerManager:AddToModal(self._control_tabchild_textinput)
 	end

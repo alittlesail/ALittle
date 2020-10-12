@@ -1,0 +1,1 @@
+{"aui_ime_dialog":{"width_value":177,"title":"输入法","height_value":58,"__extends":"dialog","__childs":[{"__link":"_ime_editing_list","__extends":"usual_label","y_type":3,"x_value":10,"text":"候选的部分"}]}}

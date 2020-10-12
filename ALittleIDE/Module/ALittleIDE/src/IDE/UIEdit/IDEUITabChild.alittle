@@ -174,7 +174,7 @@ public class IDEUITabChild : IDETabChild
     private fun OnClose()
     {
         g_IDECenter.center.control_tree.RemoveChild(this._tree_screen);
-		g_IDEAttrControlDialog.dialog.RemoveChild(this._attr_screen);
+		g_IDEAttrControlDialog.attr_container.RemoveChild(this._attr_screen);
 		g_IDECenter.center.control_anti.RemoveChild(this._anti_panel);
         g_IDEProject.RemoveEventListener(this, this.HandleProjectSettingChanged);
         g_IDECenter.center.RemoveEventListener(this, this.HandleEditScaleChanged);
@@ -186,7 +186,7 @@ public class IDEUITabChild : IDETabChild
     private fun OnOpen()
     {
 		g_IDECenter.center.control_tree.AddChild(this._tree_screen);
-		g_IDEAttrControlDialog.dialog.AddChild(this._attr_screen);
+		g_IDEAttrControlDialog.attr_container.AddChild(this._attr_screen);
 		g_IDECenter.center.control_anti.AddChild(this._anti_panel);
         this.ShowInCenter();
     }
@@ -709,7 +709,7 @@ public class IDEUITabChild : IDETabChild
         for (var index, child in list)
         {
             var control_line = new IDEUITabChildControlLine();
-            var handle_quad = g_Control.CreateControl{ALittle.DisplayObject}("ide_common_handle_quad", control_line);
+            var handle_quad = g_Control.CreateControl{ALittle.DisplayObject}("aui_handle_quad", control_line);
             control_line.quad.AddEventListener(this, this.HandleHandleQuadLButtonUp);
             control_line.quad.AddEventListener(this, this.HandleHandleQuadLButtonDown);
             control_line.quad.AddEventListener(this, this.HandleHandleQuadDragBegin);
@@ -1590,7 +1590,9 @@ public class IDEUITabChild : IDETabChild
 	public fun Jump(IDEUITreeLogic target)
     {
         var extends_module = target.user_info.base.__module;
+        if (extends_module == null) extends_module = target.user_info.module;
         var extends_name = target.user_info.base.__extends;
+
         var ui_manager = g_IDEProject.GetUIManager(extends_module);
         if (ui_manager == null) return;
 
@@ -1654,7 +1656,7 @@ public class IDEUITabChild : IDETabChild
 		// 创建输入框
 		if (this._control_tabchild_textinput == null)
         {
-            this._control_tabchild_textinput = g_Control.CreateControl{ALittle.ImageInput}("ide_rename_image_input", this);
+            this._control_tabchild_textinput = g_Control.CreateControl{ALittle.ImageInput}("aui_rename_image_input", this);
             this._control_tabchild_textinput.width = 200;
             A_LayerManager.AddToModal(this._control_tabchild_textinput);
 		}

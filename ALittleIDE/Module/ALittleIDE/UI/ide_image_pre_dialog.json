@@ -1,1 +1,1 @@
-{"ide_image_pre_dialog":{"__childs":[{"__link":"_pre_image","__class":"Image"}],"__extends":"ide_common_dialog","__module":"AUIPlugin","title":"图片预览"}}
+{"ide_image_pre_dialog":{"__childs":[{"__link":"_pre_image","__class":"Image"}],"__extends":"dialog","__module":"AUIPlugin","title":"图片预览"}}

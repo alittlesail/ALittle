@@ -66,9 +66,9 @@ ALittleIDE.IDEUITree = Lua.Class(ALittleIDE.IDEUITreeLogic, "ALittleIDE.IDEUITre
 
 function ALittleIDE.IDEUITree:Ctor(ctrl_sys, user_info, tab_child)
 	if self._user_info.extends then
-		___rawset(self, "_head", ctrl_sys:CreateControl("ide_common_tree_head_disabled", self))
+		___rawset(self, "_head", ctrl_sys:CreateControl("tree_head_disabled", self))
 	else
-		___rawset(self, "_head", ctrl_sys:CreateControl("ide_common_tree_head", self))
+		___rawset(self, "_head", ctrl_sys:CreateControl("tree_head", self))
 	end
 	ALittle.DisplayGroup.AddChild(self, self._head)
 	self._extends_icon.visible = self._user_info.extends_root
@@ -115,7 +115,7 @@ function ALittleIDE.IDEUITree:UpdateDesc()
 	elseif self._user_info.default.text ~= nil then
 		title = title .. self._user_info.default.text
 	end
-	self._item_title.text = title
+	self._item_button.text = title
 	if self._user_info.child_type == nil then
 		self._tab_child:UpdateTitle()
 	end

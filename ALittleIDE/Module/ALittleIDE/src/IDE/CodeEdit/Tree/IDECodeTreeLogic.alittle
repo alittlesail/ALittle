@@ -5,7 +5,6 @@ public class IDECodeTreeLogic : ALittle.DisplayLayout
 {
 	private IDECodeTreeUserInfo _user_info;
 
-	private ALittle.DisplayObject _item_title;	// 标题
 	private ALittle.DisplayObject _item_button;	// 按钮
 
 	private ALittle.DisplayObject _head;			// 头部

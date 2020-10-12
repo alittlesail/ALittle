@@ -49,7 +49,7 @@ public class DropDownS : TextCheckButtonS
 		g_IDEImageSelectDialog.SetBasePath(ui_manager.texture_path);
 		var path = g_IDEImageSelectDialog.ShowSelect();
 		if (path == null) return;
-		this.ImagePathSelectCallback("show_background", this.HandleShowBackGFOCUSOUT, null, path);
+		this.ImagePathSelectCallback("show_background", this.HandleShowBackGFOCUSOUT, null, path, false);
 	}
 	
 	public fun HandleShowScrollBarFOCUSOUT(ALittle.UIEvent event)

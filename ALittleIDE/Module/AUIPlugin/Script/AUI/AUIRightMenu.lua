@@ -24,6 +24,12 @@ name_list = {"target","is_drag"},
 type_list = {"ALittle.DisplayObject","bool"},
 option_map = {}
 })
+ALittle.RegStruct(348388800, "ALittle.UIHideEvent", {
+name = "ALittle.UIHideEvent", ns_name = "ALittle", rl_name = "UIHideEvent", hash_code = 348388800,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
 
 AUIPlugin.AUIRightMenu = Lua.Class(nil, "AUIPlugin.AUIRightMenu")
 
@@ -49,12 +55,12 @@ function AUIPlugin.AUIRightMenu:AddItem(name, callback, disabled, auto_hide)
 	ALittle.List_Push(self._info_list, info)
 end
 
-function AUIPlugin.AUIRightMenu:Show(target)
+function AUIPlugin.AUIRightMenu:Show(target, hide_callback)
 	if self._menu == nil then
-		self._menu = AUIPlugin.g_Control:CreateControl("ide_common_menu", self)
+		self._menu = AUIPlugin.g_Control:CreateControl("aui_menu", self)
 		local max_width = 0.0
 		for index, info in ___ipairs(self._info_list) do
-			local item = AUIPlugin.g_Control:CreateControl("ide_common_item_button")
+			local item = AUIPlugin.g_Control:CreateControl("aui_menu_item_button")
 			item.text = info.name
 			if item.show_text ~= nil and item.show_text.width > max_width then
 				max_width = item.show_text.width
@@ -66,10 +72,11 @@ function AUIPlugin.AUIRightMenu:Show(target)
 		end
 		self._menu.width = max_width + 50
 		self._menu.height = self._linear.height + 10
+		self._menu:AddEventListener(___all_struct[348388800], self, self.HandleHideEvent)
 	end
 	if target ~= nil then
 		local x, y = target:LocalToGlobal()
-		self._menu.x = x
+		self._menu.x = x - 5
 		self._menu.y = y + target.height
 	else
 		self._menu.x = A_UISystem.mouse_x
@@ -81,12 +88,21 @@ function AUIPlugin.AUIRightMenu:Show(target)
 	if self._menu.y + self._menu.height > A_UISystem.view_height then
 		self._menu.y = A_UISystem.view_height - self._menu.height
 	end
+	self._hide_callback = hide_callback
 	A_LayerManager:ShowFromRight(self._menu)
 end
 
 function AUIPlugin.AUIRightMenu:Hide()
 	if self._menu ~= nil then
 		A_LayerManager:HideFromRight(self._menu)
+	end
+end
+
+function AUIPlugin.AUIRightMenu:HandleHideEvent(event)
+	if self._hide_callback ~= nil then
+		local callback = self._hide_callback
+		self._hide_callback = nil
+		callback()
 	end
 end
 

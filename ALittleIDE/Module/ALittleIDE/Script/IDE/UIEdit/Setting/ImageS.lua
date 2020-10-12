@@ -34,7 +34,7 @@ function ALittleIDE.ImageS:HandleImageTextureNameSelect(event)
 	if path == nil then
 		return
 	end
-	self:ImagePathSelectCallback("texture_name", self.HandleImageTextureNameFOCUSOUT, nil, path)
+	self:ImagePathSelectCallback("texture_name", self.HandleImageTextureNameFOCUSOUT, nil, path, true)
 end
 ALittleIDE.ImageS.HandleImageTextureNameSelect = Lua.CoWrap(ALittleIDE.ImageS.HandleImageTextureNameSelect)
 
@@ -42,7 +42,7 @@ function ALittleIDE.ImageS:SetTextureName(texture_name, revoke_bind)
 	if texture_name == nil then
 		return
 	end
-	self:ImagePathSelectCallback("texture_name", self.HandleImageTextureNameFOCUSOUT, revoke_bind, texture_name)
+	self:ImagePathSelectCallback("texture_name", self.HandleImageTextureNameFOCUSOUT, revoke_bind, texture_name, true)
 end
 
 function ALittleIDE.ImageS:HandleFlipSELECT_CHANGE(event)

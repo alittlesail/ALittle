@@ -1641,7 +1641,7 @@ public class DisplayObjectS
         
 		var color:double = cast<Map<string, any>>(this._base)[text];
 		if (color == null) color = cast<Map<string, any>>(this._default)[text];
-		display_object.text = color*255;
+		display_object.text = ALittle.Math_Floor(color*255);
 	}
 	
 	//bool
@@ -1692,7 +1692,7 @@ public class DisplayObjectS
 	}
 	
 	//选择图片路径
-	public fun ImagePathSelectCallback(string text, Functor<(DisplayObjectS, ALittle.UIEvent)> callback, ALittle.RevokeBind revoke_bind, string path)
+	public fun ImagePathSelectCallback(string text, Functor<(DisplayObjectS, ALittle.UIEvent)> callback, ALittle.RevokeBind revoke_bind, string path, bool need_reset)
 	{
         var ui_manager = g_IDEProject.GetUIManager(this._tree_logic.user_info.module);
         if (ui_manager == null)
@@ -1708,18 +1708,21 @@ public class DisplayObjectS
 		callback(this, e);
 
 		// 获取图片大小
-		var surface = carp.LoadCarpSurface(ui_manager.texture_path.."/"..path);
-		if (surface == null) return;
-		var w = carp.GetCarpSurfaceWidth(surface);
-		var h = carp.GetCarpSurfaceHeight(surface);
-		carp.FreeCarpSurface(surface);
-		var new_revoke = false;
-		if (revoke_bind == null) { new_revoke = true; revoke_bind = new ALittle.RevokeBind(); }
-		this.SetWType(ALittle.UIEnumTypes.SIZE_ABS, revoke_bind);
-		this.SetHType(ALittle.UIEnumTypes.SIZE_ABS, revoke_bind);
-		this.SetWValue(w, revoke_bind);
-		this.SetHValue(h, revoke_bind);
-		if (new_revoke) this._tab_child.revoke_list.PushRevoke(revoke_bind);
+        if (need_reset)
+        {
+            var surface = carp.LoadCarpSurface(ui_manager.texture_path.."/"..path);
+            if (surface == null) return;
+            var w = carp.GetCarpSurfaceWidth(surface);
+            var h = carp.GetCarpSurfaceHeight(surface);
+            carp.FreeCarpSurface(surface);
+            var new_revoke = false;
+            if (revoke_bind == null) { new_revoke = true; revoke_bind = new ALittle.RevokeBind(); }
+            this.SetWType(ALittle.UIEnumTypes.SIZE_ABS, revoke_bind);
+            this.SetHType(ALittle.UIEnumTypes.SIZE_ABS, revoke_bind);
+            this.SetWValue(w, revoke_bind);
+            this.SetHValue(h, revoke_bind);
+            if (new_revoke) this._tab_child.revoke_list.PushRevoke(revoke_bind);
+        }
 	}
 
     //设置texture_name

@@ -60,9 +60,9 @@ function ALittleIDE.IDEControlTree:Ctor(ctrl_sys, user_info)
 	___rawset(self, "_pickup_child", true)
 	self.fold = false
 	if user_info.root then
-		self._item_title.text = "[" .. self._user_info.module_name .. "] " .. self._user_info.name
+		self._item_button.text = "[" .. self._user_info.module_name .. "] " .. self._user_info.name
 	else
-		self._item_title.text = self._user_info.name
+		self._item_button.text = self._user_info.name
 	end
 	self:Refresh()
 end

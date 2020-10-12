@@ -1,7 +1,7 @@
 
 namespace AUIPlugin;
 
-protected var CODE_LINE_HEIGHT = 18;
+protected var CODE_LINE_HEIGHT = 20;
 protected var CODE_LINE_NUMBER_WIDTH = 40;
 protected var CODE_PAD_LINES = 5;
 protected var CODE_FONT_SIZE = 14;
@@ -26,9 +26,9 @@ protected var CODE_PARAMLIST_RED = 128/255;
 protected var CODE_PARAMLIST_GREEN = 128/255;
 protected var CODE_PARAMLIST_BLUE = 128/255;
 
-protected var CODE_PARAMLIST_FOCUS_RED = 169/255;
-protected var CODE_PARAMLIST_FOCUS_GREEN = 183/255;
-protected var CODE_PARAMLIST_FOCUS_BLUE = 198/255;
+protected var CODE_PARAMLIST_FOCUS_RED = 226/255;
+protected var CODE_PARAMLIST_FOCUS_GREEN = 226/255;
+protected var CODE_PARAMLIST_FOCUS_BLUE = 226/255;
 
 protected var CODE_DEFAULT_COLOR = new ABnfColor();
 CODE_DEFAULT_COLOR.red = CODE_FONT_RED;

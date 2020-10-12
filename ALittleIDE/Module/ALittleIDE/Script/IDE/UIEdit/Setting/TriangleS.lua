@@ -45,7 +45,7 @@ function ALittleIDE.TriangleS:HandleImageTextureNameSelect(event)
 	if path == nil then
 		return
 	end
-	self:ImagePathSelectCallback("texture_name", self.HandleImageTextureNameFOCUSOUT, nil, path)
+	self:ImagePathSelectCallback("texture_name", self.HandleImageTextureNameFOCUSOUT, nil, path, true)
 end
 ALittleIDE.TriangleS.HandleImageTextureNameSelect = Lua.CoWrap(ALittleIDE.TriangleS.HandleImageTextureNameSelect)
 
@@ -53,7 +53,7 @@ function ALittleIDE.TriangleS:SetTextureName(texture_name, revoke_bind)
 	if texture_name == nil then
 		return
 	end
-	self:ImagePathSelectCallback("texture_name", self.HandleImageTextureNameFOCUSOUT, revoke_bind, texture_name)
+	self:ImagePathSelectCallback("texture_name", self.HandleImageTextureNameFOCUSOUT, revoke_bind, texture_name, true)
 end
 
 function ALittleIDE.TriangleS:HandleU1FOCUSOUT(event)

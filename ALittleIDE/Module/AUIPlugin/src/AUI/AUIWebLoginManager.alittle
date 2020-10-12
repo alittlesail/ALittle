@@ -153,7 +153,7 @@ public class AUIWebLoginManager : ALittle.EventDispatcher
 	{
 		if (this._login_dialog == null)
 		{
-			this._login_dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_account_login_dialog", this);
+			this._login_dialog = g_Control.CreateControl{ALittle.DisplayObject}("account_login_dialog", this);
 			A_LayerManager.AddToModal(this._login_dialog);
 	
 			this._login_account.text = this._account_name;
@@ -176,7 +176,7 @@ public class AUIWebLoginManager : ALittle.EventDispatcher
 	{
 		if (this._password_dialog == null)
 		{
-			this._password_dialog = g_Control.CreateControl{ALittle.DisplayObject}("ide_account_password_dialog", this);
+			this._password_dialog = g_Control.CreateControl{ALittle.DisplayObject}("account_password_dialog", this);
 			A_LayerManager.AddToModal(this._password_dialog);
 		}
 		this._password_dialog.visible = true;

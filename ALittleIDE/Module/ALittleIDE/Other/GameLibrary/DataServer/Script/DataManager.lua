@@ -77,7 +77,7 @@ function DataServer.HandleQLoadStruct(client, msg)
 	Lua.Assert(register_map, "表结构尚未注册")
 	local info = ALittle.FindStructById(msg.hash_code)
 	Lua.Assert(info, "反射信息查找失败")
-	local thread_id = __CPPAPI_ScriptSystem:JSHash(msg.account_id .. "_" .. info.rl_name)
+	local thread_id = carp.JSHash(msg.account_id .. "_" .. info.rl_name)
 	local primary = info.option_map["primary"]
 	Lua.Assert(primary, "找不到主键:" .. info.rl_name)
 	local wait_total = register_map.total
@@ -118,7 +118,7 @@ function DataServer.HandleNBackupStruct(client, msg)
 	Lua.Assert(register_map, "表结构尚未注册")
 	local info = ALittle.FindStructById(msg.data.hash_code)
 	Lua.Assert(info, "反射信息查找失败")
-	local thread_id = __CPPAPI_ScriptSystem:JSHash(msg.account_id .. "_" .. info.rl_name)
+	local thread_id = carp.JSHash(msg.account_id .. "_" .. info.rl_name)
 	local primary = info.option_map["primary"]
 	Lua.Assert(primary, "找不到主键:" .. info.rl_name)
 	local wait_total = register_map.total

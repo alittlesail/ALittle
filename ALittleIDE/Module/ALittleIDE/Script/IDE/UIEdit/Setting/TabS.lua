@@ -71,7 +71,7 @@ function ALittleIDE.TabS:HandleShowHeadBSelect(event)
 	if path == nil then
 		return
 	end
-	self:ImagePathSelectCallback("show_head_background", self.HandleShowHeadBFOCUSOUT, nil, path)
+	self:ImagePathSelectCallback("show_head_background", self.HandleShowHeadBFOCUSOUT, nil, path, false)
 end
 ALittleIDE.TabS.HandleShowHeadBSelect = Lua.CoWrap(ALittleIDE.TabS.HandleShowHeadBSelect)
 

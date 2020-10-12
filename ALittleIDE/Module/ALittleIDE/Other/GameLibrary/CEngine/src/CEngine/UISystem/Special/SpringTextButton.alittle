@@ -85,7 +85,7 @@ public class SpringTextButton : DisplayLayout
             this.DispatchEvent(e);
             if (this._file_select)
                 A_OtherSystem.SystemSelectFile(this);
-            if (System_IsPhone == false)
+            if (System_IsPhone() == false)
                 this.ShowOver();
             else
                 this.ShowUp(null);

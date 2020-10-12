@@ -22,7 +22,7 @@ public class IDEControlTreeItem : IDEControlTreeLogic
 		this._item_button.AddEventListener(this, this.HandleControlDragEnd);
 		this._item_button._user_data = this;
 		
-		this._item_title.text = this._user_info.name;
+		this._item_button.text = this._user_info.name;
 	}
 	
 	public get is_tree() : bool { return false; }
@@ -169,7 +169,7 @@ public class IDEControlTreeItem : IDEControlTreeLogic
 		this._user_info.path = ALittle.File_GetFilePathByPath(this._user_info.path).."/"..this._user_info.name;
         this._user_info.name = new_name;
 
-        this._item_title.text = this._user_info.name;
+        this._item_button.text = this._user_info.name;
 
         if (tab_child != null) tab_child.Rename(this._user_info.name);
 		g_IDECenter.center.content_edit.RenameTabByName{IDEUITabChild}(old_name, this._user_info.name);

@@ -122,11 +122,6 @@ function ALittleIDE.IDEUIControlTree:ShowAddDialog(target)
 	end
 	self._control_add_dialog._user_data = target
 	self._control_add_type.data_list = data_list
-	data_list = {}
-	for module_name, ui in ___pairs(ALittleIDE.g_IDEProject.project.ui) do
-		ALittle.List_Push(data_list, module_name)
-	end
-	self._control_add_module.data_list = data_list
 	self._control_add_dialog.visible = true
 end
 
@@ -141,7 +136,6 @@ function ALittleIDE.IDEUIControlTree:HandleAddControlConfirm(event)
 	self._control_add_dialog.visible = false
 	local child_type = self._control_add_type.text
 	local class_name = self._control_add_new_type.text
-	local extends_module = self._control_add_module.text
 	local tree_object = target:TreeAdd(nil, "", class_name, child_type)
 	if tree_object ~= nil then
 		tree_object:ShowFocus(false)

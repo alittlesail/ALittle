@@ -14,7 +14,6 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 {
 	private ALittle.DisplayObject _control_add_dialog;
 	private ALittle.DropDown _control_add_new_type;
-    private ALittle.DropDown _control_add_module;
 	private ALittle.DropDown _control_add_type;
 	
 	private ALittle.DisplayObject _paste_control_dialog;
@@ -127,10 +126,6 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 		this._control_add_type.data_list = data_list;
 
         // 获取模块
-        data_list = new List<string>();
-        for (var module_name, ui in g_IDEProject.project.ui)
-        	ALittle.List_Push(data_list, module_name);
-        this._control_add_module.data_list = data_list;
 		this._control_add_dialog.visible = true;
 	}
 	// 添加取消
@@ -149,7 +144,6 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 		// 获取添加类型
 		var child_type = this._control_add_type.text;
 		var class_name = this._control_add_new_type.text;
-        var extends_module = this._control_add_module.text;
 	
 		var tree_object = target.TreeAdd(null, "", class_name, child_type);
 		if (tree_object != null) tree_object.ShowFocus(false);

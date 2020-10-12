@@ -577,7 +577,7 @@ function ALittleIDE.IDEAntiPanel:CreateAnti(name)
 	local root = {}
 	root.childs = {}
 	user_info.base.loop_map[name] = root
-	local item = ALittleIDE.g_Control:CreateControl("ide_common_item_radiobutton")
+	local item = ALittleIDE.g_Control:CreateControl("tree_item_radiobutton")
 	item.text = name
 	item.group = self._list_group
 	item:AddEventListener(___all_struct[-1479093282], self, self.HandleAntiListItemRButtonDown)

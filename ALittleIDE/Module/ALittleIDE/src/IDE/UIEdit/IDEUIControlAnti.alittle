@@ -640,7 +640,7 @@ public class IDEAntiPanel : ALittle.DisplayLayout
 		user_info.base.loop_map[name] = root;
 
 		// 创建控件
-		var item = g_Control.CreateControl{ALittle.DisplayObject}("ide_common_item_radiobutton");
+		var item = g_Control.CreateControl{ALittle.DisplayObject}("tree_item_radiobutton");
 		item.text = name;
 		item.group = this._list_group;
 		item.AddEventListener(this, this.HandleAntiListItemRButtonDown);

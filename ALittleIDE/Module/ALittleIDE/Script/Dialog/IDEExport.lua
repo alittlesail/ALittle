@@ -193,7 +193,6 @@ function ALittleIDE.IDEExport:PackageCommon(export_path, project_path, project_n
 	if ALittle.File_GetFileAttr(export_common_path) == nil then
 		ALittle.File_MakeDeepDir(export_common_path)
 	end
-	self:RepairPNG(project_path .. "/Texture")
 	self:GenerateAtlas(project_path .. "/Texture")
 	local file_list = {}
 	local count = 0

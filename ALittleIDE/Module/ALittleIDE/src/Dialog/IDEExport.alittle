@@ -257,7 +257,7 @@ class IDEExport
 		if (ALittle.File_GetFileAttr(export_common_path) == null) ALittle.File_MakeDeepDir(export_common_path);
 	
 		// 修正下图片
-		this.RepairPNG(project_path.."/Texture");
+		// this.RepairPNG(project_path.."/Texture");
 	
 		// 生成纹理拼接文件
 		this.GenerateAtlas(project_path.."/Texture");

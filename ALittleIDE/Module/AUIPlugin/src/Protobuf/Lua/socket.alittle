@@ -62,5 +62,5 @@ public class socket
     public static writestring(socket c, int id, string value) {}
     public static writebinary(socket c, int id, any buffer, int size) {}
 
-    public static exit(net c) {}
+    public static exit(socket c) {}
 }

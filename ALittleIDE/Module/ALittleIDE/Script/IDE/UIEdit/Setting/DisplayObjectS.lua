@@ -143,9 +143,12 @@ function ALittleIDE.DisplayObjectS:LoadNatureBase()
 	self:LoadValueData("center_x")
 	self:LoadValueData("center_y")
 	self:LoadValueData("angle")
-	self:LoadBoolData("hand_cursor", false, ALittleIDE.g_IDEEnum.yn_type)
-	self:LoadBoolData("visible", true, ALittleIDE.g_IDEEnum.yn_type)
-	self:LoadBoolData("disabled", true, ALittleIDE.g_IDEEnum.yn_type)
+	self:LoadCheckBoolData("hand_cursor", false)
+	self:LoadCheckBoolData("visible", true)
+	self:LoadCheckBoolData("disabled", true)
+	self._hand_cursor_check_text.event_trans_target = self._hand_cursor
+	self._visible_check_text.event_trans_target = self._visible
+	self._disabled_check_text.event_trans_target = self._disabled
 	self:LoadDefaultNilString("__link")
 	self:LoadShowTypeData("__event")
 	self:LoadShowTypeDataForTargetClass("__target_class")
@@ -675,36 +678,36 @@ function ALittleIDE.DisplayObjectS:SetHandCursor(hand_cursor, revoke_bind)
 	if hand_cursor == nil then
 		return
 	end
-	self._hand_cursor.text = ALittleIDE.g_IDEEnum.yn_type[hand_cursor]
-	self:BoolSelectChange("hand_cursor", false, ALittleIDE.g_IDEEnum.yn_type, revoke_bind)
+	self._hand_cursor.selected = hand_cursor
+	self:CheckBoolSelectChange("hand_cursor", false, revoke_bind)
 end
 
-function ALittleIDE.DisplayObjectS:HandleHandCursorSELECT_CHANGE(event)
-	self:BoolSelectChange("hand_cursor", false, ALittleIDE.g_IDEEnum.yn_type)
+function ALittleIDE.DisplayObjectS:HandleHandCursorChanged(event)
+	self:CheckBoolSelectChange("hand_cursor", false)
 end
 
 function ALittleIDE.DisplayObjectS:SetVisible(visible, revoke_bind)
 	if visible == nil then
 		return
 	end
-	self._visible.text = ALittleIDE.g_IDEEnum.yn_type[visible]
-	self:BoolSelectChange("visible", false, ALittleIDE.g_IDEEnum.yn_type, revoke_bind)
+	self._visible.selected = visible
+	self:CheckBoolSelectChange("visible", false, revoke_bind)
 end
 
-function ALittleIDE.DisplayObjectS:HandleVisibleSELECT_CHANGE(event)
-	self:BoolSelectChange("visible", false, ALittleIDE.g_IDEEnum.yn_type)
+function ALittleIDE.DisplayObjectS:HandleVisibleChanged(event)
+	self:CheckBoolSelectChange("visible", false)
 end
 
 function ALittleIDE.DisplayObjectS:SetDisabled(disabled, revoke_bind)
 	if disabled == nil then
 		return
 	end
-	self._disabled.text = ALittleIDE.g_IDEEnum.yn_type[disabled]
-	self:BoolSelectChange("disabled", false, ALittleIDE.g_IDEEnum.yn_type, revoke_bind)
+	self._disabled.selected = disabled
+	self:CheckBoolSelectChange("disabled", false, revoke_bind)
 end
 
-function ALittleIDE.DisplayObjectS:HandleDisabledSELECT_CHANGE(event)
-	self:BoolSelectChange("disabled", false, ALittleIDE.g_IDEEnum.yn_type)
+function ALittleIDE.DisplayObjectS:HandleDisabledChanged(event)
+	self:CheckBoolSelectChange("disabled", false)
 end
 
 function ALittleIDE.DisplayObjectS:SetDescription(description, revoke_bind)
@@ -1201,6 +1204,42 @@ function ALittleIDE.DisplayObjectS:BoolSelectChange(text, need_reset, list, revo
 	end
 end
 
+function ALittleIDE.DisplayObjectS:CheckBoolSelectChange(text, need_reset, revoke_bind)
+	local old_base = self._base[text]
+	local old_object = self._object[text]
+	local display_object = self["_" .. text]
+	if display_object.selected then
+		if revoke_bind == nil and self._object[text] == true then
+			return
+		end
+		self._object[text] = true
+		self._base[text] = true
+	else
+		if revoke_bind == nil and self._object[text] == false then
+			return
+		end
+		self._object[text] = false
+		self._base[text] = false
+	end
+	if self._base[text] == self._default[text] then
+		self._base[text] = nil
+	end
+	self._tab_child:UpdateHandleQuadLayout(self._tree_logic)
+	self._tab_child.save = false
+	local new_base = self._base[text]
+	local new_object = self._object[text]
+	local old_text = nil
+	if display_object ~= nil then
+		old_text = display_object.text
+	end
+	local revoke = ALittleIDE.IDENatureChangeRevoke(self._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset)
+	if revoke_bind ~= nil then
+		revoke_bind:PushRevoke(revoke)
+	else
+		self._tab_child.revoke_list:PushRevoke(revoke)
+	end
+end
+
 function ALittleIDE.DisplayObjectS:RemoverToNilShowSetForImage(text, image_path, grid9, need_reset, revoke_bind)
 	if image_path == "" then
 		self:RemoverToNilShowSet(text, "", need_reset, revoke_bind)
@@ -1629,6 +1668,21 @@ function ALittleIDE.DisplayObjectS:LoadBoolData(text, default_bool, list)
 		else
 			ALittle.Warn(text)
 		end
+	end
+end
+
+function ALittleIDE.DisplayObjectS:LoadCheckBoolData(text, default_bool)
+	local display_object = self["_" .. text]
+	local temp = default_bool
+	if self._base[text] ~= nil then
+		temp = self._base[text]
+	else
+		temp = self._default[text]
+	end
+	if display_object ~= nil then
+		display_object.selected = temp
+	else
+		ALittle.Warn(text)
 	end
 end
 

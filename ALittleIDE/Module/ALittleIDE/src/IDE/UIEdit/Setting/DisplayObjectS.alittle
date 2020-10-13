@@ -32,9 +32,12 @@ public class DisplayObjectS
 	private ALittle.DisplayObject _center_y;
 	private ALittle.DisplayObject _angle;
 
-	private ALittle.DropDown _hand_cursor;
-	private ALittle.DropDown _visible;
-	private ALittle.DropDown _disabled;
+	private ALittle.TextCheckButton _hand_cursor;
+    private ALittle.Text _hand_cursor_check_text;
+	private ALittle.TextCheckButton _visible;
+    private ALittle.Text _visible_check_text;
+	private ALittle.TextCheckButton _disabled;
+    private ALittle.Text _disabled_check_text;
 	
 	private ALittle.ImageInput _description;
 	private ALittle.ImageInput ___target_class;
@@ -213,11 +216,12 @@ public class DisplayObjectS
 		this.LoadValueData("center_y");
 		this.LoadValueData("angle");
 		////////////////////////////////////////////////////////////////////////////////////////////-
-		this.LoadBoolData("hand_cursor", false, g_IDEEnum.yn_type);
-		////////////////////////////////////////////////////////////////////////////////////////////-
-		this.LoadBoolData("visible", true, g_IDEEnum.yn_type);
-		////////////////////////////////////////////////////////////////////////////////////////////-
-		this.LoadBoolData("disabled", true, g_IDEEnum.yn_type);
+		this.LoadCheckBoolData("hand_cursor", false);
+		this.LoadCheckBoolData("visible", true);
+		this.LoadCheckBoolData("disabled", true);
+        this._hand_cursor_check_text.event_trans_target = this._hand_cursor;
+        this._visible_check_text.event_trans_target = this._visible;
+        this._disabled_check_text.event_trans_target = this._disabled;
 		////////////////////////////////////////////////////////////////////////////////////////////-
 		this.LoadDefaultNilString("__link");
 		////////////////////////////////////////////////////////////////////////////////////////////-
@@ -630,37 +634,37 @@ public class DisplayObjectS
 	public fun SetHandCursor(bool hand_cursor, [Nullable] ALittle.RevokeBind revoke_bind)
 	{
 		if (hand_cursor == null) return;
-		this._hand_cursor.text = g_IDEEnum.yn_type[hand_cursor];
-		this.BoolSelectChange("hand_cursor", false, g_IDEEnum.yn_type, revoke_bind);
+		this._hand_cursor.selected = hand_cursor;
+		this.CheckBoolSelectChange("hand_cursor", false, revoke_bind);
 	}
 	//hand_cursor
-	public fun HandleHandCursorSELECT_CHANGE(ALittle.UIEvent event)
+	public fun HandleHandCursorChanged(ALittle.UIEvent event)
 	{
-		this.BoolSelectChange("hand_cursor", false, g_IDEEnum.yn_type);
+		this.CheckBoolSelectChange("hand_cursor", false);
 	}
 	//设置visible
 	public fun SetVisible(bool visible, [Nullable] ALittle.RevokeBind revoke_bind)
 	{
 		if (visible == null) return;
-		this._visible.text = g_IDEEnum.yn_type[visible];
-		this.BoolSelectChange("visible", false, g_IDEEnum.yn_type, revoke_bind);
+		this._visible.selected = visible;
+		this.CheckBoolSelectChange("visible", false, revoke_bind);
 	}
 	//visible
-	public fun HandleVisibleSELECT_CHANGE(ALittle.UIEvent event)
+	public fun HandleVisibleChanged(ALittle.UIEvent event)
 	{
-		this.BoolSelectChange("visible", false, g_IDEEnum.yn_type);
+		this.CheckBoolSelectChange("visible", false);
 	}
 	//设置disabled
 	public fun SetDisabled(bool disabled, [Nullable] ALittle.RevokeBind revoke_bind)
 	{
 		if (disabled == null) return;
-		this._disabled.text = g_IDEEnum.yn_type[disabled];
-		this.BoolSelectChange("disabled", false, g_IDEEnum.yn_type, revoke_bind);
+		this._disabled.selected = disabled;
+		this.CheckBoolSelectChange("disabled", false, revoke_bind);
 	}
 	//disabled
-	public fun HandleDisabledSELECT_CHANGE(ALittle.UIEvent event)
+	public fun HandleDisabledChanged(ALittle.UIEvent event)
 	{
-		this.BoolSelectChange("disabled", false, g_IDEEnum.yn_type);
+		this.CheckBoolSelectChange("disabled", false);
 	}
 	//设置description
 	public fun SetDescription(string description, [Nullable] ALittle.RevokeBind revoke_bind)
@@ -1159,6 +1163,47 @@ public class DisplayObjectS
 		// 设置为false
 		this._tab_child.save = false;
 		
+		var new_base = cast<Map<string, any>>(this._base)[text];
+		var new_object = cast<Map<string, any>>(this._object)[text];
+		// 生成撤销类
+		var old_text:string = null;
+		if (display_object != null) old_text = display_object.text;
+		var revoke = new IDENatureChangeRevoke(this._tree_logic, text, old_base, new_base, old_object, new_object, old_text,need_reset);
+		if (revoke_bind != null) revoke_bind.PushRevoke(revoke);
+		else this._tab_child.revoke_list.PushRevoke(revoke);
+	}
+
+	//bool，用于勾选框
+	//布尔值的改变
+	public fun CheckBoolSelectChange(string text, bool need_reset, [Nullable] ALittle.RevokeBind revoke_bind)
+	{
+		// 保存旧的属性
+		var old_base = cast<Map<string, any>>(this._base)[text];
+		var old_object = cast<Map<string, any>>(this._object)[text];
+		// 设置新的属性
+		var display_object:ALittle.DisplayObject = cast<Map<string, any>>(this)["_"..text];
+		if (display_object.selected)
+		{
+			if (revoke_bind == null && cast<Map<string, any>>(this._object)[text] == true) return;
+			cast<Map<string, any>>(this._object)[text] = true;
+			cast<Map<string, any>>(this._base)[text] = true;
+		}
+		else
+		{
+			if (revoke_bind == null && cast<Map<string, any>>(this._object)[text] == false) return;
+			cast<Map<string, any>>(this._object)[text] = false;
+			cast<Map<string, any>>(this._base)[text] = false;
+		}
+
+		// 如果新属性跟默认属性一样，那么就把base对应的value设置成null
+		if (cast<Map<string, any>>(this._base)[text] == cast<Map<string, any> >(this._default)[text])
+			cast<Map<string, any>>(this._base)[text] = null;
+
+		this._tab_child.UpdateHandleQuadLayout(this._tree_logic);
+	
+		// 设置为false
+		this._tab_child.save = false;
+    
 		var new_base = cast<Map<string, any>>(this._base)[text];
 		var new_object = cast<Map<string, any>>(this._object)[text];
 		// 生成撤销类
@@ -1668,6 +1713,23 @@ public class DisplayObjectS
 			else
 				ALittle.Warn(text);
 		}
+	}
+
+	//bool 用于勾选框
+	//布尔值的读取，bool为true || false 表示默认值
+	public fun LoadCheckBoolData(string text, bool default_bool)
+	{
+		var display_object:ALittle.DisplayObject = cast<Map<string, any>>(this)["_"..text];
+		var temp = default_bool;
+		if (cast<Map<string, any>>(this._base)[text] != null)
+			temp = cast<Map<string, any>>(this._base)[text];
+		else
+			temp = cast<Map<string, any>>(this._default)[text];
+
+		if (display_object != null)
+			display_object.selected = temp;
+		else
+			ALittle.Warn(text);
 	}
 	
 	//select

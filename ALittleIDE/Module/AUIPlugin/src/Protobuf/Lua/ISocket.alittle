@@ -233,7 +233,6 @@ public class ISocket
 
         if (!lua.protobuf.message_parsefromarray(protobuf_msg, binary_value, len))
 			return "message_parsefromarray failed, full_name:"..full_name, null;
-    
 		return null, protobuf_msg;
     }
 

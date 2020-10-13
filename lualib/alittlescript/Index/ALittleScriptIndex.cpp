@@ -308,6 +308,39 @@ void ALittleScriptIndex::FindALittleNameDecList(ABnfElementType type, ABnfFile* 
     }
 }
 
+void ALittleScriptIndex::FindGotoALittleNameDecList(ABnfElementType type, ABnfFile* file, const std::string& namespace_name, const std::string& name, bool find_in_global, std::vector<std::shared_ptr<ABnfElement>>& result)
+{
+    // 查本文件的
+    auto file_namespace_name = ALittleScriptUtility::GetNamespaceName(file);
+    if (file_namespace_name == namespace_name)
+    {
+        auto it = m_file_access_map.find(file);
+        if (it != m_file_access_map.end())
+            it->second.FindNameDecList(type, name, result);
+    }
+
+    // 查本命名域的
+    auto it = m_namespace_access_map.find(namespace_name);
+    if (it != m_namespace_access_map.end())
+		it->second.FindNameDecList(type, name, result);
+
+    // 查全局下
+    if (find_in_global)
+    {
+        if (type == ABnfElementType::INSTANCE_NAME)
+        {
+            for (auto& pair : m_global_access_map)
+                pair.second.FindNameDecList(type, name, result);
+        }
+        else
+        {
+            auto it = m_global_access_map.find(namespace_name);
+            if (it != m_global_access_map.end())
+                it->second.FindNameDecList(type, name, result);
+        }
+    }
+}
+
 ABnfGuessError ALittleScriptIndex::FindALittleStructGuessList(const std::string& namespace_name, const std::string& name, std::vector<ABnfGuessPtr>& guess_list)
 {
     auto element = FindALittleNameDec(ABnfElementType::STRUCT_NAME, nullptr, namespace_name, name, true);

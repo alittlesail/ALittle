@@ -1,1 +1,0 @@
-{"ide_ime_dialog":{"title":"输入法","width_value":175,"__childs":[{"y_type":3,"text":"候选的部分","__extends":"usual_label","__module":"AUIPlugin","__link":"_ime_editing_list","x_value":10}],"__extends":"dialog","__module":"AUIPlugin","height_value":52}}

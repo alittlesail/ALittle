@@ -109,8 +109,6 @@ function Emulator.GCenter:Setup()
 	Emulator.g_Control:CreateControl("main_scene", self, self._main_layer)
 	self._setting_dialog = Emulator.g_Control:CreateControl("main_setting_dialog", self)
 	A_LayerManager:AddToModal(self._setting_dialog)
-	self._proto_item_msg_menu = Emulator.g_Control:CreateControl("main_msg_menu", self)
-	self._log_item_msg_menu = Emulator.g_Control:CreateControl("main_msg_menu", self)
 	self._log_fliter_dialog = Emulator.g_Control:CreateControl("main_log_fliter_dialog", self)
 	self._dialog_layer:AddChild(self._log_fliter_dialog)
 	self._log_fliter_dialog.visible = false
@@ -301,7 +299,7 @@ function Emulator.GCenter:RefreshProtoList()
 	for index, info in ___ipairs(list) do
 		local item = self._proto_search_item_pool[info.name]
 		if item == nil then
-			item = Emulator.g_Control:CreateControl("emulator_common_item_radiobutton")
+			item = Emulator.g_Control:CreateControl("item_radiobutton")
 			item.text = info.name
 			self._proto_search_item_pool[info.name] = item
 			item.drag_trans_target = self._protobuf_scroll_screen
@@ -332,10 +330,12 @@ function Emulator.GCenter:HandleProtoItemSelected(event)
 end
 
 function Emulator.GCenter:HandleProtoItemRButtonDown(event)
-	A_LayerManager:ShowFromRight(self._proto_item_msg_menu)
-	self._proto_item_msg_menu.x = A_UISystem.mouse_x
-	self._proto_item_msg_menu.y = A_UISystem.mouse_y
-	self._proto_item_msg_menu._user_data = event.target._user_data
+	local info = event.target._user_data
+	local menu = AUIPlugin.AUIRightMenu()
+	menu:AddItem("复制名称", Lua.Bind(ALittle.System_SetClipboardText, info.name))
+	menu:AddItem("复制全称", Lua.Bind(ALittle.System_SetClipboardText, info.full_name))
+	menu:AddItem("过滤", Lua.Bind(self.AddFliter, self, info.full_name))
+	menu:Show()
 end
 
 function Emulator.GCenter:HandleLogSearchClick(event)
@@ -355,6 +355,7 @@ function Emulator.GCenter:HandleLogFliterClick(event)
 	self._log_fliter_dialog.visible = true
 	local fliter_list = Emulator.g_GConfig:GetConfig("fliter_list", {})
 	self._log_fliter_edit.text = ALittle.String_Join(fliter_list, "\n")
+	self._log_fliter_edit:DelayFocus()
 end
 
 function Emulator.GCenter:HandleLogFliterCancelClick(event)
@@ -408,7 +409,7 @@ function Emulator.GCenter:AddLogMessage(msg)
 	user_data.info = A_LuaProtobufSchedule:GetMessageInfoByMessage(msg)
 	user_data.msg = protobuf.clonemessage(msg)
 	user_data.upper_name = ALittle.String_Upper(user_data.info.name)
-	local item = Emulator.g_Control:CreateControl("emulator_common_item_radiobutton")
+	local item = Emulator.g_Control:CreateControl("item_radiobutton")
 	item.text = user_data.info.name
 	item.drag_trans_target = self._log_scroll_screen
 	item._user_data = user_data
@@ -439,10 +440,12 @@ function Emulator.GCenter:HandleLogItemSelected(event)
 end
 
 function Emulator.GCenter:HandleProtoLogRButtonDown(event)
-	A_LayerManager:ShowFromRight(self._log_item_msg_menu)
-	self._log_item_msg_menu.x = A_UISystem.mouse_x
-	self._log_item_msg_menu.y = A_UISystem.mouse_y
-	self._log_item_msg_menu._user_data = event.target._user_data
+	local info = event.target._user_data
+	local menu = AUIPlugin.AUIRightMenu()
+	menu:AddItem("复制名称", Lua.Bind(ALittle.System_SetClipboardText, info.info.name))
+	menu:AddItem("复制全称", Lua.Bind(ALittle.System_SetClipboardText, info.info.full_name))
+	menu:AddItem("过滤", Lua.Bind(self.AddFliter, self, info.info.full_name))
+	menu:Show()
 end
 
 function Emulator.GCenter:HandleShowSearchClick(event)
@@ -453,44 +456,13 @@ function Emulator.GCenter:HandleShowSearchClick(event)
 	self._json_codeedit:FindNext(key)
 end
 
-function Emulator.GCenter:HandleMsgCopyFullName(event)
-	if A_LayerManager:IsCurrentRight(self._proto_item_msg_menu) then
-		local info = self._proto_item_msg_menu._user_data
-		ALittle.System_SetClipboardText(info.full_name)
-	elseif A_LayerManager:IsCurrentRight(self._log_item_msg_menu) then
-		local info = self._log_item_msg_menu._user_data
-		ALittle.System_SetClipboardText(info.info.full_name)
-	end
-	A_LayerManager:HideCurrentFromRight()
-end
-
-function Emulator.GCenter:HandleMsgCopyName(event)
-	if A_LayerManager:IsCurrentRight(self._proto_item_msg_menu) then
-		local info = self._proto_item_msg_menu._user_data
-		ALittle.System_SetClipboardText(info.name)
-	elseif A_LayerManager:IsCurrentRight(self._log_item_msg_menu) then
-		local info = self._log_item_msg_menu._user_data
-		ALittle.System_SetClipboardText(info.info.name)
-	end
-	A_LayerManager:HideCurrentFromRight()
-end
-
-function Emulator.GCenter:HandleMsgAddToFliter(event)
-	local full_name = nil
-	if A_LayerManager:IsCurrentRight(self._proto_item_msg_menu) then
-		local info = self._proto_item_msg_menu._user_data
-		full_name = info.full_name
-	elseif A_LayerManager:IsCurrentRight(self._log_item_msg_menu) then
-		local info = self._log_item_msg_menu._user_data
-		full_name = info.info.full_name
-	end
+function Emulator.GCenter:AddFliter(full_name)
 	self._fliter_map[full_name] = true
 	local list = {}
 	for name, _ in ___pairs(self._fliter_map) do
 		ALittle.List_Push(list, name)
 	end
 	Emulator.g_GConfig:SetConfig("fliter_list", list)
-	A_LayerManager:HideCurrentFromRight()
 end
 
 function Emulator.GCenter:HandleClientSocketDisconnected(socket)

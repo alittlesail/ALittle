@@ -52,6 +52,7 @@ public class IDEControlTree : IDEControlTreeLogic
 			menu.AddItem("添加模块", bind(this.HandleAddModule, this));
 
         menu.AddItem("新建控件", bind(this.HandleNewControl, this));
+        menu.AddItem("继承控件", bind(this.HandleExtendsControl, this));
 
 		var can_remove = this._user_info.root && this._user_info.module_name != g_IDEProject.project.name;
 		if (can_remove) menu.AddItem("移除模块", bind(this.HandleRemoveModule, this));
@@ -107,6 +108,11 @@ public class IDEControlTree : IDEControlTreeLogic
     private fun HandleNewControl()
     {
         g_IDECenter.center.control_list.ShowNewControl(this._user_info.module_name);
+    }
+
+    private fun HandleExtendsControl()
+    {
+        g_IDECenter.center.control_list.ShowExtendsControl(this._user_info.module_name);
     }
 	
 	public get is_tree() : bool { return true; }

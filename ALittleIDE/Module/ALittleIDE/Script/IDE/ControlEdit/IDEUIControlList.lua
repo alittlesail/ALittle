@@ -176,24 +176,24 @@ function ALittleIDE.IDEUIControlList:ShowNewControl(module_name)
 	if module_name == nil then
 		module_name = ALittleIDE.g_IDEProject.project.name
 	end
-	if self._control_new_dialog == nil then
-		self._control_new_dialog = ALittleIDE.g_Control:CreateControl("ide_new_control_dialog", self)
-		A_LayerManager:AddToModal(self._control_new_dialog)
-		self._control_new_type.data_list = ALittleIDE.g_IDEEnum.child_type_list
+	if self._new_control_dialog == nil then
+		self._new_control_dialog = ALittleIDE.g_Control:CreateControl("ide_new_control_dialog", self)
+		A_LayerManager:AddToModal(self._new_control_dialog)
+		self._new_control_type.data_list = ALittleIDE.g_IDEEnum.child_type_list
 	end
 	local data_list = {}
 	for name, ui in ___pairs(ALittleIDE.g_IDEProject.project.ui) do
 		ALittle.List_Push(data_list, name)
 	end
-	self._control_new_module.data_list = data_list
-	self._control_new_module.text = module_name
-	self._control_new_name.text = ""
-	self._control_new_dialog.visible = true
-	A_UISystem.focus = self._control_new_name.show_input
+	self._new_control_module.data_list = data_list
+	self._new_control_module.text = module_name
+	self._new_control_name.text = ""
+	self._new_control_dialog.visible = true
+	A_UISystem.focus = self._new_control_name.show_input
 end
 
 function ALittleIDE.IDEUIControlList:HandleNewControlCancel(event)
-	self._control_new_dialog.visible = false
+	self._new_control_dialog.visible = false
 end
 
 function ALittleIDE.IDEUIControlList:HandleNewControlConfirm(event)
@@ -202,7 +202,7 @@ function ALittleIDE.IDEUIControlList:HandleNewControlConfirm(event)
 		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
 		return
 	end
-	local name = self._control_new_name.text
+	local name = self._new_control_name.text
 	if name == "" then
 		g_AUITool:ShowNotice("错误", "请输入控件名")
 		return
@@ -211,7 +211,7 @@ function ALittleIDE.IDEUIControlList:HandleNewControlConfirm(event)
 		g_AUITool:ShowNotice("错误", "控件名不合法:" .. name)
 		return
 	end
-	local ui_manager = project.ui[self._control_new_module.text]
+	local ui_manager = project.ui[self._new_control_module.text]
 	if ui_manager == nil then
 		g_AUITool:ShowNotice("错误", "模块不存在")
 		return
@@ -224,13 +224,93 @@ function ALittleIDE.IDEUIControlList:HandleNewControlConfirm(event)
 		g_AUITool:ShowNotice("错误", "控件名已存在:" .. name)
 		return
 	end
-	local control_type = self._control_new_type.text
+	local control_type = self._new_control_type.text
 	if control_type == "" then
 		g_AUITool:ShowNotice("错误", "请选择控件类型")
 		return
 	end
-	ALittleIDE.g_IDECenter.center.content_edit:StartEditControlByNew(self._control_new_module.text, name, control_type)
-	self._control_new_dialog.visible = false
+	ALittleIDE.g_IDECenter.center.content_edit:StartEditControlByNew(self._new_control_module.text, name, control_type)
+	self._new_control_dialog.visible = false
+end
+
+function ALittleIDE.IDEUIControlList:ShowExtendsControl(module_name)
+	if ALittleIDE.g_IDEProject.project == nil then
+		g_AUITool:ShowNotice("提示", "当前没有打开的项目")
+		return
+	end
+	if module_name == nil then
+		module_name = ALittleIDE.g_IDEProject.project.name
+	end
+	if self._extends_control_dialog == nil then
+		self._extends_control_dialog = ALittleIDE.g_Control:CreateControl("ide_extends_control_dialog", self)
+		A_LayerManager:AddToModal(self._extends_control_dialog)
+	end
+	local data_list = {}
+	for name, ui in ___pairs(ALittleIDE.g_IDEProject.project.ui) do
+		ALittle.List_Push(data_list, name)
+	end
+	self._extends_control_module.data_list = data_list
+	self._extends_control_module.text = module_name
+	data_list = {}
+	for name, ui in ___pairs(ALittleIDE.g_IDEProject.project.ui) do
+		ALittle.List_Push(data_list, name)
+	end
+	self._extends_control_extends_module.data_list = data_list
+	self._extends_control_extends_module.text = module_name
+	self._extends_control_name.text = ""
+	self._extends_control_extends_name.text = ""
+	self._extends_control_dialog.visible = true
+	A_UISystem.focus = self._extends_control_name.show_input
+end
+
+function ALittleIDE.IDEUIControlList:HandleExtendsControlCancel(event)
+	self._extends_control_dialog.visible = false
+end
+
+function ALittleIDE.IDEUIControlList:HandleExtendsControlConfirm(event)
+	local project = ALittleIDE.g_IDEProject.project
+	if project == nil then
+		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
+		return
+	end
+	local name = self._extends_control_name.text
+	if name == "" then
+		g_AUITool:ShowNotice("错误", "请输入控件名")
+		return
+	end
+	if ALittleIDE.IDEUtility_CheckName(name) ~= nil then
+		g_AUITool:ShowNotice("错误", "控件名不合法:" .. name)
+		return
+	end
+	local ui_manager = project.ui[self._extends_control_module.text]
+	if ui_manager == nil then
+		g_AUITool:ShowNotice("错误", "模块不存在")
+		return
+	end
+	if ui_manager.control_map[name] ~= nil then
+		g_AUITool:ShowNotice("错误", "控件已存在:" .. name)
+		return
+	end
+	if ALittleIDE.g_IDECenter.center.content_edit:GetTabById(ALittleIDE.IDEUITabChild, name) ~= nil then
+		g_AUITool:ShowNotice("错误", "控件名已存在:" .. name)
+		return
+	end
+	local extends_name = self._extends_control_extends_name.text
+	if extends_name == "" then
+		g_AUITool:ShowNotice("错误", "请输入要继承的控件名")
+		return
+	end
+	local extends_ui_manager = project.ui[self._extends_control_extends_module.text]
+	if extends_ui_manager == nil then
+		g_AUITool:ShowNotice("错误", "要继承的模块不存在")
+		return
+	end
+	if extends_ui_manager.control_map[extends_name] == nil then
+		g_AUITool:ShowNotice("错误", "要继承的控件不存在")
+		return
+	end
+	ALittleIDE.g_IDECenter.center.content_edit:StartEditControlByExtends(self._extends_control_module.text, name, self._extends_control_extends_module.text, extends_name)
+	self._extends_control_dialog.visible = false
 end
 
 end

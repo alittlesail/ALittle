@@ -74,7 +74,7 @@ void ALittleScriptProjectClass::FindDefineImpl(const std::string& pre_input, con
 	{
         {
             std::vector<ABnfElementPtr> dec_list;
-            FindALittleNameDecList(ABnfElementType::CLASS_NAME, nullptr, namespace_name, u8"", true, dec_list);
+            FindGotoALittleNameDecList(ABnfElementType::CLASS_NAME, nullptr, namespace_name, u8"", true, dec_list);
 
             for (auto& dec : dec_list)
             {
@@ -86,7 +86,7 @@ void ALittleScriptProjectClass::FindDefineImpl(const std::string& pre_input, con
         }
         {
             std::vector<std::shared_ptr<ABnfElement>> dec_list;
-            FindALittleNameDecList(ABnfElementType::STRUCT_NAME, nullptr, namespace_name, u8"", true, dec_list);
+            FindGotoALittleNameDecList(ABnfElementType::STRUCT_NAME, nullptr, namespace_name, u8"", true, dec_list);
 
             for (auto& dec : dec_list)
             {
@@ -98,7 +98,7 @@ void ALittleScriptProjectClass::FindDefineImpl(const std::string& pre_input, con
         }
         {
             std::vector<std::shared_ptr<ABnfElement>> dec_list;
-            FindALittleNameDecList(ABnfElementType::ENUM_NAME, nullptr, namespace_name, u8"", true, dec_list);
+            FindGotoALittleNameDecList(ABnfElementType::ENUM_NAME, nullptr, namespace_name, u8"", true, dec_list);
 
             for (auto& dec : dec_list)
             {
@@ -128,7 +128,7 @@ void ALittleScriptProjectClass::FindDefineImpl(const std::string& pre_input, con
     {
         {
             std::vector<ABnfElementPtr> dec_list;
-            FindALittleNameDecList(ABnfElementType::CLASS_NAME, nullptr, namespace_name, define_name, true, dec_list);
+            FindGotoALittleNameDecList(ABnfElementType::CLASS_NAME, nullptr, namespace_name, define_name, true, dec_list);
 
             for (auto& dec : dec_list)
             {
@@ -181,7 +181,7 @@ void ALittleScriptProjectClass::FindDefineImpl(const std::string& pre_input, con
         }
         {
             std::vector<ABnfElementPtr> dec_list;
-            FindALittleNameDecList(ABnfElementType::STRUCT_NAME, nullptr, namespace_name, define_name, true, dec_list);
+            FindGotoALittleNameDecList(ABnfElementType::STRUCT_NAME, nullptr, namespace_name, define_name, true, dec_list);
 
             for (auto& dec : dec_list)
             {
@@ -204,7 +204,7 @@ void ALittleScriptProjectClass::FindDefineImpl(const std::string& pre_input, con
         }
         {
             std::vector<ABnfElementPtr> dec_list;
-            FindALittleNameDecList(ABnfElementType::ENUM_NAME, nullptr, namespace_name, define_name, true, dec_list);
+            FindGotoALittleNameDecList(ABnfElementType::ENUM_NAME, nullptr, namespace_name, define_name, true, dec_list);
 
             for (auto& dec : dec_list)
             {
@@ -257,7 +257,7 @@ void ALittleScriptProjectClass::FindGotoImpl(const std::string& text, ALanguageG
 	{
         {
             std::vector<ABnfElementPtr> dec_list;
-            FindALittleNameDecList(ABnfElementType::CLASS_NAME, nullptr, split[0], split[1], true, dec_list);
+            FindGotoALittleNameDecList(ABnfElementType::CLASS_NAME, nullptr, split[0], split[1], true, dec_list);
             for (auto& dec : dec_list)
             {
                 info.file_path = dec->GetFullPath();
@@ -270,7 +270,7 @@ void ALittleScriptProjectClass::FindGotoImpl(const std::string& text, ALanguageG
         }
         {
             std::vector<std::shared_ptr<ABnfElement>> dec_list;
-            FindALittleNameDecList(ABnfElementType::STRUCT_NAME, nullptr, split[0], split[1], true, dec_list);
+            FindGotoALittleNameDecList(ABnfElementType::STRUCT_NAME, nullptr, split[0], split[1], true, dec_list);
             for (auto& dec : dec_list)
             {
                 info.file_path = dec->GetFullPath();
@@ -283,7 +283,7 @@ void ALittleScriptProjectClass::FindGotoImpl(const std::string& text, ALanguageG
         }
         {
             std::vector<std::shared_ptr<ABnfElement>> dec_list;
-            FindALittleNameDecList(ABnfElementType::ENUM_NAME, nullptr, split[0], split[1], true, dec_list);
+            FindGotoALittleNameDecList(ABnfElementType::ENUM_NAME, nullptr, split[0], split[1], true, dec_list);
             for (auto& dec : dec_list)
             {
                 info.file_path = dec->GetFullPath();
@@ -301,7 +301,7 @@ void ALittleScriptProjectClass::FindGotoImpl(const std::string& text, ALanguageG
     {
         {
             std::vector<ABnfElementPtr> dec_list;
-            FindALittleNameDecList(ABnfElementType::CLASS_NAME, nullptr, split[0], split[1], true, dec_list);
+            FindGotoALittleNameDecList(ABnfElementType::CLASS_NAME, nullptr, split[0], split[1], true, dec_list);
 
             for (auto& dec : dec_list)
             {
@@ -345,7 +345,7 @@ void ALittleScriptProjectClass::FindGotoImpl(const std::string& text, ALanguageG
         }
         {
             std::vector<ABnfElementPtr> dec_list;
-            FindALittleNameDecList(ABnfElementType::STRUCT_NAME, nullptr, split[0], split[1], true, dec_list);
+            FindGotoALittleNameDecList(ABnfElementType::STRUCT_NAME, nullptr, split[0], split[1], true, dec_list);
 
             for (auto& dec : dec_list)
             {
@@ -366,7 +366,7 @@ void ALittleScriptProjectClass::FindGotoImpl(const std::string& text, ALanguageG
         }
         {
             std::vector<ABnfElementPtr> dec_list;
-            FindALittleNameDecList(ABnfElementType::ENUM_NAME, nullptr, split[0], split[1], true, dec_list);
+            FindGotoALittleNameDecList(ABnfElementType::ENUM_NAME, nullptr, split[0], split[1], true, dec_list);
 
             for (auto& dec : dec_list)
             {

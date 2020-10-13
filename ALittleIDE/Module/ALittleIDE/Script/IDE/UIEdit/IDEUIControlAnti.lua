@@ -512,7 +512,7 @@ function ALittleIDE.IDEAntiPanel:Init(tab_child)
 	local user_info = self._tab_child.tree_object.user_info
 	if user_info.base.loop_map ~= nil then
 		for name, info in ___pairs(user_info.base.loop_map) do
-			local item = ALittleIDE.g_Control:CreateControl("ide_common_item_radiobutton")
+			local item = ALittleIDE.g_Control:CreateControl("tree_item_radiobutton")
 			item.text = name
 			item.group = self._list_group
 			item:AddEventListener(___all_struct[-1479093282], self, self.HandleAntiListItemRButtonDown)

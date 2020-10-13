@@ -1215,35 +1215,35 @@ class IDEExport
 			var new_surface = carp.CreateCarpSurface(24, 24);
 			var new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
 			var new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
-			carp.CutBlitCarpSurface(new_surface, surface, "0,0,"..new_surface_width..","..new_surface_height, "0,0,"..surface_width..","..surface_height);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0,"..surface_width..","..surface_height, "0,0,"..new_surface_width..","..new_surface_height);
 			carp.SaveCarpSurface(new_surface, package_info.project_path.."/Export/Android/res/drawable-ldpi/icon.png");
 			carp.FreeCarpSurface(new_surface);
 	
 			new_surface = carp.CreateCarpSurface(48, 48);
 			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
 			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
-			carp.CutBlitCarpSurface(new_surface, surface, "0,0,"..new_surface_width..","..new_surface_height, "0,0,"..surface_width..","..surface_height);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0,"..surface_width..","..surface_height, "0,0,"..new_surface_width..","..new_surface_height);
 			carp.SaveCarpSurface(new_surface, package_info.project_path.."/Export/Android/res/drawable-mdpi/icon.png");
 			carp.FreeCarpSurface(new_surface);
 	
 			new_surface = carp.CreateCarpSurface(72, 72);
 			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
 			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
-			carp.CutBlitCarpSurface(new_surface, surface, "0,0,"..new_surface_width..","..new_surface_height, "0,0,"..surface_width..","..surface_height);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0,"..surface_width..","..surface_height, "0,0,"..new_surface_width..","..new_surface_height);
 			carp.SaveCarpSurface(new_surface, package_info.project_path.."/Export/Android/res/drawable-hdpi/icon.png");
 			carp.FreeCarpSurface(new_surface);
 	
 			new_surface = carp.CreateCarpSurface(96, 96);
 			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
 			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
-			carp.CutBlitCarpSurface(new_surface, surface, "0,0,"..new_surface_width..","..new_surface_height, "0,0,"..surface_width..","..surface_height);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0,"..surface_width..","..surface_height, "0,0,"..new_surface_width..","..new_surface_height);
 			carp.SaveCarpSurface(new_surface, package_info.project_path.."/Export/Android/res/drawable-xhdpi/icon.png");
 			carp.FreeCarpSurface(new_surface);
 	
 			new_surface = carp.CreateCarpSurface(144, 144);
 			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
 			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
-			carp.CutBlitCarpSurface(new_surface, surface, "0,0,"..new_surface_width..","..new_surface_height, "0,0,"..surface_width..","..surface_height);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0,"..surface_width..","..surface_height, "0,0,"..new_surface_width..","..new_surface_height);
 			carp.SaveCarpSurface(new_surface, package_info.project_path.."/Export/Android/res/drawable-xxhdpi/icon.png");
 			carp.FreeCarpSurface(new_surface);
 			// 释放图片
@@ -1341,126 +1341,126 @@ class IDEExport
 			var new_surface = carp.CreateCarpSurface(40, 40);
 			var new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
 			var new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
-			carp.CutBlitCarpSurface(new_surface, surface, "0,0,"..new_surface_width..","..new_surface_height, "0,0,"..surface_width..","..surface_height);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0,"..surface_width..","..surface_height, "0,0,"..new_surface_width..","..new_surface_height);
 			carp.SaveCarpSurface(new_surface, package_info.export_path.."/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon.png");
 			carp.FreeCarpSurface(new_surface);
         
 			new_surface = carp.CreateCarpSurface(60, 60);
 			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
 			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
-			carp.CutBlitCarpSurface(new_surface, surface, "0,0,"..new_surface_width..","..new_surface_height, "0,0,"..surface_width..","..surface_height);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0,"..surface_width..","..surface_height, "0,0,"..new_surface_width..","..new_surface_height);
 			carp.SaveCarpSurface(new_surface, package_info.export_path.."/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-1.png");
 			carp.FreeCarpSurface(new_surface);
         
 			new_surface = carp.CreateCarpSurface(58, 58);
 			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
 			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
-			carp.CutBlitCarpSurface(new_surface, surface, "0,0,"..new_surface_width..","..new_surface_height, "0,0,"..surface_width..","..surface_height);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0,"..surface_width..","..surface_height, "0,0,"..new_surface_width..","..new_surface_height);
 			carp.SaveCarpSurface(new_surface, package_info.export_path.."/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-2.png");
 			carp.FreeCarpSurface(new_surface);
         
 			new_surface = carp.CreateCarpSurface(87, 87);
 			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
 			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
-			carp.CutBlitCarpSurface(new_surface, surface, "0,0,"..new_surface_width..","..new_surface_height, "0,0,"..surface_width..","..surface_height);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0,"..surface_width..","..surface_height, "0,0,"..new_surface_width..","..new_surface_height);
 			carp.SaveCarpSurface(new_surface, package_info.export_path.."/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-3.png");
 			carp.FreeCarpSurface(new_surface);
         
 			new_surface = carp.CreateCarpSurface(80, 80);
 			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
 			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
-			carp.CutBlitCarpSurface(new_surface, surface, "0,0,"..new_surface_width..","..new_surface_height, "0,0,"..surface_width..","..surface_height);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0,"..surface_width..","..surface_height, "0,0,"..new_surface_width..","..new_surface_height);
 			carp.SaveCarpSurface(new_surface, package_info.export_path.."/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-4.png");
 			carp.FreeCarpSurface(new_surface);
         
 			new_surface = carp.CreateCarpSurface(120, 120);
 			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
 			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
-			carp.CutBlitCarpSurface(new_surface, surface, "0,0,"..new_surface_width..","..new_surface_height, "0,0,"..surface_width..","..surface_height);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0,"..surface_width..","..surface_height, "0,0,"..new_surface_width..","..new_surface_height);
 			carp.SaveCarpSurface(new_surface, package_info.export_path.."/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-5.png");
 			carp.FreeCarpSurface(new_surface);
         
 			new_surface = carp.CreateCarpSurface(120, 120);
 			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
 			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
-			carp.CutBlitCarpSurface(new_surface, surface, "0,0,"..new_surface_width..","..new_surface_height, "0,0,"..surface_width..","..surface_height);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0,"..surface_width..","..surface_height, "0,0,"..new_surface_width..","..new_surface_height);
 			carp.SaveCarpSurface(new_surface, package_info.export_path.."/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-6.png");
 			carp.FreeCarpSurface(new_surface);
         
 			new_surface = carp.CreateCarpSurface(180, 180);
 			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
 			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
-			carp.CutBlitCarpSurface(new_surface, surface, "0,0,"..new_surface_width..","..new_surface_height, "0,0,"..surface_width..","..surface_height);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0,"..surface_width..","..surface_height, "0,0,"..new_surface_width..","..new_surface_height);
 			carp.SaveCarpSurface(new_surface, package_info.export_path.."/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-7.png");
 			carp.FreeCarpSurface(new_surface);
         
 			new_surface = carp.CreateCarpSurface(20, 20);
 			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
 			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
-			carp.CutBlitCarpSurface(new_surface, surface, "0,0,"..new_surface_width..","..new_surface_height, "0,0,"..surface_width..","..surface_height);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0,"..surface_width..","..surface_height, "0,0,"..new_surface_width..","..new_surface_height);
 			carp.SaveCarpSurface(new_surface, package_info.export_path.."/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-8.png");
 			carp.FreeCarpSurface(new_surface);
         
 			new_surface = carp.CreateCarpSurface(40, 40);
 			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
 			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
-			carp.CutBlitCarpSurface(new_surface, surface, "0,0,"..new_surface_width..","..new_surface_height, "0,0,"..surface_width..","..surface_height);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0,"..surface_width..","..surface_height, "0,0,"..new_surface_width..","..new_surface_height);
 			carp.SaveCarpSurface(new_surface, package_info.export_path.."/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-9.png");
 			carp.FreeCarpSurface(new_surface);
         
 			new_surface = carp.CreateCarpSurface(29, 29);
 			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
 			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
-			carp.CutBlitCarpSurface(new_surface, surface, "0,0,"..new_surface_width..","..new_surface_height, "0,0,"..surface_width..","..surface_height);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0,"..surface_width..","..surface_height, "0,0,"..new_surface_width..","..new_surface_height);
 			carp.SaveCarpSurface(new_surface, package_info.export_path.."/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-10.png");
 			carp.FreeCarpSurface(new_surface);
         
 			new_surface = carp.CreateCarpSurface(58, 58);
 			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
 			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
-			carp.CutBlitCarpSurface(new_surface, surface, "0,0,"..new_surface_width..","..new_surface_height, "0,0,"..surface_width..","..surface_height);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0,"..surface_width..","..surface_height, "0,0,"..new_surface_width..","..new_surface_height);
 			carp.SaveCarpSurface(new_surface, package_info.export_path.."/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-11.png");
 			carp.FreeCarpSurface(new_surface);
         
 			new_surface = carp.CreateCarpSurface(40, 40);
 			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
 			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
-			carp.CutBlitCarpSurface(new_surface, surface, "0,0,"..new_surface_width..","..new_surface_height, "0,0,"..surface_width..","..surface_height);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0,"..surface_width..","..surface_height, "0,0,"..new_surface_width..","..new_surface_height);
 			carp.SaveCarpSurface(new_surface, package_info.export_path.."/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-12.png");
 			carp.FreeCarpSurface(new_surface);
         
 			new_surface = carp.CreateCarpSurface(80, 80);
 			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
 			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
-			carp.CutBlitCarpSurface(new_surface, surface, "0,0,"..new_surface_width..","..new_surface_height, "0,0,"..surface_width..","..surface_height);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0,"..surface_width..","..surface_height, "0,0,"..new_surface_width..","..new_surface_height);
 			carp.SaveCarpSurface(new_surface, package_info.export_path.."/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-13.png");
 			carp.FreeCarpSurface(new_surface);
         
 			new_surface = carp.CreateCarpSurface(76, 76);
 			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
 			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
-			carp.CutBlitCarpSurface(new_surface, surface, "0,0,"..new_surface_width..","..new_surface_height, "0,0,"..surface_width..","..surface_height);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0,"..surface_width..","..surface_height, "0,0,"..new_surface_width..","..new_surface_height);
 			carp.SaveCarpSurface(new_surface, package_info.export_path.."/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-14.png");
 			carp.FreeCarpSurface(new_surface);
         
 			new_surface = carp.CreateCarpSurface(152, 152);
 			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
 			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
-			carp.CutBlitCarpSurface(new_surface, surface, "0,0,"..new_surface_width..","..new_surface_height, "0,0,"..surface_width..","..surface_height);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0,"..surface_width..","..surface_height, "0,0,"..new_surface_width..","..new_surface_height);
 			carp.SaveCarpSurface(new_surface, package_info.export_path.."/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-15.png");
 			carp.FreeCarpSurface(new_surface);
         
 			new_surface = carp.CreateCarpSurface(167, 167);
 			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
 			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
-			carp.CutBlitCarpSurface(new_surface, surface, "0,0,"..new_surface_width..","..new_surface_height, "0,0,"..surface_width..","..surface_height);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0,"..surface_width..","..surface_height, "0,0,"..new_surface_width..","..new_surface_height);
 			carp.SaveCarpSurface(new_surface, package_info.export_path.."/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-16.png");
 			carp.FreeCarpSurface(new_surface);
         
 			new_surface = carp.CreateCarpSurface(1024, 1024);
 			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
 			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
-			carp.CutBlitCarpSurface(new_surface, surface, "0,0,"..new_surface_width..","..new_surface_height, "0,0,"..surface_width..","..surface_height);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0,"..surface_width..","..surface_height, "0,0,"..new_surface_width..","..new_surface_height);
 			carp.SaveCarpSurface(new_surface, package_info.export_path.."/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-17.png");
 			carp.FreeCarpSurface(new_surface);
         

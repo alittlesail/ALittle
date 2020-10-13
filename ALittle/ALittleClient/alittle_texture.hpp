@@ -386,7 +386,7 @@ public:
 			
 			if (surface == 0) { surface = child_surface; break; }
 
-			CarpSurfaceBind::BlitCarpSurface(surface, child_surface, l, t);
+			CarpSurfaceBind::BlitCarpSurface(child_surface, surface, l, t);
 			// top
 			for (int i = 0; i < w; ++i)
 			{

@@ -121,7 +121,7 @@ public class AUIImageCutPlugin : ALittle.DisplayLayout
         if (new_height > this._MAX_HEIGHT) new_height = this._MAX_HEIGHT;
     
         var new_surface = carp.CreateCarpSurface(ALittle.Math_Floor(new_width), ALittle.Math_Floor(new_height));
-        carp.CutBlitCarpSurface(new_surface, surface, "0,0,"..new_width..","..new_height, cut_x..","..cut_y..","..cut_width..","..cut_height);
+        carp.CutBlitCarpSurface(surface, new_surface, cut_x..","..cut_y..","..cut_width..","..cut_height, "0,0,"..new_width..","..new_height);
         carp.FreeCarpSurface(surface);
     
         // 检查是否要剪成圆

@@ -92,7 +92,7 @@ function AUIPlugin.AUIImageCutPlugin:Cut(target_path)
 		new_height = self._MAX_HEIGHT
 	end
 	local new_surface = carp.CreateCarpSurface(ALittle.Math_Floor(new_width), ALittle.Math_Floor(new_height))
-	carp.CutBlitCarpSurface(new_surface, surface, "0,0," .. new_width .. "," .. new_height, cut_x .. "," .. cut_y .. "," .. cut_width .. "," .. cut_height)
+	carp.CutBlitCarpSurface(surface, new_surface, cut_x .. "," .. cut_y .. "," .. cut_width .. "," .. cut_height, "0,0," .. new_width .. "," .. new_height)
 	carp.FreeCarpSurface(surface)
 	if self._is_circle then
 		local new_center = new_width / 2

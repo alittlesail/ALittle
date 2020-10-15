@@ -510,8 +510,8 @@ public class AUIFileSelectLayout : ALittle.DisplayLayout
 			width = A_UISystem.view_width;
 			image.width = width;
 		}
-		this._image_pre_dialog.width = width;
-		image.x = (width - image.width) / 2;
+		this._image_pre_dialog.width = width + 10;
+		image.x = (this._image_pre_dialog.width - image.width) / 2;
 	
 		var height:double = image.texture_height;
 		image.height = height;
@@ -521,8 +521,8 @@ public class AUIFileSelectLayout : ALittle.DisplayLayout
 			height = A_UISystem.view_height - this._image_pre_dialog.head_size;
 			image.height = height;
 		}
-		image.y = (height - image.height) / 2;
-		this._image_pre_dialog.height = this._image_pre_dialog.head_size + height;
+		image.y = (height + 5 - image.height) / 2;
+		this._image_pre_dialog.height = this._image_pre_dialog.head_size + height + 10;
 	}
 
 	public fun HandleItemMoveOut(ALittle.UIMoveOutEvent event)

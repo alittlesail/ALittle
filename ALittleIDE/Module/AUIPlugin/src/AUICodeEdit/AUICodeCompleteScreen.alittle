@@ -8,7 +8,7 @@ protected struct AUICodeCompleteItemInfo
     ALittle.Image _tag_image;
     ALittle.DisplayObject _item;
 
-    int pos;        // 用于排序
+    List<int> pos;        // 用于排序
     string upper;
     lua.ABnfQueryCompleteInfo complete;
 }
@@ -233,28 +233,63 @@ protected class AUICodeCompleteScreen
 
     private static ItemInfoSort(AUICodeCompleteItemInfo a, AUICodeCompleteItemInfo b) : bool
     {
-        return a.pos < b.pos;
+        for (var index, pos in a.pos)
+        {
+            if (b.pos[index] == null) return true;
+            if (pos != b.pos[index]) return pos < b.pos[index];
+        }
+        return false;
     }
 
     private fun Fliter(string text) : bool
     {
-        var descriptor:string;
-        var upper = ALittle.String_Upper(text);
+        // 将内容改为大写
+        var upper_text = ALittle.String_Upper(text);
+        // 找出第一个分隔符
+        var first_split = ALittle.String_Find(upper_text, "_");
+        if (first_split == null) first_split = 1;
+        else first_split += 1;
+        // 切割大写，并且要跳过第一个分隔符
+        var upper_list = ALittle.String_Split(upper_text, "_", first_split);
+        // 将第一个分隔符前面的字符添加到列表
+        if (first_split > 1) ALittle.List_Insert(upper_list, 1, ALittle.String_Sub(upper_text, 1, first_split - 1));
+        // 如果数组长度大于0，并且最后一个是空串，那么就剔除掉
+        var upper_list_count = ALittle.List_MaxN(upper_list);
+        if (upper_list_count > 1 && upper_list[upper_list_count] == "") upper_list[upper_list_count] = null;
         
         var sort_list = new List<AUICodeCompleteItemInfo>();
         var count = 0;
         this._screen.RemoveAllChild();
         for (var index, info in this._item_list)
         {
-            info.pos = ALittle.String_Find(info.upper, upper);
-            if (info.pos != null)
+            // 初始化数据
+            info.pos = null;
+            var pos = 1;
+            // 遍历匹配列表
+            for (var _, upper in upper_list)
             {
-                ++count;
-                sort_list[count] = info;
+                // 查找upper进行匹配
+                pos = ALittle.String_Find(info.upper, upper, pos);
+                if (pos != null)
+                {
+                    // 如果是第一次设置，那么就加入列表
+                    if (info.pos == null)
+                    {
+                        info.pos = new List<int>();
+                        ++count;
+                        sort_list[count] = info;
+                    }
+
+                    ALittle.List_Push(info.pos, pos);
+                }
             }
         }
+
+        // 排序
         ALittle.List_Sort(sort_list, AUICodeCompleteScreen.ItemInfoSort);
         count = 0;
+
+        var descriptor:string;
         for (var index, info in sort_list)
         {
             if (this._screen.child_count == 0)
@@ -262,12 +297,12 @@ protected class AUICodeCompleteScreen
                 info._item_button.selected = true;
                 descriptor = info.complete.descriptor;
             }
-            this._screen.AddChild(info._item);      
+            this._screen.AddChild(info._item); 
             if (count >= 50) break;
         }
 
         if (this._screen.child_count == 0) return false;
-
+        
         var height = this._screen.child_count * this._item_height;
         if (height < 200) this._screen.height = height;
         else this._screen.height = 200;

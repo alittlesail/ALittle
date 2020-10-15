@@ -8,7 +8,7 @@ local ___ipairs = ipairs
 ALittle.RegStruct(1773085126, "AUIPlugin.AUICodeCompleteItemInfo", {
 name = "AUIPlugin.AUICodeCompleteItemInfo", ns_name = "AUIPlugin", rl_name = "AUICodeCompleteItemInfo", hash_code = 1773085126,
 name_list = {"_item_button","_item_title","_tag_image","_item","pos","upper","complete"},
-type_list = {"ALittle.TextRadioButton","ALittle.Text","ALittle.Image","ALittle.DisplayObject","int","string","lua.ABnfQueryCompleteInfo"},
+type_list = {"ALittle.TextRadioButton","ALittle.Text","ALittle.Image","ALittle.DisplayObject","List<int>","string","lua.ABnfQueryCompleteInfo"},
 option_map = {}
 })
 ALittle.RegStruct(-1149003083, "lua.ABnfQueryCompleteInfo", {
@@ -202,24 +202,54 @@ function AUIPlugin.AUICodeCompleteScreen:ReInit()
 end
 
 function AUIPlugin.AUICodeCompleteScreen.ItemInfoSort(a, b)
-	return a.pos < b.pos
+	for index, pos in ___ipairs(a.pos) do
+		if b.pos[index] == nil then
+			return true
+		end
+		if pos ~= b.pos[index] then
+			return pos < b.pos[index]
+		end
+	end
+	return false
 end
 
 function AUIPlugin.AUICodeCompleteScreen:Fliter(text)
-	local descriptor
-	local upper = ALittle.String_Upper(text)
+	local upper_text = ALittle.String_Upper(text)
+	local first_split = ALittle.String_Find(upper_text, "_")
+	if first_split == nil then
+		first_split = 1
+	else
+		first_split = first_split + (1)
+	end
+	local upper_list = ALittle.String_Split(upper_text, "_", first_split)
+	if first_split > 1 then
+		ALittle.List_Insert(upper_list, 1, ALittle.String_Sub(upper_text, 1, first_split - 1))
+	end
+	local upper_list_count = ALittle.List_MaxN(upper_list)
+	if upper_list_count > 1 and upper_list[upper_list_count] == "" then
+		upper_list[upper_list_count] = nil
+	end
 	local sort_list = {}
 	local count = 0
 	self._screen:RemoveAllChild()
 	for index, info in ___ipairs(self._item_list) do
-		info.pos = ALittle.String_Find(info.upper, upper)
-		if info.pos ~= nil then
-			count = count + 1
-			sort_list[count] = info
+		info.pos = nil
+		local pos = 1
+		for _, upper in ___ipairs(upper_list) do
+			pos = ALittle.String_Find(info.upper, upper, pos)
+			if pos ~= nil then
+				if info.pos == nil then
+					info.pos = {}
+					count = count + 1
+					sort_list[count] = info
+				end
+				ALittle.List_Push(info.pos, pos)
+			end
 		end
 	end
 	ALittle.List_Sort(sort_list, AUIPlugin.AUICodeCompleteScreen.ItemInfoSort)
 	count = 0
+	local descriptor
 	for index, info in ___ipairs(sort_list) do
 		if self._screen.child_count == 0 then
 			info._item_button.selected = true

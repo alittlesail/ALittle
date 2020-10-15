@@ -462,8 +462,8 @@ function AUIPlugin.AUIFileSelectLayout:HandleItemPreViewCallback(image, result)
 		width = A_UISystem.view_width
 		image.width = width
 	end
-	self._image_pre_dialog.width = width
-	image.x = (width - image.width) / 2
+	self._image_pre_dialog.width = width + 10
+	image.x = (self._image_pre_dialog.width - image.width) / 2
 	local height = image.texture_height
 	image.height = height
 	if height < 50 then
@@ -473,8 +473,8 @@ function AUIPlugin.AUIFileSelectLayout:HandleItemPreViewCallback(image, result)
 		height = A_UISystem.view_height - self._image_pre_dialog.head_size
 		image.height = height
 	end
-	image.y = (height - image.height) / 2
-	self._image_pre_dialog.height = self._image_pre_dialog.head_size + height
+	image.y = (height + 5 - image.height) / 2
+	self._image_pre_dialog.height = self._image_pre_dialog.head_size + height + 10
 end
 
 function AUIPlugin.AUIFileSelectLayout:HandleItemMoveOut(event)

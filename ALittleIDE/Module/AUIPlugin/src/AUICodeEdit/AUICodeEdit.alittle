@@ -21,7 +21,8 @@ public class AUICodeEdit : ALittle.DisplayLayout
     private ALittle.Dialog _find_dialog;        // 查找对话框
     private ALittle.ImageInput _find_input;  // 输入框
     private List<string> _find_text;		// 查找文本
-    private Map<AUICodeFindInfo, bool> _find_map; // 查找列表
+    private Map<AUICodeFindInfo, ALittle.DisplayObject> _find_map; // 查找列表
+    private ALittle.DisplayLayout _find_quad_container;// 查找提示
 
     // 跳转到行
     private ALittle.Dialog _gotoline_dialog;	// 跳转对话框
@@ -621,7 +622,8 @@ public class AUICodeEdit : ALittle.DisplayLayout
         var find_len = ALittle.List_MaxN(this._find_text);
         if (find_len == 0) return;
 
-        this._find_map = new Map<AUICodeFindInfo, bool>();
+        this._find_map = new Map<AUICodeFindInfo, ALittle.DisplayObject>();
+        this._find_quad_container.RemoveAllChild();
         var has_find = false;
         for (var index, line in this._line_list)
         {
@@ -655,7 +657,16 @@ public class AUICodeEdit : ALittle.DisplayLayout
                         info.it_char_start = char_index;
                         info.it_char_end = char_index + find_len - 1;
                         item._user_data = info;
-                        this._find_map[info] = true;
+
+                        var highlight_quad = new ALittle.Quad(g_Control);
+                        highlight_quad.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+                        highlight_quad.height = 2;
+                        highlight_quad.red = CODE_FIND_RED;
+                        highlight_quad.green = CODE_FIND_GREEN;
+                        highlight_quad.blue = CODE_FIND_BLUE;
+                        highlight_quad.y = (index - 1) / this.line_count * this._find_quad_container.height;
+                        this._find_quad_container.AddChild(highlight_quad);
+                        this._find_map[info] = highlight_quad;
                         char_index += find_len;
 
                         has_find = true;
@@ -734,7 +745,11 @@ public class AUICodeEdit : ALittle.DisplayLayout
         if (line == null) return;
 
         for (var index, child in line.container._find.childs)
+        {
+            var quad = this._find_map[child._user_data];
             this._find_map[child._user_data] = null;
+            if (quad != null) this._find_quad_container.RemoveChild(quad);
+        }
         line.container._find.RemoveAllChild();
 
         // 重新计算
@@ -771,7 +786,16 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     info.it_char_start = char_index;
                     info.it_char_end = char_index + find_len - 1;
                     item._user_data = info;
-                    this._find_map[info] = true;
+
+                    var highlight_quad = new ALittle.Quad(g_Control);
+                    highlight_quad.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+                    highlight_quad.height = 2;
+                    highlight_quad.red = CODE_FIND_RED;
+                    highlight_quad.green = CODE_FIND_GREEN;
+                    highlight_quad.blue = CODE_FIND_BLUE;
+                    highlight_quad.y = (it_line - 1) / this.line_count * this._find_quad_container.height;
+                    this._find_quad_container.AddChild(highlight_quad);
+                    this._find_map[info] = highlight_quad;
                     char_index += find_len;
                 }
                 else
@@ -795,6 +819,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
             for (var info, _ in this._find_map)
                 info._focus_quad.RemoveFromParent();
         }
+        this._find_quad_container.RemoveAllChild();
         this._find_map = null;
     }
 
@@ -1898,6 +1923,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
             var new_line_count = 0;
 
             // 处理开始那些行
+            // this._code_linear.SpliceChild(this._cursor.line);
             for (var i = 1; i < this._cursor.line; 1)
             {
                 var line = this._line_list[i];

@@ -653,6 +653,7 @@ function AUIPlugin.AUICodeEdit:HandleFindInputChanged(event)
 		return
 	end
 	self._find_map = {}
+	self._find_quad_container:RemoveAllChild()
 	local has_find = false
 	for index, line in ___ipairs(self._line_list) do
 		if line.char_count >= find_len then
@@ -679,7 +680,15 @@ function AUIPlugin.AUICodeEdit:HandleFindInputChanged(event)
 					info.it_char_start = char_index
 					info.it_char_end = char_index + find_len - 1
 					item._user_data = info
-					self._find_map[info] = true
+					local highlight_quad = ALittle.Quad(AUIPlugin.g_Control)
+					highlight_quad.width_type = 4
+					highlight_quad.height = 2
+					highlight_quad.red = AUIPlugin.CODE_FIND_RED
+					highlight_quad.green = AUIPlugin.CODE_FIND_GREEN
+					highlight_quad.blue = AUIPlugin.CODE_FIND_BLUE
+					highlight_quad.y = (index - 1) / self.line_count * self._find_quad_container.height
+					self._find_quad_container:AddChild(highlight_quad)
+					self._find_map[info] = highlight_quad
 					char_index = char_index + (find_len)
 					has_find = true
 				else
@@ -749,7 +758,11 @@ function AUIPlugin.AUICodeEdit:UpdateLineFind(it_line)
 		return
 	end
 	for index, child in ___ipairs(line.container._find.childs) do
+		local quad = self._find_map[child._user_data]
 		self._find_map[child._user_data] = nil
+		if quad ~= nil then
+			self._find_quad_container:RemoveChild(quad)
+		end
 	end
 	line.container._find:RemoveAllChild()
 	local find_len = ALittle.List_MaxN(self._find_text)
@@ -780,7 +793,15 @@ function AUIPlugin.AUICodeEdit:UpdateLineFind(it_line)
 				info.it_char_start = char_index
 				info.it_char_end = char_index + find_len - 1
 				item._user_data = info
-				self._find_map[info] = true
+				local highlight_quad = ALittle.Quad(AUIPlugin.g_Control)
+				highlight_quad.width_type = 4
+				highlight_quad.height = 2
+				highlight_quad.red = AUIPlugin.CODE_FIND_RED
+				highlight_quad.green = AUIPlugin.CODE_FIND_GREEN
+				highlight_quad.blue = AUIPlugin.CODE_FIND_BLUE
+				highlight_quad.y = (it_line - 1) / self.line_count * self._find_quad_container.height
+				self._find_quad_container:AddChild(highlight_quad)
+				self._find_map[info] = highlight_quad
 				char_index = char_index + (find_len)
 			else
 				char_index = char_index + (1)
@@ -800,6 +821,7 @@ function AUIPlugin.AUICodeEdit:ClearFindInfo()
 			info._focus_quad:RemoveFromParent()
 		end
 	end
+	self._find_quad_container:RemoveAllChild()
 	self._find_map = nil
 end
 

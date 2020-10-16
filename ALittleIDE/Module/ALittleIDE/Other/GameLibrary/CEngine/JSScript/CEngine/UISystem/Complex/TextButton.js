@@ -74,7 +74,7 @@ ALittle.TextButton = JavaScript.Class(ALittle.DisplayLayout, {
 			} else if (this._file_select === ALittle.UIEnumTypes.SELECT_DIR) {
 				A_OtherSystem.SystemSelectDirectory(this);
 			}
-			if (ALittle.System_IsPhone === false) {
+			if (ALittle.System_IsPhone() === false) {
 				this.ShowOver();
 			} else {
 				this.ShowUp(undefined);

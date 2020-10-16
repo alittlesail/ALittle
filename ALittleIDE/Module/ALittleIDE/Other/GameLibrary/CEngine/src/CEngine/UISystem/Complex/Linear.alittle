@@ -81,15 +81,17 @@ public class Linear : DisplayGroup
     }
 
     public fun GetShowMap() : Map<DisplayObject, bool> { return this._show_child_map; }
-    
+
     public fun AddChild(DisplayObject child, [Nullable] int index) : bool
     {
         if (DisplayGroup.AddChild(this, child, index) == false)
             return false;
+        
         if (index == null)
             this.Layout(this.child_count);
         else
             this.Layout(index);
+    
         // 把原来的大小保存起来
         this._child_width_map[child] = child.width;
         this._child_height_map[child] = child.height;
@@ -102,7 +104,7 @@ public class Linear : DisplayGroup
             else
                 child.width = this._width;
         }
-    
+
         // 侦听大小发生变化
         child.AddEventListener(this, this.HandleChildResize);
 
@@ -138,7 +140,7 @@ public class Linear : DisplayGroup
         var endv = index + count;
         for (var i = index; i < endv; 1)
         {
-            var child = this._childs[index];
+            var child = this._childs[i];
             if (child == null) break;
 
             // 删除记录
@@ -151,6 +153,10 @@ public class Linear : DisplayGroup
 
         var result = DisplayGroup.SpliceChild(this, index, count);
         if (result != 0) this.Layout(index);
+
+        this._clip_up_index = 0;
+        this._clip_down_index = 0;
+    
         return result;
     }
     

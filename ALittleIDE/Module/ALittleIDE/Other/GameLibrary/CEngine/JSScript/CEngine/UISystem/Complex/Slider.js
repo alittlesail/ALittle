@@ -16,11 +16,11 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	set width(value) {
 		ALittle.DisplayLayout.__setter.width.call(this, value);
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	set height(value) {
 		ALittle.DisplayLayout.__setter.height.call(this, value);
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	get width() {
 		return this._width;
@@ -33,7 +33,7 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 			return;
 		}
 		this._type = value;
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	get type() {
 		return this._type;
@@ -45,7 +45,7 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 		} else if (this._offset_rate > 1) {
 			this._offset_rate = 1;
 		}
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	get offset_rate() {
 		return this._offset_rate;
@@ -73,7 +73,7 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 			this.AddChild(value, 1);
 			value.AddEventListener(___all_struct.get(1883782801), this, this.HandleBarBackgroudLButtonDown);
 		}
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	HandleBarBackgroudLButtonDown : function(event) {
 		let rel_x = event.rel_x;
@@ -159,7 +159,7 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 			value.AddEventListener(___all_struct.get(-1737121315), this, this.HandleBarButtonScroll);
 			value._can_scroll = true;
 		}
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	get bar_button() {
 		return this._bar_button;
@@ -176,10 +176,10 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 			for (let i = 1; i <= this._grade - 2; i += 1) {
 				this._grade_list[i + 1 - 1] = i * dist;
 			}
-			let num = lua.table.maxn(this._grade_list);
+			let num = ALittle.List_MaxN(this._grade_list);
 			this._grade_list[num + 1 - 1] = 1;
 		}
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	get fixed() {
 		return this._fixed;
@@ -196,10 +196,10 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 			for (let i = 1; i <= value - 2; i += 1) {
 				this._grade_list[i + 1 - 1] = i * dist;
 			}
-			let num = lua.table.maxn(this._grade_list);
+			let num = ALittle.List_MaxN(this._grade_list);
 			this._grade_list[num + 1 - 1] = 1;
 		}
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	get grade() {
 		return this._grade;
@@ -346,7 +346,7 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		this.DispatchEvent(___all_struct.get(958494922), {});
 	},
-	RejustBarButton : function() {
+	AdjustBarButton : function() {
 		if (this._bar_background !== undefined) {
 			this._bar_background.x = 0;
 			this._bar_background.y = 0;

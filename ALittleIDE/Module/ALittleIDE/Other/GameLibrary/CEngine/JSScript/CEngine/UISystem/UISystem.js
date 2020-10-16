@@ -484,8 +484,8 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 		}
 	},
 	HandleDropFile : function(path) {
-		let x = ALittle.System_GetCursorX() - ALittle.System_GetViewX();
-		let y = ALittle.System_GetCursorY() - ALittle.System_GetViewY();
+		let x = ALittle.System_GetCursorX();
+		let y = ALittle.System_GetCursorY();
 		this.HandleMouseMoved(x, y);
 		if (this._mfc === undefined) {
 			return;

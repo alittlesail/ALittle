@@ -106,7 +106,7 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 		}
 		let endv = index + count;
 		for (let i = index; i < endv; i += 1) {
-			let child = this._childs[index - 1];
+			let child = this._childs[i - 1];
 			if (child === undefined) {
 				break;
 			}
@@ -119,6 +119,8 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 		if (result !== 0) {
 			this.Layout(index);
 		}
+		this._clip_up_index = 0;
+		this._clip_down_index = 0;
 		return result;
 	},
 	RemoveAllChild : function() {

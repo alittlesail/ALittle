@@ -1918,77 +1918,125 @@ public class AUICodeEdit : ALittle.DisplayLayout
         // 将插入的行位置空出来
         if (line_count > 1)
         {
-            this._code_linear.RemoveAllChild();
-            var new_line_list = new List<AUICodeLineInfo>();
-            var new_line_count = 0;
+            if (line_count <= 20)
+            {
+                // 保存当前行的位置
+                var new_line_index = this._cursor.line;
 
-            // 处理开始那些行
-            // this._code_linear.SpliceChild(this._cursor.line);
-            for (var i = 1; i < this._cursor.line; 1)
-            {
-                var line = this._line_list[i];
-                this._code_linear.AddChild(line.container);
-                new_line_count += 1;
-                new_line_list[new_line_count] = line;
-            }
-            // 把当前行拆成两行
-            {
-                split_next_line = new AUICodeLineInfo();
-                split_next_line.edit = this;
-                split_next_line.char_count = 0;
-                split_next_line.char_list = new List<AUICodeCharInfo>();
-                split_next_line.container = new AUICodeLineContainer(g_Control);
-                split_next_line.container._user_data = split_next_line;
-                split_next_line.container.height = CODE_LINE_HEIGHT;
-                // 把split_pre_line的后半段添加到split_next_line
-                for (var i = this._cursor.char + 1; i <= split_pre_line.char_count; 1)
+                // 把当前行拆成两行
                 {
-                    split_next_line.char_count += 1;
-                    split_next_line.char_list[split_next_line.char_count] = split_pre_line.char_list[i];
-                    if (split_pre_line.char_list[i].text != null)
-                        split_next_line.container.AddChild(split_pre_line.char_list[i].text);
+                    split_next_line = new AUICodeLineInfo();
+                    split_next_line.edit = this;
+                    split_next_line.char_count = 0;
+                    split_next_line.char_list = new List<AUICodeCharInfo>();
+                    split_next_line.container = new AUICodeLineContainer(g_Control);
+                    split_next_line.container._user_data = split_next_line;
+                    split_next_line.container.height = CODE_LINE_HEIGHT;
+                    // 把split_pre_line的后半段添加到split_next_line
+                    for (var i = this._cursor.char + 1; i <= split_pre_line.char_count; 1)
+                    {
+                        split_next_line.char_count += 1;
+                        split_next_line.char_list[split_next_line.char_count] = split_pre_line.char_list[i];
+                        if (split_pre_line.char_list[i].text != null)
+                            split_next_line.container.AddChild(split_pre_line.char_list[i].text);
+                    }
+
+                    // split_pre_line的后半段删除
+                    var split_count = split_pre_line.char_count - this._cursor.char;
+                    ALittle.List_Splice(split_pre_line.char_list, this._cursor.char + 1, split_count);
+                    split_pre_line.char_count -= split_count;
                 }
-
-                // split_pre_line的后半段删除
-                var split_count = split_pre_line.char_count - this._cursor.char;
-                ALittle.List_Splice(split_pre_line.char_list, this._cursor.char + 1, split_count);
-                split_pre_line.char_count -= split_count;
-
-                // 插入旧行（前半段）
-                this._code_linear.AddChild(split_pre_line.container);
-                new_line_count += 1;
-                new_line_list[new_line_count] = split_pre_line;
+                // 插入新的行
+                for (var i = 2; i < line_count; 1)
+                {
+                    var line = line_list[i];
+                    new_line_index += 1;
+                    this._code_linear.AddChild(line.container, new_line_index);
+                    ALittle.List_Insert(this._line_list, new_line_index, line);
+                    line_map[new_line_index] = true;
+                }
+                // 插入拆分行（后半段）
+                {
+                    new_line_index += 1;
+                    this._code_linear.AddChild(split_next_line.container, new_line_index);
+                    ALittle.List_Insert(this._line_list, new_line_index, split_next_line);
+                    it_cursor_line = new_line_index;
+                    it_cursor_char = 0;
+                    line_map[new_line_index] = true;
+                }
             }
-            // 插入新的行
-            for (var i = 2; i < line_count; 1)
+            else
             {
-                var line = line_list[i];
-                this._code_linear.AddChild(line.container);
-                new_line_count += 1;
-                new_line_list[new_line_count] = line;
+                var new_line_list = new List<AUICodeLineInfo>();
+                var new_line_count = 0;
 
-                line_map[new_line_count] = true;
-            }
-            // 插入拆分行（后半段）
-            {
-                this._code_linear.AddChild(split_next_line.container);
-                new_line_count += 1;
-                new_line_list[new_line_count] = split_next_line;
-                it_cursor_line = new_line_count;
-                it_cursor_char = 0;
+                // 处理开始那些行
+                this._code_linear.SpliceChild(this._cursor.line);
+                for (var i = 1; i < this._cursor.line; 1)
+                {
+                    var line = this._line_list[i];
+                    new_line_count += 1;
+                    new_line_list[new_line_count] = line;
+                }
+                // 把当前行拆成两行
+                {
+                    split_next_line = new AUICodeLineInfo();
+                    split_next_line.edit = this;
+                    split_next_line.char_count = 0;
+                    split_next_line.char_list = new List<AUICodeCharInfo>();
+                    split_next_line.container = new AUICodeLineContainer(g_Control);
+                    split_next_line.container._user_data = split_next_line;
+                    split_next_line.container.height = CODE_LINE_HEIGHT;
+                    // 把split_pre_line的后半段添加到split_next_line
+                    for (var i = this._cursor.char + 1; i <= split_pre_line.char_count; 1)
+                    {
+                        split_next_line.char_count += 1;
+                        split_next_line.char_list[split_next_line.char_count] = split_pre_line.char_list[i];
+                        if (split_pre_line.char_list[i].text != null)
+                            split_next_line.container.AddChild(split_pre_line.char_list[i].text);
+                    }
 
-                line_map[new_line_count] = true;
+                    // split_pre_line的后半段删除
+                    var split_count = split_pre_line.char_count - this._cursor.char;
+                    ALittle.List_Splice(split_pre_line.char_list, this._cursor.char + 1, split_count);
+                    split_pre_line.char_count -= split_count;
+
+                    // 插入旧行（前半段）
+                    var result = this._code_linear.AddChild(split_pre_line.container);
+                    new_line_count += 1;
+                    new_line_list[new_line_count] = split_pre_line;
+                }
+                // 插入新的行
+                for (var i = 2; i < line_count; 1)
+                {
+                    var line = line_list[i];
+                    var result = this._code_linear.AddChild(line.container);
+                    new_line_count += 1;
+                    new_line_list[new_line_count] = line;
+
+                    line_map[new_line_count] = true;
+                }
+                // 插入拆分行（后半段）
+                {
+                    var result = this._code_linear.AddChild(split_next_line.container);
+                    new_line_count += 1;
+                    new_line_list[new_line_count] = split_next_line;
+                    it_cursor_line = new_line_count;
+                    it_cursor_char = 0;
+
+                    line_map[new_line_count] = true;
+                }
+                // 插入剩余行
+                for (var i = this._cursor.line + 1; i <= this._line_count; 1)
+                {
+                    var line = this._line_list[i];
+                    this._code_linear.AddChild(line.container);
+                    new_line_count += 1;
+                    new_line_list[new_line_count] = line;
+                }
+                this._line_list = new_line_list;
+                this._line_count = new_line_count;
             }
-            // 插入剩余行
-            for (var i = this._cursor.line + 1; i <= this._line_count; 1)
-            {
-                var line = this._line_list[i];
-                this._code_linear.AddChild(line.container);
-                new_line_count += 1;
-                new_line_list[new_line_count] = line;
-            }
-            this._line_list = new_line_list;
-            this._line_count = new_line_count;
         }
 
         // 开始衔接起始行

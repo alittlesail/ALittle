@@ -145,7 +145,7 @@ function ALittle.DisplayGroup:SpliceChild(index, count)
 	local i = index
 	while true do
 		if not(i < endv) then break end
-		local child = self._childs[index]
+		local child = self._childs[i]
 		if child == nil then
 			break
 		end

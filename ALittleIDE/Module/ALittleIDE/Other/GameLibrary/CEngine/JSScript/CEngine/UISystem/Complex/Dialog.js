@@ -28,6 +28,14 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 		this._pickup_child = true;
 		this._title_text = "";
 		this._head = ALittle.NewObject(ALittle.DisplayLayout, this._ctrl_sys);
+		this._head_container = ALittle.NewObject(ALittle.DisplayLayout, this._ctrl_sys);
+		this._head_container.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._head_container.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._head.AddChild(this._head_container);
+		this._head_left_margin = 0;
+		this._head_right_margin = 0;
+		this._head_top_margin = 0;
+		this._head_bottom_margin = 0;
 		this._body = ALittle.NewObject(ALittle.DisplayLayout, this._ctrl_sys);
 		this._grid3 = ALittle.NewObject(ALittle.Grid3, this._ctrl_sys);
 		this._grid3.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
@@ -50,27 +58,39 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 		if (this._close_button !== undefined) {
 			this._close_button.x_value = (value - this._close_button.height) / 2;
 		}
-		if (this._title !== undefined) {
-			this._title.x_value = (value - this._title.font_height);
-		}
 	},
 	get head_size() {
 		return this._grid3.up_size;
 	},
-	ResetHeadOrder : function() {
-		let index = 1;
-		if (this._head_drag !== undefined) {
-			this._head.SetChildIndex(this._head_drag, index);
-			++ index;
-		}
-		if (this._title !== undefined) {
-			this._head.SetChildIndex(this._title, index);
-			++ index;
-		}
-		if (this._close_button !== undefined) {
-			this._head.SetChildIndex(this._close_button, index);
-			++ index;
-		}
+	get head_left_margin() {
+		return this._head_left_margin;
+	},
+	set head_left_margin(value) {
+		this._head_left_margin = value;
+		this._head_container.x = value;
+		this._head_container.width_value = this._head_left_margin + this._head_right_margin;
+	},
+	get head_right_margin() {
+		return this._head_right_margin;
+	},
+	set head_right_margin(value) {
+		this._head_right_margin = value;
+		this._head_container.width_value = this._head_left_margin + this._head_right_margin;
+	},
+	get head_top_margin() {
+		return this._head_top_margin;
+	},
+	set head_top_margin(value) {
+		this._head_top_margin = value;
+		this._head_container.y = value;
+		this._head_container.height_value = this._head_top_margin + this._head_bottom_margin;
+	},
+	get head_bottom_margin() {
+		return this._head_bottom_margin;
+	},
+	set head_bottom_margin(value) {
+		this._head_bottom_margin = value;
+		this._head_container.height_value = this._head_top_margin + this._head_bottom_margin;
 	},
 	set show_background(value) {
 		if (this._background !== undefined) {
@@ -84,7 +104,6 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 			this._background.height_value = this._grid3.up_size;
 			this._background.y_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING;
 			ALittle.DisplayLayout.AddChild.call(this, this._background, 1);
-			this.ResetHeadOrder();
 		}
 	},
 	get show_background() {
@@ -103,8 +122,7 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 			this._head_drag.width_value = 0;
 			this._head_drag.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
 			this._head_drag.height_value = 0;
-			this._head.AddChild(this._head_drag);
-			this.ResetHeadOrder();
+			this._head.AddChild(this._head_drag, 1);
 			this._head_drag.AddEventListener(___all_struct.get(1301789264), this, this.HandleHeadDragBegin);
 			this._head_drag.AddEventListener(___all_struct.get(1337289812), this, this.HandleHeadDrag);
 			this._head_drag.AddEventListener(___all_struct.get(150587926), this, this.HandleHeadDragEnd);
@@ -116,7 +134,7 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 	set show_title(value) {
 		if (this._title !== undefined) {
 			this._title_text = this._title.text;
-			this._head.RemoveChild(this._title);
+			this._head_container.RemoveChild(this._title);
 		}
 		this._title = value;
 		if (this._title !== undefined) {
@@ -124,10 +142,8 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 			this._title.disabled = true;
 			this._title.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 			this._title.y_value = 0;
-			this._head.AddChild(this._title);
-			this._title.x_type = ALittle.UIEnumTypes.POS_ABS;
-			this._title.x_value = (this._grid3.up_size - this._title.font_height);
-			this.ResetHeadOrder();
+			this._title.x = 0;
+			this._head_container.AddChild(this._title);
 		}
 	},
 	get show_title() {
@@ -147,17 +163,16 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	set show_close_button(value) {
 		if (this._close_button !== undefined) {
-			this._head.RemoveChild(this._close_button);
+			this._head_container.RemoveChild(this._close_button);
 			this._close_button.RemoveEventListener(___all_struct.get(-449066808), this, this.HandleCloseButtonClicked);
 		}
 		this._close_button = value;
 		if (this._close_button !== undefined) {
 			this._close_button.y_value = 0;
 			this._close_button.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
-			this._head.AddChild(this._close_button);
+			this._head_container.AddChild(this._close_button);
 			this._close_button.x_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING;
 			this._close_button.x_value = (this._grid3.up_size - this._close_button.height) / 2;
-			this.ResetHeadOrder();
 			this._close_button.AddEventListener(___all_struct.get(-449066808), this, this.HandleCloseButtonClicked);
 		}
 	},

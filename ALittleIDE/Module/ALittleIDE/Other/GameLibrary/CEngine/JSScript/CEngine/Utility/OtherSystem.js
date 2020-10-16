@@ -63,12 +63,6 @@ type_list : ["ALittle.EventDispatcher"],
 option_map : {}
 })
 
-ALittle.NetworkType = {
-	NONE : "OtherSystem_NotifyNetwork_none",
-	WIFI : "OtherSystem_NotifyNetwork_wifi",
-	LINE : "OtherSystem_NotifyNetwork_line",
-}
-
 if (ALittle.EventDispatcher === undefined) throw new Error(" extends class:ALittle.EventDispatcher is undefined");
 ALittle.OtherSystem = JavaScript.Class(ALittle.EventDispatcher, {
 	Ctor : function() {
@@ -99,17 +93,6 @@ ALittle.OtherSystem = JavaScript.Class(ALittle.EventDispatcher, {
 		let event = {};
 		event.url = url;
 		this.DispatchEvent(___all_struct.get(1720966934), event);
-	},
-	AddEventListener : function(T, object, callback) {
-		return ALittle.EventDispatcher.AddEventListener.call(this, T, object, callback);
-	},
-	HandleNetworkChanged : function(net_type) {
-		let event = {};
-		event.net_type = net_type;
-		this.DispatchEvent(___all_struct.get(708183011), event);
-	},
-	GetNetworkType : function() {
-		return ALittle.NetworkType.LINE;
 	},
 	HandleALittleJsonRPC : function(json) {
 		let [error, content] = (function() { try { let ___VALUE = ALittle.String_JsonDecode.call(undefined, json); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);

@@ -8,6 +8,7 @@ public class __CPPAPISystem
     public fun SystemSaveFile(string file_name, string init_dir) {}
 
     public fun GetPlatform() : string {}
+    public fun GetCurMSTime() : int {}
     public fun GetDeviceID() : string {}
     public fun InstallProgram(string path) {}
     public fun StartProgram(string path) {}

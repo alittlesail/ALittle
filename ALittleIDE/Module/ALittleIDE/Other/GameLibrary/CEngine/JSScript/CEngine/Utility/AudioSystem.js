@@ -20,20 +20,16 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 		this._chunk_map = new Map();
 		this._app_background = false;
 		this._all_chunk_mute = false;
-		this._music_mute = false;
-		this._music_valume = 1;
 		A_OtherSystem.AddEventListener(___all_struct.get(521107426), this, this.HandleDidEnterBackground);
 		A_OtherSystem.AddEventListener(___all_struct.get(760325696), this, this.HandleDidEnterForeground);
 	},
 	HandleDidEnterBackground : function(event) {
 		this._app_background = true;
 		this.UpdateAllChunkVolume();
-		this.UpdateMusicVolume();
 	},
 	HandleDidEnterForeground : function(event) {
 		this._app_background = false;
 		this.UpdateAllChunkVolume();
-		this.UpdateMusicVolume();
 	},
 	UpdateChunkVolume : function(info) {
 		let real_volume = info.volume;
@@ -41,13 +37,6 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 			real_volume = 0;
 		}
 		__CPPAPI_AudioSystem.SetChunkVolume(info.channel, real_volume);
-	},
-	UpdateMusicVolume : function() {
-		let real_volume = this._music_valume;
-		if (this._music_mute || this._app_background) {
-			real_volume = 0;
-		}
-		__CPPAPI_AudioSystem.SetMusicVolume(real_volume);
 	},
 	UpdateAllChunkVolume : function() {
 		for (let [k, v] of this._chunk_map) {
@@ -62,18 +51,8 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 		this._all_chunk_mute = mute;
 		this.UpdateAllChunkVolume();
 	},
-	SetMusicMute : function(mute) {
-		if (this._music_mute === mute) {
-			return;
-		}
-		this._music_mute = mute;
-		this.UpdateMusicVolume();
-	},
 	GetAllChunkMute : function() {
 		return this._all_chunk_mute;
-	},
-	GetMusicMute : function() {
-		return this._music_mute;
 	},
 	AddChunkCache : function(file_path) {
 		__CPPAPI_AudioSystem.AddChunkCache(file_path);
@@ -140,7 +119,7 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 		}
 		return info.volume;
 	},
-	HandleAudioChunkStopedEvent : function(channel) {
+	HandleAudioChunkStoppedEvent : function(channel) {
 		let info = this._chunk_map.get(channel);
 		if (info === undefined) {
 			return;
@@ -150,30 +129,6 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 			return;
 		}
 		info.callback(info.file_path, info.channel);
-	},
-	StartMusic : function(file_path, loop) {
-		if (loop === undefined) {
-			loop = 1;
-		}
-		let result = __CPPAPI_AudioSystem.StartMusic(file_path, loop);
-		if (result) {
-			return false;
-		}
-		this._music_valume = __CPPAPI_AudioSystem.GetMusicVolume();
-		this.UpdateMusicVolume();
-		return result;
-	},
-	StopMusic : function() {
-		__CPPAPI_AudioSystem.StopMusic();
-	},
-	StartRecord : function(file_path) {
-		return __CPPAPI_AudioSystem.StartRecord(file_path);
-	},
-	IsRecording : function() {
-		return __CPPAPI_AudioSystem.IsRecording();
-	},
-	StopRecord : function() {
-		__CPPAPI_AudioSystem.StopRecord();
 	},
 }, "ALittle.AudioSystem");
 

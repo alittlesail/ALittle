@@ -195,12 +195,6 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 	StopChunk : function(channel) {
 		A_AudioSystem.StopChunk(channel);
 	},
-	StartMusic : function(file_path, loop) {
-		return A_AudioSystem.StartMusic(this._sound_path + file_path, loop);
-	},
-	StopMusic : function() {
-		A_AudioSystem.StopMusic();
-	},
 	SetTexture : function(object, name) {
 		this._texture_mgr.SetTexture(object, name);
 	},

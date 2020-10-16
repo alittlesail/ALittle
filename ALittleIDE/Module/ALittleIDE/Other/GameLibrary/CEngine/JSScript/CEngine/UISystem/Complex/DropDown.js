@@ -168,13 +168,13 @@ ALittle.DropDown = JavaScript.Class(ALittle.TextCheckButton, {
 			A_LayerManager.HideFromRight(this._body);
 		} else {
 			let [abs_x, abs_y] = this.LocalToGlobal();
-			let rejust_y = abs_y + this.height * this.scale_y;
-			if (A_UISystem.view_height < rejust_y + this._scroll_screen.height * this.scale_y) {
-				rejust_y = abs_y - this._scroll_screen.height * this.scale_y;
+			let adjust_y = abs_y + this.height * this.scale_y;
+			if (A_UISystem.view_height < adjust_y + this._scroll_screen.height * this.scale_y) {
+				adjust_y = abs_y - this._scroll_screen.height * this.scale_y;
 			}
-			this._body.y = rejust_y;
-			this._body.width = this.width + this._body_margin;
-			this._body.x = abs_x - this._body_margin / 2;
+			this._body.y = adjust_y;
+			this._body.width = this.width - this._body_margin;
+			this._body.x = abs_x + this._body_margin / 2;
 			this._body.scale_x = this.scale_x;
 			this._body.scale_y = this.scale_y;
 			this._scroll_screen.x = this._screen_margin_left;

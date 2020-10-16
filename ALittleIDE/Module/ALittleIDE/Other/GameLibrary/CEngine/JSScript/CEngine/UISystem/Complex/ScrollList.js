@@ -170,7 +170,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 		}
 		this._scroll_linear.RemoveAllChild();
 		this.UpdateLoadingShow();
-		this.RejustScrollBar();
+		this.AdjustScrollBar();
 	},
 	RefreshChild : function(loop) {
 		if (this._type === ALittle.UIEnumTypes.TYPE_H) {
@@ -188,7 +188,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 			if (target_x === undefined || target_x === this._scroll_linear.x) {
 				A_LoopSystem.RemoveUpdater(this._drag_loop_x);
 				this.RefreshClipDisLine();
-				this.RejustScrollBar();
+				this.AdjustScrollBar();
 				return;
 			}
 			if (this._drag_loop_x !== undefined && this._drag_loop_x.IsCompleted() === false) {
@@ -223,7 +223,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 			if (target_y === undefined || target_y === this._scroll_linear.y) {
 				A_LoopSystem.RemoveUpdater(this._drag_loop_y);
 				this.RefreshClipDisLine();
-				this.RejustScrollBar();
+				this.AdjustScrollBar();
 				return;
 			}
 			if (this._drag_loop_y !== undefined && this._drag_loop_y.IsCompleted() === false) {
@@ -245,7 +245,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 			}
 		}
 		this.RefreshClipDisLine();
-		this.RejustScrollBar();
+		this.AdjustScrollBar();
 	},
 	set clip_atonce(value) {
 		this._clip_atonce = value;
@@ -269,7 +269,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 				}
 			}
 			this._scroll_linear.x = value;
-			this.RejustScrollBar();
+			this.AdjustScrollBar();
 		} else {
 			A_LoopSystem.RemoveUpdater(this._drag_loop_y);
 			A_LoopSystem.RemoveUpdater(this._drag_delta_loop_y);
@@ -285,7 +285,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 				}
 			}
 			this._scroll_linear.y = value;
-			this.RejustScrollBar();
+			this.AdjustScrollBar();
 		}
 	},
 	get scroll_offset() {
@@ -306,7 +306,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 		}
 		this._scroll_linear.gap = value;
 		this.RefreshClipDisLine();
-		this.RejustScrollBar();
+		this.AdjustScrollBar();
 	},
 	get gap() {
 		return this._scroll_linear.gap;
@@ -426,7 +426,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 	get right_scrollbar() {
 		return this._scroll_bar;
 	},
-	RejustScrollBar : function() {
+	AdjustScrollBar : function() {
 		if (this._type === ALittle.UIEnumTypes.TYPE_H) {
 			let linear_width = this._scroll_linear.width;
 			if (this._scroll_bar !== undefined) {
@@ -521,7 +521,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 		this.RefreshClipDisLine();
 	},
 	HandleLinearResize : function(event) {
-		this.RejustScrollBar();
+		this.AdjustScrollBar();
 		this.RefreshClipDisLine();
 	},
 	HandleRightScrollBarChange : function(event) {

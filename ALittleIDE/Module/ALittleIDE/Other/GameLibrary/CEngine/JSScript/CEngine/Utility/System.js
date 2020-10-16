@@ -5,7 +5,6 @@ if (typeof ALittle === "undefined") window.ALittle = {};
 ALittle.System_CalcPortrait = function(src_width, src_height, flag) {
 	let scale = 1.0;
 	let platform = ALittle.System_GetPlatform();
-	ALittle.Log(platform);
 	if (platform === "iOS" || platform === "Android") {
 		let screen_width = ALittle.System_GetScreenWidth();
 		let screen_height = ALittle.System_GetScreenHeight();
@@ -24,7 +23,6 @@ ALittle.System_CalcPortrait = function(src_width, src_height, flag) {
 		src_height = ALittle.Math_Floor(screen_height / screen_width * src_width);
 		scale = screen_width / src_width;
 	} else if (platform === "Windows") {
-		ALittle.Log(src_height, ALittle.System_GetScreenHeight());
 		if (src_height > ALittle.System_GetScreenHeight()) {
 			scale = 0.5;
 		}
@@ -68,6 +66,10 @@ ALittle.System_GetPlatform = function() {
 	}
 }
 
+ALittle.System_GetCurMSTime = function() {
+	return Date.now();
+}
+
 ALittle.System_GetDeviceID = function() {
 	return JavaScript.JSystem_GetDeviceID();
 }
@@ -105,16 +107,6 @@ ALittle.System_Exit = function() {
 }
 
 ALittle.System_Restart = function() {
-}
-
-ALittle.System_SetFPS = function(fps) {
-}
-
-ALittle.System_SetAppPauseInterval = function(interval) {
-}
-
-ALittle.System_GetAppPauseInterval = function() {
-	return 0;
 }
 
 ALittle.System_SetThreadCount = function(count) {
@@ -234,57 +226,6 @@ ALittle.System_HasClipboardText = function() {
 
 ALittle.System_OpenUrlBySystemBrowser = function(url) {
 	open(url);
-}
-
-ALittle.System_Alert = function(msg) {
-	alert(msg);
-}
-
-ALittle.System_LoadSurface = function(path) {
-	return undefined;
-}
-
-ALittle.System_CreateSurface = function(width, height) {
-	return undefined;
-}
-
-ALittle.System_SaveSurface = function(surface, path) {
-	return false;
-}
-
-ALittle.System_FreeSurface = function(surface) {
-}
-
-ALittle.System_GetSurfaceWidth = function(surface) {
-	return 0;
-}
-
-ALittle.System_GetSurfaceHeight = function(surface) {
-	return 0;
-}
-
-ALittle.System_CutBlitSurface = function(new_surface, surface, to, from) {
-	return false;
-}
-
-ALittle.System_SetSurfacePixel = function(surface, x, y, color) {
-	return false;
-}
-
-ALittle.System_GetSurfacePixel = function(surface, x, y) {
-	return 0;
-}
-
-ALittle.System_GetPixelAlpha = function(color) {
-	return 0;
-}
-
-ALittle.System_SetPixelAlpha = function(color, alpha) {
-	return 0;
-}
-
-ALittle.System_GetSurfaceGrid9 = function(surface, type) {
-	return 0;
 }
 
 ALittle.CreateMsgSender = function(heartbeat, check_heartbeat, callback) {

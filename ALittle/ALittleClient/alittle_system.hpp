@@ -27,6 +27,7 @@ public:
 		luabridge::getGlobalNamespace(l_state)
 			.beginClass<ALittleSystem>("__CPPAPISystem")
 			.addFunction("GetDeviceID", &ALittleSystem::GetDeviceID)
+			.addFunction("GetCurMSTime", &ALittleSystem::GetCurMSTime)
 			.addFunction("GetPlatform", &ALittleSystem::GetPlatform)
 			.addFunction("InstallProgram", &ALittleSystem::InstallProgram)
 			.addFunction("StartProgram", &ALittleSystem::StartProgram)
@@ -141,6 +142,11 @@ public:
 		Carp_GetDeviceID(buffer, sizeof(buffer));
 		m_device_id = buffer;
 		return m_device_id.c_str();
+	}
+
+	long long GetCurMSTime()
+	{
+		return CarpTime::GetCurMSTime();
 	}
 
 	int GetScreenWidth()

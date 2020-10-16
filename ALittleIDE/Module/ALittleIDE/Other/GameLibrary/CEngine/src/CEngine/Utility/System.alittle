@@ -107,6 +107,16 @@ public static System_GetPlatform() : string
         return "Web";
 }
 
+// 获取当前毫秒
+public static System_GetCurMSTime() : int
+{
+    [Language(Lua)]
+    return __CPPAPI_System.GetCurMSTime();
+
+    [Language(JavaScript)]
+    return javascript.Date.now();
+}
+
 // 获取设备唯一性
 public static System_GetDeviceID() : string
 {

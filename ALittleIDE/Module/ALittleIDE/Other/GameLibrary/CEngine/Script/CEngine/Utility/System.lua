@@ -65,6 +65,10 @@ function ALittle.System_GetPlatform()
 	return __CPPAPI_System:GetPlatform()
 end
 
+function ALittle.System_GetCurMSTime()
+	return __CPPAPI_System:GetCurMSTime()
+end
+
 function ALittle.System_GetDeviceID()
 	return __CPPAPI_System:GetDeviceID()
 end

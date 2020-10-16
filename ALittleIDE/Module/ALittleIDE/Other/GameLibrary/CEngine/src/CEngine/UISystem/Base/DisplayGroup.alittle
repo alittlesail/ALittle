@@ -177,7 +177,7 @@ public class DisplayGroup : DisplayObject
         var endv = index + count;
         for (var i = index; i < endv; 1)
         {
-            var child = this._childs[index];
+            var child = this._childs[i];
             if (child == null) break;
 
             // 移除show

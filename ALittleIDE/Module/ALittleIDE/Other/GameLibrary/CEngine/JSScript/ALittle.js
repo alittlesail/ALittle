@@ -215,16 +215,11 @@ window.__ALITTLEAPI_HttpFileProcess = ALittle.__ALITTLEAPI_HttpFileProcess;
 window.__ALITTLEAPI_HttpClientSucceed = ALittle.__ALITTLEAPI_HttpClientSucceed;
 window.__ALITTLEAPI_HttpClientFailed = ALittle.__ALITTLEAPI_HttpClientFailed;
 window.__ALITTLEAPI_ConnectSucceed = ALittle.__ALITTLEAPI_ConnectSucceed;
-window.__ALITTLEAPI_Disconnect = ALittle.__ALITTLEAPI_Disconnect;
+window.__ALITTLEAPI_Disconnected = ALittle.__ALITTLEAPI_Disconnected;
 window.__ALITTLEAPI_ConnectFailed = ALittle.__ALITTLEAPI_ConnectFailed;
 window.__ALITTLEAPI_Message = ALittle.__ALITTLEAPI_Message;
-window.__ALITTLEAPI_AudioChunkStopedEvent = function(id) {
-	A_AudioSystem.HandleAudioChunkStopedEvent(id);
-}
-
-window.__ALITTLEAPI_NetworkChanged = function(net_type) {
-	ALittle.System_ClearAIFamily();
-	A_OtherSystem.HandleNetworkChanged(net_type);
+window.__ALITTLEAPI_AudioChunkStoppedEvent = function(id) {
+	A_AudioSystem.HandleAudioChunkStoppedEvent(id);
 }
 
 window.__ALITTLEAPI_ALittleJsonRPC = function(json) {

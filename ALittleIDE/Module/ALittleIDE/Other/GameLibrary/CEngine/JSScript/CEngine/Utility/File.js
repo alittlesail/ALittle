@@ -22,7 +22,7 @@ ALittle.File_SaveFile = function(target_path, content, size) {
 	return JavaScript.File_SaveFile(target_path, content, undefined);
 }
 
-ALittle.File_MD5 = function(path) {
+ALittle.File_Md5 = function(path) {
 	let [content] = JavaScript.File_LoadFile(path);
 	if (content === undefined) {
 		return "";
@@ -54,7 +54,7 @@ ALittle.File_ReadJsonFromAsset = function(file_path, crypt_mode) {
 }
 
 ALittle.File_WriteJsonToFile = function(content, file_path) {
-	return ALittle.File_SaveFile(file_path, lua.json.encode(content), -1);
+	return ALittle.File_SaveFile(file_path, lua.cjson.encode(content), -1);
 }
 
 ALittle.DeleteLog = function(day_count_before) {

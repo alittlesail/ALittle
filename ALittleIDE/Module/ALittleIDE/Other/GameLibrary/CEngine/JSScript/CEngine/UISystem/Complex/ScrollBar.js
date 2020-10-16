@@ -21,27 +21,27 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 	set type(value) {
 		ALittle.Grid3.__setter.type.call(this, value);
 		this.UpdateShowSize();
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	set up_size(value) {
 		ALittle.Grid3.__setter.up_size.call(this, value);
 		this.UpdateShowSize();
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	set down_size(value) {
 		ALittle.Grid3.__setter.down_size.call(this, value);
 		this.UpdateShowSize();
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	set gap(value) {
 		ALittle.Grid3.__setter.gap.call(this, value);
 		this.UpdateShowSize();
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	set total_size(value) {
 		this._logic_total_size = value;
 		this.UpdateShowSize();
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	get total_size() {
 		return this._logic_total_size;
@@ -49,7 +49,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 	set show_size(value) {
 		this._logic_show_size = value;
 		this.UpdateShowSize();
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	get show_size() {
 		return this._logic_show_size;
@@ -61,7 +61,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 		} else if (this._offset_rate > 1) {
 			this._offset_rate = 1;
 		}
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	get offset_rate() {
 		return this._offset_rate;
@@ -81,7 +81,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 	},
 	SetToDown : function() {
 		this._offset_rate = 1;
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	set width(value) {
 		if (this._width === value) {
@@ -89,7 +89,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 		}
 		ALittle.Grid3.__setter.width.call(this, value);
 		this.UpdateShowSize();
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	set height(value) {
 		if (this._height === value) {
@@ -97,7 +97,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 		}
 		ALittle.Grid3.__setter.height.call(this, value);
 		this.UpdateShowSize();
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	set up_button(value) {
 		if (this._up_button !== undefined) {
@@ -173,7 +173,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 			value.AddEventListener(___all_struct.get(150587926), this, this.HandleBarButtonDragEnd);
 			value.AddEventListener(___all_struct.get(-1737121315), this, this.HandleBarButtonScroll);
 		}
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	get bar_button() {
 		return this._bar_button;
@@ -186,7 +186,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 		if (value !== undefined) {
 			this._bar_container.AddChild(value, 1);
 		}
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	get bar_background() {
 		return this._bar_background;
@@ -259,7 +259,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 		}
 		this.DispatchEvent(___all_struct.get(958494922), {});
 	},
-	RejustBarButton : function() {
+	AdjustBarButton : function() {
 		let real_size = this._center_size - this._show_size;
 		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
 			if (this._bar_button !== undefined) {

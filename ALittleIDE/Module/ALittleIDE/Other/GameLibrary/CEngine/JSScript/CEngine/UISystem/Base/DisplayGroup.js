@@ -136,7 +136,7 @@ ALittle.DisplayGroup = JavaScript.Class(ALittle.DisplayObject, {
 		let old_count = this._child_count;
 		let endv = index + count;
 		for (let i = index; i < endv; i += 1) {
-			let child = this._childs[index - 1];
+			let child = this._childs[i - 1];
 			if (child === undefined) {
 				break;
 			}

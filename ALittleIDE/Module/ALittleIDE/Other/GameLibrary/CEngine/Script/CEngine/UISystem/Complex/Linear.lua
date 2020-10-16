@@ -125,7 +125,7 @@ function ALittle.Linear:SpliceChild(index, count)
 	local i = index
 	while true do
 		if not(i < endv) then break end
-		local child = self._childs[index]
+		local child = self._childs[i]
 		if child == nil then
 			break
 		end
@@ -139,6 +139,8 @@ function ALittle.Linear:SpliceChild(index, count)
 	if result ~= 0 then
 		self:Layout(index)
 	end
+	self._clip_up_index = 0
+	self._clip_down_index = 0
 	return result
 end
 

@@ -55,7 +55,7 @@ ALittle.SpringTextButton = JavaScript.Class(ALittle.DisplayLayout, {
 			if (this._file_select) {
 				A_OtherSystem.SystemSelectFile(this);
 			}
-			if (ALittle.System_IsPhone === false) {
+			if (ALittle.System_IsPhone() === false) {
 				this.ShowOver();
 			} else {
 				this.ShowUp(undefined);

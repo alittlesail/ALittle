@@ -1428,7 +1428,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		this._line_start_it = line_index;
 		this._start_it_delta = 0;
-		this.RejustContentY();
+		this.AdjustContentY();
 	},
 	ResetCursor : function() {
 		if (this._font_text.font_path === undefined || this._font_text.font_size === undefined) {
@@ -2268,17 +2268,17 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		let child = this._scroll_list.GetChildByIndex(this._line_start_it);
 		this._scroll_list.scroll_offset = -child.y - this._start_it_delta;
 		this._scroll_list.RefreshClipDisLine();
-		this._scroll_list.RejustScrollBar();
+		this._scroll_list.AdjustScrollBar();
 		this._draw_loop = undefined;
 	},
-	RejustContentY : function() {
+	AdjustContentY : function() {
 		if (this._draw_loop !== undefined) {
 			return;
 		}
 		let child = this._scroll_list.GetChildByIndex(this._line_start_it);
 		this._scroll_list.scroll_offset = -child.y - this._start_it_delta;
 		this._scroll_list.RefreshClipDisLine();
-		this._scroll_list.RejustScrollBar();
+		this._scroll_list.AdjustScrollBar();
 	},
 	Draw : function() {
 		if (this._draw_loop !== undefined) {
@@ -2351,7 +2351,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			if (line_list[this._line_cursor_it - 1].acc_height > this._scroll_list.height && this._scroll_list.scroll_offset < 0) {
 				this._scroll_list.scroll_offset = this._scroll_list.height - line_list[this._line_cursor_it - 1].acc_height;
 				this._scroll_list.RefreshClipDisLine();
-				this._scroll_list.RejustScrollBar();
+				this._scroll_list.AdjustScrollBar();
 				while (line_list[this._line_start_it - 1].pre_height > -this._scroll_list.scroll_offset) {
 					this._line_start_it = this._line_start_it - 1;
 				}
@@ -2361,7 +2361,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			if (line_list[this._line_cursor_it - 1].acc_height <= this._scroll_list.height) {
 				this._scroll_list.scroll_offset = 0;
 				this._scroll_list.RefreshClipDisLine();
-				this._scroll_list.RejustScrollBar();
+				this._scroll_list.AdjustScrollBar();
 				this._line_start_it = 1;
 				this._start_it_delta = 0;
 				return;
@@ -2370,12 +2370,12 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		if (line_list[this._line_cursor_it - 1].pre_height <= -this._scroll_list.scroll_offset) {
 			this._scroll_list.scroll_offset = -line_list[this._line_cursor_it - 1].pre_height;
 			this._scroll_list.RefreshClipDisLine();
-			this._scroll_list.RejustScrollBar();
+			this._scroll_list.AdjustScrollBar();
 			this._line_start_it = this._line_cursor_it;
 		} else if (line_list[this._line_cursor_it - 1].acc_height >= this._scroll_list.height - this._scroll_list.scroll_offset) {
 			this._scroll_list.scroll_offset = this._scroll_list.height - line_list[this._line_cursor_it - 1].acc_height;
 			this._scroll_list.RefreshClipDisLine();
-			this._scroll_list.RejustScrollBar();
+			this._scroll_list.AdjustScrollBar();
 			while (line_list[this._line_start_it - 1].acc_height <= -this._scroll_list.scroll_offset) {
 				this._line_start_it = this._line_start_it + 1;
 			}
@@ -3114,7 +3114,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			}
 		} else if (event.sym === 1073741904) {
 			if (this._multi_cursor === false) {
-				if (lua.bit.band(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
+				if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
 					this._is_selecting = false;
 					this.CursorOffsetLR(true);
 					this.UpdateFontText();
@@ -3126,7 +3126,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			event.handled = true;
 		} else if (event.sym === 1073741903) {
 			if (this._multi_cursor === false) {
-				if (lua.bit.band(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
+				if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
 					this._is_selecting = false;
 					this.CursorOffsetLR(false);
 					this.UpdateFontText();
@@ -3138,7 +3138,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			event.handled = true;
 		} else if (event.sym === 1073741906) {
 			if (this._multi_cursor === false) {
-				if (lua.bit.band(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
+				if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
 					this._is_selecting = false;
 					this.CursorOffsetUD(true);
 					this.UpdateFontText();
@@ -3150,7 +3150,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			event.handled = true;
 		} else if (event.sym === 1073741905) {
 			if (this._multi_cursor === false) {
-				if (lua.bit.band(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
+				if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
 					this._is_selecting = false;
 					this.CursorOffsetUD(false);
 					this.UpdateFontText();
@@ -3221,13 +3221,13 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 					this._multi_cursor = false;
 				}
 			}
-		} else if (event.sym === 120 && lua.bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 120 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
 			if (this._multi_cursor === false) {
 				if (this._editable || event.custom) {
 					this._is_selecting = false;
 					let select_text = this.GetSelectText();
 					if (select_text[1 - 1] !== undefined) {
-						ALittle.System_SetClipboardText(lua.json.encode(select_text));
+						ALittle.System_SetClipboardText(ALittle.String_JsonEncode(select_text));
 						is_change = this.DeleteSelectText();
 					}
 					this.UpdateFontText();
@@ -3238,7 +3238,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 					this._is_selecting = false;
 					let select_text = this.GetSelectText();
 					if (select_text[1 - 1] !== undefined) {
-						ALittle.System_SetClipboardText(lua.json.encode(select_text));
+						ALittle.System_SetClipboardText(ALittle.String_JsonEncode(select_text));
 						is_change = this.DeleteSelectText();
 					}
 					this.UpdateFontText();
@@ -3246,19 +3246,19 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 					this._multi_cursor = false;
 				}
 			}
-		} else if (event.sym === 99 && lua.bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 99 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
 			let select_text = this.GetSelectText();
 			if (select_text[1 - 1] !== undefined) {
-				ALittle.System_SetClipboardText(lua.json.encode(select_text));
+				ALittle.System_SetClipboardText(ALittle.String_JsonEncode(select_text));
 			}
 			event.handled = true;
-		} else if (event.sym === 118 && lua.bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 118 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
 			if (this._multi_cursor === false) {
 				if (this._editable || event.custom) {
 					this._is_selecting = false;
 					if (ALittle.System_HasClipboardText()) {
 						let content = ALittle.System_GetClipboardText();
-						let [error, new_content] = (function() { try { let ___VALUE = lua.json.decode.call(undefined, content); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
+						let [error, new_content] = (function() { try { let ___VALUE = ALittle.String_JsonDecode.call(undefined, content); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
 						if (error === undefined && __type(new_content) === "table" && this.CheckDisplayList(new_content)) {
 							if (this.CheckAtKeyInput(new_content)) {
 								return;
@@ -3277,7 +3277,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 					this._is_selecting = false;
 					if (ALittle.System_HasClipboardText()) {
 						let content = ALittle.System_GetClipboardText();
-						let [error, new_content] = (function() { try { let ___VALUE = lua.json.decode.call(undefined, content); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
+						let [error, new_content] = (function() { try { let ___VALUE = ALittle.String_JsonDecode.call(undefined, content); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
 						if (error === undefined && __type(new_content) === "table" && this.CheckDisplayList(new_content)) {
 							is_change = this.InsertDisplayListNative(new_content, false);
 						} else {
@@ -3288,7 +3288,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 					this._multi_cursor = false;
 				}
 			}
-		} else if (event.sym === 97 && lua.bit.band(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 97 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
 			this._is_selecting = true;
 			this.SelectAll();
 			event.handled = true;
@@ -3326,7 +3326,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 	CopyText : function(return_cursor) {
 		let select_text = this.GetSelectText();
 		if (select_text[1 - 1] !== undefined) {
-			ALittle.System_SetClipboardText(lua.json.encode(select_text));
+			ALittle.System_SetClipboardText(ALittle.String_JsonEncode(select_text));
 		}
 		if (return_cursor) {
 			this.TransToCursor();
@@ -3353,7 +3353,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		this._is_selecting = false;
 		let select_text = this.GetSelectText();
 		if (select_text[1 - 1] !== undefined) {
-			ALittle.System_SetClipboardText(lua.json.encode(select_text));
+			ALittle.System_SetClipboardText(ALittle.String_JsonEncode(select_text));
 			this.DeleteSelectText();
 			this.UpdateFontText();
 			this.TransToCursor();
@@ -3387,7 +3387,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		this._is_selecting = false;
 		if (ALittle.System_HasClipboardText()) {
 			let content = ALittle.System_GetClipboardText();
-			let [error, new_content] = (function() { try { let ___VALUE = lua.json.decode.call(undefined, content); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
+			let [error, new_content] = (function() { try { let ___VALUE = ALittle.String_JsonDecode.call(undefined, content); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
 			if (error === undefined && __type(new_content) === "table" && this.CheckDisplayList(new_content)) {
 				if (this.CheckAtKeyInput(new_content)) {
 					return;

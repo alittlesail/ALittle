@@ -215,16 +215,11 @@ window.__ALITTLEAPI_HttpFileProcess = ALittle.__ALITTLEAPI_HttpFileProcess;
 window.__ALITTLEAPI_HttpClientSucceed = ALittle.__ALITTLEAPI_HttpClientSucceed;
 window.__ALITTLEAPI_HttpClientFailed = ALittle.__ALITTLEAPI_HttpClientFailed;
 window.__ALITTLEAPI_ConnectSucceed = ALittle.__ALITTLEAPI_ConnectSucceed;
-window.__ALITTLEAPI_Disconnect = ALittle.__ALITTLEAPI_Disconnect;
+window.__ALITTLEAPI_Disconnected = ALittle.__ALITTLEAPI_Disconnected;
 window.__ALITTLEAPI_ConnectFailed = ALittle.__ALITTLEAPI_ConnectFailed;
 window.__ALITTLEAPI_Message = ALittle.__ALITTLEAPI_Message;
-window.__ALITTLEAPI_AudioChunkStopedEvent = function(id) {
-	A_AudioSystem.HandleAudioChunkStopedEvent(id);
-}
-
-window.__ALITTLEAPI_NetworkChanged = function(net_type) {
-	ALittle.System_ClearAIFamily();
-	A_OtherSystem.HandleNetworkChanged(net_type);
+window.__ALITTLEAPI_AudioChunkStoppedEvent = function(id) {
+	A_AudioSystem.HandleAudioChunkStoppedEvent(id);
 }
 
 window.__ALITTLEAPI_ALittleJsonRPC = function(json) {
@@ -1998,10 +1993,10 @@ if (typeof ALittle === "undefined") window.ALittle = {};
 
 
 ALittle.String_CryptPassword = function(account_name, pwd) {
-	let device_id_md5 = ALittle.String_MD5(ALittle.System_GetDeviceID());
-	let account_name_md5 = ALittle.String_MD5(account_name);
-	let device_id_md5_ex = ALittle.String_MD5("ALittle" + ALittle.System_GetDeviceID() + "ALittle");
-	let account_name_md5_ex = ALittle.String_MD5("ALittle" + account_name + "ALittle");
+	let device_id_md5 = ALittle.String_Md5(ALittle.System_GetDeviceID());
+	let account_name_md5 = ALittle.String_Md5(account_name);
+	let device_id_md5_ex = ALittle.String_Md5("ALittle" + ALittle.System_GetDeviceID() + "ALittle");
+	let account_name_md5_ex = ALittle.String_Md5("ALittle" + account_name + "ALittle");
 	let device_id_md5_base64 = ALittle.String_Base64Encode(device_id_md5);
 	let account_name_md5_base64 = ALittle.String_Base64Encode(account_name_md5);
 	return ALittle.String_Base64Encode(device_id_md5_base64 + (ALittle.String_Base64Encode(device_id_md5_ex + pwd + account_name_md5_ex)) + account_name_md5_base64);
@@ -2009,10 +2004,10 @@ ALittle.String_CryptPassword = function(account_name, pwd) {
 
 ALittle.String_DecryptPassword = function(account_name, pwd) {
 	pwd = ALittle.String_Base64Decode(pwd);
-	let device_id_md5 = ALittle.String_MD5(ALittle.System_GetDeviceID());
-	let account_name_md5 = ALittle.String_MD5(account_name);
-	let device_id_md5_ex = ALittle.String_MD5("ALittle" + ALittle.System_GetDeviceID() + "ALittle");
-	let account_name_md5_ex = ALittle.String_MD5("ALittle" + account_name + "ALittle");
+	let device_id_md5 = ALittle.String_Md5(ALittle.System_GetDeviceID());
+	let account_name_md5 = ALittle.String_Md5(account_name);
+	let device_id_md5_ex = ALittle.String_Md5("ALittle" + ALittle.System_GetDeviceID() + "ALittle");
+	let account_name_md5_ex = ALittle.String_Md5("ALittle" + account_name + "ALittle");
 	let device_id_md5_base64 = ALittle.String_Base64Encode(device_id_md5);
 	let account_name_md5_base64 = ALittle.String_Base64Encode(account_name_md5);
 	let start_index = ALittle.String_Find(pwd, device_id_md5_base64);
@@ -2064,7 +2059,7 @@ ALittle.File_SaveFile = function(target_path, content, size) {
 	return JavaScript.File_SaveFile(target_path, content, undefined);
 }
 
-ALittle.File_MD5 = function(path) {
+ALittle.File_Md5 = function(path) {
 	let [content] = JavaScript.File_LoadFile(path);
 	if (content === undefined) {
 		return "";
@@ -2096,7 +2091,7 @@ ALittle.File_ReadJsonFromAsset = function(file_path, crypt_mode) {
 }
 
 ALittle.File_WriteJsonToFile = function(content, file_path) {
-	return ALittle.File_SaveFile(file_path, lua.json.encode(content), -1);
+	return ALittle.File_SaveFile(file_path, lua.cjson.encode(content), -1);
 }
 
 ALittle.DeleteLog = function(day_count_before) {
@@ -2171,12 +2166,12 @@ ALittle.System_GetPlatform = function() {
 	}
 }
 
-ALittle.System_GetDeviceID = function() {
-	return JavaScript.JSystem_GetDeviceID();
+ALittle.System_GetCurMSTime = function() {
+	return Date.now();
 }
 
-ALittle.System_GetLocalIPList = function() {
-	return "[]";
+ALittle.System_GetDeviceID = function() {
+	return JavaScript.JSystem_GetDeviceID();
 }
 
 ALittle.System_IsPhone = function() {
@@ -2185,15 +2180,6 @@ ALittle.System_IsPhone = function() {
 }
 
 ALittle.System_InstallProgram = function(file_path) {
-}
-
-ALittle.System_ClearAIFamily = function() {
-}
-
-ALittle.System_StartProgram = function(package_name) {
-}
-
-ALittle.System_BackProgram = function() {
 }
 
 ALittle.System_GetScreenWidth = function() {
@@ -2214,10 +2200,6 @@ ALittle.System_GetScreenHeight = function() {
 	}
 }
 
-ALittle.System_GetStatusBarHeight = function() {
-	return 0;
-}
-
 ALittle.System_ForceExit = function() {
 }
 
@@ -2227,32 +2209,10 @@ ALittle.System_Exit = function() {
 ALittle.System_Restart = function() {
 }
 
-ALittle.System_SetFPS = function(fps) {
-}
-
-ALittle.System_SetAppPauseInterval = function(interval) {
-}
-
-ALittle.System_GetAppPauseInterval = function() {
-	return 0;
-}
-
-ALittle.SystemThreadType = {
-	FAST : 0,
-	MIDDLE : 1,
-	SLOW : 2,
-}
-
-ALittle.System_SetThreadCount = function(count, thread_type) {
-	if (thread_type === undefined) {
-		thread_type = ALittle.SystemThreadType.SLOW;
-	}
+ALittle.System_SetThreadCount = function(count) {
 }
 
 ALittle.System_GetThreadCount = function(thread_type) {
-	if (thread_type === undefined) {
-		thread_type = ALittle.SystemThreadType.SLOW;
-	}
 	return 0;
 }
 
@@ -2332,40 +2292,13 @@ ALittle.System_SetViewIcon = function(path) {
 	return false;
 }
 
-ALittle.System_SetViewShape = function(path) {
-	return false;
-}
-
 ALittle.System_SetViewSize = function(width, height) {
-}
-
-ALittle.System_SetMaxViewSize = function() {
-}
-
-ALittle.System_SetMinViewSize = function() {
-}
-
-ALittle.System_SetRestoreViewSize = function() {
-}
-
-ALittle.System_RaiseView = function() {
 }
 
 ALittle.System_ShowView = function() {
 }
 
 ALittle.System_HideView = function() {
-}
-
-ALittle.System_GetViewX = function() {
-	return 0;
-}
-
-ALittle.System_GetViewY = function() {
-	return 0;
-}
-
-ALittle.System_SetViewPosition = function(x, y) {
 }
 
 ALittle.System_GetMaxTextureWidth = function() {
@@ -2377,7 +2310,7 @@ ALittle.System_GetMaxTextureHeight = function() {
 }
 
 ALittle.System_Render = function() {
-	return JavaScript.JSystem_Render();
+	JavaScript.JSystem_Render();
 }
 
 ALittle.System_GetClipboardText = function() {
@@ -2391,92 +2324,8 @@ ALittle.System_HasClipboardText = function() {
 	return false;
 }
 
-ALittle.System_GetClipboardImage = function() {
-	return undefined;
-}
-
-ALittle.System_SetClipboardImage = function(surface) {
-}
-
-ALittle.System_HasClipboardImage = function() {
-	return false;
-}
-
-ALittle.SystemOrientationType = {
-	SDL_ORIENTATION_UNKNOWN : 0,
-	SDL_ORIENTATION_LANDSCAPE : 1,
-	SDL_ORIENTATION_LANDSCAPE_FLIPPED : 2,
-	SDL_ORIENTATION_PORTRAIT : 3,
-	SDL_ORIENTATION_PORTRAIT_FLIPPED : 4,
-}
-
-ALittle.System_GetDisplayOrientation = function() {
-	let match = matchMedia("(orientation: portrait)");
-	if (match !== undefined && match.matches) {
-		return ALittle.SystemOrientationType.SDL_ORIENTATION_PORTRAIT;
-	}
-	return ALittle.SystemOrientationType.SDL_ORIENTATION_LANDSCAPE;
-}
-
-ALittle.System_EnableScreenSaver = function() {
-}
-
-ALittle.System_DisableScreenSaver = function() {
-}
-
 ALittle.System_OpenUrlBySystemBrowser = function(url) {
 	open(url);
-}
-
-ALittle.System_Alert = function(msg) {
-	alert(msg);
-}
-
-ALittle.System_LoadSurface = function(path) {
-	return undefined;
-}
-
-ALittle.System_CreateSurface = function(width, height) {
-	return undefined;
-}
-
-ALittle.System_SaveSurface = function(surface, path) {
-	return false;
-}
-
-ALittle.System_FreeSurface = function(surface) {
-}
-
-ALittle.System_GetSurfaceWidth = function(surface) {
-	return 0;
-}
-
-ALittle.System_GetSurfaceHeight = function(surface) {
-	return 0;
-}
-
-ALittle.System_CutBlitSurface = function(new_surface, surface, to, from) {
-	return false;
-}
-
-ALittle.System_SetSurfacePixel = function(surface, x, y, color) {
-	return false;
-}
-
-ALittle.System_GetSurfacePixel = function(surface, x, y) {
-	return 0;
-}
-
-ALittle.System_GetPixelAlpha = function(color) {
-	return 0;
-}
-
-ALittle.System_SetPixelAlpha = function(color, alpha) {
-	return 0;
-}
-
-ALittle.System_GetSurfaceGrid9 = function(surface, type) {
-	return 0;
 }
 
 ALittle.CreateMsgSender = function(heartbeat, check_heartbeat, callback) {
@@ -2635,12 +2484,6 @@ type_list : ["ALittle.EventDispatcher"],
 option_map : {}
 })
 
-ALittle.NetworkType = {
-	NONE : "OtherSystem_NotifyNetwork_none",
-	WIFI : "OtherSystem_NotifyNetwork_wifi",
-	LINE : "OtherSystem_NotifyNetwork_line",
-}
-
 if (ALittle.EventDispatcher === undefined) throw new Error(" extends class:ALittle.EventDispatcher is undefined");
 ALittle.OtherSystem = JavaScript.Class(ALittle.EventDispatcher, {
 	Ctor : function() {
@@ -2671,17 +2514,6 @@ ALittle.OtherSystem = JavaScript.Class(ALittle.EventDispatcher, {
 		let event = {};
 		event.url = url;
 		this.DispatchEvent(___all_struct.get(1720966934), event);
-	},
-	AddEventListener : function(T, object, callback) {
-		return ALittle.EventDispatcher.AddEventListener.call(this, T, object, callback);
-	},
-	HandleNetworkChanged : function(net_type) {
-		let event = {};
-		event.net_type = net_type;
-		this.DispatchEvent(___all_struct.get(708183011), event);
-	},
-	GetNetworkType : function() {
-		return ALittle.NetworkType.LINE;
 	},
 	HandleALittleJsonRPC : function(json) {
 		let [error, content] = (function() { try { let ___VALUE = ALittle.String_JsonDecode.call(undefined, json); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
@@ -2769,20 +2601,16 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 		this._chunk_map = new Map();
 		this._app_background = false;
 		this._all_chunk_mute = false;
-		this._music_mute = false;
-		this._music_valume = 1;
 		A_OtherSystem.AddEventListener(___all_struct.get(521107426), this, this.HandleDidEnterBackground);
 		A_OtherSystem.AddEventListener(___all_struct.get(760325696), this, this.HandleDidEnterForeground);
 	},
 	HandleDidEnterBackground : function(event) {
 		this._app_background = true;
 		this.UpdateAllChunkVolume();
-		this.UpdateMusicVolume();
 	},
 	HandleDidEnterForeground : function(event) {
 		this._app_background = false;
 		this.UpdateAllChunkVolume();
-		this.UpdateMusicVolume();
 	},
 	UpdateChunkVolume : function(info) {
 		let real_volume = info.volume;
@@ -2790,13 +2618,6 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 			real_volume = 0;
 		}
 		__CPPAPI_AudioSystem.SetChunkVolume(info.channel, real_volume);
-	},
-	UpdateMusicVolume : function() {
-		let real_volume = this._music_valume;
-		if (this._music_mute || this._app_background) {
-			real_volume = 0;
-		}
-		__CPPAPI_AudioSystem.SetMusicVolume(real_volume);
 	},
 	UpdateAllChunkVolume : function() {
 		for (let [k, v] of this._chunk_map) {
@@ -2811,18 +2632,8 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 		this._all_chunk_mute = mute;
 		this.UpdateAllChunkVolume();
 	},
-	SetMusicMute : function(mute) {
-		if (this._music_mute === mute) {
-			return;
-		}
-		this._music_mute = mute;
-		this.UpdateMusicVolume();
-	},
 	GetAllChunkMute : function() {
 		return this._all_chunk_mute;
-	},
-	GetMusicMute : function() {
-		return this._music_mute;
 	},
 	AddChunkCache : function(file_path) {
 		__CPPAPI_AudioSystem.AddChunkCache(file_path);
@@ -2889,7 +2700,7 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 		}
 		return info.volume;
 	},
-	HandleAudioChunkStopedEvent : function(channel) {
+	HandleAudioChunkStoppedEvent : function(channel) {
 		let info = this._chunk_map.get(channel);
 		if (info === undefined) {
 			return;
@@ -2899,30 +2710,6 @@ ALittle.AudioSystem = JavaScript.Class(undefined, {
 			return;
 		}
 		info.callback(info.file_path, info.channel);
-	},
-	StartMusic : function(file_path, loop) {
-		if (loop === undefined) {
-			loop = 1;
-		}
-		let result = __CPPAPI_AudioSystem.StartMusic(file_path, loop);
-		if (result) {
-			return false;
-		}
-		this._music_valume = __CPPAPI_AudioSystem.GetMusicVolume();
-		this.UpdateMusicVolume();
-		return result;
-	},
-	StopMusic : function() {
-		__CPPAPI_AudioSystem.StopMusic();
-	},
-	StartRecord : function(file_path) {
-		return __CPPAPI_AudioSystem.StartRecord(file_path);
-	},
-	IsRecording : function() {
-		return __CPPAPI_AudioSystem.IsRecording();
-	},
-	StopRecord : function() {
-		__CPPAPI_AudioSystem.StopRecord();
 	},
 }, "ALittle.AudioSystem");
 
@@ -5404,7 +5191,7 @@ ALittle.DisplayGroup = JavaScript.Class(ALittle.DisplayObject, {
 		let old_count = this._child_count;
 		let endv = index + count;
 		for (let i = index; i < endv; i += 1) {
-			let child = this._childs[index - 1];
+			let child = this._childs[i - 1];
 			if (child === undefined) {
 				break;
 			}
@@ -8019,7 +7806,7 @@ ALittle.TextButton = JavaScript.Class(ALittle.DisplayLayout, {
 			} else if (this._file_select === ALittle.UIEnumTypes.SELECT_DIR) {
 				A_OtherSystem.SystemSelectDirectory(this);
 			}
-			if (ALittle.System_IsPhone === false) {
+			if (ALittle.System_IsPhone() === false) {
 				this.ShowOver();
 			} else {
 				this.ShowUp(undefined);
@@ -8472,7 +8259,7 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 			e.is_drag = event.is_drag;
 			this.DispatchEvent(___all_struct.get(-449066808), e);
 			this.DispatchEvent(___all_struct.get(958494922), {});
-			if (ALittle.System_IsPhone === false) {
+			if (ALittle.System_IsPhone() === false) {
 				this.ShowOver();
 			} else {
 				this.ShowUp();
@@ -9174,7 +8961,7 @@ ALittle.TextRadioButton = JavaScript.Class(ALittle.TextCheckButton, {
 			let e = {};
 			e.is_drag = event.is_drag;
 			this.DispatchEvent(___all_struct.get(-449066808), e);
-			if (ALittle.System_IsPhone === false) {
+			if (ALittle.System_IsPhone() === false) {
 				this.ShowOver();
 			} else {
 				this.ShowUp();
@@ -9831,7 +9618,7 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 		}
 		let endv = index + count;
 		for (let i = index; i < endv; i += 1) {
-			let child = this._childs[index - 1];
+			let child = this._childs[i - 1];
 			if (child === undefined) {
 				break;
 			}
@@ -9844,6 +9631,8 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 		if (result !== 0) {
 			this.Layout(index);
 		}
+		this._clip_up_index = 0;
+		this._clip_down_index = 0;
 		return result;
 	},
 	RemoveAllChild : function() {
@@ -11165,13 +10954,13 @@ ALittle.DropDown = JavaScript.Class(ALittle.TextCheckButton, {
 			A_LayerManager.HideFromRight(this._body);
 		} else {
 			let [abs_x, abs_y] = this.LocalToGlobal();
-			let rejust_y = abs_y + this.height * this.scale_y;
-			if (A_UISystem.view_height < rejust_y + this._scroll_screen.height * this.scale_y) {
-				rejust_y = abs_y - this._scroll_screen.height * this.scale_y;
+			let adjust_y = abs_y + this.height * this.scale_y;
+			if (A_UISystem.view_height < adjust_y + this._scroll_screen.height * this.scale_y) {
+				adjust_y = abs_y - this._scroll_screen.height * this.scale_y;
 			}
-			this._body.y = rejust_y;
-			this._body.width = this.width + this._body_margin;
-			this._body.x = abs_x - this._body_margin / 2;
+			this._body.y = adjust_y;
+			this._body.width = this.width - this._body_margin;
+			this._body.x = abs_x + this._body_margin / 2;
 			this._body.scale_x = this.scale_x;
 			this._body.scale_y = this.scale_y;
 			this._scroll_screen.x = this._screen_margin_left;
@@ -11223,11 +11012,11 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	set width(value) {
 		ALittle.DisplayLayout.__setter.width.call(this, value);
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	set height(value) {
 		ALittle.DisplayLayout.__setter.height.call(this, value);
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	get width() {
 		return this._width;
@@ -11240,7 +11029,7 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 			return;
 		}
 		this._type = value;
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	get type() {
 		return this._type;
@@ -11252,7 +11041,7 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 		} else if (this._offset_rate > 1) {
 			this._offset_rate = 1;
 		}
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	get offset_rate() {
 		return this._offset_rate;
@@ -11280,7 +11069,7 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 			this.AddChild(value, 1);
 			value.AddEventListener(___all_struct.get(1883782801), this, this.HandleBarBackgroudLButtonDown);
 		}
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	HandleBarBackgroudLButtonDown : function(event) {
 		let rel_x = event.rel_x;
@@ -11366,7 +11155,7 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 			value.AddEventListener(___all_struct.get(-1737121315), this, this.HandleBarButtonScroll);
 			value._can_scroll = true;
 		}
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	get bar_button() {
 		return this._bar_button;
@@ -11383,10 +11172,10 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 			for (let i = 1; i <= this._grade - 2; i += 1) {
 				this._grade_list[i + 1 - 1] = i * dist;
 			}
-			let num = lua.table.maxn(this._grade_list);
+			let num = ALittle.List_MaxN(this._grade_list);
 			this._grade_list[num + 1 - 1] = 1;
 		}
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	get fixed() {
 		return this._fixed;
@@ -11403,10 +11192,10 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 			for (let i = 1; i <= value - 2; i += 1) {
 				this._grade_list[i + 1 - 1] = i * dist;
 			}
-			let num = lua.table.maxn(this._grade_list);
+			let num = ALittle.List_MaxN(this._grade_list);
 			this._grade_list[num + 1 - 1] = 1;
 		}
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	get grade() {
 		return this._grade;
@@ -11553,7 +11342,7 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		this.DispatchEvent(___all_struct.get(958494922), {});
 	},
-	RejustBarButton : function() {
+	AdjustBarButton : function() {
 		if (this._bar_background !== undefined) {
 			this._bar_background.x = 0;
 			this._bar_background.y = 0;
@@ -11600,27 +11389,27 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 	set type(value) {
 		ALittle.Grid3.__setter.type.call(this, value);
 		this.UpdateShowSize();
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	set up_size(value) {
 		ALittle.Grid3.__setter.up_size.call(this, value);
 		this.UpdateShowSize();
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	set down_size(value) {
 		ALittle.Grid3.__setter.down_size.call(this, value);
 		this.UpdateShowSize();
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	set gap(value) {
 		ALittle.Grid3.__setter.gap.call(this, value);
 		this.UpdateShowSize();
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	set total_size(value) {
 		this._logic_total_size = value;
 		this.UpdateShowSize();
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	get total_size() {
 		return this._logic_total_size;
@@ -11628,7 +11417,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 	set show_size(value) {
 		this._logic_show_size = value;
 		this.UpdateShowSize();
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	get show_size() {
 		return this._logic_show_size;
@@ -11640,7 +11429,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 		} else if (this._offset_rate > 1) {
 			this._offset_rate = 1;
 		}
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	get offset_rate() {
 		return this._offset_rate;
@@ -11660,7 +11449,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 	},
 	SetToDown : function() {
 		this._offset_rate = 1;
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	set width(value) {
 		if (this._width === value) {
@@ -11668,7 +11457,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 		}
 		ALittle.Grid3.__setter.width.call(this, value);
 		this.UpdateShowSize();
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	set height(value) {
 		if (this._height === value) {
@@ -11676,7 +11465,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 		}
 		ALittle.Grid3.__setter.height.call(this, value);
 		this.UpdateShowSize();
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	set up_button(value) {
 		if (this._up_button !== undefined) {
@@ -11752,7 +11541,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 			value.AddEventListener(___all_struct.get(150587926), this, this.HandleBarButtonDragEnd);
 			value.AddEventListener(___all_struct.get(-1737121315), this, this.HandleBarButtonScroll);
 		}
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	get bar_button() {
 		return this._bar_button;
@@ -11765,7 +11554,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 		if (value !== undefined) {
 			this._bar_container.AddChild(value, 1);
 		}
-		this.RejustBarButton();
+		this.AdjustBarButton();
 	},
 	get bar_background() {
 		return this._bar_background;
@@ -11838,7 +11627,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 		}
 		this.DispatchEvent(___all_struct.get(958494922), {});
 	},
-	RejustBarButton : function() {
+	AdjustBarButton : function() {
 		let real_size = this._center_size - this._show_size;
 		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
 			if (this._bar_button !== undefined) {
@@ -11917,7 +11706,18 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 				this._right_scroll_bar.offset_rate = this._right_scroll_bar.offset_rate - offset / this._content_height;
 			}
 		}
-		this.RejustScrollBar();
+		this.AdjustScrollBar();
+	},
+	EnableDrag : function(value) {
+		if (value) {
+			this.AddEventListener(___all_struct.get(1337289812), this, this.HandleDrag);
+			this.AddEventListener(___all_struct.get(150587926), this, this.HandleDragEnd);
+			this.AddEventListener(___all_struct.get(1301789264), this, this.HandleDragBegin);
+		} else {
+			this.RemoveEventListener(___all_struct.get(1337289812), this, this.HandleDrag);
+			this.RemoveEventListener(___all_struct.get(150587926), this, this.HandleDragEnd);
+			this.RemoveEventListener(___all_struct.get(1301789264), this, this.HandleDragBegin);
+		}
 	},
 	get open_extends_drag() {
 		return this._open_extends_drag;
@@ -11956,7 +11756,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		}
 		this._scroll_content.AddEventListener(___all_struct.get(-431205740), this, this.HandleContainerResize);
 		this._scroll_view.AddChild(this._scroll_content, 1);
-		this.RejustScrollBar();
+		this.AdjustScrollBar();
 	},
 	SetContainer : function(value) {
 		if (value === undefined) {
@@ -11967,7 +11767,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		this._scroll_content = value;
 		this._scroll_content.AddEventListener(___all_struct.get(-431205740), this, this.HandleContainerResize);
 		this._scroll_view.AddChild(this._scroll_content, 1);
-		this.RejustScrollBar();
+		this.AdjustScrollBar();
 	},
 	set container_y(value) {
 		if (this._scroll_content === undefined) {
@@ -11975,7 +11775,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		}
 		this._scroll_content.y = value;
 		this.YScrollBarChange();
-		this.RejustScrollBar();
+		this.AdjustScrollBar();
 	},
 	get container_y() {
 		if (this._scroll_content === undefined) {
@@ -11989,7 +11789,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		}
 		this._scroll_content.x = value;
 		this.XScrollBarChange();
-		this.RejustScrollBar();
+		this.AdjustScrollBar();
 	},
 	get container_x() {
 		if (this._scroll_content === undefined) {
@@ -12069,7 +11869,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		if (this._scroll_content.AddChild(child, index) === false) {
 			return false;
 		}
-		this.RejustScrollBar();
+		this.AdjustScrollBar();
 		return true;
 	},
 	RemoveChild : function(child) {
@@ -12079,13 +11879,13 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		if (this._scroll_content.RemoveChild(child) === false) {
 			return false;
 		}
-		this.RejustScrollBar();
+		this.AdjustScrollBar();
 		return true;
 	},
 	SpliceChild : function(index, count) {
 		let result = this._scroll_content.SpliceChild(index, count);
 		if (result !== 0) {
-			this.RejustScrollBar();
+			this.AdjustScrollBar();
 		}
 		return result;
 	},
@@ -12100,7 +11900,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		A_LoopSystem.RemoveUpdater(this._x_type_dispatch);
 		A_LoopSystem.RemoveUpdater(this._y_type_dispatch);
 		this._scroll_content.RemoveAllChild();
-		this.RejustScrollBar();
+		this.AdjustScrollBar();
 	},
 	set width(value) {
 		if (this._width === value) {
@@ -12334,7 +12134,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 	get bottom_scrollbar() {
 		return this._bottom_scroll_bar;
 	},
-	RejustScrollBar : function() {
+	AdjustScrollBar : function() {
 		this._content_width = this._scroll_content.max_right;
 		if (this._static_object_h !== undefined) {
 			if (this._static_object_h.width > this._content_width) {
@@ -12395,7 +12195,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		this.RefreshClipDisLine();
 	},
 	HandleContainerResize : function(event) {
-		this.RejustScrollBar();
+		this.AdjustScrollBar();
 	},
 	HandleDragBegin : function(event) {
 	},
@@ -12732,6 +12532,14 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 		this._pickup_child = true;
 		this._title_text = "";
 		this._head = ALittle.NewObject(ALittle.DisplayLayout, this._ctrl_sys);
+		this._head_container = ALittle.NewObject(ALittle.DisplayLayout, this._ctrl_sys);
+		this._head_container.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._head_container.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._head.AddChild(this._head_container);
+		this._head_left_margin = 0;
+		this._head_right_margin = 0;
+		this._head_top_margin = 0;
+		this._head_bottom_margin = 0;
 		this._body = ALittle.NewObject(ALittle.DisplayLayout, this._ctrl_sys);
 		this._grid3 = ALittle.NewObject(ALittle.Grid3, this._ctrl_sys);
 		this._grid3.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
@@ -12754,27 +12562,39 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 		if (this._close_button !== undefined) {
 			this._close_button.x_value = (value - this._close_button.height) / 2;
 		}
-		if (this._title !== undefined) {
-			this._title.x_value = (value - this._title.font_height);
-		}
 	},
 	get head_size() {
 		return this._grid3.up_size;
 	},
-	ResetHeadOrder : function() {
-		let index = 1;
-		if (this._head_drag !== undefined) {
-			this._head.SetChildIndex(this._head_drag, index);
-			++ index;
-		}
-		if (this._title !== undefined) {
-			this._head.SetChildIndex(this._title, index);
-			++ index;
-		}
-		if (this._close_button !== undefined) {
-			this._head.SetChildIndex(this._close_button, index);
-			++ index;
-		}
+	get head_left_margin() {
+		return this._head_left_margin;
+	},
+	set head_left_margin(value) {
+		this._head_left_margin = value;
+		this._head_container.x = value;
+		this._head_container.width_value = this._head_left_margin + this._head_right_margin;
+	},
+	get head_right_margin() {
+		return this._head_right_margin;
+	},
+	set head_right_margin(value) {
+		this._head_right_margin = value;
+		this._head_container.width_value = this._head_left_margin + this._head_right_margin;
+	},
+	get head_top_margin() {
+		return this._head_top_margin;
+	},
+	set head_top_margin(value) {
+		this._head_top_margin = value;
+		this._head_container.y = value;
+		this._head_container.height_value = this._head_top_margin + this._head_bottom_margin;
+	},
+	get head_bottom_margin() {
+		return this._head_bottom_margin;
+	},
+	set head_bottom_margin(value) {
+		this._head_bottom_margin = value;
+		this._head_container.height_value = this._head_top_margin + this._head_bottom_margin;
 	},
 	set show_background(value) {
 		if (this._background !== undefined) {
@@ -12788,7 +12608,6 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 			this._background.height_value = this._grid3.up_size;
 			this._background.y_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING;
 			ALittle.DisplayLayout.AddChild.call(this, this._background, 1);
-			this.ResetHeadOrder();
 		}
 	},
 	get show_background() {
@@ -12807,8 +12626,7 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 			this._head_drag.width_value = 0;
 			this._head_drag.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
 			this._head_drag.height_value = 0;
-			this._head.AddChild(this._head_drag);
-			this.ResetHeadOrder();
+			this._head.AddChild(this._head_drag, 1);
 			this._head_drag.AddEventListener(___all_struct.get(1301789264), this, this.HandleHeadDragBegin);
 			this._head_drag.AddEventListener(___all_struct.get(1337289812), this, this.HandleHeadDrag);
 			this._head_drag.AddEventListener(___all_struct.get(150587926), this, this.HandleHeadDragEnd);
@@ -12820,7 +12638,7 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 	set show_title(value) {
 		if (this._title !== undefined) {
 			this._title_text = this._title.text;
-			this._head.RemoveChild(this._title);
+			this._head_container.RemoveChild(this._title);
 		}
 		this._title = value;
 		if (this._title !== undefined) {
@@ -12828,10 +12646,8 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 			this._title.disabled = true;
 			this._title.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
 			this._title.y_value = 0;
-			this._head.AddChild(this._title);
-			this._title.x_type = ALittle.UIEnumTypes.POS_ABS;
-			this._title.x_value = (this._grid3.up_size - this._title.font_height);
-			this.ResetHeadOrder();
+			this._title.x = 0;
+			this._head_container.AddChild(this._title);
 		}
 	},
 	get show_title() {
@@ -12851,17 +12667,16 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	set show_close_button(value) {
 		if (this._close_button !== undefined) {
-			this._head.RemoveChild(this._close_button);
+			this._head_container.RemoveChild(this._close_button);
 			this._close_button.RemoveEventListener(___all_struct.get(-449066808), this, this.HandleCloseButtonClicked);
 		}
 		this._close_button = value;
 		if (this._close_button !== undefined) {
 			this._close_button.y_value = 0;
 			this._close_button.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
-			this._head.AddChild(this._close_button);
+			this._head_container.AddChild(this._close_button);
 			this._close_button.x_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING;
 			this._close_button.x_value = (this._grid3.up_size - this._close_button.height) / 2;
-			this.ResetHeadOrder();
 			this._close_button.AddEventListener(___all_struct.get(-449066808), this, this.HandleCloseButtonClicked);
 		}
 	},

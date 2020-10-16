@@ -1820,72 +1820,115 @@ function AUIPlugin.AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 	local it_cursor_char = self._cursor.char
 	line_map[self._cursor.line] = true
 	if line_count > 1 then
-		self._code_linear:RemoveAllChild()
-		local new_line_list = {}
-		local new_line_count = 0
-		local i = 1
-		while true do
-			if not(i < self._cursor.line) then break end
-			local line = self._line_list[i]
-			self._code_linear:AddChild(line.container)
-			new_line_count = new_line_count + (1)
-			new_line_list[new_line_count] = line
-			i = i+(1)
-		end
-		do
-			split_next_line = {}
-			split_next_line.edit = self
-			split_next_line.char_count = 0
-			split_next_line.char_list = {}
-			split_next_line.container = AUIPlugin.AUICodeLineContainer(AUIPlugin.g_Control)
-			split_next_line.container._user_data = split_next_line
-			split_next_line.container.height = AUIPlugin.CODE_LINE_HEIGHT
-			local i = self._cursor.char + 1
-			while true do
-				if not(i <= split_pre_line.char_count) then break end
-				split_next_line.char_count = split_next_line.char_count + (1)
-				split_next_line.char_list[split_next_line.char_count] = split_pre_line.char_list[i]
-				if split_pre_line.char_list[i].text ~= nil then
-					split_next_line.container:AddChild(split_pre_line.char_list[i].text)
+		if line_count <= 20 then
+			local new_line_index = self._cursor.line
+			do
+				split_next_line = {}
+				split_next_line.edit = self
+				split_next_line.char_count = 0
+				split_next_line.char_list = {}
+				split_next_line.container = AUIPlugin.AUICodeLineContainer(AUIPlugin.g_Control)
+				split_next_line.container._user_data = split_next_line
+				split_next_line.container.height = AUIPlugin.CODE_LINE_HEIGHT
+				local i = self._cursor.char + 1
+				while true do
+					if not(i <= split_pre_line.char_count) then break end
+					split_next_line.char_count = split_next_line.char_count + (1)
+					split_next_line.char_list[split_next_line.char_count] = split_pre_line.char_list[i]
+					if split_pre_line.char_list[i].text ~= nil then
+						split_next_line.container:AddChild(split_pre_line.char_list[i].text)
+					end
+					i = i+(1)
 				end
+				local split_count = split_pre_line.char_count - self._cursor.char
+				ALittle.List_Splice(split_pre_line.char_list, self._cursor.char + 1, split_count)
+				split_pre_line.char_count = split_pre_line.char_count - (split_count)
+			end
+			local i = 2
+			while true do
+				if not(i < line_count) then break end
+				local line = line_list[i]
+				new_line_index = new_line_index + (1)
+				self._code_linear:AddChild(line.container, new_line_index)
+				ALittle.List_Insert(self._line_list, new_line_index, line)
+				line_map[new_line_index] = true
 				i = i+(1)
 			end
-			local split_count = split_pre_line.char_count - self._cursor.char
-			ALittle.List_Splice(split_pre_line.char_list, self._cursor.char + 1, split_count)
-			split_pre_line.char_count = split_pre_line.char_count - (split_count)
-			self._code_linear:AddChild(split_pre_line.container)
-			new_line_count = new_line_count + (1)
-			new_line_list[new_line_count] = split_pre_line
+			do
+				new_line_index = new_line_index + (1)
+				self._code_linear:AddChild(split_next_line.container, new_line_index)
+				ALittle.List_Insert(self._line_list, new_line_index, split_next_line)
+				it_cursor_line = new_line_index
+				it_cursor_char = 0
+				line_map[new_line_index] = true
+			end
+		else
+			local new_line_list = {}
+			local new_line_count = 0
+			self._code_linear:SpliceChild(self._cursor.line)
+			local i = 1
+			while true do
+				if not(i < self._cursor.line) then break end
+				local line = self._line_list[i]
+				new_line_count = new_line_count + (1)
+				new_line_list[new_line_count] = line
+				i = i+(1)
+			end
+			do
+				split_next_line = {}
+				split_next_line.edit = self
+				split_next_line.char_count = 0
+				split_next_line.char_list = {}
+				split_next_line.container = AUIPlugin.AUICodeLineContainer(AUIPlugin.g_Control)
+				split_next_line.container._user_data = split_next_line
+				split_next_line.container.height = AUIPlugin.CODE_LINE_HEIGHT
+				local i = self._cursor.char + 1
+				while true do
+					if not(i <= split_pre_line.char_count) then break end
+					split_next_line.char_count = split_next_line.char_count + (1)
+					split_next_line.char_list[split_next_line.char_count] = split_pre_line.char_list[i]
+					if split_pre_line.char_list[i].text ~= nil then
+						split_next_line.container:AddChild(split_pre_line.char_list[i].text)
+					end
+					i = i+(1)
+				end
+				local split_count = split_pre_line.char_count - self._cursor.char
+				ALittle.List_Splice(split_pre_line.char_list, self._cursor.char + 1, split_count)
+				split_pre_line.char_count = split_pre_line.char_count - (split_count)
+				local result = self._code_linear:AddChild(split_pre_line.container)
+				new_line_count = new_line_count + (1)
+				new_line_list[new_line_count] = split_pre_line
+			end
+			local i = 2
+			while true do
+				if not(i < line_count) then break end
+				local line = line_list[i]
+				local result = self._code_linear:AddChild(line.container)
+				new_line_count = new_line_count + (1)
+				new_line_list[new_line_count] = line
+				line_map[new_line_count] = true
+				i = i+(1)
+			end
+			do
+				local result = self._code_linear:AddChild(split_next_line.container)
+				new_line_count = new_line_count + (1)
+				new_line_list[new_line_count] = split_next_line
+				it_cursor_line = new_line_count
+				it_cursor_char = 0
+				line_map[new_line_count] = true
+			end
+			local i = self._cursor.line + 1
+			while true do
+				if not(i <= self._line_count) then break end
+				local line = self._line_list[i]
+				self._code_linear:AddChild(line.container)
+				new_line_count = new_line_count + (1)
+				new_line_list[new_line_count] = line
+				i = i+(1)
+			end
+			self._line_list = new_line_list
+			self._line_count = new_line_count
 		end
-		local i = 2
-		while true do
-			if not(i < line_count) then break end
-			local line = line_list[i]
-			self._code_linear:AddChild(line.container)
-			new_line_count = new_line_count + (1)
-			new_line_list[new_line_count] = line
-			line_map[new_line_count] = true
-			i = i+(1)
-		end
-		do
-			self._code_linear:AddChild(split_next_line.container)
-			new_line_count = new_line_count + (1)
-			new_line_list[new_line_count] = split_next_line
-			it_cursor_line = new_line_count
-			it_cursor_char = 0
-			line_map[new_line_count] = true
-		end
-		local i = self._cursor.line + 1
-		while true do
-			if not(i <= self._line_count) then break end
-			local line = self._line_list[i]
-			self._code_linear:AddChild(line.container)
-			new_line_count = new_line_count + (1)
-			new_line_list[new_line_count] = line
-			i = i+(1)
-		end
-		self._line_list = new_line_list
-		self._line_count = new_line_count
 	end
 	if line_count > 0 then
 		local line = line_list[1]

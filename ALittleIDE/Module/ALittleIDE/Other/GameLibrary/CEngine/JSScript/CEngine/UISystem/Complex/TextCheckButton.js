@@ -96,7 +96,7 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 			e.is_drag = event.is_drag;
 			this.DispatchEvent(___all_struct.get(-449066808), e);
 			this.DispatchEvent(___all_struct.get(958494922), {});
-			if (ALittle.System_IsPhone === false) {
+			if (ALittle.System_IsPhone() === false) {
 				this.ShowOver();
 			} else {
 				this.ShowUp();

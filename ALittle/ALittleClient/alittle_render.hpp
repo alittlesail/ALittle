@@ -73,6 +73,7 @@ public:
 
 		// enable SDL_HINT_RENDER_VSYNC
 		SDL_SetHint(SDL_HINT_RENDER_VSYNC, "1");
+		SDL_SetHint(SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");
 
 		int windows_x = SDL_WINDOWPOS_CENTERED;
 		int windows_y = SDL_WINDOWPOS_CENTERED;

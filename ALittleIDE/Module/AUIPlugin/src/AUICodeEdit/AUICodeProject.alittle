@@ -8,6 +8,7 @@ protected var g_UpperExtMapABnf = new Map<string, string>();
 g_UpperExtMapABnf["JSON"] = "AJson.abnf";
 g_UpperExtMapABnf["CFG"] = "AJson.abnf";
 g_UpperExtMapABnf["XML"] = "AXml.abnf";
+g_UpperExtMapABnf["LUA"] = "ALua.abnf";
 
 public struct AUICodeProjectGotoEvent : ALittle.Event
 {

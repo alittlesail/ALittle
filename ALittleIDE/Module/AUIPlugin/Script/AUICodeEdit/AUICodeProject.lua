@@ -23,6 +23,7 @@ AUIPlugin.g_UpperExtMapABnf = {}
 AUIPlugin.g_UpperExtMapABnf["JSON"] = "AJson.abnf"
 AUIPlugin.g_UpperExtMapABnf["CFG"] = "AJson.abnf"
 AUIPlugin.g_UpperExtMapABnf["XML"] = "AXml.abnf"
+AUIPlugin.g_UpperExtMapABnf["LUA"] = "ALua.abnf"
 assert(ALittle.EventDispatcher, " extends class:ALittle.EventDispatcher is nil")
 AUIPlugin.AUICodeProject = Lua.Class(ALittle.EventDispatcher, "AUIPlugin.AUICodeProject")
 

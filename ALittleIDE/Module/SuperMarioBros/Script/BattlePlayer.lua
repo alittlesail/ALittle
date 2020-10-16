@@ -65,14 +65,6 @@ function SuperMarioBros.BattlePlayer:Init(row, col, level)
 	end
 end
 
-function SuperMarioBros.BattlePlayer:Jump()
-	if self._state ~= SuperMarioBros.PlayerState.PS_WALK and self._state ~= SuperMarioBros.PlayerState.PS_IDLE then
-		return
-	end
-	self._state = SuperMarioBros.PlayerState.PS_JUMP
-	self._vy = 0.5
-end
-
 function SuperMarioBros.BattlePlayer:Fire()
 end
 
@@ -92,24 +84,30 @@ function SuperMarioBros.BattlePlayer:UpdateFrame(frame_time)
 	if self._state == SuperMarioBros.PlayerState.PS_IDLE then
 		if walk_left then
 			self._state = SuperMarioBros.PlayerState.PS_WALK
-			self._ax = -SuperMarioBros.PLAYER_INIT_SPEED_RATE
+			self._ax = -SuperMarioBros.PLAYER_INIT_X_SPEED_RATE
 			self._right = false
 			self:UpdateIdle()
 		elseif walk_right then
 			self._state = SuperMarioBros.PlayerState.PS_WALK
-			self._ax = SuperMarioBros.PLAYER_INIT_SPEED_RATE
+			self._ax = SuperMarioBros.PLAYER_INIT_X_SPEED_RATE
 			self._right = true
 			self:UpdateIdle()
 		end
+		if jump then
+			self._state = SuperMarioBros.PlayerState.PS_JUMP
+			self._vy = -SuperMarioBros.PLAYER_INIT_JUMP_SPEED
+			self._ay = SuperMarioBros.PLAYER_INIT_Y_SPEED_RATE
+			self:UpdateJump()
+		end
 	elseif self._state == SuperMarioBros.PlayerState.PS_WALK then
 		if walk_left then
-			self._ax = -SuperMarioBros.PLAYER_INIT_SPEED_RATE
+			self._ax = -SuperMarioBros.PLAYER_INIT_X_SPEED_RATE
 			if self._right then
 				self._right = false
 				self:UpdateLeftRight()
 			end
 		elseif walk_right then
-			self._ax = SuperMarioBros.PLAYER_INIT_SPEED_RATE
+			self._ax = SuperMarioBros.PLAYER_INIT_X_SPEED_RATE
 			if not self._right then
 				self._right = true
 				self:UpdateLeftRight()
@@ -126,9 +124,36 @@ function SuperMarioBros.BattlePlayer:UpdateFrame(frame_time)
 				self:UpdateIdle()
 			end
 		end
+		if jump then
+			self._state = SuperMarioBros.PlayerState.PS_JUMP
+			self._vy = -SuperMarioBros.PLAYER_INIT_JUMP_SPEED
+			self._ay = SuperMarioBros.PLAYER_INIT_Y_SPEED_RATE
+			self:UpdateJump()
+		end
+	elseif self._state == SuperMarioBros.PlayerState.PS_JUMP then
 	end
 	if self._state == SuperMarioBros.PlayerState.PS_WALK then
 		self:WalkUpdateFrame(frame_time)
+	end
+end
+
+function SuperMarioBros.BattlePlayer:UpdateJump()
+	self:UpdateLeftRight()
+	if self._level == 1 then
+		self._level_1_sprite_right.col_index = 7
+		self._level_1_sprite_right.row_index = 1
+		self._level_1_sprite_left.col_index = 1
+		self._level_1_sprite_left.row_index = 1
+	elseif self._level == 2 then
+		self._level_2_sprite_right.col_index = 7
+		self._level_2_sprite_right.row_index = 1
+		self._level_2_sprite_left.col_index = 1
+		self._level_2_sprite_left.row_index = 1
+	elseif self._level == 3 then
+		self._level_3_sprite_right.col_index = 7
+		self._level_3_sprite_right.row_index = 1
+		self._level_3_sprite_left.col_index = 1
+		self._level_3_sprite_left.row_index = 1
 	end
 end
 

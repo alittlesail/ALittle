@@ -10,6 +10,7 @@ enum class ARegexType
 {
     T_NONE,            // 无效枚举
     T_CHAR,            // 一个字符
+	T_FIND_STRING,       // 查找字符串
     T_CHARSET,         // 字符集合
     T_LIST,           // 子节点列表 逐个匹配
     T_OPTION,           // 子节点列表 分支匹配
@@ -48,6 +49,9 @@ struct ARegexNode
     // CHAR
     char value = 0;     // 字符内容
 
+	// T_FIND_STRING
+    std::string find;   // 要查找的字符串
+
     // CHARSET
     std::unordered_set<char> char_set;// 字符集合
     ARegexCharSetType char_set_type = ARegexCharSetType::CST_CUSTOM;
@@ -80,6 +84,7 @@ private:
 private:
     static bool CompileOption(const std::string& rule, size_t& offset, ARegexNode& node, std::string& error);
     static bool CompileCustomSet(const std::string& rule, size_t& offset, ARegexNode& node, std::string& error);
+    static bool CompileFindString(const std::string& rule, size_t& offset, ARegexNode& node, std::string& error);
 };
 
 #endif // _ALITTLE_AREGEX_H_

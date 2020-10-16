@@ -79,14 +79,6 @@ public class BattlePlayer : ALittle.DisplayLayout
         }
     }
 
-    public fun Jump()
-    {
-        if (this._state != PlayerState.PS_WALK && this._state != PlayerState.PS_IDLE) return;
-
-        this._state = PlayerState.PS_JUMP;
-        this._vy = 0.5;	// 设置一个初始速度
-    }
-
     public fun Fire()
     {
 
@@ -111,26 +103,36 @@ public class BattlePlayer : ALittle.DisplayLayout
 
         if (this._state == PlayerState.PS_IDLE)
         {
+            // 空闲情况下左右行走
             if (walk_left)
             {
                 this._state = PlayerState.PS_WALK;
-                this._ax = -PLAYER_INIT_SPEED_RATE;
+                this._ax = -PLAYER_INIT_X_SPEED_RATE;
                 this._right = false;
                 this.UpdateIdle();
             }
             elseif (walk_right)
             {
                 this._state = PlayerState.PS_WALK;
-                this._ax = PLAYER_INIT_SPEED_RATE;
+                this._ax = PLAYER_INIT_X_SPEED_RATE;
                 this._right = true;
                 this.UpdateIdle();
+            }
+
+            // 空闲状态下跳跃
+            if (jump)
+            {
+                this._state = PlayerState.PS_JUMP;
+                this._vy = -PLAYER_INIT_JUMP_SPEED;
+                this._ay = PLAYER_INIT_Y_SPEED_RATE;
+                this.UpdateJump();
             }
         }
         elseif (this._state == PlayerState.PS_WALK)
         {
             if (walk_left)
             {
-                this._ax = -PLAYER_INIT_SPEED_RATE;
+                this._ax = -PLAYER_INIT_X_SPEED_RATE;
                 if (this._right)
                 {
                     this._right = false;
@@ -139,7 +141,7 @@ public class BattlePlayer : ALittle.DisplayLayout
             }
             elseif (walk_right)
             {
-                this._ax = PLAYER_INIT_SPEED_RATE;
+                this._ax = PLAYER_INIT_X_SPEED_RATE;
                 if (!this._right)
                 {
                     this._right = true;
@@ -160,11 +162,50 @@ public class BattlePlayer : ALittle.DisplayLayout
                     this.UpdateIdle();
                 }
             }
+
+            // 空闲状态下跳跃
+            if (jump)
+            {
+                this._state = PlayerState.PS_JUMP;
+                this._vy = -PLAYER_INIT_JUMP_SPEED;
+                this._ay = PLAYER_INIT_Y_SPEED_RATE;
+                this.UpdateJump();
+            }
+        }
+        elseif (this._state == PlayerState.PS_JUMP)
+        {
+
         }
 
         if (this._state == PlayerState.PS_WALK)
         {
             this.WalkUpdateFrame(frame_time);
+        }
+    }
+
+    private fun UpdateJump()
+    {
+        this.UpdateLeftRight();
+        if (this._level == 1)
+        {
+            this._level_1_sprite_right.col_index = 7;
+            this._level_1_sprite_right.row_index = 1;
+            this._level_1_sprite_left.col_index = 1;
+            this._level_1_sprite_left.row_index = 1;
+        }
+        elseif (this._level == 2)
+        {
+            this._level_2_sprite_right.col_index = 7;
+            this._level_2_sprite_right.row_index = 1;
+            this._level_2_sprite_left.col_index = 1;
+            this._level_2_sprite_left.row_index = 1;
+        }
+        elseif (this._level == 3)
+        {
+            this._level_3_sprite_right.col_index = 7;
+            this._level_3_sprite_right.row_index = 1;
+            this._level_3_sprite_left.col_index = 1;
+            this._level_3_sprite_left.row_index = 1;
         }
     }
 

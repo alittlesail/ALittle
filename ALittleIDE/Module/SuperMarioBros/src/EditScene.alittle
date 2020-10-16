@@ -208,7 +208,7 @@ public class EditScene : ALittle.DisplayLayout
         // 打开文件
         var factory:ALittle.IMessageWriteFactory;
         [Language(Lua)]
-        factory = new lua.__CPPAPIMessageWriteFactory();
+        factory = new carp.CarpMessageWriteFactory();
         [Language(JavaScript)]
         factory = new JavaScript.JMessageWriteFactory(1024);
         if (factory == null)

@@ -159,7 +159,7 @@ function SuperMarioBros.EditScene:Save()
 	end
 	local rflct = ___all_struct[-876795489]
 	local factory
-	factory = __CPPAPIMessageWriteFactory()
+	factory = carp.CarpMessageWriteFactory()
 	if factory == nil then
 		ALittle.Error("factory create failed")
 		return

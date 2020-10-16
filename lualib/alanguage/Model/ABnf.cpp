@@ -153,31 +153,42 @@ ABnfNodeElementPtr ABnf::Analysis(ABnfFile* file)
     // 创建跟节点
     auto node = CreateNodeElement(line, col, offset, m_root->id.value);
 
-    // 开始解析
-    while (true)
+    // 跳过分隔符
+    AnalysisSkip(line, col, offset);
+    // 跳过注释
+    AnalysisABnfCommentMatch(m_root, node, not_key, line, col, offset);
+    // 跳过分隔符
+    AnalysisSkip(line, col, offset);
+
+    // 如果到了文件尾部，那么就跳出解析
+    if (offset < m_file->GetLength())
     {
-        // 根据根节点的文法开始解析文本
-        if (!AnalysisABnfNode(m_root, m_root->node, node, not_key
-            , line, col, offset, pin_offset, false))
+        // 开始解析
+        while (true)
         {
-            // 如果offset是文件尾部，那么向前走一个字符，这样便于创建错误节点
-            if (offset >= m_file->GetLength() && m_file->GetLength() > 0)
-                --offset;
+            // 根据根节点的文法开始解析文本
+            if (!AnalysisABnfNode(m_root, m_root->node, node, not_key
+                , line, col, offset, pin_offset, false))
+            {
+                // 如果offset是文件尾部，那么向前走一个字符，这样便于创建错误节点
+                if (offset >= m_file->GetLength() && m_file->GetLength() > 0)
+                    --offset;
+            }
+            else
+            {
+                // 跳过分割字符
+                AnalysisSkip(line, col, offset);
+
+                // 如果到了文件尾部，那么就跳出解析
+                if (offset >= m_file->GetLength()) break;
+            }
+
+            // 将offset视为错误节点位置
+            node->AddChild(ABnfErrorElementPtr(new ABnfErrorElement(m_factory, m_file, line, col, offset, "syntax error", nullptr)));
+
+            // 跳到下一行，然后继续解析
+            if (!JumpToNextLine(line, col, offset)) break;
         }
-        else
-        {
-            // 跳过分割字符
-            AnalysisSkip(line, col, offset);
-
-            // 如果到了文件尾部，那么就跳出解析
-            if (offset >= m_file->GetLength()) break;
-        }
-
-        // 将offset视为错误节点位置
-        node->AddChild(ABnfErrorElementPtr(new ABnfErrorElement(m_factory, m_file, line, col, offset, "syntax error", nullptr)));
-
-        // 跳到下一行，然后继续解析
-        if (!JumpToNextLine(line, col, offset)) break;
     }
 
     // 清空缓存
@@ -892,6 +903,31 @@ bool ABnf::AnalysisABnfCommentMatch(ABnfRuleInfo* rule, ABnfNodeElementPtr paren
     {
         bool match = false;
         int pin_offset = -1;
+        if (m_block_comment != nullptr)
+        {
+            while (true)
+            {
+                if (m_block_comment_skip.find(offset) == m_block_comment_skip.end())
+                {
+                    if (AnalysisABnfRuleMatch(m_block_comment, parent, not_key
+                        , line, col, offset
+                        , pin_offset, true))
+                    {
+                        match = true;
+                    }
+                    else
+                    {
+                        m_block_comment_skip.insert(offset);
+                        break;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
         if (m_line_comment != nullptr)
         {
             if (m_line_comment_skip.find(offset) == m_line_comment_skip.end())
@@ -902,19 +938,6 @@ bool ABnf::AnalysisABnfCommentMatch(ABnfRuleInfo* rule, ABnfNodeElementPtr paren
                     match = true;
                 else
                     m_line_comment_skip.insert(offset);
-            }
-        }
-
-        if (m_block_comment != nullptr)
-        {
-            if (m_block_comment_skip.find(offset) == m_block_comment_skip.end())
-            {
-                if (AnalysisABnfRuleMatch(m_block_comment, parent, not_key
-                    , line, col, offset
-                    , pin_offset, true))
-                    match = true;
-                else
-                    m_block_comment_skip.insert(offset);
             }
         }
 

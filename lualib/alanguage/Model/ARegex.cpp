@@ -29,6 +29,17 @@ bool ARegex::MatchNode(const char* src, const ARegexNode& node, int& length)
 		}
 		return false;
 	}
+
+	if (node.type == ARegexType::T_FIND_STRING)
+	{
+		auto* find = strstr(src + length, node.find.c_str());
+		if (find != nullptr)
+		{
+			length += static_cast<int>(find - src - length) + static_cast<int>(node.find.length());
+			return true;
+		}
+		return false;
+	}
 	
 	if (node.type == ARegexType::T_CHARSET)
 	{
@@ -77,7 +88,8 @@ bool ARegex::MatchNode(const char* src, const ARegexNode& node, int& length)
 
 		return false;
 	}
-	else if (node.type == ARegexType::T_OPTION)
+	
+	if (node.type == ARegexType::T_OPTION)
 	{
 		for (auto& child : node.childs)
 		{
@@ -102,7 +114,8 @@ bool ARegex::MatchNode(const char* src, const ARegexNode& node, int& length)
 
 		return false;
 	}
-	else if (node.type == ARegexType::T_LIST)
+	
+	if (node.type == ARegexType::T_LIST)
 	{
 		for (auto& child : node.childs)
 		{
@@ -158,20 +171,20 @@ bool ARegex::MatchNodeRepeated(const char* src, const ARegexNode& node, int& len
 
 bool ARegex::CompileOption(const std::string& rule, size_t& offset, ARegexNode& node, std::string& error)
 {
-	node.childs.push_back(ARegexNode());
+	node.childs.emplace_back(ARegexNode());
 	auto* list = &node.childs.back();
 	list->type = ARegexType::T_LIST;
 
 	// 循环
 	while (offset < rule.size())
 	{
-		char c = rule[offset];
+		const char c = rule[offset];
 		char next_c = 0;
 		if (offset + 1 < rule.size()) next_c = rule[offset + 1];
 		
 		if (c == '[')
 		{
-			list->childs.push_back(ARegexNode());
+			list->childs.emplace_back(ARegexNode());
 			ARegexNode& child = list->childs.back();
 			child.type = ARegexType::T_CHARSET;
 			child.char_set_type = ARegexCharSetType::CST_CUSTOM;
@@ -182,12 +195,27 @@ bool ARegex::CompileOption(const std::string& rule, size_t& offset, ARegexNode& 
 		}
 		else if (c == ']')
 		{
-			error = "error close char ] in group, offset:" + offset;
+			error = "error close char ] in group, offset:" + std::to_string(offset);
+			return false;
+		}
+		else if (c == '{')
+		{
+			list->childs.emplace_back(ARegexNode());
+			ARegexNode& child = list->childs.back();
+			child.type = ARegexType::T_FIND_STRING;
+
+			++offset;
+			if (!CompileFindString(rule, offset, child, error)) return false;
+			++offset;
+		}
+		else if (c == '}')
+		{
+			error = "error close char } in group, offset:" + std::to_string(offset);
 			return false;
 		}
 		else if (c == '|')
 		{
-			node.childs.push_back(ARegexNode());
+			node.childs.emplace_back(ARegexNode());
 			list = &node.childs.back();
 			list->type = ARegexType::T_LIST;
 
@@ -197,14 +225,14 @@ bool ARegex::CompileOption(const std::string& rule, size_t& offset, ARegexNode& 
 		{
 			if (next_c != '(')
 			{
-				error = "next char must be ( after !, offset:" + offset;
+				error = "next char must be ( after !, offset:" + std::to_string(offset);
 				return false;
 			}
 			++offset;
 		}
 		else if (c == '(')
 		{
-			list->childs.push_back(ARegexNode());
+			list->childs.emplace_back(ARegexNode());
 			ARegexNode& child = list->childs.back();
 			child.type = ARegexType::T_OPTION;
 			if (offset > 0 && rule[offset - 1] == '!')
@@ -223,7 +251,7 @@ bool ARegex::CompileOption(const std::string& rule, size_t& offset, ARegexNode& 
 			// 特殊规则
 			if (next_c == 'w' || next_c == 'a' || next_c == 'd')
 			{
-				list->childs.push_back(ARegexNode());
+				list->childs.emplace_back(ARegexNode());
 				ARegexNode& child = list->childs.back();
 				child.type = ARegexType::T_CHARSET;
 				if (next_c == 'w')
@@ -241,7 +269,7 @@ bool ARegex::CompileOption(const std::string& rule, size_t& offset, ARegexNode& 
 			}
 			else
 			{
-				list->childs.push_back(ARegexNode());
+				list->childs.emplace_back(ARegexNode());
 				ARegexNode& child = list->childs.back();
 				child.type = ARegexType::T_CHAR;
 				if (next_c == 'a') child.value = '\a';
@@ -264,7 +292,7 @@ bool ARegex::CompileOption(const std::string& rule, size_t& offset, ARegexNode& 
 		}
 		else if (c == '.')
 		{
-			list->childs.push_back(ARegexNode());
+			list->childs.emplace_back(ARegexNode());
 			ARegexNode& child = list->childs.back();
 			child.type = ARegexType::T_CHARSET;
 			child.char_set_type = ARegexCharSetType::CST_DOT;
@@ -273,7 +301,7 @@ bool ARegex::CompileOption(const std::string& rule, size_t& offset, ARegexNode& 
 		}
 		else
 		{
-			list->childs.push_back(ARegexNode());
+			list->childs.emplace_back(ARegexNode());
 			ARegexNode& child = list->childs.back();
 			child.type = ARegexType::T_CHAR;
 			child.value = c;
@@ -438,5 +466,50 @@ bool ARegex::CompileCustomSet(const std::string& rule, size_t& offset, ARegexNod
 	}
 
 	error = "custom set not complete";
+	return false;
+}
+
+bool ARegex::CompileFindString(const std::string& rule, size_t& offset, ARegexNode& node, std::string& error)
+{
+	if (offset >= rule.size())
+	{
+		error = "find string not complete";
+		return false;
+	}
+
+	while (offset < rule.size())
+	{
+		char c = rule[offset];
+		char next_c = 0;
+		if (offset + 1 < rule.size()) next_c = rule[offset + 1];
+		char next_next_c = 0;
+		if (offset + 2 < rule.size()) next_next_c = rule[offset + 2];
+
+		if (c == '{')
+		{
+			error = "find string can't not nested find string";
+			return false;
+		}
+		else if (c == '}')
+		{
+			return true;
+		}
+		else if (c == '%')
+		{
+			if (next_c != 0)
+			{
+				node.find.push_back(next_c);
+			}
+			++offset;
+		}
+		else
+		{
+			node.find.push_back(c);
+		}
+
+		++offset;
+	}
+
+	error = "find string not complete";
 	return false;
 }

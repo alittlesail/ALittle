@@ -124,8 +124,18 @@ public class BattlePlayer : ALittle.DisplayLayout
 
         // 更新x轴方向
         this._vx += this._ax * frame_time;
-        if (this._vx > PLAYER_MAX_WALK_SPEED) this._vx = PLAYER_MAX_WALK_SPEED;
-        elseif (this._vx < -PLAYER_MAX_WALK_SPEED) this._vx = -PLAYER_MAX_WALK_SPEED;
+
+        var walk_speedup = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_J] != null;
+        if (walk_speedup)
+        {
+            if (this._vx > PLAYER_MAX_WALK_SPEED_2) this._vx = PLAYER_MAX_WALK_SPEED_2;
+            elseif (this._vx < -PLAYER_MAX_WALK_SPEED_2) this._vx = -PLAYER_MAX_WALK_SPEED_2;
+        }
+        else
+        {
+            if (this._vx > PLAYER_MAX_WALK_SPEED_1) this._vx = PLAYER_MAX_WALK_SPEED_1;
+            elseif (this._vx < -PLAYER_MAX_WALK_SPEED_1) this._vx = -PLAYER_MAX_WALK_SPEED_1;
+        }
             // 更新y轴方向
         this._vy += this._ay * frame_time;
 
@@ -250,6 +260,14 @@ public class BattlePlayer : ALittle.DisplayLayout
                 this._ay = PLAYER_INIT_Y_SPEED_RATE;
 
             this.y += this._vy;
+            // 如果头撞到东西就往下
+            var check_up, up_y = g_GCenter.battle_scene.CheckUp(this);
+            if (check_up)
+            {
+                this._vy = -this._vy;
+                this.y = up_y;
+            }
+
             var check_down, down_y = g_GCenter.battle_scene.CheckDown(this);
             if (check_down)
             {

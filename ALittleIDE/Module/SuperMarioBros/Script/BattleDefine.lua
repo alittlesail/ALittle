@@ -40,8 +40,9 @@ SuperMarioBros.TILE_ROW_COUNT = 11
 SuperMarioBros.TILE_WIDTH = 32
 SuperMarioBros.TILE_HEIGHT = 32
 SuperMarioBros.TILE_TEXTURE_NAME = "tile_map.png"
-SuperMarioBros.PLAYER_MAX_WALK_SPEED = 3
-SuperMarioBros.PLAYER_INIT_X_SPEED_RATE = 0.025
+SuperMarioBros.PLAYER_MAX_WALK_SPEED_1 = 3
+SuperMarioBros.PLAYER_MAX_WALK_SPEED_2 = 6
+SuperMarioBros.PLAYER_INIT_X_SPEED_RATE = 0.03
 SuperMarioBros.PLAYER_INIT_JUMP_SPEED = 7
 SuperMarioBros.PLAYER_INIT_Y_SPEED_RATE = 0.03
 end

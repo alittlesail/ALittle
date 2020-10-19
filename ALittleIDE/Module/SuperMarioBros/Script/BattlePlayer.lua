@@ -103,10 +103,19 @@ function SuperMarioBros.BattlePlayer:UpdateFrame(frame_time)
 		return
 	end
 	self._vx = self._vx + (self._ax * frame_time)
-	if self._vx > SuperMarioBros.PLAYER_MAX_WALK_SPEED then
-		self._vx = SuperMarioBros.PLAYER_MAX_WALK_SPEED
-	elseif self._vx < -SuperMarioBros.PLAYER_MAX_WALK_SPEED then
-		self._vx = -SuperMarioBros.PLAYER_MAX_WALK_SPEED
+	local walk_speedup = A_UISystem.sym_map[106] ~= nil
+	if walk_speedup then
+		if self._vx > SuperMarioBros.PLAYER_MAX_WALK_SPEED_2 then
+			self._vx = SuperMarioBros.PLAYER_MAX_WALK_SPEED_2
+		elseif self._vx < -SuperMarioBros.PLAYER_MAX_WALK_SPEED_2 then
+			self._vx = -SuperMarioBros.PLAYER_MAX_WALK_SPEED_2
+		end
+	else
+		if self._vx > SuperMarioBros.PLAYER_MAX_WALK_SPEED_1 then
+			self._vx = SuperMarioBros.PLAYER_MAX_WALK_SPEED_1
+		elseif self._vx < -SuperMarioBros.PLAYER_MAX_WALK_SPEED_1 then
+			self._vx = -SuperMarioBros.PLAYER_MAX_WALK_SPEED_1
+		end
 	end
 	self._vy = self._vy + (self._ay * frame_time)
 	local walk_left = A_UISystem.sym_map[97] ~= nil
@@ -192,6 +201,11 @@ function SuperMarioBros.BattlePlayer:UpdateFrame(frame_time)
 			self._ay = SuperMarioBros.PLAYER_INIT_Y_SPEED_RATE
 		end
 		self.y = self.y + (self._vy)
+		local check_up, up_y = g_GCenter.battle_scene:CheckUp(self)
+		if check_up then
+			self._vy = -self._vy
+			self.y = up_y
+		end
 		local check_down, down_y = g_GCenter.battle_scene:CheckDown(self)
 		if check_down then
 			self._state = SuperMarioBros.PlayerState.PS_WALK

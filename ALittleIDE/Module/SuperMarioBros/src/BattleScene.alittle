@@ -61,19 +61,8 @@ public class BattleScene : ALittle.DisplayLayout
             {
                 if (type == EntityType.ET_BORN_1)
                     this._player.Init(row + 1, col, g_GCenter.player_data.level);
-                /*elseif (type == EntityType.ET_FLOOR)
-                {
-                    var entity_sub_map = this._entity_map[row];
-                    if (entity_sub_map == null)
-                    {
-                        entity_sub_map = new Map<int, ALittle.DisplayObject>();
-                        this._entity_map[row] = entity_sub_map;
-                    }
-                    var object = g_Control.CreateControl{ALittle.DisplayObject}("floor");
-                    object.x = col * TILE_WIDTH;
-                    object.y = row * TILE_HEIGHT;
-                    this._entity_container.AddChild(object);
-                }*/
+                else
+                	this.CreateEntity(type, row, col);
             }
         }
 
@@ -89,6 +78,45 @@ public class BattleScene : ALittle.DisplayLayout
             this._frame_loop.Stop();
         this._frame_loop = new ALittle.LoopFrame(bind(this.HandleFrame, this));
         this._frame_loop.Start();
+    }
+
+    private fun CreateEntity(int type, int row, int col)
+    {
+        var ui = "";
+        if (type == EntityType.ET_WALL_1)
+        	ui = "wall_1";
+        elseif (type == EntityType.ET_HIDE_WALL_1)
+        	ui = "hide_wall_1";
+        elseif (type == EntityType.ET_RANDOM_WALL_1)
+        	ui = "random_wall_1";
+        elseif (type == EntityType.ET_FLAG_1)
+        	ui = "flag_1";
+        elseif (type == EntityType.ET_FLAG_2)
+        	ui = "flag_2";
+        elseif (type == EntityType.ET_FLAG_3)
+        	ui = "flag_3";
+        elseif (type == EntityType.ET_FLAG_4)
+        	ui = "flag_4";
+        elseif (type == EntityType.ET_FLAG_5)
+        	ui = "flag_5";
+        else
+        	return;
+
+        var entity_sub_map = this._entity_map[row];
+        if (entity_sub_map == null)
+        {
+            entity_sub_map = new Map<int, ALittle.DisplayObject>();
+            this._entity_map[row] = entity_sub_map;
+        }
+        var object = g_Control.CreateControl{ALittle.DisplayObject}(ui);
+        entity_sub_map[col] = object;
+        object.x = col * TILE_WIDTH;
+        object.y = row * TILE_HEIGHT;
+        object._user_data = type;
+
+        if (type == EntityType.ET_HIDE_WALL_1)
+        	object.visible = false;
+        this._entity_container.AddChild(object);
     }
 
     private fun SetTileShow(int row, int col, int show_row, int show_col)
@@ -157,6 +185,89 @@ public class BattleScene : ALittle.DisplayLayout
         g_GCenter.stage_scene.Show(g_GCenter.player_data.world, g_GCenter.player_data.subworld);
     }
 
+    // 检查头部是否撞到东西
+    public fun CheckUp(BattlePlayer entity) : bool, double
+    {
+        var row = ALittle.Math_Floor((entity.y - 1) / TILE_HEIGHT);
+        var min_col = ALittle.Math_Floor(entity.x / TILE_WIDTH);
+        var max_col = ALittle.Math_Floor((entity.x + entity.width - 1) / TILE_WIDTH);
+
+        var check = false;
+        for (var col = min_col; col <= max_col; 1)
+        {
+            var sub_map = this._entity_map[row];
+            if (sub_map != null)
+            {
+                var object = sub_map[col];
+                if (object != null)
+                {
+                    if (object._user_data == EntityType.ET_WALL_1)
+                    {
+                        // 如果是1级，那么就播放
+                        if (g_GCenter.player_data.level == 1)
+                        {
+                            var loop = new ALittle.LoopList();
+                            loop.AddUpdater(new ALittle.LoopLinear(object, "y", object.y - TILE_HEIGHT / 2, 100, 0));
+                            loop.AddUpdater(new ALittle.LoopLinear(object, "y", object.y, 100, 0));
+                            loop.Start();
+                        }
+                        else
+                        {
+
+                        }
+                        check = true;
+                    }
+                    elseif (object._user_data == EntityType.ET_RANDOM_WALL_1)
+                    {
+                        sub_map[col] = null;
+                        this._entity_container.RemoveChild(object);
+
+                        // 构建一个新的对象
+                        var sprite = new ALittle.Sprite(g_Control);
+                        sprite.texture_name = TILE_TEXTURE_NAME;
+                        sprite.width = TILE_WIDTH;
+                        sprite.height = TILE_HEIGHT;
+                        sprite.row_count = TILE_ROW_COUNT;
+                        sprite.col_count = TILE_COL_COUNT;
+                        sprite.col_index = 7;
+                        sprite.row_index = 1;
+
+                        sub_map[col] = sprite;
+                        this._entity_container.AddChild(sprite);
+                        sprite.x = object.x;
+                        sprite.y = object.y;
+                        object = sprite;
+
+                        var loop = new ALittle.LoopList();
+                        loop.AddUpdater(new ALittle.LoopLinear(object, "y", object.y - TILE_HEIGHT / 2, 100, 0));
+                        loop.AddUpdater(new ALittle.LoopLinear(object, "y", object.y, 100, 0));
+                        loop.Start();
+
+                        // 然后飘出一个金币
+
+                        check = true;
+                    }
+                    elseif (object._user_data == EntityType.ET_HIDE_WALL_1)
+                    {
+                        object.visible = true;
+
+                        var loop = new ALittle.LoopList();
+                        loop.AddUpdater(new ALittle.LoopLinear(object, "y", object.y - TILE_HEIGHT / 2, 100, 0));
+                        loop.AddUpdater(new ALittle.LoopLinear(object, "y", object.y, 100, 0));
+                        loop.Start();
+
+                        // 然后产出一个蘑菇
+
+                        check = true;
+                    }
+
+                }
+            }
+        }
+        if (check) return true, row * TILE_HEIGHT + TILE_HEIGHT;
+        return false, null;
+    }
+
     // 检查entity底部是不是地板
     public fun CheckDown(BattlePlayer entity) : bool, double
     {
@@ -174,12 +285,24 @@ public class BattleScene : ALittle.DisplayLayout
                     var show_row = ALittle.Math_Floor(index / TILE_COL_COUNT) + 1;
                     var show_col = index % TILE_COL_COUNT + 1;
 
-                    // 检查地板
-                    if (show_row == 1 && show_col == 1)
-                        return true, row * TILE_HEIGHT;
-                        // 检查水管
-                    elseif (show_row >= 3 && show_row <= 4 && show_col >= 1 && show_col <= 2)
-                        return true, row * TILE_HEIGHT;
+                    var check = show_row == 1 && show_col == 1  // 检查地板
+                        || show_row >= 3 && show_row <= 4 && show_col >= 1 && show_col <= 2	// 检查水管
+                    	|| show_row == 3 && show_col == 3;  // 检查地板
+
+                    if (check) return true, row * TILE_HEIGHT;
+                }
+            }
+
+            var sub_entity_map = this._entity_map[row];
+            if (sub_entity_map != null)
+            {
+                var object = sub_entity_map[col];
+                if (object != null)
+                {
+                    var check = object._user_data == EntityType.ET_RANDOM_WALL_1
+                        || object._user_data == EntityType.ET_WALL_1;
+
+                    if (check) return true, row * TILE_HEIGHT;
                 }
             }
         }
@@ -203,12 +326,24 @@ public class BattleScene : ALittle.DisplayLayout
                     var show_row = ALittle.Math_Floor(index / TILE_COL_COUNT) + 1;
                     var show_col = index % TILE_COL_COUNT + 1;
 
-                    // 检查地板
-                    if (show_row == 1 && show_col == 1)
-                        return true, col * TILE_WIDTH;
-                    // 检查水管
-                    elseif (show_row >= 3 && show_row <= 4 && show_col >= 1 && show_col <= 2)
-                    	return true, col * TILE_WIDTH;
+                    var check = show_row == 1 && show_col == 1  // 检查地板
+                        || show_row >= 3 && show_row <= 4 && show_col >= 1 && show_col <= 2	// 检查水管
+                    	|| show_row == 3 && show_col == 3;  // 检查地板
+
+                    if (check) return true, col * TILE_WIDTH;
+                }
+            }
+
+            var sub_entity_map = this._entity_map[row];
+            if (sub_entity_map != null)
+            {
+                var object = sub_entity_map[col];
+                if (object != null)
+                {
+                    var check = object._user_data == EntityType.ET_RANDOM_WALL_1
+                        || object._user_data == EntityType.ET_WALL_1;
+
+                    if (check) return true, col * TILE_WIDTH;
                 }
             }
         }
@@ -232,12 +367,24 @@ public class BattleScene : ALittle.DisplayLayout
                     var show_row = ALittle.Math_Floor(index / TILE_COL_COUNT) + 1;
                     var show_col = index % TILE_COL_COUNT + 1;
 
-                    // 检查地板
-                    if (show_row == 1 && show_col == 1)
-                        return true, col * TILE_WIDTH + TILE_WIDTH;
-                        // 检查水管
-                    elseif (show_row >= 3 && show_row <= 4 && show_col >= 1 && show_col <= 2)
-                    	return true, col * TILE_WIDTH + TILE_WIDTH;
+                    var check = show_row == 1 && show_col == 1  // 检查地板
+                        || show_row >= 3 && show_row <= 4 && show_col >= 1 && show_col <= 2	// 检查水管
+                    	|| show_row == 3 && show_col == 3;  // 检查地板
+
+                    if (check) return true, col * TILE_WIDTH + TILE_WIDTH;
+                }
+            }
+
+            var sub_entity_map = this._entity_map[row];
+            if (sub_entity_map != null)
+            {
+                var object = sub_entity_map[col];
+                if (object != null)
+                {
+                    var check = object._user_data == EntityType.ET_RANDOM_WALL_1
+                        || object._user_data == EntityType.ET_WALL_1;
+
+                    if (check) return true, col * TILE_WIDTH + TILE_WIDTH;
                 }
             }
         }

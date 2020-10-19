@@ -1952,6 +1952,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     var line = line_list[i];
                     new_line_index += 1;
                     this._code_linear.AddChild(line.container, new_line_index);
+                    this._line_count += 1;
                     ALittle.List_Insert(this._line_list, new_line_index, line);
                     line_map[new_line_index] = true;
                 }
@@ -1960,6 +1961,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     new_line_index += 1;
                     this._code_linear.AddChild(split_next_line.container, new_line_index);
                     ALittle.List_Insert(this._line_list, new_line_index, split_next_line);
+                    this._line_count += 1;
                     it_cursor_line = new_line_index;
                     it_cursor_char = 0;
                     line_map[new_line_index] = true;

@@ -61,6 +61,19 @@ public class BattleScene : ALittle.DisplayLayout
             {
                 if (type == EntityType.ET_BORN_1)
                     this._player.Init(row + 1, col, g_GCenter.player_data.level);
+                /*elseif (type == EntityType.ET_FLOOR)
+                {
+                    var entity_sub_map = this._entity_map[row];
+                    if (entity_sub_map == null)
+                    {
+                        entity_sub_map = new Map<int, ALittle.DisplayObject>();
+                        this._entity_map[row] = entity_sub_map;
+                    }
+                    var object = g_Control.CreateControl{ALittle.DisplayObject}("floor");
+                    object.x = col * TILE_WIDTH;
+                    object.y = row * TILE_HEIGHT;
+                    this._entity_container.AddChild(object);
+                }*/
             }
         }
 
@@ -120,8 +133,101 @@ public class BattleScene : ALittle.DisplayLayout
     private fun HandleFrame(int frame_time)
     {
         this._player.UpdateFrame(frame_time);
+
+        var scroll_x = -(this._player.x - this._scroll_screen.view_width / 2);
+        if (scroll_x > 0) scroll_x = 0;
+        elseif (scroll_x <= -(this._scroll_screen.container.width - this._scroll_screen.view_width))
+            scroll_x = -(this._scroll_screen.container.width - this._scroll_screen.view_width);
+        if (this._scroll_screen.container_x > scroll_x)
+        	this._scroll_screen.container_x = scroll_x;
     }
 
+    // 检查entity底部是不是地板
+    public fun CheckDown(BattlePlayer entity) : bool, double
+    {
+        var row = ALittle.Math_Floor((entity.y + entity.height) / TILE_HEIGHT);
+        var min_col = ALittle.Math_Floor(entity.x / TILE_WIDTH);
+        var max_col = ALittle.Math_Floor((entity.x + entity.width - 1) / TILE_WIDTH);
+        for (var col = min_col; col <= max_col; 1)
+        {
+            var sub_map = this._battle_map.background[row];
+            if (sub_map != null)
+            {
+                var index = sub_map[col];
+                if (index != null)
+                {
+                    var show_row = ALittle.Math_Floor(index / TILE_COL_COUNT) + 1;
+                    var show_col = index % TILE_COL_COUNT + 1;
+
+                    // 检查地板
+                    if (show_row == 1 && show_col == 1)
+                        return true, row * TILE_HEIGHT;
+                        // 检查水管
+                    elseif (show_row >= 3 && show_row <= 4 && show_col >= 1 && show_col <= 2)
+                        return true, row * TILE_HEIGHT;
+                }
+            }
+        }
+        return false, null;
+    }
+
+    // 检查右边是否可走
+    public fun CheckRight(BattlePlayer entity) : bool, double
+    {
+        var col = ALittle.Math_Floor((entity.x + entity.width) / TILE_WIDTH);
+        var min_row = ALittle.Math_Floor(entity.y / TILE_HEIGHT);
+        var max_row = ALittle.Math_Floor((entity.y + entity.height - 1) / TILE_HEIGHT);
+        for (var row = min_row; row <= max_row; 1)
+        {
+            var sub_map = this._battle_map.background[row];
+            if (sub_map != null)
+            {
+                var index = sub_map[col];
+                if (index != null)
+                {
+                    var show_row = ALittle.Math_Floor(index / TILE_COL_COUNT) + 1;
+                    var show_col = index % TILE_COL_COUNT + 1;
+
+                    // 检查地板
+                    if (show_row == 1 && show_col == 1)
+                        return true, col * TILE_WIDTH;
+                    // 检查水管
+                    elseif (show_row >= 3 && show_row <= 4 && show_col >= 1 && show_col <= 2)
+                    	return true, col * TILE_WIDTH;
+                }
+            }
+        }
+        return false, null;
+    }
+
+    // 检查左边是否可走
+    public fun CheckLeft(BattlePlayer entity) : bool, double
+    {
+        var col = ALittle.Math_Floor((entity.x - 1) / TILE_WIDTH);
+        var min_row = ALittle.Math_Floor(entity.y / TILE_HEIGHT);
+        var max_row = ALittle.Math_Floor((entity.y + entity.height - 1) / TILE_HEIGHT);
+        for (var row = min_row; row <= max_row; 1)
+        {
+            var sub_map = this._battle_map.background[row];
+            if (sub_map != null)
+            {
+                var index = sub_map[col];
+                if (index != null)
+                {
+                    var show_row = ALittle.Math_Floor(index / TILE_COL_COUNT) + 1;
+                    var show_col = index % TILE_COL_COUNT + 1;
+
+                    // 检查地板
+                    if (show_row == 1 && show_col == 1)
+                        return true, col * TILE_WIDTH + TILE_WIDTH;
+                        // 检查水管
+                    elseif (show_row >= 3 && show_row <= 4 && show_col >= 1 && show_col <= 2)
+                    	return true, col * TILE_WIDTH + TILE_WIDTH;
+                }
+            }
+        }
+        return false, null;
+    }
 
     private fun HandleKeyDown(int mod, int sym, int scancode)
     {

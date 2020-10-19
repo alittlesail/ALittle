@@ -49,6 +49,7 @@ public:
 			.addFunction("CreateView", &ALittleRender::CreateView)
 			.addFunction("SetViewTitle", &ALittleRender::SetViewTitle)
 			.addFunction("SetViewIcon", &ALittleRender::SetViewIcon)
+			.addFunction("SetViewSize", &ALittleRender::SetViewSize)
 			.addFunction("GetMaxTextureWidth", &ALittleRender::GetMaxTextureWidth)
 			.addFunction("GetMaxTextureHeight", &ALittleRender::GetMaxTextureHeight)
 			.addFunction("Render", &ALittleRender::Render)
@@ -381,6 +382,18 @@ public:
 		SDL_SetWindowIcon(m_window, surface);
 		SDL_FreeSurface(surface);
 		return true;
+	}
+
+	void SetViewSize(unsigned int width, unsigned int height)
+	{
+		if (m_window == 0) return;
+
+		// logic size transfer to view size
+		int new_view_width = int(width * m_scale_x);
+		int new_view_height = int(height * m_scale_y);
+
+		// set window size
+		SDL_SetWindowSize(m_window, new_view_width, new_view_height);
 	}
 	
 	int GetMaxTextureWidth() const

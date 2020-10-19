@@ -94,6 +94,90 @@ end
 
 function SuperMarioBros.BattleScene:HandleFrame(frame_time)
 	self._player:UpdateFrame(frame_time)
+	local scroll_x = -(self._player.x - self._scroll_screen.view_width / 2)
+	if scroll_x > 0 then
+		scroll_x = 0
+	elseif scroll_x <= -(self._scroll_screen.container.width - self._scroll_screen.view_width) then
+		scroll_x = -(self._scroll_screen.container.width - self._scroll_screen.view_width)
+	end
+	if self._scroll_screen.container_x > scroll_x then
+		self._scroll_screen.container_x = scroll_x
+	end
+end
+
+function SuperMarioBros.BattleScene:CheckDown(entity)
+	local row = ALittle.Math_Floor((entity.y + entity.height) / SuperMarioBros.TILE_HEIGHT)
+	local min_col = ALittle.Math_Floor(entity.x / SuperMarioBros.TILE_WIDTH)
+	local max_col = ALittle.Math_Floor((entity.x + entity.width - 1) / SuperMarioBros.TILE_WIDTH)
+	local col = min_col
+	while true do
+		if not(col <= max_col) then break end
+		local sub_map = self._battle_map.background[row]
+		if sub_map ~= nil then
+			local index = sub_map[col]
+			if index ~= nil then
+				local show_row = ALittle.Math_Floor(index / SuperMarioBros.TILE_COL_COUNT) + 1
+				local show_col = index % SuperMarioBros.TILE_COL_COUNT + 1
+				if show_row == 1 and show_col == 1 then
+					return true, row * SuperMarioBros.TILE_HEIGHT
+				elseif show_row >= 3 and show_row <= 4 and show_col >= 1 and show_col <= 2 then
+					return true, row * SuperMarioBros.TILE_HEIGHT
+				end
+			end
+		end
+		col = col+(1)
+	end
+	return false, nil
+end
+
+function SuperMarioBros.BattleScene:CheckRight(entity)
+	local col = ALittle.Math_Floor((entity.x + entity.width) / SuperMarioBros.TILE_WIDTH)
+	local min_row = ALittle.Math_Floor(entity.y / SuperMarioBros.TILE_HEIGHT)
+	local max_row = ALittle.Math_Floor((entity.y + entity.height - 1) / SuperMarioBros.TILE_HEIGHT)
+	local row = min_row
+	while true do
+		if not(row <= max_row) then break end
+		local sub_map = self._battle_map.background[row]
+		if sub_map ~= nil then
+			local index = sub_map[col]
+			if index ~= nil then
+				local show_row = ALittle.Math_Floor(index / SuperMarioBros.TILE_COL_COUNT) + 1
+				local show_col = index % SuperMarioBros.TILE_COL_COUNT + 1
+				if show_row == 1 and show_col == 1 then
+					return true, col * SuperMarioBros.TILE_WIDTH
+				elseif show_row >= 3 and show_row <= 4 and show_col >= 1 and show_col <= 2 then
+					return true, col * SuperMarioBros.TILE_WIDTH
+				end
+			end
+		end
+		row = row+(1)
+	end
+	return false, nil
+end
+
+function SuperMarioBros.BattleScene:CheckLeft(entity)
+	local col = ALittle.Math_Floor((entity.x - 1) / SuperMarioBros.TILE_WIDTH)
+	local min_row = ALittle.Math_Floor(entity.y / SuperMarioBros.TILE_HEIGHT)
+	local max_row = ALittle.Math_Floor((entity.y + entity.height - 1) / SuperMarioBros.TILE_HEIGHT)
+	local row = min_row
+	while true do
+		if not(row <= max_row) then break end
+		local sub_map = self._battle_map.background[row]
+		if sub_map ~= nil then
+			local index = sub_map[col]
+			if index ~= nil then
+				local show_row = ALittle.Math_Floor(index / SuperMarioBros.TILE_COL_COUNT) + 1
+				local show_col = index % SuperMarioBros.TILE_COL_COUNT + 1
+				if show_row == 1 and show_col == 1 then
+					return true, col * SuperMarioBros.TILE_WIDTH + SuperMarioBros.TILE_WIDTH
+				elseif show_row >= 3 and show_row <= 4 and show_col >= 1 and show_col <= 2 then
+					return true, col * SuperMarioBros.TILE_WIDTH + SuperMarioBros.TILE_WIDTH
+				end
+			end
+		end
+		row = row+(1)
+	end
+	return false, nil
 end
 
 function SuperMarioBros.BattleScene:HandleKeyDown(mod, sym, scancode)

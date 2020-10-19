@@ -1850,6 +1850,7 @@ function AUIPlugin.AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 				local line = line_list[i]
 				new_line_index = new_line_index + (1)
 				self._code_linear:AddChild(line.container, new_line_index)
+				self._line_count = self._line_count + (1)
 				ALittle.List_Insert(self._line_list, new_line_index, line)
 				line_map[new_line_index] = true
 				i = i+(1)
@@ -1857,6 +1858,7 @@ function AUIPlugin.AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 			do
 				new_line_index = new_line_index + (1)
 				self._code_linear:AddChild(split_next_line.container, new_line_index)
+				self._line_count = self._line_count + (1)
 				ALittle.List_Insert(self._line_list, new_line_index, split_next_line)
 				it_cursor_line = new_line_index
 				it_cursor_char = 0

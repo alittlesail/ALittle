@@ -31,13 +31,17 @@ SuperMarioBros.EntityType = {
 	ET_BORN_1 = 11,
 }
 
+SuperMarioBros.BackgroundType = {
+	BT_FLOOR = 1,
+}
+
 SuperMarioBros.TILE_COL_COUNT = 13
 SuperMarioBros.TILE_ROW_COUNT = 11
 SuperMarioBros.TILE_WIDTH = 32
 SuperMarioBros.TILE_HEIGHT = 32
 SuperMarioBros.TILE_TEXTURE_NAME = "tile_map.png"
 SuperMarioBros.PLAYER_MAX_WALK_SPEED = 3
-SuperMarioBros.PLAYER_INIT_X_SPEED_RATE = 0.02
-SuperMarioBros.PLAYER_INIT_JUMP_SPEED = 6
-SuperMarioBros.PLAYER_INIT_Y_SPEED_RATE = 0.02
+SuperMarioBros.PLAYER_INIT_X_SPEED_RATE = 0.025
+SuperMarioBros.PLAYER_INIT_JUMP_SPEED = 7
+SuperMarioBros.PLAYER_INIT_Y_SPEED_RATE = 0.03
 end

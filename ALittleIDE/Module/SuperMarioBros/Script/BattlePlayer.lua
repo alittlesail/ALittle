@@ -10,6 +10,7 @@ SuperMarioBros.PlayerState = {
 	PS_IDLE = 0,
 	PS_WALK = 1,
 	PS_JUMP = 2,
+	PS_FALL = 3,
 }
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
@@ -76,12 +77,12 @@ function SuperMarioBros.BattlePlayer:UpdateFrame(frame_time)
 		self._vx = -SuperMarioBros.PLAYER_MAX_WALK_SPEED
 	end
 	self._vy = self._vy + (self._ay * frame_time)
-	self.x = self.x + (self._vx)
-	self.y = self.y + (self._vy)
 	local walk_left = A_UISystem.sym_map[97] ~= nil
 	local walk_right = A_UISystem.sym_map[100] ~= nil
 	local jump = A_UISystem.sym_map[107] ~= nil
 	if self._state == SuperMarioBros.PlayerState.PS_IDLE then
+		self.x = self.x + (self._vx)
+		self.y = self.y + (self._vy)
 		if walk_left then
 			self._state = SuperMarioBros.PlayerState.PS_WALK
 			self._ax = -SuperMarioBros.PLAYER_INIT_X_SPEED_RATE
@@ -130,7 +131,88 @@ function SuperMarioBros.BattlePlayer:UpdateFrame(frame_time)
 			self._ay = SuperMarioBros.PLAYER_INIT_Y_SPEED_RATE
 			self:UpdateJump()
 		end
+		self.x = self.x + (self._vx)
+		local check_right, right_x = g_GCenter.battle_scene:CheckRight(self)
+		if check_right then
+			self.x = right_x - self.width
+		end
+		local check_left, left_x = g_GCenter.battle_scene:CheckLeft(self)
+		if check_left then
+			self.x = left_x
+		end
+		self.y = self.y + (self._vy)
 	elseif self._state == SuperMarioBros.PlayerState.PS_JUMP then
+		if walk_left then
+			self._ax = -SuperMarioBros.PLAYER_INIT_X_SPEED_RATE
+		elseif walk_right then
+			self._ax = SuperMarioBros.PLAYER_INIT_X_SPEED_RATE
+		else
+			if self._vx ~= 0 then
+				self._ax = 0
+				if self._vx < 0.001 then
+					self._vx = 0
+				end
+			end
+		end
+		if jump and self._vy < 0 then
+			self._ay = SuperMarioBros.PLAYER_INIT_Y_SPEED_RATE / 3
+		else
+			self._ay = SuperMarioBros.PLAYER_INIT_Y_SPEED_RATE
+		end
+		self.y = self.y + (self._vy)
+		local check_down, down_y = g_GCenter.battle_scene:CheckDown(self)
+		if check_down then
+			self._state = SuperMarioBros.PlayerState.PS_WALK
+			self._vy = 0
+			self._ay = 0
+			self.y = down_y - self.height
+		end
+		self.x = self.x + (self._vx)
+		local check_right, right_x = g_GCenter.battle_scene:CheckRight(self)
+		if check_right then
+			self.x = right_x - self.width
+		end
+		local check_left, left_x = g_GCenter.battle_scene:CheckLeft(self)
+		if check_left then
+			self.x = left_x
+		end
+	elseif self._state == SuperMarioBros.PlayerState.PS_FALL then
+		if self._vx ~= 0 then
+			if self._vx ~= 0 then
+				self._ax = 0
+				if self._vx < 0.001 then
+					self._vx = 0
+				end
+			end
+		end
+		self.y = self.y + (self._vy)
+		local check_down, down_y = g_GCenter.battle_scene:CheckDown(self)
+		if check_down then
+			self._state = SuperMarioBros.PlayerState.PS_WALK
+			self._vy = 0
+			self._ay = 0
+			self.y = down_y - self.height
+		end
+		self.x = self.x + (self._vx)
+		local check_right, right_x = g_GCenter.battle_scene:CheckRight(self)
+		if check_right then
+			self.x = right_x - self.width
+		end
+		local check_left, left_x = g_GCenter.battle_scene:CheckLeft(self)
+		if check_left then
+			self.x = left_x
+		end
+	else
+		self.x = self.x + (self._vx)
+		self.y = self.y + (self._vy)
+	end
+	if self._state == SuperMarioBros.PlayerState.PS_WALK or self._state == SuperMarioBros.PlayerState.PS_IDLE then
+		local check_down, down_y = g_GCenter.battle_scene:CheckDown(self)
+		if not check_down then
+			self._state = SuperMarioBros.PlayerState.PS_FALL
+			self._vy = 0
+			self._ay = SuperMarioBros.PLAYER_INIT_Y_SPEED_RATE
+		end
 	end
 	if self._state == SuperMarioBros.PlayerState.PS_WALK then
 		self:WalkUpdateFrame(frame_time)

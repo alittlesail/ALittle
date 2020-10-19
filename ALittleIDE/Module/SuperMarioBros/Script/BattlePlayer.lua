@@ -11,6 +11,7 @@ SuperMarioBros.PlayerState = {
 	PS_WALK = 1,
 	PS_JUMP = 2,
 	PS_FALL = 3,
+	PS_DEATH = 4,
 }
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
@@ -37,6 +38,12 @@ function SuperMarioBros.BattlePlayer:TCtor()
 end
 
 function SuperMarioBros.BattlePlayer:Init(row, col, level)
+	self._level_1_sprite_right.visible = false
+	self._level_1_sprite_left.visible = false
+	self._level_2_sprite_right.visible = false
+	self._level_2_sprite_left.visible = false
+	self._level_3_sprite_right.visible = false
+	self._level_3_sprite_left.visible = false
 	self._state = SuperMarioBros.PlayerState.PS_IDLE
 	self._right = true
 	self._vx = 0
@@ -69,7 +76,32 @@ end
 function SuperMarioBros.BattlePlayer:Fire()
 end
 
+function SuperMarioBros.BattlePlayer:Death()
+	if self._state == SuperMarioBros.PlayerState.PS_DEATH then
+		return
+	end
+	self._state = SuperMarioBros.PlayerState.PS_DEATH
+	self._level_1_sprite_right.visible = false
+	self._level_1_sprite_left.visible = false
+	self._level_2_sprite_right.visible = false
+	self._level_2_sprite_left.visible = false
+	self._level_3_sprite_right.visible = false
+	self._level_3_sprite_left.visible = false
+	self._level_1_sprite_right.visible = true
+	self.height = self._level_1_sprite_right.height
+	self._level_1_sprite_right.col_index = 2
+	self._level_1_sprite_right.row_index = 1
+	local loop = ALittle.LoopList()
+	loop:AddUpdater(ALittle.LoopLinear(self, "y", self.y - 32 * 3, 500, 0))
+	loop:AddUpdater(ALittle.LoopLinear(self, "y", self.y, 200, 500))
+	loop:AddUpdater(ALittle.LoopTimer(Lua.Bind(g_GCenter.battle_scene.Restart, g_GCenter.battle_scene), 100))
+	loop:Start()
+end
+
 function SuperMarioBros.BattlePlayer:UpdateFrame(frame_time)
+	if self._state == SuperMarioBros.PlayerState.PS_DEATH then
+		return
+	end
 	self._vx = self._vx + (self._ax * frame_time)
 	if self._vx > SuperMarioBros.PLAYER_MAX_WALK_SPEED then
 		self._vx = SuperMarioBros.PLAYER_MAX_WALK_SPEED

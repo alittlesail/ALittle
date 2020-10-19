@@ -7,6 +7,7 @@ public enum PlayerState
     PS_WALK = 1;
     PS_JUMP = 2;
     PS_FALL = 3;
+    PS_DEATH = 4;
 }
 
 public class BattlePlayer : ALittle.DisplayLayout
@@ -43,6 +44,13 @@ public class BattlePlayer : ALittle.DisplayLayout
 
     public fun Init(int row, int col, int level)
     {
+        this._level_1_sprite_right.visible = false;
+        this._level_1_sprite_left.visible = false;
+        this._level_2_sprite_right.visible = false;
+        this._level_2_sprite_left.visible = false;
+        this._level_3_sprite_right.visible = false;
+        this._level_3_sprite_left.visible = false;
+
         this._state = PlayerState.PS_IDLE;
         this._right = true;
         this._vx = 0;
@@ -85,8 +93,35 @@ public class BattlePlayer : ALittle.DisplayLayout
 
     }
 
+    public fun Death()
+    {
+        if (this._state == PlayerState.PS_DEATH) return;
+
+        this._state = PlayerState.PS_DEATH;
+
+        this._level_1_sprite_right.visible = false;
+        this._level_1_sprite_left.visible = false;
+        this._level_2_sprite_right.visible = false;
+        this._level_2_sprite_left.visible = false;
+        this._level_3_sprite_right.visible = false;
+        this._level_3_sprite_left.visible = false;
+
+        this._level_1_sprite_right.visible = true;
+        this.height = this._level_1_sprite_right.height;
+        this._level_1_sprite_right.col_index = 2;
+        this._level_1_sprite_right.row_index = 1;
+
+        var loop = new ALittle.LoopList();
+        loop.AddUpdater(new ALittle.LoopLinear(this, "y", this.y - 32 * 3, 500, 0));
+        loop.AddUpdater(new ALittle.LoopLinear(this, "y", this.y, 200, 500));
+        loop.AddUpdater(new ALittle.LoopTimer(bind(g_GCenter.battle_scene.Restart, g_GCenter.battle_scene), 100));
+        loop.Start();
+    }
+
     public fun UpdateFrame(int frame_time)
     {
+        if (this._state == PlayerState.PS_DEATH) return;
+
         // 更新x轴方向
         this._vx += this._ax * frame_time;
         if (this._vx > PLAYER_MAX_WALK_SPEED) this._vx = PLAYER_MAX_WALK_SPEED;
@@ -281,7 +316,7 @@ public class BattlePlayer : ALittle.DisplayLayout
 
         if (this._state == PlayerState.PS_WALK || this._state == PlayerState.PS_IDLE)
         {
-            // 如果没有踩在地板上，那么就改为跳跃状态
+            // 如果没有踩在地板上，那么就改为掉落状态
             var check_down, down_y = g_GCenter.battle_scene.CheckDown(this);
             if (!check_down)
             {

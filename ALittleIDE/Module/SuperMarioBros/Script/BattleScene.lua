@@ -42,6 +42,7 @@ function SuperMarioBros.BattleScene:Show(world, subworld)
 		end
 	end
 	self._scroll_screen.container.width = self._tile_linear.width + self._scroll_screen.view_width
+	self._scroll_screen.container_x = 0
 	self._scroll_screen:RefreshClipDisLine()
 	self.visible = true
 	A_UISystem.keydown_callback = Lua.Bind(self.HandleKeyDown, self)
@@ -103,6 +104,16 @@ function SuperMarioBros.BattleScene:HandleFrame(frame_time)
 	if self._scroll_screen.container_x > scroll_x then
 		self._scroll_screen.container_x = scroll_x
 	end
+	if self._player.y >= A_UISystem.view_height then
+		self._player:Death()
+	end
+end
+
+function SuperMarioBros.BattleScene:Restart()
+	g_GCenter.player_data.life = g_GCenter.player_data.life - (1)
+	g_GCenter.player_data.level = 1
+	self:Hide()
+	g_GCenter.stage_scene:Show(g_GCenter.player_data.world, g_GCenter.player_data.subworld)
 end
 
 function SuperMarioBros.BattleScene:CheckDown(entity)
@@ -187,6 +198,10 @@ function SuperMarioBros.BattleScene:HandleKeyDown(mod, sym, scancode)
 end
 
 function SuperMarioBros.BattleScene:Hide()
+	if self._frame_loop ~= nil then
+		self._frame_loop:Stop()
+	end
+	self._frame_loop = nil
 	self.visible = false
 end
 

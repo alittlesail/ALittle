@@ -23,12 +23,14 @@ Emulator.g_Control = nil
 Emulator.g_LayerGroup = nil
 Emulator.g_ModuleBasePath = nil
 Emulator.g_AUIPluinControl = nil
+Emulator.g_ADeeplearningControl = nil
 Emulator.g_VersionManager = nil
 function Emulator.__Module_Setup(layer_group, control, module_base_path, script_base_path, debug)
 	Emulator.g_Control = control
 	Emulator.g_LayerGroup = layer_group
 	Emulator.g_ModuleBasePath = module_base_path
 	Emulator.g_AUIPluinControl = A_ModuleSystem:LoadPlugin("AUIPlugin")
+	Emulator.g_ADeeplearningControl = A_ModuleSystem:LoadPlugin("ADeeplearning")
 	if ALittle.System_GetPlatform() == "Windows" then
 		package.cpath = package.cpath .. ";./" .. module_base_path .. "Other/?.dll"
 		require("memory")

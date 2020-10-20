@@ -32,6 +32,8 @@ protected var g_ModuleBasePath:string;
 
 // UI库
 protected var g_AUIPluinControl:ALittle.ControlSystem;
+// 深度学习
+protected var g_ADeeplearningControl:ALittle.ControlSystem;
 // 版本管理器
 protected var g_VersionManager:AUIPlugin.AUIVersionManager;
 
@@ -46,6 +48,7 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 
 	// 加载UI插件
     g_AUIPluinControl = A_ModuleSystem.LoadPlugin("AUIPlugin");
+    g_ADeeplearningControl = A_ModuleSystem.LoadPlugin("ADeeplearning");
 
 	[Language(Lua)]
 	if (ALittle.System_GetPlatform() == "Windows")

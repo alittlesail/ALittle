@@ -11,7 +11,8 @@ SuperMarioBros.PlayerState = {
 	PS_WALK = 1,
 	PS_JUMP = 2,
 	PS_FALL = 3,
-	PS_DEATH = 4,
+	PS_SQUAT = 4,
+	PS_DEATH = 5,
 }
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
@@ -44,7 +45,6 @@ function SuperMarioBros.BattlePlayer:Init(row, col, level)
 	self._level_2_sprite_left.visible = false
 	self._level_3_sprite_right.visible = false
 	self._level_3_sprite_left.visible = false
-	level = 2
 	self._state = SuperMarioBros.PlayerState.PS_IDLE
 	self._right = true
 	self._vx = 0
@@ -121,6 +121,7 @@ function SuperMarioBros.BattlePlayer:UpdateFrame(frame_time)
 	self._vy = self._vy + (self._ay * frame_time)
 	local walk_left = A_UISystem.sym_map[97] ~= nil
 	local walk_right = A_UISystem.sym_map[100] ~= nil
+	local squat_down = A_UISystem.sym_map[115] ~= nil
 	local jump = A_UISystem.sym_map[107] ~= nil
 	if self._state == SuperMarioBros.PlayerState.PS_IDLE then
 		self.x = self.x + (self._vx)
@@ -141,6 +142,8 @@ function SuperMarioBros.BattlePlayer:UpdateFrame(frame_time)
 			self._vy = -SuperMarioBros.PLAYER_INIT_JUMP_SPEED
 			self._ay = SuperMarioBros.PLAYER_INIT_Y_SPEED_RATE
 			self:UpdateJump()
+		elseif squat_down then
+			self._state = SuperMarioBros.PlayerState.PS_SQUAT
 		end
 	elseif self._state == SuperMarioBros.PlayerState.PS_WALK then
 		if walk_left then
@@ -172,6 +175,8 @@ function SuperMarioBros.BattlePlayer:UpdateFrame(frame_time)
 			self._vy = -SuperMarioBros.PLAYER_INIT_JUMP_SPEED
 			self._ay = SuperMarioBros.PLAYER_INIT_Y_SPEED_RATE
 			self:UpdateJump()
+		elseif squat_down then
+			self._state = SuperMarioBros.PlayerState.PS_SQUAT
 		end
 		self.x = self.x + (self._vx)
 		local check_right, right_x = g_GCenter.battle_scene:CheckRight(self)
@@ -251,6 +256,41 @@ function SuperMarioBros.BattlePlayer:UpdateFrame(frame_time)
 		if check_left then
 			self.x = left_x
 		end
+	elseif self._state == SuperMarioBros.PlayerState.PS_SQUAT then
+		if walk_left then
+			self._ax = 0
+			if self._right then
+				self._right = false
+				self:UpdateLeftRight()
+			end
+		elseif walk_right then
+			self._ax = 0
+			if not self._right then
+				self._right = true
+				self:UpdateLeftRight()
+			end
+		else
+			if self._vx ~= 0 then
+				self._ax = 0
+				self._vx = self._vx * (0.1)
+				if self._vx < 0.001 then
+					self._vx = 0
+				end
+			end
+		end
+		if not squat_down then
+			self._state = SuperMarioBros.PlayerState.PS_WALK
+		end
+		self.x = self.x + (self._vx)
+		local check_right, right_x = g_GCenter.battle_scene:CheckRight(self)
+		if check_right then
+			self.x = right_x - self.width
+		end
+		local check_left, left_x = g_GCenter.battle_scene:CheckLeft(self)
+		if check_left then
+			self.x = left_x
+		end
+		self.y = self.y + (self._vy)
 	else
 		self.x = self.x + (self._vx)
 		self.y = self.y + (self._vy)
@@ -265,6 +305,8 @@ function SuperMarioBros.BattlePlayer:UpdateFrame(frame_time)
 	end
 	if self._state == SuperMarioBros.PlayerState.PS_WALK then
 		self:WalkUpdateFrame(frame_time)
+	elseif self._state == SuperMarioBros.PlayerState.PS_SQUAT then
+		self:UpdateSquat()
 	end
 end
 
@@ -284,6 +326,21 @@ function SuperMarioBros.BattlePlayer:UpdateJump()
 		self._level_3_sprite_right.col_index = 7
 		self._level_3_sprite_right.row_index = 1
 		self._level_3_sprite_left.col_index = 1
+		self._level_3_sprite_left.row_index = 1
+	end
+end
+
+function SuperMarioBros.BattlePlayer:UpdateSquat()
+	self:UpdateLeftRight()
+	if self._level == 2 then
+		self._level_2_sprite_right.col_index = 1
+		self._level_2_sprite_right.row_index = 1
+		self._level_2_sprite_left.col_index = 7
+		self._level_2_sprite_left.row_index = 1
+	elseif self._level == 3 then
+		self._level_3_sprite_right.col_index = 1
+		self._level_3_sprite_right.row_index = 1
+		self._level_3_sprite_left.col_index = 7
 		self._level_3_sprite_left.row_index = 1
 	end
 end

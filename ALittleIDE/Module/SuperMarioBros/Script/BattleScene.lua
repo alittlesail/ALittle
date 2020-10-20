@@ -187,6 +187,19 @@ function SuperMarioBros.BattleScene:CheckUp(entity)
 						data.loop:AddUpdater(ALittle.LoopLinear(object, "y", object.y, 100, 0))
 						data.loop:Start()
 					else
+						sub_map[col] = nil
+						self._entity_container:RemoveChild(object)
+						local link_map = {}
+						local anti_object = SuperMarioBros.g_Control:CreateControl("wall_split_anti", link_map)
+						anti_object.x = object.x
+						anti_object.y = object.y
+						self._effect_container:AddChild(anti_object)
+						local anti = anti_object:CreateLoopAnimation("split")
+						anti:Init(link_map)
+						anti:Play()
+						local loop = ALittle.LoopList()
+						loop:AddUpdater(ALittle.LoopTimer(Lua.Bind(self.EffectRemoveChild, self, anti_object), 1000))
+						loop:Start()
 					end
 					check = true
 				elseif data.type == SuperMarioBros.EntityType.ET_RANDOM_WALL_1 then

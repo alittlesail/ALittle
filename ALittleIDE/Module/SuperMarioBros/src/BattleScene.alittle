@@ -226,7 +226,20 @@ public class BattleScene : ALittle.DisplayLayout
                         }
                         else
                         {
+                            sub_map[col] = null;
+                            this._entity_container.RemoveChild(object);
 
+                        	var link_map = new Map<string, ALittle.DisplayObject>();
+                            var anti_object = g_Control.CreateControl{ALittle.DisplayObject}("wall_split_anti", link_map);
+                            anti_object.x = object.x;
+                            anti_object.y = object.y;
+                            this._effect_container.AddChild(anti_object);
+                            var anti = anti_object.CreateLoopAnimation("split");
+                            anti.Init(link_map);
+                            anti.Play();
+                            var loop = new ALittle.LoopList();
+                            loop.AddUpdater(new ALittle.LoopTimer(bind(this.EffectRemoveChild, this, anti_object), 1000));
+                            loop.Start();
                         }
                         check = true;
                     }

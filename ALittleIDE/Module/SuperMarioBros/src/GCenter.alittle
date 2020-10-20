@@ -60,7 +60,7 @@ class GCenter
         this._player_data.world = 1;
         this._player_data.subworld = 1;
         this._player_data.life = 3;
-        this._player_data.level = 1;
+        this._player_data.level = 2;
         this._login_scene.Show();
     }
 

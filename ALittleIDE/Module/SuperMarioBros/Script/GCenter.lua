@@ -44,7 +44,7 @@ function SuperMarioBros.GCenter:ReStart()
 	self._player_data.world = 1
 	self._player_data.subworld = 1
 	self._player_data.life = 3
-	self._player_data.level = 1
+	self._player_data.level = 2
 	self._login_scene:Show()
 end
 

@@ -1,0 +1,607 @@
+
+namespace AUIPlugin;
+
+public struct AUIFileTreeUserInfo
+{
+    string path;	// 文件或文件夹路径
+    string name;	// 文件或文件夹名
+    bool root;		// 是否是根路径
+    ALittle.TextRadioButtonGroup group;	// 单选按钮组
+
+    Functor<(AUIFileTreeUserInfo, AUIPlugin.AUIRightMenu)> on_right_menu;	// 右键菜单回调
+}
+
+public struct AUIFileSelectFileEvent : ALittle.UIEvent
+{
+    string path;
+}
+
+public struct AUIFileDeleteFileEvent : ALittle.UIEvent
+{
+    string path;
+}
+
+public struct AUIFileDeleteDirEvent : ALittle.UIEvent
+{
+    string path;
+}
+
+public struct AUIFileCreateFileEvent : ALittle.UIEvent
+{
+    string path;
+}
+
+public class AUIFileTreeLogic : ALittle.DisplayLayout
+{
+	private AUIFileTreeUserInfo _user_info;
+
+	private ALittle.DisplayObject _item_button;	// 按钮
+
+	private ALittle.DisplayObject _head;			// 头部
+	private ALittle.DisplayObject _item;			// item部分
+
+	public ctor(ALittle.ControlSystem ctrl_sys, AUIFileTreeUserInfo user_info)
+	{
+		this._user_info = user_info;
+	}
+
+	public get user_info() : AUIFileTreeUserInfo { return this._user_info; }
+	public get is_tree() : bool { return false; }
+	public get is_root() : bool { return this._user_info.root; }
+	public set fold(bool value) { }
+	public fun ShowSelect()
+	{
+		if (this._item_button != null) this._item_button.selected = true;
+	}
+
+	public fun Refresh() {}
+
+	// 搜索文件
+	public fun SearchFile(string name, [Nullable] List<AUIFileTreeLogic> list) : List<AUIFileTreeLogic>
+	{
+		if (list == null) list = new List<AUIFileTreeLogic>();
+		return list;
+	}
+
+	// 查找文件
+	public fun FindFile(string full_path) : AUIFileTreeLogic
+	{
+        return null;
+    }
+}
+
+public class AUIFileTree : AUIFileTreeLogic
+{
+	private ALittle.Linear _body;
+	private ALittle.DisplayObject _item_checkbutton;
+
+	public ctor(ALittle.ControlSystem ctrl_sys, AUIFileTreeUserInfo user_info)
+	{
+		this._head = ctrl_sys.CreateControl{ALittle.DisplayObject}("file_tree_head", this);
+		ALittle.DisplayGroup.AddChild(this, this._head);
+    
+		this._item_button.selected = false;
+		this._item_button.group = user_info.group;
+		this._item_button.AddEventListener(this, this.HandleLButtonDown);
+		this._item_button.AddEventListener(this, this.HandleRButtonDown);
+		this._item_button._user_data = this;
+	
+		// 对数的身体部分进行处理
+		this._body = new ALittle.Linear(ctrl_sys);
+		this._body.type = ALittle.UIEnumTypes.TYPE_V;
+		this._body.x = 8;
+		this._body.y = this._head.height;
+		this._body.width = this._head.width;
+		this._item_checkbutton.selected = true;
+		ALittle.DisplayGroup.AddChild(this, this._body);
+		this._body.AddEventListener(this, this.HandleChildResize);
+	
+		// 设置一下拾取属性
+		this._pickup_rect = false;
+		this._pickup_child = true;
+	
+		this.fold = false;
+		this._item_button.text = this._user_info.name;
+		this.Refresh();
+	}
+
+	private fun HandleLButtonDown(ALittle.UILButtonDownEvent event)
+	{
+		if (event.count == 1) return;
+		this.fold = !this.fold;
+	}
+
+	private fun HandleRButtonDown(ALittle.UIRButtonDownEvent event)
+	{
+        var menu = new AUIPlugin.AUIRightMenu();
+		menu.AddItem("新建文件", bind(this.HandleCreateFile, this));
+		menu.AddItem("新建文件夹", bind(this.HandleCreateDir, this));
+		menu.AddItem("刷新", bind(this.Refresh, this));
+
+		if (!this._user_info.root)
+			menu.AddItem("删除", bind(this.HandleDeleteDir, this));
+		menu.Show();
+    }
+
+	private async fun HandleCreateFile()
+	{
+		var x, y = this._head.LocalToGlobal();
+        var name = g_AUITool.ShowRename("", x, y + this._head.height, 200);
+		if (name == null || name == "") return;
+
+		ALittle.File_WriteTextToFile("", this._user_info.path.."/"..name);
+		this.Refresh();
+
+        var event = new AUIFileCreateFileEvent();
+        event.path = this._user_info.path.."/"..name;
+        this.DispatchEvent(event);
+    }
+
+	private async fun HandleCreateDir()
+	{
+		var x, y = this._head.LocalToGlobal();
+        var name = g_AUITool.ShowRename("", x, y + this._head.height, 200);
+		if (name == null || name == "") return;
+		ALittle.File_MakeDir(this._user_info.path.."/"..name);
+		this.Refresh();
+    }
+
+	private async fun HandleDeleteDir()
+	{
+		var file_name = ALittle.File_GetFileNameByPath(this._user_info.path);
+		var result = g_AUITool.DeleteNotice("删除", "确定要删除"..file_name.."，以及子文件和子文件夹吗?");
+		if (result != AUIPlugin.AUIToolOption.YES) return;
+		this.OnDelete();
+
+        var event = new AUIFileDeleteDirEvent();
+        event.path = this._user_info.path;
+        this.DispatchEvent(event);
+
+		ALittle.File_DeleteDeepDir(this._user_info.path);
+
+		var parent = this.parent;
+        this.RemoveFromParent();
+		if (parent != null) parent.DispatchEvent(new ALittle.UIResizeEvent());
+    }
+
+	public get is_tree() : bool { return true; }
+
+	// 刷新子节点
+	public fun Refresh()
+	{
+		var map = ALittle.File_GetNameListByDir(this._user_info.path);
+
+		// 刷新已存在
+		var remove:List<AUIFileTreeLogic> = null;
+		for (var index, child:AUIFileTreeLogic in this.childs)
+		{
+            var attr = map[child._user_info.name];
+			if (attr == null)
+			{
+				if (remove == null) remove = new List<AUIFileTreeLogic>();
+				ALittle.List_Push(remove, child);
+            }
+
+			map[child._user_info.name] = null;
+			child.Refresh();
+        }
+
+		if (remove != null)
+		{
+            for (var index, child:AUIFileTreeLogic in remove)
+            {
+                // 移除文件
+                this.RemoveChild(child);
+            }   
+        }
+
+            // 添加
+		var add_file:List<string> = null;
+		var add_dir:List<string> = null;
+		for (var name, attr in map)
+		{
+			if (attr.directory)
+			{
+                if (add_dir == null) add_dir = new List<string>();
+                ALittle.List_Push(add_dir, name);
+            }
+			else
+			{
+                if (add_file == null) add_file = new List<string>();
+                ALittle.List_Push(add_file, name);
+            }	
+		}
+
+		if (add_dir != null)
+		{
+			ALittle.List_Sort(add_dir);
+			for (var index, name in add_dir)
+			{
+                var attr = map[name];
+				var info = new AUIFileTreeUserInfo();
+				info.name = name;
+				info.path = this._user_info.path.."/"..name;
+				info.group = this._user_info.group;
+				info.root = false;
+                this.AddChild(new AUIFileTree(this._ctrl_sys, info));
+            }
+        }
+
+		if (add_file != null)
+		{
+			ALittle.List_Sort(add_file);
+			for (var index, name in add_file)
+			{
+                var attr = map[name];
+				var info = new AUIFileTreeUserInfo();
+				info.name = name;
+				info.path = this._user_info.path.."/"..name;
+				info.group = this._user_info.group;
+				info.root = false;
+                this.AddChild(new AUIFileTreeItem(this._ctrl_sys, info));
+            }
+        }
+
+		this.DispatchEvent(new ALittle.UIResizeEvent());
+    }
+
+	// 搜索文件
+	public fun SearchFile(string name, [Nullable] List<AUIFileTreeLogic> list) : List<AUIFileTreeLogic>
+	{
+		if (list == null) list = new List<AUIFileTreeLogic>();
+    
+		for (var k, child:AUIFileTreeLogic in this._body.childs)
+			child.SearchFile(name, list);
+	
+		return list;
+	}
+
+	// 查找文件
+	public fun FindFile(string full_path) : AUIFileTreeLogic
+	{
+		if (ALittle.String_Find(full_path, this._user_info.path) != 1) return null;
+
+		for (var k, child:AUIFileTreeLogic in this._body.childs)
+		{
+			var item = child.FindFile(full_path);
+			if (item != null) return item;
+        }
+		return null;
+    }
+
+	// 触发删除
+	public fun OnDelete()
+	{
+		for (var index, child:AUIFileTreeLogic in this.childs)
+            child.OnDelete();
+    }
+
+	public fun HandleChildResize(ALittle.UIResizeEvent event)
+	{
+		this.DispatchEvent(new ALittle.UIResizeEvent());
+	}
+
+	public fun HandleHeadChanged(ALittle.UIEvent event)
+	{
+		this._body.visible = event.target.selected;
+		this.DispatchEvent(new ALittle.UIResizeEvent());
+	}
+	//////////////////////////////////////////////////////////////////////////////////////
+	public fun GetChildIndex(ALittle.DisplayObject child) : int	{ return this._body.GetChildIndex(child);	}
+	public fun SetChildIndex(ALittle.DisplayObject child, int index) : bool { return this._body.SetChildIndex(child, index); }
+	public fun GetChildByIndex(int index) : ALittle.DisplayObject {	return this._body.GetChildByIndex(index); }
+	public fun GetChildIndex(ALittle.DisplayObject child) : int	{ return this._body.GetChildIndex(child);	}
+	public get childs() : List<ALittle.DisplayObject> { return this._body.childs; }
+	public get child_count() : int { return this._body.child_count;	}
+	public fun HasChild(ALittle.DisplayObject child) : bool { return this._body.HasChild(child); }
+
+	public fun AddChild(ALittle.DisplayObject child, [Nullable] int index) : bool
+	{
+		if (this._body.AddChild(child, index) == false)
+			return false;
+		child._logic_parent = this;
+
+		if (this._body.abs_visible)
+			this.DispatchEvent(new ALittle.UIResizeEvent());
+		return true;
+	}
+
+	public fun RemoveChild(ALittle.DisplayObject child) : bool
+	{
+		if (this._body.RemoveChild(child) == false)
+			return false;
+		child.group = null;
+		if (this._body.abs_visible)
+			this.DispatchEvent(new ALittle.UIResizeEvent());
+		return true;
+	}
+
+	public fun SpliceChild(int index, [Nullable] int count) : int
+	{
+        var remain_count = this._child_count - index + 1;
+        if (count == null) count = remain_count;
+        elseif (count > remain_count) count = remain_count;
+        if (count <= 0) return 0;
+
+        var endv = index + count;
+        for (var i = index; i < endv; 1)
+        {
+            var child = this._childs[i];
+            if (child == null) break;
+
+			child.group = null;
+        }
+
+		var result = this._body.SpliceChild(index, count);
+		if (result == 0) return 0;
+		if (this._body.abs_visible)
+			this.DispatchEvent(new ALittle.UIResizeEvent());
+		return result;
+    }
+
+	public fun RemoveAllChild()
+	{
+		for (var index, child in this.childs)
+			child.group = null;
+		this._body.RemoveAllChild();
+    
+		if (this._body.abs_visible)
+			this.DispatchEvent(new ALittle.UIResizeEvent());
+	}
+
+	//////////////////////////////////////////////////////////////////////
+	public get width() : double
+	{
+		var head_width = 0.0;
+		if (this._head != null) head_width = this._head.width;
+		var body_width = 0.0;
+		if (this._body.visible)
+		{
+			var start_x = this._body.x;
+			body_width = start_x + this._body.width;
+			var childs = this._body.childs;
+			for (var k, v in childs)
+			{
+				var child_width = start_x + v.x + v.width;
+				if (body_width < child_width) body_width = child_width;
+			}
+		}
+		if (head_width > body_width) return head_width;
+		return body_width;
+	}
+
+	public get height() : double
+	{
+		var head_height = 0.0;
+		if (this._head != null) head_height = this._head.height;
+		if (this._body.visible) return head_height + this._body.height;
+		return head_height;
+	}
+
+	public get fold() : bool { return this._body.visible; }
+	public set fold(bool value)
+	{
+		if (value == this._body.visible) return;
+	
+		this._body.visible = value;
+		this._item_checkbutton.selected = value;
+		this.DispatchEvent(new ALittle.UIResizeEvent());
+	}
+
+	public get max_right() : double	{ return this.width; }
+	public get max_bottom() : double { return this.height; }
+}
+
+public class AUIFileTreeItem : AUIFileTreeLogic
+{
+	public ctor(ALittle.ControlSystem ctrl_sys, AUIFileTreeUserInfo user_info)
+	{
+		this._item = ctrl_sys.CreateControl{ALittle.DisplayObject}("file_tree_item", this);
+		this.AddChild(this._item);
+		this.width = this._item.width;
+		this.height = this._item.height;
+
+		this._item_button.selected = false;
+		this._item_button.group = user_info.group;
+		this._item_button.AddEventListener(this, this.HandleClick);
+		this._item_button.AddEventListener(this, this.HandleRButtonDown);
+		this._item_button.AddEventListener(this, this.HandleKeyDown);
+		this._item_button._user_data = this;
+    
+		this._item_button.text = this._user_info.name;
+	}
+
+	public get is_tree() : bool { return false; }
+	public get fold() : bool { return false; }
+	public set fold(bool value) { }
+
+	// 打开文件
+	private fun HandleClick(ALittle.UIClickEvent event)
+	{
+        var select_event = new AUIFileSelectFileEvent();
+        select_event.path = this._user_info.path;
+        this.DispatchEvent(select_event);
+    }
+
+	// 搜索文件
+	public fun SearchFile(string name, [Nullable] List<AUIFileTreeLogic> list) : List<AUIFileTreeLogic>
+	{
+		if (list == null) list = new List<AUIFileTreeLogic>();
+	
+		if (ALittle.String_Find(this._user_info.name, name) != null)
+			ALittle.List_Push(list, this);
+		return list;
+	}
+
+	// 查找文件
+	public fun FindFile(string full_path) : AUIFileTreeLogic
+	{
+		if (this._user_info.path == full_path) return this;
+		return null;
+    }
+
+	private fun HandleRButtonDown(ALittle.UIRButtonDownEvent event)
+	{
+        var menu = new AUIPlugin.AUIRightMenu();
+        if (this._user_info.on_right_menu != null) this._user_info.on_right_menu(this._user_info, menu);
+		menu.AddItem("重命名", bind(this.HandleRenameFile, this));
+		menu.AddItem("删除", bind(this.HandleDeleteFile, this));
+		menu.Show();
+    }
+
+    private fun HandleKeyDown(ALittle.UIKeyDownEvent event)
+    {
+        if (event.sym == ALittle.UIEnumTypes.KEY_F2)
+        	this.HandleRenameFile();
+    }
+
+	private async fun HandleDeleteFile()
+	{
+		var file_name = ALittle.File_GetFileNameByPath(this._user_info.path);
+		var result = g_AUITool.DeleteNotice("删除", "确定要删除"..file_name.."吗?");
+		if (result != AUIPlugin.AUIToolOption.YES) return;
+
+        var delete_event = new AUIFileDeleteFileEvent();
+        delete_event.path = this._user_info.path;
+        this.DispatchEvent(delete_event);
+
+		ALittle.File_DeleteFile(this._user_info.path);
+
+		var parent = this.parent;
+        this.RemoveFromParent();
+		if (parent != null) parent.DispatchEvent(new ALittle.UIResizeEvent());
+    }
+
+	private async fun HandleRenameFile()
+	{
+		var old_name = this._user_info.name;
+		var old_path = this._user_info.path;
+
+		var file_name = ALittle.File_GetFileNameByPath(this._user_info.path);
+		var x, y = this.LocalToGlobal();
+		var new_name = g_AUITool.ShowRename(file_name, x, y, 200);
+		if (new_name == null || new_name == "") return;
+
+		var new_path = ALittle.File_GetFilePathByPath(old_path).."/"..new_name;
+
+		this._user_info.path = new_path;
+		this._user_info.name = new_name;
+
+		this._item_button.text = this._user_info.name;
+
+        var delete_event = new AUIFileDeleteFileEvent();
+        delete_event.path = old_path;
+        this.DispatchEvent(delete_event);
+
+		ALittle.File_RenameFile(old_path, new_path);
+
+        var create_event = new AUIFileCreateFileEvent();
+        create_event.path = new_path;
+        this.DispatchEvent(create_event);
+    }
+}
+
+struct AUIFileSearchInfo
+{
+    List<AUIFileTreeLogic> list;
+	int count;
+	int index;
+	string name;
+}
+
+
+public class AUIFileTreeLayout : ALittle.DisplayLayout
+{
+	private ALittle.ScrollScreen _file_scroll_screen;
+	private ALittle.DisplayObject _file_search_key;
+	private ALittle.TextRadioButtonGroup _group;
+	private AUIFileSearchInfo _search_info;                // 搜索集合
+
+	private ALittle.LoopLinear _tree_loop_x;
+	private ALittle.LoopLinear _tree_loop_y;
+
+	public ctor(ALittle.ControlSystem ctrl_sys)
+	{
+		this._group = new ALittle.TextRadioButtonGroup();
+	}
+    
+	public fun SetRoot(string path, Functor<(AUIFileTreeUserInfo, AUIPlugin.AUIRightMenu)> on_right_menu)
+	{
+        this._file_scroll_screen.RemoveAllChild();
+        if (path == null) return;
+
+		var info = new AUIFileTreeUserInfo();
+		info.name = ALittle.File_GetFileNameByPath(path);
+		info.path = path;
+		info.group = this._group;
+		info.root = true;
+        info.on_right_menu = on_right_menu;
+		var tree = new AUIFileTree(g_Control, info);
+		this._file_scroll_screen.AddChild(tree);
+    }
+
+    public fun GetFileTree(string full_path) : AUIFileTreeLogic
+    {
+        for (var index, child:AUIFileTreeLogic in this._file_scroll_screen.childs)
+		{
+            var item = child.FindFile(full_path);
+			if (item != null)
+                return item;
+        }
+
+        return null;
+    }
+
+	// 在树形区域，设置控件焦点
+	public fun ShowTreeItemFocus(AUIFileTreeLogic target)
+    {
+        // 显示
+        target.ShowSelect();
+
+		if (target != this._file_scroll_screen)
+        {
+            var parent = cast<AUIFileTreeLogic>(target.logic_parent);
+			while (parent != null && parent != this._file_scroll_screen)
+            {
+                parent.fold = true;
+                parent = cast<AUIFileTreeLogic>(parent.logic_parent);
+			}
+		}
+        this._file_scroll_screen.AdjustScrollBar();
+
+		// 如果现在直接看的见的话，就直接返回了
+        var x, y = target.LocalToGlobal(this._file_scroll_screen.container);
+        var target_x = (this._file_scroll_screen.view_width - target.width / 2) / 2 - x;
+        var target_y = (this._file_scroll_screen.view_height - target.height) / 2 - y;
+
+        if (this._tree_loop_x != null) { this._tree_loop_x.Stop(); this._tree_loop_x = null; }
+        if (this._tree_loop_y != null) { this._tree_loop_y.Stop(); this._tree_loop_y = null; }
+
+        this._tree_loop_x = new ALittle.LoopLinear(this._file_scroll_screen, "container_x", target_x, 300, 0);
+        this._tree_loop_x.Start();
+        this._tree_loop_y = new ALittle.LoopLinear(this._file_scroll_screen, "container_y", target_y, 300, 0);
+        this._tree_loop_y.Start();
+	}
+
+	private fun HandleFileSearchClick(ALittle.UIEvent event)
+	{
+		if (this._search_info == null || this._search_info.name != this._file_search_key.text)
+		{
+            this._search_info = new AUIFileSearchInfo();
+			this._search_info.name = this._file_search_key.text;
+			this._search_info.index = 0;
+			this._search_info.list = new List<AUIFileTreeLogic>();
+			for (var index, child:AUIFileTreeLogic in this._file_scroll_screen.childs)
+                child.SearchFile(this._search_info.name, this._search_info.list);
+			this._search_info.count = ALittle.List_MaxN(this._search_info.list);
+        }
+
+		if (this._search_info.count <= 0) return;
+
+		this._search_info.index += 1;
+		if (this._search_info.index > this._search_info.count)
+			this._search_info.index = 1;
+		var item = this._search_info.list[this._search_info.index];
+		this.ShowTreeItemFocus(item);
+    }
+}

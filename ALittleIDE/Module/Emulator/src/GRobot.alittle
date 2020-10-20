@@ -1,0 +1,74 @@
+
+namespace Emulator;
+
+protected class GRobot : ALittle.DisplayLayout
+{
+    // 蓝图列表
+	private AUIPlugin.AUIFileTreeLayout _blueprint_filetree;
+
+    // 蓝图详细内容
+	private ALittle.ScrollScreen _detail_scroll_screen;
+
+    // 登陆界面
+	private ALittle.ScrollScreen _log_scroll_screen;
+	private ALittle.DropDown _ip_dropdown;
+	private ALittle.ImageInput _login_port_input;
+	private ALittle.ImageInput _min_player_id;
+	private ALittle.ImageInput _max_player_id;
+	private ALittle.TextButton _stop_button;
+	private ALittle.TextButton _start_button;
+	private ALittle.TextInput _login_ip_input;
+	private ALittle.ScrollScreen _log_scroll_screen;
+    
+    public fun Setup()
+    {
+        // 界面初始化
+        this._start_button.visible = true;
+        this._stop_button.visible = false;
+        this._login_ip_input.text = g_GConfig.GetString("login_ip", "127.0.0.1");
+        var data_list = g_GConfig.GetConfig("login_ip_list", new List<string>());
+        if (ALittle.List_Find(data_list, this._login_ip_input.text) == null)
+        	ALittle.List_Push(data_list, this._login_ip_input.text);
+        this._ip_dropdown.data_list = data_list;
+        this._ip_dropdown.text = "";
+        this._login_port_input.text = ALittle.String_ToString(g_GConfig.GetInt("login_port", 0));
+    }
+
+    private fun HandleBlueprintSearchClick(ALittle.UIClickEvent event)
+    {
+
+    }
+
+    private fun HandleIpSelectChanged(ALittle.UISelectChangedEvent event)
+    {
+        this._login_ip_input.text = this._ip_dropdown.text;
+        this._ip_dropdown.text = "";
+    }
+
+    private fun HandleStartClick(ALittle.UIClickEvent event)
+    {
+
+    }
+
+    private fun HandleStopClick(ALittle.UIClickEvent event)
+    {
+
+    }
+
+    private fun HandleFileTreeRightMenu(AUIPlugin.AUIFileTreeUserInfo user_info, AUIPlugin.AUIRightMenu menu)
+    {
+
+    }
+
+    public fun HandleSettingChanged()
+    {
+        // 协议列表
+        this._blueprint_filetree.SetRoot(g_GConfig.GetString("blueprint_root", ""), bind(this.HandleFileTreeRightMenu, this));
+
+        // 协议内容
+        this._detail_scroll_screen.SetContainer(null);
+
+        // 日志列表
+        this._log_scroll_screen.RemoveAllChild();
+    }
+}

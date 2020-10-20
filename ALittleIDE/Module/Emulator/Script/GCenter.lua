@@ -52,6 +52,7 @@ function Emulator.GCenter:Setup()
 		end
 	end
 	self._gclient:Setup()
+	self._grobot:Setup()
 	self._frame_loop = ALittle.LoopFrame(Lua.Bind(self.UpdateFrame, self))
 	self._frame_loop:Start()
 end
@@ -65,6 +66,7 @@ function Emulator.GCenter:HandleShowSettingDialog(event)
 	self._proto_root_input.text = Emulator.g_GConfig:GetString("proto_root", "")
 	self._login_proto_input.text = Emulator.g_GConfig:GetString("login_proto", "")
 	self._plugin_file_input.text = Emulator.g_GConfig:GetString("plugin_script", "")
+	self._blueprint_root_input.text = Emulator.g_GConfig:GetString("blueprint_root", "")
 end
 
 function Emulator.GCenter:HandleShowVersionDialog(event)
@@ -76,6 +78,13 @@ function Emulator.GCenter:HandleSettingSelectProtoRootClick(event)
 		return
 	end
 	self._proto_root_input.text = event.path
+end
+
+function Emulator.GCenter:HandleSettingSelectBlueprintRootClick(event)
+	if event.path == nil then
+		return
+	end
+	self._blueprint_root_input.text = event.path
 end
 
 function Emulator.GCenter:HandleSettingSelectPluginScriptClick(event)
@@ -134,7 +143,9 @@ function Emulator.GCenter:HandleSettingConfirmClick(event)
 	end
 	Emulator.g_GConfig:SetConfig("login_proto", self._login_proto_input.text)
 	Emulator.g_GConfig:SetConfig("plugin_script", self._plugin_file_input.text)
+	Emulator.g_GConfig:SetConfig("blueprint_root", self._blueprint_root_input.text)
 	self._gclient:HandleSettingChanged()
+	self._grobot:HandleSettingChanged()
 end
 
 function Emulator.GCenter:HandleSettingCancelClick(event)

@@ -12,6 +12,7 @@ class GCenter
     private ALittle.DisplayObject _proto_root_input;
     private ALittle.DisplayObject _login_proto_input;
     private ALittle.DisplayObject _plugin_file_input;
+    private ALittle.DisplayObject _blueprint_root_input;
 
     private ALittle.LoopFrame _frame_loop;
 
@@ -19,6 +20,7 @@ class GCenter
     private ALittle.Tab _main_tab;
 
     public GClient _gclient;
+    public GRobot _grobot;
 
     public fun Setup()
     {
@@ -79,6 +81,7 @@ class GCenter
         }
 
         this._gclient.Setup();
+        this._grobot.Setup();
 
         // 每帧处理
         this._frame_loop = new ALittle.LoopFrame(bind(this.UpdateFrame, this));
@@ -97,6 +100,7 @@ class GCenter
         this._proto_root_input.text = g_GConfig.GetString("proto_root", "");
         this._login_proto_input.text = g_GConfig.GetString("login_proto", "");
         this._plugin_file_input.text = g_GConfig.GetString("plugin_script", "");
+        this._blueprint_root_input.text = g_GConfig.GetString("blueprint_root", "");
     }
 
     // 显示版本对话框
@@ -111,6 +115,13 @@ class GCenter
     {
         if (event.path == null) return;
         this._proto_root_input.text = event.path;
+    }
+
+    // 选择蓝图根路径
+    private fun HandleSettingSelectBlueprintRootClick(ALittle.UISystemSelectDirectoryEvent event)
+    {
+        if (event.path == null) return;
+        this._blueprint_root_input.text = event.path;
     }
 
     // 选择插件代码
@@ -184,8 +195,10 @@ class GCenter
 
         // 保存路径
         g_GConfig.SetConfig("plugin_script", this._plugin_file_input.text);
+        g_GConfig.SetConfig("blueprint_root", this._blueprint_root_input.text);
 
         this._gclient.HandleSettingChanged();
+        this._grobot.HandleSettingChanged();
     }
 
     // 处理设置

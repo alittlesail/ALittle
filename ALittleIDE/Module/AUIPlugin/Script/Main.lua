@@ -42,8 +42,6 @@ function AUIPlugin.__Plugin_Setup(control, module_base_path, script_base_path)
 		require("memory")
 		require("protobuf")
 		require("socket")
-		require("deeplearning")
-		deeplearning.Initialize()
 	end
 	Require(script_base_path, "Protobuf/Lua/ISocket")
 	Require(script_base_path, "Protobuf/Lua/LuaProtobufSchedule")
@@ -64,9 +62,6 @@ function AUIPlugin.__Plugin_Shutdown()
 	g_AUITool:Shutdown()
 	g_AUICodeFilterScreen:Shutdown()
 	AUIPlugin.AUICodeProject.Shutdown()
-	if deeplearning ~= nil then
-		deeplearning.Cleanup()
-	end
 end
 
 end

@@ -1,5 +1,5 @@
 
-namespace AUIPlugin;
+namespace ADeeplearning;
 
 // 壳入口函数
 public async static __Browser_Setup(ALittle.DisplayLayout layer_group
@@ -52,28 +52,14 @@ public await static __Plugin_Setup(ALittle.ControlSystem control, string module_
 	if (ALittle.System_GetPlatform() == "Windows")
 	{
 		package.cpath = package.cpath..";./"..module_base_path.."Other/?.dll";
-        lua.require("alanguage");
-        lua.require("abnf");
-        lua.require("alittlescript");
-        lua.require("memory");
-        lua.require("protobuf");
-        lua.require("socket");
+        lua.require("deeplearning");
+        deeplearning.Initialize();
     }
-
-    [Language(Lua)]
-    alittle.Require(script_base_path, "Protobuf/Lua/ISocket");
-    [Language(Lua)]
-    alittle.Require(script_base_path, "Protobuf/Lua/LuaProtobufSchedule");
-    alittle.RequireFromPaths(script_base_path, "AUI/", paths("src/AUI"));
-    alittle.RequireFromPaths(script_base_path, "AUICodeEdit/", paths("src/AUICodeEdit"));
-    g_AUIIMEManager.Setup();
 }
 
 // 插件入口函数
 public static __Plugin_Shutdown()
 {
-    g_AUIIMEManager.Shutdown();
-    g_AUITool.Shutdown();
-    g_AUICodeFilterScreen.Shutdown();
-    AUICodeProject.Shutdown();
+    if (deeplearning != null)
+    	deeplearning.Cleanup();
 }

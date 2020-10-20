@@ -1,0 +1,13 @@
+
+register namespace deeplearning;
+
+public static Initialize() {}
+public static Cleanup() {}
+
+public class DeeplearningXorModel
+{
+    public fun Init(string model_path) {}
+    public fun Training() : double {}
+    public fun Output(double x1, double x2) : double {}
+    public fun Save(string model_path) {}
+}

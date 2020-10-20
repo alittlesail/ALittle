@@ -58,6 +58,8 @@ public await static __Plugin_Setup(ALittle.ControlSystem control, string module_
         lua.require("memory");
         lua.require("protobuf");
         lua.require("socket");
+        lua.require("deeplearning");
+        deeplearning.Initialize();
     }
 
     [Language(Lua)]
@@ -76,4 +78,7 @@ public static __Plugin_Shutdown()
     g_AUITool.Shutdown();
     g_AUICodeFilterScreen.Shutdown();
     AUICodeProject.Shutdown();
+
+    if (deeplearning != null)
+    	deeplearning.Cleanup();
 }

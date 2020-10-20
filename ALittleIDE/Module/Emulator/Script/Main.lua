@@ -38,6 +38,7 @@ function Emulator.__Module_Setup(layer_group, control, module_base_path, script_
 		require("socket")
 	end
 	Require(script_base_path, "GCenter")
+	Require(script_base_path, "GClient")
 	Require(script_base_path, "IDETree/IDETreeLogic")
 	Require(script_base_path, "IDETree/IDETree")
 	Require(script_base_path, "IDETree/IDETreeValue")

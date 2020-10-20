@@ -22,13 +22,13 @@ public class PluginSocket : Lua.ISocket
         if (call_error != null) return call_error;
         if (error != null) return error;
 
-        g_GCenter.AddLogMessage(protobuf_msg);
+        g_GCenter._gclient.AddLogMessage(protobuf_msg);
         return null;
     }
 
     private fun HandleMessage(lua.protobuf_message msg)
     {
-        g_GCenter.AddLogMessage(msg);
+        g_GCenter._gclient.AddLogMessage(msg);
 
         var func = cast<Map<string, Functor<(Lua.ISocket, lua.protobuf_message)>>>(_G)["__SOCKET_HandleMessage"];
         if (func == null) return;

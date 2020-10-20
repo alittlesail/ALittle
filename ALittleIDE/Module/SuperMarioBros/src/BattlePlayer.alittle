@@ -51,6 +51,8 @@ public class BattlePlayer : ALittle.DisplayLayout
         this._level_3_sprite_right.visible = false;
         this._level_3_sprite_left.visible = false;
 
+        level = 2;
+
         this._state = PlayerState.PS_IDLE;
         this._right = true;
         this._vx = 0;
@@ -112,8 +114,8 @@ public class BattlePlayer : ALittle.DisplayLayout
         this._level_1_sprite_right.row_index = 1;
 
         var loop = new ALittle.LoopList();
-        loop.AddUpdater(new ALittle.LoopLinear(this, "y", this.y - 32 * 3, 500, 0));
-        loop.AddUpdater(new ALittle.LoopLinear(this, "y", this.y, 200, 500));
+        loop.AddUpdater(new ALittle.LoopLinear(this, "y", this.y - TILE_HEIGHT * 4, 500, 0));
+        loop.AddUpdater(new ALittle.LoopLinear(this, "y", A_UISystem.view_height, 200, 500));
         loop.AddUpdater(new ALittle.LoopTimer(bind(g_GCenter.battle_scene.Restart, g_GCenter.battle_scene), 100));
         loop.Start();
     }
@@ -261,11 +263,14 @@ public class BattlePlayer : ALittle.DisplayLayout
 
             this.y += this._vy;
             // 如果头撞到东西就往下
-            var check_up, up_y = g_GCenter.battle_scene.CheckUp(this);
-            if (check_up)
+            if (this._vy < 0)
             {
-                this._vy = -this._vy;
-                this.y = up_y;
+                var check_up, up_y = g_GCenter.battle_scene.CheckUp(this);
+                if (check_up)
+                {
+                    this._vy = -this._vy;
+                    this.y = up_y;
+                }
             }
 
             var check_down, down_y = g_GCenter.battle_scene.CheckDown(this);
@@ -423,7 +428,10 @@ public class BattlePlayer : ALittle.DisplayLayout
 
     private fun WalkUpdateFrame(int frame_time)
     {
-        this._walk_frame_change += 0.006 * frame_time * (1 + ALittle.Math_Abs(this._vx));
+        var rate = 0.006;
+        if (this._level != 1) rate = 0.004;
+
+        this._walk_frame_change += rate * frame_time * (1 + ALittle.Math_Abs(this._vx));
         if (this._walk_frame_change >= 1)
         {
             this._walk_frame_change = 0.0;

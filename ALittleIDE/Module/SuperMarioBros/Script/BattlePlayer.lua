@@ -44,6 +44,7 @@ function SuperMarioBros.BattlePlayer:Init(row, col, level)
 	self._level_2_sprite_left.visible = false
 	self._level_3_sprite_right.visible = false
 	self._level_3_sprite_left.visible = false
+	level = 2
 	self._state = SuperMarioBros.PlayerState.PS_IDLE
 	self._right = true
 	self._vx = 0
@@ -92,8 +93,8 @@ function SuperMarioBros.BattlePlayer:Death()
 	self._level_1_sprite_right.col_index = 2
 	self._level_1_sprite_right.row_index = 1
 	local loop = ALittle.LoopList()
-	loop:AddUpdater(ALittle.LoopLinear(self, "y", self.y - 32 * 3, 500, 0))
-	loop:AddUpdater(ALittle.LoopLinear(self, "y", self.y, 200, 500))
+	loop:AddUpdater(ALittle.LoopLinear(self, "y", self.y - SuperMarioBros.TILE_HEIGHT * 4, 500, 0))
+	loop:AddUpdater(ALittle.LoopLinear(self, "y", A_UISystem.view_height, 200, 500))
 	loop:AddUpdater(ALittle.LoopTimer(Lua.Bind(g_GCenter.battle_scene.Restart, g_GCenter.battle_scene), 100))
 	loop:Start()
 end
@@ -201,10 +202,12 @@ function SuperMarioBros.BattlePlayer:UpdateFrame(frame_time)
 			self._ay = SuperMarioBros.PLAYER_INIT_Y_SPEED_RATE
 		end
 		self.y = self.y + (self._vy)
-		local check_up, up_y = g_GCenter.battle_scene:CheckUp(self)
-		if check_up then
-			self._vy = -self._vy
-			self.y = up_y
+		if self._vy < 0 then
+			local check_up, up_y = g_GCenter.battle_scene:CheckUp(self)
+			if check_up then
+				self._vy = -self._vy
+				self.y = up_y
+			end
 		end
 		local check_down, down_y = g_GCenter.battle_scene:CheckDown(self)
 		if check_down then
@@ -319,7 +322,11 @@ function SuperMarioBros.BattlePlayer:UpdateLeftRight()
 end
 
 function SuperMarioBros.BattlePlayer:WalkUpdateFrame(frame_time)
-	self._walk_frame_change = self._walk_frame_change + (0.006 * frame_time * (1 + ALittle.Math_Abs(self._vx)))
+	local rate = 0.006
+	if self._level ~= 1 then
+		rate = 0.004
+	end
+	self._walk_frame_change = self._walk_frame_change + (rate * frame_time * (1 + ALittle.Math_Abs(self._vx)))
 	if self._walk_frame_change >= 1 then
 		self._walk_frame_change = 0.0
 		self._walk_frame = self._walk_frame + (1)

@@ -14,11 +14,7 @@ protected enum EntityType
     ET_FLAG_4 = 9;	// 旗帜4
     ET_FLAG_5 = 10;	// 旗帜5
     ET_BORN_1 = 11;	// 出生点
-}
-
-protected enum BackgroundType
-{
-    BT_FLOOR = 1;	// 地板
+    ET_IRON = 12;	// 铁
 }
 
 protected struct BattleMap

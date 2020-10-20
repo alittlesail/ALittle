@@ -29,10 +29,7 @@ SuperMarioBros.EntityType = {
 	ET_FLAG_4 = 9,
 	ET_FLAG_5 = 10,
 	ET_BORN_1 = 11,
-}
-
-SuperMarioBros.BackgroundType = {
-	BT_FLOOR = 1,
+	ET_IRON = 12,
 }
 
 SuperMarioBros.TILE_COL_COUNT = 13

@@ -5,6 +5,12 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
+ALittle.RegStruct(-873421098, "SuperMarioBros.EntityUserData", {
+name = "SuperMarioBros.EntityUserData", ns_name = "SuperMarioBros", rl_name = "EntityUserData", hash_code = -873421098,
+name_list = {"type","loop"},
+type_list = {"int","ALittle.LoopList"},
+option_map = {}
+})
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 SuperMarioBros.BattleScene = Lua.Class(ALittle.DisplayLayout, "SuperMarioBros.BattleScene")
@@ -26,6 +32,7 @@ function SuperMarioBros.BattleScene:Show(world, subworld)
 	self._time.text = 60 * 5
 	self._tile_linear:RemoveAllChild()
 	self._entity_container:RemoveAllChild()
+	self._effect_container:RemoveAllChild()
 	self._entity_map = {}
 	for row, submap in ___pairs(self._battle_map.background) do
 		for col, index in ___pairs(submap) do
@@ -86,7 +93,9 @@ function SuperMarioBros.BattleScene:CreateEntity(type, row, col)
 	entity_sub_map[col] = object
 	object.x = col * SuperMarioBros.TILE_WIDTH
 	object.y = row * SuperMarioBros.TILE_HEIGHT
-	object._user_data = type
+	local data = {}
+	data.type = type
+	object._user_data = data
 	if type == SuperMarioBros.EntityType.ET_HIDE_WALL_1 then
 		object.visible = false
 	end
@@ -167,16 +176,20 @@ function SuperMarioBros.BattleScene:CheckUp(entity)
 		if sub_map ~= nil then
 			local object = sub_map[col]
 			if object ~= nil then
-				if object._user_data == SuperMarioBros.EntityType.ET_WALL_1 then
+				local data = object._user_data
+				if data.type == SuperMarioBros.EntityType.ET_WALL_1 then
 					if g_GCenter.player_data.level == 1 then
-						local loop = ALittle.LoopList()
-						loop:AddUpdater(ALittle.LoopLinear(object, "y", object.y - SuperMarioBros.TILE_HEIGHT / 2, 100, 0))
-						loop:AddUpdater(ALittle.LoopLinear(object, "y", object.y, 100, 0))
-						loop:Start()
+						if data.loop ~= nil then
+							data.loop:SetCompleted()
+						end
+						data.loop = ALittle.LoopList()
+						data.loop:AddUpdater(ALittle.LoopLinear(object, "y", object.y - SuperMarioBros.TILE_HEIGHT / 2, 100, 0))
+						data.loop:AddUpdater(ALittle.LoopLinear(object, "y", object.y, 100, 0))
+						data.loop:Start()
 					else
 					end
 					check = true
-				elseif object._user_data == SuperMarioBros.EntityType.ET_RANDOM_WALL_1 then
+				elseif data.type == SuperMarioBros.EntityType.ET_RANDOM_WALL_1 then
 					sub_map[col] = nil
 					self._entity_container:RemoveChild(object)
 					local sprite = ALittle.Sprite(SuperMarioBros.g_Control)
@@ -187,22 +200,54 @@ function SuperMarioBros.BattleScene:CheckUp(entity)
 					sprite.col_count = SuperMarioBros.TILE_COL_COUNT
 					sprite.col_index = 7
 					sprite.row_index = 1
+					local sprite_data = {}
+					sprite_data.type = SuperMarioBros.EntityType.ET_IRON
+					sprite._user_data = sprite_data
 					sub_map[col] = sprite
 					self._entity_container:AddChild(sprite)
 					sprite.x = object.x
 					sprite.y = object.y
 					object = sprite
-					local loop = ALittle.LoopList()
-					loop:AddUpdater(ALittle.LoopLinear(object, "y", object.y - SuperMarioBros.TILE_HEIGHT / 2, 100, 0))
-					loop:AddUpdater(ALittle.LoopLinear(object, "y", object.y, 100, 0))
-					loop:Start()
+					if sprite_data.loop ~= nil then
+						sprite_data.loop:SetCompleted()
+					end
+					sprite_data.loop = ALittle.LoopList()
+					sprite_data.loop:AddUpdater(ALittle.LoopLinear(object, "y", object.y - SuperMarioBros.TILE_HEIGHT / 2, 100, 0))
+					sprite_data.loop:AddUpdater(ALittle.LoopLinear(object, "y", object.y, 100, 0))
+					sprite_data.loop:Start()
+					do
+						local coin = SuperMarioBros.g_Control:CreateControl("effect_coin")
+						coin.x = object.x + object.width / 2 - coin.width / 2
+						coin.y = object.y - coin.height
+						coin:Play()
+						self._effect_container:AddChild(coin)
+						local loop = ALittle.LoopList()
+						loop:AddUpdater(ALittle.LoopLinear(coin, "y", coin.y - SuperMarioBros.TILE_HEIGHT * 3, 200, 0))
+						loop:AddUpdater(ALittle.LoopTimer(Lua.Bind(self.EffectRemoveChild, self, coin), 200))
+						loop:AddUpdater(ALittle.LoopTimer(Lua.Bind(coin.Stop, coin), 0))
+						loop:Start()
+					end
+					do
+						local coin_text = SuperMarioBros.g_Control:CreateControl("effect_coin_text")
+						coin_text.text = 200
+						coin_text.x = object.x + object.width / 2 - coin_text.width / 2
+						coin_text.y = object.y - coin_text.height
+						self._effect_container:AddChild(coin_text)
+						local loop = ALittle.LoopList()
+						loop:AddUpdater(ALittle.LoopLinear(coin_text, "y", coin_text.y - SuperMarioBros.TILE_HEIGHT * 2, 200, 0))
+						loop:AddUpdater(ALittle.LoopTimer(Lua.Bind(self.EffectRemoveChild, self, coin_text), 200))
+						loop:Start()
+					end
 					check = true
-				elseif object._user_data == SuperMarioBros.EntityType.ET_HIDE_WALL_1 then
+				elseif data.type == SuperMarioBros.EntityType.ET_HIDE_WALL_1 then
 					object.visible = true
-					local loop = ALittle.LoopList()
-					loop:AddUpdater(ALittle.LoopLinear(object, "y", object.y - SuperMarioBros.TILE_HEIGHT / 2, 100, 0))
-					loop:AddUpdater(ALittle.LoopLinear(object, "y", object.y, 100, 0))
-					loop:Start()
+					if data.loop ~= nil then
+						data.loop:SetCompleted()
+					end
+					data.loop = ALittle.LoopList()
+					data.loop:AddUpdater(ALittle.LoopLinear(object, "y", object.y - SuperMarioBros.TILE_HEIGHT / 2, 100, 0))
+					data.loop:AddUpdater(ALittle.LoopLinear(object, "y", object.y, 100, 0))
+					data.loop:Start()
 					check = true
 				end
 			end
@@ -213,6 +258,10 @@ function SuperMarioBros.BattleScene:CheckUp(entity)
 		return true, row * SuperMarioBros.TILE_HEIGHT + SuperMarioBros.TILE_HEIGHT
 	end
 	return false, nil
+end
+
+function SuperMarioBros.BattleScene:EffectRemoveChild(object)
+	self._effect_container:RemoveChild(object)
 end
 
 function SuperMarioBros.BattleScene:CheckDown(entity)
@@ -238,7 +287,8 @@ function SuperMarioBros.BattleScene:CheckDown(entity)
 		if sub_entity_map ~= nil then
 			local object = sub_entity_map[col]
 			if object ~= nil then
-				local check = object._user_data == SuperMarioBros.EntityType.ET_RANDOM_WALL_1 or object._user_data == SuperMarioBros.EntityType.ET_WALL_1
+				local type = object._user_data.type
+				local check = type == SuperMarioBros.EntityType.ET_RANDOM_WALL_1 or type == SuperMarioBros.EntityType.ET_WALL_1 or type == SuperMarioBros.EntityType.ET_IRON
 				if check then
 					return true, row * SuperMarioBros.TILE_HEIGHT
 				end
@@ -272,7 +322,8 @@ function SuperMarioBros.BattleScene:CheckRight(entity)
 		if sub_entity_map ~= nil then
 			local object = sub_entity_map[col]
 			if object ~= nil then
-				local check = object._user_data == SuperMarioBros.EntityType.ET_RANDOM_WALL_1 or object._user_data == SuperMarioBros.EntityType.ET_WALL_1
+				local type = object._user_data.type
+				local check = type == SuperMarioBros.EntityType.ET_RANDOM_WALL_1 or type == SuperMarioBros.EntityType.ET_WALL_1 or type == SuperMarioBros.EntityType.ET_IRON
 				if check then
 					return true, col * SuperMarioBros.TILE_WIDTH
 				end
@@ -306,7 +357,8 @@ function SuperMarioBros.BattleScene:CheckLeft(entity)
 		if sub_entity_map ~= nil then
 			local object = sub_entity_map[col]
 			if object ~= nil then
-				local check = object._user_data == SuperMarioBros.EntityType.ET_RANDOM_WALL_1 or object._user_data == SuperMarioBros.EntityType.ET_WALL_1
+				local type = object._user_data.type
+				local check = type == SuperMarioBros.EntityType.ET_RANDOM_WALL_1 or type == SuperMarioBros.EntityType.ET_WALL_1 or type == SuperMarioBros.EntityType.ET_IRON
 				if check then
 					return true, col * SuperMarioBros.TILE_WIDTH + SuperMarioBros.TILE_WIDTH
 				end

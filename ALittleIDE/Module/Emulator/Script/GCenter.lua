@@ -107,6 +107,8 @@ function Emulator.GCenter:Setup()
 	self._dialog_layer.height_type = 4
 	Emulator.g_LayerGroup:AddChild(self._dialog_layer, nil)
 	Emulator.g_Control:CreateControl("main_scene", self, self._main_layer)
+	self._main_tab:DisableAllCloseButton()
+	self._main_tab.tab_index = 1
 	self._setting_dialog = Emulator.g_Control:CreateControl("main_setting_dialog", self)
 	A_LayerManager:AddToModal(self._setting_dialog)
 	self._log_fliter_dialog = Emulator.g_Control:CreateControl("main_log_fliter_dialog", self)
@@ -176,6 +178,7 @@ end
 
 function Emulator.GCenter:HandleIpSelectChanged(event)
 	self._login_ip_input.text = self._ip_dropdown.text
+	self._ip_dropdown.text = ""
 end
 
 function Emulator.GCenter:HandleShowSettingDialog(event)

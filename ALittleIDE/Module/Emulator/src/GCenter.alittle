@@ -43,6 +43,9 @@ class GCenter
     private ALittle.DisplayObject _login_proto_input;
     private ALittle.DisplayObject _plugin_file_input;
 
+    // 标签页
+    private ALittle.Tab _main_tab;
+
     private ALittle.Dialog _log_fliter_dialog;
     private ALittle.ImageEdit _log_fliter_edit;
     private Map<string, bool> _fliter_map;
@@ -127,7 +130,9 @@ class GCenter
 
         // 创建主界面
         g_Control.CreateControl{ALittle.DisplayObject}("main_scene", this, this._main_layer);
-
+        this._main_tab.DisableAllCloseButton();
+        this._main_tab.tab_index = 1;
+        
         // 设置界面
         this._setting_dialog = g_Control.CreateControl{ALittle.Dialog}("main_setting_dialog", this);
         A_LayerManager.AddToModal(this._setting_dialog);
@@ -213,6 +218,7 @@ class GCenter
     private fun HandleIpSelectChanged(ALittle.UISelectChangedEvent event)
     {
         this._login_ip_input.text = this._ip_dropdown.text;
+        this._ip_dropdown.text = "";
     }
 
     // 显示设置对话框
@@ -514,7 +520,7 @@ class GCenter
         user_data.upper_name = ALittle.String_Upper(user_data.info.name);
 
         // 添加新的
-        var item = g_Control.CreateControl{ALittle.TextRadioButton }("item_radiobutton");
+        var item = g_Control.CreateControl{ALittle.TextRadioButton}("item_radiobutton");
         item.text = user_data.info.name;
         item.drag_trans_target = this._log_scroll_screen;
         item._user_data = user_data;

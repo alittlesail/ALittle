@@ -11,9 +11,9 @@ extern "C" {
 
 void DyNetInitialize()
 {
-	int argc = 0;
-	char** argv = nullptr;
-	dynet::initialize(argc, argv);
+	dynet::DynetParams param;
+	param.mem_descriptor = "1";
+	dynet::initialize(param);
 }
 
 void DyNetCleanup()

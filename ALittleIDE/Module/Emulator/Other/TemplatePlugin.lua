@@ -8,11 +8,18 @@
 function __PLUGIN_ProtoRefresh()
 end
 
+-- 机器人登陆时【在协程内被调用，这个函数内可以使用带await的函数】
+-- param player_id[int] 玩家的ID
+-- return login_msg[lua.protobuf_message] 登陆消息包
+function __PLUGIN_RobotLogin(player_id)
+	return nil
+end
+
 -- 开始执行登陆流程【在协程内被调用，这个函数内可以使用带await的函数】
 -- param ip[string] 目标IP
 -- param port[int] 目标端口
 -- param login_msg[protobuf_message] 登陆消息包
--- return error[string] 如果执行错误，那么就返回错误原因，否则返回
+-- return error[string] 如果执行错误，那么就返回错误原因，否则返回nil
 -- return socket[Emulator.PluginSocket] 日志登陆执行成功，返回socket对象
 function __PLUGIN_StartLogin(ip, port, login_msg)
 	--[[ 这个是范例
@@ -41,7 +48,7 @@ end
 
 -- 根据项目的消息结构来读取一个消息包【在协程内被调用，这个函数内可以使用带await的函数】
 -- param socket[Emulator.PluginSocket] 消息对象
--- return error[string] 如果读取错误，那么就返回错误原因，如果正确那么就返回null
+-- return error[string] 如果读取错误，那么就返回错误原因，如果正确那么就返回nil
 -- return protobuf_msg[protobuf_message] 如果读取正确，返回protobuf消息对象
 function __SOCKET_ReadMessage(socket)
 	--[[ 这个是范例
@@ -64,7 +71,7 @@ end
 -- param socket[Emulator.PluginSocket] socket对象
 -- param full_name[string] protobuf消息全称
 -- param protobuf_msg[protobuf_message] protobuf消息对象
--- return error[string] 如果发送失败，就返回失败原因，否则返回null
+-- return error[string] 如果发送失败，就返回失败原因，否则返回nil
 function __SOCKET_WriteMessage(socket, full_name, protobuf_msg)
 	--[[ 这个是范例
 	-- 发送full_name的长度

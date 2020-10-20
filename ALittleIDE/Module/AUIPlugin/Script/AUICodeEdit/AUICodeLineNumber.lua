@@ -43,13 +43,6 @@ end
 function AUIPlugin.AUICodeLineNumber:UpdateShow()
 	local text_list = ALittle.String_SplitUTF8(self._text)
 	self:RemoveAllChild()
-	local quad = ALittle.Quad(self._ctrl_sys)
-	quad.width_type = 4
-	quad.height_type = 4
-	quad.red = 30 / 255
-	quad.green = 30 / 255
-	quad.blue = 30 / 255
-	self:AddChild(quad)
 	local offset = 0.0
 	local len = ALittle.List_MaxN(text_list)
 	local index = len

@@ -35,14 +35,6 @@ public class AUICodeLineNumber : ALittle.DisplayLayout
         var text_list = ALittle.String_SplitUTF8(this._text);
         this.RemoveAllChild();
 
-        var quad = new ALittle.Quad(this._ctrl_sys);
-        quad.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-        quad.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-        quad.red = 30 / 255;
-        quad.green = 30 / 255;
-        quad.blue = 30 / 255;
-        this.AddChild(quad);
-
         var offset = 0.0;
         var len = ALittle.List_MaxN(text_list);
         for (var index = len; index >= 1; -1)

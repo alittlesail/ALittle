@@ -1,0 +1,213 @@
+
+namespace Emulator;
+
+protected class RobotStep
+{
+    private RobotStepManager _manager;
+    private StepInfo _info;
+
+    public ctor(RobotStepManager manager, StepInfo info)
+    {
+        this._manager = manager;
+        this._info = info;
+    }
+
+    public fun ReceiveMessage(lua.protobuf_message msg) : bool { return true; }
+
+    public fun Execute() : bool { return true; }
+
+    public get info() : StepInfo { return this._info; }
+
+    public fun Clear() {}
+
+    public fun Print()
+    {
+        ALittle.Log(this._info.id, this._info.type);
+    }
+}
+
+protected class RobotStepStart : RobotStep
+{
+
+}
+
+protected class RobotStepReceiveMessage : RobotStep
+{
+    private string _full_name;
+    private lua.protobuf_message _message;
+
+    public ctor(RobotStepManager manager, StepInfo info)
+    {
+        this._full_name = info.full_name;
+    }
+
+    public fun ReceiveMessage(lua.protobuf_message msg) : bool
+    {
+        var descriptor = lua.protobuf.message_getdescriptor(msg);
+        if (descriptor == null) return false;
+
+        var full_name = lua.protobuf.messagedescriptor_fullname(descriptor);
+        if (full_name != this._full_name) return false;
+
+        this._message = msg;
+        return true;
+    }
+
+    public fun Execute() : bool { return false; }
+}
+
+protected class RobotStepLog : RobotStep
+{
+    public ctor(RobotStepManager manager, StepInfo info)
+    {
+
+    }
+
+    public fun Execute() : bool
+    {
+        g_GCenter._grobot.AddLog(this._info.log);
+        return true;
+    }
+}
+
+protected class RobotStepSendMessage : RobotStep
+{
+    private lua.protobuf_message _message;
+
+    public ctor(RobotStepManager manager, StepInfo info)
+    {
+        this._message = A_LuaProtobufSchedule.CreateMessageByJson(info.full_name, info.message_json);
+    }
+
+    public fun Execute() : bool
+    {
+        this._manager.socket.SendMessage(this._message);
+        return true;
+    }
+}
+
+protected class RobotStepDelayMessage : RobotStep
+{
+    private ALittle.LoopTimer _loop;
+
+    public ctor(RobotStepManager manager, StepInfo info)
+    {
+    }
+
+    public fun Execute() : bool
+    {
+        this.Clear();
+
+        this._loop = new ALittle.LoopTimer(bind(this._manager.NextStep, this._manager), this._info.delay_ms);
+        this._loop.Start();
+        return false;
+    }
+
+    public fun Clear()
+    {
+        if (this._loop != null)
+        {
+            this._loop.Stop();
+            this._loop = null;
+        }
+    }
+}
+
+protected class RobotStepManager
+{
+    private Map<int, RobotStep> _step_map;
+    private Lua.ISocket _socket;
+
+    private RobotStep _cur_step;
+    private ALittle.LoopTimer _timer;
+
+    public ctor(Lua.ISocket socket, RobotStepFile file)
+    {
+        this._socket = socket;
+        this._step_map = new Map<int, RobotStep>();
+
+    
+        {
+            var step = new RobotStepStart(this, file.start_step);
+            this._step_map[file.start_step.id] = step;
+            this._cur_step = step;
+        }
+
+        for (var id, info in file.step_map)
+        {
+            if (info.type == RobotStepType.RST_RECEIVE_MESSAGE)
+            {
+                var step = new RobotStepReceiveMessage(this, info);
+                this._step_map[id] = step;
+            }
+            elseif (info.type == RobotStepType.RST_SEND_MESSAGE)
+            {
+                var step = new RobotStepSendMessage(this, info);
+                this._step_map[id] = step;
+            }
+            elseif (info.type == RobotStepType.RST_DELAY)
+            {
+                var step = new RobotStepDelayMessage(this, info);
+                this._step_map[id] = step;
+            }
+            elseif (info.type == RobotStepType.RST_START)
+            {
+                var step = new RobotStepStart(this, info);
+                this._step_map[id] = step;
+                this._cur_step = step;
+            }
+            elseif (info.type == RobotStepType.RST_LOG)
+            {
+                var step = new RobotStepLog(this, info);
+                this._step_map[id] = step;
+            }
+        }
+    }
+
+    public fun Start()
+    {
+        this.NextStep();
+    }
+
+    public fun Clear()
+    {
+        if (this._timer != null)
+        {
+            this._timer.Stop();
+            this._timer = null;
+        }
+
+        for (var id, step in this._step_map)
+            step.Clear();
+        this._step_map = new Map<int, RobotStep>();
+    }
+
+    public get socket() : Lua.ISocket { return this._socket; }
+
+    public fun NextStep()
+    {
+        if (this._timer != null)
+        {
+            this._timer.Stop();
+            this._timer = null;
+        }
+
+        if (this._cur_step == null) return;
+        var next_id = this._cur_step.info.next_id;
+        if (next_id == null) return;
+        this._cur_step = this._step_map[next_id];
+        if (this._cur_step == null) return;
+        if (!this._cur_step.Execute()) return;
+
+        this._timer = new ALittle.LoopTimer(bind(this.NextStep, this), 1);
+        this._timer.Start();
+    }
+
+    public fun ReceiveMessage(lua.protobuf_message msg)
+    {
+        if (this._cur_step == null) return;
+        if (!this._cur_step.ReceiveMessage(msg)) return;
+
+        this.NextStep();
+    }
+}

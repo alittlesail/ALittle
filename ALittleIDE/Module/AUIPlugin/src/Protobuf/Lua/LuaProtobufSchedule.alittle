@@ -205,6 +205,16 @@ public class LuaProtobufSchedule : ALittle.ISchedule
         return msg;
     }
 
+    public fun CreateMessageByStruct(string full_name, any info) : lua.protobuf_message
+    {
+        var msg = this.CreateMessage(full_name);
+        if (msg == null) return null;
+
+        var error, json = tcall(ALittle.String_JsonEncode, info);
+        if (error != null) return null;
+		lua.protobuf.message_jsondecode(msg, json);
+        return msg;
+    }
 
     public fun RunInFrame()
     {

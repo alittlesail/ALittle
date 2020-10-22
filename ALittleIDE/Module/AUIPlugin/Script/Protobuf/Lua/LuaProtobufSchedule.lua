@@ -197,6 +197,19 @@ function Lua.LuaProtobufSchedule:CreateMessageByJson(full_name, json)
 	return msg
 end
 
+function Lua.LuaProtobufSchedule:CreateMessageByStruct(full_name, info)
+	local msg = self:CreateMessage(full_name)
+	if msg == nil then
+		return nil
+	end
+	local error, json = Lua.TCall(ALittle.String_JsonEncode, info)
+	if error ~= nil then
+		return nil
+	end
+	protobuf.message_jsondecode(msg, json)
+	return msg
+end
+
 function Lua.LuaProtobufSchedule:RunInFrame()
 	if self._socket == nil then
 		self._socket = socket.create()

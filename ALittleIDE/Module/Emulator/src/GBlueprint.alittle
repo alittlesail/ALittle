@@ -1,0 +1,655 @@
+
+namespace Emulator;
+
+protected enum RobotStepType
+{
+    RST_RECEIVE_MESSAGE = 1;	// 等待消息
+    RST_SEND_MESSAGE = 2;	// 发送消息
+    RST_DELAY = 3;	// 延迟
+    RST_START = 4;	// 起点
+    RST_LOG = 5;	// 日志
+}
+
+protected enum RobotStepLineType
+{
+    RSLT_LEFT = 1;
+    RSLT_RIGHT = 2;
+}
+
+protected struct StepInfo
+{
+    double x;	// x坐标
+    double y;	// y坐标
+
+    int id;
+    int type;	// 步骤类型 RobotStepType
+
+    int next_id;	// 下一步的ID
+    int pre_type; // RobotStepLineType
+    int next_type; // RobotStepLineType
+
+    string full_name;	//  消息全称 RST_RECEIVE_MESSAGE RST_SEND_MESSAGE 有效
+    string message_json;	// 消息的json字符串 RST_SEND_MESSAGE 有效
+
+    int delay_ms;	// 延迟毫秒 RST_DELAY 有效
+
+    string log;	// 日志内容 RST_LOG 有效
+}
+
+protected struct RobotStepFile
+{
+    int max_id;
+    Map<int, StepInfo> step_map;
+    StepInfo start_step;
+}
+
+struct RobotStepLinkInfo
+{
+    StepInfo info;
+    ALittle.Dialog dialog;
+    ALittle.DisplayObject _left_step_image;
+    ALittle.DisplayObject _right_step_image;
+
+    ALittle.Triangle _line_tri;
+    Map<int, RobotStepLinkInfo> pre_link;	// 上一个步骤的link
+    RobotStepLinkInfo next_link;	// 下一个步骤的link
+}
+
+struct RobotStepReceiveMessageLinkInfo : RobotStepLinkInfo
+{
+    ALittle.DisplayObject _full_name_input;
+}
+
+struct RobotStepSendMessageLinkInfo : RobotStepLinkInfo
+{
+    ALittle.DisplayObject _full_name_input;
+    ALittle.DisplayObject _message_edit_btn;
+
+    lua.protobuf_message message;
+}
+
+struct RobotStepDelayLinkInfo : RobotStepLinkInfo
+{
+    ALittle.DisplayObject _delay_input;
+}
+
+struct RobotStepLogLinkInfo : RobotStepLinkInfo
+{
+    ALittle.DisplayObject _log_input;
+}
+
+protected class GBlueprint : ALittle.DisplayLayout
+{
+    // 蓝图详细内容
+    private ALittle.DisplayObject _file_title;
+	private ALittle.ScrollScreen _detail_scroll_screen;
+
+    private ALittle.Dialog _message_edit_dialog;
+	private ALittle.ScrollScreen _edit_scroll_screen;
+
+    // 当前选择文件的流程信息
+    private RobotStepFile _step_file;
+    private Map<int, RobotStepLinkInfo> _link_map;
+    private string _file_path;
+    private bool _save;
+
+    // 拖拽构建线条时的数据
+    private ALittle.Triangle _cur_line;
+
+    public fun Setup()
+    {
+        this._message_edit_dialog = g_Control.CreateControl{ALittle.Dialog}("robot_step_message_edit_dialog", this);
+        A_LayerManager.AddToModal(this._message_edit_dialog);
+        this._message_edit_dialog.close_callback = bind(this.HandleMessageEditDialogClose, this);
+    }
+
+    public get step_file() : RobotStepFile { return this._step_file; }
+
+    public fun CreateRobotManager(Lua.ISocket socket) : RobotStepManager
+    {
+        return new RobotStepManager(socket, this._step_file);
+    }
+
+    public fun Save(bool value)
+    {
+        if (this._file_path == null) return;
+
+        if (this._save == value) return;
+
+        this._save = value;
+        if (value != true)
+        {
+            this._file_title.text = this._file_path.."*";
+            return;
+        }
+
+        this._file_title.text = this._file_path;
+        ALittle.File_SaveFile(this._file_path, lua.ajson.encode(this._step_file), -1);
+    }
+
+    private fun HandleCreateRobotStepLog(double x, double y)
+    {
+        var info = new StepInfo();
+        this._step_file.max_id += 1;
+        info.id = this._step_file.max_id;
+        this._step_file.step_map[info.id] = info;
+        info.x = x;
+        info.y = y;
+        info.type = RobotStepType.RST_LOG;
+
+        this.CreateRobotStepDialog(info);
+        this.Save(false);
+    }
+
+    private fun HandleCreateRobotStepSendMessage(double x, double y)
+    {
+        var info = new StepInfo();
+        this._step_file.max_id += 1;
+        info.id = this._step_file.max_id;
+        this._step_file.step_map[info.id] = info;
+        info.x = x;
+        info.y = y;
+        info.type = RobotStepType.RST_SEND_MESSAGE;
+        info.full_name = "";
+        info.message_json = "{}";
+
+        this.CreateRobotStepDialog(info);
+        this.Save(false);
+    }
+
+    private fun HandleRobotStepSendMessageChanged(ALittle.UIChangedEvent event)
+    {
+        var link_info = cast<RobotStepSendMessageLinkInfo>(event.target._user_data);
+
+        link_info.info.full_name = link_info._full_name_input.text;
+        link_info.message = A_LuaProtobufSchedule.CreateMessage(link_info.info.full_name);
+        link_info._message_edit_btn.disabled = link_info.message == null;
+        link_info.dialog.title = "发送消息:"..link_info.info.full_name;
+        this.Save(false);
+    }
+
+    private fun HandleRobotStepSendMessageEditClick(ALittle.UIClickEvent event)
+    {
+        var link_info = cast<RobotStepSendMessageLinkInfo>(event.target._user_data);
+        if (link_info.message == null)
+        {
+            g_AUITool.ShowNotice("提示", "消息不存在无法编辑");
+            return;
+        }
+
+        var root = new RootInfo();
+        root.for_show = false;
+
+        var tree = UtilityCreateTreeMessage(root, link_info.message, "");
+        tree.fold = true;
+        root.detail_info = tree.GetDetailInfo();
+        if (root.detail_info == null) return;
+
+        this._edit_scroll_screen.SetContainer(root.detail_info.tree);
+        this._edit_scroll_screen.AdjustScrollBar();
+        this._message_edit_dialog.visible = true;
+        this._message_edit_dialog._user_data = link_info;
+
+        this.Save(false);
+    }
+
+    private fun HandleCreateRobotStepReceiveMessage(double x, double y)
+    {
+        var info = new StepInfo();
+        this._step_file.max_id += 1;
+        info.id = this._step_file.max_id;
+        this._step_file.step_map[info.id] = info;
+        info.x = x;
+        info.y = y;
+        info.type = RobotStepType.RST_RECEIVE_MESSAGE;
+        info.full_name = "";
+    
+        this.CreateRobotStepDialog(info);
+        this.Save(false);
+    }
+
+    private fun HandleRobotStepReceiveMessageChanged(ALittle.UIChangedEvent event)
+    {
+        var link_info = cast<RobotStepReceiveMessageLinkInfo>(event.target._user_data);
+        link_info.info.full_name = link_info._full_name_input.text;
+        link_info.dialog.title = "等待消息:"..link_info.info.full_name;
+        this.Save(false);
+    }
+
+    private fun HandleCreateRobotStepDelay(double x, double y)
+    {
+        var info = new StepInfo();
+        this._step_file.max_id += 1;
+        info.id = this._step_file.max_id;
+        this._step_file.step_map[info.id] = info;
+        info.x = x;
+        info.y = y;
+        info.type = RobotStepType.RST_DELAY;
+        info.full_name = "";
+        info.delay_ms = 0;
+
+        this.CreateRobotStepDialog(info);
+        this.Save(false);
+    }
+
+    private fun HandleRobotStepDelayChanged(ALittle.UIChangedEvent event)
+    {
+        var link_info = cast<RobotStepDelayLinkInfo>(event.target._user_data);
+        link_info.info.delay_ms = ALittle.Math_ToInt(link_info._delay_input.text);
+        if (link_info.info.delay_ms == null || link_info.info.delay_ms < 0)
+        {
+            link_info.info.delay_ms = 0;
+            link_info._delay_input.text = "0";
+        }
+        this.Save(false);
+    }
+
+    private fun HandleRobotStepLogChanged(ALittle.UIChangedEvent event)
+    {
+        var link_info = cast<RobotStepLogLinkInfo>(event.target._user_data);
+        link_info.info.log = link_info._log_input.text;
+        this.Save(false);
+    }
+
+    private fun HandleRobotStepQuadRButtonDown(ALittle.UIRButtonDownEvent event)
+    {
+        if (this._file_path == null) return;
+
+        var menu = new AUIPlugin.AUIRightMenu();
+        menu.AddItem("新建:发送消息", bind(this.HandleCreateRobotStepSendMessage, this, event.rel_x, event.rel_y));
+        menu.AddItem("新建:等待消息", bind(this.HandleCreateRobotStepReceiveMessage, this, event.rel_x, event.rel_y));
+        menu.AddItem("新建:延时", bind(this.HandleCreateRobotStepDelay, this, event.rel_x, event.rel_y));
+        menu.AddItem("新建:日志", bind(this.HandleCreateRobotStepLog, this, event.rel_x, event.rel_y));
+        menu.Show();
+    }
+
+    private fun HandleRobotStepLineDragBegin(ALittle.UIButtonDragBeginEvent event)
+    {
+        var link_info = cast<RobotStepLinkInfo>(event.target._user_data);
+        // 获取类型
+        var type:int = null;
+        if (link_info._left_step_image == event.target)
+        	type = RobotStepLineType.RSLT_LEFT;
+        elseif (link_info._right_step_image == event.target)
+        	type = RobotStepLineType.RSLT_RIGHT;
+        if (type == null) return;
+
+            // 如果当前已经有next_id
+        if (link_info.info.next_id != null)
+        {
+            // 如果起点类型与当前不一致，直接返回
+            if (link_info.info.pre_type != null && link_info.info.pre_type != type) return;
+            this.Save(false);
+
+                // 如果一致，那么就删掉当前
+            link_info.info.next_id = null;
+            link_info.info.pre_type = null;
+            link_info.info.next_type = null;
+            if (link_info.next_link.pre_link != null)
+            	link_info.next_link.pre_link[link_info.info.id] = null;
+            link_info.next_link = null;
+
+            this._detail_scroll_screen.RemoveChild(link_info._line_tri);
+            link_info._line_tri = null;
+        }
+        this.Save(false);
+
+        var pre_image = event.target;
+
+        // 构造线条
+        var tri = g_Control.CreateControl{ALittle.Triangle}("robot_step_triangle");
+        tri.disabled = true;
+        link_info.info.pre_type = type;
+
+        var pre_x, pre_y = pre_image.LocalToGlobal(this._detail_scroll_screen.container);
+        var cur_x = pre_x + event.rel_x;
+        var cur_y = pre_y + event.rel_y;
+
+        tri.x1 = pre_x; tri.y1 = pre_y + pre_image.height / 2;
+        tri.x2 = pre_x + pre_image.width; tri.y2 = pre_y + pre_image.height / 2;
+
+        tri.x3 = cur_x; tri.y3 = cur_y;
+        this._detail_scroll_screen.AddChild(tri);
+
+        this._cur_line = tri;
+    }
+
+    private fun HandleRobotStepLineDrag(ALittle.UIButtonDragEvent event)
+    {
+        if (this._cur_line == null) return;
+        var link_info = cast<RobotStepLinkInfo>(event.target._user_data);
+        this._cur_line.x3 += event.delta_x;
+        this._cur_line.y3 += event.delta_y;
+    }
+
+    private fun HandleRobotStepLineDragEnd(ALittle.UIButtonDragEndEvent event)
+    {
+        if (this._cur_line == null) return;
+
+        var tri = this._cur_line;
+        this._detail_scroll_screen.RemoveChild(tri);
+        this._cur_line = null;
+
+        var link_info = cast<RobotStepLinkInfo>(event.target._user_data);
+        var pre_type = link_info.info.pre_type;
+        link_info.info.pre_type = null;
+    
+        var image, rel_x, rel_y = A_LayerManager.PickUp(A_UISystem.mouse_x, A_UISystem.mouse_y);
+        if (image == null) return;
+        var next_link = cast<RobotStepLinkInfo>(image._user_data);
+        if (next_link == null) return;
+        if (next_link.pre_link != null && next_link.pre_link[link_info.info.id] != null)  return;
+        
+        var next_type:int = null;
+        if (next_link._left_step_image == image)
+        	next_type = RobotStepLineType.RSLT_LEFT;
+        elseif (next_link._right_step_image == image)
+        	next_type = RobotStepLineType.RSLT_RIGHT;
+        else return;
+
+        link_info.info.pre_type = pre_type;
+        link_info.info.next_id = next_link.info.id;
+        link_info.info.next_type = next_type;
+    
+        this.CreateRobotStepLine(link_info.info);
+    }
+
+    private fun UpdateRobotStepDialogPosition(RobotStepLinkInfo link_info, double x, double y)
+    {
+        link_info.info.x = x;
+        link_info.info.y = y;
+
+        if (link_info._line_tri != null)
+        {
+            var tri = link_info._line_tri;
+
+            var pre_image:ALittle.DisplayObject;
+            if (link_info.info.pre_type == RobotStepLineType.RSLT_LEFT)
+                pre_image = link_info._left_step_image;
+            elseif (link_info.info.pre_type == RobotStepLineType.RSLT_RIGHT)
+                pre_image = link_info._right_step_image;
+
+            if (pre_image != null)
+            {
+                var pre_x, pre_y = pre_image.LocalToGlobal(this._detail_scroll_screen.container);
+                tri.x1 = pre_x; tri.y1 = pre_y + pre_image.height / 2;
+                tri.x2 = pre_x + pre_image.width; tri.y2 = pre_y + pre_image.height / 2;
+            }
+        }
+    
+        if (link_info.pre_link != null)
+        {
+            for (var id, pre_link in link_info.pre_link)
+            {
+                var tri = pre_link._line_tri;
+
+                var next_image:ALittle.DisplayObject;
+                if (pre_link.info.next_type == RobotStepLineType.RSLT_LEFT)
+                    next_image = link_info._left_step_image;
+                elseif (pre_link.info.next_type == RobotStepLineType.RSLT_RIGHT)
+                    next_image = link_info._right_step_image;
+
+                if (next_image != null)
+                {
+                    var next_x, next_y = next_image.LocalToGlobal(this._detail_scroll_screen.container);
+                    tri.x3 = next_x + next_image.width / 2; tri.y3 = next_y + next_image.height / 2;
+                }
+            }
+        }
+
+        this.Save(false);
+    }
+
+    private fun HandleRobotStepDrag(ALittle.DialogDragEvent event)
+    {
+        var link_info = cast<RobotStepLinkInfo>(event.target._user_data);
+        this.UpdateRobotStepDialogPosition(link_info, event.target.x, event.target.y);
+    }
+
+    private fun HandleRobotStepDragEnd(ALittle.DialogDragEndEvent event)
+    {
+        var link_info = cast<RobotStepLinkInfo>(event.target._user_data);
+        if (event.target.x < 0) event.target.x = 0;
+        if (event.target.y < 0) event.target.y = 0;
+        this.UpdateRobotStepDialogPosition(link_info, event.target.x, event.target.y);
+    }
+
+    private fun HandleRobotStepDelete(ALittle.Dialog dialog) : bool
+    {
+        this.AskRobotStepDelete(dialog);
+        return false;
+    }
+
+    private async fun AskRobotStepDelete(ALittle.Dialog dialog)
+    {
+        var result = g_AUITool.DeleteNotice("删除", "确定删除当前步骤吗?");
+        if (result != AUIPlugin.AUIToolOption.YES) return;
+
+        var link_info = cast<RobotStepLinkInfo>(dialog._user_data);
+        if (link_info.info.type == RobotStepType.RST_START)
+        {
+            g_AUITool.ShowNotice("提示", "开始节点不能删除");
+            return;
+        }
+
+        this._detail_scroll_screen.RemoveChild(dialog);
+
+        // 删除所有连线
+        if (link_info._line_tri != null)
+        {
+        	this._detail_scroll_screen.RemoveChild(link_info._line_tri);
+            link_info._line_tri = null;
+            link_info.next_link = null;
+        }
+        if (link_info.pre_link != null)
+        {
+            for (var id, pre_link in link_info.pre_link)
+            {
+                pre_link.next_link = null;
+                pre_link.info.next_id = null;
+                pre_link.info.next_type = null;
+                pre_link.info.pre_type = null;
+                this._detail_scroll_screen.RemoveChild(pre_link._line_tri);
+            }
+            link_info.pre_link = null;
+        }
+    
+        // 删除记录，以及相关引用
+        this._step_file.step_map[link_info.info.id] = null;
+        this._link_map[link_info.info.id] = null;
+
+        this.Save(false);
+    }
+
+    private fun HandleMessageEditDialogClose() : bool
+    {
+        var link_info = cast<RobotStepSendMessageLinkInfo>(this._message_edit_dialog._user_data);
+        if (link_info.message != null)
+            link_info.info.message_json = lua.protobuf.message_jsonencode(link_info.message, true);
+        return true;
+    }
+
+    // 选中文件
+    public fun HandleFileTreeSelectFile(AUIPlugin.AUIFileSelectFileEvent event)
+    {
+        if (event.path == this._file_path) return;
+        this.Save(true);
+
+        this._file_path = event.path;
+        this._save = true;
+        this._file_title.text = this._file_path;
+
+        var step_file = new RobotStepFile();
+        var content = ALittle.File_ReadTextFromFile(event.path);
+        if (content != "")
+        {
+            var error, json = tcall(lua.ajson.decode, content);
+            if (error != null)
+            {
+                g_AUITool.ShowNotice("提示", "json解析失败!");
+                return;
+            }
+            step_file = json;
+        }
+    
+        this._step_file = step_file;
+        if (this._step_file.max_id == null) this._step_file.max_id = 0;
+        if (this._step_file.step_map == null) this._step_file.step_map = new Map<int, StepInfo>();
+
+        if (this._step_file.start_step == null)
+        {
+            this._step_file.start_step = new StepInfo();
+            this._step_file.start_step.type = RobotStepType.RST_START;
+            this._step_file.max_id += 1;
+            this._step_file.start_step.x = 0;
+            this._step_file.start_step.y = 0;
+            this._step_file.start_step.id = this._step_file.max_id;
+        }
+    
+        this._link_map = new Map<int, RobotStepLinkInfo>();
+        this._cur_line = null;
+        this._detail_scroll_screen.RemoveAllChild();
+
+        this.CreateRobotStepDialog(this._step_file.start_step);
+        // 创建对话框
+        for (var id, info in this._step_file.step_map)
+            this.CreateRobotStepDialog(info);
+
+        // 创建连接线
+        this.CreateRobotStepLine(this._step_file.start_step);
+        for (var id, info in this._step_file.step_map)
+            this.CreateRobotStepLine(info);
+    }
+
+    // 通过info来创建
+    private fun CreateRobotStepDialog(StepInfo info)
+    {
+        if (info.type == RobotStepType.RST_START)
+        {
+            var link_info = new RobotStepLinkInfo();
+            var dialog = this.CreateCommonDialog("robot_step_start", link_info, info);
+        }
+        elseif (info.type == RobotStepType.RST_RECEIVE_MESSAGE)
+        {
+            var link_info = new RobotStepReceiveMessageLinkInfo();
+            var dialog = this.CreateCommonDialog("robot_step_receive_message", link_info, info);
+            dialog.title = "等待消息:"..info.full_name;
+            link_info._full_name_input.text = info.full_name;
+            link_info._full_name_input.AddEventListener(this, this.HandleRobotStepReceiveMessageChanged);
+            link_info._full_name_input._user_data = link_info;
+        }
+        elseif (info.type == RobotStepType.RST_SEND_MESSAGE)
+        {
+            var link_info = new RobotStepSendMessageLinkInfo();
+            var dialog = this.CreateCommonDialog("robot_step_send_message", link_info, info);
+            dialog.title = "发送消息:"..info.full_name;
+            link_info._full_name_input.text = info.full_name;
+            link_info.message = A_LuaProtobufSchedule.CreateMessageByJson(info.full_name, info.message_json);
+            link_info._full_name_input.AddEventListener(this, this.HandleRobotStepSendMessageChanged);
+            link_info._full_name_input._user_data = link_info;
+            link_info._message_edit_btn.AddEventListener(this, this.HandleRobotStepSendMessageEditClick);
+            link_info._message_edit_btn._user_data = link_info;
+        }
+        elseif (info.type == RobotStepType.RST_DELAY)
+        {
+            var link_info = new RobotStepDelayLinkInfo();
+            var dialog = this.CreateCommonDialog("robot_step_delay", link_info, info);
+            link_info._delay_input.text = info.delay_ms;
+            link_info._delay_input.AddEventListener(this, this.HandleRobotStepDelayChanged);
+            link_info._delay_input._user_data = link_info;
+        }
+        elseif (info.type == RobotStepType.RST_LOG)
+        {
+            var link_info = new RobotStepLogLinkInfo();
+            var dialog = this.CreateCommonDialog("robot_step_log", link_info, info);
+            link_info._log_input.text = info.log;
+            link_info._log_input.AddEventListener(this, this.HandleRobotStepLogChanged);
+            link_info._log_input._user_data = link_info;
+        }
+    }
+
+    // 创建连接线
+    private fun CreateRobotStepLine(StepInfo info)
+    {
+        if (info.next_id == null) return;
+
+        var link_info = this._link_map[info.id];
+        if (link_info == null) return;
+
+        // 如果已经有线条，那么就直接返回
+        if (link_info.next_link != null) return;
+
+        var next_link = this._link_map[info.next_id];
+        if (next_link == null) return;
+
+        // 如果已经有线条，那么就直接返回
+        if (next_link.pre_link != null && next_link.pre_link[link_info.info.id] != null) return;
+
+        var tri = g_Control.CreateControl{ALittle.Triangle}("robot_step_triangle");
+        tri.disabled = true;
+        tri._user_data = next_link;
+        link_info._line_tri = tri;
+
+        var pre_image:ALittle.DisplayObject;
+        if (link_info.info.pre_type == RobotStepLineType.RSLT_LEFT)
+            pre_image = link_info._left_step_image;
+        elseif (link_info.info.pre_type == RobotStepLineType.RSLT_RIGHT)
+            pre_image = link_info._right_step_image;
+
+        var next_image:ALittle.DisplayObject;
+        if (link_info.info.next_type == RobotStepLineType.RSLT_LEFT)
+            next_image = next_link._left_step_image;
+        elseif (link_info.info.next_type == RobotStepLineType.RSLT_RIGHT)
+            next_image = next_link._right_step_image;
+
+        if (pre_image == null || next_image == null) return;
+
+        link_info.next_link = next_link;
+        if (next_link.pre_link == null) next_link.pre_link = new Map<int, RobotStepLinkInfo>();
+        next_link.pre_link[link_info.info.id] = link_info;
+
+        var pre_x, pre_y = pre_image.LocalToGlobal(this._detail_scroll_screen.container);
+        var next_x, next_y = next_image.LocalToGlobal(this._detail_scroll_screen.container);
+
+        tri.x1 = pre_x; tri.y1 = pre_y + pre_image.height / 2;
+        tri.x2 = pre_x + pre_image.width; tri.y2 = pre_y + pre_image.height / 2;
+        tri.x3 = next_x + next_image.width / 2; tri.y3 = next_y + next_image.height / 2;
+
+        this._detail_scroll_screen.AddChild(tri);
+    }
+
+    // 创建对话框
+    private fun CreateCommonDialog(string ui, RobotStepLinkInfo link_info, StepInfo info) : ALittle.Dialog
+    {
+        var dialog = g_Control.CreateControl{ALittle.Dialog}(ui, link_info);
+        dialog._user_data = link_info;
+        link_info.dialog = dialog;
+        link_info.info = info;
+        link_info._left_step_image._user_data = link_info;
+        link_info._left_step_image.AddEventListener(this, this.HandleRobotStepLineDragBegin);
+        link_info._left_step_image.AddEventListener(this, this.HandleRobotStepLineDrag);
+        link_info._left_step_image.AddEventListener(this, this.HandleRobotStepLineDragEnd);
+        link_info._right_step_image._user_data = link_info;
+        link_info._right_step_image.AddEventListener(this, this.HandleRobotStepLineDragBegin);
+        link_info._right_step_image.AddEventListener(this, this.HandleRobotStepLineDrag);
+        link_info._right_step_image.AddEventListener(this, this.HandleRobotStepLineDragEnd);
+        dialog.x = link_info.info.x;
+        dialog.y = link_info.info.y;
+        dialog.AddEventListener(this, this.HandleRobotStepDrag);
+        dialog.AddEventListener(this, this.HandleRobotStepDragEnd);
+        dialog.close_callback = bind(this.HandleRobotStepDelete, this, dialog);
+        this._detail_scroll_screen.AddChild(dialog, 1);
+        this._link_map[info.id] = link_info;
+        return dialog;
+    }
+
+    public fun HandleSettingChanged()
+    {
+        this._link_map = new Map<int, RobotStepLinkInfo>();
+        this._file_title.text = "";
+        this._file_path = null;
+        this._step_file = null;
+        this._save = true;
+        this._detail_scroll_screen.RemoveAllChild();
+    }
+}

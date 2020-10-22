@@ -62,6 +62,8 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 	alittle.Require(script_base_path, "GCenter");
 	alittle.Require(script_base_path, "GClient");
 	alittle.Require(script_base_path, "GRobot");
+	alittle.Require(script_base_path, "GBlueprint");
+	alittle.Require(script_base_path, "RobotStep");
 
 	alittle.Require(script_base_path, "IDETree/IDETreeLogic");
 	alittle.Require(script_base_path, "IDETree/IDETree");

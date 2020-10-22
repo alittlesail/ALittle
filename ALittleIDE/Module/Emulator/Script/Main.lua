@@ -40,6 +40,8 @@ function Emulator.__Module_Setup(layer_group, control, module_base_path, script_
 	Require(script_base_path, "GCenter")
 	Require(script_base_path, "GClient")
 	Require(script_base_path, "GRobot")
+	Require(script_base_path, "GBlueprint")
+	Require(script_base_path, "RobotStep")
 	Require(script_base_path, "IDETree/IDETreeLogic")
 	Require(script_base_path, "IDETree/IDETree")
 	Require(script_base_path, "IDETree/IDETreeValue")

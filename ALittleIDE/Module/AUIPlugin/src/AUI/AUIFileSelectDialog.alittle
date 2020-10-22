@@ -100,10 +100,11 @@ public class AUIFileSelectDialog : ALittle.EventDispatcher
         return this._layout.ShowSelect();
     }
 
-    private fun HandleDialogClose()
+    private fun HandleDialogClose() : bool
     {
         if (this._layout != null)
         	this._layout.Release();
+        return true;
     }
 
 	// 选择图片    

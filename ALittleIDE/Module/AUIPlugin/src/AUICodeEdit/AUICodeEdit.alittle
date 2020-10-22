@@ -94,7 +94,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         this.AddEventListener(this, this.HandleChangedEvent);
 
         this._find_dialog.visible = false;
-        this._find_dialog.close_callback = bind(this.HandleFindEscClick, this, null);
+        this._find_dialog.close_callback = bind(this.HandleFindDialogClose, this);
 
         this._gotoline_dialog.visible = false;
 
@@ -806,6 +806,12 @@ public class AUICodeEdit : ALittle.DisplayLayout
         }
     }
 
+    private fun HandleFindDialogClose() : bool
+    {
+        this.HandleFindEscClick(null);
+        return true;
+    }
+
     private fun HandleFindEscClick(ALittle.UIEvent event)
     {
         this._find_dialog.visible = false;
@@ -994,7 +1000,11 @@ public class AUICodeEdit : ALittle.DisplayLayout
             }
 
             this.DispatchEvent(new ALittle.UIChangedEvent());
-            this._complete_screen.ShowComplete();
+
+            if (text != " ")
+            	this._complete_screen.ShowComplete();
+            else
+            	this._complete_screen.Hide();
             this._param_dialog.ShowParamList();
         }   
     }

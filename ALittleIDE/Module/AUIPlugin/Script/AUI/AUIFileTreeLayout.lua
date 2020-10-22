@@ -36,12 +36,6 @@ name_list = {"target","mod","sym","scancode","custom","handled"},
 type_list = {"ALittle.DisplayObject","int","int","int","bool","bool"},
 option_map = {}
 })
-ALittle.RegStruct(1587518469, "AUIPlugin.AUIFileRenameFileEvent", {
-name = "AUIPlugin.AUIFileRenameFileEvent", ns_name = "AUIPlugin", rl_name = "AUIFileRenameFileEvent", hash_code = 1587518469,
-name_list = {"target","old_path","new_path"},
-type_list = {"ALittle.DisplayObject","string","string"},
-option_map = {}
-})
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
 name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
 name_list = {"target"},
@@ -68,8 +62,8 @@ option_map = {}
 })
 ALittle.RegStruct(-686652419, "AUIPlugin.AUIFileTreeUserInfo", {
 name = "AUIPlugin.AUIFileTreeUserInfo", ns_name = "AUIPlugin", rl_name = "AUIFileTreeUserInfo", hash_code = -686652419,
-name_list = {"path","name","root","group","on_right_menu"},
-type_list = {"string","string","bool","Map<ALittle.TextRadioButton,bool>","Functor<(AUIPlugin.AUIFileTreeUserInfo,AUIPlugin.AUIRightMenu)>"},
+name_list = {"path","name","root","group","on_right_menu","on_select_file","on_delete_file","on_create_file","on_delete_dir"},
+type_list = {"string","string","bool","Map<ALittle.TextRadioButton,bool>","Functor<(AUIPlugin.AUIFileTreeUserInfo,AUIPlugin.AUIRightMenu)>","Functor<(AUIPlugin.AUIFileTreeUserInfo)>","Functor<(string)>","Functor<(string)>","Functor<(string)>"},
 option_map = {}
 })
 ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
@@ -139,9 +133,6 @@ function AUIPlugin.AUIFileTreeLogic:FindFile(full_path)
 	return nil
 end
 
-function AUIPlugin.AUIFileTreeLogic:OnDelete()
-end
-
 assert(AUIPlugin.AUIFileTreeLogic, " extends class:AUIPlugin.AUIFileTreeLogic is nil")
 AUIPlugin.AUIFileTree = Lua.Class(AUIPlugin.AUIFileTreeLogic, "AUIPlugin.AUIFileTree")
 
@@ -194,9 +185,9 @@ function AUIPlugin.AUIFileTree:HandleCreateFile()
 	end
 	ALittle.File_WriteTextToFile("", self._user_info.path .. "/" .. name)
 	self:Refresh()
-	local event = {}
-	event.path = self._user_info.path .. "/" .. name
-	self:DispatchEvent(___all_struct[-2082217254], event)
+	if self._user_info.on_create_file ~= nil then
+		self._user_info.on_create_file(self._user_info.path .. "/" .. name)
+	end
 end
 AUIPlugin.AUIFileTree.HandleCreateFile = Lua.CoWrap(AUIPlugin.AUIFileTree.HandleCreateFile)
 
@@ -217,10 +208,9 @@ function AUIPlugin.AUIFileTree:HandleDeleteDir()
 	if result ~= AUIPlugin.AUIToolOption.YES then
 		return
 	end
-	self:OnDelete()
-	local event = {}
-	event.path = self._user_info.path
-	self:DispatchEvent(___all_struct[-1718818319], event)
+	if self._user_info.on_delete_dir ~= nil then
+		self._user_info.on_delete_dir(self._user_info.path)
+	end
 	ALittle.File_DeleteDeepDir(self._user_info.path)
 	local parent = self.parent
 	self:RemoveFromParent()
@@ -277,6 +267,10 @@ function AUIPlugin.AUIFileTree:Refresh()
 			info.path = self._user_info.path .. "/" .. name
 			info.group = self._user_info.group
 			info.root = false
+			info.on_select_file = self._user_info.on_select_file
+			info.on_create_file = self._user_info.on_create_file
+			info.on_delete_file = self._user_info.on_delete_file
+			info.on_delete_dir = self._user_info.on_delete_dir
 			self:AddChild(AUIPlugin.AUIFileTree(self._ctrl_sys, info))
 		end
 	end
@@ -289,6 +283,10 @@ function AUIPlugin.AUIFileTree:Refresh()
 			info.path = self._user_info.path .. "/" .. name
 			info.group = self._user_info.group
 			info.root = false
+			info.on_select_file = self._user_info.on_select_file
+			info.on_create_file = self._user_info.on_create_file
+			info.on_delete_file = self._user_info.on_delete_file
+			info.on_delete_dir = self._user_info.on_delete_dir
 			self:AddChild(AUIPlugin.AUIFileTreeItem(self._ctrl_sys, info))
 		end
 	end
@@ -316,12 +314,6 @@ function AUIPlugin.AUIFileTree:FindFile(full_path)
 		end
 	end
 	return nil
-end
-
-function AUIPlugin.AUIFileTree:OnDelete()
-	for index, child in ___ipairs(self.childs) do
-		child:OnDelete()
-	end
 end
 
 function AUIPlugin.AUIFileTree:HandleChildResize(event)
@@ -508,9 +500,9 @@ function AUIPlugin.AUIFileTreeItem.__setter:fold(value)
 end
 
 function AUIPlugin.AUIFileTreeItem:HandleClick(event)
-	local select_event = {}
-	select_event.path = self._user_info.path
-	self:DispatchEvent(___all_struct[2117383637], select_event)
+	if self._user_info.on_select_file ~= nil then
+		self._user_info.on_select_file(self._user_info)
+	end
 end
 
 function AUIPlugin.AUIFileTreeItem:SearchFile(name, list)
@@ -552,9 +544,9 @@ function AUIPlugin.AUIFileTreeItem:HandleDeleteFile()
 	if result ~= AUIPlugin.AUIToolOption.YES then
 		return
 	end
-	local delete_event = {}
-	delete_event.path = self._user_info.path
-	self:DispatchEvent(___all_struct[-545221029], delete_event)
+	if self._user_info.on_delete_file ~= nil then
+		self._user_info.on_delete_file(self._user_info.path)
+	end
 	ALittle.File_DeleteFile(self._user_info.path)
 	local parent = self.parent
 	self:RemoveFromParent()
@@ -577,9 +569,9 @@ function AUIPlugin.AUIFileTreeItem:HandleRenameFile()
 	self._user_info.path = new_path
 	self._user_info.name = new_name
 	self._item_button.text = self._user_info.name
-	local delete_event = {}
-	delete_event.path = old_path
-	self:DispatchEvent(___all_struct[-545221029], delete_event)
+	if self._user_info.on_delete_file ~= nil then
+		self._user_info.on_delete_file(old_path)
+	end
 	ALittle.File_RenameFile(old_path, new_path)
 	local create_event = {}
 	create_event.path = new_path
@@ -605,8 +597,44 @@ function AUIPlugin.AUIFileTreeLayout:SetRoot(path, on_right_menu)
 	info.group = self._group
 	info.root = true
 	info.on_right_menu = on_right_menu
+	info.on_select_file = Lua.Bind(self.HandleSelectFile, self)
+	info.on_delete_file = Lua.Bind(self.HandleDeleteFile, self)
+	info.on_create_file = Lua.Bind(self.HandleCreateFile, self)
+	info.on_delete_dir = Lua.Bind(self.HandleDeleteDir, self)
 	local tree = AUIPlugin.AUIFileTree(AUIPlugin.g_Control, info)
 	self._file_scroll_screen:AddChild(tree)
+end
+
+function AUIPlugin.AUIFileTreeLayout:HandleSelectFile(user_info)
+	local select_event = {}
+	select_event.path = user_info.path
+	self:DispatchEvent(___all_struct[2117383637], select_event)
+end
+
+function AUIPlugin.AUIFileTreeLayout:HandleCreateFile(path)
+	local select_event = {}
+	select_event.path = path
+	self:DispatchEvent(___all_struct[-2082217254], select_event)
+end
+
+function AUIPlugin.AUIFileTreeLayout:HandleDeleteFile(path)
+	local select_event = {}
+	select_event.path = path
+	self:DispatchEvent(___all_struct[-545221029], select_event)
+end
+
+function AUIPlugin.AUIFileTreeLayout:HandleDeleteDir(path)
+	local select_event = {}
+	select_event.path = path
+	self:DispatchEvent(___all_struct[-1718818319], select_event)
+end
+
+function AUIPlugin.AUIFileTreeLayout:SetFold(index, fold)
+	local tree = ALittle.Cast(AUIPlugin.AUIFileTree, ALittle.DisplayObject, self._file_scroll_screen:GetChildByIndex(index))
+	if tree == nil then
+		return
+	end
+	tree.fold = fold
 end
 
 function AUIPlugin.AUIFileTreeLayout:GetFileTree(full_path)

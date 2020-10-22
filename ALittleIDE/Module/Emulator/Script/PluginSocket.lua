@@ -33,12 +33,13 @@ function Emulator.PluginSocket:WriteMessage(full_name, protobuf_msg)
 	if error ~= nil then
 		return error
 	end
-	g_GCenter._gclient:AddLogMessage(protobuf_msg)
+	g_GCenter._gclient:AddLogMessage(self, protobuf_msg)
 	return nil
 end
 
 function Emulator.PluginSocket:HandleMessage(msg)
-	g_GCenter._gclient:AddLogMessage(msg)
+	g_GCenter._gclient:AddLogMessage(self, msg)
+	g_GCenter._grobot:HandleMessage(self, msg)
 	local func = _G["__SOCKET_HandleMessage"]
 	if func == nil then
 		return

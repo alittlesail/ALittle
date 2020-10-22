@@ -55,10 +55,17 @@ function Emulator.GCenter:Setup()
 	self._grobot:Setup()
 	self._frame_loop = ALittle.LoopFrame(Lua.Bind(self.UpdateFrame, self))
 	self._frame_loop:Start()
+	A_UISystem.keydown_callback = Lua.Bind(self.HandleKeyDown, self)
 end
 
 function Emulator.GCenter:UpdateFrame(frame_time)
 	A_LuaProtobufSchedule:RunInFrame()
+end
+
+function Emulator.GCenter:HandleKeyDown(mod, sym, scancode)
+	if sym == 115 and ALittle.BitAnd(mod, 0x00c0) ~= 0 then
+		self._grobot:Save(true)
+	end
 end
 
 function Emulator.GCenter:HandleShowSettingDialog(event)
@@ -117,6 +124,7 @@ function Emulator.GCenter:HandleSettingConfirmClick(event)
 	if ALittle.File_GetFileExtByPathAndUpper(self._plugin_file_input.text) == "LUA" then
 		_G["__PLUGIN_ProtoRefresh"] = nil
 		_G["__PLUGIN_StartLogin"] = nil
+		_G["__PLUGIN_RobotLogin"] = nil
 		_G["__SOCKET_ReadMessage"] = nil
 		_G["__SOCKET_WriteMessage"] = nil
 		_G["__SOCKET_HandleMessage"] = nil

@@ -195,6 +195,17 @@ public class LuaProtobufSchedule : ALittle.ISchedule
         return lua.protobuf.createmessage(this._factory, info.descriptor);
     }
 
+    public fun CreateMessageByJson(string full_name, string json) : lua.protobuf_message
+    {
+        var msg = this.CreateMessage(full_name);
+        if (msg == null) return null;
+
+        if (json == null) json = "{}";
+		lua.protobuf.message_jsondecode(msg, json);
+        return msg;
+    }
+
+
     public fun RunInFrame()
     {
         if (this._socket == null)

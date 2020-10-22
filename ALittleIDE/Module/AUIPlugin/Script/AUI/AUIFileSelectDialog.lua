@@ -104,6 +104,7 @@ function AUIPlugin.AUIFileSelectDialog:HandleDialogClose()
 	if self._layout ~= nil then
 		self._layout:Release()
 	end
+	return true
 end
 
 function AUIPlugin.AUIFileSelectDialog:System_SetVDragCursor(event)

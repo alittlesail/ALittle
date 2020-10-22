@@ -60,17 +60,14 @@ protected class AUICodeCompleteScreen
         if (!this.Fliter(text))
         {
             this.Hide();
-
-            if (!this.ReInit())
-                return;
+            if (!this.ReInit()) return;
 
             this._line_end = this._edit.cursor.line;
             this._char_end = this._edit.cursor.char;
             text = this._edit.GetTargetText(this._complete.line_start, this._complete.char_start - 1, this._edit.cursor.line, this._edit.cursor.char);
-            if (text == null || text == "")
-                return;
-            if (!this.Fliter(text))
-                this.Hide();
+            if (text == null || text == "") return;
+
+            if (!this.Fliter(text)) this.Hide();
         }
     }
 
@@ -84,7 +81,7 @@ protected class AUICodeCompleteScreen
         var item = this._screen.childs[target];
         var info = cast<AUICodeCompleteItemInfo>(item._user_data);
         info._item_button.selected = true;
-
+        
         if (info.complete.descriptor != null)
             this.ShowTip(info.complete.descriptor);
         else
@@ -256,7 +253,7 @@ protected class AUICodeCompleteScreen
         // 如果数组长度大于0，并且最后一个是空串，那么就剔除掉
         var upper_list_count = ALittle.List_MaxN(upper_list);
         if (upper_list_count > 1 && upper_list[upper_list_count] == "") upper_list[upper_list_count] = null;
-        
+
         var sort_list = new List<AUICodeCompleteItemInfo>();
         var count = 0;
         this._screen.RemoveAllChild();

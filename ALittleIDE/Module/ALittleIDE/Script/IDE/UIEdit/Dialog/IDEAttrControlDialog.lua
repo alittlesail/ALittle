@@ -23,6 +23,7 @@ end
 
 function ALittleIDE.IDEAttrControlDialog:HandleClose()
 	ALittleIDE.g_IDEAttrEventDialog:HideDialog()
+	return true
 end
 
 function ALittleIDE.IDEAttrControlDialog:SetTitle(title)

@@ -9,6 +9,10 @@ public struct AUIFileTreeUserInfo
     ALittle.TextRadioButtonGroup group;	// 单选按钮组
 
     Functor<(AUIFileTreeUserInfo, AUIPlugin.AUIRightMenu)> on_right_menu;	// 右键菜单回调
+    Functor<(AUIFileTreeUserInfo)> on_select_file;	// 选中文件
+    Functor<(string)> on_delete_file;	// 删除文件
+    Functor<(string)> on_create_file;	// 创建文件
+    Functor<(string)> on_delete_dir;	// 删除文件夹
 }
 
 public struct AUIFileSelectFileEvent : ALittle.UIEvent
@@ -132,9 +136,8 @@ public class AUIFileTree : AUIFileTreeLogic
 		ALittle.File_WriteTextToFile("", this._user_info.path.."/"..name);
 		this.Refresh();
 
-        var event = new AUIFileCreateFileEvent();
-        event.path = this._user_info.path.."/"..name;
-        this.DispatchEvent(event);
+        if (this._user_info.on_create_file != null)
+            this._user_info.on_create_file(this._user_info.path.."/"..name);
     }
 
 	private async fun HandleCreateDir()
@@ -151,11 +154,9 @@ public class AUIFileTree : AUIFileTreeLogic
 		var file_name = ALittle.File_GetFileNameByPath(this._user_info.path);
 		var result = g_AUITool.DeleteNotice("删除", "确定要删除"..file_name.."，以及子文件和子文件夹吗?");
 		if (result != AUIPlugin.AUIToolOption.YES) return;
-		this.OnDelete();
 
-        var event = new AUIFileDeleteDirEvent();
-        event.path = this._user_info.path;
-        this.DispatchEvent(event);
+        if (this._user_info.on_delete_dir != null)
+            this._user_info.on_delete_dir(this._user_info.path);
 
 		ALittle.File_DeleteDeepDir(this._user_info.path);
 
@@ -223,6 +224,10 @@ public class AUIFileTree : AUIFileTreeLogic
 				info.path = this._user_info.path.."/"..name;
 				info.group = this._user_info.group;
 				info.root = false;
+                info.on_select_file = this._user_info.on_select_file;
+                info.on_create_file = this._user_info.on_create_file;
+                info.on_delete_file = this._user_info.on_delete_file;
+                info.on_delete_dir = this._user_info.on_delete_dir;
                 this.AddChild(new AUIFileTree(this._ctrl_sys, info));
             }
         }
@@ -238,6 +243,10 @@ public class AUIFileTree : AUIFileTreeLogic
 				info.path = this._user_info.path.."/"..name;
 				info.group = this._user_info.group;
 				info.root = false;
+                info.on_select_file = this._user_info.on_select_file;
+                info.on_create_file = this._user_info.on_create_file;
+                info.on_delete_file = this._user_info.on_delete_file;
+                info.on_delete_dir = this._user_info.on_delete_dir;
                 this.AddChild(new AUIFileTreeItem(this._ctrl_sys, info));
             }
         }
@@ -267,13 +276,6 @@ public class AUIFileTree : AUIFileTreeLogic
 			if (item != null) return item;
         }
 		return null;
-    }
-
-	// 触发删除
-	public fun OnDelete()
-	{
-		for (var index, child:AUIFileTreeLogic in this.childs)
-            child.OnDelete();
     }
 
 	public fun HandleChildResize(ALittle.UIResizeEvent event)
@@ -418,9 +420,8 @@ public class AUIFileTreeItem : AUIFileTreeLogic
 	// 打开文件
 	private fun HandleClick(ALittle.UIClickEvent event)
 	{
-        var select_event = new AUIFileSelectFileEvent();
-        select_event.path = this._user_info.path;
-        this.DispatchEvent(select_event);
+        if (this._user_info.on_select_file != null)
+        	this._user_info.on_select_file(this._user_info);
     }
 
 	// 搜索文件
@@ -461,9 +462,8 @@ public class AUIFileTreeItem : AUIFileTreeLogic
 		var result = g_AUITool.DeleteNotice("删除", "确定要删除"..file_name.."吗?");
 		if (result != AUIPlugin.AUIToolOption.YES) return;
 
-        var delete_event = new AUIFileDeleteFileEvent();
-        delete_event.path = this._user_info.path;
-        this.DispatchEvent(delete_event);
+        if (this._user_info.on_delete_file != null)
+        	this._user_info.on_delete_file(this._user_info.path);
 
 		ALittle.File_DeleteFile(this._user_info.path);
 
@@ -489,9 +489,8 @@ public class AUIFileTreeItem : AUIFileTreeLogic
 
 		this._item_button.text = this._user_info.name;
 
-        var delete_event = new AUIFileDeleteFileEvent();
-        delete_event.path = old_path;
-        this.DispatchEvent(delete_event);
+        if (this._user_info.on_delete_file != null)
+        	this._user_info.on_delete_file(old_path);
 
 		ALittle.File_RenameFile(old_path, new_path);
 
@@ -536,8 +535,47 @@ public class AUIFileTreeLayout : ALittle.DisplayLayout
 		info.group = this._group;
 		info.root = true;
         info.on_right_menu = on_right_menu;
+        info.on_select_file = bind(this.HandleSelectFile, this);
+        info.on_delete_file = bind(this.HandleDeleteFile, this);
+        info.on_create_file = bind(this.HandleCreateFile, this);
+        info.on_delete_dir = bind(this.HandleDeleteDir, this);
 		var tree = new AUIFileTree(g_Control, info);
 		this._file_scroll_screen.AddChild(tree);
+    }
+
+    private fun HandleSelectFile(AUIFileTreeUserInfo user_info)
+    {
+        var select_event = new AUIFileSelectFileEvent();
+        select_event.path = user_info.path;
+        this.DispatchEvent(select_event);
+    }
+
+    private fun HandleCreateFile(string path)
+    {
+        var select_event = new AUIFileCreateFileEvent();
+        select_event.path = path;
+        this.DispatchEvent(select_event);
+    }
+
+    private fun HandleDeleteFile(string path)
+    {
+        var select_event = new AUIFileDeleteFileEvent();
+        select_event.path = path;
+        this.DispatchEvent(select_event);
+    }
+
+    private fun HandleDeleteDir(string path)
+    {
+        var select_event = new AUIFileDeleteDirEvent();
+        select_event.path = path;
+        this.DispatchEvent(select_event);
+    }
+
+    public fun SetFold(int index, bool fold)
+    {
+        var tree = ALittle.Cast{AUIFileTree}(this._file_scroll_screen.GetChildByIndex(index));
+        if (tree == null) return;
+        tree.fold = fold;
     }
 
     public fun GetFileTree(string full_path) : AUIFileTreeLogic

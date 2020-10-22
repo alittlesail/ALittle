@@ -97,12 +97,14 @@ function Emulator.UtilityCreateTreeValueMapMessage(root, parent, msg, key_field,
 	return tree
 end
 
-function Emulator.Utility_CreateTreeForEdit(info)
+function Emulator.Utility_CreateTreeForEdit(info, json)
 	local msg = A_LuaProtobufSchedule:CreateMessage(info.full_name)
 	if msg == nil then
 		return nil
 	end
-	local json = Emulator.g_GProtoCache:GetString(info.full_name, "{}")
+	if json == nil then
+		json = Emulator.g_GProtoCache:GetString(info.full_name, "{}")
+	end
 	protobuf.message_jsondecode(msg, json)
 	local root = {}
 	root.for_show = false

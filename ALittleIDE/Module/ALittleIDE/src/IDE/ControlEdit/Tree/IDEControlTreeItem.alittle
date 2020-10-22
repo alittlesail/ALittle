@@ -58,6 +58,7 @@ public class IDEControlTreeItem : IDEControlTreeLogic
         var menu = new AUIPlugin.AUIRightMenu();
 		menu.AddItem("复制控件名", bind(this.HandleCopyName, this));
 		menu.AddItem("复制并新建控件", bind(this.HandleCopyInfo, this));
+		menu.AddItem("继承并新建控件", bind(this.HandleExtendsInfo, this));
 		menu.AddItem("复制继承代码", bind(this.HandleCopyExtends, this));
 		menu.AddItem("修改控件名", bind(this.HandleControlRename, this));
 		menu.AddItem("删除", bind(this.HandleDelete, this));
@@ -105,6 +106,11 @@ public class IDEControlTreeItem : IDEControlTreeLogic
 		if (new_name == null || old_name == new_name) return;
 		this.ControlCopyInfo(old_name, new_name);
 	}
+    // 处理继承并新建
+    public fun HandleExtendsInfo()
+    {
+        g_IDECenter.center.control_list.ShowExtendsControl(null, this._user_info.module_name, this._user_info.name);
+    }
 
 	// 复制控件信息
 	public fun ControlCopyInfo(string target_name, string new_name)

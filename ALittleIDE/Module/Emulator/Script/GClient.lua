@@ -266,7 +266,10 @@ function Emulator.GClient:RefreshLogList()
 	self._log_scroll_screen:AdjustScrollBar()
 end
 
-function Emulator.GClient:AddLogMessage(msg)
+function Emulator.GClient:AddLogMessage(socket, msg)
+	if self._client_socket ~= socket then
+		return
+	end
 	local descriptor = protobuf.message_getdescriptor(msg)
 	local full_name = protobuf.messagedescriptor_fullname(descriptor)
 	if self._fliter_map[full_name] ~= nil then

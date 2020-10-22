@@ -86,11 +86,21 @@ class GCenter
         // 每帧处理
         this._frame_loop = new ALittle.LoopFrame(bind(this.UpdateFrame, this));
         this._frame_loop.Start();
+
+        A_UISystem.keydown_callback = bind(this.HandleKeyDown, this);
     }
 
     public fun UpdateFrame(int frame_time)
     {
         A_LuaProtobufSchedule.RunInFrame();
+    }
+
+    public fun HandleKeyDown(int mod, int sym, int scancode)
+    {
+        if (sym == ALittle.UIEnumTypes.KEY_S && ALittle.BitAnd(mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
+        {
+            this._grobot.Save(true);
+        }
     }
 
     // 显示设置对话框
@@ -163,6 +173,7 @@ class GCenter
         {
             cast<Map<string, any>>(_G)["__PLUGIN_ProtoRefresh"] = null;
             cast<Map<string, any>>(_G)["__PLUGIN_StartLogin"] = null;
+            cast<Map<string, any>>(_G)["__PLUGIN_RobotLogin"] = null;
             cast<Map<string, any>>(_G)["__SOCKET_ReadMessage"] = null;
             cast<Map<string, any>>(_G)["__SOCKET_WriteMessage"] = null;
             cast<Map<string, any>>(_G)["__SOCKET_HandleMessage"] = null;

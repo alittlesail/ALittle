@@ -215,10 +215,10 @@ function ALittle.Dialog.__getter:close_callback()
 end
 
 function ALittle.Dialog:HandleCloseButtonClicked(event)
-	self.visible = false
-	if self._close_callback ~= nil then
-		self._close_callback()
+	if self._close_callback ~= nil and not self._close_callback() then
+		return
 	end
+	self.visible = false
 end
 
 function ALittle.Dialog:HandleHeadDragBegin(event)

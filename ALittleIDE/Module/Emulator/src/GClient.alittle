@@ -317,8 +317,10 @@ protected class GClient : ALittle.DisplayLayout
     }
 
     // 添加消息
-    public fun AddLogMessage(lua.protobuf_message msg)
+    public fun AddLogMessage(PluginSocket socket, lua.protobuf_message msg)
     {
+        if (this._client_socket != socket) return;
+
         var descriptor = lua.protobuf.message_getdescriptor(msg);
         var full_name = lua.protobuf.messagedescriptor_fullname(descriptor);
         // 过滤

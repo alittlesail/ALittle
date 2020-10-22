@@ -145,7 +145,7 @@ function AUIPlugin.AUICodeEdit:TCtor()
 	self._code_screen:EnableDrag(false)
 	self:AddEventListener(___all_struct[958494922], self, self.HandleChangedEvent)
 	self._find_dialog.visible = false
-	self._find_dialog.close_callback = Lua.Bind(self.HandleFindEscClick, self, nil)
+	self._find_dialog.close_callback = Lua.Bind(self.HandleFindDialogClose, self)
 	self._gotoline_dialog.visible = false
 	self._error_btn.visible = false
 	self._code_screen.container = AUIPlugin.AUICodeEditContainer(self._ctrl_sys)
@@ -810,6 +810,11 @@ function AUIPlugin.AUICodeEdit:UpdateLineFind(it_line)
 	end
 end
 
+function AUIPlugin.AUICodeEdit:HandleFindDialogClose()
+	self:HandleFindEscClick(nil)
+	return true
+end
+
 function AUIPlugin.AUICodeEdit:HandleFindEscClick(event)
 	self._find_dialog.visible = false
 	self:ClearFindInfo()
@@ -1020,7 +1025,11 @@ function AUIPlugin.AUICodeEdit:HandleTextInput(event)
 			end
 		end
 		self:DispatchEvent(___all_struct[958494922], {})
-		self._complete_screen:ShowComplete()
+		if text ~= " " then
+			self._complete_screen:ShowComplete()
+		else
+			self._complete_screen:Hide()
+		end
 		self._param_dialog:ShowParamList()
 	end
 end
@@ -1858,8 +1867,8 @@ function AUIPlugin.AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 			do
 				new_line_index = new_line_index + (1)
 				self._code_linear:AddChild(split_next_line.container, new_line_index)
-				self._line_count = self._line_count + (1)
 				ALittle.List_Insert(self._line_list, new_line_index, split_next_line)
+				self._line_count = self._line_count + (1)
 				it_cursor_line = new_line_index
 				it_cursor_char = 0
 				line_map[new_line_index] = true

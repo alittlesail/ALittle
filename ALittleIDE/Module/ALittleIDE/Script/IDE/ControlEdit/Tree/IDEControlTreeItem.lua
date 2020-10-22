@@ -113,6 +113,7 @@ function ALittleIDE.IDEControlTreeItem:HandleRButtonDown(event)
 	local menu = AUIPlugin.AUIRightMenu()
 	menu:AddItem("复制控件名", Lua.Bind(self.HandleCopyName, self))
 	menu:AddItem("复制并新建控件", Lua.Bind(self.HandleCopyInfo, self))
+	menu:AddItem("继承并新建控件", Lua.Bind(self.HandleExtendsInfo, self))
 	menu:AddItem("复制继承代码", Lua.Bind(self.HandleCopyExtends, self))
 	menu:AddItem("修改控件名", Lua.Bind(self.HandleControlRename, self))
 	menu:AddItem("删除", Lua.Bind(self.HandleDelete, self))
@@ -158,6 +159,10 @@ function ALittleIDE.IDEControlTreeItem:HandleCopyInfo()
 	self:ControlCopyInfo(old_name, new_name)
 end
 ALittleIDE.IDEControlTreeItem.HandleCopyInfo = Lua.CoWrap(ALittleIDE.IDEControlTreeItem.HandleCopyInfo)
+
+function ALittleIDE.IDEControlTreeItem:HandleExtendsInfo()
+	ALittleIDE.g_IDECenter.center.control_list:ShowExtendsControl(nil, self._user_info.module_name, self._user_info.name)
+end
 
 function ALittleIDE.IDEControlTreeItem:ControlCopyInfo(target_name, new_name)
 	local error = ALittleIDE.IDEUtility_CheckName(new_name)

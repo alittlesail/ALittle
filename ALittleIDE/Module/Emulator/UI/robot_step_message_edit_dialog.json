@@ -1,0 +1,1 @@
+{"robot_step_message_edit_dialog":{"__extends":"dialog_with_close","title":"消息编辑","__childs":[{"__extends":"scroll_screen","x_type":3,"__link":"_edit_scroll_screen","height_type":4,"__module":"AUIPlugin","height_value":10,"width_value":10,"open_extends_drag":true,"y_value":5,"y_type":4,"width_type":4}],"__module":"AUIPlugin","height_value":176,"width_value":594}}

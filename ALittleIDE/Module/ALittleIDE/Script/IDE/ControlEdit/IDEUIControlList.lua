@@ -233,13 +233,19 @@ function ALittleIDE.IDEUIControlList:HandleNewControlConfirm(event)
 	self._new_control_dialog.visible = false
 end
 
-function ALittleIDE.IDEUIControlList:ShowExtendsControl(module_name)
+function ALittleIDE.IDEUIControlList:ShowExtendsControl(module_name, extends_module, extends_name)
 	if ALittleIDE.g_IDEProject.project == nil then
 		g_AUITool:ShowNotice("提示", "当前没有打开的项目")
 		return
 	end
 	if module_name == nil then
 		module_name = ALittleIDE.g_IDEProject.project.name
+	end
+	if extends_module == nil then
+		extends_module = module_name
+	end
+	if extends_name == nil then
+		extends_name = ""
 	end
 	if self._extends_control_dialog == nil then
 		self._extends_control_dialog = ALittleIDE.g_Control:CreateControl("ide_extends_control_dialog", self)
@@ -256,9 +262,9 @@ function ALittleIDE.IDEUIControlList:ShowExtendsControl(module_name)
 		ALittle.List_Push(data_list, name)
 	end
 	self._extends_control_extends_module.data_list = data_list
-	self._extends_control_extends_module.text = module_name
+	self._extends_control_extends_module.text = extends_module
 	self._extends_control_name.text = ""
-	self._extends_control_extends_name.text = ""
+	self._extends_control_extends_name.text = extends_name
 	self._extends_control_dialog.visible = true
 	A_UISystem.focus = self._extends_control_name.show_input
 end

@@ -12,6 +12,12 @@ end
 -- param player_id[int] 玩家的ID
 -- return login_msg[lua.protobuf_message] 登陆消息包
 function __PLUGIN_RobotLogin(player_id)
+	--[[ 这个是范例
+	local info = {}
+	info.account = tostring(player_id)
+	info.login_for_dev = true;
+	return A_LuaProtobufSchedule:CreateMessageByStruct("登陆协议全称", info)
+	--]]
 	return nil
 end
 

@@ -125,14 +125,14 @@ public static UtilityCreateTreeValueMapMessage(RootInfo root, IDETreeMap parent,
     return tree;
 }
 
-public static Utility_CreateTreeForEdit(Lua.lua_socket_schedule_message_info info) : DetailInfo
+public static Utility_CreateTreeForEdit(Lua.lua_socket_schedule_message_info info, [Nullable] string json) : DetailInfo
 {
     // 创建消息包
     var msg = A_LuaProtobufSchedule.CreateMessage(info.full_name);
     if (msg == null) return null;
     
     // 从配置中获取记录的信息
-    var json = g_GProtoCache.GetString(info.full_name, "{}");
+    if (json == null) json = g_GProtoCache.GetString(info.full_name, "{}");
     lua.protobuf.message_jsondecode(msg, json);
 
     var root = new RootInfo();

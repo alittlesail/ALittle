@@ -17,7 +17,7 @@ public class Dialog : DisplayLayout
     private DisplayObject   _title;
     
     private DisplayObject   _close_button;
-    private Functor<()>     _close_callback;
+    private Functor<():bool>     _close_callback;
     
     private DisplayLayout   _head;
     private DisplayLayout   _head_container;
@@ -228,20 +228,20 @@ public class Dialog : DisplayLayout
         return this._close_button;
     }
     
-    public set close_callback(Functor<()> value)
+    public set close_callback(Functor<():bool> value)
     {
         this._close_callback = value;
     }
-    public get close_callback() : Functor<()>
+    public get close_callback() : Functor<():bool>
     {
         return this._close_callback;
     }
     //////////////////////////////////////////////////////////////////////////////////////////////-
     protected fun HandleCloseButtonClicked(UIClickEvent event)
     {
+        if (this._close_callback != null && !this._close_callback())
+            return;
         this.visible = false;
-        if (this._close_callback != null)
-            this._close_callback();
     }
 
     protected fun HandleHeadDragBegin(UIButtonDragBeginEvent event)

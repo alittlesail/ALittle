@@ -179,7 +179,11 @@ function Emulator.GBlueprint:HandleRobotStepSendMessageChanged(event)
 	link_info.info.full_name = link_info._full_name_input.text
 	link_info.message = A_LuaProtobufSchedule:CreateMessage(link_info.info.full_name)
 	link_info._message_edit_btn.disabled = link_info.message == nil
-	link_info.dialog.title = "发送消息:" .. link_info.info.full_name
+	if link_info.message == nil then
+		link_info.dialog.title = "发送消息:协议不存在!"
+	else
+		link_info.dialog.title = "发送消息:" .. link_info.info.full_name
+	end
 	self:Save(false)
 end
 
@@ -220,7 +224,11 @@ end
 function Emulator.GBlueprint:HandleRobotStepReceiveMessageChanged(event)
 	local link_info = event.target._user_data
 	link_info.info.full_name = link_info._full_name_input.text
-	link_info.dialog.title = "等待消息:" .. link_info.info.full_name
+	if A_LuaProtobufSchedule:GetMessageInfo(link_info.info.full_name) == nil then
+		link_info.dialog.title = "等待消息:协议不存在!"
+	else
+		link_info.dialog.title = "等待消息:" .. link_info.info.full_name
+	end
 	self:Save(false)
 end
 
@@ -376,16 +384,18 @@ function Emulator.GBlueprint:UpdateRobotStepDialogPosition(link_info, x, y)
 	if link_info.pre_link ~= nil then
 		for id, pre_link in ___pairs(link_info.pre_link) do
 			local tri = pre_link._line_tri
-			local next_image
-			if pre_link.info.next_type == Emulator.RobotStepLineType.RSLT_LEFT then
-				next_image = link_info._left_step_image
-			elseif pre_link.info.next_type == Emulator.RobotStepLineType.RSLT_RIGHT then
-				next_image = link_info._right_step_image
-			end
-			if next_image ~= nil then
-				local next_x, next_y = next_image:LocalToGlobal(self._detail_scroll_screen.container)
-				tri.x3 = next_x + next_image.width / 2
-				tri.y3 = next_y + next_image.height / 2
+			if tri ~= nil then
+				local next_image
+				if pre_link.info.next_type == Emulator.RobotStepLineType.RSLT_LEFT then
+					next_image = link_info._left_step_image
+				elseif pre_link.info.next_type == Emulator.RobotStepLineType.RSLT_RIGHT then
+					next_image = link_info._right_step_image
+				end
+				if next_image ~= nil then
+					local next_x, next_y = next_image:LocalToGlobal(self._detail_scroll_screen.container)
+					tri.x3 = next_x + next_image.width / 2
+					tri.y3 = next_y + next_image.height / 2
+				end
 			end
 		end
 	end
@@ -506,16 +516,25 @@ function Emulator.GBlueprint:CreateRobotStepDialog(info)
 	elseif info.type == Emulator.RobotStepType.RST_RECEIVE_MESSAGE then
 		local link_info = {}
 		local dialog = self:CreateCommonDialog("robot_step_receive_message", link_info, info)
-		dialog.title = "等待消息:" .. info.full_name
+		if A_LuaProtobufSchedule:GetMessageInfo(info.full_name) == nil then
+			dialog.title = "等待消息:协议不存在!"
+		else
+			dialog.title = "等待消息:" .. info.full_name
+		end
 		link_info._full_name_input.text = info.full_name
 		link_info._full_name_input:AddEventListener(___all_struct[958494922], self, self.HandleRobotStepReceiveMessageChanged)
 		link_info._full_name_input._user_data = link_info
 	elseif info.type == Emulator.RobotStepType.RST_SEND_MESSAGE then
 		local link_info = {}
 		local dialog = self:CreateCommonDialog("robot_step_send_message", link_info, info)
-		dialog.title = "发送消息:" .. info.full_name
 		link_info._full_name_input.text = info.full_name
 		link_info.message = A_LuaProtobufSchedule:CreateMessageByJson(info.full_name, info.message_json)
+		if link_info.message == nil then
+			dialog.title = "发送消息:协议不存在!"
+		else
+			dialog.title = "发送消息:" .. info.full_name
+		end
+		link_info._message_edit_btn.disabled = link_info.message == nil
 		link_info._full_name_input:AddEventListener(___all_struct[958494922], self, self.HandleRobotStepSendMessageChanged)
 		link_info._full_name_input._user_data = link_info
 		link_info._message_edit_btn:AddEventListener(___all_struct[-449066808], self, self.HandleRobotStepSendMessageEditClick)

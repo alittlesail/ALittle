@@ -16,10 +16,12 @@ protected enum RobotStepLineType
     RSLT_RIGHT = 2;
 }
 
-protected struct StepInfo
+protected struct RobotStepInfo
 {
     double x;	// x坐标
     double y;	// y坐标
+
+    string unique_id;	// 全局唯一ID
 
     int id;
     int type;	// 步骤类型 RobotStepType
@@ -30,26 +32,143 @@ protected struct StepInfo
 
     string full_name;	//  消息全称 RST_RECEIVE_MESSAGE RST_SEND_MESSAGE 有效
     string message_json;	// 消息的json字符串 RST_SEND_MESSAGE 有效
+    List<RobotStepCmdInfo> cmd_list;	// 命令列表
 
     int delay_ms;	// 延迟毫秒 RST_DELAY 有效
 
     string log;	// 日志内容 RST_LOG 有效
 }
 
+protected struct RobotStepCmdInfo
+{
+    string dst_field;
+    string src_id;
+    string src_field;
+}
+
+protected struct RobotStepCmdLinkInfo
+{
+    ALittle.DisplayObject item;
+    RobotStepCmdInfo cmd;
+    ALittle.DisplayObject _delete_button;
+    ALittle.DisplayObject _dst_field_input;
+    ALittle.DisplayObject _src_id_input;
+    ALittle.DisplayObject _src_field_input;
+}
+
 protected struct RobotStepFile
 {
     int max_id;
-    Map<int, StepInfo> step_map;
-    StepInfo start_step;
+    Map<int, RobotStepInfo> step_map;
+    RobotStepInfo start_step;
+}
+
+public class RobotStepCmdEdit : ALittle.DisplayLayout
+{
+	private ALittle.TextButton _add_cmd_btn;		// 添加按钮
+	private ALittle.ScrollScreen _cmd_screen;		// 命令滚动屏
+    private List<RobotStepCmdInfo> _cmd_list;
+
+    public fun TCtor()
+    {
+        this._add_cmd_btn.AddEventListener(this, this.HandleAddClick);
+    }
+
+    public fun Init(List<RobotStepCmdInfo> cmd_list)
+    {
+        this._cmd_list = cmd_list;
+        for (var index, cmd in cmd_list)
+            this.CreateCmdItem(cmd);
+        this.UpdateHeight();
+    }
+
+    private fun HandleDstFieldChanged(ALittle.UIChangedEvent event)
+    {
+        cast<RobotStepCmdInfo>(event.target._user_data).dst_field = event.target.text;
+        g_GCenter._grobot._gblueprint.Save(false);
+    }
+
+    private fun HandleSrcIdChanged(ALittle.UIChangedEvent event)
+    {
+        cast<RobotStepCmdInfo>(event.target._user_data).src_id = event.target.text;
+        g_GCenter._grobot._gblueprint.Save(false);
+    }
+
+    private fun HandleSrcFieldChanged(ALittle.UIChangedEvent event)
+    {
+        cast<RobotStepCmdInfo>(event.target._user_data).src_field = event.target.text;
+        g_GCenter._grobot._gblueprint.Save(false);
+    }
+
+    public fun UpdateHeight()
+    {
+        var src_y = this._cmd_screen.y;
+
+        if (this._cmd_screen.child_count == 0)
+        	this._cmd_screen.height = 0;
+        elseif (this._cmd_screen.child_count < 5)
+            this._cmd_screen.height = this._cmd_screen.child_count * this._cmd_screen.childs[1].height;
+        else
+            this._cmd_screen.height = 5 * this._cmd_screen.childs[1].height;
+        this.height = src_y + this._cmd_screen.height;
+
+        this.DispatchEvent(new ALittle.UIResizeEvent());
+    }
+
+    private fun HandleDeleteClick(ALittle.UIClickEvent event)
+    {
+        var link_info = cast<RobotStepCmdLinkInfo>(event.target._user_data);
+        this._cmd_screen.RemoveChild(link_info.item);
+        this.UpdateHeight();
+        var index = ALittle.List_IndexOf(this._cmd_list, link_info.cmd);
+        if (index != null) ALittle.List_Remove(this._cmd_list, index);
+        g_GCenter._grobot._gblueprint.Save(false);
+    }
+
+    private fun HandleAddClick(ALittle.UIClickEvent event)
+    {
+        var cmd = new RobotStepCmdInfo();
+        this.CreateCmdItem(cmd);
+        ALittle.List_Push(this._cmd_list, cmd);
+        this.UpdateHeight();
+        g_GCenter._grobot._gblueprint.Save(false);
+    }
+
+    private fun CreateCmdItem(RobotStepCmdInfo cmd)
+    {
+        if (cmd.dst_field == null) cmd.dst_field = "";
+        if (cmd.src_id == null) cmd.src_id = "";
+        if (cmd.src_field == null) cmd.src_field = "";
+
+        var link_info = new RobotStepCmdLinkInfo();
+        var item = g_Control.CreateControl{ALittle.DisplayLayout}("robot_step_cmd_item", link_info);
+        link_info._delete_button.AddEventListener(this, this.HandleDeleteClick);
+        link_info._dst_field_input.text = cmd.dst_field;
+        link_info._dst_field_input.AddEventListener(this, this.HandleDstFieldChanged);
+        link_info._dst_field_input._user_data = cmd;
+        link_info._src_id_input.text = cmd.src_id;
+        link_info._src_id_input.AddEventListener(this, this.HandleSrcIdChanged);
+        link_info._src_id_input._user_data = cmd;
+        link_info._src_field_input.text = cmd.src_field;
+        link_info._src_field_input.AddEventListener(this, this.HandleSrcFieldChanged);
+        link_info._src_field_input._user_data = cmd;
+        this._cmd_screen.AddChild(item);
+
+        link_info.item = item;
+        link_info.cmd = cmd;
+
+        link_info._delete_button._user_data = link_info;
+    }
 }
 
 struct RobotStepLinkInfo
 {
-    StepInfo info;
+    RobotStepInfo info;
     ALittle.Dialog dialog;
     ALittle.DisplayObject _left_step_image;
     ALittle.DisplayObject _right_step_image;
-
+    ALittle.DisplayObject _unique_id_input;
+    
     ALittle.Triangle _line_tri;
     Map<int, RobotStepLinkInfo> pre_link;	// 上一个步骤的link
     RobotStepLinkInfo next_link;	// 下一个步骤的link
@@ -64,6 +183,7 @@ struct RobotStepSendMessageLinkInfo : RobotStepLinkInfo
 {
     ALittle.DisplayObject _full_name_input;
     ALittle.DisplayObject _message_edit_btn;
+    RobotStepCmdEdit _cmd_edit;
 
     lua.protobuf_message message;
 }
@@ -83,6 +203,8 @@ protected class GBlueprint : ALittle.DisplayLayout
     // 蓝图详细内容
     private ALittle.DisplayObject _file_title;
 	private ALittle.ScrollScreen _detail_scroll_screen;
+    private ALittle.DisplayGroup _detail_dialog_layer;
+    private ALittle.DisplayGroup _detail_line_layer;
 
     private ALittle.Dialog _message_edit_dialog;
 	private ALittle.ScrollScreen _edit_scroll_screen;
@@ -128,6 +250,11 @@ protected class GBlueprint : ALittle.DisplayLayout
         this._robot_step_log_node.AddEventListener(this, this.HandleNodeDragEnd);
 
         this.visible = false;
+
+        this._detail_dialog_layer = new ALittle.DisplayGroup(g_Control);
+        this._detail_line_layer = new ALittle.DisplayGroup(g_Control);
+        this._detail_scroll_screen.AddChild(this._detail_dialog_layer);
+        this._detail_scroll_screen.AddChild(this._detail_line_layer);
     }
 
     public get step_file() : RobotStepFile { return this._step_file; }
@@ -141,12 +268,13 @@ protected class GBlueprint : ALittle.DisplayLayout
         this._step_file = null;
         this._link_map = new Map<int, RobotStepLinkInfo>();
         this._cur_line = null;
-        this._detail_scroll_screen.RemoveAllChild();
+        this._detail_dialog_layer.RemoveAllChild();
+        this._detail_line_layer.RemoveAllChild();
     }
 
-    public fun CreateRobotManager(int player_id, Lua.ISocket socket) : RobotStepManager
+    public fun CreateRobotManager(int player_id, Lua.ISocket socket, bool trace) : RobotStepManager
     {
-        return new RobotStepManager(player_id, socket, this._step_file);
+        return new RobotStepManager(player_id, socket, this._step_file, trace);
     }
 
     private fun HandleNodeDragBegin(ALittle.UIButtonDragBeginEvent event)
@@ -239,7 +367,7 @@ protected class GBlueprint : ALittle.DisplayLayout
 
     private fun HandleCreateRobotStepLog(double x, double y)
     {
-        var info = new StepInfo();
+        var info = new RobotStepInfo();
         this._step_file.max_id += 1;
         info.id = this._step_file.max_id;
         this._step_file.step_map[info.id] = info;
@@ -253,7 +381,7 @@ protected class GBlueprint : ALittle.DisplayLayout
 
     private fun HandleCreateRobotStepSendMessage(double x, double y)
     {
-        var info = new StepInfo();
+        var info = new RobotStepInfo();
         this._step_file.max_id += 1;
         info.id = this._step_file.max_id;
         this._step_file.step_map[info.id] = info;
@@ -306,9 +434,15 @@ protected class GBlueprint : ALittle.DisplayLayout
         this.Save(false);
     }
 
+    private fun HandleRobotStepCmdEditResize(ALittle.UIResizeEvent event)
+    {
+        var link_info = cast<RobotStepSendMessageLinkInfo>(event.target._user_data);
+        link_info.dialog.height = link_info._cmd_edit.y + link_info._cmd_edit.height + 5 + link_info.dialog.head_size;
+    }
+
     private fun HandleCreateRobotStepReceiveMessage(double x, double y)
     {
-        var info = new StepInfo();
+        var info = new RobotStepInfo();
         this._step_file.max_id += 1;
         info.id = this._step_file.max_id;
         this._step_file.step_map[info.id] = info;
@@ -334,7 +468,7 @@ protected class GBlueprint : ALittle.DisplayLayout
 
     private fun HandleCreateRobotStepDelay(double x, double y)
     {
-        var info = new StepInfo();
+        var info = new RobotStepInfo();
         this._step_file.max_id += 1;
         info.id = this._step_file.max_id;
         this._step_file.step_map[info.id] = info;
@@ -365,6 +499,14 @@ protected class GBlueprint : ALittle.DisplayLayout
         var link_info = cast<RobotStepLogLinkInfo>(event.target._user_data);
         link_info.info.log = link_info._log_input.text;
         if (link_info.info.log == "") link_info.info.log = null;
+        this.Save(false);
+    }
+
+    private fun HandleRobotStepUniqueIdChanged(ALittle.UIChangedEvent event)
+    {
+        var link_info = cast<RobotStepLogLinkInfo>(event.target._user_data);
+        link_info.info.unique_id = link_info._unique_id_input.text;
+        if (link_info.info.unique_id == "") link_info.info.unique_id = null;
         this.Save(false);
     }
 
@@ -406,7 +548,7 @@ protected class GBlueprint : ALittle.DisplayLayout
             	link_info.next_link.pre_link[link_info.info.id] = null;
             link_info.next_link = null;
 
-            this._detail_scroll_screen.RemoveChild(link_info._line_tri);
+            this._detail_line_layer.RemoveChild(link_info._line_tri);
             link_info._line_tri = null;
         }
         this.Save(false);
@@ -426,7 +568,7 @@ protected class GBlueprint : ALittle.DisplayLayout
         tri.x2 = pre_x + pre_image.width; tri.y2 = pre_y + pre_image.height / 2;
 
         tri.x3 = cur_x; tri.y3 = cur_y;
-        this._detail_scroll_screen.AddChild(tri);
+        this._detail_line_layer.AddChild(tri);
 
         this._cur_line = tri;
     }
@@ -444,7 +586,7 @@ protected class GBlueprint : ALittle.DisplayLayout
         if (this._cur_line == null) return;
 
         var tri = this._cur_line;
-        this._detail_scroll_screen.RemoveChild(tri);
+        this._detail_line_layer.RemoveChild(tri);
         this._cur_line = null;
 
         var link_info = cast<RobotStepLinkInfo>(event.target._user_data);
@@ -517,6 +659,12 @@ protected class GBlueprint : ALittle.DisplayLayout
         this.Save(false);
     }
 
+    private fun HandleRobotStepDragBegin(ALittle.DialogDragBeginEvent event)
+    {
+        var link_info = cast<RobotStepLinkInfo>(event.target._user_data);
+        link_info.dialog.MoveToTop();
+    }
+
     private fun HandleRobotStepDrag(ALittle.DialogDragEvent event)
     {
         var link_info = cast<RobotStepLinkInfo>(event.target._user_data);
@@ -550,12 +698,12 @@ protected class GBlueprint : ALittle.DisplayLayout
             return;
         }
 
-        this._detail_scroll_screen.RemoveChild(dialog);
+        this._detail_dialog_layer.RemoveChild(dialog);
 
         // 删除所有连线
         if (link_info._line_tri != null)
         {
-        	this._detail_scroll_screen.RemoveChild(link_info._line_tri);
+        	this._detail_line_layer.RemoveChild(link_info._line_tri);
             link_info._line_tri = null;
             link_info.next_link = null;
         }
@@ -567,7 +715,7 @@ protected class GBlueprint : ALittle.DisplayLayout
                 pre_link.info.next_id = null;
                 pre_link.info.next_type = null;
                 pre_link.info.pre_type = null;
-                this._detail_scroll_screen.RemoveChild(pre_link._line_tri);
+                this._detail_line_layer.RemoveChild(pre_link._line_tri);
             }
             link_info.pre_link = null;
         }
@@ -583,7 +731,7 @@ protected class GBlueprint : ALittle.DisplayLayout
     {
         var link_info = cast<RobotStepSendMessageLinkInfo>(this._message_edit_dialog._user_data);
         if (link_info.message != null)
-            link_info.info.message_json = lua.protobuf.message_jsonencode(link_info.message, true);
+            link_info.info.message_json = lua.protobuf.message_jsonencode(link_info.message, true, false);
         return true;
     }
 
@@ -631,11 +779,11 @@ protected class GBlueprint : ALittle.DisplayLayout
     
         this._step_file = step_file;
         if (this._step_file.max_id == null) this._step_file.max_id = 0;
-        if (this._step_file.step_map == null) this._step_file.step_map = new Map<int, StepInfo>();
+        if (this._step_file.step_map == null) this._step_file.step_map = new Map<int, RobotStepInfo>();
 
         if (this._step_file.start_step == null)
         {
-            this._step_file.start_step = new StepInfo();
+            this._step_file.start_step = new RobotStepInfo();
             this._step_file.start_step.type = RobotStepType.RST_START;
             this._step_file.max_id += 1;
             this._step_file.start_step.x = 0;
@@ -645,7 +793,8 @@ protected class GBlueprint : ALittle.DisplayLayout
     
         this._link_map = new Map<int, RobotStepLinkInfo>();
         this._cur_line = null;
-        this._detail_scroll_screen.RemoveAllChild();
+        this._detail_dialog_layer.RemoveAllChild();
+        this._detail_line_layer.RemoveAllChild();
 
         this.CreateRobotStepDialog(this._step_file.start_step);
         // 创建对话框
@@ -656,10 +805,12 @@ protected class GBlueprint : ALittle.DisplayLayout
         this.CreateRobotStepLine(this._step_file.start_step);
         for (var id, info in this._step_file.step_map)
             this.CreateRobotStepLine(info);
+
+        this._detail_scroll_screen.AdjustScrollBar();
     }
 
     // 通过info来创建
-    private fun CreateRobotStepDialog(StepInfo info)
+    private fun CreateRobotStepDialog(RobotStepInfo info)
     {
         if (info.type == RobotStepType.RST_START)
         {
@@ -693,6 +844,9 @@ protected class GBlueprint : ALittle.DisplayLayout
             link_info._full_name_input._user_data = link_info;
             link_info._message_edit_btn.AddEventListener(this, this.HandleRobotStepSendMessageEditClick);
             link_info._message_edit_btn._user_data = link_info;
+            link_info._cmd_edit.AddEventListener(this, this.HandleRobotStepCmdEditResize);
+            link_info._cmd_edit._user_data = link_info;
+            link_info._cmd_edit.Init(info.cmd_list);
         }
         elseif (info.type == RobotStepType.RST_DELAY)
         {
@@ -713,7 +867,7 @@ protected class GBlueprint : ALittle.DisplayLayout
     }
 
     // 创建连接线
-    private fun CreateRobotStepLine(StepInfo info)
+    private fun CreateRobotStepLine(RobotStepInfo info)
     {
         if (info.next_id == null) return;
 
@@ -759,12 +913,14 @@ protected class GBlueprint : ALittle.DisplayLayout
         tri.x2 = pre_x + pre_image.width; tri.y2 = pre_y + pre_image.height / 2;
         tri.x3 = next_x + next_image.width / 2; tri.y3 = next_y + next_image.height / 2;
 
-        this._detail_scroll_screen.AddChild(tri);
+        this._detail_line_layer.AddChild(tri);
     }
 
     // 创建对话框
-    private fun CreateCommonDialog(string ui, RobotStepLinkInfo link_info, StepInfo info) : ALittle.Dialog
+    private fun CreateCommonDialog(string ui, RobotStepLinkInfo link_info, RobotStepInfo info) : ALittle.Dialog
     {
+        if (info.cmd_list == null) info.cmd_list = new List<RobotStepCmdInfo>();
+
         var dialog = g_Control.CreateControl{ALittle.Dialog}(ui, link_info);
         dialog._user_data = link_info;
         link_info.dialog = dialog;
@@ -777,12 +933,19 @@ protected class GBlueprint : ALittle.DisplayLayout
         link_info._right_step_image.AddEventListener(this, this.HandleRobotStepLineDragBegin);
         link_info._right_step_image.AddEventListener(this, this.HandleRobotStepLineDrag);
         link_info._right_step_image.AddEventListener(this, this.HandleRobotStepLineDragEnd);
+        if (link_info._unique_id_input != null)
+        {
+        	link_info._unique_id_input.AddEventListener(this, this.HandleRobotStepUniqueIdChanged);
+            link_info._unique_id_input._user_data = link_info;
+            if (info.unique_id != null) link_info._unique_id_input.text = info.unique_id;
+        }
         dialog.x = link_info.info.x;
         dialog.y = link_info.info.y;
+        dialog.AddEventListener(this, this.HandleRobotStepDragBegin);
         dialog.AddEventListener(this, this.HandleRobotStepDrag);
         dialog.AddEventListener(this, this.HandleRobotStepDragEnd);
         dialog.close_callback = bind(this.HandleRobotStepDelete, this, dialog);
-        this._detail_scroll_screen.AddChild(dialog, 1);
+        this._detail_dialog_layer.AddChild(dialog);
         this._link_map[info.id] = link_info;
         return dialog;
     }
@@ -794,6 +957,7 @@ protected class GBlueprint : ALittle.DisplayLayout
         this._file_path = null;
         this._step_file = null;
         this._save = true;
-        this._detail_scroll_screen.RemoveAllChild();
+        this._detail_dialog_layer.RemoveAllChild();
+        this._detail_line_layer.RemoveAllChild();
     }
 }

@@ -72,7 +72,7 @@ void* protobuf_message_getreflection(void* m);
 int protobuf_message_getbytesize(void* m);
 int protobuf_message_serializetoarray(void* m, void* buffer, int size);
 int protobuf_message_parsefromarray(void* m, void* buffer, int size);
-const char* protobuf_message_jsonencode(void* m, int short_mode);
+const char* protobuf_message_jsonencode(void* m, int short_mode, int always_print_primitive_fields);
 const char* protobuf_message_jsondecode(void* m, const char* json);
 
 // reflection

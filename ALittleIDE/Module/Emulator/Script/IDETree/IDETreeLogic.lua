@@ -72,7 +72,7 @@ function Emulator.IDETreeLogic:SearchDescription(name, list)
 end
 
 function Emulator.IDETreeLogic:Save()
-	local content = protobuf.message_jsonencode(self._root.detail_info.message, false)
+	local content = protobuf.message_jsonencode(self._root.detail_info.message, false, false)
 	if content == nil then
 		return
 	end

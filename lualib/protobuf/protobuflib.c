@@ -509,7 +509,8 @@ static int protobuflib_message_jsonencode(lua_State* L)
     void** m = (void**)lua_touserdata(L, 1);
     luaL_argcheck(L, m != 0, 1, "message object is null");
     int short_mode = lua_toboolean(L, 2);
-    const char* json = protobuf_message_jsonencode(*m, short_mode);
+    int always_print_primitive_fields = lua_toboolean(L, 2);
+    const char* json = protobuf_message_jsonencode(*m, short_mode, always_print_primitive_fields);
     if (json) lua_pushstring(L, json);
     else lua_pushnil(L);
     return 1;

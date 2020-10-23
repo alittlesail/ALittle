@@ -197,16 +197,38 @@ function Lua.LuaProtobufSchedule:CreateMessageByJson(full_name, json)
 	return msg
 end
 
+function Lua.LuaProtobufSchedule:ClearEmptyTable(t)
+	if type(t) ~= "table" then
+		return
+	end
+	for key, value in ___pairs(t) do
+		if type(value) == "table" then
+			if next(value) == nil then
+				t[key] = nil
+			else
+				self:ClearEmptyTable(value)
+			end
+		end
+	end
+end
+
 function Lua.LuaProtobufSchedule:CreateMessageByStruct(full_name, info)
 	local msg = self:CreateMessage(full_name)
 	if msg == nil then
 		return nil
 	end
+	self:ClearEmptyTable(info)
 	local error, json = Lua.TCall(ALittle.String_JsonEncode, info)
 	if error ~= nil then
 		return nil
 	end
-	protobuf.message_jsondecode(msg, json)
+	error = protobuf.message_jsondecode(msg, json)
+	if error ~= nil then
+		ALittle.Log("CreateMessageByStruct", error, json)
+	end
+	if error ~= nil then
+		return nil
+	end
 	return msg
 end
 

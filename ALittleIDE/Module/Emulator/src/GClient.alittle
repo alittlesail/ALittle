@@ -375,7 +375,7 @@ protected class GClient : ALittle.DisplayLayout
         this._show_search_key.text = "";
         this._cur_item_user_data = cast<LogItemUserData>(event.target._user_data);
         if (this._cur_item_user_data.json_content == null)
-            this._cur_item_user_data.json_content = lua.protobuf.message_jsonencode(this._cur_item_user_data.msg, false);
+            this._cur_item_user_data.json_content = lua.protobuf.message_jsonencode(this._cur_item_user_data.msg, false, true);
         this._json_codeedit.OnClose();
 
         this._json_codeedit.Load("temp.json", this._cur_item_user_data.json_content, null);

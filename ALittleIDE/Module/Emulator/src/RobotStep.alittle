@@ -4,9 +4,9 @@ namespace Emulator;
 protected class RobotStep
 {
     private RobotStepManager _manager;
-    private StepInfo _info;
+    private RobotStepInfo _info;
 
-    public ctor(RobotStepManager manager, StepInfo info)
+    public ctor(RobotStepManager manager, RobotStepInfo info)
     {
         this._manager = manager;
         this._info = info;
@@ -14,21 +14,23 @@ protected class RobotStep
 
     public fun ReceiveMessage(lua.protobuf_message msg) : bool { return true; }
 
+    public fun GetMessage() : lua.protobuf_message { return null; }
+
     public fun Execute() : bool { return true; }
 
-    public get info() : StepInfo { return this._info; }
+    public fun Trace()
+    {
+        var ref = reflect(this);
+        g_GCenter._grobot.AddLog(ref.__name);
+    }
+
+    public get info() : RobotStepInfo { return this._info; }
 
     public fun Clear() {}
-
-    public fun Print()
-    {
-        ALittle.Log(this._info.id, this._info.type);
-    }
 }
 
 protected class RobotStepStart : RobotStep
 {
-
 }
 
 protected class RobotStepReceiveMessage : RobotStep
@@ -36,7 +38,7 @@ protected class RobotStepReceiveMessage : RobotStep
     private string _full_name;
     private lua.protobuf_message _message;
 
-    public ctor(RobotStepManager manager, StepInfo info)
+    public ctor(RobotStepManager manager, RobotStepInfo info)
     {
         this._full_name = info.full_name;
     }
@@ -50,15 +52,24 @@ protected class RobotStepReceiveMessage : RobotStep
         if (full_name != this._full_name) return false;
 
         this._message = msg;
+        ALittle.Log(this._full_name);
         return true;
     }
+
+    public fun Trace()
+    {
+        var ref = reflect(this);
+        g_GCenter._grobot.AddLog(ref.__name..":"..this._full_name);
+    }
+
+    public fun GetMessage() : lua.protobuf_message { return this._message; }
 
     public fun Execute() : bool { return false; }
 }
 
 protected class RobotStepLog : RobotStep
 {
-    public ctor(RobotStepManager manager, StepInfo info)
+    public ctor(RobotStepManager manager, RobotStepInfo info)
     {
 
     }
@@ -75,23 +86,109 @@ protected class RobotStepSendMessage : RobotStep
 {
     private lua.protobuf_message _message;
 
-    public ctor(RobotStepManager manager, StepInfo info)
+    public ctor(RobotStepManager manager, RobotStepInfo info)
     {
         this._message = A_LuaProtobufSchedule.CreateMessageByJson(info.full_name, info.message_json);
     }
 
     public fun Execute() : bool
     {
-        this._manager.socket.SendMessage(this._message);
+        if (this._info.cmd_list[1] == null)
+        {
+            this._manager.socket.SendMessage(this._message);
+            return true;
+        }
+
+        // 拷贝消息
+        var dst_json = lua.protobuf.message_jsonencode(this._message, true, false);
+        var error, dst_info:Map<string, any> = tcall(ALittle.String_JsonDecode, dst_json);
+        if (error != null)
+        {
+            g_GCenter._grobot.AddLog(error);
+            return false;
+        }
+
+        var src_map = new Map<string, Map<string, any>>();
+
+        // 根据指令来设置message的值
+        for (var index, cmd in this._info.cmd_list)
+        {
+            if (cmd.src_id == null)
+            {
+                g_GCenter._grobot.AddLog("unique id in cmd is null");
+                return false;
+            }
+
+            var src_info =  src_map[cmd.src_id];
+            if (src_info == null)
+            {
+                var src_msg = this._manager.GetMessage(cmd.src_id);
+                if (src_msg == null)
+                {
+                    g_GCenter._grobot.AddLog("can't find message by unique id:"..cmd.src_id);
+                    return false;
+                }
+
+                var src_json = lua.protobuf.message_jsonencode(src_msg, true, false);
+                error, src_info = tcall(ALittle.String_JsonDecode, src_json);
+                if (error != null)
+                {
+                    g_GCenter._grobot.AddLog(error);
+                    return false;
+                }
+
+                src_map[cmd.src_id] = src_info;
+            }
+
+            var src_field_list = ALittle.String_Split(cmd.src_field, ".");
+            var src_field:any = null;
+            for (var _, field_name in src_field_list)
+            {
+
+                src_info = src_info[field_name];
+                if (src_info == null)
+                {
+                    g_GCenter._grobot.AddLog("unique id:"..cmd.src_id.." can't find "..cmd.src_field..", error field:"..field_name);
+                    return false;
+                }
+            }
+
+            var dst_field_list = ALittle.String_Split(cmd.dst_field, ".");
+            var dst_field_len = ALittle.List_MaxN(dst_field_list);
+            var dst_temp = dst_info;
+            for (var i = 1; i <= dst_field_len; 1)
+            {
+                var field_name = dst_field_list[i];
+                if (dst_temp[field_name] == null)
+                {
+                    g_GCenter._grobot.AddLog("unique id:"..this._info.full_name.." can't find "..cmd.dst_field..", error field:"..field_name);
+                    return false;
+                }
+                if (i < dst_field_len)
+                	dst_temp = dst_temp[field_name];
+            }
+            dst_temp[dst_field_list[dst_field_len]] = src_info;
+        }
+        var new_message = A_LuaProtobufSchedule.CreateMessageByStruct(this._info.full_name, dst_info);
+        if (new_message == null) return false;
+        this._manager.socket.SendMessage(new_message);
         return true;
     }
+
+    public fun Trace()
+    {
+        var ref = reflect(this);
+        g_GCenter._grobot.AddLog(ref.__name..":"..this._info.full_name);
+    }
+
+    public fun GetMessage() : lua.protobuf_message { return this._message; }
 }
 
-protected class RobotStepDelayMessage : RobotStep
+protected class RobotStepDelay : RobotStep
 {
     private ALittle.LoopTimer _loop;
 
-    public ctor(RobotStepManager manager, StepInfo info)
+    public ctor(RobotStepManager manager, RobotStepInfo info)
     {
     }
 
@@ -119,15 +216,20 @@ protected class RobotStepManager
     private Map<int, RobotStep> _step_map;
     private Lua.ISocket _socket;
 
+    private Map<string, RobotStep> _unique_map;
+
     private RobotStep _cur_step;
     private ALittle.LoopTimer _timer;
     private int _player_id;
+    private bool _trace;
 
-    public ctor(int player_id, Lua.ISocket socket, RobotStepFile file)
+    public ctor(int player_id, Lua.ISocket socket, RobotStepFile file, bool trace)
     {
+        this._trace = trace;
         this._player_id = player_id;
         this._socket = socket;
         this._step_map = new Map<int, RobotStep>();
+        this._unique_map = new Map<string, RobotStep>();
 
         {
             var step = new RobotStepStart(this, file.start_step);
@@ -137,36 +239,48 @@ protected class RobotStepManager
 
         for (var id, info in file.step_map)
         {
+            var step:RobotStep = null;
             if (info.type == RobotStepType.RST_RECEIVE_MESSAGE)
             {
-                var step = new RobotStepReceiveMessage(this, info);
-                this._step_map[id] = step;
+                step = new RobotStepReceiveMessage(this, info);
             }
             elseif (info.type == RobotStepType.RST_SEND_MESSAGE)
             {
-                var step = new RobotStepSendMessage(this, info);
-                this._step_map[id] = step;
+                step = new RobotStepSendMessage(this, info);
             }
             elseif (info.type == RobotStepType.RST_DELAY)
             {
-                var step = new RobotStepDelayMessage(this, info);
-                this._step_map[id] = step;
+                step = new RobotStepDelay(this, info);
             }
             elseif (info.type == RobotStepType.RST_START)
             {
-                var step = new RobotStepStart(this, info);
-                this._step_map[id] = step;
+                step = new RobotStepStart(this, info);
                 this._cur_step = step;
             }
             elseif (info.type == RobotStepType.RST_LOG)
             {
-                var step = new RobotStepLog(this, info);
+                step = new RobotStepLog(this, info);
+            }
+
+            if (step != null)
+            {
                 this._step_map[id] = step;
+                if (info.unique_id != null)
+                    this._unique_map[info.unique_id] = step;
             }
         }
     }
 
     public get player_id() : int { return this._player_id; }
+    public get trace() : bool { return this._trace; }
+
+    public fun GetMessage(string unique_id) : lua.protobuf_message
+    {
+        if (unique_id == null) return null;
+        var step = this._unique_map[unique_id];
+        if (step == null) return null;
+        return step.GetMessage();
+    }
 
     public fun Start()
     {
@@ -201,6 +315,7 @@ protected class RobotStepManager
         if (next_id == null) return;
         this._cur_step = this._step_map[next_id];
         if (this._cur_step == null) return;
+        if (this._trace) this._cur_step.Trace();
         if (!this._cur_step.Execute()) return;
 
         this._timer = new ALittle.LoopTimer(bind(this.NextStep, this), 1);

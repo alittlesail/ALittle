@@ -74,7 +74,7 @@ public class protobuf
     public static message_getbytesize(protobuf_message msg) : int {}
     public static message_serializetoarray(protobuf_message msg, any buffer, int size) : bool {}
     public static message_parsefromarray(protobuf_message msg, any buffer, int size) : bool {}
-    public static message_jsonencode(protobuf_message msg, bool short_mode) : string {}
+    public static message_jsonencode(protobuf_message msg, bool short_mode, bool always_print_primitive_fields) : string {}
     public static message_jsondecode(protobuf_message msg, string json) : string {}
 
     public static reflection_clearfield(protobuf_reflection reflection, protobuf_message message, protobuf_field_descriptor descriptor) {}

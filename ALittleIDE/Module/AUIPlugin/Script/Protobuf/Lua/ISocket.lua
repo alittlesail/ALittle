@@ -89,7 +89,7 @@ function Lua.ISocket:ReadStruct()
 	if error ~= nil then
 		return error, nil
 	end
-	local content = protobuf.message_jsonencode(msg, true)
+	local content = protobuf.message_jsonencode(msg, true, false)
 	local result, object = Lua.TCall(ALittle.String_JsonDecode, content)
 	if result ~= nil then
 		return result, nil

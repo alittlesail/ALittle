@@ -17,8 +17,17 @@ function Emulator.RobotStep:ReceiveMessage(msg)
 	return true
 end
 
+function Emulator.RobotStep:GetMessage()
+	return nil
+end
+
 function Emulator.RobotStep:Execute()
 	return true
+end
+
+function Emulator.RobotStep:Trace()
+	local ref = (self).__class
+	g_GCenter._grobot:AddLog(ref.__name)
 end
 
 function Emulator.RobotStep.__getter:info()
@@ -26,10 +35,6 @@ function Emulator.RobotStep.__getter:info()
 end
 
 function Emulator.RobotStep:Clear()
-end
-
-function Emulator.RobotStep:Print()
-	ALittle.Log(self._info.id, self._info.type)
 end
 
 assert(Emulator.RobotStep, " extends class:Emulator.RobotStep is nil")
@@ -52,7 +57,17 @@ function Emulator.RobotStepReceiveMessage:ReceiveMessage(msg)
 		return false
 	end
 	self._message = msg
+	ALittle.Log(self._full_name)
 	return true
+end
+
+function Emulator.RobotStepReceiveMessage:Trace()
+	local ref = (self).__class
+	g_GCenter._grobot:AddLog(ref.__name .. ":" .. self._full_name)
+end
+
+function Emulator.RobotStepReceiveMessage:GetMessage()
+	return self._message
 end
 
 function Emulator.RobotStepReceiveMessage:Execute()
@@ -80,24 +95,95 @@ function Emulator.RobotStepSendMessage:Ctor(manager, info)
 end
 
 function Emulator.RobotStepSendMessage:Execute()
-	self._manager.socket:SendMessage(self._message)
+	if self._info.cmd_list[1] == nil then
+		self._manager.socket:SendMessage(self._message)
+		return true
+	end
+	local dst_json = protobuf.message_jsonencode(self._message, true, false)
+	local error, dst_info = Lua.TCall(ALittle.String_JsonDecode, dst_json)
+	if error ~= nil then
+		g_GCenter._grobot:AddLog(error)
+		return false
+	end
+	local src_map = {}
+	for index, cmd in ___ipairs(self._info.cmd_list) do
+		if cmd.src_id == nil then
+			g_GCenter._grobot:AddLog("unique id in cmd is null")
+			return false
+		end
+		local src_info = src_map[cmd.src_id]
+		if src_info == nil then
+			local src_msg = self._manager:GetMessage(cmd.src_id)
+			if src_msg == nil then
+				g_GCenter._grobot:AddLog("can't find message by unique id:" .. cmd.src_id)
+				return false
+			end
+			local src_json = protobuf.message_jsonencode(src_msg, true, false)
+			error, src_info = Lua.TCall(ALittle.String_JsonDecode, src_json)
+			if error ~= nil then
+				g_GCenter._grobot:AddLog(error)
+				return false
+			end
+			src_map[cmd.src_id] = src_info
+		end
+		local src_field_list = ALittle.String_Split(cmd.src_field, ".")
+		local src_field = nil
+		for _, field_name in ___ipairs(src_field_list) do
+			src_info = src_info[field_name]
+			if src_info == nil then
+				g_GCenter._grobot:AddLog("unique id:" .. cmd.src_id .. " can't find " .. cmd.src_field .. ", error field:" .. field_name)
+				return false
+			end
+		end
+		local dst_field_list = ALittle.String_Split(cmd.dst_field, ".")
+		local dst_field_len = ALittle.List_MaxN(dst_field_list)
+		local dst_temp = dst_info
+		local i = 1
+		while true do
+			if not(i <= dst_field_len) then break end
+			local field_name = dst_field_list[i]
+			if dst_temp[field_name] == nil then
+				g_GCenter._grobot:AddLog("unique id:" .. self._info.full_name .. " can't find " .. cmd.dst_field .. ", error field:" .. field_name)
+				return false
+			end
+			if i < dst_field_len then
+				dst_temp = dst_temp[field_name]
+			end
+			i = i+(1)
+		end
+		dst_temp[dst_field_list[dst_field_len]] = src_info
+	end
+	local new_message = A_LuaProtobufSchedule:CreateMessageByStruct(self._info.full_name, dst_info)
+	if new_message == nil then
+		return false
+	end
+	self._manager.socket:SendMessage(new_message)
 	return true
 end
 
-assert(Emulator.RobotStep, " extends class:Emulator.RobotStep is nil")
-Emulator.RobotStepDelayMessage = Lua.Class(Emulator.RobotStep, "Emulator.RobotStepDelayMessage")
-
-function Emulator.RobotStepDelayMessage:Ctor(manager, info)
+function Emulator.RobotStepSendMessage:Trace()
+	local ref = (self).__class
+	g_GCenter._grobot:AddLog(ref.__name .. ":" .. self._info.full_name)
 end
 
-function Emulator.RobotStepDelayMessage:Execute()
+function Emulator.RobotStepSendMessage:GetMessage()
+	return self._message
+end
+
+assert(Emulator.RobotStep, " extends class:Emulator.RobotStep is nil")
+Emulator.RobotStepDelay = Lua.Class(Emulator.RobotStep, "Emulator.RobotStepDelay")
+
+function Emulator.RobotStepDelay:Ctor(manager, info)
+end
+
+function Emulator.RobotStepDelay:Execute()
 	self:Clear()
 	self._loop = ALittle.LoopTimer(Lua.Bind(self._manager.NextStep, self._manager), self._info.delay_ms)
 	self._loop:Start()
 	return false
 end
 
-function Emulator.RobotStepDelayMessage:Clear()
+function Emulator.RobotStepDelay:Clear()
 	if self._loop ~= nil then
 		self._loop:Stop()
 		self._loop = nil
@@ -106,38 +192,57 @@ end
 
 Emulator.RobotStepManager = Lua.Class(nil, "Emulator.RobotStepManager")
 
-function Emulator.RobotStepManager:Ctor(player_id, socket, file)
+function Emulator.RobotStepManager:Ctor(player_id, socket, file, trace)
+	___rawset(self, "_trace", trace)
 	___rawset(self, "_player_id", player_id)
 	___rawset(self, "_socket", socket)
 	___rawset(self, "_step_map", {})
+	___rawset(self, "_unique_map", {})
 	do
 		local step = Emulator.RobotStepStart(self, file.start_step)
 		self._step_map[file.start_step.id] = step
 		___rawset(self, "_cur_step", step)
 	end
 	for id, info in ___pairs(file.step_map) do
+		local step = nil
 		if info.type == Emulator.RobotStepType.RST_RECEIVE_MESSAGE then
-			local step = Emulator.RobotStepReceiveMessage(self, info)
-			self._step_map[id] = step
+			step = Emulator.RobotStepReceiveMessage(self, info)
 		elseif info.type == Emulator.RobotStepType.RST_SEND_MESSAGE then
-			local step = Emulator.RobotStepSendMessage(self, info)
-			self._step_map[id] = step
+			step = Emulator.RobotStepSendMessage(self, info)
 		elseif info.type == Emulator.RobotStepType.RST_DELAY then
-			local step = Emulator.RobotStepDelayMessage(self, info)
-			self._step_map[id] = step
+			step = Emulator.RobotStepDelay(self, info)
 		elseif info.type == Emulator.RobotStepType.RST_START then
-			local step = Emulator.RobotStepStart(self, info)
-			self._step_map[id] = step
+			step = Emulator.RobotStepStart(self, info)
 			___rawset(self, "_cur_step", step)
 		elseif info.type == Emulator.RobotStepType.RST_LOG then
-			local step = Emulator.RobotStepLog(self, info)
+			step = Emulator.RobotStepLog(self, info)
+		end
+		if step ~= nil then
 			self._step_map[id] = step
+			if info.unique_id ~= nil then
+				self._unique_map[info.unique_id] = step
+			end
 		end
 	end
 end
 
 function Emulator.RobotStepManager.__getter:player_id()
 	return self._player_id
+end
+
+function Emulator.RobotStepManager.__getter:trace()
+	return self._trace
+end
+
+function Emulator.RobotStepManager:GetMessage(unique_id)
+	if unique_id == nil then
+		return nil
+	end
+	local step = self._unique_map[unique_id]
+	if step == nil then
+		return nil
+	end
+	return step:GetMessage()
 end
 
 function Emulator.RobotStepManager:Start()
@@ -174,6 +279,9 @@ function Emulator.RobotStepManager:NextStep()
 	self._cur_step = self._step_map[next_id]
 	if self._cur_step == nil then
 		return
+	end
+	if self._trace then
+		self._cur_step:Trace()
 	end
 	if not self._cur_step:Execute() then
 		return

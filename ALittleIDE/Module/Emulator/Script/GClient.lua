@@ -313,7 +313,7 @@ function Emulator.GClient:HandleLogItemSelected(event)
 	self._show_search_key.text = ""
 	self._cur_item_user_data = event.target._user_data
 	if self._cur_item_user_data.json_content == nil then
-		self._cur_item_user_data.json_content = protobuf.message_jsonencode(self._cur_item_user_data.msg, false)
+		self._cur_item_user_data.json_content = protobuf.message_jsonencode(self._cur_item_user_data.msg, false, true)
 	end
 	self._json_codeedit:OnClose()
 	self._json_codeedit:Load("temp.json", self._cur_item_user_data.json_content, nil)

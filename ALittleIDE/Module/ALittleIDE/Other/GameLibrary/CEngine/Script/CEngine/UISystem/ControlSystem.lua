@@ -14,7 +14,8 @@ function ALittle.ControlSystem:Ctor(module_name, crypt_mode)
 	___rawset(self, "_log_error", true)
 	___rawset(self, "_use_plugin_class", true)
 	___rawset(self, "_font_map", {})
-	___rawset(self, "_plugin_map", {})
+	___rawset(self, "_child_plugin_map", {})
+	___rawset(self, "_parent_plugin_map", {})
 	___rawset(self, "_name_map_info", {})
 	___rawset(self, "_name_map_info_cache", {})
 	___rawset(self, "_module_name", module_name)
@@ -49,11 +50,17 @@ function ALittle.ControlSystem:RegisterFont(src, dst)
 end
 
 function ALittle.ControlSystem:RegisterPlugin(module_name, plugin)
-	self._plugin_map[module_name] = plugin
+	self._child_plugin_map[module_name] = plugin
+	plugin._parent_plugin_map[self._module_name] = self
 end
 
 function ALittle.ControlSystem:UnRegisterPlugin(module_name)
-	self._plugin_map[module_name] = nil
+	local plugin = self._child_plugin_map[module_name]
+	if plugin == nil then
+		return
+	end
+	self._child_plugin_map[module_name] = nil
+	plugin._parent_plugin_map[self._module_name] = nil
 end
 
 function ALittle.ControlSystem:RegisterInfoByHttp()
@@ -123,9 +130,12 @@ end
 
 function ALittle.ControlSystem:CreateControlObject(info)
 	if info.__module ~= nil and info.__module ~= self._module_name then
-		local plugin = self._plugin_map[info.__module]
+		local plugin = self._child_plugin_map[info.__module]
 		if plugin == nil then
-			ALittle.Log("unknow module " .. info.__module)
+			plugin = self._parent_plugin_map[info.__module]
+		end
+		if plugin == nil then
+			ALittle.Log("unknow module " .. info.__module .. " cur_module:" .. self._module_name)
 			return nil
 		end
 		return plugin:CreateControlObject(info)
@@ -265,7 +275,7 @@ function ALittle.ControlSystem:CreateControl(name, target_logic, parent)
 	if object ~= nil then
 		return object
 	end
-	for module_name, plugin in ___pairs(self._plugin_map) do
+	for module_name, plugin in ___pairs(self._child_plugin_map) do
 		object = plugin:CreateControlImpl(name, target_logic, parent)
 		if object ~= nil then
 			return object
@@ -278,7 +288,13 @@ end
 function ALittle.ControlSystem:CollectTextureName(name, map)
 	local info = self:LoadInfo(name)
 	if info == nil then
-		for module_name, plugin in ___pairs(self._plugin_map) do
+		for module_name, plugin in ___pairs(self._child_plugin_map) do
+			info = plugin:LoadInfo(name)
+			if info ~= nil then
+				break
+			end
+		end
+		for module_name, plugin in ___pairs(self._parent_plugin_map) do
 			info = plugin:LoadInfo(name)
 			if info ~= nil then
 				break
@@ -320,7 +336,10 @@ function ALittle.ControlSystem:CreateInfo(info)
 		if info.__module == nil or info.__module == self._module_name then
 			return self:LoadInfo(info.__include)
 		end
-		local plugin = self._plugin_map[info.__module]
+		local plugin = self._child_plugin_map[info.__module]
+		if plugin == nil then
+			plugin = self._parent_plugin_map[info.__module]
+		end
 		if plugin ~= nil then
 			return plugin:LoadInfo(info.__include)
 		end
@@ -337,7 +356,10 @@ function ALittle.ControlSystem:CreateInfo(info)
 					return nil
 				end
 			else
-				local plugin = self._plugin_map[info.__module]
+				local plugin = self._child_plugin_map[info.__module]
+				if plugin == nil then
+					plugin = self._child_plugin_map[info.__module]
+				end
 				if plugin == nil then
 					ALittle.Log("ControlSystem CreateInfo extends Failed, can't find plugin. extends:" .. extendsv .. " module:" .. info.__module)
 					return nil

@@ -193,12 +193,12 @@ int protobuf_message_parsefromarray(void* m, void* buffer, int size) {
     return ((google::protobuf::Message*)m)->ParseFromArray(buffer, size) ? 1 : 0;
 }
 
-const char* protobuf_message_jsonencode(void* m, int short_mode) {
+const char* protobuf_message_jsonencode(void* m, int short_mode, int always_print_primitive_fields) {
     static std::string temp;
     temp.clear();
     google::protobuf::util::JsonOptions option;
     option.add_whitespace = short_mode == 0;
-    option.always_print_primitive_fields = true;
+    option.always_print_primitive_fields = always_print_primitive_fields != 0;
     option.preserve_proto_field_names = true;
     option.always_print_enums_as_ints = true;
     if (google::protobuf::util::MessageToJsonString(*(const google::protobuf::Message*)m, &temp, option).ok())

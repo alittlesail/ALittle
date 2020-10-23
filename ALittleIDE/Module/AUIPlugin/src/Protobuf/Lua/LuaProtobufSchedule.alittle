@@ -205,14 +205,34 @@ public class LuaProtobufSchedule : ALittle.ISchedule
         return msg;
     }
 
+    protected fun ClearEmptyTable(any t)
+    {
+        if (lua.type(t) != "table") return;
+
+        for (var key, value in cast<Map<any, any>>(t))
+        {
+            if (lua.type(value) == "table")
+            {
+                if (lua.next(value) == null)
+                    cast<Map<any, any>>(t)[key] = null;
+                else
+                    this.ClearEmptyTable(value);
+            }
+        }
+    }
+
     public fun CreateMessageByStruct(string full_name, any info) : lua.protobuf_message
     {
         var msg = this.CreateMessage(full_name);
         if (msg == null) return null;
 
+        this.ClearEmptyTable(info);
+
         var error, json = tcall(ALittle.String_JsonEncode, info);
         if (error != null) return null;
-		lua.protobuf.message_jsondecode(msg, json);
+		error = lua.protobuf.message_jsondecode(msg, json);
+        if (error != null) ALittle.Log("CreateMessageByStruct", error, json);
+        if (error != null) return null;
         return msg;
     }
 

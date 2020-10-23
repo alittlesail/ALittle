@@ -65,7 +65,7 @@ public class IDETreeLogic : ALittle.DisplayLayout
 
 	public fun Save()
 	{
-        var content = lua.protobuf.message_jsonencode(this._root.detail_info.message, false);
+        var content = lua.protobuf.message_jsonencode(this._root.detail_info.message, false, false);
 		if (content == null) return;
 		
 		g_GProtoCache.SetConfig(this._root.detail_info.info.full_name, content);

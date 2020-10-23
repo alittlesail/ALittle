@@ -27,7 +27,8 @@ public class ControlSystem
     private TextureManager      _texture_mgr;
     
     private Map<string, string> _font_map;
-    private Map<string, ControlSystem> _plugin_map;
+    private Map<string, ControlSystem> _child_plugin_map;
+    private Map<string, ControlSystem> _parent_plugin_map;
     
     // @param module_name 模块名
     // @param crypt_mode 是否是加密模式
@@ -42,7 +43,8 @@ public class ControlSystem
         this._font_map = new Map<string, string>();
 
         // 插件模块
-        this._plugin_map = new Map<string, ControlSystem>();
+        this._child_plugin_map = new Map<string, ControlSystem>();
+        this._parent_plugin_map = new Map<string, ControlSystem>();
         
         // 定义缓存
         this._name_map_info = new Map<string, DisplayInfo>();
@@ -103,12 +105,16 @@ public class ControlSystem
 
     public fun RegisterPlugin(string module_name, ControlSystem plugin)
     {
-        this._plugin_map[module_name] = plugin;
+        this._child_plugin_map[module_name] = plugin;
+        plugin._parent_plugin_map[this._module_name] = this;
     }
 
     public fun UnRegisterPlugin(string module_name)
     {
-        this._plugin_map[module_name] = null;
+        var plugin = this._child_plugin_map[module_name];
+        if (plugin == null) return;
+        this._child_plugin_map[module_name] = null;
+        plugin._parent_plugin_map[this._module_name] = null;
     }
     
     public await fun RegisterInfoByHttp()
@@ -217,11 +223,12 @@ public class ControlSystem
     {
         if (info.__module != null && info.__module != this._module_name)
         {
-            var plugin = this._plugin_map[info.__module];
+            var plugin = this._child_plugin_map[info.__module];
+            if (plugin == null) plugin = this._parent_plugin_map[info.__module];
             if (plugin == null)
             {
-                Log("unknow module "..info.__module);
-                return null;
+                Log("unknow module "..info.__module.." cur_module:"..this._module_name);
+            	return null;
             }
             return plugin.CreateControlObject(info);
         }
@@ -381,7 +388,7 @@ public class ControlSystem
         var object = this.CreateControlImpl(name, target_logic, parent);
         if (object != null) return cast<T>(object);
 
-        for (var module_name, plugin in this._plugin_map)
+        for (var module_name, plugin in this._child_plugin_map)
         {
             object = plugin.CreateControlImpl(name, target_logic, parent);
             if (object != null) return cast<T>(object);
@@ -399,7 +406,12 @@ public class ControlSystem
         var info = this.LoadInfo(name);
         if (info == null)
         {
-            for (var module_name, plugin in this._plugin_map)
+            for (var module_name, plugin in this._child_plugin_map)
+            {
+                info = plugin.LoadInfo(name);
+                if (info != null) break;
+            }
+            for (var module_name, plugin in this._parent_plugin_map)
             {
                 info = plugin.LoadInfo(name);
                 if (info != null) break;
@@ -449,7 +461,8 @@ public class ControlSystem
         {
             if (info.__module == null || info.__module == this._module_name)
             	return this.LoadInfo(info.__include);
-            var plugin = this._plugin_map[info.__module];
+            var plugin = this._child_plugin_map[info.__module];
+            if (plugin == null) plugin = this._parent_plugin_map[info.__module];
             if (plugin != null) return plugin.LoadInfo(info.__include);
             return null;
         }
@@ -472,7 +485,8 @@ public class ControlSystem
                 }
                 else
                 {
-                    var plugin = this._plugin_map[info.__module];
+                    var plugin = this._child_plugin_map[info.__module];
+                    if (plugin == null) plugin = this._child_plugin_map[info.__module];
                     if (plugin == null)
                     {
                         Log("ControlSystem CreateInfo extends Failed, can't find plugin. extends:"..extendsv.." module:"..info.__module);

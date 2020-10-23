@@ -105,6 +105,18 @@ protected class GBlueprint : ALittle.DisplayLayout
 
     public get step_file() : RobotStepFile { return this._step_file; }
 
+    public fun Clear()
+    {
+        this._file_path = null;
+        this._save = true;
+        this._file_title.text = "";
+
+        this._step_file = null;
+        this._link_map = new Map<int, RobotStepLinkInfo>();
+        this._cur_line = null;
+        this._detail_scroll_screen.RemoveAllChild();
+    }
+
     public fun CreateRobotManager(Lua.ISocket socket) : RobotStepManager
     {
         return new RobotStepManager(socket, this._step_file);
@@ -254,6 +266,7 @@ protected class GBlueprint : ALittle.DisplayLayout
     {
         var link_info = cast<RobotStepLogLinkInfo>(event.target._user_data);
         link_info.info.log = link_info._log_input.text;
+        if (link_info.info.log == "") link_info.info.log = null;
         this.Save(false);
     }
 
@@ -388,19 +401,17 @@ protected class GBlueprint : ALittle.DisplayLayout
             for (var id, pre_link in link_info.pre_link)
             {
                 var tri = pre_link._line_tri;
-                if (tri != null)
-                {
-                    var next_image:ALittle.DisplayObject;
-                    if (pre_link.info.next_type == RobotStepLineType.RSLT_LEFT)
-                        next_image = link_info._left_step_image;
-                    elseif (pre_link.info.next_type == RobotStepLineType.RSLT_RIGHT)
-                        next_image = link_info._right_step_image;
 
-                    if (next_image != null)
-                    {
-                        var next_x, next_y = next_image.LocalToGlobal(this._detail_scroll_screen.container);
-                        tri.x3 = next_x + next_image.width / 2; tri.y3 = next_y + next_image.height / 2;
-                    }
+                var next_image:ALittle.DisplayObject;
+                if (pre_link.info.next_type == RobotStepLineType.RSLT_LEFT)
+                    next_image = link_info._left_step_image;
+                elseif (pre_link.info.next_type == RobotStepLineType.RSLT_RIGHT)
+                    next_image = link_info._right_step_image;
+
+                if (next_image != null)
+                {
+                    var next_x, next_y = next_image.LocalToGlobal(this._detail_scroll_screen.container);
+                    tri.x3 = next_x + next_image.width / 2; tri.y3 = next_y + next_image.height / 2;
                 }
             }
         }
@@ -475,6 +486,22 @@ protected class GBlueprint : ALittle.DisplayLayout
         if (link_info.message != null)
             link_info.info.message_json = lua.protobuf.message_jsonencode(link_info.message, true);
         return true;
+    }
+
+    // 删除文件夹
+    public fun HandleFileTreeDeleteDir(AUIPlugin.AUIFileDeleteDirEvent event)
+    {
+        if (this._file_path == null) return;
+        if (ALittle.File_GetFileAttr(this._file_path) != null) return;
+        this.Clear();
+    }
+
+    // 文件删除
+    public fun HandleFileTreeDeleteFile(AUIPlugin.AUIFileDeleteFileEvent event)
+    {
+        if (event.path != this._file_path) return;
+
+        this.Clear();
     }
 
     // 选中文件

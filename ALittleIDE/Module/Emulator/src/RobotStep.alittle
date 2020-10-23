@@ -65,7 +65,8 @@ protected class RobotStepLog : RobotStep
 
     public fun Execute() : bool
     {
-        g_GCenter._grobot.AddLog(this._info.log);
+        if (this._info.log != null)
+        	g_GCenter._grobot.AddLog(this._info.log);
         return true;
     }
 }

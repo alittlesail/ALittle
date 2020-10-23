@@ -80,6 +80,13 @@ public class IDECodeTree : IDECodeTreeLogic
         var name = g_AUITool.ShowRename("", x, y + this._head.height, 200);
 		if (name == null || name == "") return;
 
+        // 检查文件是否以存在
+        if (ALittle.File_GetFileAttr(this._user_info.path.."/"..name..".alittle") != null)
+        {
+            g_AUITool.ShowNotice("提示", "文件名已存在");
+            return;
+        }
+
         var content = "\nnamespace "..g_IDEProject.project.name..";\n\nprotected class "..name.."\n{\n}\n";
 		ALittle.File_WriteTextToFile(content, this._user_info.path.."/"..name..".alittle");
 		this.Refresh();

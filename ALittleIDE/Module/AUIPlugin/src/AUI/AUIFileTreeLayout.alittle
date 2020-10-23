@@ -133,6 +133,13 @@ public class AUIFileTree : AUIFileTreeLogic
         var name = g_AUITool.ShowRename("", x, y + this._head.height, 200);
 		if (name == null || name == "") return;
 
+        // 检查文件是否以存在
+        if (ALittle.File_GetFileAttr(this._user_info.path.."/"..name) != null)
+        {
+            g_AUITool.ShowNotice("提示", "文件名已存在");
+            return;
+        }
+
 		ALittle.File_WriteTextToFile("", this._user_info.path.."/"..name);
 		this.Refresh();
 
@@ -483,6 +490,13 @@ public class AUIFileTreeItem : AUIFileTreeLogic
 		if (new_name == null || new_name == "") return;
 
 		var new_path = ALittle.File_GetFilePathByPath(old_path).."/"..new_name;
+
+        // 检查文件是否以存在
+        if (ALittle.File_GetFileAttr(new_path) != null)
+        {
+            g_AUITool.ShowNotice("提示", "文件名已存在");
+            return;
+        }
 
 		this._user_info.path = new_path;
 		this._user_info.name = new_name;

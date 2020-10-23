@@ -128,6 +128,16 @@ function Emulator.GBlueprint.__getter:step_file()
 	return self._step_file
 end
 
+function Emulator.GBlueprint:Clear()
+	self._file_path = nil
+	self._save = true
+	self._file_title.text = ""
+	self._step_file = nil
+	self._link_map = {}
+	self._cur_line = nil
+	self._detail_scroll_screen:RemoveAllChild()
+end
+
 function Emulator.GBlueprint:CreateRobotManager(socket)
 	return Emulator.RobotStepManager(socket, self._step_file)
 end
@@ -259,6 +269,9 @@ end
 function Emulator.GBlueprint:HandleRobotStepLogChanged(event)
 	local link_info = event.target._user_data
 	link_info.info.log = link_info._log_input.text
+	if link_info.info.log == "" then
+		link_info.info.log = nil
+	end
 	self:Save(false)
 end
 
@@ -384,18 +397,16 @@ function Emulator.GBlueprint:UpdateRobotStepDialogPosition(link_info, x, y)
 	if link_info.pre_link ~= nil then
 		for id, pre_link in ___pairs(link_info.pre_link) do
 			local tri = pre_link._line_tri
-			if tri ~= nil then
-				local next_image
-				if pre_link.info.next_type == Emulator.RobotStepLineType.RSLT_LEFT then
-					next_image = link_info._left_step_image
-				elseif pre_link.info.next_type == Emulator.RobotStepLineType.RSLT_RIGHT then
-					next_image = link_info._right_step_image
-				end
-				if next_image ~= nil then
-					local next_x, next_y = next_image:LocalToGlobal(self._detail_scroll_screen.container)
-					tri.x3 = next_x + next_image.width / 2
-					tri.y3 = next_y + next_image.height / 2
-				end
+			local next_image
+			if pre_link.info.next_type == Emulator.RobotStepLineType.RSLT_LEFT then
+				next_image = link_info._left_step_image
+			elseif pre_link.info.next_type == Emulator.RobotStepLineType.RSLT_RIGHT then
+				next_image = link_info._right_step_image
+			end
+			if next_image ~= nil then
+				local next_x, next_y = next_image:LocalToGlobal(self._detail_scroll_screen.container)
+				tri.x3 = next_x + next_image.width / 2
+				tri.y3 = next_y + next_image.height / 2
 			end
 		end
 	end
@@ -461,6 +472,23 @@ function Emulator.GBlueprint:HandleMessageEditDialogClose()
 		link_info.info.message_json = protobuf.message_jsonencode(link_info.message, true)
 	end
 	return true
+end
+
+function Emulator.GBlueprint:HandleFileTreeDeleteDir(event)
+	if self._file_path == nil then
+		return
+	end
+	if ALittle.File_GetFileAttr(self._file_path) ~= nil then
+		return
+	end
+	self:Clear()
+end
+
+function Emulator.GBlueprint:HandleFileTreeDeleteFile(event)
+	if event.path ~= self._file_path then
+		return
+	end
+	self:Clear()
 end
 
 function Emulator.GBlueprint:HandleFileTreeSelectFile(event)

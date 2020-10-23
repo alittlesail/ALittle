@@ -26,6 +26,7 @@ protected class GRobot : ALittle.DisplayLayout
 
     // 所有玩家对象
     private Map<int, PlayerInfo> _player_map;
+    private int _cur_create_count;
     private Map<Lua.ISocket, PlayerInfo> _socket_map;
 
     public fun Setup()
@@ -48,6 +49,8 @@ protected class GRobot : ALittle.DisplayLayout
 
         this._blueprint_filetree.SetRoot(g_GConfig.GetString("blueprint_root", ""), bind(this.HandleFileTreeRightMenu, this));
         this._blueprint_filetree.AddEventListener(this._gblueprint, this._gblueprint.HandleFileTreeSelectFile);
+        this._blueprint_filetree.AddEventListener(this._gblueprint, this._gblueprint.HandleFileTreeDeleteFile);
+        this._blueprint_filetree.AddEventListener(this._gblueprint, this._gblueprint.HandleFileTreeDeleteDir);
         this._blueprint_filetree.SetFold(1, true);
 
         this._gblueprint.Setup();
@@ -64,6 +67,7 @@ protected class GRobot : ALittle.DisplayLayout
             }
             this._player_map = null;
         }
+        this._cur_create_count = 0;
         this._socket_map = new Map<Lua.ISocket, PlayerInfo>();
     }
 
@@ -114,7 +118,46 @@ protected class GRobot : ALittle.DisplayLayout
         this._player_map[player_id] = null;
     }
 
-    private async fun HandleStartClick(ALittle.UIClickEvent event)
+    private async fun CreatePlayer(string ip, int port, int total_count, int id
+                                  , Functor<(int):lua.protobuf_message> robot_login
+                                  , Functor<await(string, int, lua.protobuf_message):string,Lua.ISocket> login_func)
+    {
+        var msg = robot_login(id);
+        var call_error, error, client = tcall(login_func, ip, port, msg);
+        if (call_error != null) error = call_error;
+        if (error != null)
+        {
+            this.AddLog(id..":"..error);
+        }
+        else
+        {
+            var info = new PlayerInfo();
+            this._player_map[id] = info;
+            this._socket_map[client] = info;
+            info.client = client;
+            // 设置断开的回调函数
+            info.client.disconnect_callback = bind(this.HandleClientSocketDisconnected, this, id);
+            info.robot = this._gblueprint.CreateRobotManager(info.client);
+            info.robot.Start();
+            // 开始循环接收消息包
+            info.client.ReceiveMessage();
+            this.AddLog(id..":login succeed");
+        }
+
+        this.HandleCreatePlayerEnd(total_count, id);
+    }
+
+    private fun HandleCreatePlayerEnd(int total_count, int id)
+    {
+        this._cur_create_count += 1;
+        if (this._cur_create_count < total_count) return;
+
+        this._start_button.disabled = false;
+        this._start_button.visible = false;
+        this._stop_button.visible = true;
+    }
+
+    private fun HandleStartClick(ALittle.UIClickEvent event)
     {
         if (this._gblueprint.step_file == null)
         {
@@ -171,35 +214,11 @@ protected class GRobot : ALittle.DisplayLayout
 
         this._player_map = new Map<int, PlayerInfo>();
 
-        // 开始创建玩家对象
+        // 开始创建玩家对象，间隔1毫秒创建
+        var loop_list = new ALittle.LoopList();
         for (var id = min_player_id; id <= max_player_id; 1)
-        {
-            var msg = robot_login(id);
-            var call_error, error, client = tcall(login_func, ip, port, msg);
-            if (call_error != null) error = call_error;
-
-            if (call_error != null)
-            {
-                this.AddLog(call_error);
-            }
-            else
-            {
-                var info = new PlayerInfo();
-                this._player_map[id] = info;
-                this._socket_map[client] = info;
-                info.client = client;
-                // 设置断开的回调函数
-                info.client.disconnect_callback = bind(this.HandleClientSocketDisconnected, this, id);
-                info.robot = this._gblueprint.CreateRobotManager(info.client);
-                info.robot.Start();
-                // 开始循环接收消息包
-                info.client.ReceiveMessage();
-                this.AddLog("login succeed:"..id);
-            }
-        }
-        this._start_button.disabled = false;
-        this._start_button.visible = false;
-        this._stop_button.visible = true;
+            loop_list.AddUpdater(new ALittle.LoopTimer(bind(this.CreatePlayer, this, ip, port, max_player_id - min_player_id + 1, id, robot_login, login_func), 50));
+        loop_list.Start();
 
         g_GConfig.SetConfig("min_player_id", min_player_id);
         g_GConfig.SetConfig("max_player_id", max_player_id);

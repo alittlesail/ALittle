@@ -11,6 +11,12 @@ name_list = {"target","path"},
 type_list = {"ALittle.DisplayObject","string"},
 option_map = {}
 })
+ALittle.RegStruct(-1718818319, "AUIPlugin.AUIFileDeleteDirEvent", {
+name = "AUIPlugin.AUIFileDeleteDirEvent", ns_name = "AUIPlugin", rl_name = "AUIFileDeleteDirEvent", hash_code = -1718818319,
+name_list = {"target","path"},
+type_list = {"ALittle.DisplayObject","string"},
+option_map = {}
+})
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
 name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
 name_list = {"target"},
@@ -21,6 +27,12 @@ ALittle.RegStruct(-1010534958, "Emulator.PlayerInfo", {
 name = "Emulator.PlayerInfo", ns_name = "Emulator", rl_name = "PlayerInfo", hash_code = -1010534958,
 name_list = {"client","robot"},
 type_list = {"Lua.ISocket","Emulator.RobotStepManager"},
+option_map = {}
+})
+ALittle.RegStruct(-545221029, "AUIPlugin.AUIFileDeleteFileEvent", {
+name = "AUIPlugin.AUIFileDeleteFileEvent", ns_name = "AUIPlugin", rl_name = "AUIFileDeleteFileEvent", hash_code = -545221029,
+name_list = {"target","path"},
+type_list = {"ALittle.DisplayObject","string"},
 option_map = {}
 })
 
@@ -43,6 +55,8 @@ function Emulator.GRobot:Setup()
 	self._max_player_id.text = Emulator.g_GConfig:GetInt("max_player_id", 1)
 	self._blueprint_filetree:SetRoot(Emulator.g_GConfig:GetString("blueprint_root", ""), Lua.Bind(self.HandleFileTreeRightMenu, self))
 	self._blueprint_filetree:AddEventListener(___all_struct[2117383637], self._gblueprint, self._gblueprint.HandleFileTreeSelectFile)
+	self._blueprint_filetree:AddEventListener(___all_struct[-545221029], self._gblueprint, self._gblueprint.HandleFileTreeDeleteFile)
+	self._blueprint_filetree:AddEventListener(___all_struct[-1718818319], self._gblueprint, self._gblueprint.HandleFileTreeDeleteDir)
 	self._blueprint_filetree:SetFold(1, true)
 	self._gblueprint:Setup()
 end
@@ -59,6 +73,7 @@ function Emulator.GRobot:ClearAllPlayer()
 		end
 		self._player_map = nil
 	end
+	self._cur_create_count = 0
 	self._socket_map = {}
 end
 
@@ -101,6 +116,39 @@ function Emulator.GRobot:HandleClientSocketDisconnected(player_id, socket)
 	self._player_map[player_id] = nil
 end
 
+function Emulator.GRobot:CreatePlayer(ip, port, total_count, id, robot_login, login_func)
+	local msg = robot_login(id)
+	local call_error, error, client = Lua.TCall(login_func, ip, port, msg)
+	if call_error ~= nil then
+		error = call_error
+	end
+	if error ~= nil then
+		self:AddLog(id .. ":" .. error)
+	else
+		local info = {}
+		self._player_map[id] = info
+		self._socket_map[client] = info
+		info.client = client
+		info.client.disconnect_callback = Lua.Bind(self.HandleClientSocketDisconnected, self, id)
+		info.robot = self._gblueprint:CreateRobotManager(info.client)
+		info.robot:Start()
+		info.client:ReceiveMessage()
+		self:AddLog(id .. ":login succeed")
+	end
+	self:HandleCreatePlayerEnd(total_count, id)
+end
+Emulator.GRobot.CreatePlayer = Lua.CoWrap(Emulator.GRobot.CreatePlayer)
+
+function Emulator.GRobot:HandleCreatePlayerEnd(total_count, id)
+	self._cur_create_count = self._cur_create_count + (1)
+	if self._cur_create_count < total_count then
+		return
+	end
+	self._start_button.disabled = false
+	self._start_button.visible = false
+	self._stop_button.visible = true
+end
+
 function Emulator.GRobot:HandleStartClick(event)
 	if self._gblueprint.step_file == nil then
 		g_AUITool:ShowNotice("提示", "请先选择蓝图")
@@ -141,32 +189,14 @@ function Emulator.GRobot:HandleStartClick(event)
 	self._start_button.disabled = true
 	self:AddLog("Started!")
 	self._player_map = {}
+	local loop_list = ALittle.LoopList()
 	local id = min_player_id
 	while true do
 		if not(id <= max_player_id) then break end
-		local msg = robot_login(id)
-		local call_error, error, client = Lua.TCall(login_func, ip, port, msg)
-		if call_error ~= nil then
-			error = call_error
-		end
-		if call_error ~= nil then
-			self:AddLog(call_error)
-		else
-			local info = {}
-			self._player_map[id] = info
-			self._socket_map[client] = info
-			info.client = client
-			info.client.disconnect_callback = Lua.Bind(self.HandleClientSocketDisconnected, self, id)
-			info.robot = self._gblueprint:CreateRobotManager(info.client)
-			info.robot:Start()
-			info.client:ReceiveMessage()
-			self:AddLog("login succeed:" .. id)
-		end
+		loop_list:AddUpdater(ALittle.LoopTimer(Lua.Bind(self.CreatePlayer, self, ip, port, max_player_id - min_player_id + 1, id, robot_login, login_func), 50))
 		id = id+(1)
 	end
-	self._start_button.disabled = false
-	self._start_button.visible = false
-	self._stop_button.visible = true
+	loop_list:Start()
 	Emulator.g_GConfig:SetConfig("min_player_id", min_player_id)
 	Emulator.g_GConfig:SetConfig("max_player_id", max_player_id)
 	Emulator.g_GConfig:SetConfig("login_ip", ip)
@@ -179,7 +209,6 @@ function Emulator.GRobot:HandleStartClick(event)
 	self._ip_dropdown.data_list = data_list
 	self._ip_dropdown.text = ""
 end
-Emulator.GRobot.HandleStartClick = Lua.CoWrap(Emulator.GRobot.HandleStartClick)
 
 function Emulator.GRobot:HandleStopClick(event)
 	self:ClearAllPlayer()

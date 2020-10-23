@@ -164,6 +164,10 @@ function ALittleIDE.IDECodeTreeItem:HandleRenameFile()
 		return
 	end
 	local new_path = ALittle.File_GetFilePathByPath(old_path) .. "/" .. new_name
+	if ALittle.File_GetFileAttr(new_path) ~= nil then
+		g_AUITool:ShowNotice("提示", "文件名已存在")
+		return
+	end
 	self._user_info.path = new_path
 	self._user_info.name = new_name
 	self._item_button.text = self._user_info.name

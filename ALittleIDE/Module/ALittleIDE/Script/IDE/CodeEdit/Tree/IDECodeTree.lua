@@ -105,6 +105,10 @@ function ALittleIDE.IDECodeTree:HandleCreateFile()
 	if name == nil or name == "" then
 		return
 	end
+	if ALittle.File_GetFileAttr(self._user_info.path .. "/" .. name .. ".alittle") ~= nil then
+		g_AUITool:ShowNotice("提示", "文件名已存在")
+		return
+	end
 	local content = "\nnamespace " .. ALittleIDE.g_IDEProject.project.name .. ";\n\nprotected class " .. name .. "\n{\n}\n"
 	ALittle.File_WriteTextToFile(content, self._user_info.path .. "/" .. name .. ".alittle")
 	self:Refresh()

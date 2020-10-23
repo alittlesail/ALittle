@@ -273,7 +273,9 @@ function Lua.ISocket:ReceiveMessage()
 	while self:IsConnected() do
 		local error, protobuf_msg = self:ReadMessage()
 		if error ~= nil then
-			ALittle.Log(error)
+			if error ~= "closed" then
+				ALittle.Log(error)
+			end
 			break
 		end
 		self:HandleMessage(protobuf_msg)

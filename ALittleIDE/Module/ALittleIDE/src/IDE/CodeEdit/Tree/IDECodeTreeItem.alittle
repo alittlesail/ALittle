@@ -121,6 +121,13 @@ public class IDECodeTreeItem : IDECodeTreeLogic
 
 		var new_path = ALittle.File_GetFilePathByPath(old_path).."/"..new_name;
 
+        // 检查文件是否以存在
+        if (ALittle.File_GetFileAttr(new_path) != null)
+        {
+            g_AUITool.ShowNotice("提示", "文件名已存在");
+            return;
+        }
+
 		this._user_info.path = new_path;
 		this._user_info.name = new_name;
 

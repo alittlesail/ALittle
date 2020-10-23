@@ -1060,7 +1060,7 @@ function ALittleIDE.DisplayObjectS:DefaultNilStringInputChange(text, need_reset,
 	local old_object = self._object[text]
 	local display_object = self["_" .. text]
 	if display_object.text == "" then
-		if revoke_bind == nil and self._object[text] == nil then
+		if revoke_bind == nil and self._base[text] == display_object.text then
 			return
 		end
 		self._base[text] = nil
@@ -1071,7 +1071,7 @@ function ALittleIDE.DisplayObjectS:DefaultNilStringInputChange(text, need_reset,
 			display_object.text = self._default[text]
 		end
 	else
-		if revoke_bind == nil and self._object[text] == display_object.text then
+		if revoke_bind == nil and self._base[text] == display_object.text then
 			return
 		end
 		self._base[text] = display_object.text

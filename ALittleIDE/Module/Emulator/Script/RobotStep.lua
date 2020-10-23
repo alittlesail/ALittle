@@ -66,7 +66,9 @@ function Emulator.RobotStepLog:Ctor(manager, info)
 end
 
 function Emulator.RobotStepLog:Execute()
-	g_GCenter._grobot:AddLog(self._info.log)
+	if self._info.log ~= nil then
+		g_GCenter._grobot:AddLog(self._info.log)
+	end
 	return true
 end
 

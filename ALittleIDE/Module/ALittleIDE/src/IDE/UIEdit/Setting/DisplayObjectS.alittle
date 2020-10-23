@@ -1015,7 +1015,7 @@ public class DisplayObjectS
 		var display_object:ALittle.DisplayObject = cast<Map<string, any>>(this)["_"..text];
 		if (display_object.text == "")
 		{
-			if (revoke_bind == null && cast<Map<string, any>>(this._object)[text] == null) return;
+            if (revoke_bind == null && cast<Map<string, any>>(this._base)[text] == display_object.text) return;
 
 			cast<Map<string, any>>(this._base)[text] = null;
 			if (cast<Map<string, any>>(this._default)[text] == null)
@@ -1028,7 +1028,7 @@ public class DisplayObjectS
 		}
 		else
 		{
-			if (revoke_bind == null && cast<Map<string, any>>(this._object)[text] == display_object.text) return;
+			if (revoke_bind == null && cast<Map<string, any>>(this._base)[text] == display_object.text) return;
 			cast<Map<string, any>>(this._base)[text] = display_object.text;
 			cast<Map<string, any>>(this._object)[text] = display_object.text;
 	

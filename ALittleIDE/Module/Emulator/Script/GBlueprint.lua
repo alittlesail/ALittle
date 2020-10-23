@@ -122,6 +122,19 @@ function Emulator.GBlueprint:Setup()
 	self._message_edit_dialog = Emulator.g_Control:CreateControl("robot_step_message_edit_dialog", self)
 	A_LayerManager:AddToModal(self._message_edit_dialog)
 	self._message_edit_dialog.close_callback = Lua.Bind(self.HandleMessageEditDialogClose, self)
+	self._robot_step_send_node:AddEventListener(___all_struct[1301789264], self, self.HandleNodeDragBegin)
+	self._robot_step_send_node:AddEventListener(___all_struct[1337289812], self, self.HandleNodeDrag)
+	self._robot_step_send_node:AddEventListener(___all_struct[150587926], self, self.HandleNodeDragEnd)
+	self._robot_step_receive_node:AddEventListener(___all_struct[1301789264], self, self.HandleNodeDragBegin)
+	self._robot_step_receive_node:AddEventListener(___all_struct[1337289812], self, self.HandleNodeDrag)
+	self._robot_step_receive_node:AddEventListener(___all_struct[150587926], self, self.HandleNodeDragEnd)
+	self._robot_step_delay_node:AddEventListener(___all_struct[1301789264], self, self.HandleNodeDragBegin)
+	self._robot_step_delay_node:AddEventListener(___all_struct[1337289812], self, self.HandleNodeDrag)
+	self._robot_step_delay_node:AddEventListener(___all_struct[150587926], self, self.HandleNodeDragEnd)
+	self._robot_step_log_node:AddEventListener(___all_struct[1301789264], self, self.HandleNodeDragBegin)
+	self._robot_step_log_node:AddEventListener(___all_struct[1337289812], self, self.HandleNodeDrag)
+	self._robot_step_log_node:AddEventListener(___all_struct[150587926], self, self.HandleNodeDragEnd)
+	self.visible = false
 end
 
 function Emulator.GBlueprint.__getter:step_file()
@@ -140,6 +153,72 @@ end
 
 function Emulator.GBlueprint:CreateRobotManager(socket)
 	return Emulator.RobotStepManager(socket, self._step_file)
+end
+
+function Emulator.GBlueprint:HandleNodeDragBegin(event)
+	self._cur_node_ui = nil
+	A_LayerManager:RemoveFromTip(self._cur_drag_image)
+	self._cur_drag_image = nil
+	if event.target == self._robot_step_send_node then
+		self._cur_node_ui = "robot_step_send_message"
+		self._cur_drag_type = Emulator.RobotStepType.RST_SEND_MESSAGE
+	elseif event.target == self._robot_step_receive_node then
+		self._cur_node_ui = "robot_step_receive_message"
+		self._cur_drag_type = Emulator.RobotStepType.RST_RECEIVE_MESSAGE
+	elseif event.target == self._robot_step_delay_node then
+		self._cur_node_ui = "robot_step_delay"
+		self._cur_drag_type = Emulator.RobotStepType.RST_DELAY
+	elseif event.target == self._robot_step_log_node then
+		self._cur_node_ui = "robot_step_log"
+		self._cur_drag_type = Emulator.RobotStepType.RST_LOG
+	end
+	if self._cur_node_ui == nil then
+		return
+	end
+	local dialog = Emulator.g_Control:CreateControl(self._cur_node_ui)
+	local effect = ALittle.EffectImage(Emulator.g_Control)
+	effect:Action(dialog)
+	self._cur_drag_image = effect
+	A_LayerManager:AddToTip(self._cur_drag_image)
+	self._cur_drag_image.x = A_UISystem.mouse_x
+	self._cur_drag_image.y = A_UISystem.mouse_y
+	self._cur_drag_image.alpha = 0.5
+end
+
+function Emulator.GBlueprint:HandleNodeDrag(event)
+	if self._cur_drag_image == nil then
+		return
+	end
+	self._cur_drag_image.x = A_UISystem.mouse_x - self._cur_drag_image.width / 2
+	self._cur_drag_image.y = A_UISystem.mouse_y - self._cur_drag_image.height / 2
+end
+
+function Emulator.GBlueprint:HandleNodeDragEnd(event)
+	if self._cur_node_ui == nil then
+		return
+	end
+	local x, y = self._detail_scroll_screen.container:LocalToGlobal()
+	x = A_UISystem.mouse_x - x - self._cur_drag_image.width / 2
+	y = A_UISystem.mouse_y - y - self._cur_drag_image.height / 2
+	if x < 0 then
+		x = 0
+	end
+	if y < 0 then
+		y = 0
+	end
+	if self._cur_drag_type == Emulator.RobotStepType.RST_RECEIVE_MESSAGE then
+		self:HandleCreateRobotStepReceiveMessage(x, y)
+	elseif self._cur_drag_type == Emulator.RobotStepType.RST_SEND_MESSAGE then
+		self:HandleCreateRobotStepSendMessage(x, y)
+	elseif self._cur_drag_type == Emulator.RobotStepType.RST_DELAY then
+		self:HandleCreateRobotStepDelay(x, y)
+	elseif self._cur_drag_type == Emulator.RobotStepType.RST_LOG then
+		self:HandleCreateRobotStepLog(x, y)
+	end
+	self._cur_node_ui = nil
+	self._cur_drag_type = nil
+	A_LayerManager:RemoveFromTip(self._cur_drag_image)
+	self._cur_drag_image = nil
 end
 
 function Emulator.GBlueprint:Save(value)
@@ -427,6 +506,7 @@ function Emulator.GBlueprint:HandleRobotStepDragEnd(event)
 		event.target.y = 0
 	end
 	self:UpdateRobotStepDialogPosition(link_info, event.target.x, event.target.y)
+	self._detail_scroll_screen:AdjustScrollBar()
 end
 
 function Emulator.GBlueprint:HandleRobotStepDelete(dialog)
@@ -482,19 +562,23 @@ function Emulator.GBlueprint:HandleFileTreeDeleteDir(event)
 		return
 	end
 	self:Clear()
+	self.visible = false
 end
 
 function Emulator.GBlueprint:HandleFileTreeDeleteFile(event)
 	if event.path ~= self._file_path then
 		return
 	end
+	self:Save(true)
 	self:Clear()
+	self.visible = false
 end
 
 function Emulator.GBlueprint:HandleFileTreeSelectFile(event)
 	if event.path == self._file_path then
 		return
 	end
+	self.visible = true
 	self:Save(true)
 	self._file_path = event.path
 	self._save = true

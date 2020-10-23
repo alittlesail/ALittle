@@ -96,11 +96,38 @@ protected class GBlueprint : ALittle.DisplayLayout
     // 拖拽构建线条时的数据
     private ALittle.Triangle _cur_line;
 
+    // 常用节点
+    private ALittle.DisplayObject _robot_step_send_node;
+    private ALittle.DisplayObject _robot_step_receive_node;
+    private ALittle.DisplayObject _robot_step_delay_node;
+    private ALittle.DisplayObject _robot_step_log_node;
+    private string _cur_node_ui;
+    private ALittle.DisplayObject _cur_drag_image;
+    private int _cur_drag_type;
+    
     public fun Setup()
     {
         this._message_edit_dialog = g_Control.CreateControl{ALittle.Dialog}("robot_step_message_edit_dialog", this);
         A_LayerManager.AddToModal(this._message_edit_dialog);
         this._message_edit_dialog.close_callback = bind(this.HandleMessageEditDialogClose, this);
+
+        this._robot_step_send_node.AddEventListener(this, this.HandleNodeDragBegin);
+        this._robot_step_send_node.AddEventListener(this, this.HandleNodeDrag);
+        this._robot_step_send_node.AddEventListener(this, this.HandleNodeDragEnd);
+
+        this._robot_step_receive_node.AddEventListener(this, this.HandleNodeDragBegin);
+        this._robot_step_receive_node.AddEventListener(this, this.HandleNodeDrag);
+        this._robot_step_receive_node.AddEventListener(this, this.HandleNodeDragEnd);
+
+        this._robot_step_delay_node.AddEventListener(this, this.HandleNodeDragBegin);
+        this._robot_step_delay_node.AddEventListener(this, this.HandleNodeDrag);
+        this._robot_step_delay_node.AddEventListener(this, this.HandleNodeDragEnd);
+
+        this._robot_step_log_node.AddEventListener(this, this.HandleNodeDragBegin);
+        this._robot_step_log_node.AddEventListener(this, this.HandleNodeDrag);
+        this._robot_step_log_node.AddEventListener(this, this.HandleNodeDragEnd);
+
+        this.visible = false;
     }
 
     public get step_file() : RobotStepFile { return this._step_file; }
@@ -120,6 +147,77 @@ protected class GBlueprint : ALittle.DisplayLayout
     public fun CreateRobotManager(Lua.ISocket socket) : RobotStepManager
     {
         return new RobotStepManager(socket, this._step_file);
+    }
+
+    private fun HandleNodeDragBegin(ALittle.UIButtonDragBeginEvent event)
+    {
+        this._cur_node_ui = null;
+        A_LayerManager.RemoveFromTip(this._cur_drag_image);
+        this._cur_drag_image = null;
+
+        if (event.target == this._robot_step_send_node)
+        {
+        	this._cur_node_ui = "robot_step_send_message";
+            this._cur_drag_type = RobotStepType.RST_SEND_MESSAGE;
+        }
+        elseif (event.target == this._robot_step_receive_node)
+        {
+        	this._cur_node_ui = "robot_step_receive_message";
+            this._cur_drag_type = RobotStepType.RST_RECEIVE_MESSAGE;
+        }
+        elseif (event.target == this._robot_step_delay_node)
+        {
+        	this._cur_node_ui = "robot_step_delay";
+            this._cur_drag_type = RobotStepType.RST_DELAY;
+        }
+        elseif (event.target == this._robot_step_log_node)
+        {
+        	this._cur_node_ui = "robot_step_log";
+            this._cur_drag_type = RobotStepType.RST_LOG;
+        }
+
+        if (this._cur_node_ui == null) return;
+
+        var dialog = g_Control.CreateControl{ALittle.DisplayObject}(this._cur_node_ui);
+        var effect = new ALittle.EffectImage(g_Control);
+        effect.Action(dialog);
+        this._cur_drag_image = effect;
+        A_LayerManager.AddToTip(this._cur_drag_image);
+        this._cur_drag_image.x = A_UISystem.mouse_x;
+        this._cur_drag_image.y = A_UISystem.mouse_y;
+        this._cur_drag_image.alpha = 0.5;
+    }
+
+    private fun HandleNodeDrag(ALittle.UIButtonDragEvent event)
+    {
+        if (this._cur_drag_image == null) return;
+        this._cur_drag_image.x = A_UISystem.mouse_x - this._cur_drag_image.width / 2;
+        this._cur_drag_image.y = A_UISystem.mouse_y - this._cur_drag_image.height / 2;
+    }
+
+    private fun HandleNodeDragEnd(ALittle.UIButtonDragEndEvent event)
+    {
+        if (this._cur_node_ui == null) return;
+
+        var x, y = this._detail_scroll_screen.container.LocalToGlobal();
+        x = A_UISystem.mouse_x - x - this._cur_drag_image.width / 2;
+        y = A_UISystem.mouse_y - y - this._cur_drag_image.height / 2;
+        if (x < 0) x = 0;
+        if (y < 0) y = 0;
+
+        if (this._cur_drag_type == RobotStepType.RST_RECEIVE_MESSAGE)
+        	this.HandleCreateRobotStepReceiveMessage(x, y);
+        elseif (this._cur_drag_type == RobotStepType.RST_SEND_MESSAGE)
+        	this.HandleCreateRobotStepSendMessage(x, y);
+        elseif (this._cur_drag_type == RobotStepType.RST_DELAY)
+        	this.HandleCreateRobotStepDelay(x, y);
+        elseif (this._cur_drag_type == RobotStepType.RST_LOG)
+        	this.HandleCreateRobotStepLog(x, y);
+
+        this._cur_node_ui = null;
+        this._cur_drag_type = null;
+        A_LayerManager.RemoveFromTip(this._cur_drag_image);
+        this._cur_drag_image = null;
     }
 
     public fun Save(bool value)
@@ -431,6 +529,7 @@ protected class GBlueprint : ALittle.DisplayLayout
         if (event.target.x < 0) event.target.x = 0;
         if (event.target.y < 0) event.target.y = 0;
         this.UpdateRobotStepDialogPosition(link_info, event.target.x, event.target.y);
+        this._detail_scroll_screen.AdjustScrollBar();
     }
 
     private fun HandleRobotStepDelete(ALittle.Dialog dialog) : bool
@@ -494,20 +593,23 @@ protected class GBlueprint : ALittle.DisplayLayout
         if (this._file_path == null) return;
         if (ALittle.File_GetFileAttr(this._file_path) != null) return;
         this.Clear();
+        this.visible = false;
     }
 
     // 文件删除
     public fun HandleFileTreeDeleteFile(AUIPlugin.AUIFileDeleteFileEvent event)
     {
         if (event.path != this._file_path) return;
-
+        this.Save(true);
         this.Clear();
+        this.visible = false;
     }
 
     // 选中文件
     public fun HandleFileTreeSelectFile(AUIPlugin.AUIFileSelectFileEvent event)
     {
         if (event.path == this._file_path) return;
+        this.visible = true;
         this.Save(true);
 
         this._file_path = event.path;

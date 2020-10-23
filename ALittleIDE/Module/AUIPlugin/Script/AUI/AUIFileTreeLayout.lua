@@ -596,7 +596,11 @@ end
 
 function AUIPlugin.AUIFileTreeLayout:SetRoot(path, on_right_menu)
 	self._file_scroll_screen:RemoveAllChild()
-	if path == nil then
+	if path == nil or path == "" then
+		return
+	end
+	local attr = ALittle.File_GetFileAttr(path)
+	if attr == nil or not attr.directory then
 		return
 	end
 	local info = {}

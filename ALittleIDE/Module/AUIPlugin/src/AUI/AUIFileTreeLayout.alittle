@@ -541,7 +541,9 @@ public class AUIFileTreeLayout : ALittle.DisplayLayout
 	public fun SetRoot(string path, Functor<(AUIFileTreeUserInfo, AUIPlugin.AUIRightMenu)> on_right_menu)
 	{
         this._file_scroll_screen.RemoveAllChild();
-        if (path == null) return;
+        if (path == null || path == "") return;
+        var attr = ALittle.File_GetFileAttr(path);
+        if (attr == null || !attr.directory) return;
 
 		var info = new AUIFileTreeUserInfo();
 		info.name = ALittle.File_GetFileNameByPath(path);

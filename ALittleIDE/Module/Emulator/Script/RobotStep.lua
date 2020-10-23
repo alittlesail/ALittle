@@ -67,7 +67,7 @@ end
 
 function Emulator.RobotStepLog:Execute()
 	if self._info.log ~= nil then
-		g_GCenter._grobot:AddLog(self._info.log)
+		g_GCenter._grobot:AddLog(self._manager.player_id .. ":" .. self._info.log)
 	end
 	return true
 end
@@ -106,7 +106,8 @@ end
 
 Emulator.RobotStepManager = Lua.Class(nil, "Emulator.RobotStepManager")
 
-function Emulator.RobotStepManager:Ctor(socket, file)
+function Emulator.RobotStepManager:Ctor(player_id, socket, file)
+	___rawset(self, "_player_id", player_id)
 	___rawset(self, "_socket", socket)
 	___rawset(self, "_step_map", {})
 	do
@@ -133,6 +134,10 @@ function Emulator.RobotStepManager:Ctor(socket, file)
 			self._step_map[id] = step
 		end
 	end
+end
+
+function Emulator.RobotStepManager.__getter:player_id()
+	return self._player_id
 end
 
 function Emulator.RobotStepManager:Start()

@@ -151,8 +151,8 @@ function Emulator.GBlueprint:Clear()
 	self._detail_scroll_screen:RemoveAllChild()
 end
 
-function Emulator.GBlueprint:CreateRobotManager(socket)
-	return Emulator.RobotStepManager(socket, self._step_file)
+function Emulator.GBlueprint:CreateRobotManager(player_id, socket)
+	return Emulator.RobotStepManager(player_id, socket, self._step_file)
 end
 
 function Emulator.GBlueprint:HandleNodeDragBegin(event)

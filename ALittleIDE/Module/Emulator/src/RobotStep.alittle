@@ -66,7 +66,7 @@ protected class RobotStepLog : RobotStep
     public fun Execute() : bool
     {
         if (this._info.log != null)
-        	g_GCenter._grobot.AddLog(this._info.log);
+        	g_GCenter._grobot.AddLog(this._manager.player_id..":"..this._info.log);
         return true;
     }
 }
@@ -121,13 +121,14 @@ protected class RobotStepManager
 
     private RobotStep _cur_step;
     private ALittle.LoopTimer _timer;
+    private int _player_id;
 
-    public ctor(Lua.ISocket socket, RobotStepFile file)
+    public ctor(int player_id, Lua.ISocket socket, RobotStepFile file)
     {
+        this._player_id = player_id;
         this._socket = socket;
         this._step_map = new Map<int, RobotStep>();
 
-    
         {
             var step = new RobotStepStart(this, file.start_step);
             this._step_map[file.start_step.id] = step;
@@ -164,6 +165,8 @@ protected class RobotStepManager
             }
         }
     }
+
+    public get player_id() : int { return this._player_id; }
 
     public fun Start()
     {

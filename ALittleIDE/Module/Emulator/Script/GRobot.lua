@@ -130,7 +130,7 @@ function Emulator.GRobot:CreatePlayer(ip, port, total_count, id, robot_login, lo
 		self._socket_map[client] = info
 		info.client = client
 		info.client.disconnect_callback = Lua.Bind(self.HandleClientSocketDisconnected, self, id)
-		info.robot = self._gblueprint:CreateRobotManager(info.client)
+		info.robot = self._gblueprint:CreateRobotManager(id, info.client)
 		info.robot:Start()
 		info.client:ReceiveMessage()
 		self:AddLog(id .. ":login succeed")

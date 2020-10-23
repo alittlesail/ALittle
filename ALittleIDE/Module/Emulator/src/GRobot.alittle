@@ -137,7 +137,7 @@ protected class GRobot : ALittle.DisplayLayout
             info.client = client;
             // 设置断开的回调函数
             info.client.disconnect_callback = bind(this.HandleClientSocketDisconnected, this, id);
-            info.robot = this._gblueprint.CreateRobotManager(info.client);
+            info.robot = this._gblueprint.CreateRobotManager(id, info.client);
             info.robot.Start();
             // 开始循环接收消息包
             info.client.ReceiveMessage();

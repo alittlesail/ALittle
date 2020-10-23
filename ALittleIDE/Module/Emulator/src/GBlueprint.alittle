@@ -144,9 +144,9 @@ protected class GBlueprint : ALittle.DisplayLayout
         this._detail_scroll_screen.RemoveAllChild();
     }
 
-    public fun CreateRobotManager(Lua.ISocket socket) : RobotStepManager
+    public fun CreateRobotManager(int player_id, Lua.ISocket socket) : RobotStepManager
     {
-        return new RobotStepManager(socket, this._step_file);
+        return new RobotStepManager(player_id, socket, this._step_file);
     }
 
     private fun HandleNodeDragBegin(ALittle.UIButtonDragBeginEvent event)

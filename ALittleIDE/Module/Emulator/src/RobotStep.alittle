@@ -54,6 +54,41 @@ protected class RobotStepReceiveMessage : RobotStep
         if (full_name != this._info.full_name) return;
 
         this._message = msg;
+
+        // 拷贝消息
+        var dst_json = lua.protobuf.message_jsonencode(this._message, true, true);
+        var error, dst_info:Map<string, any> = tcall(ALittle.String_JsonDecode, dst_json);
+        if (error != null)
+        {
+            g_GCenter._grobot.AddLog(error);
+        }
+        else
+        {
+            for (var index, log in this._info.receive_log_list)
+            {
+                var dst_field_list = ALittle.String_Split(log.dst_field, ".");
+                var dst_field_len = ALittle.List_MaxN(dst_field_list);
+                var dst_temp = dst_info;
+                for (var i = 1; i <= dst_field_len; 1)
+                {
+                    var field_name = dst_field_list[i];
+                    dst_temp = dst_temp[field_name];
+                    if (dst_temp == null)
+                    {
+                        g_GCenter._grobot.AddLog("unique id:"..this._info.full_name.." can't find "..log.dst_field..", error field:"..field_name);
+                        break;
+                    }
+                }
+                if (dst_temp != null)
+                {
+                    if (lua.type(dst_temp) == "table")
+                        g_GCenter._grobot.AddLog(this._manager.player_id..":["..log.dst_field.."]"..ALittle.String_JsonEncode(dst_temp));
+                    else
+                        g_GCenter._grobot.AddLog(this._manager.player_id..":["..log.dst_field.."]"..ALittle.String_ToString(dst_temp));
+                }
+            }
+        }
+
         this._manager.NextStep();
     }
 

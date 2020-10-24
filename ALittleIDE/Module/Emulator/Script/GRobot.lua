@@ -84,17 +84,12 @@ function Emulator.GRobot:AddLog(log)
 		item = self._log_scroll_screen.childs[1]
 		self._log_scroll_screen:RemoveChild(item)
 	else
-		local container = ALittle.DisplayLayout(Emulator.g_Control)
-		container.width_type = 4
-		container.height = 20
-		local text = Emulator.g_Control:CreateControl("usual_label", nil, container)
-		text.x = 5
-		text.y_type = 3
-		self._log_scroll_screen:AddChild(container)
-		container._user_data = text
-		item = container
+		item = Emulator.g_Control:CreateControl("usual_textarea_left_top", nil)
+		item.width = self._log_scroll_screen.view_width
 	end
-	item._user_data.text = log
+	item.text = log
+	item.height = item.real_height
+	self._log_scroll_screen:AddChild(item)
 	if at_bottom then
 		self._log_scroll_screen:ScrollToBottom()
 	end

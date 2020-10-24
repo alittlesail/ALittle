@@ -11,10 +11,22 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
+ALittle.RegStruct(-1613357887, "Emulator.RobotStepReceiveLogInfo", {
+name = "Emulator.RobotStepReceiveLogInfo", ns_name = "Emulator", rl_name = "RobotStepReceiveLogInfo", hash_code = -1613357887,
+name_list = {"dst_field"},
+type_list = {"string"},
+option_map = {}
+})
 ALittle.RegStruct(1517533145, "ALittle.DialogDragEvent", {
 name = "ALittle.DialogDragEvent", ns_name = "ALittle", rl_name = "DialogDragEvent", hash_code = 1517533145,
 name_list = {"target","delta_x","delta_y"},
 type_list = {"ALittle.DisplayObject","double","double"},
+option_map = {}
+})
+ALittle.RegStruct(1512397058, "Emulator.RobotStepReceiveLogLinkInfo", {
+name = "Emulator.RobotStepReceiveLogLinkInfo", ns_name = "Emulator", rl_name = "RobotStepReceiveLogLinkInfo", hash_code = 1512397058,
+name_list = {"item","log","_delete_button","_dst_field_input"},
+type_list = {"ALittle.DisplayObject","Emulator.RobotStepReceiveLogInfo","ALittle.DisplayObject","ALittle.DisplayObject"},
 option_map = {}
 })
 ALittle.RegStruct(1489330622, "Emulator.RobotStepCmdLinkInfo", {
@@ -97,14 +109,14 @@ option_map = {}
 })
 ALittle.RegStruct(-312899494, "Emulator.RobotStepReceiveMessageLinkInfo", {
 name = "Emulator.RobotStepReceiveMessageLinkInfo", ns_name = "Emulator", rl_name = "RobotStepReceiveMessageLinkInfo", hash_code = -312899494,
-name_list = {"info","dialog","_left_step_image","_right_step_image","_unique_id_input","_line_tri","pre_link","next_link","_full_name_input"},
-type_list = {"Emulator.RobotStepInfo","ALittle.Dialog","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.Triangle","Map<int,Emulator.RobotStepLinkInfo>","Emulator.RobotStepLinkInfo","ALittle.DisplayObject"},
+name_list = {"info","dialog","_left_step_image","_right_step_image","_unique_id_input","_line_tri","pre_link","next_link","_full_name_input","_log_edit"},
+type_list = {"Emulator.RobotStepInfo","ALittle.Dialog","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.Triangle","Map<int,Emulator.RobotStepLinkInfo>","Emulator.RobotStepLinkInfo","ALittle.DisplayObject","Emulator.RobotStepReceiveLogEdit"},
 option_map = {}
 })
 ALittle.RegStruct(210013886, "Emulator.RobotStepInfo", {
 name = "Emulator.RobotStepInfo", ns_name = "Emulator", rl_name = "RobotStepInfo", hash_code = 210013886,
-name_list = {"x","y","unique_id","id","type","next_id","pre_type","next_type","full_name","message_json","cmd_list","delay_ms","log"},
-type_list = {"double","double","string","int","int","int","int","int","string","string","List<Emulator.RobotStepCmdInfo>","int","string"},
+name_list = {"x","y","unique_id","id","type","next_id","pre_type","next_type","full_name","message_json","cmd_list","receive_log_list","delay_ms","log"},
+type_list = {"double","double","string","int","int","int","int","int","string","string","List<Emulator.RobotStepCmdInfo>","List<Emulator.RobotStepReceiveLogInfo>","int","string"},
 option_map = {}
 })
 ALittle.RegStruct(162621669, "Emulator.RobotStepDelayLinkInfo", {
@@ -226,6 +238,74 @@ function Emulator.RobotStepCmdEdit:CreateCmdItem(cmd)
 	self._cmd_screen:AddChild(item)
 	link_info.item = item
 	link_info.cmd = cmd
+	link_info._delete_button._user_data = link_info
+end
+
+assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
+Emulator.RobotStepReceiveLogEdit = Lua.Class(ALittle.DisplayLayout, "Emulator.RobotStepReceiveLogEdit")
+
+function Emulator.RobotStepReceiveLogEdit:TCtor()
+	self._add_cmd_btn:AddEventListener(___all_struct[-449066808], self, self.HandleAddClick)
+end
+
+function Emulator.RobotStepReceiveLogEdit:Init(log_list)
+	self._log_list = log_list
+	for index, log in ___ipairs(log_list) do
+		self:CreateLogItem(log)
+	end
+	self:UpdateHeight()
+end
+
+function Emulator.RobotStepReceiveLogEdit:HandleDstFieldChanged(event)
+	event.target._user_data.dst_field = event.target.text
+	g_GCenter._grobot._gblueprint:Save(false)
+end
+
+function Emulator.RobotStepReceiveLogEdit:UpdateHeight()
+	local src_y = self._log_screen.y
+	if self._log_screen.child_count == 0 then
+		self._log_screen.height = 0
+	elseif self._log_screen.child_count < 5 then
+		self._log_screen.height = self._log_screen.child_count * self._log_screen.childs[1].height
+	else
+		self._log_screen.height = 5 * self._log_screen.childs[1].height
+	end
+	self.height = src_y + self._log_screen.height
+	self:DispatchEvent(___all_struct[-431205740], {})
+end
+
+function Emulator.RobotStepReceiveLogEdit:HandleDeleteClick(event)
+	local link_info = event.target._user_data
+	self._log_screen:RemoveChild(link_info.item)
+	self:UpdateHeight()
+	local index = ALittle.List_IndexOf(self._log_list, link_info.log)
+	if index ~= nil then
+		ALittle.List_Remove(self._log_list, index)
+	end
+	g_GCenter._grobot._gblueprint:Save(false)
+end
+
+function Emulator.RobotStepReceiveLogEdit:HandleAddClick(event)
+	local log = {}
+	self:CreateLogItem(log)
+	ALittle.List_Push(self._log_list, log)
+	self:UpdateHeight()
+	g_GCenter._grobot._gblueprint:Save(false)
+end
+
+function Emulator.RobotStepReceiveLogEdit:CreateLogItem(log)
+	if log.dst_field == nil then
+		log.dst_field = ""
+	end
+	local link_info = {}
+	local item = Emulator.g_Control:CreateControl("robot_step_receive_log_item", link_info)
+	link_info._delete_button:AddEventListener(___all_struct[-449066808], self, self.HandleDeleteClick)
+	link_info._dst_field_input.text = log.dst_field
+	link_info._dst_field_input:AddEventListener(___all_struct[958494922], self, self.HandleDstFieldChanged)
+	link_info._dst_field_input._user_data = log
+	self._log_screen:AddChild(item)
+	link_info.item = item
+	link_info.log = log
 	link_info._delete_button._user_data = link_info
 end
 
@@ -419,6 +499,11 @@ end
 function Emulator.GBlueprint:HandleRobotStepCmdEditResize(event)
 	local link_info = event.target._user_data
 	link_info.dialog.height = link_info._cmd_edit.y + link_info._cmd_edit.height + 5 + link_info.dialog.head_size
+end
+
+function Emulator.GBlueprint:HandleRobotStepReceiveLogEditResize(event)
+	local link_info = event.target._user_data
+	link_info.dialog.height = link_info._log_edit.y + link_info._log_edit.height + 5 + link_info.dialog.head_size
 end
 
 function Emulator.GBlueprint:HandleCreateRobotStepReceiveMessage(x, y)
@@ -828,6 +913,9 @@ function Emulator.GBlueprint:CreateRobotStepDialog(info)
 		link_info._full_name_input.text = info.full_name
 		link_info._full_name_input:AddEventListener(___all_struct[958494922], self, self.HandleRobotStepReceiveMessageChanged)
 		link_info._full_name_input._user_data = link_info
+		link_info._log_edit:AddEventListener(___all_struct[-431205740], self, self.HandleRobotStepReceiveLogEditResize)
+		link_info._log_edit._user_data = link_info
+		link_info._log_edit:Init(info.receive_log_list)
 	elseif info.type == Emulator.RobotStepType.RST_SEND_MESSAGE then
 		local link_info = {}
 		local dialog = self:CreateCommonDialog("robot_step_send_message", link_info, info)
@@ -913,6 +1001,9 @@ end
 function Emulator.GBlueprint:CreateCommonDialog(ui, link_info, info)
 	if info.cmd_list == nil then
 		info.cmd_list = {}
+	end
+	if info.receive_log_list == nil then
+		info.receive_log_list = {}
 	end
 	local dialog = Emulator.g_Control:CreateControl(ui, link_info)
 	dialog._user_data = link_info

@@ -75,27 +75,22 @@ protected class GRobot : ALittle.DisplayLayout
     {
         var at_bottom = this._log_scroll_screen.container_y <= this._log_scroll_screen.container.height - this._log_scroll_screen.view_height + 5;
 
-        var item:ALittle.DisplayObject = null;
+        var item:ALittle.TextArea = null;
         if (this._log_scroll_screen.child_count > 1000)
         {
-            item = this._log_scroll_screen.childs[1];
+            item = cast<ALittle.TextArea>(this._log_scroll_screen.childs[1]);
             this._log_scroll_screen.RemoveChild(item);
         }
         else
         {
-            var container = new ALittle.DisplayLayout(g_Control);
-            container.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-            container.height = 20;
-            var text = g_Control.CreateControl{ALittle.DisplayObject}("usual_label", null, container);
-            text.x = 5;
-            text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
-            this._log_scroll_screen.AddChild(container);
-            container._user_data = text;
-            item = container;
+            item = g_Control.CreateControl{ALittle.TextArea}("usual_textarea_left_top", null);
+            item.width = this._log_scroll_screen.view_width;
         }
 
-        cast<ALittle.DisplayObject>(item._user_data).text = log;
-
+        item.text = log;
+        item.height = item.real_height;
+        this._log_scroll_screen.AddChild(item);
+    
         if (at_bottom)
         	this._log_scroll_screen.ScrollToBottom();
     }

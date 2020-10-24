@@ -1,0 +1,1 @@
+{"robot_step_receive_log_item":{"__childs":[{"__extends":"usual_button","text":"删除","__link":"_delete_button","x_value":296,"__module":"AUIPlugin"},{"y_type":3,"__module":"AUIPlugin","__link":"_dst_field_input","__extends":"image_input","width_value":295}],"__class":"DisplayLayout","height_value":23,"width_value":354}}

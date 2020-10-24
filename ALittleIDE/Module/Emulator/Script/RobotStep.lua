@@ -60,6 +60,35 @@ function Emulator.RobotStepReceiveMessage:ReceiveMessage(msg)
 		return
 	end
 	self._message = msg
+	local dst_json = protobuf.message_jsonencode(self._message, true, true)
+	local error, dst_info = Lua.TCall(ALittle.String_JsonDecode, dst_json)
+	if error ~= nil then
+		g_GCenter._grobot:AddLog(error)
+	else
+		for index, log in ___ipairs(self._info.receive_log_list) do
+			local dst_field_list = ALittle.String_Split(log.dst_field, ".")
+			local dst_field_len = ALittle.List_MaxN(dst_field_list)
+			local dst_temp = dst_info
+			local i = 1
+			while true do
+				if not(i <= dst_field_len) then break end
+				local field_name = dst_field_list[i]
+				dst_temp = dst_temp[field_name]
+				if dst_temp == nil then
+					g_GCenter._grobot:AddLog("unique id:" .. self._info.full_name .. " can't find " .. log.dst_field .. ", error field:" .. field_name)
+					break
+				end
+				i = i+(1)
+			end
+			if dst_temp ~= nil then
+				if type(dst_temp) == "table" then
+					g_GCenter._grobot:AddLog(self._manager.player_id .. ":[" .. log.dst_field .. "]" .. ALittle.String_JsonEncode(dst_temp))
+				else
+					g_GCenter._grobot:AddLog(self._manager.player_id .. ":[" .. log.dst_field .. "]" .. ALittle.String_ToString(dst_temp))
+				end
+			end
+		end
+	end
 	self._manager:NextStep()
 end
 

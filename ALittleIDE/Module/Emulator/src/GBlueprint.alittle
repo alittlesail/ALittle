@@ -33,10 +33,18 @@ protected struct RobotStepInfo
     string full_name;	//  消息全称 RST_RECEIVE_MESSAGE RST_SEND_MESSAGE 有效
     string message_json;	// 消息的json字符串 RST_SEND_MESSAGE 有效
     List<RobotStepCmdInfo> cmd_list;	// 命令列表
+    List<RobotStepReceiveLogInfo> receive_log_list;	// 命令列表
 
     int delay_ms;	// 延迟毫秒 RST_DELAY 有效
 
     string log;	// 日志内容 RST_LOG 有效
+}
+
+protected struct RobotStepFile
+{
+    int max_id;
+    Map<int, RobotStepInfo> step_map;
+    RobotStepInfo start_step;
 }
 
 protected struct RobotStepCmdInfo
@@ -54,13 +62,6 @@ protected struct RobotStepCmdLinkInfo
     ALittle.DisplayObject _dst_field_input;
     ALittle.DisplayObject _src_id_input;
     ALittle.DisplayObject _src_field_input;
-}
-
-protected struct RobotStepFile
-{
-    int max_id;
-    Map<int, RobotStepInfo> step_map;
-    RobotStepInfo start_step;
 }
 
 public class RobotStepCmdEdit : ALittle.DisplayLayout
@@ -161,6 +162,98 @@ public class RobotStepCmdEdit : ALittle.DisplayLayout
     }
 }
 
+protected struct RobotStepReceiveLogInfo
+{
+    string dst_field;
+}
+
+protected struct RobotStepReceiveLogLinkInfo
+{
+    ALittle.DisplayObject item;
+    RobotStepReceiveLogInfo log;
+    ALittle.DisplayObject _delete_button;
+    ALittle.DisplayObject _dst_field_input;
+}
+
+public class RobotStepReceiveLogEdit : ALittle.DisplayLayout
+{
+	private ALittle.TextButton _add_cmd_btn;		// 添加按钮
+	private ALittle.ScrollScreen _log_screen;		// 命令滚动屏
+    private List<RobotStepReceiveLogInfo> _log_list;
+
+    public fun TCtor()
+    {
+        this._add_cmd_btn.AddEventListener(this, this.HandleAddClick);
+    }
+
+    public fun Init(List<RobotStepReceiveLogInfo> log_list)
+    {
+        this._log_list = log_list;
+        for (var index, log in log_list)
+            this.CreateLogItem(log);
+        this.UpdateHeight();
+    }
+
+    private fun HandleDstFieldChanged(ALittle.UIChangedEvent event)
+    {
+        cast<RobotStepCmdInfo>(event.target._user_data).dst_field = event.target.text;
+        g_GCenter._grobot._gblueprint.Save(false);
+    }
+
+
+    public fun UpdateHeight()
+    {
+        var src_y = this._log_screen.y;
+
+        if (this._log_screen.child_count == 0)
+        	this._log_screen.height = 0;
+        elseif (this._log_screen.child_count < 5)
+            this._log_screen.height = this._log_screen.child_count * this._log_screen.childs[1].height;
+        else
+            this._log_screen.height = 5 * this._log_screen.childs[1].height;
+        this.height = src_y + this._log_screen.height;
+
+        this.DispatchEvent(new ALittle.UIResizeEvent());
+    }
+
+    private fun HandleDeleteClick(ALittle.UIClickEvent event)
+    {
+        var link_info = cast<RobotStepReceiveLogLinkInfo>(event.target._user_data);
+        this._log_screen.RemoveChild(link_info.item);
+        this.UpdateHeight();
+        var index = ALittle.List_IndexOf(this._log_list, link_info.log);
+        if (index != null) ALittle.List_Remove(this._log_list, index);
+        g_GCenter._grobot._gblueprint.Save(false);
+    }
+
+    private fun HandleAddClick(ALittle.UIClickEvent event)
+    {
+        var log = new RobotStepReceiveLogInfo();
+        this.CreateLogItem(log);
+        ALittle.List_Push(this._log_list, log);
+        this.UpdateHeight();
+        g_GCenter._grobot._gblueprint.Save(false);
+    }
+
+    private fun CreateLogItem(RobotStepReceiveLogInfo log)
+    {
+        if (log.dst_field == null) log.dst_field = "";
+
+        var link_info = new RobotStepReceiveLogLinkInfo();
+        var item = g_Control.CreateControl{ALittle.DisplayLayout}("robot_step_receive_log_item", link_info);
+        link_info._delete_button.AddEventListener(this, this.HandleDeleteClick);
+        link_info._dst_field_input.text = log.dst_field;
+        link_info._dst_field_input.AddEventListener(this, this.HandleDstFieldChanged);
+        link_info._dst_field_input._user_data = log;
+        this._log_screen.AddChild(item);
+
+        link_info.item = item;
+        link_info.log = log;
+
+        link_info._delete_button._user_data = link_info;
+    }
+}
+
 struct RobotStepLinkInfo
 {
     RobotStepInfo info;
@@ -177,6 +270,7 @@ struct RobotStepLinkInfo
 struct RobotStepReceiveMessageLinkInfo : RobotStepLinkInfo
 {
     ALittle.DisplayObject _full_name_input;
+    RobotStepReceiveLogEdit _log_edit;
 }
 
 struct RobotStepSendMessageLinkInfo : RobotStepLinkInfo
@@ -438,6 +532,12 @@ protected class GBlueprint : ALittle.DisplayLayout
     {
         var link_info = cast<RobotStepSendMessageLinkInfo>(event.target._user_data);
         link_info.dialog.height = link_info._cmd_edit.y + link_info._cmd_edit.height + 5 + link_info.dialog.head_size;
+    }
+
+    private fun HandleRobotStepReceiveLogEditResize(ALittle.UIResizeEvent event)
+    {
+        var link_info = cast<RobotStepReceiveMessageLinkInfo>(event.target._user_data);
+        link_info.dialog.height = link_info._log_edit.y + link_info._log_edit.height + 5 + link_info.dialog.head_size;
     }
 
     private fun HandleCreateRobotStepReceiveMessage(double x, double y)
@@ -899,6 +999,9 @@ protected class GBlueprint : ALittle.DisplayLayout
             link_info._full_name_input.text = info.full_name;
             link_info._full_name_input.AddEventListener(this, this.HandleRobotStepReceiveMessageChanged);
             link_info._full_name_input._user_data = link_info;
+            link_info._log_edit.AddEventListener(this, this.HandleRobotStepReceiveLogEditResize);
+            link_info._log_edit._user_data = link_info;
+            link_info._log_edit.Init(info.receive_log_list);
         }
         elseif (info.type == RobotStepType.RST_SEND_MESSAGE)
         {
@@ -989,6 +1092,7 @@ protected class GBlueprint : ALittle.DisplayLayout
     private fun CreateCommonDialog(string ui, RobotStepLinkInfo link_info, RobotStepInfo info) : ALittle.Dialog
     {
         if (info.cmd_list == null) info.cmd_list = new List<RobotStepCmdInfo>();
+        if (info.receive_log_list == null) info.receive_log_list = new List<RobotStepReceiveLogInfo>();
 
         var dialog = g_Control.CreateControl{ALittle.Dialog}(ui, link_info);
         dialog._user_data = link_info;

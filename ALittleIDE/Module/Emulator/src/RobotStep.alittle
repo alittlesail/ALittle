@@ -12,7 +12,9 @@ protected class RobotStep
         this._info = info;
     }
 
-    public fun ReceiveMessage(lua.protobuf_message msg) : bool { return true; }
+    public fun ReceiveMessage(lua.protobuf_message msg)
+    {
+    }
 
     public fun GetMessage() : lua.protobuf_message { return null; }
 
@@ -31,35 +33,33 @@ protected class RobotStep
 
 protected class RobotStepStart : RobotStep
 {
+    public fun Execute() : bool { return true; }
+
+    public fun Trace()
+    {
+        g_GCenter._grobot.AddLog("开始");
+    }
 }
 
 protected class RobotStepReceiveMessage : RobotStep
 {
-    private string _full_name;
     private lua.protobuf_message _message;
 
-    public ctor(RobotStepManager manager, RobotStepInfo info)
-    {
-        this._full_name = info.full_name;
-    }
-
-    public fun ReceiveMessage(lua.protobuf_message msg) : bool
+    public fun ReceiveMessage(lua.protobuf_message msg)
     {
         var descriptor = lua.protobuf.message_getdescriptor(msg);
-        if (descriptor == null) return false;
+        if (descriptor == null) return;
 
         var full_name = lua.protobuf.messagedescriptor_fullname(descriptor);
-        if (full_name != this._full_name) return false;
+        if (full_name != this._info.full_name) return;
 
         this._message = msg;
-        ALittle.Log(this._full_name);
-        return true;
+        this._manager.NextStep();
     }
 
     public fun Trace()
     {
-        var ref = reflect(this);
-        g_GCenter._grobot.AddLog(ref.__name..":"..this._full_name);
+        g_GCenter._grobot.AddLog("等待消息:"..this._info.full_name);
     }
 
     public fun GetMessage() : lua.protobuf_message { return this._message; }
@@ -69,16 +69,15 @@ protected class RobotStepReceiveMessage : RobotStep
 
 protected class RobotStepLog : RobotStep
 {
-    public ctor(RobotStepManager manager, RobotStepInfo info)
-    {
-
-    }
-
     public fun Execute() : bool
     {
         if (this._info.log != null)
         	g_GCenter._grobot.AddLog(this._manager.player_id..":"..this._info.log);
         return true;
+    }
+
+    public fun Trace()
+    {
     }
 }
 
@@ -177,8 +176,7 @@ protected class RobotStepSendMessage : RobotStep
 
     public fun Trace()
     {
-        var ref = reflect(this);
-        g_GCenter._grobot.AddLog(ref.__name..":"..this._info.full_name);
+        g_GCenter._grobot.AddLog("发送消息:"..this._info.full_name);
     }
 
     public fun GetMessage() : lua.protobuf_message { return this._message; }
@@ -188,10 +186,6 @@ protected class RobotStepDelay : RobotStep
 {
     private ALittle.LoopTimer _loop;
 
-    public ctor(RobotStepManager manager, RobotStepInfo info)
-    {
-    }
-
     public fun Execute() : bool
     {
         this.Clear();
@@ -199,6 +193,11 @@ protected class RobotStepDelay : RobotStep
         this._loop = new ALittle.LoopTimer(bind(this._manager.NextStep, this._manager), this._info.delay_ms);
         this._loop.Start();
         return false;
+    }
+
+    public fun Trace()
+    {
+        g_GCenter._grobot.AddLog("延迟:"..this._info.delay_ms);
     }
 
     public fun Clear()
@@ -284,6 +283,8 @@ protected class RobotStepManager
 
     public fun Start()
     {
+        // 直接跳过开始节点，直接进入第二节点
+        // 如果第二个节点是等待消息，会因为执行开始节点而错过消息
         this.NextStep();
     }
 
@@ -325,8 +326,6 @@ protected class RobotStepManager
     public fun ReceiveMessage(lua.protobuf_message msg)
     {
         if (this._cur_step == null) return;
-        if (!this._cur_step.ReceiveMessage(msg)) return;
-
-        this.NextStep();
+        this._cur_step.ReceiveMessage(msg);
     }
 }

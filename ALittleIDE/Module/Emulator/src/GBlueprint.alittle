@@ -514,11 +514,16 @@ protected class GBlueprint : ALittle.DisplayLayout
     {
         if (this._file_path == null) return;
 
+        var x = event.rel_x - this._detail_scroll_screen.container_x;
+        var y = event.rel_y - this._detail_scroll_screen.container_y;
+        if (x < 0) x = 0;
+        if (y < 0) y = 0;
+
         var menu = new AUIPlugin.AUIRightMenu();
-        menu.AddItem("新建:发送消息", bind(this.HandleCreateRobotStepSendMessage, this, event.rel_x, event.rel_y));
-        menu.AddItem("新建:等待消息", bind(this.HandleCreateRobotStepReceiveMessage, this, event.rel_x, event.rel_y));
-        menu.AddItem("新建:延时", bind(this.HandleCreateRobotStepDelay, this, event.rel_x, event.rel_y));
-        menu.AddItem("新建:日志", bind(this.HandleCreateRobotStepLog, this, event.rel_x, event.rel_y));
+        menu.AddItem("新建:发送消息", bind(this.HandleCreateRobotStepSendMessage, this, x, y));
+        menu.AddItem("新建:等待消息", bind(this.HandleCreateRobotStepReceiveMessage, this, x, y));
+        menu.AddItem("新建:延时", bind(this.HandleCreateRobotStepDelay, this, x, y));
+        menu.AddItem("新建:日志", bind(this.HandleCreateRobotStepLog, this, x, y));
         menu.Show();
     }
 
@@ -564,13 +569,55 @@ protected class GBlueprint : ALittle.DisplayLayout
         var cur_x = pre_x + event.rel_x;
         var cur_y = pre_y + event.rel_y;
 
-        tri.x1 = pre_x; tri.y1 = pre_y + pre_image.height / 2;
-        tri.x2 = pre_x + pre_image.width; tri.y2 = pre_y + pre_image.height / 2;
-
-        tri.x3 = cur_x; tri.y3 = cur_y;
+        this.SetLinePosition(tri, pre_x + pre_image.width / 2, pre_y + pre_image.height / 2, cur_x, cur_y, pre_image.width / 2);
         this._detail_line_layer.AddChild(tri);
 
         this._cur_line = tri;
+    }
+
+    private fun SetLinePosition(ALittle.Triangle tri, double pre_x, double pre_y, double next_x, double next_y, double r)
+    {
+        // 计算圆形到目标点的向量
+        var vx3 = next_x - pre_x;
+        var vy3 = next_y - pre_y;
+    
+        // 定义垂直向量vx3*vx + vy3*vy = 0
+        var vx = 0.0;
+        var vy = 0.0;
+        if (vx3 == 0)
+        {
+            vx = 1;
+            vy = 0;
+        }
+        elseif (vy3 == 0)
+        {
+            vx = 0;
+            vy = 1;
+        }
+        else
+        {
+            vx = 1;
+            vy = -vx3 / vy3;
+        }
+
+        // 归一化
+        var vr = ALittle.Math_Sqrt(vx * vx + vy * vy);
+        if (vr == 0)
+        {
+            vx = 0;
+            vy = 0;
+        }
+        else
+        {
+            vx = vx / vr;
+            vy = vy / vr;
+        }
+
+        // 当前圆的半径
+        tri.x1 = vx * r + pre_x; tri.y1 = vy * r + pre_y;
+        tri.x2 = -vx * r + pre_x; tri.y2 = -vy * r + pre_y;
+
+        tri.x3 = next_x; tri.y3 = next_y;
     }
 
     private fun HandleRobotStepLineDrag(ALittle.UIButtonDragEvent event)
@@ -628,11 +675,21 @@ protected class GBlueprint : ALittle.DisplayLayout
             elseif (link_info.info.pre_type == RobotStepLineType.RSLT_RIGHT)
                 pre_image = link_info._right_step_image;
 
-            if (pre_image != null)
+            var next_image:ALittle.DisplayObject;
+            if (link_info.next_link != null)
+            {
+                if (link_info.info.next_type == RobotStepLineType.RSLT_LEFT)
+                    next_image = link_info.next_link._left_step_image;
+                elseif (link_info.info.next_type == RobotStepLineType.RSLT_RIGHT)
+                    next_image = link_info.next_link._right_step_image;
+            }
+
+            if (pre_image != null && next_image != null)
             {
                 var pre_x, pre_y = pre_image.LocalToGlobal(this._detail_scroll_screen.container);
-                tri.x1 = pre_x; tri.y1 = pre_y + pre_image.height / 2;
-                tri.x2 = pre_x + pre_image.width; tri.y2 = pre_y + pre_image.height / 2;
+                var next_x, next_y = next_image.LocalToGlobal(this._detail_scroll_screen.container);
+                var r = pre_image.width / 2;
+                this.SetLinePosition(tri, pre_x + r, pre_y + r, next_x + r, next_y + r, r);
             }
         }
     
@@ -642,16 +699,24 @@ protected class GBlueprint : ALittle.DisplayLayout
             {
                 var tri = pre_link._line_tri;
 
+                var pre_image:ALittle.DisplayObject;
+                if (pre_link.info.pre_type == RobotStepLineType.RSLT_LEFT)
+                    pre_image = pre_link._left_step_image;
+                elseif (pre_link.info.pre_type == RobotStepLineType.RSLT_RIGHT)
+                    pre_image = pre_link._right_step_image;
+
                 var next_image:ALittle.DisplayObject;
                 if (pre_link.info.next_type == RobotStepLineType.RSLT_LEFT)
                     next_image = link_info._left_step_image;
                 elseif (pre_link.info.next_type == RobotStepLineType.RSLT_RIGHT)
                     next_image = link_info._right_step_image;
 
-                if (next_image != null)
+                if (pre_image != null && next_image != null)
                 {
+                    var pre_x, pre_y = pre_image.LocalToGlobal(this._detail_scroll_screen.container);
                     var next_x, next_y = next_image.LocalToGlobal(this._detail_scroll_screen.container);
-                    tri.x3 = next_x + next_image.width / 2; tri.y3 = next_y + next_image.height / 2;
+                    var r = pre_image.width / 2;
+                    this.SetLinePosition(tri, pre_x + r, pre_y + r, next_x + r, next_y + r, r);
                 }
             }
         }
@@ -705,6 +770,7 @@ protected class GBlueprint : ALittle.DisplayLayout
         {
         	this._detail_line_layer.RemoveChild(link_info._line_tri);
             link_info._line_tri = null;
+            link_info.next_link.pre_link[link_info.info.id] = null;
             link_info.next_link = null;
         }
         if (link_info.pre_link != null)
@@ -908,10 +974,8 @@ protected class GBlueprint : ALittle.DisplayLayout
 
         var pre_x, pre_y = pre_image.LocalToGlobal(this._detail_scroll_screen.container);
         var next_x, next_y = next_image.LocalToGlobal(this._detail_scroll_screen.container);
-
-        tri.x1 = pre_x; tri.y1 = pre_y + pre_image.height / 2;
-        tri.x2 = pre_x + pre_image.width; tri.y2 = pre_y + pre_image.height / 2;
-        tri.x3 = next_x + next_image.width / 2; tri.y3 = next_y + next_image.height / 2;
+        var r = pre_image.width / 2;
+        this.SetLinePosition(tri, pre_x + r, pre_y + r, next_x + r, next_y + r, r);
 
         this._detail_line_layer.AddChild(tri);
     }

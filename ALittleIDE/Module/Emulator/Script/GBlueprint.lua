@@ -491,11 +491,19 @@ function Emulator.GBlueprint:HandleRobotStepQuadRButtonDown(event)
 	if self._file_path == nil then
 		return
 	end
+	local x = event.rel_x - self._detail_scroll_screen.container_x
+	local y = event.rel_y - self._detail_scroll_screen.container_y
+	if x < 0 then
+		x = 0
+	end
+	if y < 0 then
+		y = 0
+	end
 	local menu = AUIPlugin.AUIRightMenu()
-	menu:AddItem("新建:发送消息", Lua.Bind(self.HandleCreateRobotStepSendMessage, self, event.rel_x, event.rel_y))
-	menu:AddItem("新建:等待消息", Lua.Bind(self.HandleCreateRobotStepReceiveMessage, self, event.rel_x, event.rel_y))
-	menu:AddItem("新建:延时", Lua.Bind(self.HandleCreateRobotStepDelay, self, event.rel_x, event.rel_y))
-	menu:AddItem("新建:日志", Lua.Bind(self.HandleCreateRobotStepLog, self, event.rel_x, event.rel_y))
+	menu:AddItem("新建:发送消息", Lua.Bind(self.HandleCreateRobotStepSendMessage, self, x, y))
+	menu:AddItem("新建:等待消息", Lua.Bind(self.HandleCreateRobotStepReceiveMessage, self, x, y))
+	menu:AddItem("新建:延时", Lua.Bind(self.HandleCreateRobotStepDelay, self, x, y))
+	menu:AddItem("新建:日志", Lua.Bind(self.HandleCreateRobotStepLog, self, x, y))
 	menu:Show()
 end
 
@@ -533,14 +541,40 @@ function Emulator.GBlueprint:HandleRobotStepLineDragBegin(event)
 	local pre_x, pre_y = pre_image:LocalToGlobal(self._detail_scroll_screen.container)
 	local cur_x = pre_x + event.rel_x
 	local cur_y = pre_y + event.rel_y
-	tri.x1 = pre_x
-	tri.y1 = pre_y + pre_image.height / 2
-	tri.x2 = pre_x + pre_image.width
-	tri.y2 = pre_y + pre_image.height / 2
-	tri.x3 = cur_x
-	tri.y3 = cur_y
+	self:SetLinePosition(tri, pre_x + pre_image.width / 2, pre_y + pre_image.height / 2, cur_x, cur_y, pre_image.width / 2)
 	self._detail_line_layer:AddChild(tri)
 	self._cur_line = tri
+end
+
+function Emulator.GBlueprint:SetLinePosition(tri, pre_x, pre_y, next_x, next_y, r)
+	local vx3 = next_x - pre_x
+	local vy3 = next_y - pre_y
+	local vx = 0.0
+	local vy = 0.0
+	if vx3 == 0 then
+		vx = 1
+		vy = 0
+	elseif vy3 == 0 then
+		vx = 0
+		vy = 1
+	else
+		vx = 1
+		vy = -vx3 / vy3
+	end
+	local vr = ALittle.Math_Sqrt(vx * vx + vy * vy)
+	if vr == 0 then
+		vx = 0
+		vy = 0
+	else
+		vx = vx / vr
+		vy = vy / vr
+	end
+	tri.x1 = vx * r + pre_x
+	tri.y1 = vy * r + pre_y
+	tri.x2 = -vx * r + pre_x
+	tri.y2 = -vy * r + pre_y
+	tri.x3 = next_x
+	tri.y3 = next_y
 end
 
 function Emulator.GBlueprint:HandleRobotStepLineDrag(event)
@@ -598,27 +632,41 @@ function Emulator.GBlueprint:UpdateRobotStepDialogPosition(link_info, x, y)
 		elseif link_info.info.pre_type == Emulator.RobotStepLineType.RSLT_RIGHT then
 			pre_image = link_info._right_step_image
 		end
-		if pre_image ~= nil then
+		local next_image
+		if link_info.next_link ~= nil then
+			if link_info.info.next_type == Emulator.RobotStepLineType.RSLT_LEFT then
+				next_image = link_info.next_link._left_step_image
+			elseif link_info.info.next_type == Emulator.RobotStepLineType.RSLT_RIGHT then
+				next_image = link_info.next_link._right_step_image
+			end
+		end
+		if pre_image ~= nil and next_image ~= nil then
 			local pre_x, pre_y = pre_image:LocalToGlobal(self._detail_scroll_screen.container)
-			tri.x1 = pre_x
-			tri.y1 = pre_y + pre_image.height / 2
-			tri.x2 = pre_x + pre_image.width
-			tri.y2 = pre_y + pre_image.height / 2
+			local next_x, next_y = next_image:LocalToGlobal(self._detail_scroll_screen.container)
+			local r = pre_image.width / 2
+			self:SetLinePosition(tri, pre_x + r, pre_y + r, next_x + r, next_y + r, r)
 		end
 	end
 	if link_info.pre_link ~= nil then
 		for id, pre_link in ___pairs(link_info.pre_link) do
 			local tri = pre_link._line_tri
+			local pre_image
+			if pre_link.info.pre_type == Emulator.RobotStepLineType.RSLT_LEFT then
+				pre_image = pre_link._left_step_image
+			elseif pre_link.info.pre_type == Emulator.RobotStepLineType.RSLT_RIGHT then
+				pre_image = pre_link._right_step_image
+			end
 			local next_image
 			if pre_link.info.next_type == Emulator.RobotStepLineType.RSLT_LEFT then
 				next_image = link_info._left_step_image
 			elseif pre_link.info.next_type == Emulator.RobotStepLineType.RSLT_RIGHT then
 				next_image = link_info._right_step_image
 			end
-			if next_image ~= nil then
+			if pre_image ~= nil and next_image ~= nil then
+				local pre_x, pre_y = pre_image:LocalToGlobal(self._detail_scroll_screen.container)
 				local next_x, next_y = next_image:LocalToGlobal(self._detail_scroll_screen.container)
-				tri.x3 = next_x + next_image.width / 2
-				tri.y3 = next_y + next_image.height / 2
+				local r = pre_image.width / 2
+				self:SetLinePosition(tri, pre_x + r, pre_y + r, next_x + r, next_y + r, r)
 			end
 		end
 	end
@@ -666,6 +714,7 @@ function Emulator.GBlueprint:AskRobotStepDelete(dialog)
 	if link_info._line_tri ~= nil then
 		self._detail_line_layer:RemoveChild(link_info._line_tri)
 		link_info._line_tri = nil
+		link_info.next_link.pre_link[link_info.info.id] = nil
 		link_info.next_link = nil
 	end
 	if link_info.pre_link ~= nil then
@@ -853,12 +902,8 @@ function Emulator.GBlueprint:CreateRobotStepLine(info)
 	next_link.pre_link[link_info.info.id] = link_info
 	local pre_x, pre_y = pre_image:LocalToGlobal(self._detail_scroll_screen.container)
 	local next_x, next_y = next_image:LocalToGlobal(self._detail_scroll_screen.container)
-	tri.x1 = pre_x
-	tri.y1 = pre_y + pre_image.height / 2
-	tri.x2 = pre_x + pre_image.width
-	tri.y2 = pre_y + pre_image.height / 2
-	tri.x3 = next_x + next_image.width / 2
-	tri.y3 = next_y + next_image.height / 2
+	local r = pre_image.width / 2
+	self:SetLinePosition(tri, pre_x + r, pre_y + r, next_x + r, next_y + r, r)
 	self._detail_line_layer:AddChild(tri)
 end
 

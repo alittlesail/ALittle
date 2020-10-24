@@ -14,7 +14,6 @@ function Emulator.RobotStep:Ctor(manager, info)
 end
 
 function Emulator.RobotStep:ReceiveMessage(msg)
-	return true
 end
 
 function Emulator.RobotStep:GetMessage()
@@ -40,30 +39,32 @@ end
 assert(Emulator.RobotStep, " extends class:Emulator.RobotStep is nil")
 Emulator.RobotStepStart = Lua.Class(Emulator.RobotStep, "Emulator.RobotStepStart")
 
+function Emulator.RobotStepStart:Execute()
+	return true
+end
+
+function Emulator.RobotStepStart:Trace()
+	g_GCenter._grobot:AddLog("开始")
+end
+
 assert(Emulator.RobotStep, " extends class:Emulator.RobotStep is nil")
 Emulator.RobotStepReceiveMessage = Lua.Class(Emulator.RobotStep, "Emulator.RobotStepReceiveMessage")
-
-function Emulator.RobotStepReceiveMessage:Ctor(manager, info)
-	___rawset(self, "_full_name", info.full_name)
-end
 
 function Emulator.RobotStepReceiveMessage:ReceiveMessage(msg)
 	local descriptor = protobuf.message_getdescriptor(msg)
 	if descriptor == nil then
-		return false
+		return
 	end
 	local full_name = protobuf.messagedescriptor_fullname(descriptor)
-	if full_name ~= self._full_name then
-		return false
+	if full_name ~= self._info.full_name then
+		return
 	end
 	self._message = msg
-	ALittle.Log(self._full_name)
-	return true
+	self._manager:NextStep()
 end
 
 function Emulator.RobotStepReceiveMessage:Trace()
-	local ref = (self).__class
-	g_GCenter._grobot:AddLog(ref.__name .. ":" .. self._full_name)
+	g_GCenter._grobot:AddLog("等待消息:" .. self._info.full_name)
 end
 
 function Emulator.RobotStepReceiveMessage:GetMessage()
@@ -77,14 +78,14 @@ end
 assert(Emulator.RobotStep, " extends class:Emulator.RobotStep is nil")
 Emulator.RobotStepLog = Lua.Class(Emulator.RobotStep, "Emulator.RobotStepLog")
 
-function Emulator.RobotStepLog:Ctor(manager, info)
-end
-
 function Emulator.RobotStepLog:Execute()
 	if self._info.log ~= nil then
 		g_GCenter._grobot:AddLog(self._manager.player_id .. ":" .. self._info.log)
 	end
 	return true
+end
+
+function Emulator.RobotStepLog:Trace()
 end
 
 assert(Emulator.RobotStep, " extends class:Emulator.RobotStep is nil")
@@ -162,8 +163,7 @@ function Emulator.RobotStepSendMessage:Execute()
 end
 
 function Emulator.RobotStepSendMessage:Trace()
-	local ref = (self).__class
-	g_GCenter._grobot:AddLog(ref.__name .. ":" .. self._info.full_name)
+	g_GCenter._grobot:AddLog("发送消息:" .. self._info.full_name)
 end
 
 function Emulator.RobotStepSendMessage:GetMessage()
@@ -173,14 +173,15 @@ end
 assert(Emulator.RobotStep, " extends class:Emulator.RobotStep is nil")
 Emulator.RobotStepDelay = Lua.Class(Emulator.RobotStep, "Emulator.RobotStepDelay")
 
-function Emulator.RobotStepDelay:Ctor(manager, info)
-end
-
 function Emulator.RobotStepDelay:Execute()
 	self:Clear()
 	self._loop = ALittle.LoopTimer(Lua.Bind(self._manager.NextStep, self._manager), self._info.delay_ms)
 	self._loop:Start()
 	return false
+end
+
+function Emulator.RobotStepDelay:Trace()
+	g_GCenter._grobot:AddLog("延迟:" .. self._info.delay_ms)
 end
 
 function Emulator.RobotStepDelay:Clear()
@@ -294,10 +295,7 @@ function Emulator.RobotStepManager:ReceiveMessage(msg)
 	if self._cur_step == nil then
 		return
 	end
-	if not self._cur_step:ReceiveMessage(msg) then
-		return
-	end
-	self:NextStep()
+	self._cur_step:ReceiveMessage(msg)
 end
 
 end

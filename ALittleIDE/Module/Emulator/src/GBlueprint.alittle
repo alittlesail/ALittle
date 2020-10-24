@@ -624,8 +624,13 @@ protected class GBlueprint : ALittle.DisplayLayout
     {
         if (this._cur_line == null) return;
         var link_info = cast<RobotStepLinkInfo>(event.target._user_data);
-        this._cur_line.x3 += event.delta_x;
-        this._cur_line.y3 += event.delta_y;
+
+        var pre_image = event.target;
+        var pre_x, pre_y = pre_image.LocalToGlobal(this._detail_scroll_screen.container);
+        var cur_x = pre_x + event.rel_x;
+        var cur_y = pre_y + event.rel_y;
+
+        this.SetLinePosition(this._cur_line, pre_x + pre_image.width / 2, pre_y + pre_image.height / 2, cur_x, cur_y, pre_image.width / 2);
     }
 
     private fun HandleRobotStepLineDragEnd(ALittle.UIButtonDragEndEvent event)

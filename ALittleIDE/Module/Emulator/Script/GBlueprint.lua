@@ -582,8 +582,11 @@ function Emulator.GBlueprint:HandleRobotStepLineDrag(event)
 		return
 	end
 	local link_info = event.target._user_data
-	self._cur_line.x3 = self._cur_line.x3 + (event.delta_x)
-	self._cur_line.y3 = self._cur_line.y3 + (event.delta_y)
+	local pre_image = event.target
+	local pre_x, pre_y = pre_image:LocalToGlobal(self._detail_scroll_screen.container)
+	local cur_x = pre_x + event.rel_x
+	local cur_y = pre_y + event.rel_y
+	self:SetLinePosition(self._cur_line, pre_x + pre_image.width / 2, pre_y + pre_image.height / 2, cur_x, cur_y, pre_image.width / 2)
 end
 
 function Emulator.GBlueprint:HandleRobotStepLineDragEnd(event)

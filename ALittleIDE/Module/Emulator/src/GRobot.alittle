@@ -76,7 +76,7 @@ protected class GRobot : ALittle.DisplayLayout
         var at_bottom = this._log_scroll_screen.container_y <= this._log_scroll_screen.container.height - this._log_scroll_screen.view_height + 5;
 
         var item:ALittle.TextArea = null;
-        if (this._log_scroll_screen.child_count > 1000)
+        if (this._log_scroll_screen.child_count > 500)
         {
             item = cast<ALittle.TextArea>(this._log_scroll_screen.childs[1]);
             this._log_scroll_screen.RemoveChild(item);

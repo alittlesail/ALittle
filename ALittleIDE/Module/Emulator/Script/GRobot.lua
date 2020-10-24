@@ -80,7 +80,7 @@ end
 function Emulator.GRobot:AddLog(log)
 	local at_bottom = self._log_scroll_screen.container_y <= self._log_scroll_screen.container.height - self._log_scroll_screen.view_height + 5
 	local item = nil
-	if self._log_scroll_screen.child_count > 1000 then
+	if self._log_scroll_screen.child_count > 500 then
 		item = self._log_scroll_screen.childs[1]
 		self._log_scroll_screen:RemoveChild(item)
 	else

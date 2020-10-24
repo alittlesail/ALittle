@@ -257,6 +257,10 @@ function ALittle.VersionSystem:UpdateModule()
 	end
 end
 
+function ALittle.VersionSystem.__getter:update_info()
+	return self._update_info
+end
+
 function ALittle.VersionSystem:UpdateVersion(ip, port, callback, check, repeat_count)
 	local ___COROUTINE = coroutine.running()
 	if self._doing == true then
@@ -311,13 +315,13 @@ function ALittle.VersionSystem:UpdateVersion(ip, port, callback, check, repeat_c
 		local error, result = ALittle.IHttpSender.Invoke("VersionServer.QUpdateVersion", self._ask_update_request, param)
 		self._ask_update_request = nil
 		if error ~= nil then
-			ALittle.Log("VersionSystem.UpdateVersion" .. error)
+			ALittle.Log("VersionSystem:UpdateVersion error:" .. error)
 			self._doing = false
 			return ALittle.VersionProcess.UPDATE_VERSION_FAILED
 		end
 		self._ask_update_request = nil
 		if error ~= nil then
-			ALittle.Log("VersionSystem error:" .. error)
+			ALittle.Log("VersionSystem:UpdateVersion error:" .. error)
 			self._doing = false
 			return ALittle.VersionProcess.UPDATE_VERSION_FAILED
 		end
@@ -410,6 +414,7 @@ function ALittle.VersionSystem:UpdateVersion(ip, port, callback, check, repeat_c
 						v.start_size = file_attr.size
 						new_download_list_count = new_download_list_count + 1
 						table.insert(new_download_list, 1, v)
+						self._current_update_size = self._current_update_size + file_attr.size
 					else
 						self._current_update_size = self._current_update_size + file_attr.size
 					end
@@ -449,7 +454,7 @@ function ALittle.VersionSystem:DownloadNext()
 	self._download_list_count = self._download_list_count - 1
 	local file_full_path = ALittle.File_BaseFilePath() .. self._update_path .. file_info.c_file_path
 	local file_path = ALittle.File_GetFilePathByPath(file_full_path)
-	ALittle.Log("begin download remain_count(" .. self._remain_repeat_count .. ")." .. file_full_path, "start size." .. file_info.start_size)
+	ALittle.Log("begin download remain_count(" .. self._remain_repeat_count .. ")." .. file_full_path, "start size:" .. file_info.start_size)
 	if file_path ~= "" then
 		ALittle.File_MakeDeepDir(file_path)
 	end
@@ -471,12 +476,15 @@ function ALittle.VersionSystem:DownloadNext()
 		self._cur_file_index = self._cur_file_index - 1
 		table.insert(self._download_list, 1, file_info)
 		self._download_list_count = self._download_list_count + 1
-		file_info.start_size = 0
 		local file_attr = ALittle.File_GetFileAttr(file_full_path)
 		if file_attr ~= nil then
+			self._current_update_size = self._current_update_size + file_attr.size - file_info.start_size
 			file_info.start_size = file_attr.size
+		else
+			self._current_update_size = self._current_update_size - file_info.start_size
+			file_info.start_size = 0
 		end
-		self._current_file_size = file_info.start_size
+		self._current_file_size = 0
 	else
 		ALittle.Log("download succeed." .. file_full_path)
 		self._current_update_size = self._current_update_size + self._current_request:GetTotalSize()
@@ -491,8 +499,8 @@ function ALittle.VersionSystem:DownloadUpdateFileCallback(file_info, file)
 	local file_name = file:GetFilePath()
 	local cur_size = file:GetCurSize()
 	local total_size = file:GetTotalSize()
-	self._callback(file_name, cur_size, total_size, self._cur_file_index, self._file_count)
 	self._current_file_size = cur_size
+	self._callback(file_name, cur_size, total_size, self._cur_file_index, self._file_count)
 end
 
 function ALittle.VersionSystem:StopUpdate()

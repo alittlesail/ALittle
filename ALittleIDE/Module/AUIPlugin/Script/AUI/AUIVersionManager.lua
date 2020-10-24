@@ -114,9 +114,12 @@ function AUIPlugin.AUIVersionManager:UpdateVersion(check)
 	local result = self._version_system:UpdateVersion(self._version_ip, self._version_port, Lua.Bind(self.HandleUpdateVersion, self), check)
 	if result == 2 or result == 3 then
 		local text = "有最新版本，您是否更新?"
-		local new_big_version, new_small_version, new_log_list = self._version_system:GetNewVersion(5)
-		if new_log_list ~= nil then
-			text = text .. "\n" .. ALittle.String_Join(new_log_list, "\n")
+		local log_list = nil
+		if self._version_system.update_info ~= nil then
+			log_list = self._version_system.update_info.log_list
+		end
+		if log_list ~= nil then
+			text = text .. "\n" .. ALittle.String_Join(log_list, "\n")
 		end
 		self._notice_edit.text = text
 		self._notice_content.visible = false

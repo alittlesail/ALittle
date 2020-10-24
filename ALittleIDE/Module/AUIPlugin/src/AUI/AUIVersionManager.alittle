@@ -163,9 +163,11 @@ public class AUIVersionManager
 			|| result == ALittle.VersionProcess.VERSION_NEED_UPDATE_FORCE) //需要强制更新
 		{
 			var text = "有最新版本，您是否更新?";
-			var new_big_version, new_small_version, new_log_list = this._version_system.GetNewVersion(5);
-			if (new_log_list != null)
-				text = text.."\n"..ALittle.String_Join(new_log_list, "\n");
+            var log_list:List<string> = null;
+            if (this._version_system.update_info != null)
+            	log_list = this._version_system.update_info.log_list;
+			if (log_list != null)
+				text = text.."\n"..ALittle.String_Join(log_list, "\n");
 
 			this._notice_edit.text = text;
 			this._notice_content.visible = false;

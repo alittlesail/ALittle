@@ -374,6 +374,9 @@ public class VersionSystem
         }
     }
 
+    // 获取最新版本的更新信息
+    public get update_info() : VersionServer.AUpdateVersion { return this._update_info; }
+
     // ip 版本服务器的ip，可以填写域名
     // port 版本服务器的端口
     // callback 版本更新回调函数 参数列表为：进度枚举VersionProcess，文件名，当前下载的文件大小，需要下载的大小总量，当前第几个文件，文件总数
@@ -450,7 +453,7 @@ public class VersionSystem
             this._ask_update_request = null;
             if (error != null)
             {
-                Log("VersionSystem.UpdateVersion"..error);
+                Log("VersionSystem:UpdateVersion error:"..error);
                 this._doing = false;
                 return VersionProcess.UPDATE_VERSION_FAILED;
             }
@@ -461,7 +464,7 @@ public class VersionSystem
             // 检查是否有错误
             if (error != null)
             {
-                Log("VersionSystem error:"..error);
+                Log("VersionSystem:UpdateVersion error:"..error);
                 this._doing = false;
                 return VersionProcess.UPDATE_VERSION_FAILED;
             }
@@ -600,6 +603,8 @@ public class VersionSystem
                             // 把这个文件放在队列第一个，这样可以第一个下载
                             ++ new_download_list_count;
                             lua.table.insert(new_download_list, 1, v);
+
+                            this._current_update_size = this._current_update_size + file_attr.size;
                         }
                         else
                         {
@@ -667,7 +672,7 @@ public class VersionSystem
         var file_full_path = File_BaseFilePath() .. this._update_path .. file_info.c_file_path;
         var file_path = File_GetFilePathByPath(file_full_path);
         // 获取文件名
-        Log("begin download remain_count(" .. this._remain_repeat_count .. ")." .. file_full_path, "start size." .. file_info.start_size);
+        Log("begin download remain_count(" .. this._remain_repeat_count .. ")." .. file_full_path, "start size:" .. file_info.start_size);
         if (file_path != "") File_MakeDeepDir(file_path);
 
         // 再次初始化这个变量
@@ -696,12 +701,23 @@ public class VersionSystem
             lua.table.insert(this._download_list, 1, file_info);
             ++ this._download_list_count;
 
-            // 初始化开始下载的大小
-            file_info.start_size = 0;
             // 获取文件信息，如果没有，那么开始下载的大小还是0，否则填为当前文件的大小
             var file_attr = File_GetFileAttr(file_full_path);
-            if (file_attr != null) file_info.start_size = file_attr.size;
-            this._current_file_size = file_info.start_size;
+            if (file_attr != null)
+            {
+                // 把当前已经下载完成的加进来
+                this._current_update_size = this._current_update_size + file_attr.size - file_info.start_size;
+                // 然后把他设置为当前大小位置
+                file_info.start_size = file_attr.size;
+            }
+            else
+            {
+                // 把当前已经加进来的都扣掉
+                this._current_update_size = this._current_update_size - file_info.start_size;
+                // 然后起始点重新设置为0
+                file_info.start_size = 0;
+            }
+            this._current_file_size = 0;
         }
         else
         {
@@ -723,8 +739,8 @@ public class VersionSystem
         var cur_size = file.GetCurSize();
         var total_size = file.GetTotalSize();
 
-        this._callback(file_name, cur_size, total_size, this._cur_file_index, this._file_count);
         this._current_file_size = cur_size;
+        this._callback(file_name, cur_size, total_size, this._cur_file_index, this._file_count);
     }
 
 

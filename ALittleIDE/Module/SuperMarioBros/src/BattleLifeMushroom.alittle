@@ -1,0 +1,81 @@
+
+namespace SuperMarioBros;
+
+public enum LifeMushroomState
+{
+    LMS_BORN = 0;
+    LMS_WALK = 1;
+}
+
+public class BattleLifeMushroom : ALittle.Image
+{
+    private int _state;		// 状态
+    private int _level = 1;	// 当前等级
+
+    private double _vx = 0;	// x轴速度
+    private double _vy = 0;	// y轴速度
+    private double _ax = 0;	// x轴加速度
+    private double _ay = 0;	// y轴加速度
+
+    private double _born_y = 0;	// 蘑菇生长出来的动画目标y坐标
+
+    public fun Born(int row, int col)
+    {
+        this._state = LifeMushroomState.LMS_BORN;
+        this._vx = 0;
+        this._vy = 0;
+        this._ax = 0;
+        this._ay = 0;
+
+        this.x = col * TILE_WIDTH;
+        this.y = row * TILE_HEIGHT;
+        this._born_y = this.y - TILE_HEIGHT;
+    }
+
+    public fun UpdateFrame(int frame_time)
+    {
+            // 更新x轴方向
+        this._vx += this._ax * frame_time;
+        // 更新y轴方向
+        this._vy += this._ay * frame_time;
+
+        if (this._state == LifeMushroomState.LMS_BORN)
+        {
+            // 移动
+            this.y -= 0.03 * frame_time;
+
+            if (this.y <= this._born_y)
+            {
+                this.y = this._born_y;
+                this._state = LifeMushroomState.LMS_WALK;
+                this._vx = 1;
+                this._ay = 0.01;
+            }
+        }
+        elseif (this._state == LifeMushroomState.LMS_WALK)
+        {
+            this.y += this._vy;
+
+            var check_down, down_y = g_GCenter.battle_scene.CheckDown(this);
+            if (check_down)
+            {
+                this.y = down_y - this.height;
+                this._vy = 0;
+            }
+
+            this.x += this._vx;
+
+            var check_right, right_x = g_GCenter.battle_scene.CheckRight(this);
+            if (check_right)
+            {
+                this.x = right_x - this.width;
+            }
+
+            var check_left, left_x = g_GCenter.battle_scene.CheckLeft(this);
+            if (check_left)
+            {
+                this.x = left_x;
+            }
+        }
+    }
+}

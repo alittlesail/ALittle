@@ -113,7 +113,7 @@ public class BattlePlayer : ALittle.DisplayLayout
         this._level_1_sprite_right.row_index = 1;
 
         var loop = new ALittle.LoopList();
-        loop.AddUpdater(new ALittle.LoopLinear(this, "y", this.y - TILE_HEIGHT * 4, 500, 0));
+        loop.AddUpdater(new ALittle.LoopLinear(this, "y", this.y - TILE_HEIGHT * 5, 500, 0));
         loop.AddUpdater(new ALittle.LoopLinear(this, "y", A_UISystem.view_height, 200, 500));
         loop.AddUpdater(new ALittle.LoopTimer(bind(g_GCenter.battle_scene.Restart, g_GCenter.battle_scene), 100));
         loop.Start();

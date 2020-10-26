@@ -22,6 +22,7 @@ public class BattleScene : ALittle.DisplayLayout
     private BattleMap _battle_map;
     private Map<int, Map<int, ALittle.DisplayObject>> _entity_map;
     private BattlePlayer _player;
+    private Map<BattleLifeMushroom, bool> _life_mushroom_map;
 
     private int _coin_value;
 
@@ -52,6 +53,8 @@ public class BattleScene : ALittle.DisplayLayout
         this._entity_container.RemoveAllChild();
         this._effect_container.RemoveAllChild();
         this._entity_map = new Map<int, Map<int, ALittle.DisplayObject>>();
+
+        this._life_mushroom_map = new Map<BattleLifeMushroom, bool>();
 
         for (var row, submap in this._battle_map.background)
         {
@@ -170,6 +173,15 @@ public class BattleScene : ALittle.DisplayLayout
         sprite.visible = true;
     }
 
+    private fun TestCollision(ALittle.DisplayObject a, ALittle.DisplayObject b) : bool
+    {
+        if (a.x + a.width < b.x) return false;
+        if (a.x > b.x + b.width) return false;
+        if (a.y + a.height < b.y) return false;
+        if (a.y > b.y + b.height) return false;
+        return true;
+    }
+
     private fun HandleFrame(int frame_time)
     {
         this._player.UpdateFrame(frame_time);
@@ -185,6 +197,46 @@ public class BattleScene : ALittle.DisplayLayout
         if (this._player.y >= A_UISystem.view_height)
         {
             this._player.Death();
+        }
+
+        var remove_map:Map<BattleLifeMushroom, bool>;
+        for (var mushroom, _ in this._life_mushroom_map)
+        {
+            mushroom.UpdateFrame(frame_time);
+
+            if (mushroom.y >= A_UISystem.view_height)
+            {
+                if (remove_map == null) remove_map = new Map<BattleLifeMushroom, bool>();
+                remove_map[mushroom] = true;
+            }
+            // 玩家与蘑菇的碰撞
+            elseif (this.TestCollision(this._player, mushroom))
+            {
+                if (remove_map == null) remove_map = new Map<BattleLifeMushroom, bool>();
+                remove_map[mushroom] = true;
+
+                g_GCenter.player_data.life += 1;
+                // 飘出一个加命的文本
+                {
+                    var coin_text = g_Control.CreateControl{ALittle.DisplayObject}("effect_coin_text");
+                    coin_text.text = "1 UP";
+                    coin_text.x = this._player.x + this._player.width / 2 - coin_text.width / 2;
+                    coin_text.y = this._player.y - coin_text.height;
+                    this._effect_container.AddChild(coin_text);
+                    var loop = new ALittle.LoopList();
+                    loop.AddUpdater(new ALittle.LoopLinear(coin_text, "y", coin_text.y - TILE_HEIGHT * 2, 200, 0));
+                    loop.AddUpdater(new ALittle.LoopTimer(bind(this.EffectRemoveChild, this, coin_text), 200));
+                    loop.Start();
+                }
+            }
+        }
+        if (remove_map != null)
+        {
+            for (var mushroom, _ in remove_map)
+            {
+                this._life_mushroom_map[mushroom] = null;
+                this._entity_container.RemoveChild(mushroom);
+            }
         }
     }
 
@@ -311,9 +363,8 @@ public class BattleScene : ALittle.DisplayLayout
                         data.loop = new ALittle.LoopList();
                         data.loop.AddUpdater(new ALittle.LoopLinear(object, "y", object.y - TILE_HEIGHT / 2, 100, 0));
                         data.loop.AddUpdater(new ALittle.LoopLinear(object, "y", object.y, 100, 0));
+                        data.loop.AddUpdater(new ALittle.LoopTimer(bind(this.BornLifeMushroom, this, row, col, object), 0));
                         data.loop.Start();
-
-                        // 然后产出一个蘑菇
 
                         check = true;
                     }
@@ -325,13 +376,23 @@ public class BattleScene : ALittle.DisplayLayout
         return false, null;
     }
 
+    private fun BornLifeMushroom(int row, int col, ALittle.DisplayObject object)
+    {
+        var index = this._entity_container.GetChildIndex(object);
+        // 然后产出一个蘑菇
+        var mushroom = g_Control.CreateControl{BattleLifeMushroom}("life_mushroom");
+        this._life_mushroom_map[mushroom] = true;
+        this._entity_container.AddChild(mushroom, index);
+        mushroom.Born(row, col);
+    }
+
     public fun EffectRemoveChild(ALittle.DisplayObject object)
     {
         this._effect_container.RemoveChild(object);
     }
 
     // 检查entity底部是不是地板
-    public fun CheckDown(BattlePlayer entity) : bool, double
+    public fun CheckDown(ALittle.DisplayObject entity) : bool, double
     {
         var row = ALittle.Math_Floor((entity.y + entity.height) / TILE_HEIGHT);
         var min_col = ALittle.Math_Floor(entity.x / TILE_WIDTH);
@@ -364,6 +425,7 @@ public class BattleScene : ALittle.DisplayLayout
                     var type = cast<EntityUserData>(object._user_data).type;
                     var check = type == EntityType.ET_RANDOM_WALL_1
                         || type == EntityType.ET_WALL_1
+                    	|| type == EntityType.ET_HIDE_WALL_1
                         || type == EntityType.ET_IRON;
 
                     if (check) return true, row * TILE_HEIGHT;
@@ -374,7 +436,7 @@ public class BattleScene : ALittle.DisplayLayout
     }
 
     // 检查右边是否可走
-    public fun CheckRight(BattlePlayer entity) : bool, double
+    public fun CheckRight(ALittle.DisplayObject entity) : bool, double
     {
         var col = ALittle.Math_Floor((entity.x + entity.width) / TILE_WIDTH);
         var min_row = ALittle.Math_Floor(entity.y / TILE_HEIGHT);
@@ -407,6 +469,7 @@ public class BattleScene : ALittle.DisplayLayout
                     var type = cast<EntityUserData>(object._user_data).type;
                     var check = type == EntityType.ET_RANDOM_WALL_1
                         || type == EntityType.ET_WALL_1
+                    	|| type == EntityType.ET_HIDE_WALL_1
                         || type == EntityType.ET_IRON;
 
                     if (check) return true, col * TILE_WIDTH;
@@ -417,7 +480,7 @@ public class BattleScene : ALittle.DisplayLayout
     }
 
     // 检查左边是否可走
-    public fun CheckLeft(BattlePlayer entity) : bool, double
+    public fun CheckLeft(ALittle.DisplayObject entity) : bool, double
     {
         var col = ALittle.Math_Floor((entity.x - 1) / TILE_WIDTH);
         var min_row = ALittle.Math_Floor(entity.y / TILE_HEIGHT);
@@ -450,6 +513,7 @@ public class BattleScene : ALittle.DisplayLayout
                     var type = cast<EntityUserData>(object._user_data).type;
                     var check = type == EntityType.ET_RANDOM_WALL_1
                         || type == EntityType.ET_WALL_1
+                    	|| type == EntityType.ET_HIDE_WALL_1
                         || type == EntityType.ET_IRON;
 
                     if (check) return true, col * TILE_WIDTH + TILE_WIDTH;

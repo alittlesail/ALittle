@@ -34,6 +34,7 @@ function SuperMarioBros.BattleScene:Show(world, subworld)
 	self._entity_container:RemoveAllChild()
 	self._effect_container:RemoveAllChild()
 	self._entity_map = {}
+	self._life_mushroom_map = {}
 	for row, submap in ___pairs(self._battle_map.background) do
 		for col, index in ___pairs(submap) do
 			local show_row = ALittle.Math_Floor(index / SuperMarioBros.TILE_COL_COUNT) + 1
@@ -141,6 +142,22 @@ function SuperMarioBros.BattleScene:SetTileShow(row, col, show_row, show_col)
 	sprite.visible = true
 end
 
+function SuperMarioBros.BattleScene:TestCollision(a, b)
+	if a.x + a.width < b.x then
+		return false
+	end
+	if a.x > b.x + b.width then
+		return false
+	end
+	if a.y + a.height < b.y then
+		return false
+	end
+	if a.y > b.y + b.height then
+		return false
+	end
+	return true
+end
+
 function SuperMarioBros.BattleScene:HandleFrame(frame_time)
 	self._player:UpdateFrame(frame_time)
 	local scroll_x = -(self._player.x - self._scroll_screen.view_width / 2)
@@ -154,6 +171,39 @@ function SuperMarioBros.BattleScene:HandleFrame(frame_time)
 	end
 	if self._player.y >= A_UISystem.view_height then
 		self._player:Death()
+	end
+	local remove_map
+	for mushroom, _ in ___pairs(self._life_mushroom_map) do
+		mushroom:UpdateFrame(frame_time)
+		if mushroom.y >= A_UISystem.view_height then
+			if remove_map == nil then
+				remove_map = {}
+			end
+			remove_map[mushroom] = true
+		elseif self:TestCollision(self._player, mushroom) then
+			if remove_map == nil then
+				remove_map = {}
+			end
+			remove_map[mushroom] = true
+			g_GCenter.player_data.life = g_GCenter.player_data.life + (1)
+			do
+				local coin_text = SuperMarioBros.g_Control:CreateControl("effect_coin_text")
+				coin_text.text = "1 UP"
+				coin_text.x = self._player.x + self._player.width / 2 - coin_text.width / 2
+				coin_text.y = self._player.y - coin_text.height
+				self._effect_container:AddChild(coin_text)
+				local loop = ALittle.LoopList()
+				loop:AddUpdater(ALittle.LoopLinear(coin_text, "y", coin_text.y - SuperMarioBros.TILE_HEIGHT * 2, 200, 0))
+				loop:AddUpdater(ALittle.LoopTimer(Lua.Bind(self.EffectRemoveChild, self, coin_text), 200))
+				loop:Start()
+			end
+		end
+	end
+	if remove_map ~= nil then
+		for mushroom, _ in ___pairs(remove_map) do
+			self._life_mushroom_map[mushroom] = nil
+			self._entity_container:RemoveChild(mushroom)
+		end
 	end
 end
 
@@ -260,6 +310,7 @@ function SuperMarioBros.BattleScene:CheckUp(entity)
 					data.loop = ALittle.LoopList()
 					data.loop:AddUpdater(ALittle.LoopLinear(object, "y", object.y - SuperMarioBros.TILE_HEIGHT / 2, 100, 0))
 					data.loop:AddUpdater(ALittle.LoopLinear(object, "y", object.y, 100, 0))
+					data.loop:AddUpdater(ALittle.LoopTimer(Lua.Bind(self.BornLifeMushroom, self, row, col, object), 0))
 					data.loop:Start()
 					check = true
 				end
@@ -271,6 +322,14 @@ function SuperMarioBros.BattleScene:CheckUp(entity)
 		return true, row * SuperMarioBros.TILE_HEIGHT + SuperMarioBros.TILE_HEIGHT
 	end
 	return false, nil
+end
+
+function SuperMarioBros.BattleScene:BornLifeMushroom(row, col, object)
+	local index = self._entity_container:GetChildIndex(object)
+	local mushroom = SuperMarioBros.g_Control:CreateControl("life_mushroom")
+	self._life_mushroom_map[mushroom] = true
+	self._entity_container:AddChild(mushroom, index)
+	mushroom:Born(row, col)
 end
 
 function SuperMarioBros.BattleScene:EffectRemoveChild(object)
@@ -301,7 +360,7 @@ function SuperMarioBros.BattleScene:CheckDown(entity)
 			local object = sub_entity_map[col]
 			if object ~= nil then
 				local type = object._user_data.type
-				local check = type == SuperMarioBros.EntityType.ET_RANDOM_WALL_1 or type == SuperMarioBros.EntityType.ET_WALL_1 or type == SuperMarioBros.EntityType.ET_IRON
+				local check = type == SuperMarioBros.EntityType.ET_RANDOM_WALL_1 or type == SuperMarioBros.EntityType.ET_WALL_1 or type == SuperMarioBros.EntityType.ET_HIDE_WALL_1 or type == SuperMarioBros.EntityType.ET_IRON
 				if check then
 					return true, row * SuperMarioBros.TILE_HEIGHT
 				end
@@ -336,7 +395,7 @@ function SuperMarioBros.BattleScene:CheckRight(entity)
 			local object = sub_entity_map[col]
 			if object ~= nil then
 				local type = object._user_data.type
-				local check = type == SuperMarioBros.EntityType.ET_RANDOM_WALL_1 or type == SuperMarioBros.EntityType.ET_WALL_1 or type == SuperMarioBros.EntityType.ET_IRON
+				local check = type == SuperMarioBros.EntityType.ET_RANDOM_WALL_1 or type == SuperMarioBros.EntityType.ET_WALL_1 or type == SuperMarioBros.EntityType.ET_HIDE_WALL_1 or type == SuperMarioBros.EntityType.ET_IRON
 				if check then
 					return true, col * SuperMarioBros.TILE_WIDTH
 				end
@@ -371,7 +430,7 @@ function SuperMarioBros.BattleScene:CheckLeft(entity)
 			local object = sub_entity_map[col]
 			if object ~= nil then
 				local type = object._user_data.type
-				local check = type == SuperMarioBros.EntityType.ET_RANDOM_WALL_1 or type == SuperMarioBros.EntityType.ET_WALL_1 or type == SuperMarioBros.EntityType.ET_IRON
+				local check = type == SuperMarioBros.EntityType.ET_RANDOM_WALL_1 or type == SuperMarioBros.EntityType.ET_WALL_1 or type == SuperMarioBros.EntityType.ET_HIDE_WALL_1 or type == SuperMarioBros.EntityType.ET_IRON
 				if check then
 					return true, col * SuperMarioBros.TILE_WIDTH + SuperMarioBros.TILE_WIDTH
 				end

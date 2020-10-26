@@ -93,7 +93,7 @@ function SuperMarioBros.BattlePlayer:Death()
 	self._level_1_sprite_right.col_index = 2
 	self._level_1_sprite_right.row_index = 1
 	local loop = ALittle.LoopList()
-	loop:AddUpdater(ALittle.LoopLinear(self, "y", self.y - SuperMarioBros.TILE_HEIGHT * 4, 500, 0))
+	loop:AddUpdater(ALittle.LoopLinear(self, "y", self.y - SuperMarioBros.TILE_HEIGHT * 5, 500, 0))
 	loop:AddUpdater(ALittle.LoopLinear(self, "y", A_UISystem.view_height, 200, 500))
 	loop:AddUpdater(ALittle.LoopTimer(Lua.Bind(g_GCenter.battle_scene.Restart, g_GCenter.battle_scene), 100))
 	loop:Start()

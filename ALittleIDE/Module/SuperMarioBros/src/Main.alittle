@@ -46,6 +46,7 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 	alittle.Require(script_base_path, "StageScene");
 	alittle.Require(script_base_path, "BattleScene");
 	alittle.Require(script_base_path, "BattlePlayer");
+	alittle.Require(script_base_path, "BattleLifeMushroom");
 	alittle.Require(script_base_path, "GCenter");
 	g_GCenter.Setup();
 }

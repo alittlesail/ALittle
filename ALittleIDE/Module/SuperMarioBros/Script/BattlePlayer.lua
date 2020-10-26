@@ -77,6 +77,11 @@ end
 function SuperMarioBros.BattlePlayer:Fire()
 end
 
+function SuperMarioBros.BattlePlayer:SmallJump()
+	self._state = SuperMarioBros.PlayerState.PS_JUMP
+	self._vy = -3
+end
+
 function SuperMarioBros.BattlePlayer:Death()
 	if self._state == SuperMarioBros.PlayerState.PS_DEATH then
 		return
@@ -97,6 +102,10 @@ function SuperMarioBros.BattlePlayer:Death()
 	loop:AddUpdater(ALittle.LoopLinear(self, "y", A_UISystem.view_height, 200, 500))
 	loop:AddUpdater(ALittle.LoopTimer(Lua.Bind(g_GCenter.battle_scene.Restart, g_GCenter.battle_scene), 100))
 	loop:Start()
+end
+
+function SuperMarioBros.BattlePlayer.__getter:state()
+	return self._state
 end
 
 function SuperMarioBros.BattlePlayer:UpdateFrame(frame_time)

@@ -94,6 +94,12 @@ public class BattlePlayer : ALittle.DisplayLayout
 
     }
 
+    public fun SmallJump()
+    {
+        this._state = PlayerState.PS_JUMP;
+        this._vy = -3;
+    }
+
     public fun Death()
     {
         if (this._state == PlayerState.PS_DEATH) return;
@@ -118,6 +124,8 @@ public class BattlePlayer : ALittle.DisplayLayout
         loop.AddUpdater(new ALittle.LoopTimer(bind(g_GCenter.battle_scene.Restart, g_GCenter.battle_scene), 100));
         loop.Start();
     }
+
+    public get state() : int { return this._state; }
 
     public fun UpdateFrame(int frame_time)
     {

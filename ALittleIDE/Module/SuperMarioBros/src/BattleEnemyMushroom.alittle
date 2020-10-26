@@ -1,0 +1,164 @@
+
+namespace SuperMarioBros;
+
+public enum EnemyMushroomState
+{
+    EMS_IDLE = 0;
+    EMS_WALK = 1;
+    EMS_FALL = 2;
+    EMS_DEATH = 3;
+}
+
+public class BattleEnemyMushroom : ALittle.DisplayLayout
+{
+	private ALittle.Sprite _sprite;
+
+    private int _state;		// 状态
+
+    private double _vx = 0;	// x轴速度
+    private double _vy = 0;	// y轴速度
+    private double _ax = 0;	// x轴加速度
+    private double _ay = 0;	// y轴加速度
+
+    // 行走变帧参数
+    private double _walk_frame_change = 0.0;
+    private int _walk_frame = 1;
+
+    public fun Init(int row, int col)
+    {
+        this._state = EnemyMushroomState.EMS_IDLE;
+        this._vx = 0;
+        this._vy = 0;
+        this._ax = 0;
+        this._ay = 0;
+
+        this.x = col * TILE_WIDTH;
+        this.y = row * TILE_HEIGHT;
+    }
+
+    public get state() : int { return this._state; }
+
+    public fun Death()
+    {
+        if (this._state == EnemyMushroomState.EMS_DEATH) return;
+
+        this._state = EnemyMushroomState.EMS_DEATH;
+        var group = new ALittle.LoopGroup();
+        group.AddUpdater(new ALittle.LoopLinear(this._sprite, "height", 5, 100, 0));
+        group.AddUpdater(new ALittle.LoopLinear(this._sprite, "y", this.height - 5, 100, 0));
+        group.Start();
+    }
+
+    public fun TryWalk()
+    {
+        if (this._state == EnemyMushroomState.EMS_DEATH) return;
+        if (this._state != EnemyMushroomState.EMS_IDLE) return;
+
+        this._state = EnemyMushroomState.EMS_WALK;
+        this._vx = -1;
+    }
+
+    public fun UpdateFrame(int frame_time)
+    {
+        if (this._state == EnemyMushroomState.EMS_DEATH) return;
+
+        // 更新x轴方向
+        this._vx += this._ax * frame_time;
+
+        // 更新y轴方向
+        this._vy += this._ay * frame_time;
+
+        if (this._state == EnemyMushroomState.EMS_IDLE)
+        {
+            // 移动
+            this.x += this._vx;
+            this.y += this._vy;
+        }
+        elseif (this._state == EnemyMushroomState.EMS_WALK)
+        {
+            this.x += this._vx;
+            
+            var check_right, right_x = g_GCenter.battle_scene.CheckRight(this);
+            if (check_right)
+            {
+                this.x = right_x - this.width;
+                this._vx = -this._vx;
+            }
+
+            var check_left, left_x = g_GCenter.battle_scene.CheckLeft(this);
+            if (check_left)
+            {
+                this.x = left_x;
+                this._vx = -this._vx;
+            }
+
+            this.y += this._vy;
+        }
+        elseif (this._state == EnemyMushroomState.EMS_FALL)
+        {
+            this.y += this._vy;
+
+            var check_down, down_y = g_GCenter.battle_scene.CheckDown(this);
+            if (check_down)
+            {
+                this._state = EnemyMushroomState.EMS_WALK;
+                this._vy = 0;
+                this._ay = 0;
+                this._vx = -1;
+                this.y = down_y - this.height;
+            }
+
+            this.x += this._vx;
+
+            var check_right, right_x = g_GCenter.battle_scene.CheckRight(this);
+            if (check_right)
+            {
+                this.x = right_x - this.width;
+                this._vx = -this._vx;
+            }
+
+            var check_left, left_x = g_GCenter.battle_scene.CheckLeft(this);
+            if (check_left)
+            {
+                this.x = left_x;
+                this._vx = -this._vx;
+            }
+        }
+        else
+        {
+            this.x += this._vx;
+            this.y += this._vy;
+        }
+
+        if (this._state == EnemyMushroomState.EMS_WALK || this._state == EnemyMushroomState.EMS_IDLE)
+        {
+            // 如果没有踩在地板上，那么就改为掉落状态
+            var check_down, down_y = g_GCenter.battle_scene.CheckDown(this);
+            if (!check_down)
+            {
+                this._state = EnemyMushroomState.EMS_FALL;
+                this._vy = 0;
+                this._ay = PLAYER_INIT_Y_SPEED_RATE;
+            }
+        }
+
+        if (this._state == EnemyMushroomState.EMS_WALK)
+        {
+            this.WalkUpdateFrame(frame_time);
+        }
+    }
+
+    private fun WalkUpdateFrame(int frame_time)
+    {
+        var rate = 0.003;
+
+        this._walk_frame_change += rate * frame_time * (1 + ALittle.Math_Abs(this._vx));
+        if (this._walk_frame_change >= 1)
+        {
+            this._walk_frame_change = 0.0;
+            this._walk_frame += 1;
+            if (this._walk_frame >= 3) this._walk_frame = 1;
+            this._sprite.col_index = this._walk_frame;   
+        }
+    }
+}

@@ -23,6 +23,7 @@ public class BattleScene : ALittle.DisplayLayout
     private Map<int, Map<int, ALittle.DisplayObject>> _entity_map;
     private BattlePlayer _player;
     private Map<BattleLifeMushroom, bool> _life_mushroom_map;
+    private Map<BattleEnemyMushroom, bool> _enemy_mushroom_map;
 
     private int _coin_value;
 
@@ -55,6 +56,7 @@ public class BattleScene : ALittle.DisplayLayout
         this._entity_map = new Map<int, Map<int, ALittle.DisplayObject>>();
 
         this._life_mushroom_map = new Map<BattleLifeMushroom, bool>();
+        this._enemy_mushroom_map = new Map<BattleEnemyMushroom, bool>();
 
         for (var row, submap in this._battle_map.background)
         {
@@ -72,6 +74,13 @@ public class BattleScene : ALittle.DisplayLayout
             {
                 if (type == EntityType.ET_BORN_1)
                     this._player.Init(row + 1, col, g_GCenter.player_data.level);
+                elseif (type == EntityType.ET_ENEMY_1)
+                {
+                    var enemy = g_Control.CreateControl{BattleEnemyMushroom}("enemy_mushroom");
+                    enemy.Init(row, col);
+                    this._enemy_mushroom_map[enemy] = true;
+                    this._entity_container.AddChild(enemy);
+                }
                 else
                 	this.CreateEntity(type, row, col);
             }
@@ -199,43 +208,113 @@ public class BattleScene : ALittle.DisplayLayout
             this._player.Death();
         }
 
-        var remove_map:Map<BattleLifeMushroom, bool>;
-        for (var mushroom, _ in this._life_mushroom_map)
+        // 处理敌军蘑菇
+        if (this._player.state != PlayerState.PS_DEATH)
         {
-            mushroom.UpdateFrame(frame_time);
+            // 如果蘑菇已经在屏幕可见范围，那么就开始走动
+            var remove_map:Map<BattleEnemyMushroom, bool>;
+            for (var enemy, _ in this._enemy_mushroom_map)
+        	{
+            	if (enemy.x < -this._scroll_screen.container_x + this._scroll_screen.view_width)
+            		enemy.TryWalk();
+            	enemy.UpdateFrame(frame_time);
 
-            if (mushroom.y >= A_UISystem.view_height)
-            {
-                if (remove_map == null) remove_map = new Map<BattleLifeMushroom, bool>();
-                remove_map[mushroom] = true;
-            }
-            // 玩家与蘑菇的碰撞
-            elseif (this.TestCollision(this._player, mushroom))
-            {
-                if (remove_map == null) remove_map = new Map<BattleLifeMushroom, bool>();
-                remove_map[mushroom] = true;
-
-                g_GCenter.player_data.life += 1;
-                // 飘出一个加命的文本
+                if (enemy.y >= A_UISystem.view_height)
                 {
-                    var coin_text = g_Control.CreateControl{ALittle.DisplayObject}("effect_coin_text");
-                    coin_text.text = "1 UP";
-                    coin_text.x = this._player.x + this._player.width / 2 - coin_text.width / 2;
-                    coin_text.y = this._player.y - coin_text.height;
-                    this._effect_container.AddChild(coin_text);
-                    var loop = new ALittle.LoopList();
-                    loop.AddUpdater(new ALittle.LoopLinear(coin_text, "y", coin_text.y - TILE_HEIGHT * 2, 200, 0));
-                    loop.AddUpdater(new ALittle.LoopTimer(bind(this.EffectRemoveChild, this, coin_text), 200));
-                    loop.Start();
+                    if (remove_map == null) remove_map = new Map<BattleEnemyMushroom, bool>();
+                    remove_map[enemy] = true;
+                    this._entity_container.RemoveChild(enemy);
+                }
+        	}
+
+            for (var enemy, _ in this._enemy_mushroom_map)
+        	{
+                if (this._player.state == PlayerState.PS_DEATH) break;
+
+                // 如果碰撞了
+                if (enemy.state != EnemyMushroomState.EMS_DEATH && this.TestCollision(this._player, enemy))
+                {
+                    // 如果是踩的，就是蘑菇阵亡
+                    if (this._player.y + this._player.height - enemy.y < TILE_HEIGHT)
+                    {
+                        if (remove_map == null) remove_map = new Map<BattleEnemyMushroom, bool>();
+                        remove_map[enemy] = true;
+
+                        enemy.Death();
+                        var remove_loop = new ALittle.LoopList();
+                        remove_loop.AddUpdater(new ALittle.LoopTimer(bind(this.EntityRemoveChild, this, enemy), 200));
+                        remove_loop.Start();
+                        this._player.SmallJump();
+
+                        // 飘出一个加命的文本
+                        {
+                            var coin_text = g_Control.CreateControl{ALittle.DisplayObject}("effect_coin_text");
+                            coin_text.text = "100";
+                            coin_text.x = enemy.x + enemy.width / 2 - coin_text.width / 2;
+                            coin_text.y = enemy.y - coin_text.height;
+                            this._effect_container.AddChild(coin_text);
+                            var loop = new ALittle.LoopList();
+                            loop.AddUpdater(new ALittle.LoopLinear(coin_text, "y", coin_text.y - TILE_HEIGHT * 2, 200, 0));
+                            loop.AddUpdater(new ALittle.LoopTimer(bind(this.EffectRemoveChild, this, coin_text), 200));
+                            loop.Start();
+                        }
+                    }
+                    else
+                    {
+                        this._player.Death();
+                    }
+                }
+        	}
+            if (remove_map != null)
+            {
+                for (var mushroom, _ in remove_map)
+                {
+                    this._enemy_mushroom_map[mushroom] = null;
                 }
             }
         }
-        if (remove_map != null)
+
+        // 处理奖励蘑菇
+        if (this._player.state != PlayerState.PS_DEATH)
         {
-            for (var mushroom, _ in remove_map)
+            var remove_map:Map<BattleLifeMushroom, bool>;
+            for (var mushroom, _ in this._life_mushroom_map)
             {
-                this._life_mushroom_map[mushroom] = null;
-                this._entity_container.RemoveChild(mushroom);
+                mushroom.UpdateFrame(frame_time);
+    
+                if (mushroom.y >= A_UISystem.view_height)
+                {
+                    if (remove_map == null) remove_map = new Map<BattleLifeMushroom, bool>();
+                    remove_map[mushroom] = true;
+                }
+                // 玩家与蘑菇的碰撞
+                elseif (this.TestCollision(this._player, mushroom))
+                {
+                    if (remove_map == null) remove_map = new Map<BattleLifeMushroom, bool>();
+                    remove_map[mushroom] = true;
+    
+                    g_GCenter.player_data.life += 1;
+                    // 飘出一个加命的文本
+                    {
+                        var coin_text = g_Control.CreateControl{ALittle.DisplayObject}("effect_coin_text");
+                        coin_text.text = "1 UP";
+                        coin_text.x = this._player.x + this._player.width / 2 - coin_text.width / 2;
+                        coin_text.y = this._player.y - coin_text.height;
+                        this._effect_container.AddChild(coin_text);
+                        var loop = new ALittle.LoopList();
+                        loop.AddUpdater(new ALittle.LoopLinear(coin_text, "y", coin_text.y - TILE_HEIGHT * 2, 200, 0));
+                        loop.AddUpdater(new ALittle.LoopTimer(bind(this.EffectRemoveChild, this, coin_text), 200));
+                        loop.Start();
+                    }
+                }
+            }
+            if (remove_map != null)
+            {
+                for (var mushroom, _ in remove_map)
+                {
+                    this._life_mushroom_map[mushroom] = null;
+                    this._entity_container.RemoveChild(mushroom);
+                }
             }
         }
     }
@@ -389,6 +468,11 @@ public class BattleScene : ALittle.DisplayLayout
     public fun EffectRemoveChild(ALittle.DisplayObject object)
     {
         this._effect_container.RemoveChild(object);
+    }
+
+    public fun EntityRemoveChild(ALittle.DisplayObject object)
+    {
+        this._entity_container.RemoveChild(object);
     }
 
     // 检查entity底部是不是地板

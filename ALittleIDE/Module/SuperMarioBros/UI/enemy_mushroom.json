@@ -1,0 +1,1 @@
+{"enemy_mushroom":{"__class":"DisplayLayout","width_value":28,"__childs":[{"x_value":2,"__class":"Sprite","width_value":32,"texture_name":"enemy_1.png","col_count":2,"height_value":32,"__link":"_sprite"}],"height_value":32,"__target_class":["SuperMarioBros","BattleEnemyMushroom"]}}

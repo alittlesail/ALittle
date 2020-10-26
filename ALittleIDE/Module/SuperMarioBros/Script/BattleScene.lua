@@ -35,6 +35,7 @@ function SuperMarioBros.BattleScene:Show(world, subworld)
 	self._effect_container:RemoveAllChild()
 	self._entity_map = {}
 	self._life_mushroom_map = {}
+	self._enemy_mushroom_map = {}
 	for row, submap in ___pairs(self._battle_map.background) do
 		for col, index in ___pairs(submap) do
 			local show_row = ALittle.Math_Floor(index / SuperMarioBros.TILE_COL_COUNT) + 1
@@ -46,6 +47,11 @@ function SuperMarioBros.BattleScene:Show(world, subworld)
 		for col, type in ___pairs(submap) do
 			if type == SuperMarioBros.EntityType.ET_BORN_1 then
 				self._player:Init(row + 1, col, g_GCenter.player_data.level)
+			elseif type == SuperMarioBros.EntityType.ET_ENEMY_1 then
+				local enemy = SuperMarioBros.g_Control:CreateControl("enemy_mushroom")
+				enemy:Init(row, col)
+				self._enemy_mushroom_map[enemy] = true
+				self._entity_container:AddChild(enemy)
 			else
 				self:CreateEntity(type, row, col)
 			end
@@ -172,37 +178,91 @@ function SuperMarioBros.BattleScene:HandleFrame(frame_time)
 	if self._player.y >= A_UISystem.view_height then
 		self._player:Death()
 	end
-	local remove_map
-	for mushroom, _ in ___pairs(self._life_mushroom_map) do
-		mushroom:UpdateFrame(frame_time)
-		if mushroom.y >= A_UISystem.view_height then
-			if remove_map == nil then
-				remove_map = {}
+	if self._player.state ~= SuperMarioBros.PlayerState.PS_DEATH then
+		local remove_map
+		for enemy, _ in ___pairs(self._enemy_mushroom_map) do
+			if enemy.x < -self._scroll_screen.container_x + self._scroll_screen.view_width then
+				enemy:TryWalk()
 			end
-			remove_map[mushroom] = true
-		elseif self:TestCollision(self._player, mushroom) then
-			if remove_map == nil then
-				remove_map = {}
+			enemy:UpdateFrame(frame_time)
+			if enemy.y >= A_UISystem.view_height then
+				if remove_map == nil then
+					remove_map = {}
+				end
+				remove_map[enemy] = true
+				self._entity_container:RemoveChild(enemy)
 			end
-			remove_map[mushroom] = true
-			g_GCenter.player_data.life = g_GCenter.player_data.life + (1)
-			do
-				local coin_text = SuperMarioBros.g_Control:CreateControl("effect_coin_text")
-				coin_text.text = "1 UP"
-				coin_text.x = self._player.x + self._player.width / 2 - coin_text.width / 2
-				coin_text.y = self._player.y - coin_text.height
-				self._effect_container:AddChild(coin_text)
-				local loop = ALittle.LoopList()
-				loop:AddUpdater(ALittle.LoopLinear(coin_text, "y", coin_text.y - SuperMarioBros.TILE_HEIGHT * 2, 200, 0))
-				loop:AddUpdater(ALittle.LoopTimer(Lua.Bind(self.EffectRemoveChild, self, coin_text), 200))
-				loop:Start()
+		end
+		for enemy, _ in ___pairs(self._enemy_mushroom_map) do
+			if self._player.state == SuperMarioBros.PlayerState.PS_DEATH then
+				break
+			end
+			if enemy.state ~= SuperMarioBros.EnemyMushroomState.EMS_DEATH and self:TestCollision(self._player, enemy) then
+				if self._player.y + self._player.height - enemy.y < SuperMarioBros.TILE_HEIGHT then
+					if remove_map == nil then
+						remove_map = {}
+					end
+					remove_map[enemy] = true
+					enemy:Death()
+					local remove_loop = ALittle.LoopList()
+					remove_loop:AddUpdater(ALittle.LoopTimer(Lua.Bind(self.EntityRemoveChild, self, enemy), 200))
+					remove_loop:Start()
+					self._player:SmallJump()
+					do
+						local coin_text = SuperMarioBros.g_Control:CreateControl("effect_coin_text")
+						coin_text.text = "100"
+						coin_text.x = enemy.x + enemy.width / 2 - coin_text.width / 2
+						coin_text.y = enemy.y - coin_text.height
+						self._effect_container:AddChild(coin_text)
+						local loop = ALittle.LoopList()
+						loop:AddUpdater(ALittle.LoopLinear(coin_text, "y", coin_text.y - SuperMarioBros.TILE_HEIGHT * 2, 200, 0))
+						loop:AddUpdater(ALittle.LoopTimer(Lua.Bind(self.EffectRemoveChild, self, coin_text), 200))
+						loop:Start()
+					end
+				else
+					self._player:Death()
+				end
+			end
+		end
+		if remove_map ~= nil then
+			for mushroom, _ in ___pairs(remove_map) do
+				self._enemy_mushroom_map[mushroom] = nil
 			end
 		end
 	end
-	if remove_map ~= nil then
-		for mushroom, _ in ___pairs(remove_map) do
-			self._life_mushroom_map[mushroom] = nil
-			self._entity_container:RemoveChild(mushroom)
+	if self._player.state ~= SuperMarioBros.PlayerState.PS_DEATH then
+		local remove_map
+		for mushroom, _ in ___pairs(self._life_mushroom_map) do
+			mushroom:UpdateFrame(frame_time)
+			if mushroom.y >= A_UISystem.view_height then
+				if remove_map == nil then
+					remove_map = {}
+				end
+				remove_map[mushroom] = true
+			elseif self:TestCollision(self._player, mushroom) then
+				if remove_map == nil then
+					remove_map = {}
+				end
+				remove_map[mushroom] = true
+				g_GCenter.player_data.life = g_GCenter.player_data.life + (1)
+				do
+					local coin_text = SuperMarioBros.g_Control:CreateControl("effect_coin_text")
+					coin_text.text = "1 UP"
+					coin_text.x = self._player.x + self._player.width / 2 - coin_text.width / 2
+					coin_text.y = self._player.y - coin_text.height
+					self._effect_container:AddChild(coin_text)
+					local loop = ALittle.LoopList()
+					loop:AddUpdater(ALittle.LoopLinear(coin_text, "y", coin_text.y - SuperMarioBros.TILE_HEIGHT * 2, 200, 0))
+					loop:AddUpdater(ALittle.LoopTimer(Lua.Bind(self.EffectRemoveChild, self, coin_text), 200))
+					loop:Start()
+				end
+			end
+		end
+		if remove_map ~= nil then
+			for mushroom, _ in ___pairs(remove_map) do
+				self._life_mushroom_map[mushroom] = nil
+				self._entity_container:RemoveChild(mushroom)
+			end
 		end
 	end
 end
@@ -334,6 +394,10 @@ end
 
 function SuperMarioBros.BattleScene:EffectRemoveChild(object)
 	self._effect_container:RemoveChild(object)
+end
+
+function SuperMarioBros.BattleScene:EntityRemoveChild(object)
+	self._entity_container:RemoveChild(object)
 end
 
 function SuperMarioBros.BattleScene:CheckDown(entity)

@@ -1305,6 +1305,9 @@ public:
     void SetName( const char* str, bool staticMem=false )	{
         SetValue( str, staticMem );
     }
+	void SetNameForLua(const char* str) {
+        SetName(str);
+    }
 
     virtual XMLElement* ToElement()				{
         return this;
@@ -1338,6 +1341,7 @@ public:
     	@endverbatim
     */
     const char* Attribute( const char* name, const char* value=0 ) const;
+    const char* AttributeForLua(const char* name) const { return Attribute(name);  }
 
     /** Given an attribute name, IntAttribute() returns the value
     	of the attribute interpreted as an integer. The default

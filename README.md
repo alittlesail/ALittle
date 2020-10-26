@@ -39,22 +39,8 @@ ALittleScript是一门兼顾强类型和弱类型的语言。
   * 使用浏览器打开HelloWorld.html。按F12打开浏览器调试界面，就可以看到HelloWorld
   * ![HelloWorld](https://github.com/alittlesail/ALittle/blob/master/ALittle/Module/ALittleIDE/Other/GameLibrary/HelloWorld/HelloWorld.js.png)
   
-## 小游戏
-* 线上 demo
-  * [2048 PixiJS移植](http://alittlesail.github.io/G2048.html)
-  * [FlappyBird PixiJS移植](http://alittlesail.github.io/FlappyBird.html)
-  * [ALittleIDE PixiJS移植](http://alittlesail.github.io/ALittleIDE.html)
-  * [2048 Emscripten移植](https://alittlesail.github.io/Emscripten/G2048.html)
-  * [ALittleIDE Emscripten移植](https://alittlesail.github.io/Emscripten/ALittleIDE.html)
-* 本地运行
-  * 运行nginx-1.16.1目录下的start.bat
-  * 打开浏览器，输入地址localhost/ALittle/G2048.html
-  * ![G2048](https://github.com/alittlesail/ALittle/blob/master/ALittle/Module/G2048/G2048.js.png)
-  * 打开浏览器，输入地址localhost/Emcc/G2048.html
-  * ![G2048](https://github.com/alittlesail/ALittle/blob/master/Emcc/G2048.emcc.png)
-  * 打开浏览器，输入地址localhost/Emcc/ALittleIDE.html
-  * ![ALittleIDE](https://github.com/alittlesail/ALittle/blob/master/Emcc/ALittleIDE.emcc.png)
-  
+## 线上 demo https://alittlesail.github.io/
+
 # 语言快速入门
 
 ## 命名域 namespace

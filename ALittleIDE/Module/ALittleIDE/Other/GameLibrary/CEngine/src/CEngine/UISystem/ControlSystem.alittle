@@ -157,7 +157,7 @@ public class ControlSystem
             if (buffer == null)
             {
                 File_MakeDeepDir(ALittle.File_GetFilePathByPath(module_path));
-                var error = HttpDownloadRequest(this._host, this._port, module_path, module_path, null, true);
+                var error = HttpDownloadRequest(this._host, this._port, module_path, this._base_path..path, null, true);
                 if (error != null)
                 {
                     ALittle.Error(this._host, this._port, module_path, error);

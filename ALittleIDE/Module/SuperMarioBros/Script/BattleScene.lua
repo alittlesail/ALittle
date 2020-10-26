@@ -1,6 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.SuperMarioBros == nil then _G.SuperMarioBros = {} end
+local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
@@ -14,6 +15,11 @@ option_map = {}
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 SuperMarioBros.BattleScene = Lua.Class(ALittle.DisplayLayout, "SuperMarioBros.BattleScene")
+
+function SuperMarioBros.BattleScene:Ctor()
+	___rawset(self, "_coin_value", 0)
+	___rawset(self, "_end_time", 0)
+end
 
 function SuperMarioBros.BattleScene:TCtor()
 	self._scroll_screen.container:Init(self._tile_linear)
@@ -30,6 +36,9 @@ function SuperMarioBros.BattleScene:Show(world, subworld)
 	self._coin.text = self._coin_value
 	self._stage.text = g_GCenter.player_data.world .. "-" .. g_GCenter.player_data.subworld
 	self._time.text = 60 * 5
+	local start_time = ALittle.System_GetCurMSTime()
+	self._end_time = start_time + 60 * 5 * 1000
+	self._time.text = ALittle.Math_Floor((self._end_time - start_time) / 1000)
 	self._tile_linear:RemoveAllChild()
 	self._entity_container:RemoveAllChild()
 	self._effect_container:RemoveAllChild()
@@ -165,6 +174,16 @@ function SuperMarioBros.BattleScene:TestCollision(a, b)
 end
 
 function SuperMarioBros.BattleScene:HandleFrame(frame_time)
+	local cur_time = ALittle.System_GetCurMSTime()
+	local delta_time = ALittle.Math_Floor((self._end_time - cur_time) / 1000)
+	if delta_time <= 0 then
+		delta_time = 0
+	end
+	self._time.text = ALittle.Math_Floor(delta_time)
+	if delta_time <= 0 then
+		self._player:Death()
+		return
+	end
 	self._player:UpdateFrame(frame_time)
 	local scroll_x = -(self._player.x - self._scroll_screen.view_width / 2)
 	if scroll_x > 0 then
@@ -209,6 +228,8 @@ function SuperMarioBros.BattleScene:HandleFrame(frame_time)
 					remove_loop:Start()
 					self._player:SmallJump()
 					do
+						g_GCenter.player_data.score = g_GCenter.player_data.score + (100)
+						self._score.text = g_GCenter.player_data.score
 						local coin_text = SuperMarioBros.g_Control:CreateControl("effect_coin_text")
 						coin_text.text = "100"
 						coin_text.x = enemy.x + enemy.width / 2 - coin_text.width / 2
@@ -351,6 +372,10 @@ function SuperMarioBros.BattleScene:CheckUp(entity)
 						loop:Start()
 					end
 					do
+						self._coin_value = self._coin_value + (1)
+						self._coin.text = self._coin_value
+						g_GCenter.player_data.score = g_GCenter.player_data.score + (200)
+						self._score.text = g_GCenter.player_data.score
 						local coin_text = SuperMarioBros.g_Control:CreateControl("effect_coin_text")
 						coin_text.text = 200
 						coin_text.x = object.x + object.width / 2 - coin_text.width / 2

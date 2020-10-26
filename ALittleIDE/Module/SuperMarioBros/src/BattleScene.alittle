@@ -25,10 +25,11 @@ public class BattleScene : ALittle.DisplayLayout
     private Map<BattleLifeMushroom, bool> _life_mushroom_map;
     private Map<BattleEnemyMushroom, bool> _enemy_mushroom_map;
 
-    private int _coin_value;
+    private int _coin_value = 0;
+    private int _end_time = 0;
 
     private ALittle.LoopFrame _frame_loop;
-
+    
     public fun TCtor()
     {
         cast<EditContainer>(this._scroll_screen.container).Init(this._tile_linear);
@@ -49,6 +50,9 @@ public class BattleScene : ALittle.DisplayLayout
         this._coin.text = this._coin_value;
         this._stage.text = g_GCenter.player_data.world.."-"..g_GCenter.player_data.subworld;
         this._time.text = 60 * 5;
+        var start_time = ALittle.System_GetCurMSTime();
+        this._end_time = start_time + 60 * 5 * 1000;
+        this._time.text = ALittle.Math_Floor((this._end_time - start_time) / 1000);
 
         this._tile_linear.RemoveAllChild();
         this._entity_container.RemoveAllChild();
@@ -193,6 +197,16 @@ public class BattleScene : ALittle.DisplayLayout
 
     private fun HandleFrame(int frame_time)
     {
+        var cur_time = ALittle.System_GetCurMSTime();
+        var delta_time = ALittle.Math_Floor((this._end_time - cur_time) / 1000);
+        if (delta_time <= 0) delta_time = 0;
+        this._time.text = ALittle.Math_Floor(delta_time);
+        if (delta_time <= 0)
+        {
+            this._player.Death();
+            return;
+        }
+
         this._player.UpdateFrame(frame_time);
 
         var scroll_x = -(this._player.x - this._scroll_screen.view_width / 2);
@@ -248,6 +262,9 @@ public class BattleScene : ALittle.DisplayLayout
 
                         // 飘出一个加命的文本
                         {
+                            g_GCenter.player_data.score += 100;
+                            this._score.text = g_GCenter.player_data.score;
+
                             var coin_text = g_Control.CreateControl{ALittle.DisplayObject}("effect_coin_text");
                             coin_text.text = "100";
                             coin_text.x = enemy.x + enemy.width / 2 - coin_text.width / 2;
@@ -421,6 +438,11 @@ public class BattleScene : ALittle.DisplayLayout
 
                         // 飘出一个分数
                         {
+                            this._coin_value += 1;
+                            this._coin.text = this._coin_value;
+                            g_GCenter.player_data.score += 200;
+                            this._score.text = g_GCenter.player_data.score;
+
                             var coin_text = g_Control.CreateControl{ALittle.DisplayObject}("effect_coin_text");
                             coin_text.text = 200;
                             coin_text.x = object.x + object.width / 2 - coin_text.width / 2;

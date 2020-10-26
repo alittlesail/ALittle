@@ -454,6 +454,10 @@ public class BattleScene : ALittle.DisplayLayout
                         }
                         check = true;
                     }
+                    elseif (data.type == EntityType.ET_IRON)
+                    {
+                        check = true;
+                    }
                     elseif (data.type == EntityType.ET_RANDOM_WALL_1)
                     {
                         sub_map[col] = null;

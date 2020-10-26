@@ -374,6 +374,8 @@ function SuperMarioBros.BattleScene:CheckUp(entity)
 						loop:Start()
 					end
 					check = true
+				elseif data.type == SuperMarioBros.EntityType.ET_IRON then
+					check = true
 				elseif data.type == SuperMarioBros.EntityType.ET_RANDOM_WALL_1 then
 					sub_map[col] = nil
 					self._entity_container:RemoveChild(object)

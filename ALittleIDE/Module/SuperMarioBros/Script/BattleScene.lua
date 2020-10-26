@@ -66,7 +66,7 @@ function SuperMarioBros.BattleScene:Show(world, subworld)
 			end
 		end
 	end
-	self._scroll_screen.container.width = self._tile_linear.width + self._scroll_screen.view_width
+	self._scroll_screen.container.width = self._tile_linear.width
 	self._scroll_screen.container_x = 0
 	self._scroll_screen:RefreshClipDisLine()
 	self.visible = true
@@ -129,7 +129,7 @@ function SuperMarioBros.BattleScene:SetTileShow(row, col, show_row, show_col)
 			self._tile_linear:AddChild(linear)
 			i = i+(1)
 		end
-		self._scroll_screen.container.width = self._tile_linear.width + self._scroll_screen.view_width
+		self._scroll_screen.container.width = self._tile_linear.width
 		self._scroll_screen:AdjustScrollBar()
 	end
 	local linear = self._tile_linear:GetChildByIndex(col + 1)
@@ -449,7 +449,7 @@ function SuperMarioBros.BattleScene:CheckDown(entity)
 			local object = sub_entity_map[col]
 			if object ~= nil then
 				local type = object._user_data.type
-				local check = type == SuperMarioBros.EntityType.ET_RANDOM_WALL_1 or type == SuperMarioBros.EntityType.ET_WALL_1 or type == SuperMarioBros.EntityType.ET_HIDE_WALL_1 or type == SuperMarioBros.EntityType.ET_IRON
+				local check = type == SuperMarioBros.EntityType.ET_RANDOM_WALL_1 or type == SuperMarioBros.EntityType.ET_WALL_1 or (type == SuperMarioBros.EntityType.ET_HIDE_WALL_1 and object.visible) or type == SuperMarioBros.EntityType.ET_IRON
 				if check then
 					return true, row * SuperMarioBros.TILE_HEIGHT
 				end
@@ -484,7 +484,7 @@ function SuperMarioBros.BattleScene:CheckRight(entity)
 			local object = sub_entity_map[col]
 			if object ~= nil then
 				local type = object._user_data.type
-				local check = type == SuperMarioBros.EntityType.ET_RANDOM_WALL_1 or type == SuperMarioBros.EntityType.ET_WALL_1 or type == SuperMarioBros.EntityType.ET_HIDE_WALL_1 or type == SuperMarioBros.EntityType.ET_IRON
+				local check = type == SuperMarioBros.EntityType.ET_RANDOM_WALL_1 or type == SuperMarioBros.EntityType.ET_WALL_1 or (type == SuperMarioBros.EntityType.ET_HIDE_WALL_1 and object.visible) or type == SuperMarioBros.EntityType.ET_IRON
 				if check then
 					return true, col * SuperMarioBros.TILE_WIDTH
 				end
@@ -519,7 +519,7 @@ function SuperMarioBros.BattleScene:CheckLeft(entity)
 			local object = sub_entity_map[col]
 			if object ~= nil then
 				local type = object._user_data.type
-				local check = type == SuperMarioBros.EntityType.ET_RANDOM_WALL_1 or type == SuperMarioBros.EntityType.ET_WALL_1 or type == SuperMarioBros.EntityType.ET_HIDE_WALL_1 or type == SuperMarioBros.EntityType.ET_IRON
+				local check = type == SuperMarioBros.EntityType.ET_RANDOM_WALL_1 or type == SuperMarioBros.EntityType.ET_WALL_1 or (type == SuperMarioBros.EntityType.ET_HIDE_WALL_1 and object.visible) or type == SuperMarioBros.EntityType.ET_IRON
 				if check then
 					return true, col * SuperMarioBros.TILE_WIDTH + SuperMarioBros.TILE_WIDTH
 				end

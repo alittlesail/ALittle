@@ -90,7 +90,7 @@ public class BattleScene : ALittle.DisplayLayout
             }
         }
 
-        this._scroll_screen.container.width = this._tile_linear.width + this._scroll_screen.view_width;
+        this._scroll_screen.container.width = this._tile_linear.width;
         this._scroll_screen.container_x = 0;
         this._scroll_screen.RefreshClipDisLine();
 
@@ -158,7 +158,7 @@ public class BattleScene : ALittle.DisplayLayout
                 this._tile_linear.AddChild(linear);
             }
 
-            this._scroll_screen.container.width = this._tile_linear.width + this._scroll_screen.view_width;
+            this._scroll_screen.container.width = this._tile_linear.width;
             this._scroll_screen.AdjustScrollBar();
         }
 
@@ -215,7 +215,7 @@ public class BattleScene : ALittle.DisplayLayout
             scroll_x = -(this._scroll_screen.container.width - this._scroll_screen.view_width);
         if (this._scroll_screen.container_x > scroll_x)
         	this._scroll_screen.container_x = scroll_x;
-
+        
         // 检查玩家死亡
         if (this._player.y >= A_UISystem.view_height)
         {
@@ -531,7 +531,7 @@ public class BattleScene : ALittle.DisplayLayout
                     var type = cast<EntityUserData>(object._user_data).type;
                     var check = type == EntityType.ET_RANDOM_WALL_1
                         || type == EntityType.ET_WALL_1
-                    	|| type == EntityType.ET_HIDE_WALL_1
+                    	|| (type == EntityType.ET_HIDE_WALL_1 && object.visible)
                         || type == EntityType.ET_IRON;
 
                     if (check) return true, row * TILE_HEIGHT;
@@ -575,7 +575,7 @@ public class BattleScene : ALittle.DisplayLayout
                     var type = cast<EntityUserData>(object._user_data).type;
                     var check = type == EntityType.ET_RANDOM_WALL_1
                         || type == EntityType.ET_WALL_1
-                    	|| type == EntityType.ET_HIDE_WALL_1
+                    	|| (type == EntityType.ET_HIDE_WALL_1 && object.visible)
                         || type == EntityType.ET_IRON;
 
                     if (check) return true, col * TILE_WIDTH;
@@ -619,7 +619,7 @@ public class BattleScene : ALittle.DisplayLayout
                     var type = cast<EntityUserData>(object._user_data).type;
                     var check = type == EntityType.ET_RANDOM_WALL_1
                         || type == EntityType.ET_WALL_1
-                    	|| type == EntityType.ET_HIDE_WALL_1
+                    	|| (type == EntityType.ET_HIDE_WALL_1 && object.visible)
                         || type == EntityType.ET_IRON;
 
                     if (check) return true, col * TILE_WIDTH + TILE_WIDTH;

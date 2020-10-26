@@ -1,0 +1,79 @@
+
+register namespace tinyxml2;
+
+public class XMLAttribute
+{
+    public fun Name() : string {}
+    public fun Value() : string {}
+    public fun Next() : XMLAttribute {}
+    public fun SetAttribute(string value) {}
+}
+
+public class XMLNode
+{
+    public fun GetDocument() : XMLDocument {}
+
+    public fun ToElement() : XMLElement {}
+    public fun ToText() : XMLText {}
+    public fun ToComment() : XMLComment {}
+    public fun ToDocument() : XMLDocument {}
+    public fun ToDeclaration() : XMLDeclaration {}
+
+    public fun Value() : string {}
+    public fun SetValue(string value) {}
+
+    public fun Parent() : XMLNode {}
+    public fun NoChildren() : bool {}
+
+    public fun FirstChild() : XMLNode {}
+    public fun NextSibling() : XMLNode {}
+
+    public fun LastChild() : XMLNode {}
+    public fun PreviousSibling() : XMLNode {}
+
+    public fun InsertEndChild(XMLNode node) : XMLNode {}
+    public fun InsertFirstChild(XMLNode node) : XMLNode {}
+    public fun InsertAfterChild(XMLNode after, XMLNode node) : XMLNode {}
+
+    public fun DeleteChild(XMLNode node) {}
+    public fun DeleteChildren() {}
+}
+
+public class XMLElement : XMLNode
+{
+    public fun Name() : string {}
+    public fun SetName(string name, bool staticMem) {}
+    public fun Attribute(string name, string value) : string {}
+    public fun SetAttribute(string nmae, string value) {}
+    public fun GetText() : string {}
+    public fun SetText(string text) {}
+    public fun FirstAttribute() : XMLAttribute {}
+}
+
+public class XMLComment : XMLNode
+{
+
+}
+
+public class XMLDeclaration : XMLNode
+{
+
+}
+
+public class XMLText : XMLNode
+{
+
+}
+
+public class XMLDocument : XMLNode
+{
+    public fun Parse(string value) : bool {}
+    public fun LoadFile(string file_path) : bool {}
+    public fun SaveFile(string file_path, bool compact) {}
+    public fun RootElement() : XMLElement {}
+    public fun NewElement() : XMLElement {}
+    public fun NewComment() : XMLComment {}
+    public fun NewDeclaration() : XMLDeclaration {}
+    public fun NewText() : XMLText {}
+    public fun DeleteNode(XMLNode node) {}
+}

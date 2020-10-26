@@ -40,7 +40,7 @@ ALittleIDE.DropDownS = JavaScript.Class(ALittleIDE.TextCheckButtonS, {
 		if (path === undefined) {
 			return;
 		}
-		this.ImagePathSelectCallback("show_background", this.HandleShowBackGFOCUSOUT, undefined, path);
+		this.ImagePathSelectCallback("show_background", this.HandleShowBackGFOCUSOUT, undefined, path, false);
 	},
 	HandleShowScrollBarFOCUSOUT : function(event) {
 		if (event.target._user_data !== undefined) {

@@ -105,7 +105,7 @@ AUIPlugin.AUICodeABnf = JavaScript.Class(AUIPlugin.AUICodeLanguage, {
 			return;
 		}
 		let attr = ALittle.File_GetFileAttr(path);
-		if (attr === undefined || attr.mode !== "directory") {
+		if (attr === undefined || attr.directory !== true) {
 			g_AUITool.ShowNotice("错误", "文件夹不存在");
 			return;
 		}

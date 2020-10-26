@@ -26,13 +26,13 @@ ALittleIDE.ImageS = JavaScript.Class(ALittleIDE.DisplayObjectS, {
 		if (path === undefined) {
 			return;
 		}
-		this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, undefined, path);
+		this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, undefined, path, true);
 	},
 	SetTextureName : function(texture_name, revoke_bind) {
 		if (texture_name === undefined) {
 			return;
 		}
-		this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, revoke_bind, texture_name);
+		this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, revoke_bind, texture_name, true);
 	},
 	HandleFlipSELECT_CHANGE : function(event) {
 		let list = ALittleIDE.g_IDEEnum.flip_rtype;

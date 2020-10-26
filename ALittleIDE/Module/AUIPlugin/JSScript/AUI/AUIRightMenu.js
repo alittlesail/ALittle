@@ -20,6 +20,12 @@ name_list : ["target","is_drag"],
 type_list : ["ALittle.DisplayObject","bool"],
 option_map : {}
 })
+ALittle.RegStruct(348388800, "ALittle.UIHideEvent", {
+name : "ALittle.UIHideEvent", ns_name : "ALittle", rl_name : "UIHideEvent", hash_code : 348388800,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
 
 AUIPlugin.AUIRightMenu = JavaScript.Class(undefined, {
 	Ctor : function() {
@@ -42,15 +48,15 @@ AUIPlugin.AUIRightMenu = JavaScript.Class(undefined, {
 		info.auto_hide = auto_hide;
 		ALittle.List_Push(this._info_list, info);
 	},
-	Show : function(target) {
+	Show : function(target, hide_callback) {
 		if (this._menu === undefined) {
-			this._menu = AUIPlugin.g_Control.CreateControl("ide_common_menu", this);
+			this._menu = AUIPlugin.g_Control.CreateControl("aui_menu", this);
 			let max_width = 0.0;
 			let ___OBJECT_1 = this._info_list;
 			for (let index = 1; index <= ___OBJECT_1.length; ++index) {
 				let info = ___OBJECT_1[index - 1];
 				if (info === undefined) break;
-				let item = AUIPlugin.g_Control.CreateControl("ide_common_item_button");
+				let item = AUIPlugin.g_Control.CreateControl("aui_menu_item_button");
 				item.text = info.name;
 				if (item.show_text !== undefined && item.show_text.width > max_width) {
 					max_width = item.show_text.width;
@@ -62,10 +68,11 @@ AUIPlugin.AUIRightMenu = JavaScript.Class(undefined, {
 			}
 			this._menu.width = max_width + 50;
 			this._menu.height = this._linear.height + 10;
+			this._menu.AddEventListener(___all_struct.get(348388800), this, this.HandleHideEvent);
 		}
 		if (target !== undefined) {
 			let [x, y] = target.LocalToGlobal();
-			this._menu.x = x;
+			this._menu.x = x - 5;
 			this._menu.y = y + target.height;
 		} else {
 			this._menu.x = A_UISystem.mouse_x;
@@ -77,11 +84,19 @@ AUIPlugin.AUIRightMenu = JavaScript.Class(undefined, {
 		if (this._menu.y + this._menu.height > A_UISystem.view_height) {
 			this._menu.y = A_UISystem.view_height - this._menu.height;
 		}
+		this._hide_callback = hide_callback;
 		A_LayerManager.ShowFromRight(this._menu);
 	},
 	Hide : function() {
 		if (this._menu !== undefined) {
 			A_LayerManager.HideFromRight(this._menu);
+		}
+	},
+	HandleHideEvent : function(event) {
+		if (this._hide_callback !== undefined) {
+			let callback = this._hide_callback;
+			this._hide_callback = undefined;
+			callback();
 		}
 	},
 	HandleItemClick : function(event) {

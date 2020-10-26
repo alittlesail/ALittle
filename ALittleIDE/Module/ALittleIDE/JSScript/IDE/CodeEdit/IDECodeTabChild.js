@@ -31,7 +31,7 @@ if (ALittleIDE.IDETabChild === undefined) throw new Error(" extends class:ALittl
 ALittleIDE.IDECodeTabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 	Ctor : function(ctrl_sys, module, name, save, user_info) {
 		this._user_info = user_info;
-		this._edit = ALittleIDE.g_AUIPluinControl.CreateControl("ide_code_tab_screen", this);
+		this._edit = ALittleIDE.g_AUIPluinControl.CreateControl("code_tab_screen", this);
 		this._edit.AddEventListener(___all_struct.get(958494922), this, this.HandleChangedEvent);
 		this._edit.AddEventListener(___all_struct.get(631224630), this, this.HandleEditGotoEvent);
 		this._edit.AddEventListener(___all_struct.get(-1898137181), this, this.HandleJumpCodeEvent);

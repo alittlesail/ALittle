@@ -473,7 +473,7 @@ ALittleIDE.IDEAntiPanel = JavaScript.Class(ALittle.DisplayLayout, {
 			for (let name in ___OBJECT_3) {
 				let info = ___OBJECT_3[name];
 				if (info === undefined) continue;
-				let item = ALittleIDE.g_Control.CreateControl("ide_common_item_radiobutton");
+				let item = ALittleIDE.g_Control.CreateControl("tree_item_radiobutton");
 				item.text = name;
 				item.group = this._list_group;
 				item.AddEventListener(___all_struct.get(-1479093282), this, this.HandleAntiListItemRButtonDown);
@@ -501,7 +501,7 @@ ALittleIDE.IDEAntiPanel = JavaScript.Class(ALittle.DisplayLayout, {
 		this._anti_anti_linear.x = static_object_hv.width;
 		this._anti_anti_linear.y = static_object_hv.height;
 		this._anti_anti_linear.width = static_object_h.width - static_object_hv.width;
-		this._anti_screen.RejustScrollBar();
+		this._anti_screen.AdjustScrollBar();
 		if (this._anti_scroll_list.child_count > 0) {
 			this._anti_scroll_list.childs[1 - 1].selected = true;
 			this.ShowAnti(this._anti_scroll_list.childs[1 - 1].text);
@@ -532,7 +532,7 @@ ALittleIDE.IDEAntiPanel = JavaScript.Class(ALittle.DisplayLayout, {
 		let root = {};
 		root.childs = [];
 		user_info.base.loop_map[name] = root;
-		let item = ALittleIDE.g_Control.CreateControl("ide_common_item_radiobutton");
+		let item = ALittleIDE.g_Control.CreateControl("tree_item_radiobutton");
 		item.text = name;
 		item.group = this._list_group;
 		item.AddEventListener(___all_struct.get(-1479093282), this, this.HandleAntiListItemRButtonDown);
@@ -635,7 +635,7 @@ ALittleIDE.IDEAntiPanel = JavaScript.Class(ALittle.DisplayLayout, {
 			this._anti_link_linear.AddChild(link_item);
 		}
 		static_object_v.height = this._anti_link_linear.y + this._anti_link_linear.height;
-		this._anti_screen.RejustScrollBar();
+		this._anti_screen.AdjustScrollBar();
 		this._handle_container.visible = true;
 	},
 	HideAnti : function() {
@@ -646,7 +646,7 @@ ALittleIDE.IDEAntiPanel = JavaScript.Class(ALittle.DisplayLayout, {
 		this._anti_anti_linear.RemoveAllChild();
 		this._anti_link_linear.RemoveAllChild();
 		this._anti_screen.static_object_v.height = this._anti_link_linear.y;
-		this._anti_screen.RejustScrollBar();
+		this._anti_screen.AdjustScrollBar();
 		this._handle_container.visible = false;
 		this._loop_linear.visible = false;
 		this._loop_attribute.visible = false;
@@ -690,7 +690,7 @@ ALittleIDE.IDEAntiPanel = JavaScript.Class(ALittle.DisplayLayout, {
 		this._anti_link_linear.AddChild(link_item);
 		let static_object_v = this._anti_screen.static_object_v;
 		static_object_v.height = this._anti_link_linear.y + this._anti_link_linear.height;
-		this._anti_screen.RejustScrollBar();
+		this._anti_screen.AdjustScrollBar();
 		let revoke = ALittle.NewObject(ALittleIDE.IDEAntiAddAttrRevoke, this, this._cur_show, child, anti_item, link_item);
 		this._tab_child.revoke_list.PushRevoke(revoke);
 		this._tab_child.save = false;
@@ -716,7 +716,7 @@ ALittleIDE.IDEAntiPanel = JavaScript.Class(ALittle.DisplayLayout, {
 		this._anti_link_linear.AddChild(link_item);
 		let static_object_v = this._anti_screen.static_object_v;
 		static_object_v.height = this._anti_link_linear.y + this._anti_link_linear.height;
-		this._anti_screen.RejustScrollBar();
+		this._anti_screen.AdjustScrollBar();
 		let revoke = ALittle.NewObject(ALittleIDE.IDEAntiAddAttrRevoke, this, this._cur_show, child, anti_item, link_item);
 		this._tab_child.revoke_list.PushRevoke(revoke);
 		this._tab_child.save = false;
@@ -737,7 +737,7 @@ ALittleIDE.IDEAntiPanel = JavaScript.Class(ALittle.DisplayLayout, {
 		let link_item = this._anti_link_linear.GetChildByIndex(child_index);
 		this._anti_link_linear.RemoveChild(link_item);
 		this._anti_screen.static_object_v.height = this._anti_link_linear.y + this._anti_link_linear.height;
-		this._anti_screen.RejustScrollBar();
+		this._anti_screen.AdjustScrollBar();
 		let revoke = ALittle.NewObject(ALittleIDE.IDEAntiRemoveAttrRevoke, this, this._cur_show, child, anti_item, link_item, child_index);
 		this._tab_child.revoke_list.PushRevoke(revoke);
 		this._tab_child.save = false;

@@ -126,7 +126,7 @@ ALittleIDE.IDEUIControlList = JavaScript.Class(ALittle.DisplayLayout, {
 				parent = parent.logic_parent;
 			}
 		}
-		this._control_scroll_screen.RejustScrollBar();
+		this._control_scroll_screen.AdjustScrollBar();
 		let [x, y] = target.LocalToGlobal(this._control_scroll_screen.container);
 		let target_x = (this._control_scroll_screen.view_width - target.width / 2) / 2 - x;
 		let target_y = (this._control_scroll_screen.view_height - target.height) / 2 - y;
@@ -175,10 +175,10 @@ ALittleIDE.IDEUIControlList = JavaScript.Class(ALittle.DisplayLayout, {
 		if (module_name === undefined) {
 			module_name = ALittleIDE.g_IDEProject.project.name;
 		}
-		if (this._control_new_dialog === undefined) {
-			this._control_new_dialog = ALittleIDE.g_Control.CreateControl("ide_new_control_dialog", this);
-			A_LayerManager.AddToModal(this._control_new_dialog);
-			this._control_new_type.data_list = ALittleIDE.g_IDEEnum.child_type_list;
+		if (this._new_control_dialog === undefined) {
+			this._new_control_dialog = ALittleIDE.g_Control.CreateControl("ide_new_control_dialog", this);
+			A_LayerManager.AddToModal(this._new_control_dialog);
+			this._new_control_type.data_list = ALittleIDE.g_IDEEnum.child_type_list;
 		}
 		let data_list = [];
 		let ___OBJECT_5 = ALittleIDE.g_IDEProject.project.ui;
@@ -187,14 +187,14 @@ ALittleIDE.IDEUIControlList = JavaScript.Class(ALittle.DisplayLayout, {
 			if (ui === undefined) continue;
 			ALittle.List_Push(data_list, name);
 		}
-		this._control_new_module.data_list = data_list;
-		this._control_new_module.text = module_name;
-		this._control_new_name.text = "";
-		this._control_new_dialog.visible = true;
-		A_UISystem.focus = this._control_new_name.show_input;
+		this._new_control_module.data_list = data_list;
+		this._new_control_module.text = module_name;
+		this._new_control_name.text = "";
+		this._new_control_dialog.visible = true;
+		A_UISystem.focus = this._new_control_name.show_input;
 	},
 	HandleNewControlCancel : function(event) {
-		this._control_new_dialog.visible = false;
+		this._new_control_dialog.visible = false;
 	},
 	HandleNewControlConfirm : function(event) {
 		let project = ALittleIDE.g_IDEProject.project;
@@ -202,7 +202,7 @@ ALittleIDE.IDEUIControlList = JavaScript.Class(ALittle.DisplayLayout, {
 			g_AUITool.ShowNotice("错误", "当前没有打开的项目");
 			return;
 		}
-		let name = this._control_new_name.text;
+		let name = this._new_control_name.text;
 		if (name === "") {
 			g_AUITool.ShowNotice("错误", "请输入控件名");
 			return;
@@ -211,7 +211,7 @@ ALittleIDE.IDEUIControlList = JavaScript.Class(ALittle.DisplayLayout, {
 			g_AUITool.ShowNotice("错误", "控件名不合法:" + name);
 			return;
 		}
-		let ui_manager = project.ui[this._control_new_module.text];
+		let ui_manager = project.ui[this._new_control_module.text];
 		if (ui_manager === undefined) {
 			g_AUITool.ShowNotice("错误", "模块不存在");
 			return;
@@ -224,13 +224,102 @@ ALittleIDE.IDEUIControlList = JavaScript.Class(ALittle.DisplayLayout, {
 			g_AUITool.ShowNotice("错误", "控件名已存在:" + name);
 			return;
 		}
-		let control_type = this._control_new_type.text;
+		let control_type = this._new_control_type.text;
 		if (control_type === "") {
 			g_AUITool.ShowNotice("错误", "请选择控件类型");
 			return;
 		}
-		ALittleIDE.g_IDECenter.center.content_edit.StartEditControlByNew(this._control_new_module.text, name, control_type);
-		this._control_new_dialog.visible = false;
+		ALittleIDE.g_IDECenter.center.content_edit.StartEditControlByNew(this._new_control_module.text, name, control_type);
+		this._new_control_dialog.visible = false;
+	},
+	ShowExtendsControl : function(module_name, extends_module, extends_name) {
+		if (ALittleIDE.g_IDEProject.project === undefined) {
+			g_AUITool.ShowNotice("提示", "当前没有打开的项目");
+			return;
+		}
+		if (module_name === undefined) {
+			module_name = ALittleIDE.g_IDEProject.project.name;
+		}
+		if (extends_module === undefined) {
+			extends_module = module_name;
+		}
+		if (extends_name === undefined) {
+			extends_name = "";
+		}
+		if (this._extends_control_dialog === undefined) {
+			this._extends_control_dialog = ALittleIDE.g_Control.CreateControl("ide_extends_control_dialog", this);
+			A_LayerManager.AddToModal(this._extends_control_dialog);
+		}
+		let data_list = [];
+		let ___OBJECT_6 = ALittleIDE.g_IDEProject.project.ui;
+		for (let name in ___OBJECT_6) {
+			let ui = ___OBJECT_6[name];
+			if (ui === undefined) continue;
+			ALittle.List_Push(data_list, name);
+		}
+		this._extends_control_module.data_list = data_list;
+		this._extends_control_module.text = module_name;
+		data_list = [];
+		let ___OBJECT_7 = ALittleIDE.g_IDEProject.project.ui;
+		for (let name in ___OBJECT_7) {
+			let ui = ___OBJECT_7[name];
+			if (ui === undefined) continue;
+			ALittle.List_Push(data_list, name);
+		}
+		this._extends_control_extends_module.data_list = data_list;
+		this._extends_control_extends_module.text = extends_module;
+		this._extends_control_name.text = "";
+		this._extends_control_extends_name.text = extends_name;
+		this._extends_control_dialog.visible = true;
+		A_UISystem.focus = this._extends_control_name.show_input;
+	},
+	HandleExtendsControlCancel : function(event) {
+		this._extends_control_dialog.visible = false;
+	},
+	HandleExtendsControlConfirm : function(event) {
+		let project = ALittleIDE.g_IDEProject.project;
+		if (project === undefined) {
+			g_AUITool.ShowNotice("错误", "当前没有打开的项目");
+			return;
+		}
+		let name = this._extends_control_name.text;
+		if (name === "") {
+			g_AUITool.ShowNotice("错误", "请输入控件名");
+			return;
+		}
+		if (ALittleIDE.IDEUtility_CheckName(name) !== undefined) {
+			g_AUITool.ShowNotice("错误", "控件名不合法:" + name);
+			return;
+		}
+		let ui_manager = project.ui[this._extends_control_module.text];
+		if (ui_manager === undefined) {
+			g_AUITool.ShowNotice("错误", "模块不存在");
+			return;
+		}
+		if (ui_manager.control_map[name] !== undefined) {
+			g_AUITool.ShowNotice("错误", "控件已存在:" + name);
+			return;
+		}
+		if (ALittleIDE.g_IDECenter.center.content_edit.GetTabById(ALittleIDE.IDEUITabChild, name) !== undefined) {
+			g_AUITool.ShowNotice("错误", "控件名已存在:" + name);
+			return;
+		}
+		let extends_name = this._extends_control_extends_name.text;
+		if (extends_name === "") {
+			g_AUITool.ShowNotice("错误", "请输入要继承的控件名");
+			return;
+		}
+		let extends_ui_manager = project.ui[this._extends_control_extends_module.text];
+		if (extends_ui_manager === undefined) {
+			g_AUITool.ShowNotice("错误", "要继承的模块不存在");
+			return;
+		}
+		if (extends_ui_manager.control_map[extends_name] === undefined) {
+			g_AUITool.ShowNotice("错误", "要继承的控件不存在");
+			return;
+		}
+		ALittleIDE.g_IDECenter.center.content_edit.StartEditControlByExtends(this._extends_control_module.text, name, this._extends_control_extends_module.text, extends_name);
+		this._extends_control_dialog.visible = false;
 	},
 }, "ALittleIDE.IDEUIControlList");
 

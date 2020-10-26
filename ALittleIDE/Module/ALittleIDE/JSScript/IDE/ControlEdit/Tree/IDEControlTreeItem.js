@@ -66,7 +66,7 @@ ALittleIDE.IDEControlTreeItem = JavaScript.Class(ALittleIDE.IDEControlTreeLogic,
 		this._item_button.AddEventListener(___all_struct.get(1337289812), this, this.HandleControlDrag);
 		this._item_button.AddEventListener(___all_struct.get(150587926), this, this.HandleControlDragEnd);
 		this._item_button._user_data = this;
-		this._item_title.text = this._user_info.name;
+		this._item_button.text = this._user_info.name;
 	},
 	get is_tree() {
 		return false;
@@ -101,6 +101,7 @@ ALittleIDE.IDEControlTreeItem = JavaScript.Class(ALittleIDE.IDEControlTreeLogic,
 		let menu = ALittle.NewObject(AUIPlugin.AUIRightMenu);
 		menu.AddItem("复制控件名", this.HandleCopyName.bind(this));
 		menu.AddItem("复制并新建控件", this.HandleCopyInfo.bind(this));
+		menu.AddItem("继承并新建控件", this.HandleExtendsInfo.bind(this));
 		menu.AddItem("复制继承代码", this.HandleCopyExtends.bind(this));
 		menu.AddItem("修改控件名", this.HandleControlRename.bind(this));
 		menu.AddItem("删除", this.HandleDelete.bind(this));
@@ -140,6 +141,9 @@ ALittleIDE.IDEControlTreeItem = JavaScript.Class(ALittleIDE.IDEControlTreeLogic,
 			return;
 		}
 		this.ControlCopyInfo(old_name, new_name);
+	},
+	HandleExtendsInfo : function() {
+		ALittleIDE.g_IDECenter.center.control_list.ShowExtendsControl(undefined, this._user_info.module_name, this._user_info.name);
 	},
 	ControlCopyInfo : function(target_name, new_name) {
 		let error = ALittleIDE.IDEUtility_CheckName(new_name);
@@ -186,7 +190,7 @@ ALittleIDE.IDEControlTreeItem = JavaScript.Class(ALittleIDE.IDEControlTreeLogic,
 		this._user_info.name = new_name;
 		this._user_info.path = ALittle.File_GetFilePathByPath(this._user_info.path) + "/" + this._user_info.name;
 		this._user_info.name = new_name;
-		this._item_title.text = this._user_info.name;
+		this._item_button.text = this._user_info.name;
 		if (tab_child !== undefined) {
 			tab_child.Rename(this._user_info.name);
 		}

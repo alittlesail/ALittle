@@ -71,6 +71,9 @@ ALittleIDE.IDEAttrTextDialog = JavaScript.Class(undefined, {
 	ResetText : function() {
 		let info = this._target_panel.base[this._target_text];
 		if (info === undefined) {
+			info = this._target_panel.default[this._target_text];
+		}
+		if (info === undefined) {
 			info = {};
 		}
 		this._bold.text = "否";
@@ -106,17 +109,17 @@ ALittleIDE.IDEAttrTextDialog = JavaScript.Class(undefined, {
 		if (info.red === undefined) {
 			this._red.text = 255;
 		} else {
-			this._red.text = info.red * 255;
+			this._red.text = ALittle.Math_Floor(info.red * 255);
 		}
 		if (info.green === undefined) {
 			this._green.text = 255;
 		} else {
-			this._green.text = info.green * 255;
+			this._green.text = ALittle.Math_Floor(info.green * 255);
 		}
 		if (info.blue === undefined) {
 			this._blue.text = 255;
 		} else {
-			this._blue.text = info.blue * 255;
+			this._blue.text = ALittle.Math_Floor(info.blue * 255);
 		}
 	},
 }, "ALittleIDE.IDEAttrTextDialog");

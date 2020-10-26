@@ -30,7 +30,7 @@ ALittleIDE.SpriteS = JavaScript.Class(ALittleIDE.DisplayObjectS, {
 		if (path === undefined) {
 			return;
 		}
-		this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, undefined, path);
+		this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, undefined, path, true);
 	},
 	HandleRowCountFOCUSOUT : function(event) {
 		this.ValueNumInputChange("row_count", false);

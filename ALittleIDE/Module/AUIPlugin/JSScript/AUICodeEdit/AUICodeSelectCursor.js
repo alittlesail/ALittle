@@ -135,10 +135,17 @@ AUIPlugin.AUICodeSelectCursor = JavaScript.Class(undefined, {
 		this._it_line_start = line;
 		this._it_char_start = char;
 	},
-	UpdateLineChar : function(line, char) {
+	UpdateLineChar : function(it_line, it_char) {
 		this.ClearQuad();
-		this._it_line_end = line;
-		this._it_char_end = char;
+		this._it_line_end = it_line;
+		let line = this._edit.line_list[it_line - 1];
+		if (line === undefined) {
+			this._it_char_end = 0;
+		} else if (line.char_count < it_char) {
+			this._it_line_end = line.char_count;
+		} else {
+			this._it_char_end = it_char;
+		}
 		this.SetQuad();
 	},
 	StartOffsetXY : function(x, y) {
@@ -286,7 +293,7 @@ AUIPlugin.AUICodeSelectCursor = JavaScript.Class(undefined, {
 				}
 			}
 			if (rejust) {
-				this._edit.RejustCodeScreen(line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH);
+				this._edit.AdjustCodeScreen(line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH);
 			}
 			if (need_revoke) {
 				let revoke = ALittle.NewObject(AUIPlugin.AUICodeDeleteSelectRevoke, this._edit, this._edit.cursor, this, old_it_line_start, old_it_char_start, old_it_line_end, old_it_char_end, it_line_start, it_char_start, revoke_content, revoke_bind === undefined);
@@ -387,7 +394,7 @@ AUIPlugin.AUICodeSelectCursor = JavaScript.Class(undefined, {
 				max_width = line.container.width;
 			}
 		}
-		this._edit.RejustCodeScreen(max_width);
+		this._edit.AdjustCodeScreen(max_width);
 		if (need_revoke) {
 			let revoke = ALittle.NewObject(AUIPlugin.AUICodeDeleteSelectRevoke, this._edit, this._edit.cursor, this, old_it_line_start, old_it_char_start, old_it_line_end, old_it_char_end, it_line_start, it_char_start, revoke_start + ALittle.String_Join(revoke_center, "") + revoke_end, revoke_bind === undefined);
 			if (revoke_bind !== undefined) {

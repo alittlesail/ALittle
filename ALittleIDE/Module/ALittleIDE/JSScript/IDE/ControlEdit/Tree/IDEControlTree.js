@@ -55,9 +55,9 @@ ALittleIDE.IDEControlTree = JavaScript.Class(ALittleIDE.IDEControlTreeLogic, {
 		this._pickup_child = true;
 		this.fold = false;
 		if (user_info.root) {
-			this._item_title.text = "[" + this._user_info.module_name + "] " + this._user_info.name;
+			this._item_button.text = "[" + this._user_info.module_name + "] " + this._user_info.name;
 		} else {
-			this._item_title.text = this._user_info.name;
+			this._item_button.text = this._user_info.name;
 		}
 		this.Refresh();
 	},
@@ -73,6 +73,7 @@ ALittleIDE.IDEControlTree = JavaScript.Class(ALittleIDE.IDEControlTreeLogic, {
 			menu.AddItem("添加模块", this.HandleAddModule.bind(this));
 		}
 		menu.AddItem("新建控件", this.HandleNewControl.bind(this));
+		menu.AddItem("继承控件", this.HandleExtendsControl.bind(this));
 		let can_remove = this._user_info.root && this._user_info.module_name !== ALittleIDE.g_IDEProject.project.name;
 		if (can_remove) {
 			menu.AddItem("移除模块", this.HandleRemoveModule.bind(this));
@@ -128,11 +129,14 @@ ALittleIDE.IDEControlTree = JavaScript.Class(ALittleIDE.IDEControlTreeLogic, {
 	HandleNewControl : function() {
 		ALittleIDE.g_IDECenter.center.control_list.ShowNewControl(this._user_info.module_name);
 	},
+	HandleExtendsControl : function() {
+		ALittleIDE.g_IDECenter.center.control_list.ShowExtendsControl(this._user_info.module_name);
+	},
 	get is_tree() {
 		return true;
 	},
 	Refresh : function() {
-		let map = ALittle.File_GetFileNameListByDir(this._user_info.path);
+		let map = ALittle.File_GetNameListByDir(this._user_info.path);
 		let remove = undefined;
 		let ___OBJECT_3 = this.childs;
 		for (let index = 1; index <= ___OBJECT_3.length; ++index) {
@@ -162,7 +166,7 @@ ALittleIDE.IDEControlTree = JavaScript.Class(ALittleIDE.IDEControlTreeLogic, {
 		for (let name in ___OBJECT_5) {
 			let attr = ___OBJECT_5[name];
 			if (attr === undefined) continue;
-			if (attr.mode === "directory") {
+			if (attr.directory) {
 				if (add_dir === undefined) {
 					add_dir = [];
 				}
@@ -307,7 +311,7 @@ ALittleIDE.IDEControlTree = JavaScript.Class(ALittleIDE.IDEControlTreeLogic, {
 		}
 		let endv = index + count;
 		for (let i = index; i < endv; i += 1) {
-			let child = this._childs[index - 1];
+			let child = this._childs[i - 1];
 			if (child === undefined) {
 				break;
 			}

@@ -31,12 +31,6 @@ name_list : ["upload_list","project_path","export_module_path","is_login","modul
 type_list : ["List<string>","string","string","bool","string","string","int","int","int","int","string","string","string","string","List<string>","string","int","bool","string"],
 option_map : {}
 })
-ALittle.RegStruct(1089261655, "lua.fileattr", {
-name : "lua.fileattr", ns_name : "lua", rl_name : "fileattr", hash_code : 1089261655,
-name_list : ["mode","size"],
-type_list : ["string","int"],
-option_map : {}
-})
 ALittle.RegStruct(1084005584, "ALittleIDE.IDEExportFileInfo", {
 name : "ALittleIDE.IDEExportFileInfo", ns_name : "ALittleIDE", rl_name : "IDEExportFileInfo", hash_code : 1084005584,
 name_list : ["path","crypt_mode"],
@@ -52,7 +46,13 @@ option_map : {}
 ALittle.RegStruct(900617833, "ALittleIDE.IDEExportFileAttr", {
 name : "ALittleIDE.IDEExportFileAttr", ns_name : "ALittleIDE", rl_name : "IDEExportFileAttr", hash_code : 900617833,
 name_list : ["attr","md5","file_type","file_path"],
-type_list : ["lua.fileattr","string","string","string"],
+type_list : ["ALittle.PathAttribute","string","string","string"],
+option_map : {}
+})
+ALittle.RegStruct(839664979, "ALittle.PathAttribute", {
+name : "ALittle.PathAttribute", ns_name : "ALittle", rl_name : "PathAttribute", hash_code : 839664979,
+name_list : ["directory","size"],
+type_list : ["bool","int"],
 option_map : {}
 })
 ALittle.RegStruct(-600814285, "ALittle.SmallVersionInfo", {
@@ -109,10 +109,10 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 			let attr = ___OBJECT_1[file_path];
 			if (attr === undefined) continue;
 			if (ALittle.File_GetFileExtByPath(file_path) === "png") {
-				let surface = ALittle.System_LoadSurface(file_path);
+				let surface = carp.LoadCarpSurface(file_path);
 				if (surface !== undefined) {
-					ALittle.System_SaveSurface(surface, file_path);
-					ALittle.System_FreeSurface(surface);
+					carp.SaveCarpSurface(surface, file_path);
+					carp.FreeCarpSurface(surface);
 				}
 			}
 		}
@@ -128,13 +128,13 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 			let attr = ___OBJECT_2[file_path];
 			if (attr === undefined) continue;
 			if (ALittle.File_GetFileExtByPath(file_path) === "png") {
-				let surface = ALittle.System_LoadSurface(file_path);
+				let surface = carp.LoadCarpSurface(file_path);
 				if (surface === undefined) {
 					ALittle.Error("ALittle.System_LoadSurface failed! path:" + file_path);
 				} else {
-					let width = ALittle.System_GetSurfaceWidth(surface);
-					let height = ALittle.System_GetSurfaceHeight(surface);
-					ALittle.System_FreeSurface(surface);
+					let width = carp.GetCarpSurfaceWidth(surface);
+					let height = carp.GetCarpSurfaceHeight(surface);
+					carp.FreeCarpSurface(surface);
 					let texture_info = {};
 					texture_info.path = ALittle.String_Sub(file_path, ALittle.String_Len(path) + 2);
 					texture_info.width = width;
@@ -165,9 +165,9 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 			let rel_path = ALittle.String_Sub(file_path, start_index + ALittle.String_Len(src_path));
 			let ext = ALittle.File_GetFileExtByPath(file_path);
 			ext = ALittle.String_Upper(ext);
-			let file = ALittle.NewObject(lua.__CPPAPILocalFile);
+			let file = ALittle.NewObject(carp.CarpLocalFile);
 			file.SetPath(file_path);
-			JavaScript.Assert(file.Load(), "IDEExport:PackagePath, 文件加载失败:" + file_path);
+			JavaScript.Assert(file.Load(false), "IDEExport:PackagePath, 文件加载失败:" + file_path);
 			if (crypt_mode) {
 				file.Encrypt(undefined);
 			}
@@ -175,7 +175,7 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 			file.Save(dst_path + rel_path);
 			let new_attr = {};
 			new_attr.attr = attr;
-			new_attr.md5 = __CPPAPI_ScriptSystemEx.FileMD5(dst_path + rel_path);
+			new_attr.md5 = ALittle.File_Md5(dst_path + rel_path);
 			new_attr.file_type = file_type;
 			new_attr.file_path = file_type + rel_path;
 			out_file_map[file_path] = new_attr;
@@ -194,7 +194,6 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 		if (ALittle.File_GetFileAttr(export_common_path) === undefined) {
 			ALittle.File_MakeDeepDir(export_common_path);
 		}
-		this.RepairPNG(project_path + "/Texture");
 		this.GenerateAtlas(project_path + "/Texture");
 		let file_list = [];
 		let count = 0;
@@ -856,19 +855,7 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 		ALittle.File_CopyFile("ALittleClient.exe", "Export/Windows/Engine/ALittleClient.exe");
 		ALittle.File_CopyFile("ALittleClientWin.exe", "Export/Windows/Engine/ALittleClientWin.exe");
 		ALittle.File_CopyFile("ALittleServer.exe", "Export/Windows/Engine/ALittleServer.exe");
-		ALittle.File_CopyFile("lua51.dll", "Export/Windows/Engine/lua51.dll");
 		ALittle.File_CopyFile("SDL2.dll", "Export/Windows/Engine/SDL2.dll");
-		ALittle.File_CopyFile("libjpeg-9.dll", "Export/Windows/Engine/libjpeg-9.dll");
-		ALittle.File_CopyFile("libpng16-16.dll", "Export/Windows/Engine/libpng16-16.dll");
-		ALittle.File_CopyFile("zlib1.dll", "Export/Windows/Engine/zlib1.dll");
-		ALittle.File_CopyFile("SDL2_image.dll", "Export/Windows/Engine/SDL2_image.dll");
-		ALittle.File_CopyFile("SDL2_net.dll", "Export/Windows/Engine/SDL2_net.dll");
-		ALittle.File_CopyFile("libogg-0.dll", "Export/Windows/Engine/libogg-0.dll");
-		ALittle.File_CopyFile("libvorbis-0.dll", "Export/Windows/Engine/libvorbis-0.dll");
-		ALittle.File_CopyFile("libvorbisfile-3.dll", "Export/Windows/Engine/libvorbisfile-3.dll");
-		ALittle.File_CopyFile("SDL2_mixer.dll", "Export/Windows/Engine/SDL2_mixer.dll");
-		ALittle.File_CopyFile("libfreetype-6.dll", "Export/Windows/Engine/libfreetype-6.dll");
-		ALittle.File_CopyFile("SDL2_ttf.dll", "Export/Windows/Engine/SDL2_ttf.dll");
 		ALittle.File_CopyFile("libcrypto-1_1-x64.dll", "Export/Windows/Engine/libcrypto-1_1-x64.dll");
 		ALittle.File_CopyFile("libssl-1_1-x64.dll", "Export/Windows/Engine/libssl-1_1-x64.dll");
 		ALittle.File_CopyFile("libtcmalloc_minimal.dll", "Export/Windows/Engine/libtcmalloc_minimal.dll");
@@ -887,9 +874,9 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 			return undefined;
 		}
 		template = ALittle.String_Replace(template, "VERSION_NUMBER", package_info.version_info.version_number);
-		let install_name_gbk = lua.utf8.utf82ansi(package_info.install_info.install_name);
+		let install_name_gbk = package_info.install_info.install_name;
 		template = ALittle.String_Replace(template, "INSTALL_NAME", install_name_gbk);
-		let guid = ALittle.String_MD5(package_info.project_name + "-" + package_info.install_info.install_name);
+		let guid = ALittle.String_Md5(package_info.project_name + "-" + package_info.install_info.install_name);
 		guid = ALittle.String_Upper(guid);
 		guid = ALittle.String_Sub(guid, 1, 8) + "-" + ALittle.String_Sub(guid, 9, 13) + "-" + ALittle.String_Sub(guid, 14, 18) + "-" + ALittle.String_Sub(guid, 19, 23) + "-" + ALittle.String_Sub(guid, 24, 32);
 		template = ALittle.String_Replace(template, "INSTALL_GUID", guid);
@@ -916,9 +903,9 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 			ALittle.Log("IDEExport:GenerateApk install_name is null");
 			return undefined;
 		}
-		let file = ALittle.NewObject(lua.__CPPAPILocalFile);
+		let file = ALittle.NewObject(carp.CarpLocalFile);
 		file.SetPath(ALittle.File_BaseFilePath() + "Export/Android/AndroidManifestTemplate.xml");
-		if (file.Load()) {
+		if (file.Load(false)) {
 			let content = file.GetContent();
 			content = ALittle.String_Replace(content, "abcd@package_name@abcd", package_info.install_info.package_name);
 			content = ALittle.String_Replace(content, "abcd@version_number@abcd", package_info.version_info.version_number);
@@ -946,41 +933,41 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 		if (ALittle.File_GetFileAttr(install_png) === undefined) {
 			install_png = ALittle.File_BaseFilePath() + "Export/Icon/install.png";
 		}
-		let surface = ALittle.System_LoadSurface(install_png);
+		let surface = carp.LoadCarpSurface(install_png);
 		if (surface !== undefined) {
-			let surface_width = ALittle.System_GetSurfaceWidth(surface);
-			let surface_height = ALittle.System_GetSurfaceHeight(surface);
-			let new_surface = ALittle.System_CreateSurface(24, 24);
-			let new_surface_width = ALittle.System_GetSurfaceWidth(new_surface);
-			let new_surface_height = ALittle.System_GetSurfaceHeight(new_surface);
-			ALittle.System_CutBlitSurface(new_surface, surface, "0,0," + new_surface_width + "," + new_surface_height, "0,0," + surface_width + "," + surface_height);
-			ALittle.System_SaveSurface(new_surface, package_info.project_path + "/Export/Android/res/drawable-ldpi/icon.png");
-			ALittle.System_FreeSurface(new_surface);
-			new_surface = ALittle.System_CreateSurface(48, 48);
-			new_surface_width = ALittle.System_GetSurfaceWidth(new_surface);
-			new_surface_height = ALittle.System_GetSurfaceHeight(new_surface);
-			ALittle.System_CutBlitSurface(new_surface, surface, "0,0," + new_surface_width + "," + new_surface_height, "0,0," + surface_width + "," + surface_height);
-			ALittle.System_SaveSurface(new_surface, package_info.project_path + "/Export/Android/res/drawable-mdpi/icon.png");
-			ALittle.System_FreeSurface(new_surface);
-			new_surface = ALittle.System_CreateSurface(72, 72);
-			new_surface_width = ALittle.System_GetSurfaceWidth(new_surface);
-			new_surface_height = ALittle.System_GetSurfaceHeight(new_surface);
-			ALittle.System_CutBlitSurface(new_surface, surface, "0,0," + new_surface_width + "," + new_surface_height, "0,0," + surface_width + "," + surface_height);
-			ALittle.System_SaveSurface(new_surface, package_info.project_path + "/Export/Android/res/drawable-hdpi/icon.png");
-			ALittle.System_FreeSurface(new_surface);
-			new_surface = ALittle.System_CreateSurface(96, 96);
-			new_surface_width = ALittle.System_GetSurfaceWidth(new_surface);
-			new_surface_height = ALittle.System_GetSurfaceHeight(new_surface);
-			ALittle.System_CutBlitSurface(new_surface, surface, "0,0," + new_surface_width + "," + new_surface_height, "0,0," + surface_width + "," + surface_height);
-			ALittle.System_SaveSurface(new_surface, package_info.project_path + "/Export/Android/res/drawable-xhdpi/icon.png");
-			ALittle.System_FreeSurface(new_surface);
-			new_surface = ALittle.System_CreateSurface(144, 144);
-			new_surface_width = ALittle.System_GetSurfaceWidth(new_surface);
-			new_surface_height = ALittle.System_GetSurfaceHeight(new_surface);
-			ALittle.System_CutBlitSurface(new_surface, surface, "0,0," + new_surface_width + "," + new_surface_height, "0,0," + surface_width + "," + surface_height);
-			ALittle.System_SaveSurface(new_surface, package_info.project_path + "/Export/Android/res/drawable-xxhdpi/icon.png");
-			ALittle.System_FreeSurface(new_surface);
-			ALittle.System_FreeSurface(surface);
+			let surface_width = carp.GetCarpSurfaceWidth(surface);
+			let surface_height = carp.GetCarpSurfaceHeight(surface);
+			let new_surface = carp.CreateCarpSurface(24, 24);
+			let new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
+			let new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0," + surface_width + "," + surface_height, "0,0," + new_surface_width + "," + new_surface_height);
+			carp.SaveCarpSurface(new_surface, package_info.project_path + "/Export/Android/res/drawable-ldpi/icon.png");
+			carp.FreeCarpSurface(new_surface);
+			new_surface = carp.CreateCarpSurface(48, 48);
+			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
+			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0," + surface_width + "," + surface_height, "0,0," + new_surface_width + "," + new_surface_height);
+			carp.SaveCarpSurface(new_surface, package_info.project_path + "/Export/Android/res/drawable-mdpi/icon.png");
+			carp.FreeCarpSurface(new_surface);
+			new_surface = carp.CreateCarpSurface(72, 72);
+			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
+			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0," + surface_width + "," + surface_height, "0,0," + new_surface_width + "," + new_surface_height);
+			carp.SaveCarpSurface(new_surface, package_info.project_path + "/Export/Android/res/drawable-hdpi/icon.png");
+			carp.FreeCarpSurface(new_surface);
+			new_surface = carp.CreateCarpSurface(96, 96);
+			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
+			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0," + surface_width + "," + surface_height, "0,0," + new_surface_width + "," + new_surface_height);
+			carp.SaveCarpSurface(new_surface, package_info.project_path + "/Export/Android/res/drawable-xhdpi/icon.png");
+			carp.FreeCarpSurface(new_surface);
+			new_surface = carp.CreateCarpSurface(144, 144);
+			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
+			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0," + surface_width + "," + surface_height, "0,0," + new_surface_width + "," + new_surface_height);
+			carp.SaveCarpSurface(new_surface, package_info.project_path + "/Export/Android/res/drawable-xxhdpi/icon.png");
+			carp.FreeCarpSurface(new_surface);
+			carp.FreeCarpSurface(surface);
 		}
 		let package_name_list = ALittle.String_Split(package_info.install_info.package_name, ".");
 		let default_src_path = package_info.project_path + "/Export/Android/src/org/libsdl/app";
@@ -1036,137 +1023,137 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 		if (ALittle.File_GetFileAttr(install_png) === undefined) {
 			install_png = ALittle.File_BaseFilePath() + "Export/Icon/install.png";
 		}
-		let surface = ALittle.System_LoadSurface(install_png);
+		let surface = carp.LoadCarpSurface(install_png);
 		if (surface !== undefined) {
-			let surface_width = ALittle.System_GetSurfaceWidth(surface);
-			let surface_height = ALittle.System_GetSurfaceHeight(surface);
-			let new_surface = ALittle.System_CreateSurface(40, 40);
-			let new_surface_width = ALittle.System_GetSurfaceWidth(new_surface);
-			let new_surface_height = ALittle.System_GetSurfaceHeight(new_surface);
-			ALittle.System_CutBlitSurface(new_surface, surface, "0,0," + new_surface_width + "," + new_surface_height, "0,0," + surface_width + "," + surface_height);
-			ALittle.System_SaveSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon.png");
-			ALittle.System_FreeSurface(new_surface);
-			new_surface = ALittle.System_CreateSurface(60, 60);
-			new_surface_width = ALittle.System_GetSurfaceWidth(new_surface);
-			new_surface_height = ALittle.System_GetSurfaceHeight(new_surface);
-			ALittle.System_CutBlitSurface(new_surface, surface, "0,0," + new_surface_width + "," + new_surface_height, "0,0," + surface_width + "," + surface_height);
-			ALittle.System_SaveSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-1.png");
-			ALittle.System_FreeSurface(new_surface);
-			new_surface = ALittle.System_CreateSurface(58, 58);
-			new_surface_width = ALittle.System_GetSurfaceWidth(new_surface);
-			new_surface_height = ALittle.System_GetSurfaceHeight(new_surface);
-			ALittle.System_CutBlitSurface(new_surface, surface, "0,0," + new_surface_width + "," + new_surface_height, "0,0," + surface_width + "," + surface_height);
-			ALittle.System_SaveSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-2.png");
-			ALittle.System_FreeSurface(new_surface);
-			new_surface = ALittle.System_CreateSurface(87, 87);
-			new_surface_width = ALittle.System_GetSurfaceWidth(new_surface);
-			new_surface_height = ALittle.System_GetSurfaceHeight(new_surface);
-			ALittle.System_CutBlitSurface(new_surface, surface, "0,0," + new_surface_width + "," + new_surface_height, "0,0," + surface_width + "," + surface_height);
-			ALittle.System_SaveSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-3.png");
-			ALittle.System_FreeSurface(new_surface);
-			new_surface = ALittle.System_CreateSurface(80, 80);
-			new_surface_width = ALittle.System_GetSurfaceWidth(new_surface);
-			new_surface_height = ALittle.System_GetSurfaceHeight(new_surface);
-			ALittle.System_CutBlitSurface(new_surface, surface, "0,0," + new_surface_width + "," + new_surface_height, "0,0," + surface_width + "," + surface_height);
-			ALittle.System_SaveSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-4.png");
-			ALittle.System_FreeSurface(new_surface);
-			new_surface = ALittle.System_CreateSurface(120, 120);
-			new_surface_width = ALittle.System_GetSurfaceWidth(new_surface);
-			new_surface_height = ALittle.System_GetSurfaceHeight(new_surface);
-			ALittle.System_CutBlitSurface(new_surface, surface, "0,0," + new_surface_width + "," + new_surface_height, "0,0," + surface_width + "," + surface_height);
-			ALittle.System_SaveSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-5.png");
-			ALittle.System_FreeSurface(new_surface);
-			new_surface = ALittle.System_CreateSurface(120, 120);
-			new_surface_width = ALittle.System_GetSurfaceWidth(new_surface);
-			new_surface_height = ALittle.System_GetSurfaceHeight(new_surface);
-			ALittle.System_CutBlitSurface(new_surface, surface, "0,0," + new_surface_width + "," + new_surface_height, "0,0," + surface_width + "," + surface_height);
-			ALittle.System_SaveSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-6.png");
-			ALittle.System_FreeSurface(new_surface);
-			new_surface = ALittle.System_CreateSurface(180, 180);
-			new_surface_width = ALittle.System_GetSurfaceWidth(new_surface);
-			new_surface_height = ALittle.System_GetSurfaceHeight(new_surface);
-			ALittle.System_CutBlitSurface(new_surface, surface, "0,0," + new_surface_width + "," + new_surface_height, "0,0," + surface_width + "," + surface_height);
-			ALittle.System_SaveSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-7.png");
-			ALittle.System_FreeSurface(new_surface);
-			new_surface = ALittle.System_CreateSurface(20, 20);
-			new_surface_width = ALittle.System_GetSurfaceWidth(new_surface);
-			new_surface_height = ALittle.System_GetSurfaceHeight(new_surface);
-			ALittle.System_CutBlitSurface(new_surface, surface, "0,0," + new_surface_width + "," + new_surface_height, "0,0," + surface_width + "," + surface_height);
-			ALittle.System_SaveSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-8.png");
-			ALittle.System_FreeSurface(new_surface);
-			new_surface = ALittle.System_CreateSurface(40, 40);
-			new_surface_width = ALittle.System_GetSurfaceWidth(new_surface);
-			new_surface_height = ALittle.System_GetSurfaceHeight(new_surface);
-			ALittle.System_CutBlitSurface(new_surface, surface, "0,0," + new_surface_width + "," + new_surface_height, "0,0," + surface_width + "," + surface_height);
-			ALittle.System_SaveSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-9.png");
-			ALittle.System_FreeSurface(new_surface);
-			new_surface = ALittle.System_CreateSurface(29, 29);
-			new_surface_width = ALittle.System_GetSurfaceWidth(new_surface);
-			new_surface_height = ALittle.System_GetSurfaceHeight(new_surface);
-			ALittle.System_CutBlitSurface(new_surface, surface, "0,0," + new_surface_width + "," + new_surface_height, "0,0," + surface_width + "," + surface_height);
-			ALittle.System_SaveSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-10.png");
-			ALittle.System_FreeSurface(new_surface);
-			new_surface = ALittle.System_CreateSurface(58, 58);
-			new_surface_width = ALittle.System_GetSurfaceWidth(new_surface);
-			new_surface_height = ALittle.System_GetSurfaceHeight(new_surface);
-			ALittle.System_CutBlitSurface(new_surface, surface, "0,0," + new_surface_width + "," + new_surface_height, "0,0," + surface_width + "," + surface_height);
-			ALittle.System_SaveSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-11.png");
-			ALittle.System_FreeSurface(new_surface);
-			new_surface = ALittle.System_CreateSurface(40, 40);
-			new_surface_width = ALittle.System_GetSurfaceWidth(new_surface);
-			new_surface_height = ALittle.System_GetSurfaceHeight(new_surface);
-			ALittle.System_CutBlitSurface(new_surface, surface, "0,0," + new_surface_width + "," + new_surface_height, "0,0," + surface_width + "," + surface_height);
-			ALittle.System_SaveSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-12.png");
-			ALittle.System_FreeSurface(new_surface);
-			new_surface = ALittle.System_CreateSurface(80, 80);
-			new_surface_width = ALittle.System_GetSurfaceWidth(new_surface);
-			new_surface_height = ALittle.System_GetSurfaceHeight(new_surface);
-			ALittle.System_CutBlitSurface(new_surface, surface, "0,0," + new_surface_width + "," + new_surface_height, "0,0," + surface_width + "," + surface_height);
-			ALittle.System_SaveSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-13.png");
-			ALittle.System_FreeSurface(new_surface);
-			new_surface = ALittle.System_CreateSurface(76, 76);
-			new_surface_width = ALittle.System_GetSurfaceWidth(new_surface);
-			new_surface_height = ALittle.System_GetSurfaceHeight(new_surface);
-			ALittle.System_CutBlitSurface(new_surface, surface, "0,0," + new_surface_width + "," + new_surface_height, "0,0," + surface_width + "," + surface_height);
-			ALittle.System_SaveSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-14.png");
-			ALittle.System_FreeSurface(new_surface);
-			new_surface = ALittle.System_CreateSurface(152, 152);
-			new_surface_width = ALittle.System_GetSurfaceWidth(new_surface);
-			new_surface_height = ALittle.System_GetSurfaceHeight(new_surface);
-			ALittle.System_CutBlitSurface(new_surface, surface, "0,0," + new_surface_width + "," + new_surface_height, "0,0," + surface_width + "," + surface_height);
-			ALittle.System_SaveSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-15.png");
-			ALittle.System_FreeSurface(new_surface);
-			new_surface = ALittle.System_CreateSurface(167, 167);
-			new_surface_width = ALittle.System_GetSurfaceWidth(new_surface);
-			new_surface_height = ALittle.System_GetSurfaceHeight(new_surface);
-			ALittle.System_CutBlitSurface(new_surface, surface, "0,0," + new_surface_width + "," + new_surface_height, "0,0," + surface_width + "," + surface_height);
-			ALittle.System_SaveSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-16.png");
-			ALittle.System_FreeSurface(new_surface);
-			new_surface = ALittle.System_CreateSurface(1024, 1024);
-			new_surface_width = ALittle.System_GetSurfaceWidth(new_surface);
-			new_surface_height = ALittle.System_GetSurfaceHeight(new_surface);
-			ALittle.System_CutBlitSurface(new_surface, surface, "0,0," + new_surface_width + "," + new_surface_height, "0,0," + surface_width + "," + surface_height);
-			ALittle.System_SaveSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-17.png");
-			ALittle.System_FreeSurface(new_surface);
-			ALittle.System_FreeSurface(surface);
+			let surface_width = carp.GetCarpSurfaceWidth(surface);
+			let surface_height = carp.GetCarpSurfaceHeight(surface);
+			let new_surface = carp.CreateCarpSurface(40, 40);
+			let new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
+			let new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0," + surface_width + "," + surface_height, "0,0," + new_surface_width + "," + new_surface_height);
+			carp.SaveCarpSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon.png");
+			carp.FreeCarpSurface(new_surface);
+			new_surface = carp.CreateCarpSurface(60, 60);
+			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
+			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0," + surface_width + "," + surface_height, "0,0," + new_surface_width + "," + new_surface_height);
+			carp.SaveCarpSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-1.png");
+			carp.FreeCarpSurface(new_surface);
+			new_surface = carp.CreateCarpSurface(58, 58);
+			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
+			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0," + surface_width + "," + surface_height, "0,0," + new_surface_width + "," + new_surface_height);
+			carp.SaveCarpSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-2.png");
+			carp.FreeCarpSurface(new_surface);
+			new_surface = carp.CreateCarpSurface(87, 87);
+			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
+			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0," + surface_width + "," + surface_height, "0,0," + new_surface_width + "," + new_surface_height);
+			carp.SaveCarpSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-3.png");
+			carp.FreeCarpSurface(new_surface);
+			new_surface = carp.CreateCarpSurface(80, 80);
+			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
+			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0," + surface_width + "," + surface_height, "0,0," + new_surface_width + "," + new_surface_height);
+			carp.SaveCarpSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-4.png");
+			carp.FreeCarpSurface(new_surface);
+			new_surface = carp.CreateCarpSurface(120, 120);
+			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
+			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0," + surface_width + "," + surface_height, "0,0," + new_surface_width + "," + new_surface_height);
+			carp.SaveCarpSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-5.png");
+			carp.FreeCarpSurface(new_surface);
+			new_surface = carp.CreateCarpSurface(120, 120);
+			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
+			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0," + surface_width + "," + surface_height, "0,0," + new_surface_width + "," + new_surface_height);
+			carp.SaveCarpSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-6.png");
+			carp.FreeCarpSurface(new_surface);
+			new_surface = carp.CreateCarpSurface(180, 180);
+			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
+			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0," + surface_width + "," + surface_height, "0,0," + new_surface_width + "," + new_surface_height);
+			carp.SaveCarpSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-7.png");
+			carp.FreeCarpSurface(new_surface);
+			new_surface = carp.CreateCarpSurface(20, 20);
+			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
+			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0," + surface_width + "," + surface_height, "0,0," + new_surface_width + "," + new_surface_height);
+			carp.SaveCarpSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-8.png");
+			carp.FreeCarpSurface(new_surface);
+			new_surface = carp.CreateCarpSurface(40, 40);
+			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
+			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0," + surface_width + "," + surface_height, "0,0," + new_surface_width + "," + new_surface_height);
+			carp.SaveCarpSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-9.png");
+			carp.FreeCarpSurface(new_surface);
+			new_surface = carp.CreateCarpSurface(29, 29);
+			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
+			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0," + surface_width + "," + surface_height, "0,0," + new_surface_width + "," + new_surface_height);
+			carp.SaveCarpSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-10.png");
+			carp.FreeCarpSurface(new_surface);
+			new_surface = carp.CreateCarpSurface(58, 58);
+			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
+			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0," + surface_width + "," + surface_height, "0,0," + new_surface_width + "," + new_surface_height);
+			carp.SaveCarpSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-11.png");
+			carp.FreeCarpSurface(new_surface);
+			new_surface = carp.CreateCarpSurface(40, 40);
+			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
+			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0," + surface_width + "," + surface_height, "0,0," + new_surface_width + "," + new_surface_height);
+			carp.SaveCarpSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-12.png");
+			carp.FreeCarpSurface(new_surface);
+			new_surface = carp.CreateCarpSurface(80, 80);
+			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
+			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0," + surface_width + "," + surface_height, "0,0," + new_surface_width + "," + new_surface_height);
+			carp.SaveCarpSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-13.png");
+			carp.FreeCarpSurface(new_surface);
+			new_surface = carp.CreateCarpSurface(76, 76);
+			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
+			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0," + surface_width + "," + surface_height, "0,0," + new_surface_width + "," + new_surface_height);
+			carp.SaveCarpSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-14.png");
+			carp.FreeCarpSurface(new_surface);
+			new_surface = carp.CreateCarpSurface(152, 152);
+			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
+			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0," + surface_width + "," + surface_height, "0,0," + new_surface_width + "," + new_surface_height);
+			carp.SaveCarpSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-15.png");
+			carp.FreeCarpSurface(new_surface);
+			new_surface = carp.CreateCarpSurface(167, 167);
+			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
+			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0," + surface_width + "," + surface_height, "0,0," + new_surface_width + "," + new_surface_height);
+			carp.SaveCarpSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-16.png");
+			carp.FreeCarpSurface(new_surface);
+			new_surface = carp.CreateCarpSurface(1024, 1024);
+			new_surface_width = carp.GetCarpSurfaceWidth(new_surface);
+			new_surface_height = carp.GetCarpSurfaceHeight(new_surface);
+			carp.CutBlitCarpSurface(surface, new_surface, "0,0," + surface_width + "," + surface_height, "0,0," + new_surface_width + "," + new_surface_height);
+			carp.SaveCarpSurface(new_surface, package_info.export_path + "/ALittleClient/Assets.xcassets/AppIcon.appiconset/icon-17.png");
+			carp.FreeCarpSurface(new_surface);
+			carp.FreeCarpSurface(surface);
 		}
-		let share_file = ALittle.NewObject(lua.__CPPAPILocalFile);
+		let share_file = ALittle.NewObject(carp.CarpLocalFile);
 		share_file.SetPath(package_info.export_path + "/ALittleClient.xcodeproj/project.pbxproj");
-		if (share_file.Load()) {
+		if (share_file.Load(false)) {
 			let content = share_file.GetContent();
 			content = ALittle.String_Replace(content, "abcd@package_name@abcd", package_info.install_info.package_name);
 			ALittle.File_SaveFile(package_info.export_path + "/ALittleClient.xcodeproj/project.pbxproj", content, -1);
 		}
-		share_file = ALittle.NewObject(lua.__CPPAPILocalFile);
+		share_file = ALittle.NewObject(carp.CarpLocalFile);
 		share_file.SetPath(package_info.export_path + "/ALittleClient/ALittleClient.entitlements");
-		if (share_file.Load()) {
+		if (share_file.Load(false)) {
 			let content = share_file.GetContent();
 			content = ALittle.String_Replace(content, "abcd@package_name@abcd", package_info.install_info.package_name);
 			ALittle.File_SaveFile(package_info.export_path + "/ALittleClient/ALittleClient.entitlements", content, -1);
 		}
-		share_file = ALittle.NewObject(lua.__CPPAPILocalFile);
+		share_file = ALittle.NewObject(carp.CarpLocalFile);
 		share_file.SetPath(package_info.export_path + "/ALittleClient/Info.plist");
-		if (share_file.Load()) {
+		if (share_file.Load(false)) {
 			let content = share_file.GetContent();
 			content = ALittle.String_Replace(content, "abcd@version_number@abcd", package_info.version_info.version_number);
 			content = ALittle.String_Replace(content, "abcd@app_name@abcd", package_info.install_info.install_name);
@@ -1202,9 +1189,9 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 		} else {
 			ALittle.File_CopyFile(install_ico, package_info.project_path + "/Export/Web/favicon.ico");
 		}
-		let file = ALittle.NewObject(lua.__CPPAPILocalFile);
+		let file = ALittle.NewObject(carp.CarpLocalFile);
 		file.SetPath(ALittle.File_BaseFilePath() + "Export/Web/index.html");
-		if (file.Load()) {
+		if (file.Load(false)) {
 			let content = file.GetContent();
 			content = ALittle.String_Replace(content, "abcd@project_name@abcd", package_info.project_name);
 			ALittle.File_SaveFile(package_info.project_path + "/Export/Web/" + package_info.project_name + ".html", content, -1);
@@ -1224,9 +1211,9 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 		} else {
 			ALittle.File_CopyFile(install_ico, package_info.project_path + "/Export/WeChat/favicon.ico");
 		}
-		let game_js = ALittle.NewObject(lua.__CPPAPILocalFile);
+		let game_js = ALittle.NewObject(carp.CarpLocalFile);
 		game_js.SetPath(ALittle.File_BaseFilePath() + "Export/WeChat/game.js");
-		if (game_js.Load()) {
+		if (game_js.Load(false)) {
 			let content = game_js.GetContent();
 			content = ALittle.String_Replace(content, "abcd@project_name@abcd", package_info.project_name);
 			content = ALittle.String_Replace(content, "abcd@res_ip@abcd", package_info.install_info.res_ip);
@@ -1235,9 +1222,9 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 			ALittle.File_SaveFile(package_info.project_path + "/Export/WeChat/game.js", content, -1);
 			ALittle.File_SaveFile(package_info.project_path + "/Export/Install.js", content, -1);
 		}
-		let game_json = ALittle.NewObject(lua.__CPPAPILocalFile);
+		let game_json = ALittle.NewObject(carp.CarpLocalFile);
 		game_json.SetPath(ALittle.File_BaseFilePath() + "Export/WeChat/game.json");
-		if (game_json.Load()) {
+		if (game_json.Load(false)) {
 			let content = game_json.GetContent();
 			if (package_info.install_info.screen === "竖屏") {
 				content = ALittle.String_Replace(content, "abcd@screen@abcd", "portrait");
@@ -1246,9 +1233,9 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 			}
 			ALittle.File_SaveFile(package_info.project_path + "/Export/WeChat/game.json", content, -1);
 		}
-		let project_config_json = ALittle.NewObject(lua.__CPPAPILocalFile);
+		let project_config_json = ALittle.NewObject(carp.CarpLocalFile);
 		project_config_json.SetPath(ALittle.File_BaseFilePath() + "Export/WeChat/project.config.json");
-		if (project_config_json.Load()) {
+		if (project_config_json.Load(false)) {
 			let content = project_config_json.GetContent();
 			ALittle.File_SaveFile(package_info.project_path + "/Export/WeChat/project.config.json", content, -1);
 		}

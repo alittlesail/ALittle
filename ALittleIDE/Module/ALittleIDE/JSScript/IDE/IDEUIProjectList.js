@@ -32,7 +32,7 @@ ALittleIDE.IDEUIProjectList = JavaScript.Class(ALittle.DisplayLayout, {
 			let v = ___OBJECT_1[k];
 			if (v === undefined) continue;
 			if (key === "" || ALittle.String_Find(v, key) !== undefined) {
-				let item = ALittleIDE.g_Control.CreateControl("ide_common_item_button");
+				let item = ALittleIDE.g_Control.CreateControl("aui_menu_item_button");
 				item.text = v;
 				item.drag_trans_target = this._project_scroll_screen;
 				item.AddEventListener(___all_struct.get(-641444818), this, this.HandleProjectItemRightClick);

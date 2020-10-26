@@ -39,7 +39,7 @@ ALittleIDE.SpringTextButtonS = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
 		if (path === undefined) {
 			return;
 		}
-		this.ImagePathSelectCallback("show_up", this.HandleShowUpFOCUSOUT, undefined, path);
+		this.ImagePathSelectCallback("show_up", this.HandleShowUpFOCUSOUT, undefined, path, true);
 	},
 	HandleShowDisabledFOCUSOUT : function(event) {
 		if (event.target._user_data !== undefined) {
@@ -61,7 +61,7 @@ ALittleIDE.SpringTextButtonS = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
 		if (path === undefined) {
 			return;
 		}
-		this.ImagePathSelectCallback("show_disabled", this.HandleShowDisabledFOCUSOUT, undefined, path);
+		this.ImagePathSelectCallback("show_disabled", this.HandleShowDisabledFOCUSOUT, undefined, path, true);
 	},
 	HandleShowTextFOCUSOUT : function(event) {
 		ALittleIDE.g_IDEAttrTextDialog.ShowDialog(this, "show_text", false);

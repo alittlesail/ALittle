@@ -165,7 +165,7 @@ AUIPlugin.AUIWebLoginManager = JavaScript.Class(ALittle.EventDispatcher, {
 	},
 	ShowLoginDialog : function() {
 		if (this._login_dialog === undefined) {
-			this._login_dialog = AUIPlugin.g_Control.CreateControl("ide_account_login_dialog", this);
+			this._login_dialog = AUIPlugin.g_Control.CreateControl("account_login_dialog", this);
 			A_LayerManager.AddToModal(this._login_dialog);
 			this._login_account.text = this._account_name;
 			this._login_password.text = "";
@@ -183,7 +183,7 @@ AUIPlugin.AUIWebLoginManager = JavaScript.Class(ALittle.EventDispatcher, {
 	},
 	ShowPasswordDialog : function() {
 		if (this._password_dialog === undefined) {
-			this._password_dialog = AUIPlugin.g_Control.CreateControl("ide_account_password_dialog", this);
+			this._password_dialog = AUIPlugin.g_Control.CreateControl("account_password_dialog", this);
 			A_LayerManager.AddToModal(this._password_dialog);
 		}
 		this._password_dialog.visible = true;
@@ -208,7 +208,7 @@ AUIPlugin.AUIWebLoginManager = JavaScript.Class(ALittle.EventDispatcher, {
 		}
 		this._account_name = this._login_account.text;
 		if (this._login_password.text !== "") {
-			this._account_pwd = ALittle.String_MD5(this._login_password.text);
+			this._account_pwd = ALittle.String_Md5(this._login_password.text);
 		}
 		this._save_password = this._save_password_check.selected;
 		this._auto_login = this._auto_login_check.selected;
@@ -308,8 +308,8 @@ AUIPlugin.AUIWebLoginManager = JavaScript.Class(ALittle.EventDispatcher, {
 		}
 		this._change_pas_confirm.disabled = true;
 		let param = {};
-		param.old_password = ALittle.String_MD5(old_password);
-		param.new_password = ALittle.String_MD5(new_password);
+		param.old_password = ALittle.String_Md5(old_password);
+		param.new_password = ALittle.String_Md5(new_password);
 		let [error, result] = await ALittle.IMsgCommon.InvokeRPC(-1373673802, this._msg_client, param);
 		this._change_pas_confirm.disabled = false;
 		if (this._change_pas_confirm !== undefined) {

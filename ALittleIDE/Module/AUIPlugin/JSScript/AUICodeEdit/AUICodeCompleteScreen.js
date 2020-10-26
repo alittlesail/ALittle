@@ -4,7 +4,7 @@ if (typeof AUIPlugin === "undefined") window.AUIPlugin = {};
 ALittle.RegStruct(1773085126, "AUIPlugin.AUICodeCompleteItemInfo", {
 name : "AUIPlugin.AUICodeCompleteItemInfo", ns_name : "AUIPlugin", rl_name : "AUICodeCompleteItemInfo", hash_code : 1773085126,
 name_list : ["_item_button","_item_title","_tag_image","_item","pos","upper","complete"],
-type_list : ["ALittle.TextRadioButton","ALittle.Text","ALittle.Image","ALittle.DisplayObject","int","string","lua.ABnfQueryCompleteInfo"],
+type_list : ["ALittle.TextRadioButton","ALittle.Text","ALittle.Image","ALittle.DisplayObject","List<int>","string","lua.ABnfQueryCompleteInfo"],
 option_map : {}
 })
 ALittle.RegStruct(-1149003083, "lua.ABnfQueryCompleteInfo", {
@@ -73,7 +73,7 @@ AUIPlugin.AUICodeCompleteScreen = JavaScript.Class(undefined, {
 			let offset = (target - 1) * this._item_height + this._screen.container_y;
 			if (offset < 0) {
 				this._screen.right_scrollbar.offset_rate = ((target - 1) * this._item_height) / delta;
-				this._screen.RejustScrollBar();
+				this._screen.AdjustScrollBar();
 			}
 		}
 	},
@@ -96,7 +96,7 @@ AUIPlugin.AUICodeCompleteScreen = JavaScript.Class(undefined, {
 			let offset = target * this._item_height + this._screen.container_y;
 			if (offset > this._screen.height) {
 				this._screen.right_scrollbar.offset_rate = (target * this._item_height - this._screen.height) / delta;
-				this._screen.RejustScrollBar();
+				this._screen.AdjustScrollBar();
 			}
 		}
 	},
@@ -144,7 +144,7 @@ AUIPlugin.AUICodeCompleteScreen = JavaScript.Class(undefined, {
 			let [x, y] = this._edit.CalcPosition(this._complete.line_start, this._complete.char_start, true);
 			y = y + (AUIPlugin.CODE_LINE_HEIGHT);
 			if (this._screen === undefined) {
-				this._screen = AUIPlugin.g_Control.CreateControl("ide_code_scroll_screen");
+				this._screen = AUIPlugin.g_Control.CreateControl("code_scroll_screen");
 				this._screen.width = 200;
 			}
 			this._screen.RemoveAllChild();
@@ -173,7 +173,7 @@ AUIPlugin.AUICodeCompleteScreen = JavaScript.Class(undefined, {
 					this._item_pool_count = this._item_pool_count - (1);
 				} else {
 					item_info = {};
-					item_info._item = AUIPlugin.g_Control.CreateControl("ide_code_complete_item", item_info);
+					item_info._item = AUIPlugin.g_Control.CreateControl("code_complete_item", item_info);
 				}
 				item_info._item_button.group = this._item_group;
 				item_info._item_title.text = info.display;
@@ -198,29 +198,65 @@ AUIPlugin.AUICodeCompleteScreen = JavaScript.Class(undefined, {
 		}).bind(this));
 	},
 	ItemInfoSort : function(a, b) {
-		return a.pos < b.pos;
+		let ___OBJECT_4 = a.pos;
+		for (let index = 1; index <= ___OBJECT_4.length; ++index) {
+			let pos = ___OBJECT_4[index - 1];
+			if (pos === undefined) break;
+			if (b.pos[index - 1] === undefined) {
+				return true;
+			}
+			if (pos !== b.pos[index - 1]) {
+				return pos < b.pos[index - 1];
+			}
+		}
+		return false;
 	},
 	Fliter : function(text) {
-		let descriptor = undefined;
-		let upper = ALittle.String_Upper(text);
+		let upper_text = ALittle.String_Upper(text);
+		let first_split = ALittle.String_Find(upper_text, "_");
+		if (first_split === undefined) {
+			first_split = 1;
+		} else {
+			first_split = first_split + (1);
+		}
+		let upper_list = ALittle.String_Split(upper_text, "_", first_split);
+		if (first_split > 1) {
+			ALittle.List_Insert(upper_list, 1, ALittle.String_Sub(upper_text, 1, first_split - 1));
+		}
+		let upper_list_count = ALittle.List_MaxN(upper_list);
+		if (upper_list_count > 1 && upper_list[upper_list_count - 1] === "") {
+			upper_list[upper_list_count - 1] = undefined;
+		}
 		let sort_list = [];
 		let count = 0;
 		this._screen.RemoveAllChild();
-		let ___OBJECT_4 = this._item_list;
-		for (let index = 1; index <= ___OBJECT_4.length; ++index) {
-			let info = ___OBJECT_4[index - 1];
+		let ___OBJECT_5 = this._item_list;
+		for (let index = 1; index <= ___OBJECT_5.length; ++index) {
+			let info = ___OBJECT_5[index - 1];
 			if (info === undefined) break;
-			info.pos = ALittle.String_Find(info.upper, upper);
-			if (info.pos !== undefined) {
-				++ count;
-				sort_list[count - 1] = info;
+			info.pos = undefined;
+			let pos = 1;
+			let ___OBJECT_6 = upper_list;
+			for (let _ = 1; _ <= ___OBJECT_6.length; ++_) {
+				let upper = ___OBJECT_6[_ - 1];
+				if (upper === undefined) break;
+				pos = ALittle.String_Find(info.upper, upper, pos);
+				if (pos !== undefined) {
+					if (info.pos === undefined) {
+						info.pos = [];
+						++ count;
+						sort_list[count - 1] = info;
+					}
+					ALittle.List_Push(info.pos, pos);
+				}
 			}
 		}
 		ALittle.List_Sort(sort_list, AUIPlugin.AUICodeCompleteScreen.ItemInfoSort);
 		count = 0;
-		let ___OBJECT_5 = sort_list;
-		for (let index = 1; index <= ___OBJECT_5.length; ++index) {
-			let info = ___OBJECT_5[index - 1];
+		let descriptor = undefined;
+		let ___OBJECT_7 = sort_list;
+		for (let index = 1; index <= ___OBJECT_7.length; ++index) {
+			let info = ___OBJECT_7[index - 1];
 			if (info === undefined) break;
 			if (this._screen.child_count === 0) {
 				info._item_button.selected = true;
@@ -274,15 +310,19 @@ AUIPlugin.AUICodeCompleteScreen = JavaScript.Class(undefined, {
 	},
 	ShowTip : function(content) {
 		if (this._tip_dialog === undefined) {
-			this._tip_dialog = AUIPlugin.g_Control.CreateControl("ide_tool_area_tip", this);
+			this._tip_dialog = AUIPlugin.g_Control.CreateControl("code_area_tip", this);
 			this._tip_dialog.width = 200;
 		}
 		this._edit.help_container.AddChild(this._tip_dialog);
 		this._tip_dialog.visible = true;
 		this._tip_text.text = content;
-		this._tip_dialog.height = this._tip_text.real_height + 6;
-		this._tip_dialog.x = this._screen.x;
-		this._tip_dialog.y = this._screen.y + this._screen.height;
+		this._tip_dialog.height = this._tip_text.real_height + 16;
+		this._tip_dialog.x = this._screen.x + this._screen.width;
+		this._tip_dialog.y = this._screen.y;
+		if (this._tip_dialog.x + this._tip_dialog.width > A_UISystem.view_width) {
+			this._tip_dialog.x = this._screen.x;
+			this._tip_dialog.y = this._screen.y + this._screen.height;
+		}
 	},
 	HideTip : function() {
 		if (this._tip_dialog === undefined) {

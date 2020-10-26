@@ -11,7 +11,7 @@ AUIPlugin.AUIEditImageDialog = JavaScript.Class(undefined, {
 	},
 	ShowDialog : function(path, save_dir) {
 		if (this._dialog === undefined) {
-			this._dialog = AUIPlugin.g_Control.CreateControl("ide_image_edit_dialog", this);
+			this._dialog = AUIPlugin.g_Control.CreateControl("aui_image_edit_dialog", this);
 			A_LayerManager.AddToModal(this._dialog);
 		}
 		this._save_dir = save_dir;

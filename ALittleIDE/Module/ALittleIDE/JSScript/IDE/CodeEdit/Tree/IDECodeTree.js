@@ -55,9 +55,9 @@ ALittleIDE.IDECodeTree = JavaScript.Class(ALittleIDE.IDECodeTreeLogic, {
 		this._pickup_child = true;
 		this.fold = false;
 		if (user_info.root) {
-			this._item_title.text = "[" + this._user_info.module_name + "] " + this._user_info.name;
+			this._item_button.text = "[" + this._user_info.module_name + "] " + this._user_info.name;
 		} else {
-			this._item_title.text = this._user_info.name;
+			this._item_button.text = this._user_info.name;
 		}
 		this.Refresh();
 	},
@@ -95,6 +95,10 @@ ALittleIDE.IDECodeTree = JavaScript.Class(ALittleIDE.IDECodeTreeLogic, {
 		let [x, y] = this._head.LocalToGlobal();
 		let name = await g_AUITool.ShowRename("", x, y + this._head.height, 200);
 		if (name === undefined || name === "") {
+			return;
+		}
+		if (ALittle.File_GetFileAttr(this._user_info.path + "/" + name + ".alittle") !== undefined) {
+			g_AUITool.ShowNotice("提示", "文件名已存在");
 			return;
 		}
 		let content = "\nnamespace " + ALittleIDE.g_IDEProject.project.name + ";\n\nprotected class " + name + "\n{\n}\n";
@@ -189,7 +193,7 @@ ALittleIDE.IDECodeTree = JavaScript.Class(ALittleIDE.IDECodeTreeLogic, {
 		}
 	},
 	Refresh : function() {
-		let map = ALittle.File_GetFileNameListByDir(this._user_info.path);
+		let map = ALittle.File_GetNameListByDir(this._user_info.path);
 		let remove = undefined;
 		let ___OBJECT_1 = this.childs;
 		for (let index = 1; index <= ___OBJECT_1.length; ++index) {
@@ -222,7 +226,7 @@ ALittleIDE.IDECodeTree = JavaScript.Class(ALittleIDE.IDECodeTreeLogic, {
 		for (let name in ___OBJECT_3) {
 			let attr = ___OBJECT_3[name];
 			if (attr === undefined) continue;
-			if (attr.mode === "directory") {
+			if (attr.directory) {
 				if (add_dir === undefined) {
 					add_dir = [];
 				}
@@ -370,7 +374,7 @@ ALittleIDE.IDECodeTree = JavaScript.Class(ALittleIDE.IDECodeTreeLogic, {
 		}
 		let endv = index + count;
 		for (let i = index; i < endv; i += 1) {
-			let child = this._childs[index - 1];
+			let child = this._childs[i - 1];
 			if (child === undefined) {
 				break;
 			}

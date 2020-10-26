@@ -61,9 +61,9 @@ if (ALittleIDE.IDEUITreeLogic === undefined) throw new Error(" extends class:ALi
 ALittleIDE.IDEUITree = JavaScript.Class(ALittleIDE.IDEUITreeLogic, {
 	Ctor : function(ctrl_sys, user_info, tab_child) {
 		if (this._user_info.extends) {
-			this._head = ctrl_sys.CreateControl("ide_common_tree_head_disabled", this);
+			this._head = ctrl_sys.CreateControl("tree_head_disabled", this);
 		} else {
-			this._head = ctrl_sys.CreateControl("ide_common_tree_head", this);
+			this._head = ctrl_sys.CreateControl("tree_head", this);
 		}
 		ALittle.DisplayGroup.AddChild.call(this, this._head);
 		this._extends_icon.visible = this._user_info.extends_root;
@@ -109,7 +109,7 @@ ALittleIDE.IDEUITree = JavaScript.Class(ALittleIDE.IDEUITreeLogic, {
 		} else if (this._user_info.default.text !== undefined) {
 			title = title + this._user_info.default.text;
 		}
-		this._item_title.text = title;
+		this._item_button.text = title;
 		if (this._user_info.child_type === undefined) {
 			this._tab_child.UpdateTitle();
 		}

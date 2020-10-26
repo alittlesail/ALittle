@@ -36,13 +36,6 @@ AUIPlugin.AUICodeLineNumber = JavaScript.Class(ALittle.DisplayLayout, {
 	UpdateShow : function() {
 		let text_list = ALittle.String_SplitUTF8(this._text);
 		this.RemoveAllChild();
-		let quad = ALittle.NewObject(ALittle.Quad, this._ctrl_sys);
-		quad.width_type = 4;
-		quad.height_type = 4;
-		quad.red = 43 / 255;
-		quad.green = 43 / 255;
-		quad.blue = 43 / 255;
-		this.AddChild(quad);
 		let offset = 0.0;
 		let len = ALittle.List_MaxN(text_list);
 		for (let index = len; index >= 1; index += -1) {

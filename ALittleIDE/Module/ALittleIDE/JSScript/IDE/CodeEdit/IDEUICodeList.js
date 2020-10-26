@@ -125,9 +125,9 @@ ALittleIDE.IDEUICodeList = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 	},
 	AddLibrary : function(name) {
-		let file_map = ALittle.File_GetFileNameListByDir(ALittle.File_BaseFilePath() + "Module/ALittleIDE/Other/GameLibrary");
+		let file_map = ALittle.File_GetNameListByDir(ALittle.File_BaseFilePath() + "Module/ALittleIDE/Other/GameLibrary");
 		let attr = file_map[name];
-		if (attr === undefined || attr.mode !== "directory") {
+		if (attr === undefined || !attr.directory) {
 			return false;
 		}
 		let module_map = ALittleIDE.g_IDEProject.project.config.GetConfig("code_module", {});
@@ -218,7 +218,7 @@ ALittleIDE.IDEUICodeList = JavaScript.Class(ALittle.DisplayLayout, {
 				parent = parent.logic_parent;
 			}
 		}
-		this._code_scroll_screen.RejustScrollBar();
+		this._code_scroll_screen.AdjustScrollBar();
 		let [x, y] = target.LocalToGlobal(this._code_scroll_screen.container);
 		let target_x = (this._code_scroll_screen.view_width - target.width / 2) / 2 - x;
 		let target_y = (this._code_scroll_screen.view_height - target.height) / 2 - y;

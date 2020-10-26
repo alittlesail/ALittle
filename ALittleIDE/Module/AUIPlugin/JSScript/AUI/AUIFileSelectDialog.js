@@ -58,7 +58,7 @@ AUIPlugin.AUIFileSelectDialog = JavaScript.Class(ALittle.EventDispatcher, {
 	},
 	CreateDialog : function() {
 		if (this._dialog === undefined) {
-			this._dialog = AUIPlugin.g_Control.CreateControl("ide_file_select_dialog", this);
+			this._dialog = AUIPlugin.g_Control.CreateControl("file_select_dialog", this);
 			this._dialog.title = this._title;
 			if (this._layer !== undefined) {
 				this._layer.AddChild(this._dialog);
@@ -92,6 +92,7 @@ AUIPlugin.AUIFileSelectDialog = JavaScript.Class(ALittle.EventDispatcher, {
 		if (this._layout !== undefined) {
 			this._layout.Release();
 		}
+		return true;
 	},
 	System_SetVDragCursor : function(event) {
 		ALittle.System_SetVDragCursor();

@@ -312,7 +312,7 @@ ALittleIDE.IDEAntiAddAttrRevoke = JavaScript.Class(ALittle.RevokeObject, {
 			this._target.anti_link_linear.AddChild(this._link_item);
 			let static_object_v = this._target.anti_screen.static_object_v;
 			static_object_v.height = this._target.anti_link_linear.y + this._target.anti_link_linear.height;
-			this._target.anti_screen.RejustScrollBar();
+			this._target.anti_screen.AdjustScrollBar();
 		}
 		this._target.tab_child.save = false;
 	},
@@ -331,7 +331,7 @@ ALittleIDE.IDEAntiAddAttrRevoke = JavaScript.Class(ALittle.RevokeObject, {
 			this._target.anti_link_linear.RemoveChild(this._link_item);
 			let static_object_v = this._target.anti_screen.static_object_v;
 			static_object_v.height = this._target.anti_link_linear.y + this._target.anti_link_linear.height;
-			this._target.anti_screen.RejustScrollBar();
+			this._target.anti_screen.AdjustScrollBar();
 		}
 		this._target.tab_child.save = false;
 	},
@@ -362,7 +362,7 @@ ALittleIDE.IDEAntiRemoveAttrRevoke = JavaScript.Class(ALittle.RevokeObject, {
 			this._target.anti_link_linear.RemoveChild(this._link_item);
 			let static_object_v = this._target.anti_screen.static_object_v;
 			static_object_v.height = this._target.anti_link_linear.y + this._target.anti_link_linear.height;
-			this._target.anti_screen.RejustScrollBar();
+			this._target.anti_screen.AdjustScrollBar();
 		}
 		this._target.tab_child.save = false;
 	},
@@ -381,7 +381,7 @@ ALittleIDE.IDEAntiRemoveAttrRevoke = JavaScript.Class(ALittle.RevokeObject, {
 			this._target.anti_link_linear.AddChild(this._link_item, this._child_index);
 			let static_object_v = this._target.anti_screen.static_object_v;
 			static_object_v.height = this._target.anti_link_linear.y + this._target.anti_link_linear.height;
-			this._target.anti_screen.RejustScrollBar();
+			this._target.anti_screen.AdjustScrollBar();
 		}
 		this._target.tab_child.save = false;
 	},

@@ -6,7 +6,7 @@ ALittleIDE.__Browser_Setup = async function(layer_group, control, module_base_pa
 	ALittle.DeleteLog(7);
 	let [window_width, window_height, flag, scale] = ALittle.System_CalcLandscape(1200, 600, ALittle.BitOr(0x00000080, 0x00000020));
 	ALittle.System_CreateView("ALittleIDE", window_width, window_height, flag, scale);
-	ALittle.System_SetViewIcon(module_base_path + "/Other/ic_launcher.png");
+	ALittle.System_SetViewIcon(module_base_path + "Other/ic_launcher.png");
 	await A_ModuleSystem.LoadModule(module_base_path, "ALittleIDE");
 }
 

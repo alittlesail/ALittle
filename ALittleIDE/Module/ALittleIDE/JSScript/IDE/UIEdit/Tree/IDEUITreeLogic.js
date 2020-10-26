@@ -52,7 +52,7 @@ ALittleIDE.IDEUITreeLogic = JavaScript.Class(ALittle.DisplayLayout, {
 		return this._attr_panel;
 	},
 	get title() {
-		return this._item_title.text;
+		return this._item_button.text;
 	},
 	CanAddChild : function() {
 		return false;

@@ -12690,10 +12690,10 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 		return this._close_callback;
 	},
 	HandleCloseButtonClicked : function(event) {
-		this.visible = false;
-		if (this._close_callback !== undefined) {
-			this._close_callback();
+		if (this._close_callback !== undefined && !this._close_callback()) {
+			return;
 		}
+		this.visible = false;
 	},
 	HandleHeadDragBegin : function(event) {
 		this.DispatchEvent(___all_struct.get(1971745271), {});

@@ -53,6 +53,16 @@ Index.GCenter = JavaScript.Class(undefined, {
 			data.path = "BattleCity.html";
 			ALittle.List_Push(data_list, data);
 			data = {};
+			data.title = "SuperMarioBros";
+			data.texture_name = "SuperMarioBros.png";
+			data.path = "SuperMarioBros.html";
+			ALittle.List_Push(data_list, data);
+			data = {};
+			data.title = "ALittleIDE";
+			data.texture_name = "ALittleIDE.png";
+			data.path = "ALittleIDE.html";
+			ALittle.List_Push(data_list, data);
+			data = {};
 			data.title = "2048";
 			data.texture_name = "G2048.png";
 			data.path = "G2048.html";
@@ -61,11 +71,6 @@ Index.GCenter = JavaScript.Class(undefined, {
 			data.title = "FlappyBird";
 			data.texture_name = "FlappyBird.png";
 			data.path = "FlappyBird.html";
-			ALittle.List_Push(data_list, data);
-			data = {};
-			data.title = "ALittleIDE";
-			data.texture_name = "ALittleIDE.png";
-			data.path = "ALittleIDE.html";
 			ALittle.List_Push(data_list, data);
 		}
 		this._item_width = 0;

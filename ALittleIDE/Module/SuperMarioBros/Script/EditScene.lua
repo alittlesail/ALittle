@@ -60,6 +60,7 @@ function SuperMarioBros.EditScene:TCtor()
 	self:AddEntity("flag_4", SuperMarioBros.EntityType.ET_FLAG_4, self._entity_flag_4)
 	self:AddEntity("flag_5", SuperMarioBros.EntityType.ET_FLAG_5, self._entity_flag_5)
 	self:AddEntity("born_1", SuperMarioBros.EntityType.ET_BORN_1, self._entity_born_1)
+	self._select_frame._user_data = self._entity_info_map[SuperMarioBros.EntityType.ET_RANDOM_WALL_1]
 end
 
 function SuperMarioBros.EditScene:AddEntity(ui, type, object)

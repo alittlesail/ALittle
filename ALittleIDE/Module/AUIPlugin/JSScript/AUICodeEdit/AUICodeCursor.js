@@ -138,7 +138,7 @@ AUIPlugin.AUICodeCursor = JavaScript.Class(ALittle.Quad, {
 		}
 		return true;
 	},
-	RejustShowCursor : function() {
+	AdjustShowCursor : function() {
 		let line = this._edit.line_list[this._it_line - 1];
 		if (line === undefined) {
 			return;
@@ -347,7 +347,7 @@ AUIPlugin.AUICodeCursor = JavaScript.Class(ALittle.Quad, {
 			}
 			if (rejust) {
 				this._edit.code_screen.container.width = line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH;
-				this._edit.code_screen.RejustScrollBar();
+				this._edit.code_screen.AdjustScrollBar();
 			}
 			if (need_revoke) {
 				let new_it_line = this._it_line;
@@ -411,7 +411,7 @@ AUIPlugin.AUICodeCursor = JavaScript.Class(ALittle.Quad, {
 		if (this._edit.code_screen.container.width < pre_line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH) {
 			this._edit.code_screen.container.width = pre_line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH;
 		}
-		this._edit.code_screen.RejustScrollBar();
+		this._edit.code_screen.AdjustScrollBar();
 		if (need_revoke) {
 			let revoke = ALittle.NewObject(AUIPlugin.AUICodeDeleteLeftRevoke, this._edit, this, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content, revoke_bind === undefined);
 			if (revoke_bind !== undefined) {
@@ -471,7 +471,7 @@ AUIPlugin.AUICodeCursor = JavaScript.Class(ALittle.Quad, {
 			}
 			if (rejust) {
 				this._edit.code_screen.container.width = line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH;
-				this._edit.code_screen.RejustScrollBar();
+				this._edit.code_screen.AdjustScrollBar();
 			}
 			let new_it_line = this._it_line;
 			let new_it_char = this._it_char;
@@ -532,7 +532,7 @@ AUIPlugin.AUICodeCursor = JavaScript.Class(ALittle.Quad, {
 		if (this._edit.code_screen.container.width < cur_line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH) {
 			this._edit.code_screen.container.width = cur_line.container.width + AUIPlugin.CODE_LINE_NUMBER_WIDTH;
 		}
-		this._edit.code_screen.RejustScrollBar();
+		this._edit.code_screen.AdjustScrollBar();
 		if (need_revoke) {
 			let revoke = ALittle.NewObject(AUIPlugin.AUICodeDeleteRightRevoke, this._edit, this, old_it_line, old_it_char, new_it_line, new_it_char, revoke_content, revoke_bind === undefined);
 			if (revoke_bind !== undefined) {

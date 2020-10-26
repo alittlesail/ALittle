@@ -10,7 +10,7 @@ AUIPlugin.AUIIMEManager = JavaScript.Class(undefined, {
 			return;
 		}
 		if (this._ime_dialog === undefined) {
-			this._ime_dialog = AUIPlugin.g_Control.CreateControl("ide_ime_dialog", this);
+			this._ime_dialog = AUIPlugin.g_Control.CreateControl("aui_ime_dialog", this);
 			A_LayerManager.AddToTip(this._ime_dialog);
 			this._ime_dialog.visible = false;
 			this._ime_dialog_init_width = this._ime_dialog.width;

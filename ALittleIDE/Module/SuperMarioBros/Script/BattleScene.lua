@@ -45,6 +45,7 @@ function SuperMarioBros.BattleScene:Show(world, subworld)
 	self._entity_map = {}
 	self._life_mushroom_map = {}
 	self._enemy_mushroom_map = {}
+	self._flag_map = {}
 	for row, submap in ___pairs(self._battle_map.background) do
 		for col, index in ___pairs(submap) do
 			local show_row = ALittle.Math_Floor(index / SuperMarioBros.TILE_COL_COUNT) + 1
@@ -116,6 +117,9 @@ function SuperMarioBros.BattleScene:CreateEntity(type, row, col)
 		object.visible = false
 	end
 	self._entity_container:AddChild(object)
+	if type == SuperMarioBros.EntityType.ET_FLAG_1 or type == SuperMarioBros.EntityType.ET_FLAG_2 or type == SuperMarioBros.EntityType.ET_FLAG_3 or type == SuperMarioBros.EntityType.ET_FLAG_4 or type == SuperMarioBros.EntityType.ET_FLAG_5 then
+		self._flag_map[object] = true
+	end
 end
 
 function SuperMarioBros.BattleScene:SetTileShow(row, col, show_row, show_col)
@@ -174,6 +178,14 @@ function SuperMarioBros.BattleScene:TestCollision(a, b)
 end
 
 function SuperMarioBros.BattleScene:HandleFrame(frame_time)
+	if self._player.win and self._player.visible and g_GCenter.battle_scene:CheckOutDoor(self._player) then
+		self._player.visible = false
+		self._player:Idle()
+		g_GCenter.login_scene:UpdateTopScore()
+		local loop = ALittle.LoopList()
+		loop:AddUpdater(ALittle.LoopTimer(Lua.Bind(g_GCenter.battle_scene.NextStage, g_GCenter.battle_scene), 1000))
+		loop:Start()
+	end
 	local cur_time = ALittle.System_GetCurMSTime()
 	local delta_time = ALittle.Math_Floor((self._end_time - cur_time) / 1000)
 	if delta_time <= 0 then
@@ -196,6 +208,25 @@ function SuperMarioBros.BattleScene:HandleFrame(frame_time)
 	end
 	if self._player.y >= A_UISystem.view_height then
 		self._player:Death()
+	end
+	if self._player.state ~= SuperMarioBros.PlayerState.PS_DEATH and self._player.state ~= SuperMarioBros.PlayerState.PS_FLAG and not self._player.win then
+		for flag, _ in ___pairs(self._flag_map) do
+			if self:TestCollision(self._player, flag) then
+				if self._player.right then
+					if self._player.x >= flag.x - SuperMarioBros.TILE_WIDTH / 2 then
+						self._player.x = flag.x - SuperMarioBros.TILE_WIDTH / 2
+						self._player:Flag()
+						break
+					end
+				else
+					if self._player.x <= flag.x + flag.width - SuperMarioBros.TILE_WIDTH / 2 then
+						self._player.x = flag.x + flag.width - SuperMarioBros.TILE_WIDTH / 2
+						self._player:Flag()
+						break
+					end
+				end
+			end
+		end
 	end
 	if self._player.state ~= SuperMarioBros.PlayerState.PS_DEATH then
 		local remove_map
@@ -289,8 +320,18 @@ function SuperMarioBros.BattleScene:HandleFrame(frame_time)
 end
 
 function SuperMarioBros.BattleScene:Restart()
+	if g_GCenter.player_data.life <= 0 then
+		self:Hide()
+		g_GCenter.login_scene:Show()
+		return
+	end
 	g_GCenter.player_data.life = g_GCenter.player_data.life - (1)
 	g_GCenter.player_data.level = 1
+	self:Hide()
+	g_GCenter.stage_scene:Show(g_GCenter.player_data.world, g_GCenter.player_data.subworld)
+end
+
+function SuperMarioBros.BattleScene:NextStage()
 	self:Hide()
 	g_GCenter.stage_scene:Show(g_GCenter.player_data.world, g_GCenter.player_data.subworld)
 end
@@ -458,6 +499,30 @@ function SuperMarioBros.BattleScene:CheckDown(entity)
 		col = col+(1)
 	end
 	return false, nil
+end
+
+function SuperMarioBros.BattleScene:CheckOutDoor(entity)
+	local col = ALittle.Math_Floor((entity.x + entity.width) / SuperMarioBros.TILE_WIDTH) - 1
+	local min_row = ALittle.Math_Floor(entity.y / SuperMarioBros.TILE_HEIGHT)
+	local max_row = ALittle.Math_Floor((entity.y + entity.height - 1) / SuperMarioBros.TILE_HEIGHT)
+	local row = min_row
+	while true do
+		if not(row <= max_row) then break end
+		local sub_map = self._battle_map.background[row]
+		if sub_map ~= nil then
+			local index = sub_map[col]
+			if index ~= nil then
+				local show_row = ALittle.Math_Floor(index / SuperMarioBros.TILE_COL_COUNT) + 1
+				local show_col = index % SuperMarioBros.TILE_COL_COUNT + 1
+				local check = show_row == 7 and show_col == 2
+				if check then
+					return true
+				end
+			end
+		end
+		row = row+(1)
+	end
+	return false
 end
 
 function SuperMarioBros.BattleScene:CheckRight(entity)

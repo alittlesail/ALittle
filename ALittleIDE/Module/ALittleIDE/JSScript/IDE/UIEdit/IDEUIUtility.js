@@ -369,18 +369,18 @@ ALittleIDE.IDEUIUtility_CreateTree = function(control, module, extends_v, object
 }
 
 ALittleIDE.IDEUIUtility_GenerateGrid9ImageInfo = function(base_path, image_path) {
-	let surface = ALittle.System_LoadSurface(base_path + image_path);
+	let surface = carp.LoadCarpSurface(base_path + image_path);
 	if (surface === undefined) {
 		return undefined;
 	}
-	let width = ALittle.System_GetSurfaceWidth(surface);
-	let height = ALittle.System_GetSurfaceHeight(surface);
+	let width = carp.GetCarpSurfaceWidth(surface);
+	let height = carp.GetCarpSurfaceHeight(surface);
 	let helf_width = ALittle.Math_Floor(width / 2);
 	let helf_height = ALittle.Math_Floor(height / 2);
-	let left = ALittle.System_GetSurfaceGrid9(surface, "left");
-	let right = ALittle.System_GetSurfaceGrid9(surface, "right");
-	let top = ALittle.System_GetSurfaceGrid9(surface, "top");
-	let bottom = ALittle.System_GetSurfaceGrid9(surface, "bottom");
+	let left = carp.GetCarpSurfaceGrid9(surface, "left");
+	let right = carp.GetCarpSurfaceGrid9(surface, "right");
+	let top = carp.GetCarpSurfaceGrid9(surface, "top");
+	let bottom = carp.GetCarpSurfaceGrid9(surface, "bottom");
 	if (left === 0) {
 		left = 1;
 	} else if (left === helf_width) {
@@ -409,7 +409,7 @@ ALittleIDE.IDEUIUtility_GenerateGrid9ImageInfo = function(base_path, image_path)
 	} else {
 		bottom = height - bottom + 1;
 	}
-	ALittle.System_FreeSurface(surface);
+	carp.FreeCarpSurface(surface);
 	let display_info = {};
 	display_info.__class = "Grid9Image";
 	display_info.texture_name = image_path;

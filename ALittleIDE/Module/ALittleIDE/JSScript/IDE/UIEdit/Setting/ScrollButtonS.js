@@ -38,7 +38,7 @@ ALittleIDE.ScrollButtonS = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
 		if (path === undefined) {
 			return;
 		}
-		this.ImagePathSelectCallback("show_up", this.HandleShowUpFOCUSOUT, undefined, path);
+		this.ImagePathSelectCallback("show_up", this.HandleShowUpFOCUSOUT, undefined, path, true);
 	},
 	HandleShowOverFOCUSOUT : function(event) {
 		if (event.target._user_data !== undefined) {
@@ -60,7 +60,7 @@ ALittleIDE.ScrollButtonS = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
 		if (path === undefined) {
 			return;
 		}
-		this.ImagePathSelectCallback("show_over", this.HandleShowOverFOCUSOUT, undefined, path);
+		this.ImagePathSelectCallback("show_over", this.HandleShowOverFOCUSOUT, undefined, path, true);
 	},
 	HandleShowDownFOCUSOUT : function(event) {
 		if (event.target._user_data !== undefined) {
@@ -82,7 +82,7 @@ ALittleIDE.ScrollButtonS = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
 		if (path === undefined) {
 			return;
 		}
-		this.ImagePathSelectCallback("show_down", this.HandleShowDownFOCUSOUT, undefined, path);
+		this.ImagePathSelectCallback("show_down", this.HandleShowDownFOCUSOUT, undefined, path, true);
 	},
 	HandleShowDisabledFOCUSOUT : function(event) {
 		if (event.target._user_data !== undefined) {
@@ -104,7 +104,7 @@ ALittleIDE.ScrollButtonS = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
 		if (path === undefined) {
 			return;
 		}
-		this.ImagePathSelectCallback("show_disabled", this.HandleShowDisabledFOCUSOUT, undefined, path);
+		this.ImagePathSelectCallback("show_disabled", this.HandleShowDisabledFOCUSOUT, undefined, path, true);
 	},
 	HandleShowTextFOCUSOUT : function(event) {
 		ALittleIDE.g_IDEAttrTextDialog.ShowDialog(this, "show_text", false);

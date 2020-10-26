@@ -63,12 +63,12 @@ AUIPlugin.AUIImageCutPlugin = JavaScript.Class(ALittle.DisplayLayout, {
 		if (target_path === undefined) {
 			target_path = this._file_path;
 		}
-		let surface = ALittle.System_LoadSurface(this._file_path);
+		let surface = carp.LoadCarpSurface(this._file_path);
 		if (surface === undefined) {
 			return false;
 		}
-		let width = ALittle.System_GetSurfaceWidth(surface);
-		let height = ALittle.System_GetSurfaceHeight(surface);
+		let width = carp.GetCarpSurfaceWidth(surface);
+		let height = carp.GetCarpSurfaceHeight(surface);
 		let rate_w = this._edit_container.width / width;
 		let rate_h = this._edit_container.height / height;
 		let cut_x = ALittle.Math_Floor(this._cut_center_x / rate_w);
@@ -83,9 +83,9 @@ AUIPlugin.AUIImageCutPlugin = JavaScript.Class(ALittle.DisplayLayout, {
 		if (new_height > this._MAX_HEIGHT) {
 			new_height = this._MAX_HEIGHT;
 		}
-		let new_surface = ALittle.System_CreateSurface(ALittle.Math_Floor(new_width), ALittle.Math_Floor(new_height));
-		ALittle.System_CutBlitSurface(new_surface, surface, "0,0," + new_width + "," + new_height, cut_x + "," + cut_y + "," + cut_width + "," + cut_height);
-		ALittle.System_FreeSurface(surface);
+		let new_surface = carp.CreateCarpSurface(ALittle.Math_Floor(new_width), ALittle.Math_Floor(new_height));
+		carp.CutBlitCarpSurface(surface, new_surface, cut_x + "," + cut_y + "," + cut_width + "," + cut_height, "0,0," + new_width + "," + new_height);
+		carp.FreeCarpSurface(surface);
 		if (this._is_circle) {
 			let new_center = new_width / 2;
 			let gradual_len = ALittle.Math_Floor(new_center * 0.05);
@@ -95,22 +95,22 @@ AUIPlugin.AUIImageCutPlugin = JavaScript.Class(ALittle.DisplayLayout, {
 					let y2 = (new_center - row) * (new_center - row);
 					let distance = ALittle.Math_Sqrt(x2 + y2);
 					if (distance > new_center) {
-						ALittle.System_SetSurfacePixel(new_surface, col, row, 0);
+						carp.SetCarpSurfacePixel(new_surface, col, row, 0);
 					} else if (gradual_len > 0 && new_center - distance < gradual_len) {
-						let color = ALittle.System_GetSurfacePixel(new_surface, col, row);
-						let src_alpha = ALittle.System_GetPixelAlpha(color);
+						let color = carp.GetCarpSurfacePixel(new_surface, col, row);
+						let src_alpha = carp.GetPixelAlpha(color);
 						let dst_alpha = ALittle.Math_Sin((3.14159625 / 2) * (new_center - distance) / gradual_len) * 255;
 						if (src_alpha < dst_alpha) {
 							dst_alpha = src_alpha;
 						}
-						color = ALittle.System_SetPixelAlpha(color, ALittle.Math_Ceil(dst_alpha));
-						ALittle.System_SetSurfacePixel(new_surface, col, row, color);
+						color = carp.SetPixelAlpha(color, ALittle.Math_Ceil(dst_alpha));
+						carp.SetCarpSurfacePixel(new_surface, col, row, color);
 					}
 				}
 			}
 		}
-		let result = ALittle.System_SaveSurface(new_surface, target_path);
-		ALittle.System_FreeSurface(new_surface);
+		let result = carp.SaveCarpSurface(new_surface, target_path);
+		carp.FreeCarpSurface(new_surface);
 		return result;
 	},
 	LoadTextureCallback : function(image, result) {

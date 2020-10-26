@@ -24,6 +24,7 @@ ALittleIDE.TextButtonS = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
 	},
 	HandleMTextFOCUSOUT : function(event) {
 		this.DefaultNoStringInputChange("text", false);
+		this._tree_logic.UpdateDesc();
 	},
 	HandleTextXTypeSELECT_CHANGE : function(event) {
 		let object = this._object;
@@ -57,7 +58,7 @@ ALittleIDE.TextButtonS = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
 		if (path === undefined) {
 			return;
 		}
-		this.ImagePathSelectCallback("show_up", this.HandleShowUpFOCUSOUT, undefined, path);
+		this.ImagePathSelectCallback("show_up", this.HandleShowUpFOCUSOUT, undefined, path, true);
 	},
 	HandleShowOverFOCUSOUT : function(event) {
 		if (event.target._user_data !== undefined) {
@@ -79,7 +80,7 @@ ALittleIDE.TextButtonS = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
 		if (path === undefined) {
 			return;
 		}
-		this.ImagePathSelectCallback("show_over", this.HandleShowOverFOCUSOUT, undefined, path);
+		this.ImagePathSelectCallback("show_over", this.HandleShowOverFOCUSOUT, undefined, path, true);
 	},
 	HandleShowDownFOCUSOUT : function(event) {
 		if (event.target._user_data !== undefined) {
@@ -101,7 +102,7 @@ ALittleIDE.TextButtonS = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
 		if (path === undefined) {
 			return;
 		}
-		this.ImagePathSelectCallback("show_down", this.HandleShowDownFOCUSOUT, undefined, path);
+		this.ImagePathSelectCallback("show_down", this.HandleShowDownFOCUSOUT, undefined, path, true);
 	},
 	HandleShowDisabledFOCUSOUT : function(event) {
 		if (event.target._user_data !== undefined) {
@@ -123,7 +124,7 @@ ALittleIDE.TextButtonS = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
 		if (path === undefined) {
 			return;
 		}
-		this.ImagePathSelectCallback("show_disabled", this.HandleShowDisabledFOCUSOUT, undefined, path);
+		this.ImagePathSelectCallback("show_disabled", this.HandleShowDisabledFOCUSOUT, undefined, path, true);
 	},
 	HandleShowTextFOCUSOUT : function(event) {
 		ALittleIDE.g_IDEAttrTextDialog.ShowDialog(this, "show_text", false);

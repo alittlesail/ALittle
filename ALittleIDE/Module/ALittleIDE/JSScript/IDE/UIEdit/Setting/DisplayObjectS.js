@@ -129,9 +129,12 @@ ALittleIDE.DisplayObjectS = JavaScript.Class(undefined, {
 		this.LoadValueData("center_x");
 		this.LoadValueData("center_y");
 		this.LoadValueData("angle");
-		this.LoadBoolData("hand_cursor", false, ALittleIDE.g_IDEEnum.yn_type);
-		this.LoadBoolData("visible", true, ALittleIDE.g_IDEEnum.yn_type);
-		this.LoadBoolData("disabled", true, ALittleIDE.g_IDEEnum.yn_type);
+		this.LoadCheckBoolData("hand_cursor", false);
+		this.LoadCheckBoolData("visible", true);
+		this.LoadCheckBoolData("disabled", true);
+		this._hand_cursor_check_text.event_trans_target = this._hand_cursor;
+		this._visible_check_text.event_trans_target = this._visible;
+		this._disabled_check_text.event_trans_target = this._disabled;
 		this.LoadDefaultNilString("__link");
 		this.LoadShowTypeData("__event");
 		this.LoadShowTypeDataForTargetClass("__target_class");
@@ -589,31 +592,31 @@ ALittleIDE.DisplayObjectS = JavaScript.Class(undefined, {
 		if (hand_cursor === undefined) {
 			return;
 		}
-		this._hand_cursor.text = ALittleIDE.g_IDEEnum.yn_type.get(hand_cursor);
-		this.BoolSelectChange("hand_cursor", false, ALittleIDE.g_IDEEnum.yn_type, revoke_bind);
+		this._hand_cursor.selected = hand_cursor;
+		this.CheckBoolSelectChange("hand_cursor", false, revoke_bind);
 	},
-	HandleHandCursorSELECT_CHANGE : function(event) {
-		this.BoolSelectChange("hand_cursor", false, ALittleIDE.g_IDEEnum.yn_type);
+	HandleHandCursorChanged : function(event) {
+		this.CheckBoolSelectChange("hand_cursor", false);
 	},
 	SetVisible : function(visible, revoke_bind) {
 		if (visible === undefined) {
 			return;
 		}
-		this._visible.text = ALittleIDE.g_IDEEnum.yn_type.get(visible);
-		this.BoolSelectChange("visible", false, ALittleIDE.g_IDEEnum.yn_type, revoke_bind);
+		this._visible.selected = visible;
+		this.CheckBoolSelectChange("visible", false, revoke_bind);
 	},
-	HandleVisibleSELECT_CHANGE : function(event) {
-		this.BoolSelectChange("visible", false, ALittleIDE.g_IDEEnum.yn_type);
+	HandleVisibleChanged : function(event) {
+		this.CheckBoolSelectChange("visible", false);
 	},
 	SetDisabled : function(disabled, revoke_bind) {
 		if (disabled === undefined) {
 			return;
 		}
-		this._disabled.text = ALittleIDE.g_IDEEnum.yn_type.get(disabled);
-		this.BoolSelectChange("disabled", false, ALittleIDE.g_IDEEnum.yn_type, revoke_bind);
+		this._disabled.selected = disabled;
+		this.CheckBoolSelectChange("disabled", false, revoke_bind);
 	},
-	HandleDisabledSELECT_CHANGE : function(event) {
-		this.BoolSelectChange("disabled", false, ALittleIDE.g_IDEEnum.yn_type);
+	HandleDisabledChanged : function(event) {
+		this.CheckBoolSelectChange("disabled", false);
 	},
 	SetDescription : function(description, revoke_bind) {
 		if (description === undefined) {
@@ -943,7 +946,7 @@ ALittleIDE.DisplayObjectS = JavaScript.Class(undefined, {
 		let old_object = this._object[text];
 		let display_object = this["_" + text];
 		if (display_object.text === "") {
-			if (revoke_bind === undefined && this._object[text] === undefined) {
+			if (revoke_bind === undefined && this._base[text] === display_object.text) {
 				return;
 			}
 			delete this._base[text];
@@ -954,7 +957,7 @@ ALittleIDE.DisplayObjectS = JavaScript.Class(undefined, {
 				display_object.text = this._default[text];
 			}
 		} else {
-			if (revoke_bind === undefined && this._object[text] === display_object.text) {
+			if (revoke_bind === undefined && this._base[text] === display_object.text) {
 				return;
 			}
 			this._base[text] = display_object.text;
@@ -1064,6 +1067,41 @@ ALittleIDE.DisplayObjectS = JavaScript.Class(undefined, {
 			this._base[text] = false;
 		} else {
 			ALittle.Log("bool failed");
+		}
+		if (this._base[text] === this._default[text]) {
+			delete this._base[text];
+		}
+		this._tab_child.UpdateHandleQuadLayout(this._tree_logic);
+		this._tab_child.save = false;
+		let new_base = this._base[text];
+		let new_object = this._object[text];
+		let old_text = undefined;
+		if (display_object !== undefined) {
+			old_text = display_object.text;
+		}
+		let revoke = ALittle.NewObject(ALittleIDE.IDENatureChangeRevoke, this._tree_logic, text, old_base, new_base, old_object, new_object, old_text, need_reset);
+		if (revoke_bind !== undefined) {
+			revoke_bind.PushRevoke(revoke);
+		} else {
+			this._tab_child.revoke_list.PushRevoke(revoke);
+		}
+	},
+	CheckBoolSelectChange : function(text, need_reset, revoke_bind) {
+		let old_base = this._base[text];
+		let old_object = this._object[text];
+		let display_object = this["_" + text];
+		if (display_object.selected) {
+			if (revoke_bind === undefined && this._object[text] === true) {
+				return;
+			}
+			this._object[text] = true;
+			this._base[text] = true;
+		} else {
+			if (revoke_bind === undefined && this._object[text] === false) {
+				return;
+			}
+			this._object[text] = false;
+			this._base[text] = false;
 		}
 		if (this._base[text] === this._default[text]) {
 			delete this._base[text];
@@ -1475,7 +1513,7 @@ ALittleIDE.DisplayObjectS = JavaScript.Class(undefined, {
 		if (color === undefined) {
 			color = this._default[text];
 		}
-		display_object.text = color * 255;
+		display_object.text = ALittle.Math_Floor(color * 255);
 	},
 	LoadBoolData : function(text, default_bool, list) {
 		let display_object = this["_" + text];
@@ -1499,6 +1537,20 @@ ALittleIDE.DisplayObjectS = JavaScript.Class(undefined, {
 			}
 		}
 	},
+	LoadCheckBoolData : function(text, default_bool) {
+		let display_object = this["_" + text];
+		let temp = default_bool;
+		if (this._base[text] !== undefined) {
+			temp = this._base[text];
+		} else {
+			temp = this._default[text];
+		}
+		if (display_object !== undefined) {
+			display_object.selected = temp;
+		} else {
+			ALittle.Warn(text);
+		}
+	},
 	LoadTypeSelectData : function(text, list) {
 		let content = this._base[text];
 		if (content === undefined) {
@@ -1518,7 +1570,7 @@ ALittleIDE.DisplayObjectS = JavaScript.Class(undefined, {
 			display_object.text = "";
 		}
 	},
-	ImagePathSelectCallback : function(text, callback, revoke_bind, path) {
+	ImagePathSelectCallback : function(text, callback, revoke_bind, path, need_reset) {
 		let ui_manager = ALittleIDE.g_IDEProject.GetUIManager(this._tree_logic.user_info.module);
 		if (ui_manager === undefined) {
 			g_AUITool.ShowNotice("错误", "模块不存在:" + this._tree_logic.user_info.module);
@@ -1529,24 +1581,26 @@ ALittleIDE.DisplayObjectS = JavaScript.Class(undefined, {
 		let e = {};
 		e.target = display_object;
 		callback(this, e);
-		let surface = ALittle.System_LoadSurface(ui_manager.texture_path + "/" + path);
-		if (surface === undefined) {
-			return;
-		}
-		let w = ALittle.System_GetSurfaceWidth(surface);
-		let h = ALittle.System_GetSurfaceHeight(surface);
-		ALittle.System_FreeSurface(surface);
-		let new_revoke = false;
-		if (revoke_bind === undefined) {
-			new_revoke = true;
-			revoke_bind = ALittle.NewObject(ALittle.RevokeBind);
-		}
-		this.SetWType(1, revoke_bind);
-		this.SetHType(1, revoke_bind);
-		this.SetWValue(w, revoke_bind);
-		this.SetHValue(h, revoke_bind);
-		if (new_revoke) {
-			this._tab_child.revoke_list.PushRevoke(revoke_bind);
+		if (need_reset) {
+			let surface = carp.LoadCarpSurface(ui_manager.texture_path + "/" + path);
+			if (surface === undefined) {
+				return;
+			}
+			let w = carp.GetCarpSurfaceWidth(surface);
+			let h = carp.GetCarpSurfaceHeight(surface);
+			carp.FreeCarpSurface(surface);
+			let new_revoke = false;
+			if (revoke_bind === undefined) {
+				new_revoke = true;
+				revoke_bind = ALittle.NewObject(ALittle.RevokeBind);
+			}
+			this.SetWType(1, revoke_bind);
+			this.SetHType(1, revoke_bind);
+			this.SetWValue(w, revoke_bind);
+			this.SetHValue(h, revoke_bind);
+			if (new_revoke) {
+				this._tab_child.revoke_list.PushRevoke(revoke_bind);
+			}
 		}
 	},
 	SetTextureName : function(texture_name, revoke_bind) {

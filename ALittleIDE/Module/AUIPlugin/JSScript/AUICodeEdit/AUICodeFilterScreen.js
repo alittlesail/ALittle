@@ -107,7 +107,7 @@ AUIPlugin.AUICodeFilterScreen = JavaScript.Class(undefined, {
 			let offset = (target - 1) * this._item_height + this._screen.container_y;
 			if (offset < 0) {
 				this._screen.right_scrollbar.offset_rate = ((target - 1) * this._item_height) / delta;
-				this._screen.RejustScrollBar();
+				this._screen.AdjustScrollBar();
 			}
 		}
 	},
@@ -130,7 +130,7 @@ AUIPlugin.AUICodeFilterScreen = JavaScript.Class(undefined, {
 			let offset = target * this._item_height + this._screen.container_y;
 			if (offset > this._screen.height) {
 				this._screen.right_scrollbar.offset_rate = (target * this._item_height - this._screen.height) / delta;
-				this._screen.RejustScrollBar();
+				this._screen.AdjustScrollBar();
 			}
 		}
 	},
@@ -176,7 +176,7 @@ AUIPlugin.AUICodeFilterScreen = JavaScript.Class(undefined, {
 			let [x, y] = this._edit.LocalToGlobal();
 			y = y + (this._edit.height);
 			if (this._screen === undefined) {
-				this._screen = AUIPlugin.g_Control.CreateControl("ide_code_scroll_screen");
+				this._screen = AUIPlugin.g_Control.CreateControl("code_scroll_screen");
 				this._screen.width = 200;
 				this._screen.AddEventListener(___all_struct.get(348388800), this, this.HandleHide);
 			}
@@ -206,7 +206,7 @@ AUIPlugin.AUICodeFilterScreen = JavaScript.Class(undefined, {
 					this._item_pool_count = this._item_pool_count - (1);
 				} else {
 					item_info = {};
-					item_info._item = AUIPlugin.g_Control.CreateControl("ide_code_complete_item", item_info);
+					item_info._item = AUIPlugin.g_Control.CreateControl("code_complete_item", item_info);
 				}
 				item_info._item_button.group = this._item_group;
 				item_info._item_title.text = info.display;
@@ -300,15 +300,19 @@ AUIPlugin.AUICodeFilterScreen = JavaScript.Class(undefined, {
 	},
 	ShowTip : function(content) {
 		if (this._tip_dialog === undefined) {
-			this._tip_dialog = AUIPlugin.g_Control.CreateControl("ide_tool_area_tip", this);
+			this._tip_dialog = AUIPlugin.g_Control.CreateControl("code_area_tip", this);
 			this._tip_dialog.width = 200;
 		}
 		A_LayerManager.AddToTip(this._tip_dialog);
 		this._tip_dialog.visible = true;
 		this._tip_text.text = content;
-		this._tip_dialog.height = this._tip_text.real_height + 6;
-		this._tip_dialog.x = this._screen.x;
-		this._tip_dialog.y = this._screen.y + this._screen.height;
+		this._tip_dialog.height = this._tip_text.real_height + 16;
+		this._tip_dialog.x = this._screen.x + this._screen.width;
+		this._tip_dialog.y = this._screen.y;
+		if (this._tip_dialog.x + this._tip_dialog.width > A_UISystem.view_width) {
+			this._tip_dialog.x = this._screen.x;
+			this._tip_dialog.y = this._screen.y + this._screen.height;
+		}
 	},
 	HideTip : function() {
 		if (this._tip_dialog === undefined) {

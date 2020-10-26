@@ -24,6 +24,7 @@ public class BattleScene : ALittle.DisplayLayout
     private BattlePlayer _player;
     private Map<BattleLifeMushroom, bool> _life_mushroom_map;
     private Map<BattleEnemyMushroom, bool> _enemy_mushroom_map;
+    private Map<ALittle.DisplayObject, bool> _flag_map;
 
     private int _coin_value = 0;
     private int _end_time = 0;
@@ -61,6 +62,7 @@ public class BattleScene : ALittle.DisplayLayout
 
         this._life_mushroom_map = new Map<BattleLifeMushroom, bool>();
         this._enemy_mushroom_map = new Map<BattleEnemyMushroom, bool>();
+        this._flag_map = new Map<ALittle.DisplayObject, bool>();
 
         for (var row, submap in this._battle_map.background)
         {
@@ -93,7 +95,7 @@ public class BattleScene : ALittle.DisplayLayout
         this._scroll_screen.container.width = this._tile_linear.width;
         this._scroll_screen.container_x = 0;
         this._scroll_screen.RefreshClipDisLine();
-
+        
         this.visible = true;
 
         A_UISystem.keydown_callback = bind(this.HandleKeyDown, this);
@@ -144,6 +146,13 @@ public class BattleScene : ALittle.DisplayLayout
         if (type == EntityType.ET_HIDE_WALL_1)
         	object.visible = false;
         this._entity_container.AddChild(object);
+
+        if (type == EntityType.ET_FLAG_1 || type == EntityType.ET_FLAG_2
+            || type == EntityType.ET_FLAG_3 || type == EntityType.ET_FLAG_4
+            || type == EntityType.ET_FLAG_5)
+        {
+            this._flag_map[object] = true;
+        }
     }
 
     private fun SetTileShow(int row, int col, int show_row, int show_col)
@@ -197,6 +206,18 @@ public class BattleScene : ALittle.DisplayLayout
 
     private fun HandleFrame(int frame_time)
     {
+        if (this._player.win && this._player.visible && g_GCenter.battle_scene.CheckOutDoor(this._player))
+        {
+            this._player.visible = false;
+            this._player.Idle();
+
+            g_GCenter.login_scene.UpdateTopScore();
+            // 定时跳转
+            var loop = new ALittle.LoopList();
+            loop.AddUpdater(new ALittle.LoopTimer(bind(g_GCenter.battle_scene.NextStage, g_GCenter.battle_scene), 1000));
+            loop.Start();
+        }
+
         var cur_time = ALittle.System_GetCurMSTime();
         var delta_time = ALittle.Math_Floor((this._end_time - cur_time) / 1000);
         if (delta_time <= 0) delta_time = 0;
@@ -220,6 +241,35 @@ public class BattleScene : ALittle.DisplayLayout
         if (this._player.y >= A_UISystem.view_height)
         {
             this._player.Death();
+        }
+
+        // 处理旗杆
+        if (this._player.state != PlayerState.PS_DEATH && this._player.state != PlayerState.PS_FLAG && !this._player.win)
+        {
+            for (var flag, _ in this._flag_map)
+            {
+                if (this.TestCollision(this._player, flag))
+                {
+                    if (this._player.right)
+                    {
+                        if (this._player.x >= flag.x - TILE_WIDTH / 2)
+                        {
+                            this._player.x = flag.x - TILE_WIDTH / 2;
+                            this._player.Flag();
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (this._player.x <= flag.x + flag.width - TILE_WIDTH / 2)
+                        {
+                            this._player.x = flag.x + flag.width - TILE_WIDTH / 2;
+                            this._player.Flag();
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         // 处理敌军蘑菇
@@ -338,8 +388,21 @@ public class BattleScene : ALittle.DisplayLayout
 
     public fun Restart()
     {
+        if (g_GCenter.player_data.life <= 0)
+        {
+            this.Hide();
+            g_GCenter.login_scene.Show();
+            return;
+        }
+
         g_GCenter.player_data.life -= 1;
         g_GCenter.player_data.level = 1;
+        this.Hide();
+        g_GCenter.stage_scene.Show(g_GCenter.player_data.world, g_GCenter.player_data.subworld);
+    }
+
+    public fun NextStage()
+    {
         this.Hide();
         g_GCenter.stage_scene.Show(g_GCenter.player_data.world, g_GCenter.player_data.subworld);
     }
@@ -539,6 +602,33 @@ public class BattleScene : ALittle.DisplayLayout
             }
         }
         return false, null;
+    }
+
+    // 检查出口
+    public fun CheckOutDoor(ALittle.DisplayObject entity) : bool
+    {
+        var col = ALittle.Math_Floor((entity.x + entity.width) / TILE_WIDTH) - 1;
+        var min_row = ALittle.Math_Floor(entity.y / TILE_HEIGHT);
+        var max_row = ALittle.Math_Floor((entity.y + entity.height - 1) / TILE_HEIGHT);
+        for (var row = min_row; row <= max_row; 1)
+        {
+            var sub_map = this._battle_map.background[row];
+            if (sub_map != null)
+            {
+                var index = sub_map[col];
+                if (index != null)
+                {
+                    var show_row = ALittle.Math_Floor(index / TILE_COL_COUNT) + 1;
+                    var show_col = index % TILE_COL_COUNT + 1;
+
+                    var check = show_row == 7 && show_col == 2;  // 检查出口
+
+                    if (check) return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     // 检查右边是否可走

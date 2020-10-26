@@ -59,7 +59,7 @@ ALittleIDE.SliderS = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
 		if (path === undefined) {
 			return;
 		}
-		this.ImagePathSelectCallback("bar_background", this.HandleBarBackFOCUSOUT, undefined, path);
+		this.ImagePathSelectCallback("bar_background", this.HandleBarBackFOCUSOUT, undefined, path, false);
 	},
 }, "ALittleIDE.SliderS");
 

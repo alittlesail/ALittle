@@ -58,7 +58,7 @@ ALittleIDE.IDECodeTreeItem = JavaScript.Class(ALittleIDE.IDECodeTreeLogic, {
 		this._item_button.AddEventListener(___all_struct.get(-641444818), this, this.HandleRButtonDown);
 		this._item_button.AddEventListener(___all_struct.get(-1604617962), this, this.HandleKeyDown);
 		this._item_button._user_data = this;
-		this._item_title.text = this._user_info.name;
+		this._item_button.text = this._user_info.name;
 	},
 	get is_tree() {
 		return false;
@@ -118,6 +118,14 @@ ALittleIDE.IDECodeTreeItem = JavaScript.Class(ALittleIDE.IDECodeTreeLogic, {
 		ALittleIDE.g_IDECenter.center.content_edit.CloseTabByName(ALittleIDE.IDECodeTabChild, this._user_info.name);
 	},
 	HandleCutFile : function() {
+		let old_name = this._user_info.name;
+		let old_path = this._user_info.path;
+		let tab_child = ALittleIDE.g_IDECenter.center.content_edit.GetTabChildById(ALittleIDE.IDECodeTabChild, old_path);
+		if (tab_child !== undefined && tab_child.save !== true) {
+			ALittleIDE.g_IDECenter.center.code_list.SetCutTreeItem(undefined);
+			g_AUITool.ShowNotice("提示", "请先保存再重命名");
+			return;
+		}
 		ALittleIDE.g_IDECenter.center.code_list.SetCutTreeItem(this);
 	},
 	HandleCopyFile : function() {
@@ -138,9 +146,13 @@ ALittleIDE.IDECodeTreeItem = JavaScript.Class(ALittleIDE.IDECodeTreeLogic, {
 			return;
 		}
 		let new_path = ALittle.File_GetFilePathByPath(old_path) + "/" + new_name;
+		if (ALittle.File_GetFileAttr(new_path) !== undefined) {
+			g_AUITool.ShowNotice("提示", "文件名已存在");
+			return;
+		}
 		this._user_info.path = new_path;
 		this._user_info.name = new_name;
-		this._item_title.text = this._user_info.name;
+		this._item_button.text = this._user_info.name;
 		if (this._user_info.project !== undefined && ALittle.File_GetFileExtByPathAndUpper(this._user_info.path) === this._user_info.project.upper_ext) {
 			this._user_info.project.RemoveFile(old_path);
 		}

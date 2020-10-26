@@ -27,7 +27,7 @@ ALittleIDE.Grid9ImageS = JavaScript.Class(ALittleIDE.Grid9S, {
 		if (path === undefined) {
 			return;
 		}
-		this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, undefined, path);
+		this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, undefined, path, true);
 	},
 	HandleFlipSELECT_CHANGE : function(event) {
 		let list = ALittleIDE.g_IDEEnum.flip_rtype;

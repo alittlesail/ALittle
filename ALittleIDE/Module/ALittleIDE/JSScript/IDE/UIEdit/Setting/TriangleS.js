@@ -37,13 +37,13 @@ ALittleIDE.TriangleS = JavaScript.Class(ALittleIDE.DisplayObjectS, {
 		if (path === undefined) {
 			return;
 		}
-		this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, undefined, path);
+		this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, undefined, path, true);
 	},
 	SetTextureName : function(texture_name, revoke_bind) {
 		if (texture_name === undefined) {
 			return;
 		}
-		this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, revoke_bind, texture_name);
+		this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, revoke_bind, texture_name, true);
 	},
 	HandleU1FOCUSOUT : function(event) {
 		this.ValueNumInputChange("u1", true);

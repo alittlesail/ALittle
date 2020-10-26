@@ -58,11 +58,11 @@ ALittleIDE.IDEImageSelectDialog = JavaScript.Class(AUIPlugin.AUIFileSelectDialog
 	HandleImageCopyImageCodeClick : function(event) {
 		let width = 100;
 		let height = 100;
-		let surface = ALittle.System_LoadSurface(this.base_path + "/" + event.path);
+		let surface = carp.LoadCarpSurface(this.base_path + "/" + event.path);
 		if (surface !== undefined) {
-			width = ALittle.System_GetSurfaceWidth(surface);
-			height = ALittle.System_GetSurfaceHeight(surface);
-			ALittle.System_FreeSurface(surface);
+			width = carp.GetCarpSurfaceWidth(surface);
+			height = carp.GetCarpSurfaceHeight(surface);
+			carp.FreeCarpSurface(surface);
 		}
 		let display_info = {};
 		display_info.__class = "Image";

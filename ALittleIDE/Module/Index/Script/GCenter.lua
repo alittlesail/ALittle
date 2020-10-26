@@ -39,7 +39,7 @@ end
 function Index.GCenter:Setup()
 	Index.g_GConfig = ALittle.CreateConfigSystem(Index.g_ModuleBasePath .. "/User.cfg")
 	ALittle.Math_RandomSeed(ALittle.Time_GetCurTime())
-	ALittle.System_SetThreadCount(1, 2)
+	ALittle.System_SetThreadCount(1)
 	self._main_layer = ALittle.DisplayLayout(Index.g_Control)
 	self._main_layer.width_type = 4
 	self._main_layer.height_type = 4
@@ -58,6 +58,16 @@ function Index.GCenter:Setup()
 		data.path = "BattleCity.html"
 		ALittle.List_Push(data_list, data)
 		data = {}
+		data.title = "SuperMarioBros"
+		data.texture_name = "SuperMarioBros.png"
+		data.path = "SuperMarioBros.html"
+		ALittle.List_Push(data_list, data)
+		data = {}
+		data.title = "ALittleIDE"
+		data.texture_name = "ALittleIDE.png"
+		data.path = "ALittleIDE.html"
+		ALittle.List_Push(data_list, data)
+		data = {}
 		data.title = "2048"
 		data.texture_name = "G2048.png"
 		data.path = "G2048.html"
@@ -66,11 +76,6 @@ function Index.GCenter:Setup()
 		data.title = "FlappyBird"
 		data.texture_name = "FlappyBird.png"
 		data.path = "FlappyBird.html"
-		ALittle.List_Push(data_list, data)
-		data = {}
-		data.title = "ALittleIDE"
-		data.texture_name = "ALittleIDE.png"
-		data.path = "ALittleIDE.html"
 		ALittle.List_Push(data_list, data)
 	end
 	self._item_width = 0
@@ -87,7 +92,7 @@ function Index.GCenter:Setup()
 	if self._item_width > 0 and self._item_tiletable ~= nil then
 		self._item_tiletable.col_count = ALittle.Math_Floor(self._item_container.width / self._item_width)
 	end
-	self._item_container:RejustScrollBar()
+	self._item_container:AdjustScrollBar()
 	A_UISystem.view_resize_callback = Lua.Bind(self.HandleViewResized, self)
 end
 
@@ -95,7 +100,7 @@ function Index.GCenter:HandleViewResized(width, height)
 	if self._item_width > 0 and self._item_tiletable ~= nil then
 		self._item_tiletable.col_count = ALittle.Math_Floor(self._item_container.width / self._item_width)
 	end
-	self._item_container:RejustScrollBar()
+	self._item_container:AdjustScrollBar()
 end
 
 function Index.GCenter:HandleImageClick(event)

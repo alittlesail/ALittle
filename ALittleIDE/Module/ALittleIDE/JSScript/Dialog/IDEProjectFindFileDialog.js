@@ -63,7 +63,7 @@ ALittleIDE.IDEProjectFindFileDialog = JavaScript.Class(undefined, {
 		for (let index = 1; index <= ___OBJECT_1.length; ++index) {
 			let file_path = ___OBJECT_1[index - 1];
 			if (file_path === undefined) break;
-			let item = ALittleIDE.g_Control.CreateControl("ide_common_item_checkbutton");
+			let item = ALittleIDE.g_Control.CreateControl("scroll_screen_item_checkbutton");
 			item.AddEventListener(___all_struct.get(-449066808), this, this.HandleItemClick);
 			item.text = file_path;
 			item._user_data = file_path;

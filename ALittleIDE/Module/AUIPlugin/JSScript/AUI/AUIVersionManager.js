@@ -19,7 +19,7 @@ AUIPlugin.AUIVersionManager = JavaScript.Class(undefined, {
 	},
 	CreateDialog : function() {
 		if (this._dialog === undefined) {
-			this._dialog = AUIPlugin.g_Control.CreateControl("ide_version_dialog", this);
+			this._dialog = AUIPlugin.g_Control.CreateControl("aui_version_dialog", this);
 			A_LayerManager.AddToModal(this._dialog);
 			this._notice_content.text = "";
 			this._notice_content.visible = true;
@@ -95,9 +95,12 @@ AUIPlugin.AUIVersionManager = JavaScript.Class(undefined, {
 		let result = await this._version_system.UpdateVersion(this._version_ip, this._version_port, this.HandleUpdateVersion.bind(this), check);
 		if (result === 2 || result === 3) {
 			let text = "有最新版本，您是否更新?";
-			let [new_big_version, new_small_version, new_log_list] = this._version_system.GetNewVersion(5);
-			if (new_log_list !== undefined) {
-				text = text + "\n" + ALittle.String_Join(new_log_list, "\n");
+			let log_list = undefined;
+			if (this._version_system.update_info !== undefined) {
+				log_list = this._version_system.update_info.log_list;
+			}
+			if (log_list !== undefined) {
+				text = text + "\n" + ALittle.String_Join(log_list, "\n");
 			}
 			this._notice_edit.text = text;
 			this._notice_content.visible = false;

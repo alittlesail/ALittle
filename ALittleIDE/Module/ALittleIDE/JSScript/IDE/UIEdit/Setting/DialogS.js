@@ -10,6 +10,10 @@ ALittleIDE.DialogS = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
 	LoadNatureBase : function() {
 		ALittleIDE.DisplayLayoutS.LoadNatureBase.call(this);
 		this.LoadValueData("head_size");
+		this.LoadValueData("head_top_margin");
+		this.LoadValueData("head_bottom_margin");
+		this.LoadValueData("head_left_margin");
+		this.LoadValueData("head_right_margin");
 		this.LoadDefaultNilString("title");
 		this.LoadShowTypeDataForImage("show_background");
 		this.LoadShowTypeDataForImage("show_head_drag");
@@ -18,6 +22,18 @@ ALittleIDE.DialogS = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
 	},
 	HandleHeadSizeFOCUSOUT : function(event) {
 		this.ValueNumInputChange("head_size", false);
+	},
+	HandleHeadTopMarginFOCUSOUT : function(event) {
+		this.ValueNumInputChange("head_top_margin", false);
+	},
+	HandleHeadBottomMarginFOCUSOUT : function(event) {
+		this.ValueNumInputChange("head_bottom_margin", false);
+	},
+	HandleHeadLeftMarginFOCUSOUT : function(event) {
+		this.ValueNumInputChange("head_left_margin", false);
+	},
+	HandleHeadRightMarginFOCUSOUT : function(event) {
+		this.ValueNumInputChange("head_right_margin", false);
 	},
 	HandleTitleFOCUSOUT : function(event) {
 		this.DefaultNoStringInputChange("title", false);
@@ -42,7 +58,7 @@ ALittleIDE.DialogS = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
 		if (path === undefined) {
 			return;
 		}
-		this.ImagePathSelectCallback("show_background", this.HandleShowBackgroundFOCUSOUT, undefined, path);
+		this.ImagePathSelectCallback("show_background", this.HandleShowBackgroundFOCUSOUT, undefined, path, false);
 	},
 	HandleShowHeadDragFOCUSOUT : function(event) {
 		if (event.target._user_data !== undefined) {
@@ -64,7 +80,7 @@ ALittleIDE.DialogS = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
 		if (path === undefined) {
 			return;
 		}
-		this.ImagePathSelectCallback("show_head_drag", this.HandleShowHeadDragFOCUSOUT, undefined, path);
+		this.ImagePathSelectCallback("show_head_drag", this.HandleShowHeadDragFOCUSOUT, undefined, path, false);
 	},
 	HandleShowCloseButtonFOCUSOUT : function(event) {
 		if (event.target._user_data !== undefined) {

@@ -58,7 +58,7 @@ ALittleIDE.TabS = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
 		if (path === undefined) {
 			return;
 		}
-		this.ImagePathSelectCallback("show_head_background", this.HandleShowHeadBFOCUSOUT, undefined, path);
+		this.ImagePathSelectCallback("show_head_background", this.HandleShowHeadBFOCUSOUT, undefined, path, false);
 	},
 	HandleBGapFOCUSOUT : function(event) {
 		this.ValueNumInputChange("button_gap", false);

@@ -19,6 +19,7 @@ AUIPlugin.g_UpperExtMapABnf = {};
 AUIPlugin.g_UpperExtMapABnf["JSON"] = "AJson.abnf";
 AUIPlugin.g_UpperExtMapABnf["CFG"] = "AJson.abnf";
 AUIPlugin.g_UpperExtMapABnf["XML"] = "AXml.abnf";
+AUIPlugin.g_UpperExtMapABnf["LUA"] = "ALua.abnf";
 if (ALittle.EventDispatcher === undefined) throw new Error(" extends class:ALittle.EventDispatcher is undefined");
 AUIPlugin.AUICodeProject = JavaScript.Class(ALittle.EventDispatcher, {
 	Ctor : function(project) {

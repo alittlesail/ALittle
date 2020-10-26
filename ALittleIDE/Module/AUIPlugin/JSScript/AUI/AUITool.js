@@ -41,7 +41,7 @@ AUIPlugin.AUITool = JavaScript.Class(undefined, {
 	},
 	ShowAlertDialog : function(title, content) {
 		if (this._alert_dialog === undefined) {
-			this._alert_dialog = AUIPlugin.g_Control.CreateControl("ide_alert_dialog", this);
+			this._alert_dialog = AUIPlugin.g_Control.CreateControl("aui_alert_dialog", this);
 			A_LayerManager.AddToModal(this._alert_dialog);
 		}
 		this._alert_dialog.visible = true;
@@ -54,7 +54,7 @@ AUIPlugin.AUITool = JavaScript.Class(undefined, {
 	},
 	ShowNotice : function(title, content) {
 		if (this._notice_dialog === undefined) {
-			this._notice_dialog = AUIPlugin.g_Control.CreateControl("ide_notice_dialog", this);
+			this._notice_dialog = AUIPlugin.g_Control.CreateControl("aui_notice_dialog", this);
 			A_LayerManager.AddToModal(this._notice_dialog);
 			this._notice_min_size = this._notice_content.height;
 		}
@@ -75,7 +75,7 @@ AUIPlugin.AUITool = JavaScript.Class(undefined, {
 	SaveNotice : function(title, content) {
 		return new Promise((function(___COROUTINE, ___) {
 			if (this._save_dialog === undefined) {
-				this._save_dialog = AUIPlugin.g_Control.CreateControl("ide_save_dialog", this);
+				this._save_dialog = AUIPlugin.g_Control.CreateControl("aui_save_dialog", this);
 				A_LayerManager.AddToModal(this._save_dialog);
 			}
 			this._save_dialog.visible = true;
@@ -116,7 +116,7 @@ AUIPlugin.AUITool = JavaScript.Class(undefined, {
 	DeleteNotice : function(title, content) {
 		return new Promise((function(___COROUTINE, ___) {
 			if (this._delete_dialog === undefined) {
-				this._delete_dialog = AUIPlugin.g_Control.CreateControl("ide_delete_dialog", this);
+				this._delete_dialog = AUIPlugin.g_Control.CreateControl("aui_delete_dialog", this);
 				A_LayerManager.AddToModal(this._delete_dialog);
 				this._delete_delta_height = this._delete_dialog.height - this._delete_content.height;
 			}
@@ -150,7 +150,7 @@ AUIPlugin.AUITool = JavaScript.Class(undefined, {
 	ShowRename : function(text, x, y, width) {
 		return new Promise((function(___COROUTINE, ___) {
 			if (this._rename_input === undefined) {
-				this._rename_input = AUIPlugin.g_Control.CreateControl("ide_rename_image_input", this);
+				this._rename_input = AUIPlugin.g_Control.CreateControl("aui_rename_image_input", this);
 				A_LayerManager.AddToModal(this._rename_input);
 			}
 			this._rename_input.visible = true;
@@ -191,7 +191,7 @@ AUIPlugin.AUITool = JavaScript.Class(undefined, {
 	ShowSelectDir : function(title, dir) {
 		return new Promise((function(___COROUTINE, ___) {
 			if (this._selectdir_dialog === undefined) {
-				this._selectdir_dialog = AUIPlugin.g_Control.CreateControl("ide_common_selectdir_dialog", this);
+				this._selectdir_dialog = AUIPlugin.g_Control.CreateControl("aui_selectdir_dialog", this);
 				A_LayerManager.AddToModal(this._selectdir_dialog);
 			}
 			this._selectdir_dialog.visible = true;
@@ -229,7 +229,7 @@ AUIPlugin.AUITool = JavaScript.Class(undefined, {
 	},
 	ShowTipHelp : function(content, show_time) {
 		if (this._tip_help_dialog === undefined) {
-			this._tip_help_dialog = AUIPlugin.g_Control.CreateControl("ide_tip_help", this);
+			this._tip_help_dialog = AUIPlugin.g_Control.CreateControl("aui_tip_help", this);
 			A_LayerManager.AddToTip(this._tip_help_dialog);
 		}
 		if (this._tip_help_loop !== undefined) {
@@ -268,7 +268,7 @@ AUIPlugin.AUITool = JavaScript.Class(undefined, {
 	},
 	ShowTip : function(content) {
 		if (this._tip_dialog === undefined) {
-			this._tip_dialog = AUIPlugin.g_Control.CreateControl("ide_tool_tip", this);
+			this._tip_dialog = AUIPlugin.g_Control.CreateControl("aui_tool_tip", this);
 			A_LayerManager.AddToTip(this._tip_dialog);
 		}
 		this._tip_dialog.visible = true;

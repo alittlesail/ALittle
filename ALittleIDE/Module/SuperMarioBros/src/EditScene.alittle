@@ -83,6 +83,8 @@ public class EditScene : ALittle.DisplayLayout
         this.AddEntity("flag_5", EntityType.ET_FLAG_5, this._entity_flag_5);
 
         this.AddEntity("born_1", EntityType.ET_BORN_1, this._entity_born_1);
+
+        this._select_frame._user_data = this._entity_info_map[EntityType.ET_RANDOM_WALL_1];
     }
 
     private fun AddEntity(string ui, int type, ALittle.DisplayObject object)

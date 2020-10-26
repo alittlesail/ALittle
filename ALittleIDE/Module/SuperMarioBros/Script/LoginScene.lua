@@ -16,6 +16,7 @@ end
 function SuperMarioBros.LoginScene:Show()
 	self.visible = true
 	A_UISystem.keydown_callback = Lua.Bind(self.HandleKeyDown, self)
+	g_GCenter.player_data.life = 3
 	self._top_score.text = SuperMarioBros.g_GConfig:GetInt("top_score", 0)
 	self._score.text = g_GCenter.player_data.score
 	self._coin.text = 0
@@ -43,6 +44,15 @@ function SuperMarioBros.LoginScene:HandleKeyDown(mod, sym, scancode)
 			self:Hide()
 			g_GCenter.stage_scene:Show(1, 1)
 		end
+	end
+end
+
+function SuperMarioBros.LoginScene:UpdateTopScore()
+	local top_score = SuperMarioBros.g_GConfig:GetInt("top_score", 0)
+	if top_score < g_GCenter.player_data.score then
+		top_score = g_GCenter.player_data.score
+		SuperMarioBros.g_GConfig:SetConfig("top_score", top_score)
+		self._score.text = g_GCenter.player_data.score
 	end
 end
 

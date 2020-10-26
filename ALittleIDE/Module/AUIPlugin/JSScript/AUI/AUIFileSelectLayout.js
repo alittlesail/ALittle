@@ -134,7 +134,7 @@ AUIPlugin.AUIFileSelectLayout = JavaScript.Class(ALittle.DisplayLayout, {
 			}
 		}
 		let info = {};
-		let item = AUIPlugin.g_Control.CreateControl("ide_file_select_item", info);
+		let item = AUIPlugin.g_Control.CreateControl("file_select_item", info);
 		info.name.text = file_name;
 		info.dir.visible = false;
 		info.file.visible = false;
@@ -142,11 +142,11 @@ AUIPlugin.AUIFileSelectLayout = JavaScript.Class(ALittle.DisplayLayout, {
 		if (ext === "PNG" || ext === "JPG" || ext === "BMP") {
 			let width = undefined;
 			let height = undefined;
-			let surface = ALittle.System_LoadSurface(abs_path);
+			let surface = carp.LoadCarpSurface(abs_path);
 			if (surface !== undefined) {
-				width = ALittle.System_GetSurfaceWidth(surface);
-				height = ALittle.System_GetSurfaceHeight(surface);
-				ALittle.System_FreeSurface(surface);
+				width = carp.GetCarpSurfaceWidth(surface);
+				height = carp.GetCarpSurfaceHeight(surface);
+				carp.FreeCarpSurface(surface);
 			}
 			if (width === undefined) {
 				width = info.frame.width;
@@ -186,7 +186,7 @@ AUIPlugin.AUIFileSelectLayout = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	CreateDirItem : function(file_name, rel_path, abs_path) {
 		let info = {};
-		let item = AUIPlugin.g_Control.CreateControl("ide_file_select_item", info);
+		let item = AUIPlugin.g_Control.CreateControl("file_select_item", info);
 		info.name.text = file_name;
 		info.image.visible = false;
 		info.file.visible = false;
@@ -205,7 +205,7 @@ AUIPlugin.AUIFileSelectLayout = JavaScript.Class(ALittle.DisplayLayout, {
 	BrowserCollect : function(browser_path) {
 		let item_list_dir = [];
 		let item_list_img = [];
-		let file_map = ALittle.File_GetFileNameListByDir(browser_path);
+		let file_map = ALittle.File_GetNameListByDir(browser_path);
 		let ___OBJECT_2 = file_map;
 		for (let file in ___OBJECT_2) {
 			let info = ___OBJECT_2[file];
@@ -213,7 +213,7 @@ AUIPlugin.AUIFileSelectLayout = JavaScript.Class(ALittle.DisplayLayout, {
 			let path = browser_path + "/" + file;
 			let rel_path = ALittle.String_Sub(path, ALittle.String_Len(this._base_path) + 2);
 			let attr = ALittle.File_GetFileAttr(path);
-			if (attr.mode === "directory") {
+			if (attr.directory) {
 				let item = this.CreateDirItem(file, rel_path, path);
 				if (item !== undefined) {
 					ALittle.List_Push(item_list_dir, item);
@@ -239,7 +239,7 @@ AUIPlugin.AUIFileSelectLayout = JavaScript.Class(ALittle.DisplayLayout, {
 		if (name === "" || name === undefined) {
 			return [item_list, run_time];
 		}
-		let file_map = ALittle.File_GetFileNameListByDir(search_path);
+		let file_map = ALittle.File_GetNameListByDir(search_path);
 		let ___OBJECT_3 = file_map;
 		for (let file in ___OBJECT_3) {
 			let info = ___OBJECT_3[file];
@@ -247,7 +247,7 @@ AUIPlugin.AUIFileSelectLayout = JavaScript.Class(ALittle.DisplayLayout, {
 			let path = search_path + "/" + file;
 			let rel_path = ALittle.String_Sub(path, ALittle.String_Len(this._base_path) + 2);
 			let attr = ALittle.File_GetFileAttr(path);
-			if (attr.mode === "directory") {
+			if (attr.directory) {
 				this.SearchCollect(path, name, item_list, run_time);
 			} else if (ALittle.String_Find(file, name) !== undefined) {
 				let item = this.CreateFileItem(file, rel_path, path);
@@ -317,7 +317,7 @@ AUIPlugin.AUIFileSelectLayout = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	SetPath : function(base_path, rel_path) {
 		let attr = ALittle.File_GetFileAttr(base_path + "/" + rel_path);
-		if (attr === undefined || attr.mode !== "directory") {
+		if (attr === undefined || attr.directory !== true) {
 			g_AUITool.ShowNotice("错误", "无效路径");
 			return false;
 		}
@@ -363,12 +363,12 @@ AUIPlugin.AUIFileSelectLayout = JavaScript.Class(ALittle.DisplayLayout, {
 			real_path = this._base_path + "/" + user_data.path;
 		}
 		let name = ALittle.File_GetFileNameByPath(event.path);
-		let ansi_path = event.path;
-		let attr = ALittle.File_GetFileAttr(ansi_path);
+		let path = event.path;
+		let attr = ALittle.File_GetFileAttr(path);
 		if (attr === undefined) {
 			return;
 		}
-		if (attr.mode === "directory") {
+		if (attr.directory) {
 			let [check, error] = this.CheckResourceName(name);
 			if (!check) {
 				g_AUITool.ShowNotice("提示", error);
@@ -376,13 +376,13 @@ AUIPlugin.AUIFileSelectLayout = JavaScript.Class(ALittle.DisplayLayout, {
 			}
 			ALittle.File_MakeDir(real_path + "/" + name);
 			if (this._ext_map === undefined) {
-				ALittle.File_CopyDeepDir(ansi_path, real_path + "/" + name);
+				ALittle.File_CopyDeepDir(path, real_path + "/" + name);
 			} else {
 				let ___OBJECT_7 = this._ext_map;
 				for (let ext in ___OBJECT_7) {
 					let _ = ___OBJECT_7[ext];
 					if (_ === undefined) continue;
-					ALittle.File_CopyDeepDir(ansi_path, real_path + "/" + name, ext);
+					ALittle.File_CopyDeepDir(path, real_path + "/" + name, ext);
 				}
 			}
 		} else {
@@ -411,8 +411,8 @@ AUIPlugin.AUIFileSelectLayout = JavaScript.Class(ALittle.DisplayLayout, {
 			g_AUITool.ShowNotice("错误", error);
 			return;
 		}
-		let result = ALittle.File_MakeDir(this._real_path + "/" + name);
-		if (!result) {
+		ALittle.File_MakeDir(this._real_path + "/" + name);
+		if (ALittle.File_GetFileAttr(this._real_path + "/" + name) === undefined) {
 			g_AUITool.ShowNotice("错误", "文件夹创建失败");
 			return;
 		}
@@ -435,7 +435,7 @@ AUIPlugin.AUIFileSelectLayout = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	HandleItemMoveIn : function(event) {
 		if (this._image_pre_dialog === undefined) {
-			this._image_pre_dialog = AUIPlugin.g_Control.CreateControl("ide_image_pre_dialog", this);
+			this._image_pre_dialog = AUIPlugin.g_Control.CreateControl("file_select_image_pre_dialog", this);
 		}
 		A_LayerManager.AddToTip(this._image_pre_dialog);
 		let user_data = event.target._user_data;
@@ -453,8 +453,8 @@ AUIPlugin.AUIFileSelectLayout = JavaScript.Class(ALittle.DisplayLayout, {
 			width = A_UISystem.view_width;
 			image.width = width;
 		}
-		this._image_pre_dialog.width = width;
-		image.x = (width - image.width) / 2;
+		this._image_pre_dialog.width = width + 10;
+		image.x = (this._image_pre_dialog.width - image.width) / 2;
 		let height = image.texture_height;
 		image.height = height;
 		if (height < 50) {
@@ -464,8 +464,8 @@ AUIPlugin.AUIFileSelectLayout = JavaScript.Class(ALittle.DisplayLayout, {
 			height = A_UISystem.view_height - this._image_pre_dialog.head_size;
 			image.height = height;
 		}
-		image.y = (height - image.height) / 2;
-		this._image_pre_dialog.height = this._image_pre_dialog.head_size + height;
+		image.y = (height + 5 - image.height) / 2;
+		this._image_pre_dialog.height = this._image_pre_dialog.head_size + height + 10;
 	},
 	HandleItemMoveOut : function(event) {
 		A_LayerManager.RemoveFromTip(this._image_pre_dialog);

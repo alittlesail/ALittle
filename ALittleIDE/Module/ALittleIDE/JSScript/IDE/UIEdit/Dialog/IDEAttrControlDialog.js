@@ -9,14 +9,15 @@ ALittleIDE.IDEAttrControlDialog = JavaScript.Class(undefined, {
 		this._dialog.visible = false;
 		this._dialog.close_callback = this.HandleClose.bind(this);
 	},
-	get dialog() {
-		if (this._dialog === undefined) {
+	get attr_container() {
+		if (this._attr_container === undefined) {
 			this.CreateDialog();
 		}
-		return this._dialog;
+		return this._attr_container;
 	},
 	HandleClose : function() {
 		ALittleIDE.g_IDEAttrEventDialog.HideDialog();
+		return true;
 	},
 	SetTitle : function(title) {
 		if (this._dialog === undefined) {

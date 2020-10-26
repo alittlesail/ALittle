@@ -156,7 +156,7 @@ ALittleIDE.IDEVersionList = JavaScript.Class(ALittle.DisplayLayout, {
 			let v = ___OBJECT_2[k - 1];
 			if (v === undefined) break;
 			let control_line = {};
-			let item = this._ctrl_sys.CreateControl("ide_common_tree_item", control_line, this._close_list);
+			let item = this._ctrl_sys.CreateControl("tree_item", control_line, this._close_list);
 			control_line._item_button.group = group;
 			let user_data = {};
 			control_line._item_button._user_data = user_data;

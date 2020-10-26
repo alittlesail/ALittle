@@ -83,7 +83,7 @@ AUIPlugin.AUICodeParamList = JavaScript.Class(undefined, {
 			}
 			let [x, y] = this._edit.CalcPosition(this._param_info.line_start, this._param_info.char_start, true);
 			if (this._dialog === undefined) {
-				this._dialog = AUIPlugin.g_Control.CreateControl("ide_tool_paramlist_tip", this);
+				this._dialog = AUIPlugin.g_Control.CreateControl("code_paramlist_tip", this);
 				this._dialog.width = 200;
 				this._dialog.height = AUIPlugin.CODE_LINE_HEIGHT + this._text_container.height_value;
 			}

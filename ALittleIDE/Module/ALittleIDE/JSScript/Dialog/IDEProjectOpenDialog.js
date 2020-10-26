@@ -11,12 +11,12 @@ ALittleIDE.IDEProjectOpenDialog = JavaScript.Class(undefined, {
 		this._project_open_name.text = "";
 		this._project_open_dialog.visible = true;
 		let module_list = [];
-		let file_map = ALittle.File_GetFileNameListByDir(ALittleIDE.g_ModuleBasePath + "..");
+		let file_map = ALittle.File_GetNameListByDir(ALittleIDE.g_ModuleBasePath + "..");
 		let ___OBJECT_1 = file_map;
 		for (let name in ___OBJECT_1) {
 			let info = ___OBJECT_1[name];
 			if (info === undefined) continue;
-			if (info.mode === "directory") {
+			if (info.directory) {
 				ALittle.List_Push(module_list, name);
 			}
 		}

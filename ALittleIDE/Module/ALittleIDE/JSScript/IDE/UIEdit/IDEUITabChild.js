@@ -135,7 +135,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 		this._tab_screen.container.scale_y = 1;
 		this._tab_container.width = ALittleIDE.g_IDEProject.project.config.GetConfig("default_show_width", 800);
 		this._tab_container.height = ALittleIDE.g_IDEProject.project.config.GetConfig("default_show_height", 600);
-		this._tab_screen.RejustScrollBar();
+		this._tab_screen.AdjustScrollBar();
 		this._tab_select_container.visible = ALittleIDE.g_IDECenter.center.singleselect;
 		this._tab_handle_quad.AddEventListener(___all_struct.get(1883782801), this, this.HandleHandleContainerLButtonDown);
 		this._tab_handle_quad.AddEventListener(___all_struct.get(40651933), this, this.HandleHandleContainerLButtonUp);
@@ -181,7 +181,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 	},
 	OnClose : function() {
 		ALittleIDE.g_IDECenter.center.control_tree.RemoveChild(this._tree_screen);
-		ALittleIDE.g_IDEAttrControlDialog.dialog.RemoveChild(this._attr_screen);
+		ALittleIDE.g_IDEAttrControlDialog.attr_container.RemoveChild(this._attr_screen);
 		ALittleIDE.g_IDECenter.center.control_anti.RemoveChild(this._anti_panel);
 		ALittleIDE.g_IDEProject.RemoveEventListener(___all_struct.get(1787992834), this, this.HandleProjectSettingChanged);
 		ALittleIDE.g_IDECenter.center.RemoveEventListener(___all_struct.get(1408180774), this, this.HandleEditScaleChanged);
@@ -191,7 +191,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 	},
 	OnOpen : function() {
 		ALittleIDE.g_IDECenter.center.control_tree.AddChild(this._tree_screen);
-		ALittleIDE.g_IDEAttrControlDialog.dialog.AddChild(this._attr_screen);
+		ALittleIDE.g_IDEAttrControlDialog.attr_container.AddChild(this._attr_screen);
 		ALittleIDE.g_IDECenter.center.control_anti.AddChild(this._anti_panel);
 		this.ShowInCenter();
 	},
@@ -211,7 +211,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 				let center_y = y + object.height / 2;
 				this._tab_screen.right_scrollbar.offset_rate = (center_y - view_y) / real_height;
 			}
-			this._tab_screen.RejustScrollBar();
+			this._tab_screen.AdjustScrollBar();
 		}
 	},
 	OnTabRightMenu : function(menu) {
@@ -235,14 +235,14 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 	HandleProjectSettingChanged : function(event) {
 		this._tab_container.width = event.default_show_width;
 		this._tab_container.height = event.default_show_height;
-		this._tab_screen.RejustScrollBar();
+		this._tab_screen.AdjustScrollBar();
 		for (let [target, handle_info] of this._tab_quad_map) {
 			if (handle_info === undefined) continue;
 			this.UpdateHandleQuadLayout(target);
 		}
 	},
 	HandleTreeSizeChanged : function(event) {
-		this._tree_screen.RejustScrollBar();
+		this._tree_screen.AdjustScrollBar();
 	},
 	HandleSavePng : function(event) {
 		ALittleIDE.g_Control.SaveControlToFile(this._tree_object.user_info.object, event.path);
@@ -638,7 +638,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 			let child = ___OBJECT_2[index - 1];
 			if (child === undefined) break;
 			let control_line = {};
-			let handle_quad = ALittleIDE.g_Control.CreateControl("ide_common_handle_quad", control_line);
+			let handle_quad = ALittleIDE.g_Control.CreateControl("aui_handle_quad", control_line);
 			control_line.quad.AddEventListener(___all_struct.get(40651933), this, this.HandleHandleQuadLButtonUp);
 			control_line.quad.AddEventListener(___all_struct.get(1883782801), this, this.HandleHandleQuadLButtonDown);
 			control_line.quad.AddEventListener(___all_struct.get(1301789264), this, this.HandleHandleQuadDragBegin);
@@ -907,13 +907,13 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 		}
 		this._tab_screen.container.scale_x = scale;
 		this._tab_screen.container.scale_y = scale;
-		this._tab_screen.RejustScrollBar();
+		this._tab_screen.AdjustScrollBar();
 		ALittleIDE.g_IDECenter.center.UpdateToolScale(scale);
 	},
 	HandleEditScaleChanged : function(event) {
 		this._tab_screen.container.scale_x = event.scale;
 		this._tab_screen.container.scale_y = event.scale;
-		this._tab_screen.RejustScrollBar();
+		this._tab_screen.AdjustScrollBar();
 	},
 	GetScale : function() {
 		return this._tab_screen.container.scale_x;
@@ -1359,6 +1359,9 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 	},
 	Jump : function(target) {
 		let extends_module = target.user_info.base.__module;
+		if (extends_module === undefined) {
+			extends_module = target.user_info.module;
+		}
 		let extends_name = target.user_info.base.__extends;
 		let ui_manager = ALittleIDE.g_IDEProject.GetUIManager(extends_module);
 		if (ui_manager === undefined) {
@@ -1415,7 +1418,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 	TextEdit : function(target) {
 		let object = target.user_info.object;
 		if (this._control_tabchild_textinput === undefined) {
-			this._control_tabchild_textinput = ALittleIDE.g_Control.CreateControl("ide_rename_image_input", this);
+			this._control_tabchild_textinput = ALittleIDE.g_Control.CreateControl("aui_rename_image_input", this);
 			this._control_tabchild_textinput.width = 200;
 			A_LayerManager.AddToModal(this._control_tabchild_textinput);
 		}
@@ -1460,7 +1463,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 			}
 		}
 		this._tree_object.fold = true;
-		this._tree_screen.RejustScrollBar();
+		this._tree_screen.AdjustScrollBar();
 		let [x, y] = target.LocalToGlobal(this._tree_screen.container);
 		let target_x = (this._tree_screen.view_width - target.width / 2) / 2 - x;
 		let target_y = (this._tree_screen.view_height - target.height) / 2 - y;

@@ -27,7 +27,7 @@ ALittleIDE.PiechartS = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
 		if (path === undefined) {
 			return;
 		}
-		this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, undefined, path);
+		this.ImagePathSelectCallback("texture_name", this.HandleImageTextureNameFOCUSOUT, undefined, path, true);
 	},
 	HandleImageStartDegreeFOCUSOUT : function(event) {
 		this.ValueNumZInputChange("start_degree", false);

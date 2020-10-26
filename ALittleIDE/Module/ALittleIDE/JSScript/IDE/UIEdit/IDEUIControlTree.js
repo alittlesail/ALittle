@@ -113,14 +113,6 @@ ALittleIDE.IDEUIControlTree = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		this._control_add_dialog._user_data = target;
 		this._control_add_type.data_list = data_list;
-		data_list = [];
-		let ___OBJECT_1 = ALittleIDE.g_IDEProject.project.ui;
-		for (let module_name in ___OBJECT_1) {
-			let ui = ___OBJECT_1[module_name];
-			if (ui === undefined) continue;
-			ALittle.List_Push(data_list, module_name);
-		}
-		this._control_add_module.data_list = data_list;
 		this._control_add_dialog.visible = true;
 	},
 	HandleAddControlCancel : function(event) {
@@ -133,7 +125,6 @@ ALittleIDE.IDEUIControlTree = JavaScript.Class(ALittle.DisplayLayout, {
 		this._control_add_dialog.visible = false;
 		let child_type = this._control_add_type.text;
 		let class_name = this._control_add_new_type.text;
-		let extends_module = this._control_add_module.text;
 		let tree_object = target.TreeAdd(undefined, "", class_name, child_type);
 		if (tree_object !== undefined) {
 			tree_object.ShowFocus(false);
@@ -189,6 +180,9 @@ ALittleIDE.IDEUIControlTree = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	ControlTreeJump : function(target) {
 		let extends_module = target.user_info.base.__module;
+		if (extends_module === undefined) {
+			extends_module = target.user_info.module;
+		}
 		let extends_name = target.user_info.base.__extends;
 		let ui_manager = ALittleIDE.g_IDEProject.GetUIManager(extends_module);
 		if (ui_manager === undefined) {

@@ -9,6 +9,7 @@ public enum PlayerState
     PS_FALL = 3;
     PS_SQUAT = 4;
     PS_DEATH = 5;
+    PS_FLAG = 6;	// 挂在旗杆上
 }
 
 public class BattlePlayer : ALittle.DisplayLayout
@@ -28,6 +29,7 @@ public class BattlePlayer : ALittle.DisplayLayout
     private double _vy = 0;	// y轴速度
     private double _ax = 0;	// x轴加速度
     private double _ay = 0;	// y轴加速度
+    private bool _win = false;
 
     // 行走变帧参数
     private double _walk_frame_change = 0.0;
@@ -51,8 +53,10 @@ public class BattlePlayer : ALittle.DisplayLayout
         this._level_2_sprite_left.visible = false;
         this._level_3_sprite_right.visible = false;
         this._level_3_sprite_left.visible = false;
+        this.visible = true;
 
         this._state = PlayerState.PS_IDLE;
+        this._win = false;
         this._right = true;
         this._vx = 0;
         this._vy = 0;
@@ -100,6 +104,22 @@ public class BattlePlayer : ALittle.DisplayLayout
         this._vy = -3;
     }
 
+    public fun Flag()
+    {
+        if (this._state == PlayerState.PS_DEATH) return;
+        if (this._state == PlayerState.PS_FLAG) return;
+
+        this._state = PlayerState.PS_FLAG;
+        this._vx = 0;
+        this._vy = 3;
+        this._ax = 0;
+        this._ay = 0;
+        this.UpdateFlag();
+    }
+
+    public get win() : bool { return this._win; }
+    public set win(bool value) { this._win = value; }
+
     public fun Death()
     {
         if (this._state == PlayerState.PS_DEATH) return;
@@ -126,6 +146,17 @@ public class BattlePlayer : ALittle.DisplayLayout
     }
 
     public get state() : int { return this._state; }
+    public get right() : bool { return this._right; }
+
+    public fun Idle()
+    {
+        this._state = PlayerState.PS_IDLE;
+        this._vx = 0;
+        this._vy = 0;
+        this._ax = 0;
+        this._ay = 0;
+        this.UpdateIdle();
+    }
 
     public fun UpdateFrame(int frame_time)
     {
@@ -134,7 +165,7 @@ public class BattlePlayer : ALittle.DisplayLayout
         // 更新x轴方向
         this._vx += this._ax * frame_time;
 
-        var walk_speedup = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_J] != null;
+        var walk_speedup = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_J] != null && this._state == PlayerState.PS_WALK;
         if (walk_speedup)
         {
             if (this._vx > PLAYER_MAX_WALK_SPEED_2) this._vx = PLAYER_MAX_WALK_SPEED_2;
@@ -152,6 +183,14 @@ public class BattlePlayer : ALittle.DisplayLayout
         var walk_right = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_D] != null;
         var squat_down = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_S] != null;
         var jump = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_K] != null;
+
+        if (this._win)
+        {
+            walk_left = false;
+            walk_right = true;
+            squat_down = false;
+            jump = false;
+        }
 
         if (this._state == PlayerState.PS_IDLE)
         {
@@ -313,15 +352,6 @@ public class BattlePlayer : ALittle.DisplayLayout
         }
         elseif (this._state == PlayerState.PS_FALL)
         {
-            if (this._vx != 0)
-            {
-                if (this._vx != 0)
-                {
-                    this._ax = 0;
-                    if (this._vx < 0.001) this._vx = 0;
-                }
-            }
-
             this.y += this._vy;
 
             var check_down, down_y = g_GCenter.battle_scene.CheckDown(this);
@@ -413,7 +443,22 @@ public class BattlePlayer : ALittle.DisplayLayout
             {
                 this._state = PlayerState.PS_FALL;
                 this._vy = 0;
+                this._vx /= 2;
                 this._ay = PLAYER_INIT_Y_SPEED_RATE;
+            }
+        }
+
+        if (this._state == PlayerState.PS_FLAG)
+        {
+            // 如果没有踩在地板上，那么就改为掉落状态
+            var check_down, down_y = g_GCenter.battle_scene.CheckDown(this);
+            if (check_down)
+            {
+                this._win = true;
+                this._state = PlayerState.PS_WALK;
+                this._vy = 0;
+                this._ay = 0;
+                this.y = down_y - this.height;
             }
         }
 
@@ -424,6 +469,36 @@ public class BattlePlayer : ALittle.DisplayLayout
         elseif (this._state == PlayerState.PS_SQUAT)
         {
             this.UpdateSquat();
+        }
+        elseif (this._state == PlayerState.PS_FLAG)
+        {
+            this.UpdateFlag();
+        }
+    }
+
+    private fun UpdateFlag()
+    {
+        this.UpdateLeftRight();
+        if (this._level == 1)
+        {
+            this._level_1_sprite_right.col_index = 1;
+            this._level_1_sprite_right.row_index = 2;
+            this._level_1_sprite_left.col_index = 7;
+            this._level_1_sprite_left.row_index = 2;
+        }
+        elseif (this._level == 2)
+        {
+            this._level_2_sprite_right.col_index = 1;
+            this._level_2_sprite_right.row_index = 2;
+            this._level_2_sprite_left.col_index = 7;
+            this._level_2_sprite_left.row_index = 2;
+        }
+        elseif (this._level == 3)
+        {
+            this._level_3_sprite_right.col_index = 1;
+            this._level_3_sprite_right.row_index = 2;
+            this._level_3_sprite_left.col_index = 7;
+            this._level_3_sprite_left.row_index = 2;
         }
     }
 
@@ -534,16 +609,19 @@ public class BattlePlayer : ALittle.DisplayLayout
                 if (this._level == 1)
                 {
                     this._walk_frame = 1;
+                    this._level_1_sprite_right.row_index = 1;
                     this._level_1_sprite_right.col_index = 3;
                 }
                 elseif (this._level == 2)
                 {
                     this._walk_frame = 1;
+                    this._level_2_sprite_right.row_index = 1;
                     this._level_2_sprite_right.col_index = 3;
                 }
                 elseif (this._level == 3)
                 {
                     this._walk_frame = 1;
+                    this._level_3_sprite_right.row_index = 1;
                     this._level_3_sprite_right.col_index = 3;
                 }
             }
@@ -552,16 +630,19 @@ public class BattlePlayer : ALittle.DisplayLayout
                 if (this._level == 1)
                 {
                     this._walk_frame = 1;
+                    this._level_1_sprite_left.row_index = 1;
                     this._level_1_sprite_left.col_index = 5;
                 }
                 elseif (this._level == 2)
                 {
                     this._walk_frame = 1;
+                    this._level_2_sprite_left.row_index = 1;
                     this._level_2_sprite_left.col_index = 5;
                 }
                 elseif (this._level == 3)
                 {
                     this._walk_frame = 1;
+                    this._level_3_sprite_left.row_index = 1;
                     this._level_3_sprite_left.col_index = 5;
                 }
             }
@@ -569,6 +650,7 @@ public class BattlePlayer : ALittle.DisplayLayout
             {
                 if (this._level == 1)
                 {
+                    this._level_1_sprite_right.row_index = 1;
                     if (this._walk_frame == 2)
                         this._level_1_sprite_right.col_index = 5;
                     elseif (this._walk_frame == 3)
@@ -581,6 +663,7 @@ public class BattlePlayer : ALittle.DisplayLayout
                 }
                 elseif (this._level == 2)
                 {
+                    this._level_2_sprite_right.row_index = 1;
                     if (this._walk_frame == 2)
                         this._level_2_sprite_right.col_index = 5;
                     elseif (this._walk_frame == 3)
@@ -593,6 +676,7 @@ public class BattlePlayer : ALittle.DisplayLayout
                 }
                 elseif (this._level == 3)
                 {
+                    this._level_3_sprite_right.row_index = 1;
                     if (this._walk_frame == 2)
                         this._level_3_sprite_right.col_index = 5;
                     elseif (this._walk_frame == 3)
@@ -608,6 +692,7 @@ public class BattlePlayer : ALittle.DisplayLayout
             {
                 if (this._level == 1)
                 {
+                    this._level_1_sprite_left.row_index = 1;
                     if (this._walk_frame == 2)
                         this._level_1_sprite_left.col_index = 4;
                     elseif (this._walk_frame == 3)
@@ -620,6 +705,7 @@ public class BattlePlayer : ALittle.DisplayLayout
                 }
                 elseif (this._level == 2)
                 {
+                    this._level_2_sprite_left.row_index = 1;
                     if (this._walk_frame == 2)
                         this._level_2_sprite_left.col_index = 4;
                     elseif (this._walk_frame == 3)
@@ -632,6 +718,7 @@ public class BattlePlayer : ALittle.DisplayLayout
                 }
                 elseif (this._level == 3)
                 {
+                    this._level_3_sprite_left.row_index = 1;
                     if (this._walk_frame == 2)
                         this._level_3_sprite_left.col_index = 4;
                     elseif (this._walk_frame == 3)

@@ -33,7 +33,7 @@ ALittleIDE.ScrollListS = JavaScript.Class(ALittleIDE.DisplayLayoutS, {
 		this.ValueNumInputChange("gap", false);
 	},
 	HandleClipClick : function(event) {
-		this._object.RejustScrollBar();
+		this._object.AdjustScrollBar();
 		this._object.RefreshClipDisLine();
 	},
 	HandleClipAtonceSELECT_CHANGE : function(event) {

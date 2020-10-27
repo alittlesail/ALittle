@@ -5,7 +5,7 @@ extern "C" {
 #include "tinyxml2.h"
 #include "carp_lua.hpp"
 
-int luaopen_carp(lua_State* l_state) {
+int luaopen_tinyxml2(lua_State* l_state) {
 	luabridge::getGlobalNamespace(l_state)
 		.beginNamespace("tinyxml2")
 		.beginClass<tinyxml2::XMLAttribute>("XMLAttribute")

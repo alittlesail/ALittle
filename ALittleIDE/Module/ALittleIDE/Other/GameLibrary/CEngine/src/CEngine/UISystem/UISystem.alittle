@@ -745,7 +745,7 @@ class UISystem
     {
         var x = System_GetCursorX();
         var y = System_GetCursorY();
-    
+
         this.HandleMouseMoved(x, y);
 
         if (this._mfc == null) return;

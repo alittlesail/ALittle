@@ -24,12 +24,18 @@ distribution.
 #include "tinyxml2.h"
 
 #include <new>		// yes, this one new style header, is in the Android SDK.
+#include <string>
+#include <vector>
 #if defined(ANDROID_NDK) || defined(__BORLANDC__) || defined(__QNXNTO__)
 #   include <stddef.h>
 #   include <stdarg.h>
 #else
 #   include <cstddef>
 #   include <cstdarg>
+#endif
+
+#ifdef _WIN32
+#include <windows.h>
 #endif
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1400 ) && (!defined WINCE)
@@ -2247,13 +2253,30 @@ XMLUnknown* XMLDocument::NewUnknown( const char* str )
     return unk;
 }
 
+#ifdef _WIN32
+static std::string UTF82ANSI(const std::string& utf8)
+{
+    int len = MultiByteToWideChar(CP_UTF8, 0, utf8.c_str(), -1, NULL, 0);
+    std::vector<WCHAR> wszGBK;
+    wszGBK.resize(len + 1, 0);
+    MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)utf8.c_str(), -1, wszGBK.data(), static_cast<int>(len));
+
+    len = WideCharToMultiByte(CP_ACP, 0, wszGBK.data(), -1, NULL, 0, NULL, NULL);
+    std::vector<char> szGBK;
+    szGBK.resize(len + 1, 0);
+    WideCharToMultiByte(CP_ACP, 0, (LPWSTR)wszGBK.data(), -1, szGBK.data(), static_cast<int>(len), NULL, NULL);
+    return szGBK.data();
+}
+#endif
+	
 static FILE* callfopen( const char* filepath, const char* mode )
 {
     TIXMLASSERT( filepath );
     TIXMLASSERT( mode );
 #if defined(_MSC_VER) && (_MSC_VER >= 1400 ) && (!defined WINCE)
     FILE* fp = 0;
-    const errno_t err = fopen_s( &fp, filepath, mode );
+    const std::string ansi = UTF82ANSI(filepath);
+    const errno_t err = fopen_s( &fp, ansi.c_str(), mode );
     if ( err ) {
         return 0;
     }

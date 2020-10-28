@@ -102,6 +102,10 @@ public:
 			dynet::TextFileLoader loader(model_path);
 			loader.populate(m_collection);
 		}
+		
+		m_mnist_train.clear();
+		m_mnist_train_labels.clear();
+		m_train_order.clear();
 
 		// 如果有填充
 		if (train_image && train_labels)
@@ -112,6 +116,7 @@ public:
 			// 计算批次数量
 			auto num_batches = m_mnist_train.size() / BATCH_SIZE - 1;
 			m_train_order.resize(num_batches);
+			for (int i = 0; i < (int)num_batches; ++i) m_train_order[i] = i;
 			std::random_shuffle(m_train_order.begin(), m_train_order.end());
 		}
 		m_train_index = 0;
@@ -150,6 +155,9 @@ public:
 		// 更新参数
 		m_trainer.update();
 
+		++m_train_index;
+		if (m_train_index >= (int)m_train_order.size())
+			m_train_index = 0;
 		return loss / bsize;
 	}
 
@@ -180,6 +188,8 @@ public:
 				data[i] = (float)new_surface.GetGray(i);
 		}
 
+		m_mlp.disable_dropout();
+
 		// 构建动态图
 		dynet::ComputationGraph cg;
 		// 设置当前输入
@@ -203,7 +213,7 @@ private:
 
 	std::vector<std::vector<float>> m_mnist_train;
 	std::vector<unsigned> m_mnist_train_labels;
-	std::vector<unsigned> m_train_order;
+	std::vector<int> m_train_order;
 	unsigned int m_train_index = 0;
 
 private:

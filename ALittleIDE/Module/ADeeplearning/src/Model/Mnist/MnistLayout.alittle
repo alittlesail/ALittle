@@ -1,0 +1,18 @@
+
+namespace ADeeplearning;
+
+protected class MnistLayout : ALittle.DisplayLayout
+{
+	private ADeeplearning.MnistTestLayout _test;
+	private ADeeplearning.MnistTrainLayout _train;
+
+    public fun TCtor()
+    {
+        this._train.AddEventListener(this, this.HandleChanged);
+    }
+
+    private fun HandleChanged(ALittle.UIChangedEvent event)
+    {
+        this._test.Reset();
+    }
+}

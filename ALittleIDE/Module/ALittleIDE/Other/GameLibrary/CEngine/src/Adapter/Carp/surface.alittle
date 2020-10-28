@@ -19,4 +19,8 @@ public static SetCarpSurfacePixel(CarpSurface surface, int x, int y, int color) 
 public static GetCarpSurfacePixel(CarpSurface surface, int x, int y) : int {}
 public static GetPixelAlpha(int color) : int {}
 public static SetPixelAlpha(int color, int alpha) : int {}
+// type: left, right, top, bottom
 public static GetCarpSurfaceGrid9(CarpSurface surface, string type) : int { }
+// type: left, right, top, bottom
+// step: 平移的像素数量
+public static TransferCarpSurface(CarpSurface surface, string type, int step) : int { }

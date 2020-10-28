@@ -7,6 +7,13 @@ public async static __Browser_Setup(ALittle.DisplayLayout layer_group
                               , string module_base_path, string script_base_path
                               , string debug)
 {
+	// 创建窗口
+	var window_width, window_height, flag, scale = ALittle.System_CalcPortrait(800, 600, 0);
+	ALittle.System_CreateView("深度学习", window_width, window_height, flag, scale);
+	ALittle.System_SetViewIcon(module_base_path.."Other/ic_launcher.png");
+
+	// 加载模块
+	A_ModuleSystem.LoadModule(module_base_path, "ADeeplearning");
 }
 
 // 壳处理添加模块，layer_group是模块的层组
@@ -24,22 +31,51 @@ protected var g_Control:ALittle.ControlSystem;
 protected var g_AUIPluinControl:ALittle.ControlSystem;
 protected var g_ModuleBasePath:string;
 protected var g_ScriptBasePath:string;
+protected var g_LayerGroup:ALittle.DisplayLayout;
 
 // 模块入口函数
 public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.ControlSystem control
                                   , string module_base_path, string script_base_path, string debug)
 {
+    g_Control = control;
+	g_ModuleBasePath = module_base_path;
+    g_ScriptBasePath = script_base_path;
+    g_LayerGroup = layer_group;
+
+    g_AUIPluinControl = A_ModuleSystem.LoadPlugin("AUIPlugin");
+    g_Control.RegisterPlugin("AUIPlugin", g_AUIPluinControl);
+
+	[Language(Lua)]
+	if (ALittle.System_GetPlatform() == "Windows")
+	{
+		package.cpath = package.cpath..";./"..module_base_path.."Other/?.dll";
+        lua.require("deeplearning");
+        deeplearning.Initialize();
+    }
+
+    alittle.RequireFromPaths(script_base_path, "Model/", paths("src/Model"));
+
+	alittle.Require(script_base_path, "GCenter");
+	g_GCenter.Setup();
 }
 
 // 模块结束函数
 public static __Module_Shutdown()
 {
+	g_GCenter.Shutdown();
 }
 
 // 提供给壳的模块信息
 public static __Module_GetInfo(ALittle.ControlSystem control, string module_base_path, string script_base_path) : ALittle.ModuleShortInfo
 {
-    return null;
+	var info = new ALittle.ModuleShortInfo();
+	info.title = "深度学习";
+	info.icon = null;
+	info.width_type = ALittle.UIEnumTypes.SIZE_ABS;
+	info.width_value = 720;
+	info.height_type = ALittle.UIEnumTypes.SIZE_ABS;
+	info.height_value = 1280;
+	return info;
 }
 
 // 插件入口函数
@@ -60,11 +96,7 @@ public await static __Plugin_Setup(ALittle.ControlSystem control, string module_
         deeplearning.Initialize();
     }
 
-    [Language(Lua)]
-    {
-        alittle.Require(script_base_path, "Trainning");
-        alittle.Require(script_base_path, "MnistTestLayout");
-    }
+    alittle.RequireFromPaths(script_base_path, "Mnist/", paths("src/Model"));
 }
 
 // 插件入口函数

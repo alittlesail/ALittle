@@ -1,0 +1,52 @@
+
+namespace ADeeplearning;
+
+public class MnistTrainLayout : ALittle.DisplayLayout
+{
+	private AUIPlugin.AUIStatLayout _stat;
+    private deeplearning.DeeplearningMnistModel _model;
+
+    private ALittle.LoopFrame _loop_frame;
+    private ALittle.DisplayObject _start_button;
+    private ALittle.DisplayObject _stop_button;
+
+    public fun TCtor()
+    {
+        this._model = new deeplearning.DeeplearningMnistModel();
+        this._start_button.disabled = false;
+        this._stop_button.disabled = true;
+    }
+
+    private fun HandleStartClick(ALittle.UIClickEvent event)
+    {
+        if (this._loop_frame != null) return;
+        this._start_button.disabled = true;
+        this._stop_button.disabled = false;
+    
+        this._loop_frame = new ALittle.LoopFrame(bind(this.UpdateFrame, this));
+        A_WeakLoopSystem.AddUpdater(this._loop_frame);
+        this._model.Init(g_ModuleBasePath.."Other/mnist.model", g_ModuleBasePath.."Data/train-images.idx3-ubyte", g_ModuleBasePath.."Data/train-labels.idx1-ubyte");
+        this._stat.Init(1, ALittle.Math_Floor(this._stat.width), ALittle.Math_Floor(this._stat.height), 1);
+    }
+
+    private fun HandleStopClick(ALittle.UIClickEvent event)
+    {
+        if (this._loop_frame == null) return;
+        this._start_button.disabled = false;
+        this._stop_button.disabled = true;
+
+        if (this._loop_frame != null)
+        {
+            A_WeakLoopSystem.RemoveUpdater(this._loop_frame);
+            this._loop_frame = null;
+        }
+        this._model.Save(g_ModuleBasePath.."Other/mnist.model");
+
+        this.DispatchEvent(new ALittle.UIChangedEvent());
+    }
+
+    private fun UpdateFrame(int frame_time)
+    {
+        this._stat.AddValue(this._model.Training());
+    }
+}

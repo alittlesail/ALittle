@@ -1,0 +1,94 @@
+
+namespace AUIPlugin;
+
+public class AUIStatLayout : ALittle.DisplayLayout
+{
+    private ALittle.DynamicImage _image;
+    private int _point_size = 5;
+    private int _draw_width = 0;
+    private int _draw_height = 0;
+
+    private int _min_index = 0;
+    private int _max_index = 0;
+    private double _max_value = 0;
+    private Map<int, double> _value_map = new Map<int, double>();
+
+    private fun TCtor()
+    {
+        this._image = new ALittle.DynamicImage(this._ctrl_sys);
+        this._image.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this._image.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this._image.SetRenderMode(1);
+        this.AddChild(this._image);
+    }
+
+    public fun Init(int point_size, int draw_width, int draw_height, double max_value)
+    {
+        this._point_size = point_size;
+        if (this._point_size < 1) this._point_size = 1;
+        this._draw_width = draw_width;
+        if (this._draw_width < 0) this._draw_width = 0;
+        this._draw_height = draw_height;
+        if (this._draw_height < 0) this._draw_height = 0;
+
+        this._min_index = 0;
+        this._max_index = 0;
+        this._max_value = max_value;
+        if (this._max_value < 0) this._max_value = 0;
+        this._value_map = new Map<int, double>();
+
+        this._image.SetSurfaceSize(this._draw_width, this._draw_height);
+    }
+
+    public fun AddValue(double value)
+    {
+        if (this._max_index - this._min_index < ALittle.Math_Floor(this._draw_width / this._point_size))
+        {
+            this._max_index += 1;
+        }
+        else
+        {
+            this._value_map[this._min_index] = null;
+            this._min_index += 1;
+            this._max_index += 1;
+            var surface = this._image.GetSurface(true);
+            carp.TransferCarpSurface(surface, "left", this._point_size);
+        }
+
+        this._value_map[this._max_index] = value;
+
+        // 计算笔触的坐标
+        var x = (this._max_index - this._min_index) *  this._point_size;
+        if (x > this._draw_width - this._point_size) x = this._draw_width - this._point_size;
+        var y = 0;
+        if (this._max_value != 0)
+        {
+            y = ALittle.Math_Floor(value / this._max_value * this._draw_height);
+            if (y > this._draw_height - this._point_size) y = this._draw_height - this._point_size;
+        }
+        y = this._draw_height - this._point_size - y;
+
+        for (var col = x; col < x + this._point_size; 1)
+        {
+            for (var row = y; row < y + this._point_size; 1)
+			{
+                var surface = this._image.GetSurface(true);
+                var color = 0xFFFFFFFF;
+                carp.SetCarpSurfacePixel(surface, col, row, color);
+            }
+        }
+    }
+
+    public fun ClearContent()
+    {
+        this._min_index = 0;
+        this._max_index = 0;
+        this._max_value = this._max_value;
+        if (this._max_value < 0) this._max_value = 0;
+        this._value_map = new Map<int, double>();
+        this._image.SetSurfaceSize(this._draw_width, this._draw_height);
+    }
+
+    public get surface() : carp.CarpSurface { return this._image.GetSurface(false); }
+
+}

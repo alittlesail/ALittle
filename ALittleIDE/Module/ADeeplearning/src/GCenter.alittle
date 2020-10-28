@@ -1,0 +1,39 @@
+
+namespace ADeeplearning;
+
+protected var g_GConfig:ALittle.IJsonConfig;
+
+protected class GCenter
+{
+    private ALittle.DisplayLayout _main_layer;
+    private ALittle.DisplayLayout _dialog_layer;
+
+    public fun Setup()
+    {
+        // 获取配置信息
+        g_GConfig = ALittle.CreateConfigSystem(g_ModuleBasePath.."/User.cfg");
+        // 生成随机数种子
+        ALittle.Math_RandomSeed(ALittle.Time_GetCurTime());
+        // 设置5个线程
+        ALittle.System_SetThreadCount(1);
+    
+        // 创建主层
+        this._main_layer = new ALittle.DisplayLayout(g_Control);
+        this._main_layer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this._main_layer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        g_LayerGroup.AddChild(this._main_layer, null);
+        this._dialog_layer = new ALittle.DisplayLayout(g_Control);
+        this._dialog_layer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        this._dialog_layer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+        g_LayerGroup.AddChild(this._dialog_layer, null);
+
+        var main_scene = g_Control.CreateControl{ALittle.DisplayLayout}("main_scene");
+        this._main_layer.AddChild(main_scene);
+    }
+
+    public fun Shutdown()
+    {
+    }
+}
+
+protected var g_GCenter = new GCenter();

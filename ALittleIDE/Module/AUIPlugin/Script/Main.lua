@@ -46,9 +46,9 @@ function AUIPlugin.__Plugin_Setup(control, module_base_path, script_base_path)
 	Require(script_base_path, "Protobuf/Lua/ISocket")
 	Require(script_base_path, "Protobuf/Lua/LuaProtobufSchedule")
 	RequireFromPaths(script_base_path, "AUI/", {"AUIWebLoginManager.alittle", "AUIVersionManager.alittle", "AUITool.alittle"
-		, "AUIRightMenu.alittle", "AUIImageCutPlugin.alittle", "AUIIMEManager.alittle"
-		, "AUIFileTreeLayout.alittle", "AUIFileSelectLayout.alittle", "AUIFileSelectDialog.alittle"
-		, "AUIEditImageDialog.alittle", "AUIDrawingBoard.alittle"})
+		, "AUIStatLayout.alittle", "AUIRightMenu.alittle", "AUIImageCutPlugin.alittle"
+		, "AUIIMEManager.alittle", "AUIFileTreeLayout.alittle", "AUIFileSelectLayout.alittle"
+		, "AUIFileSelectDialog.alittle", "AUIEditImageDialog.alittle", "AUIDrawingBoard.alittle"})
 	RequireFromPaths(script_base_path, "AUICodeEdit/", {"AUICodeSelectCursor.alittle", "AUICodeRevocation.alittle", "AUICodeProject.alittle"
 		, "AUICodeParamList.alittle", "AUICodeLineNumber.alittle", "AUICodeLineContainer.alittle"
 		, "AUICodeLanguage.alittle", "AUICodeFilterScreen.alittle", "AUICodeEdit.alittle"

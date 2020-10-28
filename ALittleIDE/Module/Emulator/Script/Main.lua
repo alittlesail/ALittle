@@ -30,7 +30,6 @@ function Emulator.__Module_Setup(layer_group, control, module_base_path, script_
 	Emulator.g_LayerGroup = layer_group
 	Emulator.g_ModuleBasePath = module_base_path
 	Emulator.g_AUIPluinControl = A_ModuleSystem:LoadPlugin("AUIPlugin")
-	Emulator.g_ADeeplearningControl = A_ModuleSystem:LoadPlugin("ADeeplearning")
 	if ALittle.System_GetPlatform() == "Windows" then
 		package.cpath = package.cpath .. ";./" .. module_base_path .. "Other/?.dll"
 		require("memory")

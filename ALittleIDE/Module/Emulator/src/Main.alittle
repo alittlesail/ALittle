@@ -48,7 +48,6 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 
 	// 加载UI插件
     g_AUIPluinControl = A_ModuleSystem.LoadPlugin("AUIPlugin");
-    g_ADeeplearningControl = A_ModuleSystem.LoadPlugin("ADeeplearning");
 
 	[Language(Lua)]
 	if (ALittle.System_GetPlatform() == "Windows")

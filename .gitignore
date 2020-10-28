@@ -57,3 +57,5 @@
 /ALittle/ALittleClient/*.user
 /ALittleIDE/Module/SuperMarioBros/Export
 /lualib/.vs
+/lualib/deeplearning/x64
+/lualib/x64

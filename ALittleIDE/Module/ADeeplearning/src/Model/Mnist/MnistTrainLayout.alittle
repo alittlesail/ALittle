@@ -3,8 +3,15 @@ namespace ADeeplearning;
 
 public class MnistTrainLayout : ALittle.DisplayLayout
 {
+	private ALittle.Text _total_train_count_text;
+	private ALittle.Text _cur_train_count_text;
+	private ALittle.Text _train_round_text;
+
 	private AUIPlugin.AUIStatLayout _stat;
-    private deeplearning.DeeplearningMnistModel _model;
+    // private deeplearning.DeeplearningMnistMLPModel _model;
+    private deeplearning.DeeplearningMnistCNNModel _model;
+
+    private string _model_path;
 
     private ALittle.LoopFrame _loop_frame;
     private ALittle.DisplayObject _start_button;
@@ -12,9 +19,12 @@ public class MnistTrainLayout : ALittle.DisplayLayout
 
     public fun TCtor()
     {
-        this._model = new deeplearning.DeeplearningMnistModel();
+        // this._model = new deeplearning.DeeplearningMnistMLPModel();
+        this._model = new deeplearning.DeeplearningMnistCNNModel();
         this._start_button.disabled = false;
         this._stop_button.disabled = true;
+
+        this._model_path = g_ModuleBasePath.."Other/mnist-cnn.model";
     }
 
     private fun HandleStartClick(ALittle.UIClickEvent event)
@@ -25,8 +35,15 @@ public class MnistTrainLayout : ALittle.DisplayLayout
     
         this._loop_frame = new ALittle.LoopFrame(bind(this.UpdateFrame, this));
         A_WeakLoopSystem.AddUpdater(this._loop_frame);
-        this._model.Init(g_ModuleBasePath.."Other/mnist.model", g_ModuleBasePath.."Data/train-images.idx3-ubyte", g_ModuleBasePath.."Data/train-labels.idx1-ubyte");
+
+        var load_path:string;
+        if (ALittle.File_GetFileAttr(this._model_path) != null) load_path = this._model_path;
+        this._model.Init(load_path, g_ModuleBasePath.."Data/train-images.idx3-ubyte", g_ModuleBasePath.."Data/train-labels.idx1-ubyte");
         this._stat.Init(1, ALittle.Math_Floor(this._stat.width), ALittle.Math_Floor(this._stat.height), 1);
+
+        this._total_train_count_text.text = this._model.GetTotalTrainCount();
+        this._cur_train_count_text.text = this._model.GetCurTrainCount();
+        this._train_round_text.text = this._model.GetTrainRound();
     }
 
     private fun HandleStopClick(ALittle.UIClickEvent event)
@@ -40,13 +57,15 @@ public class MnistTrainLayout : ALittle.DisplayLayout
             A_WeakLoopSystem.RemoveUpdater(this._loop_frame);
             this._loop_frame = null;
         }
-        this._model.Save(g_ModuleBasePath.."Other/mnist.model");
+        this._model.Save(this._model_path);
 
         this.DispatchEvent(new ALittle.UIChangedEvent());
     }
 
     private fun UpdateFrame(int frame_time)
     {
+        this._cur_train_count_text.text = this._model.GetCurTrainCount();
+        this._train_round_text.text = this._model.GetTrainRound();
         this._stat.AddValue(this._model.Training());
     }
 }

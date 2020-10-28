@@ -4,8 +4,21 @@ register namespace deeplearning;
 public static Initialize() {}
 public static Cleanup() {}
 
+public class DeeplearningModel
+{
+    // model_path 要保存的模型文件
+    public fun Save(string model_path) {}
+
+    // 获取训练总数
+    public fun GetTotalTrainCount() : int {}
+    // 获取当前已训练数量
+    public fun GetCurTrainCount() : int {}
+    // 获取第几轮
+    public fun GetTrainRound() : int {}
+}
+
 // 异或
-public class DeeplearningXorModel
+public class DeeplearningXorModel : DeeplearningModel
 {
     // model_path 事先训练的模型数据
     public fun Init(string model_path) {}
@@ -14,12 +27,10 @@ public class DeeplearningXorModel
     // x1，x2 都是取值1或者-1
     // 当同号时返回1，异号时返回0
     public fun Output(double x1, double x2) : double {}
-    // model_path 要保存的模型文件
-    public fun Save(string model_path) {}
 }
 
-// Mnist
-public class DeeplearningMnistModel
+// Mnist MLP版本
+public class DeeplearningMnistMLPModel : DeeplearningModel
 {
     // model_path 事先训练的模型数据
     // train_image 从http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz下载的文件后的本地路径
@@ -29,6 +40,17 @@ public class DeeplearningMnistModel
     public fun Training() : double {}
     // 输入表面，然后预测0-9的数字
     public fun Output(int surface) : int {}
-    // model_path 要保存的模型文件
-    public fun Save(string model_path) {}
+}
+
+// Mnist CNN版本
+public class DeeplearningMnistCNNModel : DeeplearningModel
+{
+    // model_path 事先训练的模型数据
+    // train_image 从http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz下载的文件后的本地路径
+    // train_labels 从http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz下载的文件后的本地路径
+    public fun Init(string model_path, string train_image, string train_labels) {}
+    // 训练一次，返回损失
+    public fun Training() : double {}
+    // 输入表面，然后预测0-9的数字
+    public fun Output(int surface) : int {}
 }

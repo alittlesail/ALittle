@@ -4,7 +4,8 @@
     <ClInclude Include="deeplearninglib.h" />
     <ClInclude Include="deeplearning_xor.hpp" />
     <ClInclude Include="deeplearning_model.hpp" />
-    <ClInclude Include="deeplearning_mnist.hpp" />
+    <ClInclude Include="deeplearning_mnist_mlp.hpp" />
+    <ClInclude Include="deeplearning_mnist_cnn.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="deeplearninglib.cpp" />

@@ -29,6 +29,10 @@ public:
 			loader.populate(m_collection);
 		}
 
+		m_total_train_count = 4;
+		m_cur_train_count = 0;
+		m_train_round = 0;
+
 		// ÖØÖÃ
 		m_trainer.restart();
 		m_graph.clear();
@@ -71,6 +75,8 @@ public:
 			m_trainer.update();
 		}
 
+		++m_train_round;
+
 		return loss / 4;
 	}
 
@@ -81,15 +87,8 @@ public:
 		return as_scalar(m_graph.forward(m_y_pred));
 	}
 
-	void Save(const char* file_path)
-	{
-		dynet::TextFileSaver saver(file_path);
-		saver.save(m_collection);
-	}
-
 private:
 	dynet::SimpleSGDTrainer m_trainer;
-	dynet::ParameterCollection m_collection;
 	dynet::ComputationGraph m_graph;
 
 private:

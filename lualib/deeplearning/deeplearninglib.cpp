@@ -8,7 +8,8 @@ extern "C" {
 #include <LuaBridge/LuaBridge.h>
 
 #include "deeplearning_xor.hpp"
-#include "deeplearning_mnist.hpp"
+#include "deeplearning_mnist_mlp.hpp"
+#include "deeplearning_mnist_cnn.hpp"
 
 void DyNetInitialize()
 {
@@ -27,19 +28,29 @@ int luaopen_deeplearning(lua_State* l_state) {
 		.beginNamespace("deeplearning")
 		.addFunction("Initialize", DyNetInitialize)
 		.addFunction("Cleanup", DyNetCleanup)
-		.beginClass<DeeplearningXorModel>("DeeplearningXorModel")
+		.beginClass<DeeplearningModel>("DeeplearningModel")
+		.addFunction("Save", &DeeplearningModel::Save)
+		.addFunction("GetTotalTrainCount", &DeeplearningModel::GetTotalTrainCount)
+		.addFunction("GetCurTrainCount", &DeeplearningModel::GetCurTrainCount)
+		.addFunction("GetTrainRound", &DeeplearningModel::GetTrainRound)
+		.endClass()
+		.deriveClass<DeeplearningXorModel, DeeplearningModel>("DeeplearningXorModel")
 		.addConstructor<void(*)()>()
 		.addFunction("Init", &DeeplearningXorModel::Init)
 		.addFunction("Training", &DeeplearningXorModel::Training)
 		.addFunction("Output", &DeeplearningXorModel::Output)
-		.addFunction("Save", &DeeplearningXorModel::Save)
 		.endClass()
-		.beginClass<DeeplearningMnistModel>("DeeplearningMnistModel")
+		.deriveClass<DeeplearningMnistMLPModel, DeeplearningModel>("DeeplearningMnistMLPModel")
 		.addConstructor<void(*)()>()
-		.addFunction("Init", &DeeplearningMnistModel::Init)
-		.addFunction("Training", &DeeplearningMnistModel::Training)
-		.addFunction("Output", &DeeplearningMnistModel::Output)
-		.addFunction("Save", &DeeplearningMnistModel::Save)
+		.addFunction("Init", &DeeplearningMnistMLPModel::Init)
+		.addFunction("Training", &DeeplearningMnistMLPModel::Training)
+		.addFunction("Output", &DeeplearningMnistMLPModel::Output)
+		.endClass()
+		.deriveClass<DeeplearningMnistCNNModel, DeeplearningModel>("DeeplearningMnistCNNModel")
+		.addConstructor<void(*)()>()
+		.addFunction("Init", &DeeplearningMnistCNNModel::Init)
+		.addFunction("Training", &DeeplearningMnistCNNModel::Training)
+		.addFunction("Output", &DeeplearningMnistCNNModel::Output)
 		.endClass()
 		.endNamespace();
     lua_getglobal(l_state, "deeplearning");

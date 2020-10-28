@@ -9,14 +9,23 @@ assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 ADeeplearning.MnistTestLayout = Lua.Class(ALittle.DisplayLayout, "ADeeplearning.MnistTestLayout")
 
 function ADeeplearning.MnistTestLayout:TCtor()
-	self._model = deeplearning.DeeplearningMnistModel()
-	self._model:Init(ADeeplearning.g_ModuleBasePath .. "Other/mnist.model", nil, nil)
+	self._model_path = ADeeplearning.g_ModuleBasePath .. "Other/mnist-cnn.model"
+	self._model = deeplearning.DeeplearningMnistCNNModel()
+	local load_path
+	if ALittle.File_GetFileAttr(self._model_path) ~= nil then
+		load_path = self._model_path
+	end
+	self._model:Init(load_path, nil, nil)
 	self._board:SetDrawSize(ALittle.Math_Floor(self._board.width), ALittle.Math_Floor(self._board.height))
 	self._result_text.text = "识别结果"
 end
 
 function ADeeplearning.MnistTestLayout:Reset()
-	self._model:Init(ADeeplearning.g_ModuleBasePath .. "Other/mnist.model", nil, nil)
+	local load_path
+	if ALittle.File_GetFileAttr(self._model_path) ~= nil then
+		load_path = self._model_path
+	end
+	self._model:Init(self._model_path, nil, nil)
 end
 
 function ADeeplearning.MnistTestLayout:HandleChanged(event)

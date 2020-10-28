@@ -359,6 +359,15 @@ public class DisplayObject : UIEventDispatcher
 
     private fun HandleDelayFocus() { this.focus = true; }
 
+    // 下一帧获取禁用
+    public fun DelayDisable()
+    {
+        var loop = new LoopTimer(bind(this.HandleDelayDisable, this), 1);
+        loop.Start();
+    }
+
+    private fun HandleDelayDisable() { this.disabled = true; }
+
     // 控件焦点
     public set focus(bool value)
     {

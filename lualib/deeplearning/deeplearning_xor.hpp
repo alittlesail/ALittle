@@ -35,42 +35,49 @@ public:
 
 		// 重置
 		m_trainer.restart();
-		m_graph.clear();
-
-		// 获得参数表达式
-		m_W = parameter(m_graph, m_pW);
-		m_b = parameter(m_graph, m_pb);
-		m_V = parameter(m_graph, m_pV);
-		m_a = parameter(m_graph, m_pa);
-
-		// 设置输入表达式
-		m_x_values.resize(2, 0.0);
-		dynet::Expression x = input(m_graph, { 2 }, &m_x_values);
-		// 设置输出表达式
-		m_y_value = 0.0;  
-		dynet::Expression y = input(m_graph, &m_y_value);
-		// 获得预测表达式
-		m_y_pred = m_V * tanh(m_W * x + m_b) + m_a;
-		// 获得损失表达式
-		m_loss_expr = squared_distance(m_y_pred, y);
 	}
 
-	double Training()
+	double Training() override
 	{
+		if (dynet::get_number_of_active_graphs() > 0) return 0;
+		
+		std::vector<dynet::real> x_values;
+		dynet::real y_value = 0.0;
+
+		dynet::ComputationGraph cg;
+		
+		// 获得参数表达式
+		auto W = parameter(cg, m_pW);
+		auto b = parameter(cg, m_pb);
+		auto V = parameter(cg, m_pV);
+		auto a = parameter(cg, m_pa);
+
+		// 设置输入表达式
+		x_values.resize(2, 0.0);
+		dynet::Expression x = input(cg, { 2 }, &x_values);
+		// 设置输出表达式
+		y_value = 0.0;
+		dynet::Expression y = input(cg, &y_value);
+		// 获得预测表达式
+		auto y_pred = V * tanh(W * x + b) + a;
+		// 获得损失表达式
+		auto loss_expr = squared_distance(y_pred, y);
+		
 		double loss = 0;
 
 		for (unsigned mi = 0; mi < 4; ++mi) {
 			bool x1 = mi % 2;
 			bool x2 = (mi / 2) % 2;
 			// 设置输入值
-			m_x_values[0] = x1 ? 1.0f : -1.0f;
-			m_x_values[1] = x2 ? 1.0f : -1.0f;
+			x_values[0] = x1 ? 1.0f : -1.0f;
+			x_values[1] = x2 ? 1.0f : -1.0f;
 			// 设置输出值
-			m_y_value = (x1 != x2) ? 1.0f : -1.0f;
+			y_value = (x1 != x2) ? 1.0f : -1.0f;
+
 			// 获取损失
-			loss += as_scalar(m_graph.forward(m_loss_expr));
+			loss += as_scalar(cg.forward(loss_expr));
 			// 计算反向传播
-			m_graph.backward(m_loss_expr);
+			cg.backward(loss_expr);
 			// 更新训练
 			m_trainer.update();
 		}
@@ -82,32 +89,42 @@ public:
 
 	double Output(double x1, double x2)
 	{
-		m_x_values[0] = (dynet::real)x1;
-		m_x_values[1] = (dynet::real)x2;
-		return as_scalar(m_graph.forward(m_y_pred));
+		if (dynet::get_number_of_active_graphs() > 0) return 0;
+		
+		std::vector<dynet::real> x_values;
+		dynet::real y_value = 0.0;
+		
+		x_values[0] = (dynet::real)x1;
+		x_values[1] = (dynet::real)x2;
+
+		dynet::ComputationGraph cg;
+
+		// 获得参数表达式
+		auto W = parameter(cg, m_pW);
+		auto b = parameter(cg, m_pb);
+		auto V = parameter(cg, m_pV);
+		auto a = parameter(cg, m_pa);
+
+		// 设置输入表达式
+		x_values.resize(2, 0.0);
+		dynet::Expression x = input(cg, { 2 }, &x_values);
+		// 设置输出表达式
+		y_value = 0.0;
+		dynet::Expression y = input(cg, &y_value);
+		// 获得预测表达式
+		auto y_pred = V * tanh(W * x + b) + a;
+		
+		return as_scalar(cg.forward(y_pred));
 	}
 
 private:
 	dynet::SimpleSGDTrainer m_trainer;
-	dynet::ComputationGraph m_graph;
 
 private:
 	dynet::Parameter m_pW;
 	dynet::Parameter m_pb;
 	dynet::Parameter m_pV;
 	dynet::Parameter m_pa;
-
-private:
-	dynet::Expression m_W;
-	dynet::Expression m_b;
-	dynet::Expression m_V;
-	dynet::Expression m_a;
-	dynet::Expression m_loss_expr;
-	dynet::Expression m_y_pred;
-
-private:
-	std::vector<dynet::real> m_x_values;
-	dynet::real m_y_value = 0.0;
 };
 
 #endif

@@ -29,10 +29,14 @@ function ADeeplearning.MnistTrainLayout:TCtor()
 end
 
 function ADeeplearning.MnistTrainLayout:HandleStartClick(event)
+	if deeplearning.GetNumberOfGraph() > 0 then
+		g_AUITool:ShowNotice("提示", "当前有图正在计算，请稍后再试")
+		return
+	end
 	if self._loop_frame ~= nil then
 		return
 	end
-	self._start_button.disabled = true
+	self._start_button:DelayDisable()
 	self._stop_button.disabled = false
 	self._loop_frame = ALittle.LoopFrame(Lua.Bind(self.UpdateFrame, self))
 	A_WeakLoopSystem:AddUpdater(self._loop_frame)
@@ -45,6 +49,8 @@ function ADeeplearning.MnistTrainLayout:HandleStartClick(event)
 	self._total_train_count_text.text = self._model:GetTotalTrainCount()
 	self._cur_train_count_text.text = self._model:GetCurTrainCount()
 	self._train_round_text.text = self._model:GetTrainRound()
+	self._cur_right_count_text.text = self._model:GetCurRightCount()
+	self._model:StartTraining()
 end
 
 function ADeeplearning.MnistTrainLayout:HandleStopClick(event)
@@ -52,19 +58,30 @@ function ADeeplearning.MnistTrainLayout:HandleStopClick(event)
 		return
 	end
 	self._start_button.disabled = false
-	self._stop_button.disabled = true
+	self._stop_button:DelayDisable()
 	if self._loop_frame ~= nil then
 		A_WeakLoopSystem:RemoveUpdater(self._loop_frame)
 		self._loop_frame = nil
 	end
+	self._model:StopTraining()
 	self._model:Save(self._model_path)
 	self:DispatchEvent(___all_struct[958494922], {})
 end
 
 function ADeeplearning.MnistTrainLayout:UpdateFrame(frame_time)
-	self._cur_train_count_text.text = self._model:GetCurTrainCount()
-	self._train_round_text.text = self._model:GetTrainRound()
-	self._stat:AddValue(self._model:Training())
+	self._model:HandleEvent()
+	local has_loss = false
+	while self._model:HasLoss() do
+		has_loss = true
+		local loss = self._model:GetLoss()
+		self._stat:AddValue(loss)
+	end
+	if has_loss then
+		self._total_train_count_text.text = self._model:GetTotalTrainCount()
+		self._cur_train_count_text.text = self._model:GetCurTrainCount()
+		self._train_round_text.text = self._model:GetTrainRound()
+		self._cur_right_count_text.text = self._model:GetCurRightCount()
+	end
 end
 
 end

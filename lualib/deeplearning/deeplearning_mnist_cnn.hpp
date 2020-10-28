@@ -26,38 +26,30 @@ public:
 public:
 	void Init(const char* model_path, const char* train_image, const char* train_labels)
 	{
+		StopTraining();
+		
 		if (model_path != nullptr)
 		{
 			dynet::TextFileLoader loader(model_path);
 			loader.populate(m_collection);
 		}
+
+		m_train_image_path.clear();
+		m_train_labels_path.clear();
+		if (train_image) m_train_image_path = train_image;
+		if (train_labels) m_train_labels_path = train_labels;
 		
 		m_mnist_train.clear();
 		m_mnist_train_labels.clear();
 		m_train_order.clear();
 
 		// 如果有填充
-		if (train_image && train_labels)
-		{
-			ReadMnist(train_image, m_mnist_train);
-			for (auto& trains : m_mnist_train)
-			{
-				for (auto& value : trains)
-					value /= 255.0f;
-			}
-			ReadMnistLabels(train_labels, m_mnist_train_labels);
-			
-			// 计算批次数量
-			auto num_batches = m_mnist_train.size() / BATCH_SIZE - 1;
-			m_train_order.resize(num_batches);
-			for (int i = 0; i < (int)num_batches; ++i) m_train_order[i] = i;
-			std::random_shuffle(m_train_order.begin(), m_train_order.end());
-		}
 		m_train_index = 0;
 
-		m_total_train_count = (int)m_mnist_train.size();
+		m_total_train_count = 0;
 		m_cur_train_count = 0;
 		m_train_round = 0;
+		m_cur_right_count = 0;
 
 		// 重置
 		m_trainer.restart();
@@ -100,9 +92,38 @@ public:
 		return w2 * h;
 	}
 
-	double Training()
+	void TrainInit() override
+	{
+		if (m_train_image_path.size() && m_train_labels_path.size())
+		{
+			ReadMnist(m_train_image_path, m_mnist_train);
+			for (auto& trains : m_mnist_train)
+			{
+				for (auto& value : trains)
+					value /= 255.0f;
+			}
+			ReadMnistLabels(m_train_labels_path, m_mnist_train_labels);
+
+			// 计算批次数量
+			auto num_batches = m_mnist_train.size() / BATCH_SIZE - 1;
+			m_train_order.resize(num_batches);
+			for (int i = 0; i < (int)num_batches; ++i) m_train_order[i] = i;
+			std::random_shuffle(m_train_order.begin(), m_train_order.end());
+
+			m_total_train_count = (int)m_mnist_train.size();
+		}
+	}
+
+	void TrainRelease() override
+	{
+		m_mnist_train.clear();
+		m_mnist_train_labels.clear();
+	}
+
+	double Training() override
 	{
 		if (m_train_order.empty()) return 0;
+		if (dynet::get_number_of_active_graphs() > 0) return 0;
 		
 		// 构建动态图
 		dynet::ComputationGraph cg;
@@ -122,6 +143,26 @@ public:
 		dynet::Expression x_batch = dynet::concatenate_to_batch(cur_batch);
 		// 获得隐藏层
 		dynet::Expression output = Build(cg, x_batch, true);
+
+
+		// 预测
+		dynet::Expression out = dynet::softmax(output);
+		// Get values
+		std::vector<float> probs = dynet::as_vector(cg.forward(out));
+		// Get argmax
+		for (unsigned i = 0; i < bsize; ++i)
+		{
+			auto offset = i * bsize;
+			unsigned argmax = 0;
+			for (unsigned index = 1; index < probs.size() /  bsize; ++index) {
+				if (probs[offset + index] > probs[offset + argmax])
+					argmax = index;
+			}
+
+			if (argmax == cur_labels[i])
+				++m_cur_right_count;
+		}
+		
 		// 构建 负对数似然 模型
 		dynet::Expression loss_expr = dynet::mean_batches(dynet::pickneglogsoftmax(output, cur_labels));
 		// 累计损失值
@@ -137,6 +178,7 @@ public:
 		{
 			++m_train_round;
 			m_cur_train_count = 0;
+			m_cur_right_count = 0;
 			m_train_index = 0;
 		}
 		return loss / bsize;
@@ -144,6 +186,8 @@ public:
 
 	int Output(size_t address)
 	{
+		if (dynet::get_number_of_active_graphs() > 0) return 0;
+		
 		CarpSurface* surface = nullptr;
 		memcpy(&surface, &address, sizeof(size_t));
 		
@@ -174,7 +218,7 @@ public:
 		// 设置当前输入
 		dynet::Expression x = input(cg, { IMAGE_SIZE, IMAGE_SIZE }, data);
 		// 获得隐藏层
-		dynet::Expression output = Build(cg, x, true);
+		dynet::Expression output = Build(cg, x, false);
 		// 预测
 		dynet::Expression out = dynet::softmax(output);
 		// Get values
@@ -206,6 +250,9 @@ private:
 	std::vector<unsigned> m_mnist_train_labels;
 	std::vector<int> m_train_order;
 	unsigned int m_train_index = 0;
+
+	std::string m_train_image_path;
+	std::string m_train_labels_path;
 
 private:
 	static const unsigned BATCH_SIZE = 1;

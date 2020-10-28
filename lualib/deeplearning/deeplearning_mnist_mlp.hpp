@@ -31,37 +31,58 @@ public:
 			dynet::TextFileLoader loader(model_path);
 			loader.populate(m_collection);
 		}
-		
+
+		m_train_image_path.clear();
+		m_train_labels_path.clear();
+		if (train_image) m_train_image_path = train_image;
+		if (train_labels) m_train_labels_path = train_labels;
+
 		m_mnist_train.clear();
 		m_mnist_train_labels.clear();
 		m_train_order.clear();
+		m_train_index = 0;
 
-		// 如果有填充
-		if (train_image && train_labels)
+		m_total_train_count = 0;
+		m_cur_train_count = 0;
+		m_train_round = 0;
+		m_cur_right_count = 0;
+
+		// 重置
+		m_trainer.restart();
+	}
+
+	void TrainInit() override
+	{
+		if (m_train_image_path.size() && m_train_labels_path.size())
 		{
-			ReadMnist(train_image, m_mnist_train);
-			ReadMnistLabels(train_labels, m_mnist_train_labels);
-			
+			ReadMnist(m_train_image_path, m_mnist_train);
+			for (auto& trains : m_mnist_train)
+			{
+				for (auto& value : trains)
+					value /= 255.0f;
+			}
+			ReadMnistLabels(m_train_labels_path, m_mnist_train_labels);
+
 			// 计算批次数量
 			auto num_batches = m_mnist_train.size() / BATCH_SIZE - 1;
 			m_train_order.resize(num_batches);
 			for (int i = 0; i < (int)num_batches; ++i) m_train_order[i] = i;
 			std::random_shuffle(m_train_order.begin(), m_train_order.end());
+
+			m_total_train_count = (int)m_mnist_train.size();
 		}
-		m_train_index = 0;
-
-		m_total_train_count = (int)m_mnist_train.size();
-		m_cur_train_count = 0;
-		m_train_round = 0;
-
-		// 重置
-		m_trainer.restart();
-
 	}
 
-	double Training()
+	void TrainRelease() override
+	{
+		m_mnist_train.clear();
+		m_mnist_train_labels.clear();
+	}
+
+	double Training() override
 	{
 		if (m_train_order.empty()) return 0;
+		if (dynet::get_number_of_active_graphs() > 0) return 0;
 		
 		// 启用dropout
 		m_mlp.enable_dropout();
@@ -103,6 +124,8 @@ public:
 
 	int Output(size_t address)
 	{
+		if (dynet::get_number_of_active_graphs() > 0) return 0;
+		
 		CarpSurface* surface = nullptr;
 		memcpy(&surface, &address, sizeof(size_t));
 		
@@ -148,6 +171,9 @@ private:
 	std::vector<unsigned> m_mnist_train_labels;
 	std::vector<int> m_train_order;
 	unsigned int m_train_index = 0;
+
+	std::string m_train_image_path;
+	std::string m_train_labels_path;
 
 private:
 	static const unsigned BATCH_SIZE = 128;

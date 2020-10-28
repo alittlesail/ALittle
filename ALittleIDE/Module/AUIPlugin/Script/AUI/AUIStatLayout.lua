@@ -61,26 +61,32 @@ function AUIPlugin.AUIStatLayout:AddValue(value)
 		carp.TransferCarpSurface(surface, "left", self._point_size)
 	end
 	self._value_map[self._max_index] = value
+	local color = 0xFFFFFFFF
 	local x = (self._max_index - self._min_index) * self._point_size
 	if x > self._draw_width - self._point_size then
 		x = self._draw_width - self._point_size
 	end
 	local y = 0
 	if self._max_value ~= 0 then
-		y = ALittle.Math_Floor(value / self._max_value * self._draw_height)
+		local rate = value / self._max_value
+		if rate > 1 then
+			color = 0xFF0000FF
+		elseif rate < 0.00001 then
+			color = 0xFF00FF00
+		end
+		y = ALittle.Math_Floor(rate * self._draw_height)
 		if y > self._draw_height - self._point_size then
 			y = self._draw_height - self._point_size
 		end
 	end
 	y = self._draw_height - self._point_size - y
+	local surface = self._image:GetSurface(true)
 	local col = x
 	while true do
 		if not(col < x + self._point_size) then break end
 		local row = y
 		while true do
 			if not(row < y + self._point_size) then break end
-			local surface = self._image:GetSurface(true)
-			local color = 0xFFFFFFFF
 			carp.SetCarpSurfacePixel(surface, col, row, color)
 			row = row+(1)
 		end

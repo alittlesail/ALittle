@@ -29,6 +29,10 @@ function ADeeplearning.MnistTestLayout:Reset()
 end
 
 function ADeeplearning.MnistTestLayout:HandleChanged(event)
+	if deeplearning.GetNumberOfGraph() > 0 then
+		g_AUITool:ShowNotice("提示", "当前有图正在计算，请稍后再试")
+		return
+	end
 	local address = carp.GetCarpSurfaceAddress(self._board.surface)
 	local result = self._model:Output(address)
 	self._result_text.text = "识别结果:" .. result

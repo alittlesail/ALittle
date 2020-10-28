@@ -57,23 +57,29 @@ public class AUIStatLayout : ALittle.DisplayLayout
 
         this._value_map[this._max_index] = value;
 
+        var color = 0xFFFFFFFF;
+        
         // 计算笔触的坐标
         var x = (this._max_index - this._min_index) *  this._point_size;
         if (x > this._draw_width - this._point_size) x = this._draw_width - this._point_size;
         var y = 0;
         if (this._max_value != 0)
         {
-            y = ALittle.Math_Floor(value / this._max_value * this._draw_height);
+            var rate = value / this._max_value;
+            if (rate > 1)
+                color = 0xFF0000FF;
+            elseif (rate < 0.00001)
+            	color = 0xFF00FF00;
+            y = ALittle.Math_Floor(rate * this._draw_height);
             if (y > this._draw_height - this._point_size) y = this._draw_height - this._point_size;
         }
         y = this._draw_height - this._point_size - y;
 
+        var surface = this._image.GetSurface(true);
         for (var col = x; col < x + this._point_size; 1)
         {
             for (var row = y; row < y + this._point_size; 1)
 			{
-                var surface = this._image.GetSurface(true);
-                var color = 0xFFFFFFFF;
                 carp.SetCarpSurfacePixel(surface, col, row, color);
             }
         }

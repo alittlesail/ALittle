@@ -3,11 +3,24 @@ register namespace deeplearning;
 
 public static Initialize() {}
 public static Cleanup() {}
+public static GetNumberOfGraph() : int {}
 
 public class DeeplearningModel
 {
     // model_path 要保存的模型文件
     public fun Save(string model_path) {}
+
+    // 开始训练
+    public fun StartTraining() {}
+    // 结束训练
+    public fun StopTraining() {}
+
+    // 获取数据
+    public fun HandleEvent() {}
+    // 是否还有数据
+    public fun HasLoss() : bool {}
+    // 获取loss
+    public fun GetLoss() : double {}
 
     // 获取训练总数
     public fun GetTotalTrainCount() : int {}
@@ -15,6 +28,8 @@ public class DeeplearningModel
     public fun GetCurTrainCount() : int {}
     // 获取第几轮
     public fun GetTrainRound() : int {}
+    // 获取当前正确数量
+    public fun GetCurRightCount() : int {}
 }
 
 // 异或
@@ -22,8 +37,6 @@ public class DeeplearningXorModel : DeeplearningModel
 {
     // model_path 事先训练的模型数据
     public fun Init(string model_path) {}
-    // 训练一次，返回损失
-    public fun Training() : double {}
     // x1，x2 都是取值1或者-1
     // 当同号时返回1，异号时返回0
     public fun Output(double x1, double x2) : double {}
@@ -36,8 +49,6 @@ public class DeeplearningMnistMLPModel : DeeplearningModel
     // train_image 从http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz下载的文件后的本地路径
     // train_labels 从http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz下载的文件后的本地路径
     public fun Init(string model_path, string train_image, string train_labels) {}
-    // 训练一次，返回损失
-    public fun Training() : double {}
     // 输入表面，然后预测0-9的数字
     public fun Output(int surface) : int {}
 }
@@ -49,8 +60,6 @@ public class DeeplearningMnistCNNModel : DeeplearningModel
     // train_image 从http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz下载的文件后的本地路径
     // train_labels 从http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz下载的文件后的本地路径
     public fun Init(string model_path, string train_image, string train_labels) {}
-    // 训练一次，返回损失
-    public fun Training() : double {}
     // 输入表面，然后预测0-9的数字
     public fun Output(int surface) : int {}
 }

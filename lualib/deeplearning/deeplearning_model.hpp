@@ -1,10 +1,12 @@
 #ifndef DEEPLEARNING_MODEL_INCLUDED
 #define DEEPLEARNING_MODEL_INCLUDED
 
+#include "carp_task_consumer.hpp"
+
 class DeeplearningModel
 {
 public:
-	virtual ~DeeplearningModel() {}
+	virtual ~DeeplearningModel() { StopTraining(); }
 
 public:
 	static int ReverseInt(int i)
@@ -77,15 +79,76 @@ public:
 	}
 
 public:
+	bool StartTraining()
+	{
+		StopTraining();
+
+		if (dynet::get_number_of_active_graphs() > 0) return false;
+
+		m_run = true;
+		m_thread = new std::thread(&DeeplearningModel::Run, this);
+
+		return true;
+	}
+
+	void StopTraining()
+	{
+		if (m_thread == nullptr) return;
+
+		m_run = false;
+		m_thread->join();
+		delete m_thread;
+		m_thread = nullptr;
+
+		m_consumer.HandleEvent();
+		m_loss_list.clear();
+	}
+
+	void Run()
+	{
+		TrainInit();
+		while (m_run)
+		{
+			auto loss = Training();
+			m_consumer.PushEvent(std::bind(&DeeplearningModel::HandleTrainResult, this, loss));
+		}
+		TrainRelease();
+	}
+
+	void HandleEvent() { m_consumer.HandleEvent(); }
+
+private:
+	void HandleTrainResult(double loss)
+	{
+		m_loss_list.push_back(loss);
+	}
+
+public:
+	bool HasLoss() const { return !m_loss_list.empty(); }
+	
+	double GetLoss()
+	{
+		if (m_loss_list.empty()) return 0;
+		const double value = m_loss_list.front();
+		m_loss_list.pop_front();
+		return value;
+	}
+	
+public:
 	virtual void Save(const char* file_path)
 	{
 		dynet::TextFileSaver saver(file_path);
 		saver.save(m_collection);
 	}
 
+	virtual void TrainInit() {}
+	virtual void TrainRelease() {}
+	virtual double Training() { return 0.0; }
+
 	virtual int GetTotalTrainCount() { return m_total_train_count; }
 	virtual int GetCurTrainCount() { return m_cur_train_count; }
 	virtual int GetTrainRound() { return m_train_round; }
+	virtual int GetCurRightCount() { return m_cur_right_count; }
 	
 protected:
 	dynet::ParameterCollection m_collection;
@@ -93,7 +156,14 @@ protected:
 protected:
 	int m_total_train_count = 0;
 	int m_cur_train_count = 0;
+	int m_cur_right_count = 0;	// 正确数量
 	int m_train_round = 0;
+	std::list<double> m_loss_list;
+
+private:
+	std::thread* m_thread = nullptr;
+	volatile bool m_run = false;	// 支线程是否正在执行
+	CarpTaskConsumer m_consumer;
 };
 
 #endif

@@ -208,6 +208,15 @@ function ALittle.DisplayObject:HandleDelayFocus()
 	self.focus = true
 end
 
+function ALittle.DisplayObject:DelayDisable()
+	local loop = ALittle.LoopTimer(Lua.Bind(self.HandleDelayDisable, self), 1)
+	loop:Start()
+end
+
+function ALittle.DisplayObject:HandleDelayDisable()
+	self.disabled = true
+end
+
 function ALittle.DisplayObject.__setter:focus(value)
 	if value then
 		A_UISystem.focus = self

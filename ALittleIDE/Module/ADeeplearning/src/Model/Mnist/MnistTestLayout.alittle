@@ -33,6 +33,12 @@ public class MnistTestLayout : ALittle.DisplayLayout
 
     private fun HandleChanged(ALittle.UIChangedEvent event)
     {
+        if (deeplearning.GetNumberOfGraph() > 0)
+        {
+            g_AUITool.ShowNotice("提示", "当前有图正在计算，请稍后再试");
+            return;
+        }
+
         var address = carp.GetCarpSurfaceAddress(this._board.surface);
         var result = this._model.Output(address);
         this._result_text.text = "识别结果:"..result;

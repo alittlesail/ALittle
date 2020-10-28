@@ -86,6 +86,7 @@ public await static RequireCEngine(string base_path)
     Require(base_path, "CEngine/UISystem/Plugin/SpringDialog");
 
     Require(base_path, "CEngine/UISystem/Effect/EffectImage");
+    Require(base_path, "CEngine/UISystem/Effect/DynamicImage");
     
     Require(base_path, "CEngine/UISystem/UISystem");
     Require(base_path, "CEngine/UISystem/LayerManager");

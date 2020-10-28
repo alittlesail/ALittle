@@ -94,6 +94,16 @@ public class IDEUIControlList : ALittle.DisplayLayout
 			var tree = new IDEControlTree(g_Control, info);
 			this._control_scroll_screen.AddChild(tree);
         }
+
+        // 将所有的control system互相注册
+        for (var child_name, child_ui in g_IDEProject.project.ui)
+        {
+            for (var parent_name, parent_ui in g_IDEProject.project.ui)
+            {
+                if (child_ui != parent_ui)
+                    parent_ui.control.RegisterPlugin(child_name, child_ui.control);
+            }
+        }
     }
 
     public fun GetControlTree(string module) : IDEControlTree

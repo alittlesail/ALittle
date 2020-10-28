@@ -1,0 +1,25 @@
+
+namespace ALittle;
+
+public class DynamicImage : DisplayObject
+{
+    private lua.__CPPAPIDynamicTexture _texture;
+
+    public ctor(ControlSystem ctrl_sys)
+    {
+        this._show = new lua.__CPPAPIImage();
+        this._texture = new lua.__CPPAPIDynamicTexture();
+        this._show.SetTexture(this._texture);
+    }
+
+    public fun GetSurface(bool redraw) : carp.CarpSurface { return this._texture.GetSurface(redraw); }
+
+    public fun SetSurfaceSize(int width, int height) { this._texture.SetSurfaceSize(width, height); }
+    public fun SetRenderMode(int mode) { this._texture.SetRenderMode(mode); }
+
+    public fun Clear()
+    {
+        if (this._texture == null) return;
+        this._texture.Clear();
+    }
+}

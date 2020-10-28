@@ -71,6 +71,13 @@ function ALittleIDE.IDEUIControlList:HandleProjectOpen(event)
 		local tree = ALittleIDE.IDEControlTree(ALittleIDE.g_Control, info)
 		self._control_scroll_screen:AddChild(tree)
 	end
+	for child_name, child_ui in ___pairs(ALittleIDE.g_IDEProject.project.ui) do
+		for parent_name, parent_ui in ___pairs(ALittleIDE.g_IDEProject.project.ui) do
+			if child_ui ~= parent_ui then
+				parent_ui.control:RegisterPlugin(child_name, child_ui.control)
+			end
+		end
+	end
 end
 ALittleIDE.IDEUIControlList.HandleProjectOpen = Lua.CoWrap(ALittleIDE.IDEUIControlList.HandleProjectOpen)
 

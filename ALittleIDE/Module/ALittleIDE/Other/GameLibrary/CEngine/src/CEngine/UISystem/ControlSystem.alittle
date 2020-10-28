@@ -486,7 +486,7 @@ public class ControlSystem
                 else
                 {
                     var plugin = this._child_plugin_map[info.__module];
-                    if (plugin == null) plugin = this._child_plugin_map[info.__module];
+                    if (plugin == null) plugin = this._parent_plugin_map[info.__module];
                     if (plugin == null)
                     {
                         Log("ControlSystem CreateInfo extends Failed, can't find plugin. extends:"..extendsv.." module:"..info.__module);

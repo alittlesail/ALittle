@@ -21,6 +21,7 @@ public static __Browser_Shutdown()
 }
 
 protected var g_Control:ALittle.ControlSystem;
+protected var g_AUIPluinControl:ALittle.ControlSystem;
 protected var g_ModuleBasePath:string;
 protected var g_ScriptBasePath:string;
 
@@ -48,12 +49,21 @@ public await static __Plugin_Setup(ALittle.ControlSystem control, string module_
 	g_ModuleBasePath = module_base_path;
     g_ScriptBasePath = script_base_path;
 
+    g_AUIPluinControl = A_ModuleSystem.LoadPlugin("AUIPlugin");
+    g_Control.RegisterPlugin("AUIPlugin", g_AUIPluinControl);
+
 	[Language(Lua)]
 	if (ALittle.System_GetPlatform() == "Windows")
 	{
 		package.cpath = package.cpath..";./"..module_base_path.."Other/?.dll";
         lua.require("deeplearning");
         deeplearning.Initialize();
+    }
+
+    [Language(Lua)]
+    {
+        alittle.Require(script_base_path, "Trainning");
+        alittle.Require(script_base_path, "MnistTestLayout");
     }
 }
 

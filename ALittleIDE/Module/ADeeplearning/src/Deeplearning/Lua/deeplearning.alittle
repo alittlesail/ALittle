@@ -4,10 +4,31 @@ register namespace deeplearning;
 public static Initialize() {}
 public static Cleanup() {}
 
+// 异或
 public class DeeplearningXorModel
 {
-    public fun Init([Nullable] string model_path) {}
+    // model_path 事先训练的模型数据
+    public fun Init(string model_path) {}
+    // 训练一次，返回损失
     public fun Training() : double {}
+    // x1，x2 都是取值1或者-1
+    // 当同号时返回1，异号时返回0
     public fun Output(double x1, double x2) : double {}
+    // model_path 要保存的模型文件
+    public fun Save(string model_path) {}
+}
+
+// Mnist
+public class DeeplearningMnistModel
+{
+    // model_path 事先训练的模型数据
+    // train_image 从http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz下载的文件后的本地路径
+    // train_labels 从http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz下载的文件后的本地路径
+    public fun Init(string model_path, string train_image, string train_labels) {}
+    // 训练一次，返回损失
+    public fun Training() : double {}
+    // 输入表面，然后预测0-9的数字
+    public fun Output(int surface) : int {}
+    // model_path 要保存的模型文件
     public fun Save(string model_path) {}
 }

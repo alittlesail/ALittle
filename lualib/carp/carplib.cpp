@@ -23,9 +23,6 @@ extern "C" {
 #define CARP_LOG_IMPL
 #include "carp_log.hpp"
 
-#define CARP_RWOPS_IMPL
-#include "carp_rwops.h"
-
 #define CARP_TASK_CONSUMER_IMPL
 #include "carp_task_consumer.hpp"
 

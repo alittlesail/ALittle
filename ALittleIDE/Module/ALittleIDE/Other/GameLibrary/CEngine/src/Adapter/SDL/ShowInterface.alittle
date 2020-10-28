@@ -130,6 +130,17 @@ public class __CPPAPIRenderTexture : ALittle.IRenderTexture
     public fun Draw(ALittle.IDisplayObject show, int width, int height, double scale) : bool {}
 }
 
+public class __CPPAPIDynamicTexture : ALittle.ITexture
+{
+    public fun GetSurface(bool need_draw) : carp.CarpSurface {}
+    public fun Clear() {}
+	// 0: nearest pixel sampling
+	// 1: linear filtering
+	// 2: anisotropic filtering
+    public fun SetRenderMode(int mode) {}
+    public fun SetSurfaceSize(int width, int height) {}
+}
+
 public class __CPPAPITextureLoader : ALittle.ITextureLoader
 {
     public fun SetPath(string big_path, string altas, int big_width, int big_height, bool crypt_mode) {}

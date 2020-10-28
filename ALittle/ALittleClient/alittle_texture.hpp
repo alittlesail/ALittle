@@ -55,6 +55,146 @@ public:
 	ALittleTexture* m_texture = nullptr;
 };
 
+class ALittleDynamicTexture : public ALittleTexture
+{
+public:
+	ALittleDynamicTexture() : m_surface(0, 0) { }
+	~ALittleDynamicTexture() { Clear(); }
+
+public:
+	void GenerateImpl()
+	{
+		if (m_texture && m_width == m_surface.GetWidth() && m_height == m_surface.GetHeight() && !m_need_draw) return;
+
+#if (defined __ANDROID__) || (defined __IPHONEOS__)
+		if (!SDL_GL_GetCurrentContext()) return;
+#endif
+
+		// if size changed
+		if (m_width != m_surface.GetWidth() || m_height != m_surface.GetHeight())
+		{
+			if (m_texture) s_alittle_render.DestroyTexture(m_texture);
+			m_texture = nullptr;
+			m_width = 0;
+			m_height = 0;
+		}
+
+		if (m_surface.GetWidth() == 0 || m_surface.GetHeight() == 0) return;
+
+		if (m_texture == nullptr)
+		{
+			// if surface small then max texture size then create single texture
+			if (m_surface.GetWidth() > s_alittle_render.GetMaxTextureWidth() || m_surface.GetHeight() > s_alittle_render.GetMaxTextureHeight())
+			{
+				CARP_ERROR("surface is too large:" << m_surface.GetWidth() << "," << m_surface.GetHeight());
+				return;
+			}
+			
+			m_texture = SDL_CreateTexture(s_alittle_render.GetRender(), SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, m_surface.GetWidth(), m_surface.GetHeight());
+			if (m_texture == nullptr) return;
+
+			m_width = m_surface.GetWidth();
+			m_height = m_surface.GetHeight();
+
+			switch (m_mode)
+			{
+			case ALittleTextureRenderMode::ATRM_NEAREST:
+				SDL_SetTextureScaleMode(m_texture, SDL_ScaleModeNearest);
+				break;
+			case ALittleTextureRenderMode::ATRM_BEST:
+				SDL_SetTextureScaleMode(m_texture, SDL_ScaleModeBest);
+				break;
+			default:
+				SDL_SetTextureScaleMode(m_texture, SDL_ScaleModeLinear);
+				break;
+			}
+			SDL_SetTextureBlendMode(m_texture, SDL_BLENDMODE_BLEND);
+		}
+
+		SDL_UpdateTexture(m_texture, nullptr, m_surface.GetPixels(), m_surface.GetPitch());
+		m_need_draw = false;
+	}
+
+public:
+	/**
+	 * clear texture
+	 */
+	void Clear() override
+	{
+		m_surface.Clear();
+		if (m_texture) s_alittle_render.DestroyTexture(m_texture);
+		m_texture = nullptr;
+
+		m_width = 0;
+		m_height = 0;
+	}
+
+	void SetRenderMode(int mode)
+	{
+		m_mode = static_cast<ALittleTextureRenderMode>(mode);
+		switch (m_mode)
+		{
+		case ALittleTextureRenderMode::ATRM_NEAREST:
+			SDL_SetTextureScaleMode(m_texture, SDL_ScaleModeNearest);
+			break;
+		case ALittleTextureRenderMode::ATRM_BEST:
+			SDL_SetTextureScaleMode(m_texture, SDL_ScaleModeBest);
+			break;
+		default:
+			SDL_SetTextureScaleMode(m_texture, SDL_ScaleModeLinear);
+			break;
+		}
+		SDL_SetTextureBlendMode(m_texture, SDL_BLENDMODE_BLEND);
+	}
+
+	void SetSurfaceSize(int width, int height)
+	{
+		if (width < 0) width = 0;
+		if (height < 0) height = 0;
+
+		m_surface.Reset(width, height);
+		m_need_draw = true;
+	}
+
+	/**
+	 * get width and height
+	 */
+	int GetWidth() const override { return m_width; }
+	int GetHeight() const override { return m_height; }
+
+	CarpSurface* GetSurface(bool need_draw)
+	{
+		if (need_draw) m_need_draw = true;
+		return &m_surface;
+	}
+
+public:
+	void Render(const CarpColor4& color, float* vertex_coord, float* texture_coord) override
+	{
+		GenerateImpl();
+
+		// if single texture then render
+		if (m_texture)
+			s_alittle_render.PushRenderQuad(m_texture, color, vertex_coord, texture_coord);
+	}
+	void RenderTriangle(const CarpColor4& color, float* vertex_coord, float* texture_coord) override
+	{
+		GenerateImpl();
+
+		// if single texture then render
+		if (m_texture)
+			s_alittle_render.PushRenderTriangle(m_texture, color, vertex_coord, texture_coord);
+	}
+
+private:
+	SDL_Texture* m_texture = nullptr;
+	CarpSurface m_surface;
+
+private:
+	bool m_need_draw = false;
+	int m_width = 0, m_height = 0;
+	ALittleTextureRenderMode m_mode = ALittleTextureRenderMode::ATRM_LINEAR;
+};
 
 class ALittleSurfaceTexture : public ALittleTexture
 {
@@ -162,7 +302,7 @@ private:
 
 private:
 	int m_width = 0, m_height = 0;
-	ALittleTextureRenderMode m_mode = ALittleTextureRenderMode::ATRM_LINEAR;
+	ALittleTextureRenderMode m_mode = ALittleTextureRenderMode::ATRM_NEAREST;
 };
 
 
@@ -567,6 +707,15 @@ public:
 			.addFunction("Draw", &ALittleRenderTexture::Draw)
 			.addFunction("Save", &ALittleRenderTexture::Save)
 			.addFunction("Clear", &ALittleRenderTexture::Clear)
+			.endClass();
+
+		luabridge::getGlobalNamespace(l_state)
+			.deriveClass<ALittleDynamicTexture, ALittleTexture>("__CPPAPIDynamicTexture")
+			.addConstructor<void(*)()>()
+			.addFunction("GetSurface", &ALittleDynamicTexture::GetSurface)
+			.addFunction("SetRenderMode", &ALittleDynamicTexture::SetRenderMode)
+			.addFunction("SetSurfaceSize", &ALittleDynamicTexture::SetSurfaceSize)
+			.addFunction("Clear", &ALittleDynamicTexture::Clear)
 			.endClass();
 
 		luabridge::getGlobalNamespace(l_state)

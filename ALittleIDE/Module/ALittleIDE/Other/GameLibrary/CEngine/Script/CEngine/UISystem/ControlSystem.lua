@@ -358,7 +358,7 @@ function ALittle.ControlSystem:CreateInfo(info)
 			else
 				local plugin = self._child_plugin_map[info.__module]
 				if plugin == nil then
-					plugin = self._child_plugin_map[info.__module]
+					plugin = self._parent_plugin_map[info.__module]
 				end
 				if plugin == nil then
 					ALittle.Log("ControlSystem CreateInfo extends Failed, can't find plugin. extends:" .. extendsv .. " module:" .. info.__module)

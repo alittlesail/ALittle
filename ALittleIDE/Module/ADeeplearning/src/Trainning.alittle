@@ -1,0 +1,20 @@
+
+namespace ADeeplearning;
+
+public static TrainningMnist()
+{
+    var model_file_path = g_ModuleBasePath.."Other/mnist.model";
+
+    var mnist = new deeplearning.DeeplearningMnistModel();
+    var model_file:string;
+    if (ALittle.File_GetFileAttr(model_file_path) != null) model_file = model_file_path;
+    mnist.Init(model_file, g_ModuleBasePath.."Data/train-images.idx3-ubyte", g_ModuleBasePath.."Data/train-labels.idx1-ubyte");
+
+    for (var i = 1; i < 1000; 1)
+    {
+        var loss = mnist.Training();
+        ALittle.Log(loss);
+    }
+
+    mnist.Save(model_file_path);
+}

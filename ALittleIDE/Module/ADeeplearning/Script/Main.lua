@@ -16,6 +16,7 @@ function ADeeplearning.__Browser_Shutdown()
 end
 
 ADeeplearning.g_Control = nil
+ADeeplearning.g_AUIPluinControl = nil
 ADeeplearning.g_ModuleBasePath = nil
 ADeeplearning.g_ScriptBasePath = nil
 function ADeeplearning.__Module_Setup(layer_group, control, module_base_path, script_base_path, debug)
@@ -34,10 +35,16 @@ function ADeeplearning.__Plugin_Setup(control, module_base_path, script_base_pat
 	ADeeplearning.g_Control = control
 	ADeeplearning.g_ModuleBasePath = module_base_path
 	ADeeplearning.g_ScriptBasePath = script_base_path
+	ADeeplearning.g_AUIPluinControl = A_ModuleSystem:LoadPlugin("AUIPlugin")
+	ADeeplearning.g_Control:RegisterPlugin("AUIPlugin", ADeeplearning.g_AUIPluinControl)
 	if ALittle.System_GetPlatform() == "Windows" then
 		package.cpath = package.cpath .. ";./" .. module_base_path .. "Other/?.dll"
 		require("deeplearning")
 		deeplearning.Initialize()
+	end
+	do
+		Require(script_base_path, "Trainning")
+		Require(script_base_path, "MnistTestLayout")
 	end
 end
 

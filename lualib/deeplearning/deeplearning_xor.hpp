@@ -21,11 +21,11 @@ public:
 	}
 
 public:
-	void Init(const char* file_path)
+	void Init(const char* model_path)
 	{
-		if (file_path != nullptr)
+		if (model_path != nullptr)
 		{
-			dynet::TextFileLoader loader(file_path);
+			dynet::TextFileLoader loader(model_path);
 			loader.populate(m_collection);
 		}
 
@@ -59,10 +59,10 @@ public:
 			bool x1 = mi % 2;
 			bool x2 = (mi / 2) % 2;
 			// 设置输入值
-			m_x_values[0] = x1 ? 1 : -1;
-			m_x_values[1] = x2 ? 1 : -1;
+			m_x_values[0] = x1 ? 1.0f : -1.0f;
+			m_x_values[1] = x2 ? 1.0f : -1.0f;
 			// 设置输出值
-			m_y_value = (x1 != x2) ? 1 : -1;
+			m_y_value = (x1 != x2) ? 1.0f : -1.0f;
 			// 获取损失
 			loss += as_scalar(m_graph.forward(m_loss_expr));
 			// 计算反向传播
@@ -71,13 +71,13 @@ public:
 			m_trainer.update();
 		}
 
-		return loss /= 4;
+		return loss / 4;
 	}
 
 	double Output(double x1, double x2)
 	{
-		m_x_values[0] = x1;
-		m_x_values[1] = x2;
+		m_x_values[0] = (dynet::real)x1;
+		m_x_values[1] = (dynet::real)x2;
 		return as_scalar(m_graph.forward(m_y_pred));
 	}
 

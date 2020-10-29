@@ -57,9 +57,6 @@ public:
 
 	dynet::Expression Build(dynet::ComputationGraph& cg, dynet::Expression x, bool dropout)
 	{
-		// 获取批次数量
-		auto bsize = x.dim().batch_elems();
-		
 		// 卷积参数
 		dynet::Expression conv1 = dynet::parameter(cg, m_pConv1);
 		// 偏置参数
@@ -79,7 +76,7 @@ public:
 		dynet::Expression relu2_x = dynet::rectify(dynet::maxpooling2d(conv2_x, { 2, 2 }, { 2, 2 }));
 
 		// 调整维度
-		dynet::Expression reshape_x = dynet::reshape(relu2_x, dynet::Dim({ 7 * 7 * 64, 1 }, bsize));
+		dynet::Expression reshape_x = dynet::reshape(relu2_x, { 7 * 7 * 64, 1 });
 
 		// 线性变换
 		dynet::Expression w1 = dynet::parameter(cg, m_pW1);
@@ -105,9 +102,8 @@ public:
 			ReadMnistLabels(m_train_labels_path, m_mnist_train_labels);
 
 			// 计算批次数量
-			auto num_batches = m_mnist_train.size() / BATCH_SIZE - 1;
-			m_train_order.resize(num_batches);
-			for (int i = 0; i < (int)num_batches; ++i) m_train_order[i] = i;
+			m_train_order.resize(m_mnist_train.size());
+			for (int i = 0; i < (int)m_train_order.size(); ++i) m_train_order[i] = i;
 			std::random_shuffle(m_train_order.begin(), m_train_order.end());
 
 			m_total_train_count = (int)m_mnist_train.size();
@@ -118,6 +114,7 @@ public:
 	{
 		m_mnist_train.clear();
 		m_mnist_train_labels.clear();
+		m_train_order.clear();
 	}
 
 	double Training() override
@@ -128,43 +125,19 @@ public:
 		// 构建动态图
 		dynet::ComputationGraph cg;
 		// 计算当前批次的下标和大小
-		int id = m_train_order[m_train_index] * BATCH_SIZE;
-		unsigned bsize = std::min((unsigned)m_mnist_train.size() - id, BATCH_SIZE);
-		// 设置当前批次的输入
-		std::vector<dynet::Expression> cur_batch(bsize);
-		std::vector<unsigned> cur_labels(bsize);
-		for (unsigned idx = 0; idx < bsize; ++idx)
-		{
-			cur_batch[idx] = input(cg, { IMAGE_SIZE, IMAGE_SIZE }, m_mnist_train[id + idx]);
-			cur_labels[idx] = m_mnist_train_labels[id + idx];
-		}
-
+		int id = m_train_order[m_train_index];
 		// 把所有输入合并为一个矩阵
-		dynet::Expression x_batch = dynet::concatenate_to_batch(cur_batch);
+		dynet::Expression x = input(cg, { IMAGE_SIZE, IMAGE_SIZE }, m_mnist_train[id]);
 		// 获得隐藏层
-		dynet::Expression output = Build(cg, x_batch, true);
-
+		dynet::Expression output = Build(cg, x, true);
 
 		// 预测
-		dynet::Expression out = dynet::softmax(output);
-		// Get values
-		std::vector<float> probs = dynet::as_vector(cg.forward(out));
-		// Get argmax
-		for (unsigned i = 0; i < bsize; ++i)
-		{
-			auto offset = i * bsize;
-			unsigned argmax = 0;
-			for (unsigned index = 1; index < probs.size() /  bsize; ++index) {
-				if (probs[offset + index] > probs[offset + argmax])
-					argmax = index;
-			}
-
-			if (argmax == cur_labels[i])
-				++m_cur_right_count;
-		}
+		auto label = Prediction(cg, output);
+		if (label == m_mnist_train_labels[id])
+			++m_cur_right_count;
 		
 		// 构建 负对数似然 模型
-		dynet::Expression loss_expr = dynet::mean_batches(dynet::pickneglogsoftmax(output, cur_labels));
+		dynet::Expression loss_expr = dynet::pickneglogsoftmax(output, m_mnist_train_labels[id]);
 		// 累计损失值
 		double loss = as_scalar(cg.forward(loss_expr));
 		// 反向传播
@@ -173,7 +146,7 @@ public:
 		m_trainer.update();
 
 		++m_train_index;
-		m_cur_train_count += bsize;
+		m_cur_train_count += 1;
 		if (m_train_index >= (int)m_train_order.size())
 		{
 			++m_train_round;
@@ -181,7 +154,23 @@ public:
 			m_cur_right_count = 0;
 			m_train_index = 0;
 		}
-		return loss / bsize;
+		return loss;
+	}
+
+	int Prediction(dynet::ComputationGraph& cg, dynet::Expression output)
+	{
+		// 预测
+		dynet::Expression out = dynet::softmax(output);
+		// Get values
+		std::vector<float> probs = dynet::as_vector(cg.forward(out));
+		// Get argmax
+		int argmax = 0;
+		for (int i = 1; i < (int)probs.size(); ++i) {
+			if (probs[i] > probs[argmax])
+				argmax = i;
+		}
+
+		return argmax;
 	}
 
 	int Output(size_t address)
@@ -219,18 +208,8 @@ public:
 		dynet::Expression x = input(cg, { IMAGE_SIZE, IMAGE_SIZE }, data);
 		// 获得隐藏层
 		dynet::Expression output = Build(cg, x, false);
-		// 预测
-		dynet::Expression out = dynet::softmax(output);
-		// Get values
-		std::vector<float> probs = dynet::as_vector(cg.forward(out));
-		// Get argmax
-		unsigned argmax = 0;
-		for (unsigned i = 1; i < probs.size(); ++i) {
-			if (probs[i] > probs[argmax])
-				argmax = i;
-		}
 
-		return argmax;
+		return Prediction(cg, output);
 	}
 
 private:
@@ -255,7 +234,6 @@ private:
 	std::string m_train_labels_path;
 
 private:
-	static const unsigned BATCH_SIZE = 1;
 	static const unsigned HIDDEN_DIM = 1024;
 	static const unsigned IMAGE_SIZE = 28;
 	static constexpr float DROPOUT_RATE = 0.4f;

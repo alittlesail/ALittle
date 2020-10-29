@@ -147,12 +147,12 @@ public:
 		SDL_SetTextureBlendMode(m_texture, SDL_BLENDMODE_BLEND);
 	}
 
-	void SetSurfaceSize(int width, int height)
+	void SetSurfaceSize(int width, int height, unsigned int color)
 	{
 		if (width < 0) width = 0;
 		if (height < 0) height = 0;
 
-		m_surface.Reset(width, height);
+		m_surface.Reset(width, height, color);
 		m_need_draw = true;
 	}
 

@@ -102,8 +102,32 @@ public:
 		}
 		// 把所有输入合并为一个矩阵
 		dynet::Expression x_batch = reshape(concatenate_cols(cur_batch), dynet::Dim({ IMAGE_SIZE * IMAGE_SIZE }, bsize));
+
+		// 计算输出
+		dynet::Expression y = m_mlp.run(x_batch, cg);
+
+		// 预测结果，统计正确数量
+		std::vector<float> probs = as_vector(cg.forward(y));
+		for (unsigned index = 0; index < bsize; ++index)
+		{
+			unsigned count = (unsigned)probs.size() / bsize;
+			unsigned offset = index * count;
+			// Get argmax
+			unsigned argmax = 0;
+			for (unsigned i = 1; i < count; ++i) {
+				if (probs[offset + i] > probs[offset + argmax])
+					argmax = i;
+			}
+
+			if (argmax == cur_labels[index])
+				++m_cur_right_count;
+		}
+		
 		// 构建 负对数似然 模型
-		dynet::Expression loss_expr = m_mlp.get_nll(x_batch, cur_labels, cg);
+		dynet::Expression losses = pickneglogsoftmax(y, cur_labels);
+		// 计算损失
+		dynet::Expression loss_expr = sum_batches(losses);
+		
 		// 累计损失值
 		double loss = as_scalar(cg.forward(loss_expr));
 		// 反向传播
@@ -117,6 +141,7 @@ public:
 		{
 			++m_train_round;
 			m_cur_train_count = 0;
+			m_cur_right_count = 0;
 			m_train_index = 0;
 		}
 		return loss / bsize;

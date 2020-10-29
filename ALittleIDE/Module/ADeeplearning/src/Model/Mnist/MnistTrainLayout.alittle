@@ -25,6 +25,7 @@ public class MnistTrainLayout : ALittle.DisplayLayout
         this._start_button.disabled = false;
         this._stop_button.disabled = true;
 
+        // this._model_path = g_ModuleBasePath.."Other/mnist-mlp.model";
         this._model_path = g_ModuleBasePath.."Other/mnist-cnn.model";
     }
 

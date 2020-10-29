@@ -37,7 +37,7 @@ public class AUIStatLayout : ALittle.DisplayLayout
         if (this._max_value < 0) this._max_value = 0;
         this._value_map = new Map<int, double>();
 
-        this._image.SetSurfaceSize(this._draw_width, this._draw_height);
+        this._image.SetSurfaceSize(this._draw_width, this._draw_height, 0xFF000000);
     }
 
     public fun AddValue(double value)
@@ -92,7 +92,7 @@ public class AUIStatLayout : ALittle.DisplayLayout
         this._max_value = this._max_value;
         if (this._max_value < 0) this._max_value = 0;
         this._value_map = new Map<int, double>();
-        this._image.SetSurfaceSize(this._draw_width, this._draw_height);
+        this._image.SetSurfaceSize(this._draw_width, this._draw_height, 0xFF000000);
     }
 
     public get surface() : carp.CarpSurface { return this._image.GetSurface(false); }

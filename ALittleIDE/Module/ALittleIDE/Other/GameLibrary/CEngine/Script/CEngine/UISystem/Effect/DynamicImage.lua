@@ -19,8 +19,8 @@ function ALittle.DynamicImage:GetSurface(redraw)
 	return self._texture:GetSurface(redraw)
 end
 
-function ALittle.DynamicImage:SetSurfaceSize(width, height)
-	self._texture:SetSurfaceSize(width, height)
+function ALittle.DynamicImage:SetSurfaceSize(width, height, color)
+	self._texture:SetSurfaceSize(width, height, color)
 end
 
 function ALittle.DynamicImage:SetRenderMode(mode)

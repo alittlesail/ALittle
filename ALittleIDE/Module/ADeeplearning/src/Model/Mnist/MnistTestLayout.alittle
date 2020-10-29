@@ -12,6 +12,7 @@ public class MnistTestLayout : ALittle.DisplayLayout
 
     public fun TCtor()
     {
+        // this._model_path = g_ModuleBasePath.."Other/mnist-mlp.model";
         this._model_path = g_ModuleBasePath.."Other/mnist-cnn.model";
 
         // this._model = new deeplearning.DeeplearningMnistMLPModel();
@@ -20,7 +21,8 @@ public class MnistTestLayout : ALittle.DisplayLayout
         var load_path:string;
         if (ALittle.File_GetFileAttr(this._model_path) != null) load_path = this._model_path;
         this._model.Init(load_path, null, null);
-        this._board.SetDrawSize(ALittle.Math_Floor(this._board.width), ALittle.Math_Floor(this._board.height));
+        this._board.SetPan(5, 0xFFFFFFFF);
+        this._board.SetDrawSize(ALittle.Math_Floor(this._board.width), ALittle.Math_Floor(this._board.height), 0xFF000000);
         this._result_text.text = "识别结果";
     }
 
@@ -47,6 +49,6 @@ public class MnistTestLayout : ALittle.DisplayLayout
     private fun HandleClearClick(ALittle.UIClickEvent event)
     {
         this._result_text.text = "识别结果";
-        this._board.ClearContent();
+        this._board.ClearContent(0xFF000000);
     }
 }

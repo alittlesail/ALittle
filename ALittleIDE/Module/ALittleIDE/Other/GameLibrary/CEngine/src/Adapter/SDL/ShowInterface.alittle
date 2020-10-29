@@ -138,7 +138,7 @@ public class __CPPAPIDynamicTexture : ALittle.ITexture
 	// 1: linear filtering
 	// 2: anisotropic filtering
     public fun SetRenderMode(int mode) {}
-    public fun SetSurfaceSize(int width, int height) {}
+    public fun SetSurfaceSize(int width, int height, int color) {}
 }
 
 public class __CPPAPITextureLoader : ALittle.ITextureLoader

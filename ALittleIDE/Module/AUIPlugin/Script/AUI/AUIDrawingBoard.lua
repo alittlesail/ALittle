@@ -36,6 +36,7 @@ AUIPlugin.AUIDrawingBoard = Lua.Class(ALittle.DisplayLayout, "AUIPlugin.AUIDrawi
 
 function AUIPlugin.AUIDrawingBoard:Ctor()
 	___rawset(self, "_pan_size", 5)
+	___rawset(self, "_pan_color", 0)
 	___rawset(self, "_draw_width", 0)
 	___rawset(self, "_draw_height", 0)
 end
@@ -50,14 +51,15 @@ function AUIPlugin.AUIDrawingBoard:TCtor()
 	self._image:AddEventListener(___all_struct[150587926], self, self.HandleDragEnd)
 end
 
-function AUIPlugin.AUIDrawingBoard:SetPanSize(size)
+function AUIPlugin.AUIDrawingBoard:SetPan(size, color)
 	self._pan_size = size
 	if self._pan_size < 1 then
 		self._pan_size = 1
 	end
+	self._pan_color = color
 end
 
-function AUIPlugin.AUIDrawingBoard:SetDrawSize(width, height)
+function AUIPlugin.AUIDrawingBoard:SetDrawSize(width, height, color)
 	self._draw_width = width
 	self._draw_height = height
 	if self._draw_width < 0 then
@@ -66,11 +68,11 @@ function AUIPlugin.AUIDrawingBoard:SetDrawSize(width, height)
 	if self._draw_height < 0 then
 		self._draw_height = 0
 	end
-	self._image:SetSurfaceSize(self._draw_width, self._draw_height)
+	self._image:SetSurfaceSize(self._draw_width, self._draw_height, color)
 end
 
-function AUIPlugin.AUIDrawingBoard:ClearContent()
-	self._image:SetSurfaceSize(self._draw_width, self._draw_height)
+function AUIPlugin.AUIDrawingBoard:ClearContent(color)
+	self._image:SetSurfaceSize(self._draw_width, self._draw_height, color)
 end
 
 function AUIPlugin.AUIDrawingBoard.__getter:surface()
@@ -88,6 +90,7 @@ function AUIPlugin.AUIDrawingBoard:HandleDrag(event)
 	end
 	local x = ALittle.Math_Floor(self._draw_width * x_rate)
 	local y = ALittle.Math_Floor(self._draw_height * y_rate)
+	local surface = self._image:GetSurface(true)
 	local range = ALittle.Math_Floor((self._pan_size - 1) / 2)
 	local col = x - range
 	while true do
@@ -95,9 +98,7 @@ function AUIPlugin.AUIDrawingBoard:HandleDrag(event)
 		local row = y - range
 		while true do
 			if not(row <= y + range) then break end
-			local surface = self._image:GetSurface(true)
-			local color = 0xFFFFFFFF
-			carp.SetCarpSurfacePixel(surface, col, row, color)
+			carp.SetCarpSurfacePixel(surface, col, row, self._pan_color)
 			row = row+(1)
 		end
 		col = col+(1)

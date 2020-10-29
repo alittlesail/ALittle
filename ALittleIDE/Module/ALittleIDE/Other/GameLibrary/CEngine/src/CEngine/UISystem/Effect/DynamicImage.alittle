@@ -14,7 +14,7 @@ public class DynamicImage : DisplayObject
 
     public fun GetSurface(bool redraw) : carp.CarpSurface { return this._texture.GetSurface(redraw); }
 
-    public fun SetSurfaceSize(int width, int height) { this._texture.SetSurfaceSize(width, height); }
+    public fun SetSurfaceSize(int width, int height, int color) { this._texture.SetSurfaceSize(width, height, color); }
     public fun SetRenderMode(int mode) { this._texture.SetRenderMode(mode); }
 
     public fun Clear()

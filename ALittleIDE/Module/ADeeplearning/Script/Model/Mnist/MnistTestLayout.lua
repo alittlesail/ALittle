@@ -16,7 +16,8 @@ function ADeeplearning.MnistTestLayout:TCtor()
 		load_path = self._model_path
 	end
 	self._model:Init(load_path, nil, nil)
-	self._board:SetDrawSize(ALittle.Math_Floor(self._board.width), ALittle.Math_Floor(self._board.height))
+	self._board:SetPan(5, 0xFFFFFFFF)
+	self._board:SetDrawSize(ALittle.Math_Floor(self._board.width), ALittle.Math_Floor(self._board.height), 0xFF000000)
 	self._result_text.text = "识别结果"
 end
 
@@ -40,7 +41,7 @@ end
 
 function ADeeplearning.MnistTestLayout:HandleClearClick(event)
 	self._result_text.text = "识别结果"
-	self._board:ClearContent()
+	self._board:ClearContent(0xFF000000)
 end
 
 end

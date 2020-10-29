@@ -47,7 +47,7 @@ function AUIPlugin.AUIStatLayout:Init(point_size, draw_width, draw_height, max_v
 		self._max_value = 0
 	end
 	self._value_map = {}
-	self._image:SetSurfaceSize(self._draw_width, self._draw_height)
+	self._image:SetSurfaceSize(self._draw_width, self._draw_height, 0xFF000000)
 end
 
 function AUIPlugin.AUIStatLayout:AddValue(value)
@@ -102,7 +102,7 @@ function AUIPlugin.AUIStatLayout:ClearContent()
 		self._max_value = 0
 	end
 	self._value_map = {}
-	self._image:SetSurfaceSize(self._draw_width, self._draw_height)
+	self._image:SetSurfaceSize(self._draw_width, self._draw_height, 0xFF000000)
 end
 
 function AUIPlugin.AUIStatLayout.__getter:surface()

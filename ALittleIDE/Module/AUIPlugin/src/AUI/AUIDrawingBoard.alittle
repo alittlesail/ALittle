@@ -5,6 +5,7 @@ public class AUIDrawingBoard : ALittle.DisplayLayout
 {
     private ALittle.DynamicImage _image;
     private int _pan_size = 5;
+    private int _pan_color = 0;
     private int _draw_width = 0;
     private int _draw_height = 0;
 
@@ -19,25 +20,26 @@ public class AUIDrawingBoard : ALittle.DisplayLayout
         this._image.AddEventListener(this, this.HandleDragEnd);
     }
 
-    public fun SetPanSize(int size)
+    public fun SetPan(int size, int color)
     {
         this._pan_size = size;
         if (this._pan_size < 1) this._pan_size = 1;
+        this._pan_color = color;
     }
 
-    public fun SetDrawSize(int width, int height)
+    public fun SetDrawSize(int width, int height, int color)
     {
         this._draw_width = width;
         this._draw_height = height;
         if (this._draw_width < 0) this._draw_width = 0;
         if (this._draw_height < 0) this._draw_height = 0;
 
-        this._image.SetSurfaceSize(this._draw_width, this._draw_height);
+        this._image.SetSurfaceSize(this._draw_width, this._draw_height, color);
     }
 
-    public fun ClearContent()
+    public fun ClearContent(int color)
     {
-        this._image.SetSurfaceSize(this._draw_width, this._draw_height);
+        this._image.SetSurfaceSize(this._draw_width, this._draw_height, color);
     }
 
     public get surface() : carp.CarpSurface { return this._image.GetSurface(false); }
@@ -53,14 +55,14 @@ public class AUIDrawingBoard : ALittle.DisplayLayout
         var x = ALittle.Math_Floor(this._draw_width * x_rate);
         var y = ALittle.Math_Floor(this._draw_height * y_rate);
 
+        var surface = this._image.GetSurface(true);
+
         var range = ALittle.Math_Floor((this._pan_size - 1) / 2);
         for (var col = x - range; col <= x + range; 1)
         {
             for (var row = y - range; row <= y + range; 1)
 			{
-                var surface = this._image.GetSurface(true);
-                var color = 0xFFFFFFFF;
-                carp.SetCarpSurfacePixel(surface, col, row, color);
+                carp.SetCarpSurfacePixel(surface, col, row, this._pan_color);
             }
         }
     }

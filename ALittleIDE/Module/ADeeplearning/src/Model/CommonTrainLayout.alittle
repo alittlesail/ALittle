@@ -1,0 +1,91 @@
+
+namespace ADeeplearning;
+
+public class CommonTrainLayout : ALittle.DisplayLayout
+{
+	private ALittle.Text _total_train_count_text;
+	private ALittle.Text _cur_train_count_text;
+	private ALittle.Text _cur_right_count_text;
+	private ALittle.Text _train_round_text;
+
+	private AUIPlugin.AUIStatLayout _stat;
+
+    private ALittle.LoopFrame _loop_frame;
+    private ALittle.DisplayObject _start_button;
+    private ALittle.DisplayObject _stop_button;
+
+    public fun TCtor()
+    {
+        this._start_button.disabled = false;
+        this._stop_button.disabled = true;
+    }
+
+    private get model() : deeplearning.DeeplearningModel { return null; }
+
+    private fun Load() {}
+    private fun Save() {}
+
+    private fun HandleStartClick(ALittle.UIClickEvent event)
+    {
+        if (deeplearning.GetNumberOfGraph() > 0)
+        {
+            g_AUITool.ShowNotice("提示", "当前有图正在计算，请稍后再试");
+            return;
+        }
+
+        if (this._loop_frame != null) return;
+        this._start_button.DelayDisable();
+        this._stop_button.disabled = false;
+    
+        this._loop_frame = new ALittle.LoopFrame(bind(this.UpdateFrame, this));
+        A_WeakLoopSystem.AddUpdater(this._loop_frame);
+
+        this._total_train_count_text.text = 0;
+        this._cur_train_count_text.text = 0;
+        this._train_round_text.text = 0;
+        this._cur_right_count_text.text = 0;
+
+        this._stat.Init(1, ALittle.Math_Floor(this._stat.width), ALittle.Math_Floor(this._stat.height), 1);
+        this.Load();
+        this.model.StartTraining();
+    }
+
+    private fun HandleStopClick(ALittle.UIClickEvent event)
+    {
+        if (this._loop_frame == null) return;
+        this._start_button.disabled = false;
+        this._stop_button.DelayDisable();
+
+        if (this._loop_frame != null)
+        {
+            A_WeakLoopSystem.RemoveUpdater(this._loop_frame);
+            this._loop_frame = null;
+        }
+
+        this.model.StopTraining();
+        this.Save();
+
+        this.DispatchEvent(new ALittle.UIChangedEvent());
+    }
+
+    private fun UpdateFrame(int frame_time)
+    {
+        this.model.HandleEvent();
+
+        var has_loss = false;
+        while (this.model.HasLoss())
+        {
+            has_loss = true;
+            var loss = this.model.GetLoss();
+            this._stat.AddValue(loss);
+        }
+
+        if (has_loss)
+        {
+            this._total_train_count_text.text = this.model.GetTotalTrainCount();
+            this._cur_train_count_text.text = this.model.GetCurTrainCount();
+            this._train_round_text.text = this.model.GetTrainRound();
+            this._cur_right_count_text.text = this.model.GetCurRightCount();
+        }
+    }
+}

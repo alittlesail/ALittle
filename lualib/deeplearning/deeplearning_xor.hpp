@@ -29,90 +29,88 @@ public:
 			loader.populate(m_collection);
 		}
 
-		m_total_train_count = 4;
-		m_cur_train_count = 0;
-		m_train_round = 0;
-
 		// 重置
 		m_trainer.restart();
 	}
 
-	double Training() override
+	size_t TrainInit() override
+	{
+		m_x_values.push_back({ 1.0f, 1.0f });
+		m_y_value.push_back(-1.0f);
+
+		m_x_values.push_back({ -1.0f, -1.0f });
+		m_y_value.push_back(-1.0f);
+
+		m_x_values.push_back({ -1.0f, 1.0f });
+		m_y_value.push_back(1.0f);
+
+		m_x_values.push_back({ 1.0f, -1.0f });
+		m_y_value.push_back(1.0f);
+
+		return m_y_value.size();
+	}
+
+	void TrainRelease() override
+	{
+		m_x_values.clear();
+		m_y_value.clear();
+	}
+	
+	double Training(size_t index, size_t& right_count) override
 	{
 		if (dynet::get_number_of_active_graphs() > 0) return 0;
 		
-		std::vector<dynet::real> x_values;
-		dynet::real y_value = 0.0;
+		auto x_values = m_x_values[index];
+		float y_value = m_y_value[index];
 
 		dynet::ComputationGraph cg;
 		
 		// 获得参数表达式
-		auto W = parameter(cg, m_pW);
-		auto b = parameter(cg, m_pb);
-		auto V = parameter(cg, m_pV);
-		auto a = parameter(cg, m_pa);
+		const auto W = parameter(cg, m_pW);
+		const auto b = parameter(cg, m_pb);
+		const auto V = parameter(cg, m_pV);
+		const auto a = parameter(cg, m_pa);
 
 		// 设置输入表达式
-		x_values.resize(2, 0.0);
-		dynet::Expression x = input(cg, { 2 }, &x_values);
+		const auto x = input(cg, { 2 }, &x_values);
 		// 设置输出表达式
-		y_value = 0.0;
-		dynet::Expression y = input(cg, &y_value);
+		const auto y = input(cg, &y_value);
 		// 获得预测表达式
-		auto y_pred = V * tanh(W * x + b) + a;
+		const auto y_pred = V * tanh(W * x + b) + a;
 		// 获得损失表达式
-		auto loss_expr = squared_distance(y_pred, y);
-		
-		double loss = 0;
+		const auto loss_expr = squared_distance(y_pred, y);
 
-		for (unsigned mi = 0; mi < 4; ++mi) {
-			bool x1 = mi % 2;
-			bool x2 = (mi / 2) % 2;
-			// 设置输入值
-			x_values[0] = x1 ? 1.0f : -1.0f;
-			x_values[1] = x2 ? 1.0f : -1.0f;
-			// 设置输出值
-			y_value = (x1 != x2) ? 1.0f : -1.0f;
+		// 获取损失		
+		const double loss = as_scalar(cg.forward(loss_expr));
 
-			// 获取损失
-			loss += as_scalar(cg.forward(loss_expr));
-			// 计算反向传播
-			cg.backward(loss_expr);
-			// 更新训练
-			m_trainer.update();
-		}
+		// 计算反向传播
+		cg.backward(loss_expr);
+		// 更新训练
+		m_trainer.update();
 
-		++m_train_round;
-
-		return loss / 4;
+		return loss;
 	}
 
 	double Output(double x1, double x2)
 	{
 		if (dynet::get_number_of_active_graphs() > 0) return 0;
 		
-		std::vector<dynet::real> x_values;
-		dynet::real y_value = 0.0;
-		
-		x_values[0] = (dynet::real)x1;
-		x_values[1] = (dynet::real)x2;
+		std::vector<float> x_values;		
+		x_values[0] = static_cast<float>(x1);
+		x_values[1] = static_cast<float>(x2);
 
 		dynet::ComputationGraph cg;
 
 		// 获得参数表达式
-		auto W = parameter(cg, m_pW);
-		auto b = parameter(cg, m_pb);
-		auto V = parameter(cg, m_pV);
-		auto a = parameter(cg, m_pa);
+		const auto W = parameter(cg, m_pW);
+		const auto b = parameter(cg, m_pb);
+		const auto V = parameter(cg, m_pV);
+		const auto a = parameter(cg, m_pa);
 
 		// 设置输入表达式
-		x_values.resize(2, 0.0);
-		dynet::Expression x = input(cg, { 2 }, &x_values);
-		// 设置输出表达式
-		y_value = 0.0;
-		dynet::Expression y = input(cg, &y_value);
+		const auto x = input(cg, { 2 }, &x_values);
 		// 获得预测表达式
-		auto y_pred = V * tanh(W * x + b) + a;
+		const auto y_pred = V * tanh(W * x + b) + a;
 		
 		return as_scalar(cg.forward(y_pred));
 	}
@@ -125,6 +123,10 @@ private:
 	dynet::Parameter m_pb;
 	dynet::Parameter m_pV;
 	dynet::Parameter m_pa;
+
+private:
+	std::vector<std::vector<float>> m_x_values;
+	std::vector<float> m_y_value;
 };
 
 #endif

@@ -9,7 +9,6 @@ public class MnistTrainLayout : ALittle.DisplayLayout
 	private ALittle.Text _train_round_text;
 
 	private AUIPlugin.AUIStatLayout _stat;
-    // private deeplearning.DeeplearningMnistMLPModel _model;
     private deeplearning.DeeplearningMnistCNNModel _model;
 
     private string _model_path;
@@ -20,12 +19,10 @@ public class MnistTrainLayout : ALittle.DisplayLayout
 
     public fun TCtor()
     {
-        // this._model = new deeplearning.DeeplearningMnistMLPModel();
         this._model = new deeplearning.DeeplearningMnistCNNModel();
         this._start_button.disabled = false;
         this._stop_button.disabled = true;
 
-        // this._model_path = g_ModuleBasePath.."Other/mnist-mlp.model";
         this._model_path = g_ModuleBasePath.."Other/mnist-cnn.model";
     }
 

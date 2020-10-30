@@ -42,17 +42,6 @@ public class DeeplearningXorModel : DeeplearningModel
     public fun Output(double x1, double x2) : double {}
 }
 
-// Mnist MLP版本
-public class DeeplearningMnistMLPModel : DeeplearningModel
-{
-    // model_path 事先训练的模型数据
-    // train_image 从http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz下载的文件后的本地路径
-    // train_labels 从http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz下载的文件后的本地路径
-    public fun Init(string model_path, string train_image, string train_labels) {}
-    // 输入表面，然后预测0-9的数字
-    public fun Output(int surface) : int {}
-}
-
 // Mnist CNN版本
 public class DeeplearningMnistCNNModel : DeeplearningModel
 {

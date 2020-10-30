@@ -21,7 +21,6 @@
   <ItemGroup>
     <ClInclude Include="deeplearninglib.h" />
     <ClInclude Include="deeplearning_mnist_cnn.hpp" />
-    <ClInclude Include="deeplearning_mnist_mlp.hpp" />
     <ClInclude Include="deeplearning_model.hpp" />
     <ClInclude Include="deeplearning_xor.hpp" />
   </ItemGroup>

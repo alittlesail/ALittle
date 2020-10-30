@@ -5,17 +5,14 @@ public class MnistTestLayout : ALittle.DisplayLayout
 {
 	private ALittle.Text _result_text;
 	private AUIPlugin.AUIDrawingBoard _board;
-    // private deeplearning.DeeplearningMnistMLPModel _model;
     private deeplearning.DeeplearningMnistCNNModel _model;
 
     private string _model_path;
 
     public fun TCtor()
     {
-        // this._model_path = g_ModuleBasePath.."Other/mnist-mlp.model";
         this._model_path = g_ModuleBasePath.."Other/mnist-cnn.model";
 
-        // this._model = new deeplearning.DeeplearningMnistMLPModel();
         this._model = new deeplearning.DeeplearningMnistCNNModel();
 
         var load_path:string;

@@ -1,6 +1,9 @@
 #ifndef DEEPLEARNING_MODEL_INCLUDED
 #define DEEPLEARNING_MODEL_INCLUDED
 
+#include <random>
+
+
 #include "carp_task_consumer.hpp"
 
 class DeeplearningModel
@@ -9,81 +12,19 @@ public:
 	virtual ~DeeplearningModel() { StopTraining(); }
 
 public:
-	static int ReverseInt(int i)
-	{
-		unsigned char ch1, ch2, ch3, ch4;
-		ch1 = i & 255;
-		ch2 = (i >> 8) & 255;
-		ch3 = (i >> 16) & 255;
-		ch4 = (i >> 24) & 255;
-		return ((int)ch1 << 24) + ((int)ch2 << 16) + ((int)ch3 << 8) + ch4;
-	}
-
-	// 读取图像数据
-	// Code from https://compvisionlab.wordpress.com/2014/01/01/c-code-for-reading-mnist-data-set/ to read MNIST
-	static bool ReadMnist(const std::string& data_file, std::vector<std::vector<float>>& arr)
-	{
-		std::ifstream file(data_file, std::ios::binary);
-		if (!file.is_open()) return false;
-
-		int magic_number = 0;
-		int number_of_images = 0;
-		int n_rows = 0;
-		int n_cols = 0;
-		file.read((char*)&magic_number, sizeof(magic_number));
-		magic_number = ReverseInt(magic_number);
-		file.read((char*)&number_of_images, sizeof(number_of_images));
-		number_of_images = ReverseInt(number_of_images);
-		file.read((char*)&n_rows, sizeof(n_rows));
-		n_rows = ReverseInt(n_rows);
-		file.read((char*)&n_cols, sizeof(n_cols));
-		n_cols = ReverseInt(n_cols);
-		arr.resize(number_of_images);
-		for (int i = 0; i < number_of_images; ++i)
-		{
-			arr[i].reserve(n_rows * n_cols);
-			for (int r = 0; r < n_rows; ++r)
-			{
-				for (int c = 0; c < n_cols; ++c)
-				{
-					unsigned char temp = 0;
-					file.read((char*)&temp, sizeof(temp));
-					arr[i].push_back((float)temp);
-				}
-			}
-		}
-
-		return true;
-	}
-
-	// 读取标记数据
-	static bool ReadMnistLabels(const std::string& label_file, std::vector<unsigned>& labels)
-	{
-		std::ifstream file(label_file, std::ios::binary);
-		if (!file.is_open()) return false;
-
-		int magic_number = 0;
-		int number_of_images = 0;
-		file.read((char*)&magic_number, sizeof(magic_number));
-		magic_number = ReverseInt(magic_number);
-		file.read((char*)&number_of_images, sizeof(number_of_images));
-		number_of_images = ReverseInt(number_of_images);
-		labels.reserve(number_of_images);
-		for (int i = 0; i < number_of_images; ++i)
-		{
-			unsigned char temp = 0;
-			file.read((char*)&temp, sizeof(temp));
-			labels.push_back((unsigned)temp);
-		}
-		return true;
-	}
-
-public:
 	bool StartTraining()
 	{
 		StopTraining();
 
 		if (dynet::get_number_of_active_graphs() > 0) return false;
+
+		m_total_train_count = 0;
+		m_cur_train_count = 0;
+		m_train_round = 0;
+		m_cur_right_count = 0;
+		
+		m_train_order.clear();
+		m_train_index = 0;
 
 		m_run = true;
 		m_thread = new std::thread(&DeeplearningModel::Run, this);
@@ -106,12 +47,38 @@ public:
 
 	void Run()
 	{
-		TrainInit();
+		m_total_train_count = TrainInit();
+		if (m_total_train_count <= 0) return;
+
+		// 计算批次数量
+		m_train_order.resize(m_total_train_count);
+		for (size_t i = 0; i < m_train_order.size(); ++i) m_train_order[i] = i;
+		std::shuffle(m_train_order.begin(), m_train_order.end(), std::mt19937(std::random_device()()));
+
 		while (m_run)
 		{
-			auto loss = Training();
+			// 计算下一轮
+			if (m_train_index >= m_train_order.size())
+			{
+				m_train_round += 1;
+				m_cur_train_count = 0;
+				m_cur_right_count = 0;
+				m_train_index = 0;
+			}
+
+			// 训练获得结果
+			size_t right_count = 0;
+			auto loss = Training(m_train_order[m_train_index], right_count);
+
+			// 训练下标
+			m_train_index += 1;
+			m_cur_train_count += 1;
+			m_cur_right_count += right_count;
+			
 			m_consumer.PushEvent(std::bind(&DeeplearningModel::HandleTrainResult, this, loss));
 		}
+
+		m_train_order.clear();
 		TrainRelease();
 	}
 
@@ -141,24 +108,28 @@ public:
 		saver.save(m_collection);
 	}
 
-	virtual void TrainInit() {}
+	virtual size_t TrainInit() { return 0; }
 	virtual void TrainRelease() {}
-	virtual double Training() { return 0.0; }
+	virtual double Training(size_t index, size_t& right_count) { return 0.0; }
 
-	virtual int GetTotalTrainCount() { return m_total_train_count; }
-	virtual int GetCurTrainCount() { return m_cur_train_count; }
-	virtual int GetTrainRound() { return m_train_round; }
-	virtual int GetCurRightCount() { return m_cur_right_count; }
+	virtual size_t GetTotalTrainCount() { return m_total_train_count; }
+	virtual size_t GetCurTrainCount() { return m_cur_train_count; }
+	virtual size_t GetTrainRound() { return m_train_round; }
+	virtual size_t GetCurRightCount() { return m_cur_right_count; }
 	
 protected:
 	dynet::ParameterCollection m_collection;
 
-protected:
-	int m_total_train_count = 0;
-	int m_cur_train_count = 0;
-	int m_cur_right_count = 0;	// 正确数量
-	int m_train_round = 0;
+private:
+	size_t m_total_train_count = 0;
+	size_t m_cur_train_count = 0;
+	size_t m_cur_right_count = 0;	// 正确数量
+	size_t m_train_round = 0;
 	std::list<double> m_loss_list;
+
+private:
+	std::vector<size_t> m_train_order;
+	size_t m_train_index = 0;
 
 private:
 	std::thread* m_thread = nullptr;

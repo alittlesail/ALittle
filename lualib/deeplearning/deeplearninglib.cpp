@@ -8,7 +8,6 @@ extern "C" {
 #include <LuaBridge/LuaBridge.h>
 
 #include "deeplearning_xor.hpp"
-#include "deeplearning_mnist_mlp.hpp"
 #include "deeplearning_mnist_cnn.hpp"
 
 void DyNetInitialize()
@@ -50,11 +49,6 @@ int luaopen_deeplearning(lua_State* l_state) {
 		.addConstructor<void(*)()>()
 		.addFunction("Init", &DeeplearningXorModel::Init)
 		.addFunction("Output", &DeeplearningXorModel::Output)
-		.endClass()
-		.deriveClass<DeeplearningMnistMLPModel, DeeplearningModel>("DeeplearningMnistMLPModel")
-		.addConstructor<void(*)()>()
-		.addFunction("Init", &DeeplearningMnistMLPModel::Init)
-		.addFunction("Output", &DeeplearningMnistMLPModel::Output)
 		.endClass()
 		.deriveClass<DeeplearningMnistCNNModel, DeeplearningModel>("DeeplearningMnistCNNModel")
 		.addConstructor<void(*)()>()

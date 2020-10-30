@@ -135,11 +135,14 @@ function ALittleIDE.IDEUITabChild:Ctor(ctrl_sys, module, name, save)
 	___rawset(self, "_attr_screen", ALittleIDE.g_Control:CreateControl("ide_edit_attr_screen", self))
 	___rawset(self, "_anti_panel", ALittleIDE.g_Control:CreateControl("ide_edit_anti_panel", self))
 	___rawset(self, "_tree_object", nil)
-	self._tab_screen.container = ALittle.DisplayGroup(ALittleIDE.g_Control)
 	self._tab_screen.container.scale_x = 1
 	self._tab_screen.container.scale_y = 1
 	self._tab_container.width = ALittleIDE.g_IDEProject.project.config:GetConfig("default_show_width", 800)
 	self._tab_container.height = ALittleIDE.g_IDEProject.project.config:GetConfig("default_show_height", 600)
+	self._tab_container.x = 100
+	self._tab_container.y = 100
+	self._tab_rb_quad.x = self._tab_container.x + self._tab_container.width + 100
+	self._tab_rb_quad.y = self._tab_container.y + self._tab_container.height + 100
 	self._tab_screen:AdjustScrollBar()
 	self._tab_select_container.visible = ALittleIDE.g_IDECenter.center.singleselect
 	self._tab_handle_quad:AddEventListener(___all_struct[1883782801], self, self.HandleHandleContainerLButtonDown)
@@ -202,7 +205,6 @@ function ALittleIDE.IDEUITabChild:OnOpen()
 	ALittleIDE.g_IDECenter.center.control_tree:AddChild(self._tree_screen)
 	ALittleIDE.g_IDEAttrControlDialog.attr_container:AddChild(self._attr_screen)
 	ALittleIDE.g_IDECenter.center.control_anti:AddChild(self._anti_panel)
-	self:ShowInCenter()
 end
 
 function ALittleIDE.IDEUITabChild:ShowInCenter()

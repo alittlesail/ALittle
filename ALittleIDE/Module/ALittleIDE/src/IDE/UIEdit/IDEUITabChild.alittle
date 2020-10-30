@@ -58,6 +58,7 @@ public class IDEUITabChild : IDETabChild
 	private IDEUITreeLogic _tree_object;              // 根节点
 
 	private ALittle.DisplayLayout _tab_container;               // 总容器
+    private ALittle.DisplayObject _tab_rb_quad;
 	
     private ALittle.DisplayLayout _tab_select_container;        // 选中部分容器
 	private ALittle.DisplayLayout _tab_handle_quad;             // 用于感应鼠标操作的Quad
@@ -101,11 +102,14 @@ public class IDEUITabChild : IDETabChild
         this._tree_object = null; // 树形结构根节点
 	
 		// 初始化容器
-		this._tab_screen.container = new ALittle.DisplayGroup(g_Control);
 		this._tab_screen.container.scale_x = 1;
 		this._tab_screen.container.scale_y = 1;
 		this._tab_container.width = g_IDEProject.project.config.GetConfig("default_show_width", 800);
 		this._tab_container.height = g_IDEProject.project.config.GetConfig("default_show_height", 600);
+        this._tab_container.x = 100;
+        this._tab_container.y = 100;
+        this._tab_rb_quad.x = this._tab_container.x + this._tab_container.width + 100;
+        this._tab_rb_quad.y = this._tab_container.y + this._tab_container.height + 100;
 		this._tab_screen.AdjustScrollBar();
 	
 		// 控件层
@@ -188,7 +192,7 @@ public class IDEUITabChild : IDETabChild
 		g_IDECenter.center.control_tree.AddChild(this._tree_screen);
 		g_IDEAttrControlDialog.attr_container.AddChild(this._attr_screen);
 		g_IDECenter.center.control_anti.AddChild(this._anti_panel);
-        this.ShowInCenter();
+        // this.ShowInCenter();
     }
 
     // 调整到中心位置

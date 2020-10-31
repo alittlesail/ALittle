@@ -21,18 +21,6 @@ public:
 	}
 
 public:
-	void Init(const char* model_path)
-	{
-		if (model_path != nullptr)
-		{
-			dynet::TextFileLoader loader(model_path);
-			loader.populate(m_collection);
-		}
-
-		// ÖØÖÃ
-		m_trainer.restart();
-	}
-
 	size_t TrainInit() override
 	{
 		m_x_values.push_back({ 1.0f, 1.0f });
@@ -47,6 +35,7 @@ public:
 		m_x_values.push_back({ 1.0f, -1.0f });
 		m_y_value.push_back(1.0f);
 
+		m_trainer.restart();
 		return m_y_value.size();
 	}
 

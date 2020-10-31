@@ -24,26 +24,13 @@ public:
 	}
 
 public:
-	void Init(const char* model_path, const char* train_image, const char* train_labels)
+	void SetTrainDataPath(const char* train_image, const char* train_labels)
 	{
-		// 停止训练
-		StopTraining();
-
-		// 加载模型
-		if (model_path != nullptr)
-		{
-			dynet::TextFileLoader loader(model_path);
-			loader.populate(m_collection);
-		}
-
 		// 保存训练数据路径
 		m_train_image_path.clear();
 		m_train_labels_path.clear();
 		if (train_image) m_train_image_path = train_image;
 		if (train_labels) m_train_labels_path = train_labels;
-
-		// 重置
-		m_trainer.restart();
 	}
 
 	dynet::Expression Build(dynet::ComputationGraph& cg, dynet::Expression x, bool dropout) const
@@ -92,6 +79,8 @@ public:
 		m_label_list.clear();
 		ReadLabel(m_train_labels_path, m_label_list);
 
+		// 重置
+		m_trainer.restart();
 		return m_image_list.size();
 	}
 

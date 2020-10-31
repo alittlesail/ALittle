@@ -11,22 +11,11 @@ ADeeplearning.MnistTrainLayout = Lua.Class(ADeeplearning.CommonTrainLayout, "ADe
 function ADeeplearning.MnistTrainLayout:TCtor()
 	self._model = deeplearning.DeeplearningMnistCNNModel()
 	self._model_path = ADeeplearning.g_ModuleBasePath .. "Other/mnist-cnn.model"
+	self._model:SetTrainDataPath(ADeeplearning.g_ModuleBasePath .. "Data/train-images.idx3-ubyte", ADeeplearning.g_ModuleBasePath .. "Data/train-labels.idx1-ubyte")
 end
 
 function ADeeplearning.MnistTrainLayout.__getter:model()
 	return self._model
-end
-
-function ADeeplearning.MnistTrainLayout:Load()
-	local load_path
-	if ALittle.File_GetFileAttr(self._model_path) ~= nil then
-		load_path = self._model_path
-	end
-	self._model:Init(load_path, ADeeplearning.g_ModuleBasePath .. "Data/train-images.idx3-ubyte", ADeeplearning.g_ModuleBasePath .. "Data/train-labels.idx1-ubyte")
-end
-
-function ADeeplearning.MnistTrainLayout:Save()
-	self._model:Save(self._model_path)
 end
 
 end

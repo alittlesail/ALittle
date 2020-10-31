@@ -30,12 +30,6 @@ function ADeeplearning.CommonTrainLayout.__getter:model()
 	return nil
 end
 
-function ADeeplearning.CommonTrainLayout:Load()
-end
-
-function ADeeplearning.CommonTrainLayout:Save()
-end
-
 function ADeeplearning.CommonTrainLayout:HandleStartClick(event)
 	if deeplearning.GetNumberOfGraph() > 0 then
 		g_AUITool:ShowNotice("提示", "当前有图正在计算，请稍后再试")
@@ -53,7 +47,7 @@ function ADeeplearning.CommonTrainLayout:HandleStartClick(event)
 	self._train_round_text.text = 0
 	self._cur_right_count_text.text = 0
 	self._stat:Init(1, ALittle.Math_Floor(self._stat.width), ALittle.Math_Floor(self._stat.height), 1)
-	self:Load()
+	self.model:Load(self._model_path)
 	self.model:StartTraining()
 end
 
@@ -68,7 +62,7 @@ function ADeeplearning.CommonTrainLayout:HandleStopClick(event)
 		self._loop_frame = nil
 	end
 	self.model:StopTraining()
-	self:Save()
+	self.model:Save(self._model_path)
 	self:DispatchEvent(___all_struct[958494922], {})
 end
 

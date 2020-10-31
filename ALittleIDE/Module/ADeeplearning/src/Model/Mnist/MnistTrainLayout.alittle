@@ -4,25 +4,13 @@ namespace ADeeplearning;
 public class MnistTrainLayout : CommonTrainLayout
 {
     private deeplearning.DeeplearningMnistCNNModel _model;
-    private string _model_path;
 
     public fun TCtor()
     {
         this._model = new deeplearning.DeeplearningMnistCNNModel();
         this._model_path = g_ModuleBasePath.."Other/mnist-cnn.model";
+        this._model.SetTrainDataPath(g_ModuleBasePath.."Data/train-images.idx3-ubyte", g_ModuleBasePath.."Data/train-labels.idx1-ubyte");
     }
 
     public get model() : deeplearning.DeeplearningModel { return this._model; }
-
-    public fun Load()
-    {
-        var load_path:string;
-        if (ALittle.File_GetFileAttr(this._model_path) != null) load_path = this._model_path;
-        this._model.Init(load_path, g_ModuleBasePath.."Data/train-images.idx3-ubyte", g_ModuleBasePath.."Data/train-labels.idx1-ubyte");
-    }
-
-    public fun Save()
-    {
-        this._model.Save(this._model_path);
-    }
 }

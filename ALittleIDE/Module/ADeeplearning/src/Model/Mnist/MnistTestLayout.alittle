@@ -8,16 +8,15 @@ public class MnistTestLayout : ALittle.DisplayLayout
     private deeplearning.DeeplearningMnistCNNModel _model;
 
     private string _model_path;
+    private bool _loaded = false;
 
     public fun TCtor()
     {
         this._model_path = g_ModuleBasePath.."Other/mnist-cnn.model";
-
         this._model = new deeplearning.DeeplearningMnistCNNModel();
 
         var load_path:string;
         if (ALittle.File_GetFileAttr(this._model_path) != null) load_path = this._model_path;
-        this._model.Init(load_path, null, null);
         this._board.SetPan(5, 0xFFFFFFFF);
         this._board.SetDrawSize(ALittle.Math_Floor(this._board.width), ALittle.Math_Floor(this._board.height), 0xFF000000);
         this._result_text.text = "识别结果";
@@ -25,9 +24,7 @@ public class MnistTestLayout : ALittle.DisplayLayout
 
     public fun Reset()
     {
-        var load_path:string;
-        if (ALittle.File_GetFileAttr(this._model_path) != null) load_path = this._model_path;
-        this._model.Init(this._model_path, null, null);
+        this._model.Load(this._model_path);
     }
 
     private fun HandleChanged(ALittle.UIChangedEvent event)
@@ -36,6 +33,12 @@ public class MnistTestLayout : ALittle.DisplayLayout
         {
             g_AUITool.ShowNotice("提示", "当前有图正在计算，请稍后再试");
             return;
+        }
+
+        if (!this._loaded)
+        {
+            this._model.Load(this._model_path);
+            this._loaded = true;
         }
 
         var address = carp.GetCarpSurfaceAddress(this._board.surface);

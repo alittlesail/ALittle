@@ -8,6 +8,8 @@ public class CommonTrainLayout : ALittle.DisplayLayout
 	private ALittle.Text _cur_right_count_text;
 	private ALittle.Text _train_round_text;
 
+    private string _model_path;
+
 	private AUIPlugin.AUIStatLayout _stat;
 
     private ALittle.LoopFrame _loop_frame;
@@ -21,9 +23,6 @@ public class CommonTrainLayout : ALittle.DisplayLayout
     }
 
     private get model() : deeplearning.DeeplearningModel { return null; }
-
-    private fun Load() {}
-    private fun Save() {}
 
     private fun HandleStartClick(ALittle.UIClickEvent event)
     {
@@ -46,7 +45,7 @@ public class CommonTrainLayout : ALittle.DisplayLayout
         this._cur_right_count_text.text = 0;
 
         this._stat.Init(1, ALittle.Math_Floor(this._stat.width), ALittle.Math_Floor(this._stat.height), 1);
-        this.Load();
+        this.model.Load(this._model_path);
         this.model.StartTraining();
     }
 
@@ -63,7 +62,7 @@ public class CommonTrainLayout : ALittle.DisplayLayout
         }
 
         this.model.StopTraining();
-        this.Save();
+        this.model.Save(this._model_path);
 
         this.DispatchEvent(new ALittle.UIChangedEvent());
     }

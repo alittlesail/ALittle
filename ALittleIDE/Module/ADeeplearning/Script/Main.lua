@@ -36,8 +36,7 @@ function ADeeplearning.__Module_Setup(layer_group, control, module_base_path, sc
 		require("deeplearning")
 		deeplearning.Initialize()
 	end
-	RequireFromPaths(script_base_path, "Model/", {"CommonTrainLayout.alittle", "Mnist/MnistTrainLayout.alittle", "Mnist/MnistTestLayout.alittle"
-		, "Mnist/MnistLayout.alittle"})
+	RequireFromPaths(script_base_path, "Model/", {"CommonTrainLayout.alittle", "MnistLayout.alittle"})
 	Require(script_base_path, "GCenter")
 	ADeeplearning.g_GCenter:Setup()
 end
@@ -70,8 +69,7 @@ function ADeeplearning.__Plugin_Setup(control, module_base_path, script_base_pat
 		require("deeplearning")
 		deeplearning.Initialize()
 	end
-	RequireFromPaths(script_base_path, "Mnist/", {"CommonTrainLayout.alittle", "Mnist/MnistTrainLayout.alittle", "Mnist/MnistTestLayout.alittle"
-		, "Mnist/MnistLayout.alittle"})
+	RequireFromPaths(script_base_path, "Mnist/", {"CommonTrainLayout.alittle", "MnistLayout.alittle"})
 end
 
 function ADeeplearning.__Plugin_Shutdown()

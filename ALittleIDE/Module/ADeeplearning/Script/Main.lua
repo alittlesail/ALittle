@@ -6,7 +6,7 @@ local ___ipairs = ipairs
 
 
 function ADeeplearning.__Browser_Setup(layer_group, control, module_base_path, script_base_path, debug)
-	local window_width, window_height, flag, scale = ALittle.System_CalcPortrait(800, 600, 0)
+	local window_width, window_height, flag, scale = ALittle.System_CalcPortrait(950, 600, 0)
 	ALittle.System_CreateView("深度学习", window_width, window_height, flag, scale)
 	ALittle.System_SetViewIcon(module_base_path .. "Other/ic_launcher.png")
 	A_ModuleSystem:LoadModule(module_base_path, "ADeeplearning")
@@ -36,7 +36,7 @@ function ADeeplearning.__Module_Setup(layer_group, control, module_base_path, sc
 		require("deeplearning")
 		deeplearning.Initialize()
 	end
-	RequireFromPaths(script_base_path, "Model/", {"CommonTrainLayout.alittle", "MnistLayout.alittle"})
+	RequireFromPaths(script_base_path, "Model/", {"CommonTrainLayout.alittle", "XorLayout.alittle", "MnistLayout.alittle"})
 	Require(script_base_path, "GCenter")
 	ADeeplearning.g_GCenter:Setup()
 end
@@ -69,7 +69,7 @@ function ADeeplearning.__Plugin_Setup(control, module_base_path, script_base_pat
 		require("deeplearning")
 		deeplearning.Initialize()
 	end
-	RequireFromPaths(script_base_path, "Mnist/", {"CommonTrainLayout.alittle", "MnistLayout.alittle"})
+	RequireFromPaths(script_base_path, "Mnist/", {"CommonTrainLayout.alittle", "XorLayout.alittle", "MnistLayout.alittle"})
 end
 
 function ADeeplearning.__Plugin_Shutdown()

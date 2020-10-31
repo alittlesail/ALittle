@@ -35,13 +35,13 @@ function ADeeplearning.CommonTrainLayout:HandleStartClick(event)
 		g_AUITool:ShowNotice("提示", "当前有图正在计算，请稍后再试")
 		return
 	end
-	if self._loop_frame ~= nil then
+	if self._loop ~= nil then
 		return
 	end
 	self._start_button:DelayDisable()
 	self._stop_button.disabled = false
-	self._loop_frame = ALittle.LoopFrame(Lua.Bind(self.UpdateFrame, self))
-	A_WeakLoopSystem:AddUpdater(self._loop_frame)
+	self._loop = ALittle.LoopFrame(Lua.Bind(self.UpdateFrame, self))
+	A_WeakLoopSystem:AddUpdater(self._loop)
 	self._total_train_count_text.text = 0
 	self._cur_train_count_text.text = 0
 	self._train_round_text.text = 0
@@ -52,14 +52,14 @@ function ADeeplearning.CommonTrainLayout:HandleStartClick(event)
 end
 
 function ADeeplearning.CommonTrainLayout:HandleStopClick(event)
-	if self._loop_frame == nil then
+	if self._loop == nil then
 		return
 	end
 	self._start_button.disabled = false
 	self._stop_button:DelayDisable()
-	if self._loop_frame ~= nil then
-		A_WeakLoopSystem:RemoveUpdater(self._loop_frame)
-		self._loop_frame = nil
+	if self._loop ~= nil then
+		A_WeakLoopSystem:RemoveUpdater(self._loop)
+		self._loop = nil
 	end
 	self.model:StopTraining()
 	self.model:Save(self._model_path)

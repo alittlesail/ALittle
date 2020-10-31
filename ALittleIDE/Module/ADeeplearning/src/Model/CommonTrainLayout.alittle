@@ -12,7 +12,7 @@ public class CommonTrainLayout : ALittle.DisplayLayout
 
 	private AUIPlugin.AUIStatLayout _stat;
 
-    private ALittle.LoopFrame _loop_frame;
+    private ALittle.LoopFrame _loop;
     private ALittle.DisplayObject _start_button;
     private ALittle.DisplayObject _stop_button;
 
@@ -32,12 +32,12 @@ public class CommonTrainLayout : ALittle.DisplayLayout
             return;
         }
 
-        if (this._loop_frame != null) return;
+        if (this._loop != null) return;
         this._start_button.DelayDisable();
         this._stop_button.disabled = false;
     
-        this._loop_frame = new ALittle.LoopFrame(bind(this.UpdateFrame, this));
-        A_WeakLoopSystem.AddUpdater(this._loop_frame);
+        this._loop = new ALittle.LoopFrame(bind(this.UpdateFrame, this));
+        A_WeakLoopSystem.AddUpdater(this._loop);
 
         this._total_train_count_text.text = 0;
         this._cur_train_count_text.text = 0;
@@ -51,14 +51,14 @@ public class CommonTrainLayout : ALittle.DisplayLayout
 
     private fun HandleStopClick(ALittle.UIClickEvent event)
     {
-        if (this._loop_frame == null) return;
+        if (this._loop == null) return;
         this._start_button.disabled = false;
         this._stop_button.DelayDisable();
 
-        if (this._loop_frame != null)
+        if (this._loop != null)
         {
-            A_WeakLoopSystem.RemoveUpdater(this._loop_frame);
-            this._loop_frame = null;
+            A_WeakLoopSystem.RemoveUpdater(this._loop);
+            this._loop = null;
         }
 
         this.model.StopTraining();

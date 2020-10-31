@@ -8,7 +8,7 @@ public async static __Browser_Setup(ALittle.DisplayLayout layer_group
                               , string debug)
 {
 	// 创建窗口
-	var window_width, window_height, flag, scale = ALittle.System_CalcPortrait(800, 600, 0);
+	var window_width, window_height, flag, scale = ALittle.System_CalcPortrait(950, 600, 0);
 	ALittle.System_CreateView("深度学习", window_width, window_height, flag, scale);
 	ALittle.System_SetViewIcon(module_base_path.."Other/ic_launcher.png");
 

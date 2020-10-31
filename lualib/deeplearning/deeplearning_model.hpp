@@ -89,6 +89,8 @@ public:
 		}
 
 		m_train_order.clear();
+		m_loss_list.clear();
+		m_right_list.clear();
 		TrainRelease();
 	}
 

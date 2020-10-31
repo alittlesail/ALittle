@@ -43,10 +43,6 @@ function ADeeplearning.MnistLayout:TCtor()
 	self._train:AddEventListener(___all_struct[958494922], self, self.HandleTrainChanged)
 	self._model_path = ADeeplearning.g_ModuleBasePath .. "Other/mnist-cnn.model"
 	self._model = deeplearning.DeeplearningMnistCNNModel()
-	local load_path
-	if ALittle.File_GetFileAttr(self._model_path) ~= nil then
-		load_path = self._model_path
-	end
 	self._board:SetPan(5, 0xFFFFFFFF)
 	self._board:SetDrawSize(ALittle.Math_Floor(self._board.width), ALittle.Math_Floor(self._board.height), 0xFF000000)
 	self._result_text.text = "识别结果"

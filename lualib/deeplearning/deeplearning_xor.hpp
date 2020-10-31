@@ -87,7 +87,7 @@ public:
 	{
 		if (dynet::get_number_of_active_graphs() > 0) return 0;
 		
-		std::vector<float> x_values;		
+		std::vector<float> x_values(2);
 		x_values[0] = static_cast<float>(x1);
 		x_values[1] = static_cast<float>(x2);
 

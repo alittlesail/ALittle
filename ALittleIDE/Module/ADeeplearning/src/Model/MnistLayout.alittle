@@ -33,8 +33,6 @@ protected class MnistLayout : ALittle.DisplayLayout
         this._model_path = g_ModuleBasePath.."Other/mnist-cnn.model";
         this._model = new deeplearning.DeeplearningMnistCNNModel();
 
-        var load_path:string;
-        if (ALittle.File_GetFileAttr(this._model_path) != null) load_path = this._model_path;
         this._board.SetPan(5, 0xFFFFFFFF);
         this._board.SetDrawSize(ALittle.Math_Floor(this._board.width), ALittle.Math_Floor(this._board.height), 0xFF000000);
         this._result_text.text = "识别结果";

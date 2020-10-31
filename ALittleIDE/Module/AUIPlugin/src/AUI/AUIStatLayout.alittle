@@ -11,7 +11,8 @@ public class AUIStatLayout : ALittle.DisplayLayout
     private int _min_index = 0;
     private int _max_index = 0;
     private double _max_value = 0;
-    private Map<int, double> _value_map = new Map<int, double>();
+    private Map<int, double> _loss_map = new Map<int, double>();
+    private Map<int, bool> _right_map = new Map<int, bool>();
 
     private fun TCtor()
     {
@@ -35,12 +36,13 @@ public class AUIStatLayout : ALittle.DisplayLayout
         this._max_index = 0;
         this._max_value = max_value;
         if (this._max_value < 0) this._max_value = 0;
-        this._value_map = new Map<int, double>();
+        this._loss_map = new Map<int, double>();
+        this._right_map = new Map<int, bool>();
 
         this._image.SetSurfaceSize(this._draw_width, this._draw_height, 0xFF000000);
     }
 
-    public fun AddValue(double value)
+    public fun AddValue(double loss, bool right)
     {
         if (this._max_index - this._min_index < ALittle.Math_Floor(this._draw_width / this._point_size))
         {
@@ -48,14 +50,16 @@ public class AUIStatLayout : ALittle.DisplayLayout
         }
         else
         {
-            this._value_map[this._min_index] = null;
+            this._loss_map[this._min_index] = null;
+            this._right_map[this._min_index] = null;
             this._min_index += 1;
             this._max_index += 1;
             var surface = this._image.GetSurface(true);
             carp.TransferCarpSurface(surface, "left", this._point_size);
         }
 
-        this._value_map[this._max_index] = value;
+        this._loss_map[this._max_index] = loss;
+        this._right_map[this._max_index] = right;
 
         var color = 0xFFFFFFFF;
         
@@ -65,11 +69,14 @@ public class AUIStatLayout : ALittle.DisplayLayout
         var y = 0;
         if (this._max_value != 0)
         {
-            var rate = value / this._max_value;
+            var rate = loss / this._max_value;
             if (rate > 1)
                 color = 0xFF0000FF;
             elseif (rate < 0.00001)
-            	color = 0xFF00FF00;
+            	color = 0xFF00FFFF;
+
+            if (right)
+                color = 0xFF00FF00;
             y = ALittle.Math_Floor(rate * this._draw_height);
             if (y > this._draw_height - this._point_size) y = this._draw_height - this._point_size;
         }
@@ -91,7 +98,8 @@ public class AUIStatLayout : ALittle.DisplayLayout
         this._max_index = 0;
         this._max_value = this._max_value;
         if (this._max_value < 0) this._max_value = 0;
-        this._value_map = new Map<int, double>();
+        this._loss_map = new Map<int, double>();
+        this._right_map = new Map<int, bool>();
         this._image.SetSurfaceSize(this._draw_width, this._draw_height, 0xFF000000);
     }
 

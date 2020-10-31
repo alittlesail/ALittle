@@ -73,11 +73,12 @@ public class CommonTrainLayout : ALittle.DisplayLayout
         this.model.HandleEvent();
 
         var has_loss = false;
-        while (this.model.HasLoss())
+        while (this.model.HasResult())
         {
             has_loss = true;
             var loss = this.model.GetLoss();
-            this._stat.AddValue(loss);
+            var right = this.model.GetRight();
+            this._stat.AddValue(loss, right);
         }
 
         if (has_loss)

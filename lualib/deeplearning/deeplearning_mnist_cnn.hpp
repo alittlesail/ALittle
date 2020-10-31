@@ -101,7 +101,7 @@ public:
 		m_label_list.clear();
 	}
 
-	double Training(size_t index, size_t& right_count) override
+	double Training(size_t index, bool& right) override
 	{
 		if (dynet::get_number_of_active_graphs() > 0) return 0;
 		
@@ -114,7 +114,7 @@ public:
 
 		// 预测
 		const auto label = Prediction(cg, output);
-		if (label == m_label_list[index]) right_count = 1;
+		right = label == static_cast<int>(m_label_list[index]);
 		
 		// 构建 负对数似然 模型
 		const auto loss_expr = dynet::pickneglogsoftmax(output, m_label_list[index]);

@@ -16,7 +16,8 @@ function AUIPlugin.AUIStatLayout:Ctor()
 	___rawset(self, "_min_index", 0)
 	___rawset(self, "_max_index", 0)
 	___rawset(self, "_max_value", 0)
-	___rawset(self, "_value_map", {})
+	___rawset(self, "_loss_map", {})
+	___rawset(self, "_right_map", {})
 end
 
 function AUIPlugin.AUIStatLayout:TCtor()
@@ -46,21 +47,24 @@ function AUIPlugin.AUIStatLayout:Init(point_size, draw_width, draw_height, max_v
 	if self._max_value < 0 then
 		self._max_value = 0
 	end
-	self._value_map = {}
+	self._loss_map = {}
+	self._right_map = {}
 	self._image:SetSurfaceSize(self._draw_width, self._draw_height, 0xFF000000)
 end
 
-function AUIPlugin.AUIStatLayout:AddValue(value)
+function AUIPlugin.AUIStatLayout:AddValue(loss, right)
 	if self._max_index - self._min_index < ALittle.Math_Floor(self._draw_width / self._point_size) then
 		self._max_index = self._max_index + (1)
 	else
-		self._value_map[self._min_index] = nil
+		self._loss_map[self._min_index] = nil
+		self._right_map[self._min_index] = nil
 		self._min_index = self._min_index + (1)
 		self._max_index = self._max_index + (1)
 		local surface = self._image:GetSurface(true)
 		carp.TransferCarpSurface(surface, "left", self._point_size)
 	end
-	self._value_map[self._max_index] = value
+	self._loss_map[self._max_index] = loss
+	self._right_map[self._max_index] = right
 	local color = 0xFFFFFFFF
 	local x = (self._max_index - self._min_index) * self._point_size
 	if x > self._draw_width - self._point_size then
@@ -68,10 +72,13 @@ function AUIPlugin.AUIStatLayout:AddValue(value)
 	end
 	local y = 0
 	if self._max_value ~= 0 then
-		local rate = value / self._max_value
+		local rate = loss / self._max_value
 		if rate > 1 then
 			color = 0xFF0000FF
 		elseif rate < 0.00001 then
+			color = 0xFF00FFFF
+		end
+		if right then
 			color = 0xFF00FF00
 		end
 		y = ALittle.Math_Floor(rate * self._draw_height)
@@ -101,7 +108,8 @@ function AUIPlugin.AUIStatLayout:ClearContent()
 	if self._max_value < 0 then
 		self._max_value = 0
 	end
-	self._value_map = {}
+	self._loss_map = {}
+	self._right_map = {}
 	self._image:SetSurfaceSize(self._draw_width, self._draw_height, 0xFF000000)
 end
 

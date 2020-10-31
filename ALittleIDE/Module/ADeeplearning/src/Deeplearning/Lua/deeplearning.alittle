@@ -18,9 +18,11 @@ public class DeeplearningModel
     // 获取数据
     public fun HandleEvent() {}
     // 是否还有数据
-    public fun HasLoss() : bool {}
+    public fun HasResult() : bool {}
     // 获取loss
     public fun GetLoss() : double {}
+    // 获取是否正确
+    public fun GetRight() : bool {}
 
     // 获取训练总数
     public fun GetTotalTrainCount() : int {}

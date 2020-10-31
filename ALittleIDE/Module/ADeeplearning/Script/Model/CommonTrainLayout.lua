@@ -75,10 +75,11 @@ end
 function ADeeplearning.CommonTrainLayout:UpdateFrame(frame_time)
 	self.model:HandleEvent()
 	local has_loss = false
-	while self.model:HasLoss() do
+	while self.model:HasResult() do
 		has_loss = true
 		local loss = self.model:GetLoss()
-		self._stat:AddValue(loss)
+		local right = self.model:GetRight()
+		self._stat:AddValue(loss, right)
 	end
 	if has_loss then
 		self._total_train_count_text.text = self.model:GetTotalTrainCount()

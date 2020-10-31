@@ -56,7 +56,7 @@ public:
 		m_y_value.clear();
 	}
 	
-	double Training(size_t index, size_t& right_count) override
+	double Training(size_t index, bool& right) override
 	{
 		if (dynet::get_number_of_active_graphs() > 0) return 0;
 		
@@ -77,6 +77,9 @@ public:
 		const auto y = input(cg, &y_value);
 		// 获得预测表达式
 		const auto y_pred = V * tanh(W * x + b) + a;
+		
+		right = std::fabs(as_scalar(cg.forward(y_pred)) - y_value) < 0.00001f;
+		
 		// 获得损失表达式
 		const auto loss_expr = squared_distance(y_pred, y);
 

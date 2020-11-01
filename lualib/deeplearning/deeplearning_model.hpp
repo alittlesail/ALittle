@@ -4,6 +4,10 @@
 #include <random>
 #include <vector>
 
+#include "dynet/training.h"
+#include "dynet/expr.h"
+#include "dynet/model.h"
+
 #include "carp_task_consumer.hpp"
 #include "carp_message.hpp"
 

@@ -1,13 +1,20 @@
-#ifndef DEEPLEARNING_MNIST_CNN_INCLUDED
-#define DEEPLEARNING_MNIST_CNN_INCLUDED
+#ifndef DEEPLEARNING_SPEECH_INCLUDED
+#define DEEPLEARNING_SPEECH_INCLUDED
 
+#include "other/mfcc.h"
 #include "deeplearning_model.hpp"
-#include "carp_surface.hpp"
+#include <fstream>
 
-class DeeplearningMnistCNNModel : public DeeplearningModel
+#define _MFCCData 0
+#define _SpeechData 0
+
+CARP_MESSAGE_MACRO(MFCCData, std::vector<std::vector<float>>, mfcc, std::string, sentence, std::string, phoneme);
+CARP_MESSAGE_MACRO(SpeechData, std::vector<MFCCData>, data_list);
+
+class DeeplearningSpeechModel : public DeeplearningModel
 {
 public:
-	DeeplearningMnistCNNModel() : m_trainer(m_collection)
+	DeeplearningSpeechModel() : m_trainer(m_collection)
 	{
 		m_pConv1 = m_collection.add_parameters({ 5, 5, 1, 32 });
 		m_pB1 = m_collection.add_parameters({ 32, });
@@ -19,13 +26,55 @@ public:
 	}
 
 public:
-	void SetTrainDataPath(const char* train_image, const char* train_labels)
+	bool Wav2MFCC(const char* desc_path, const char* wav_base_path, const char* out_path)
+	{
+		std::ifstream desc_file(desc_path);
+		if (!desc_file.is_open()) return false;
+
+		SpeechData speech_data;
+		while (true)
+		{
+			std::string file;
+			if (!std::getline(desc_file, file)) break;
+			std::string sentence;
+			if (!std::getline(desc_file, sentence)) break;
+			std::string phoneme;
+			if (!std::getline(desc_file, phoneme)) break;
+
+			std::string wav_path = wav_base_path;
+			wav_path += file;
+			std::ifstream wav_file(wav_path, std::ios::binary);
+			if (!wav_file.is_open()) break;
+
+			MFCC mfcc;
+			std::vector<std::vector<double>> mfcc_list;
+			std::string error;
+			if (!mfcc.process(wav_file, mfcc_list, error)) return false;
+
+			speech_data.data_list.emplace_back(MFCCData());
+			auto& back = speech_data.data_list.back();
+
+			back.sentence = sentence;
+			back.phoneme = phoneme;
+
+			back.mfcc.resize(mfcc_list.size());
+			for (size_t i = 0; i < mfcc_list.size(); ++i)
+				for (auto& value : mfcc_list[i])
+					back.mfcc[i].push_back(static_cast<float>(value));
+		}
+
+		std::vector<char> out;
+		out.resize(speech_data.GetTotalSize());
+		speech_data.Serialize(out.data());
+		return CarpMessageWriteFactory::WriteMemoryToStdFile(out_path, out.data(), out.size());
+	}
+
+public:
+	void SetTrainDataPath(const char* mfcc_path)
 	{
 		// 保存训练数据路径
-		m_train_image_path.clear();
-		m_train_labels_path.clear();
-		if (train_image) m_train_image_path = train_image;
-		if (train_labels) m_train_labels_path = train_labels;
+		m_train_mfcc_path.clear();
+		if (mfcc_path) m_train_mfcc_path = mfcc_path;
 	}
 
 	dynet::Expression Build(dynet::ComputationGraph& cg, dynet::Expression x, bool dropout) const
@@ -64,31 +113,26 @@ public:
 
 	size_t TrainInit() override
 	{
-		m_image_list.clear();
-		ReadImage(m_train_image_path, m_image_list);
-		for (auto& trains : m_image_list)
-		{
-			for (auto& value : trains)
-				value /= 255.0f;
-		}
-		m_label_list.clear();
-		ReadLabel(m_train_labels_path, m_label_list);
+		m_data.data_list.clear();
 
-		// 重置
-		m_trainer.restart();
-		return m_image_list.size();
+		std::vector<char> out;
+		if (!CarpMessageReadFactory::LoadStdFile(m_train_mfcc_path, out)) return 0;
+
+		int result = m_data.Deserialize(out.data(), static_cast<int>(out.size()));
+		if (result < CARP_MESSAGE_DR_NO_DATA) return 0;
+
+		return m_data.data_list.size();
 	}
 
 	void TrainRelease() override
 	{
-		m_image_list.clear();
-		m_label_list.clear();
+		m_data.data_list.clear();
 	}
 
 	double Training(size_t index, bool& right) override
 	{
 		if (dynet::get_number_of_active_graphs() > 0) return 0;
-		
+
 		// 构建动态图
 		dynet::ComputationGraph cg;
 		// 把所有输入合并为一个矩阵
@@ -99,7 +143,7 @@ public:
 		// 预测
 		const auto label = Prediction(cg, output);
 		right = label == static_cast<int>(m_label_list[index]);
-		
+
 		// 构建 负对数似然 模型
 		const auto loss_expr = dynet::pickneglogsoftmax(output, m_label_list[index]);
 		// 累计损失值
@@ -131,13 +175,13 @@ public:
 	int Output(size_t address)
 	{
 		if (dynet::get_number_of_active_graphs() > 0) return 0;
-		
+
 		CarpSurface* surface = nullptr;
 		memcpy(&surface, &address, sizeof(size_t));
-		
+
 		if (surface == nullptr) return -1;
 		if (surface->GetWidth() == 0 || surface->GetHeight() == 0) return -1;
-		
+
 		std::vector<float> data;
 
 		// 如果图片不是指定大小那么就进行缩放
@@ -168,76 +212,6 @@ public:
 	}
 
 private:
-	static int ReverseInt(int i)
-	{
-		unsigned char ch1, ch2, ch3, ch4;
-		ch1 = i & 255;
-		ch2 = (i >> 8) & 255;
-		ch3 = (i >> 16) & 255;
-		ch4 = (i >> 24) & 255;
-		return ((int)ch1 << 24) + ((int)ch2 << 16) + ((int)ch3 << 8) + ch4;
-	}
-
-	// 读取图像数据
-	// Code from https://compvisionlab.wordpress.com/2014/01/01/c-code-for-reading-mnist-data-set/ to read MNIST
-	static bool ReadImage(const std::string& data_file, std::vector<std::vector<float>>& arr)
-	{
-		std::ifstream file(data_file, std::ios::binary);
-		if (!file.is_open()) return false;
-
-		int magic_number = 0;
-		int number_of_images = 0;
-		int n_rows = 0;
-		int n_cols = 0;
-		file.read((char*)&magic_number, sizeof(magic_number));
-		magic_number = ReverseInt(magic_number);
-		file.read((char*)&number_of_images, sizeof(number_of_images));
-		number_of_images = ReverseInt(number_of_images);
-		file.read((char*)&n_rows, sizeof(n_rows));
-		n_rows = ReverseInt(n_rows);
-		file.read((char*)&n_cols, sizeof(n_cols));
-		n_cols = ReverseInt(n_cols);
-		arr.resize(number_of_images);
-		for (int i = 0; i < number_of_images; ++i)
-		{
-			arr[i].reserve(n_rows * n_cols);
-			for (int r = 0; r < n_rows; ++r)
-			{
-				for (int c = 0; c < n_cols; ++c)
-				{
-					unsigned char temp = 0;
-					file.read((char*)&temp, sizeof(temp));
-					arr[i].push_back((float)temp);
-				}
-			}
-		}
-
-		return true;
-	}
-
-	// 读取标记数据
-	static bool ReadLabel(const std::string& label_file, std::vector<unsigned>& labels)
-	{
-		std::ifstream file(label_file, std::ios::binary);
-		if (!file.is_open()) return false;
-
-		int magic_number = 0;
-		int number_of_images = 0;
-		file.read((char*)&magic_number, sizeof(magic_number));
-		magic_number = ReverseInt(magic_number);
-		file.read((char*)&number_of_images, sizeof(number_of_images));
-		number_of_images = ReverseInt(number_of_images);
-		labels.reserve(number_of_images);
-		for (int i = 0; i < number_of_images; ++i)
-		{
-			unsigned char temp = 0;
-			file.read((char*)&temp, sizeof(temp));
-			labels.push_back((unsigned)temp);
-		}
-		return true;
-	}
-
-private:
 	dynet::SimpleSGDTrainer m_trainer;
 
 private:
@@ -248,13 +222,11 @@ private:
 	dynet::Parameter m_pW1;
 	dynet::Parameter m_pB3;
 	dynet::Parameter m_pW2;
-	
+
 private:
-	std::string m_train_image_path;
-	std::string m_train_labels_path;
-	
-	std::vector<std::vector<float>> m_image_list;
-	std::vector<unsigned> m_label_list;
+	std::string m_train_mfcc_path;
+
+	SpeechData m_data;
 
 private:
 	static const unsigned HIDDEN_DIM = 1024;

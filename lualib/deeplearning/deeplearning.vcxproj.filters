@@ -5,8 +5,23 @@
     <ClInclude Include="deeplearning_xor.hpp" />
     <ClInclude Include="deeplearning_model.hpp" />
     <ClInclude Include="deeplearning_mnist_cnn.hpp" />
+    <ClInclude Include="deeplearning_speech.hpp" />
+    <ClInclude Include="include\other\ctc\CTCLossNode.h">
+      <Filter>ctc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="deeplearninglib.cpp" />
+    <ClCompile Include="include\other\ctc\CTCLossNode.cpp">
+      <Filter>ctc</Filter>
+    </ClCompile>
+    <ClCompile Include="include\other\ctc\src\ctc_entrypoint.cpp">
+      <Filter>ctc</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="ctc">
+      <UniqueIdentifier>{96b1ea63-cab1-462e-882f-e07d464e9503}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

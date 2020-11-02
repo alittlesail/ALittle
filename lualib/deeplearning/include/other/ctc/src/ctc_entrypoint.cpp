@@ -3,9 +3,8 @@
 #include <algorithm>
 #include <cstdio>
 
-#include <ctc.h>
-
-#include "detail/cpu_ctc.h"
+#include <other/ctc/include/ctc.h>
+#include "other/ctc/include/detail/cpu_ctc.h"
 #ifdef __CUDACC__
     #include "detail/gpu_ctc.h"
 #endif

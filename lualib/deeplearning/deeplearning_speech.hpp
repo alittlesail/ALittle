@@ -3,43 +3,67 @@
 
 #include "other/mfcc.h"
 #include "deeplearning_model.hpp"
+#include "dynet/lstm.h"
+#include "dynet/dict.h"
+#include "other/mlp.h"
+#include "carp_string.hpp"
 #include <fstream>
+#include "other/ctc/CTCLossNode.h"
 
 #define _MFCCData 0
 #define _SpeechData 0
+#define _SpeechWordData 0
 
-CARP_MESSAGE_MACRO(MFCCData, std::vector<std::vector<float>>, mfcc, std::string, sentence, std::string, phoneme);
+CARP_MESSAGE_MACRO(MFCCData, std::vector<std::vector<float>>, mfcc, std::string, sentence, std::string, phoneme_word, std::string, phoneme_vowel);
 CARP_MESSAGE_MACRO(SpeechData, std::vector<MFCCData>, data_list);
+CARP_MESSAGE_MACRO(SpeechWordData, std::vector<std::string>, word_list);
 
 class DeeplearningSpeechModel : public DeeplearningModel
 {
 public:
-	DeeplearningSpeechModel() : m_trainer(m_collection)
+	DeeplearningSpeechModel(const char* word_data_path) : m_trainer(m_collection)
+		, m_l2rbuilder(1, MFCC_SIZE, HIDDEN_DIM, m_collection)
+		, m_r2lbuilder(1, MFCC_SIZE, HIDDEN_DIM, m_collection)
+		, m_mlp(m_collection)
 	{
-		m_pConv1 = m_collection.add_parameters({ 5, 5, 1, 32 });
-		m_pB1 = m_collection.add_parameters({ 32, });
-		m_pConv2 = m_collection.add_parameters({ 5, 5, 32, 64 });
-		m_pB2 = m_collection.add_parameters({ 64, });
-		m_pW1 = m_collection.add_parameters({ HIDDEN_DIM, 7 * 7 * 64 });
-		m_pB3 = m_collection.add_parameters({ HIDDEN_DIM, });
-		m_pW2 = m_collection.add_parameters({ 10, HIDDEN_DIM });
+		size_t label_size = 1;
+		m_tag_BLANK = m_dict.convert("<BLANK>");
+
+		std::vector<char> out;
+		if (word_data_path != nullptr && CarpMessageReadFactory::LoadStdFile(word_data_path, out))
+		{
+			SpeechWordData data;
+			int result = data.Deserialize(out.data(), static_cast<int>(out.size()));
+			if (result >= CARP_MESSAGE_DR_NO_DATA)
+			{
+				for (auto& word : data.word_list)
+					m_dict.convert(word);
+				label_size = m_dict.get_words().size();
+			}
+		}
+		
+		m_mlp.append(m_collection, dynet::Layer(/* input_dim */ HIDDEN_DIM * 2, /* output_dim */ label_size, /* activation */ dynet::Activation::LINEAR, /* dropout_rate */ DROPOUT_RATE));
 	}
 
 public:
-	bool Wav2MFCC(const char* desc_path, const char* wav_base_path, const char* out_path)
+	bool Wav2MFCC(const char* desc_path, const char* wav_base_path, const char* word_out_path, const char* speech_out_path)
 	{
 		std::ifstream desc_file(desc_path);
 		if (!desc_file.is_open()) return false;
 
 		SpeechData speech_data;
+
+		std::set<std::string> word_set;
 		while (true)
 		{
 			std::string file;
 			if (!std::getline(desc_file, file)) break;
 			std::string sentence;
 			if (!std::getline(desc_file, sentence)) break;
-			std::string phoneme;
-			if (!std::getline(desc_file, phoneme)) break;
+			std::string phoneme_word;
+			if (!std::getline(desc_file, phoneme_word)) break;
+			std::string phoneme_vowel;
+			if (!std::getline(desc_file, phoneme_vowel)) break;
 
 			std::string wav_path = wav_base_path;
 			wav_path += file;
@@ -55,18 +79,35 @@ public:
 			auto& back = speech_data.data_list.back();
 
 			back.sentence = sentence;
-			back.phoneme = phoneme;
+			back.phoneme_word = phoneme_word;
+			back.phoneme_vowel = phoneme_vowel;
 
 			back.mfcc.resize(mfcc_list.size());
 			for (size_t i = 0; i < mfcc_list.size(); ++i)
 				for (auto& value : mfcc_list[i])
 					back.mfcc[i].push_back(static_cast<float>(value));
+
+			std::vector<std::string> phoneme_list;
+			CarpString::Split(back.phoneme_word, " ", phoneme_list);
+			for (auto& value : phoneme_list) word_set.insert(value);
+		}
+
+		{
+			SpeechWordData word_data;
+			for (auto& value : word_set)
+				word_data.word_list.push_back(value);
+			std::sort(word_data.word_list.begin(), word_data.word_list.end());
+
+			std::vector<char> out;
+			out.resize(word_data.GetTotalSize());
+			word_data.Serialize(out.data());
+			if (!CarpMessageWriteFactory::WriteMemoryToStdFile(word_out_path, out.data(), out.size())) return false;
 		}
 
 		std::vector<char> out;
 		out.resize(speech_data.GetTotalSize());
 		speech_data.Serialize(out.data());
-		return CarpMessageWriteFactory::WriteMemoryToStdFile(out_path, out.data(), out.size());
+		return CarpMessageWriteFactory::WriteMemoryToStdFile(speech_out_path, out.data(), out.size());
 	}
 
 public:
@@ -77,38 +118,33 @@ public:
 		if (mfcc_path) m_train_mfcc_path = mfcc_path;
 	}
 
-	dynet::Expression Build(dynet::ComputationGraph& cg, dynet::Expression x, bool dropout) const
+	void Build(dynet::ComputationGraph& cg, const std::vector<dynet::Expression>& input_list, bool dropout, std::vector<dynet::Expression>& out_list)
 	{
-		// 卷积参数
-		const auto conv1 = dynet::parameter(cg, m_pConv1);
-		// 偏置参数
-		const auto b1 = dynet::parameter(cg, m_pB1);
-		// 卷积
-		const auto conv1_x = dynet::conv2d(x, conv1, b1, { 1, 1 }, false);
-		// 激活
-		const auto relu1_x = dynet::rectify(dynet::maxpooling2d(conv1_x, { 2, 2 }, { 2, 2 }));
+		// 双向lstm
+		m_l2rbuilder.new_graph(cg);  // reset RNN builder for new graph
+		m_l2rbuilder.start_new_sequence();
+		m_r2lbuilder.new_graph(cg);  // reset RNN builder for new graph
+		m_r2lbuilder.start_new_sequence();
 
-		// 卷积参数
-		const auto conv2 = dynet::parameter(cg, m_pConv2);
-		// 偏置参数
-		const auto b2 = dynet::parameter(cg, m_pB2);
-		// 卷积
-		const auto conv2_x = dynet::conv2d(relu1_x, conv2, b2, { 1, 1 }, false);
-		// 激活
-		const auto relu2_x = dynet::rectify(dynet::maxpooling2d(conv2_x, { 2, 2 }, { 2, 2 }));
+		// read sequence from left to right
+		std::vector<dynet::Expression> l2r;
+		for (int i = 0; i < (int)input_list.size(); ++i)
+			l2r.push_back(m_l2rbuilder.add_input(input_list[i]));
+		// read sequence from right to left
+		std::vector<dynet::Expression> r2l;
+		for (int i = (int)input_list.size() - 1; i >= 0; --i)
+			r2l.push_back(m_r2lbuilder.add_input(input_list[i]));
+	
+		// 合并
+		for (int i = 0; i < (int)input_list.size(); ++i)
+			out_list.push_back(dynet::concatenate({ l2r[i], r2l[i] }));
 
-		// 调整维度
-		const auto reshape_x = dynet::reshape(relu2_x, { 7 * 7 * 64, 1 });
+		// MLP
+		if (dropout) m_mlp.enable_dropout();
+		else m_mlp.disable_dropout();
 
-		// 线性变换
-		const auto w1 = dynet::parameter(cg, m_pW1);
-		const auto b3 = dynet::parameter(cg, m_pB3);
-		auto h = dynet::rectify(w1 * reshape_x + b3);
-
-		if (dropout) h = dynet::dropout(h, DROPOUT_RATE);
-		const auto w2 = dynet::parameter(cg, m_pW2);
-
-		return w2 * h;
+		for (int i = 0; i < (int)out_list.size(); ++i)
+			out_list[i] = m_mlp.run(out_list[i], cg);
 	}
 
 	size_t TrainInit() override
@@ -135,19 +171,25 @@ public:
 
 		// 构建动态图
 		dynet::ComputationGraph cg;
-		// 把所有输入合并为一个矩阵
-		const auto x = input(cg, { IMAGE_SIZE, IMAGE_SIZE }, m_image_list[index]);
+		// 设置输入
+		std::vector<dynet::Expression> input_list;
+		for (auto& data : m_data.data_list[index].mfcc)
+			input_list.push_back(input(cg, { MFCC_SIZE }, data));
+
 		// 获得隐藏层
-		const auto output = Build(cg, x, true);
+		std::vector<dynet::Expression> out_list;
+		Build(cg, input_list, true, out_list);
 
 		// 预测
-		const auto label = Prediction(cg, output);
-		right = label == static_cast<int>(m_label_list[index]);
+		std::vector<int> label_list;
+		Prediction(cg, out_list, label_list);
 
-		// 构建 负对数似然 模型
-		const auto loss_expr = dynet::pickneglogsoftmax(output, m_label_list[index]);
+		right = Label2String(label_list) == m_data.data_list[index].phoneme_word;
+
+		dynet::Expression loss_expr = ctc_loss(dynet::concatenate(out_list), m_dict.get_words().size(), label_list, m_tag_BLANK);
+
 		// 累计损失值
-		const double loss = as_scalar(cg.forward(loss_expr));
+		const double loss = as_scalar(cg.incremental_forward(loss_expr));
 		// 反向传播
 		cg.backward(loss_expr);
 		// 更新参数
@@ -156,81 +198,97 @@ public:
 		return loss;
 	}
 
-	static int Prediction(dynet::ComputationGraph& cg, dynet::Expression output)
+	static void Prediction(dynet::ComputationGraph& cg, const std::vector<dynet::Expression>& softmax_list, std::vector<int>& label_list)
 	{
 		// 预测
-		const auto out = dynet::softmax(output);
-		// Get values
-		const auto probs = dynet::as_vector(cg.forward(out));
-		// Get argmax
-		size_t argmax = 0;
-		for (size_t i = 1; i < probs.size(); ++i) {
-			if (probs[i] > probs[argmax])
-				argmax = i;
-		}
-
-		return static_cast<int>(argmax);
+		int index = 0;
+	    for (auto& out : softmax_list)
+	    {
+			++index;
+			// Get values
+			const auto probs = dynet::as_vector(cg.incremental_forward(out));
+			// Get argmax
+			size_t argmax = 0;
+			for (size_t i = 1; i < probs.size(); ++i) {
+				if (probs[i] > probs[argmax])
+					argmax = i;
+			}
+			label_list.push_back(argmax);
+	    }
 	}
 
-	int Output(size_t address)
+	const char* Output(const char* file_path)
 	{
-		if (dynet::get_number_of_active_graphs() > 0) return 0;
+		m_output.clear();
+		if (dynet::get_number_of_active_graphs() > 0) return m_output.c_str();
 
-		CarpSurface* surface = nullptr;
-		memcpy(&surface, &address, sizeof(size_t));
+		std::string wav_path = file_path;
+		std::ifstream wav_file(wav_path, std::ios::binary);
+		if (!wav_file.is_open()) return m_output.c_str();
 
-		if (surface == nullptr) return -1;
-		if (surface->GetWidth() == 0 || surface->GetHeight() == 0) return -1;
+		std::vector<std::vector<double>> mfcc_list;
+		std::string error;
+		MFCC mfcc;
+		if (!mfcc.process(wav_file, mfcc_list, error)) return m_output.c_str();
 
-		std::vector<float> data;
-
-		// 如果图片不是指定大小那么就进行缩放
-		if (surface->GetWidth() == IMAGE_SIZE && surface->GetHeight() == IMAGE_SIZE)
-		{
-			data.resize(IMAGE_SIZE * IMAGE_SIZE, 0.0f);
-			for (unsigned i = 0; i < IMAGE_SIZE * IMAGE_SIZE; ++i)
-				data[i] = static_cast<float>(surface->GetGray(i)) / 255.0f;
-		}
-		else
-		{
-			CarpSurface new_surface(IMAGE_SIZE, IMAGE_SIZE);
-			new_surface.ScaleFrom(surface, nullptr, nullptr);
-
-			data.resize(IMAGE_SIZE * IMAGE_SIZE, 0.0f);
-			for (unsigned i = 0; i < IMAGE_SIZE * IMAGE_SIZE; ++i)
-				data[i] = static_cast<float>(new_surface.GetGray(i)) / 255.0f;
-		}
+		std::vector<std::vector<float>> data_list;
+		data_list.resize(mfcc_list.size());
+		for (size_t i = 0; i < mfcc_list.size(); ++i)
+			for (auto& value : mfcc_list[i])
+				data_list[i].push_back(static_cast<float>(value));
 
 		// 构建动态图
 		dynet::ComputationGraph cg;
-		// 设置当前输入
-		const auto x = input(cg, { IMAGE_SIZE, IMAGE_SIZE }, data);
-		// 获得隐藏层
-		const auto output = Build(cg, x, false);
+		// 设置输入
+		std::vector<dynet::Expression> input_list;
+		for (auto& data : data_list)
+			input_list.push_back(input(cg, { MFCC_SIZE }, data));
 
-		return Prediction(cg, output);
+		// 获得隐藏层
+		std::vector<dynet::Expression> out_list;
+		Build(cg, input_list, false, out_list);
+
+		// 预测
+		std::vector<int> label_list;
+		Prediction(cg, out_list, label_list);
+
+		m_output = Label2String(label_list);
+		return m_output.c_str();
+	}
+
+	std::string Label2String(const std::vector<int>& label_list)
+	{
+		std::string out;
+		for (size_t i = 0; i < label_list.size(); ++i)
+		{
+			out += m_dict.convert(label_list[i]);
+			if (i + 1 < label_list.size())
+				out += " ";
+		}
+
+		return out;
 	}
 
 private:
 	dynet::SimpleSGDTrainer m_trainer;
 
 private:
-	dynet::Parameter m_pConv1;
-	dynet::Parameter m_pB1;
-	dynet::Parameter m_pConv2;
-	dynet::Parameter m_pB2;
-	dynet::Parameter m_pW1;
-	dynet::Parameter m_pB3;
-	dynet::Parameter m_pW2;
+	dynet::LSTMBuilder m_l2rbuilder;
+	dynet::LSTMBuilder m_r2lbuilder;
+	dynet::MLP m_mlp;
 
 private:
 	std::string m_train_mfcc_path;
-
 	SpeechData m_data;
+
+	dynet::Dict m_dict;
+	int m_tag_BLANK = 0;
+
+	std::string m_output;
 
 private:
 	static const unsigned HIDDEN_DIM = 1024;
-	static const unsigned IMAGE_SIZE = 28;
+	static const unsigned MFCC_SIZE = 13;
 	static constexpr float DROPOUT_RATE = 0.4f;
 };
 

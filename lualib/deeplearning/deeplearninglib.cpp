@@ -9,6 +9,7 @@ extern "C" {
 
 #include "deeplearning_xor.hpp"
 #include "deeplearning_mnist_cnn.hpp"
+#include "deeplearning_speech.hpp"
 
 void DyNetInitialize()
 {
@@ -55,6 +56,12 @@ int luaopen_deeplearning(lua_State* l_state) {
 		.addConstructor<void(*)()>()
 		.addFunction("SetTrainDataPath", &DeeplearningMnistCNNModel::SetTrainDataPath)
 		.addFunction("Output", &DeeplearningMnistCNNModel::Output)
+		.endClass()
+		.deriveClass<DeeplearningSpeechModel, DeeplearningModel>("DeeplearningSpeechModel")
+		.addConstructor<void(*)(const char*)>()
+		.addFunction("Wav2MFCC", &DeeplearningSpeechModel::Wav2MFCC)
+		.addFunction("SetTrainDataPath", &DeeplearningSpeechModel::SetTrainDataPath)
+		.addFunction("Output", &DeeplearningSpeechModel::Output)
 		.endClass()
 		.endNamespace();
     lua_getglobal(l_state, "deeplearning");

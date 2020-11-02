@@ -29,10 +29,36 @@ protected class GCenter
 
         var main_scene = g_Control.CreateControl{ALittle.DisplayLayout}("main_scene");
         this._main_layer.AddChild(main_scene);
+
+        // this.Wav2MFCC();
     }
 
     public fun Shutdown()
     {
+    }
+
+    public fun Wav2MFCC()
+    {
+        var model = new deeplearning.DeeplearningSpeechModel(null);
+        model.Wav2MFCC(g_ModuleBasePath.."Data/thchs30.txt", "D:/Users/IGG/Downloads/data_thchs30/data/", g_ModuleBasePath.."Other/thchs30_word.dat", g_ModuleBasePath.."Other/thchs30_speech.dat");
+    }
+
+    // thchs30_path 是thchs30下data数据的路径 比如 D:/Users/IGG/Downloads/data_thchs30/data
+    public fun Thchs302DescFile(string thchs30_path)
+    {
+        var out_file = lua.io.open(g_ModuleBasePath.."Data/thchs30.txt", "w");
+        var file_map = ALittle.File_GetFileAttrByDir(thchs30_path);
+        for (var file_path, _ in file_map)
+        {
+            if (ALittle.File_GetFileExtByPath(file_path) == "trn")
+            {
+                var content = ALittle.File_ReadTextFromStdFile(file_path);
+                out_file.write(ALittle.File_GetJustFileNameByPath(file_path));
+                out_file.write("\n");
+                out_file.write(content);
+            }
+        }
+        out_file.close();
     }
 }
 

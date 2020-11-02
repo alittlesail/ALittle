@@ -91,7 +91,7 @@ public:
 		
 		// 构建动态图
 		dynet::ComputationGraph cg;
-		// 把所有输入合并为一个矩阵
+		// 设置输入
 		const auto x = input(cg, { IMAGE_SIZE, IMAGE_SIZE }, m_image_list[index]);
 		// 获得隐藏层
 		const auto output = Build(cg, x, true);

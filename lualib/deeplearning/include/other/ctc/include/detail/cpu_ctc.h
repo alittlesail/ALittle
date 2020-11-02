@@ -32,8 +32,8 @@ public:
 #endif
     };
 
-    // CpuCTC(const CpuCTC&) = delete;
-    // CpuCTC& operator=(const CpuCTC&) = delete;
+    CpuCTC(const CpuCTC&) = delete;
+    CpuCTC& operator=(const CpuCTC&) = delete;
 
     ctcStatus_t cost_and_grad(const ProbT* const activations,
                               ProbT *grads,
@@ -163,13 +163,15 @@ template<typename ProbT>
 void
 CpuCTC<ProbT>::softmax(const ProbT* const activations, ProbT* probs,
                        const int* const input_lengths) {
+    ProbT min_T = std::numeric_limits<ProbT>::min();
+
 #pragma omp parallel for
     for (int mb = 0; mb < minibatch_; ++mb) {
         for(int c = 0; c < input_lengths[mb]; ++c) {
             int col_offset = (mb + minibatch_ * c) * alphabet_size_;
             ProbT max_activation = -std::numeric_limits<ProbT>::infinity();
             for(int r = 0; r < alphabet_size_; ++r)
-                max_activation = max(max_activation, activations[r + col_offset]);
+                max_activation = std::max(max_activation, activations[r + col_offset]);
 
             ProbT denom = ProbT(0.);
             for(int r = 0; r < alphabet_size_; ++r) {
@@ -179,6 +181,9 @@ CpuCTC<ProbT>::softmax(const ProbT* const activations, ProbT* probs,
 
             for(int r = 0; r < alphabet_size_; ++r) {
                 probs[r + col_offset] /= denom;
+                if (probs[r + col_offset] < min_T) {
+                    probs[r + col_offset] = min_T;
+                }
             }
         }
     }
@@ -226,7 +231,6 @@ ProbT CpuCTC<ProbT>::compute_alphas(const ProbT* probs, int repeats, int S, int 
                                     const int* const s_inc,
                                     const int* const labels,
                                     ProbT* alphas) {
-
     int start =  (((S /2) + repeats - T) < 0) ? 0 : 1,
             end = S > 1 ? 2 : 1;
 

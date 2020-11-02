@@ -6,16 +6,13 @@
 
 #include "hostdevice.h"
 
-#include <Eigen/Eigen/Eigen>
-#include <Eigen/unsupported/Eigen/CXX11/Tensor>
-
 namespace ctc_helper {
 
 static const float threshold = 1e-1;
 
 template<typename T>
 HOSTDEVICE
-T neg_inf() { return -T(std::numeric_limits<float>::infinity()); }
+T neg_inf() { return -T(INFINITY); }
 
 inline int div_up(int x, int y) {
     return (x + y - 1) / y;
@@ -56,7 +53,7 @@ struct log_plus {
             return p2;
         if (p2 == neg_inf<Arg2>())
             return p1;
-        Res result = Eigen::numext::log1p(exp(-fabs(p1 - p2))) + maximum<Res>()(p1, p2);
+        Res result = log1p(exp(-fabs(p1 - p2))) + maximum<Res>()(p1, p2);
         return result;
     }
 };

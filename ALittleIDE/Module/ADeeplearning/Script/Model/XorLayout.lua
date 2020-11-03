@@ -49,10 +49,10 @@ end
 
 function ADeeplearning.XorLayout:Calc()
 	self._model:Load(self._model_path)
-	self._result_1.text = self._model:Output(1.0, 1.0)
-	self._result_2.text = self._model:Output(-1.0, 1.0)
-	self._result_3.text = self._model:Output(1.0, -1.0)
-	self._result_4.text = self._model:Output(-1.0, -1.0)
+	self._result_1.text = ALittle.Math_Floor(self._model:Output(0.0, 0.0) * 100000) / 100000
+	self._result_2.text = ALittle.Math_Floor(self._model:Output(0.0, 1.0) * 100000) / 100000
+	self._result_3.text = ALittle.Math_Floor(self._model:Output(1.0, 0.0) * 100000) / 100000
+	self._result_4.text = ALittle.Math_Floor(self._model:Output(1.0, 1.0) * 100000) / 100000
 end
 
 end

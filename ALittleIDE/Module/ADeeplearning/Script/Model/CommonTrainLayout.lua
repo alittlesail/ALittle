@@ -31,10 +31,6 @@ function ADeeplearning.CommonTrainLayout.__getter:model()
 end
 
 function ADeeplearning.CommonTrainLayout:HandleStartClick(event)
-	if deeplearning.GetNumberOfGraph() > 0 then
-		g_AUITool:ShowNotice("提示", "当前有图正在计算，请稍后再试")
-		return
-	end
 	if self._loop ~= nil then
 		return
 	end

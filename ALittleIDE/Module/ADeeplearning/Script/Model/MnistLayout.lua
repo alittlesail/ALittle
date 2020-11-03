@@ -23,9 +23,9 @@ assert(ADeeplearning.CommonTrainLayout, " extends class:ADeeplearning.CommonTrai
 ADeeplearning.MnistTrainLayout = Lua.Class(ADeeplearning.CommonTrainLayout, "ADeeplearning.MnistTrainLayout")
 
 function ADeeplearning.MnistTrainLayout:TCtor()
-	self._model = deeplearning.DeeplearningMnistCNNModel()
-	self._model_path = ADeeplearning.g_ModuleBasePath .. "Other/mnist-cnn.model"
-	self._model:SetTrainDataPath(ADeeplearning.g_ModuleBasePath .. "Data/train-images.idx3-ubyte", ADeeplearning.g_ModuleBasePath .. "Data/train-labels.idx1-ubyte")
+	self._model = deeplearning.DeeplearningMnistModel()
+	self._model_path = ADeeplearning.g_ModuleBasePath .. "Other/mnist.model"
+	self._model:SetMnistRoot(ADeeplearning.g_ModuleBasePath .. "Data")
 end
 
 function ADeeplearning.MnistTrainLayout.__getter:model()
@@ -41,8 +41,8 @@ end
 
 function ADeeplearning.MnistLayout:TCtor()
 	self._train:AddEventListener(___all_struct[958494922], self, self.HandleTrainChanged)
-	self._model_path = ADeeplearning.g_ModuleBasePath .. "Other/mnist-cnn.model"
-	self._model = deeplearning.DeeplearningMnistCNNModel()
+	self._model_path = ADeeplearning.g_ModuleBasePath .. "Other/mnist.model"
+	self._model = deeplearning.DeeplearningMnistModel()
 	self._board:SetPan(5, 0xFFFFFFFF)
 	self._board:SetDrawSize(ALittle.Math_Floor(self._board.width), ALittle.Math_Floor(self._board.height), 0xFF000000)
 	self._result_text.text = "识别结果"
@@ -53,10 +53,6 @@ function ADeeplearning.MnistLayout:HandleTrainChanged(event)
 end
 
 function ADeeplearning.MnistLayout:HandleDrawChanged(event)
-	if deeplearning.GetNumberOfGraph() > 0 then
-		g_AUITool:ShowNotice("提示", "当前有图正在计算，请稍后再试")
-		return
-	end
 	if not self._loaded then
 		self._model:Load(self._model_path)
 		self._loaded = true

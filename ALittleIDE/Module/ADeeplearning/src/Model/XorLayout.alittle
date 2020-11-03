@@ -48,9 +48,9 @@ protected class XorLayout : ALittle.DisplayLayout
     {
         this._model.Load(this._model_path);
 
-        this._result_1.text = this._model.Output(1.0, 1.0);
-        this._result_2.text = this._model.Output(-1.0, 1.0);
-        this._result_3.text = this._model.Output(1.0, -1.0);
-        this._result_4.text = this._model.Output(-1.0, -1.0);
+        this._result_1.text = ALittle.Math_Floor(this._model.Output(0.0, 0.0) * 100000) / 100000;
+        this._result_2.text = ALittle.Math_Floor(this._model.Output(0.0, 1.0) * 100000) / 100000;
+        this._result_3.text = ALittle.Math_Floor(this._model.Output(1.0, 0.0) * 100000) / 100000;
+        this._result_4.text = ALittle.Math_Floor(this._model.Output(1.0, 1.0) * 100000) / 100000;
     }
 }

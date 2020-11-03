@@ -24,7 +24,7 @@ ADeeplearning.SpeechTrainLayout = Lua.Class(ADeeplearning.CommonTrainLayout, "AD
 function ADeeplearning.SpeechTrainLayout:TCtor()
 	self._model = deeplearning.DeeplearningSpeechModel(ADeeplearning.g_ModuleBasePath .. "Data/thchs30_word.dat")
 	self._model_path = ADeeplearning.g_ModuleBasePath .. "Other/speech.model"
-	self._model:SetTrainDataPath(ADeeplearning.g_ModuleBasePath .. "Data/thchs30_speech.dat")
+	self._model:SetSpeechDataPath(ADeeplearning.g_ModuleBasePath .. "Data/thchs30_speech.dat")
 end
 
 function ADeeplearning.SpeechTrainLayout.__getter:model()

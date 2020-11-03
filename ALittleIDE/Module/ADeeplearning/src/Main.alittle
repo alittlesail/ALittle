@@ -49,8 +49,10 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 	if (ALittle.System_GetPlatform() == "Windows")
 	{
 		package.cpath = package.cpath..";./"..module_base_path.."Other/?.dll";
+        var path = ALittle.File_GetCurrentPath();
+        ALittle.File_SetCurrentPath(path.."/"..module_base_path.."Other");
         lua.require("deeplearning");
-        deeplearning.Initialize();
+        ALittle.File_SetCurrentPath(path);
     }
 
     alittle.RequireFromPaths(script_base_path, "Model/", paths("src/Model"));
@@ -93,7 +95,6 @@ public await static __Plugin_Setup(ALittle.ControlSystem control, string module_
 	{
 		package.cpath = package.cpath..";./"..module_base_path.."Other/?.dll";
         lua.require("deeplearning");
-        deeplearning.Initialize();
     }
 
     alittle.RequireFromPaths(script_base_path, "Mnist/", paths("src/Model"));
@@ -102,6 +103,4 @@ public await static __Plugin_Setup(ALittle.ControlSystem control, string module_
 // 插件入口函数
 public static __Plugin_Shutdown()
 {
-    if (deeplearning != null)
-    	deeplearning.Cleanup();
 }

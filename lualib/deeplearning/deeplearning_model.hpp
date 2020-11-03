@@ -4,22 +4,9 @@
 #include <random>
 #include <vector>
 
-#include "dynet/training.h"
-#include "dynet/expr.h"
-#include "dynet/model.h"
-
 #include "carp_task_consumer.hpp"
-#include "carp_message.hpp"
 
-#define _DeeplearningParameter 0
-#define _DeeplearningLookupParameter 0
-#define _DeeplearningData 0
-
-CARP_MESSAGE_MACRO(DeeplearningParameter, std::vector<float>, values, bool, has_grad, std::vector<float>, grad);
-CARP_MESSAGE_MACRO(DeeplearningLookupParameter, std::vector<float>, all_values, bool, has_grad, std::vector<float>, all_grads);
-CARP_MESSAGE_MACRO(DeeplearningData, std::vector<DeeplearningParameter>, params, std::vector<DeeplearningLookupParameter>, lookup_params);
-
-class DeeplearningModel
+class DeeplearningModel : public torch::nn::Module
 {
 public:
 	virtual ~DeeplearningModel() { StopTraining(); }
@@ -28,8 +15,6 @@ public:
 	bool StartTraining()
 	{
 		StopTraining();
-
-		if (dynet::get_number_of_active_graphs() > 0) return false;
 
 		m_total_train_count = 0;
 		m_cur_train_count = 0;
@@ -127,70 +112,25 @@ public:
 	}
 	
 public:
-	bool Load(const char* file_path)
+	void Load(const char* file_path)
 	{
-		std::vector<char> out;
-		if (!CarpMessageReadFactory::LoadStdFile(file_path, out)) return false;
-		
-		DeeplearningData data;
-		int result = data.Deserialize(out.data(), static_cast<int>(out.size()));
-		if (result < CARP_MESSAGE_DR_NO_DATA) return false;
-		auto& storage = m_collection.get_storage();
-		if (data.params.size() != storage.params.size()) return false;
-		for (size_t i = 0; i < storage.params.size(); ++i)
-		{
-			auto& p = storage.params[i];
-			auto& o = data.params[i];
-
-			dynet::TensorTools::set_elements(p->values, o.values);
-			if (o.has_grad) dynet::TensorTools::set_elements(p->g, o.grad);
+		torch::serialize::InputArchive archive;
+		try {
+			archive.load_from(file_path);
 		}
-
-		data.lookup_params.resize(storage.lookup_params.size());
-		for (size_t i = 0; i < storage.lookup_params.size(); ++i)
-		{
-			auto& p = storage.lookup_params[i];
-			auto& o = data.lookup_params[i];
-
-			dynet::TensorTools::set_elements(p->all_values, o.all_values);
-			if (o.has_grad) dynet::TensorTools::set_elements(p->all_grads, o.all_grads);
-		}
-
-		return true;
+		catch (...) { return; }
+		load(archive);
 	}
 	
 	void Save(const char* file_path)
 	{
-		DeeplearningData data;
-		
-		const auto& storage = m_collection.get_storage();
-
-		data.params.resize(storage.params.size());
-		for (size_t i = 0; i < storage.params.size(); ++i)
-		{
-			auto& p = storage.params[i];
-			auto& o = data.params[i];
-			
-			o.values = dynet::as_scale_vector(p->values, p->owner->get_weight_decay().current_weight_decay());
-			o.has_grad = p->has_grad();
-			if (o.has_grad) o.grad = dynet::as_vector(p->g);
+		torch::serialize::OutputArchive archive(
+			std::make_shared<torch::jit::CompilationUnit>());
+		save(archive);
+		try {
+			archive.save_to(file_path);
 		}
-		
-		data.lookup_params.resize(storage.lookup_params.size());
-		for (size_t i = 0; i < storage.lookup_params.size(); ++i)
-		{
-			auto& p = storage.lookup_params[i];
-			auto& o = data.lookup_params[i];
-
-			o.all_values = dynet::as_scale_vector(p->all_values, p->owner->get_weight_decay().current_weight_decay());
-			o.has_grad = p->has_grad();
-			if (o.has_grad) o.all_grads = dynet::as_vector(p->all_grads);
-		}
-
-		std::vector<char> out;
-		out.resize(data.GetTotalSize());
-		data.Serialize(out.data());
-		CarpMessageWriteFactory::WriteMemoryToStdFile(file_path, out.data(), out.size());
+		catch (...) { }
 	}
 
 	virtual size_t TrainInit() { return 0; }
@@ -202,9 +142,6 @@ public:
 	virtual size_t GetTrainRound() { return m_train_round; }
 	virtual size_t GetCurRightCount() { return m_cur_right_count; }
 	
-protected:
-	dynet::ParameterCollection m_collection;
-
 private:
 	size_t m_total_train_count = 0;
 	size_t m_cur_train_count = 0;

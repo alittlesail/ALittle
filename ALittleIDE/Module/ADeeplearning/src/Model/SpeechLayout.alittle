@@ -9,7 +9,7 @@ public class SpeechTrainLayout : CommonTrainLayout
     {
         this._model = new deeplearning.DeeplearningSpeechModel(g_ModuleBasePath.."Data/thchs30_word.dat");
         this._model_path = g_ModuleBasePath.."Other/speech.model";
-        this._model.SetTrainDataPath(g_ModuleBasePath.."Data/thchs30_speech.dat");
+        this._model.SetSpeechDataPath(g_ModuleBasePath.."Data/thchs30_speech.dat");
     }
 
     public get model() : deeplearning.DeeplearningModel { return this._model; }

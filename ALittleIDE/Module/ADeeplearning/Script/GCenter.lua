@@ -29,7 +29,7 @@ end
 
 function ADeeplearning.GCenter:Wav2MFCC()
 	local model = deeplearning.DeeplearningSpeechModel(nil)
-	model:Wav2MFCC(ADeeplearning.g_ModuleBasePath .. "Data/thchs30.txt", "D:/Users/IGG/Downloads/data_thchs30/data/", ADeeplearning.g_ModuleBasePath .. "Other/thchs30_word.dat", ADeeplearning.g_ModuleBasePath .. "Other/thchs30_speech.dat")
+	model:Wav2MFCC(ADeeplearning.g_ModuleBasePath .. "Data/thchs30.txt", "D:/Users/IGG/Downloads/data_thchs30/data/", ADeeplearning.g_ModuleBasePath .. "Data/thchs30_word.dat", ADeeplearning.g_ModuleBasePath .. "Data/thchs30_speech.dat")
 end
 
 function ADeeplearning.GCenter:Thchs302DescFile(thchs30_path)

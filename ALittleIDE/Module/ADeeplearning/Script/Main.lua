@@ -33,8 +33,10 @@ function ADeeplearning.__Module_Setup(layer_group, control, module_base_path, sc
 	ADeeplearning.g_Control:RegisterPlugin("AUIPlugin", ADeeplearning.g_AUIPluinControl)
 	if ALittle.System_GetPlatform() == "Windows" then
 		package.cpath = package.cpath .. ";./" .. module_base_path .. "Other/?.dll"
+		local path = ALittle.File_GetCurrentPath()
+		ALittle.File_SetCurrentPath(path .. "/" .. module_base_path .. "Other")
 		require("deeplearning")
-		deeplearning.Initialize()
+		ALittle.File_SetCurrentPath(path)
 	end
 	RequireFromPaths(script_base_path, "Model/", {"CommonTrainLayout.alittle", "XorLayout.alittle", "SpeechLayout.alittle"
 		, "MnistLayout.alittle"})
@@ -68,16 +70,12 @@ function ADeeplearning.__Plugin_Setup(control, module_base_path, script_base_pat
 	if ALittle.System_GetPlatform() == "Windows" then
 		package.cpath = package.cpath .. ";./" .. module_base_path .. "Other/?.dll"
 		require("deeplearning")
-		deeplearning.Initialize()
 	end
 	RequireFromPaths(script_base_path, "Mnist/", {"CommonTrainLayout.alittle", "XorLayout.alittle", "SpeechLayout.alittle"
 		, "MnistLayout.alittle"})
 end
 
 function ADeeplearning.__Plugin_Shutdown()
-	if deeplearning ~= nil then
-		deeplearning.Cleanup()
-	end
 end
 
 end

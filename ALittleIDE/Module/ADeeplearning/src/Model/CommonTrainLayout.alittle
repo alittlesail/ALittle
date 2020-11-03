@@ -26,12 +26,6 @@ public class CommonTrainLayout : ALittle.DisplayLayout
 
     private fun HandleStartClick(ALittle.UIClickEvent event)
     {
-        if (deeplearning.GetNumberOfGraph() > 0)
-        {
-            g_AUITool.ShowNotice("提示", "当前有图正在计算，请稍后再试");
-            return;
-        }
-
         if (this._loop != null) return;
         this._start_button.DelayDisable();
         this._stop_button.disabled = false;

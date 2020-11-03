@@ -3,13 +3,13 @@ namespace ADeeplearning;
 
 public class MnistTrainLayout : CommonTrainLayout
 {
-    private deeplearning.DeeplearningMnistCNNModel _model;
+    private deeplearning.DeeplearningMnistModel _model;
 
     public fun TCtor()
     {
-        this._model = new deeplearning.DeeplearningMnistCNNModel();
-        this._model_path = g_ModuleBasePath.."Other/mnist-cnn.model";
-        this._model.SetTrainDataPath(g_ModuleBasePath.."Data/train-images.idx3-ubyte", g_ModuleBasePath.."Data/train-labels.idx1-ubyte");
+        this._model = new deeplearning.DeeplearningMnistModel();
+        this._model_path = g_ModuleBasePath.."Other/mnist.model";
+        this._model.SetMnistRoot(g_ModuleBasePath.."Data");
     }
 
     public get model() : deeplearning.DeeplearningModel { return this._model; }
@@ -21,7 +21,7 @@ protected class MnistLayout : ALittle.DisplayLayout
 
 	private ALittle.Text _result_text;
 	private AUIPlugin.AUIDrawingBoard _board;
-    private deeplearning.DeeplearningMnistCNNModel _model;
+    private deeplearning.DeeplearningMnistModel _model;
 
     private string _model_path;
     private bool _loaded = false;
@@ -30,8 +30,8 @@ protected class MnistLayout : ALittle.DisplayLayout
     {
         this._train.AddEventListener(this, this.HandleTrainChanged);
 
-        this._model_path = g_ModuleBasePath.."Other/mnist-cnn.model";
-        this._model = new deeplearning.DeeplearningMnistCNNModel();
+        this._model_path = g_ModuleBasePath.."Other/mnist.model";
+        this._model = new deeplearning.DeeplearningMnistModel();
 
         this._board.SetPan(5, 0xFFFFFFFF);
         this._board.SetDrawSize(ALittle.Math_Floor(this._board.width), ALittle.Math_Floor(this._board.height), 0xFF000000);
@@ -45,12 +45,6 @@ protected class MnistLayout : ALittle.DisplayLayout
 
     private fun HandleDrawChanged(ALittle.UIChangedEvent event)
     {
-        if (deeplearning.GetNumberOfGraph() > 0)
-        {
-            g_AUITool.ShowNotice("提示", "当前有图正在计算，请稍后再试");
-            return;
-        }
-
         if (!this._loaded)
         {
             this._model.Load(this._model_path);

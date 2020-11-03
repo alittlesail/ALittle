@@ -40,7 +40,7 @@ protected class GCenter
     public fun Wav2MFCC()
     {
         var model = new deeplearning.DeeplearningSpeechModel(null);
-        model.Wav2MFCC(g_ModuleBasePath.."Data/thchs30.txt", "D:/Users/IGG/Downloads/data_thchs30/data/", g_ModuleBasePath.."Other/thchs30_word.dat", g_ModuleBasePath.."Other/thchs30_speech.dat");
+        model.Wav2MFCC(g_ModuleBasePath.."Data/thchs30.txt", "D:/Users/IGG/Downloads/data_thchs30/data/", g_ModuleBasePath.."Data/thchs30_word.dat", g_ModuleBasePath.."Data/thchs30_speech.dat");
     }
 
     // thchs30_path 是thchs30下data数据的路径 比如 D:/Users/IGG/Downloads/data_thchs30/data

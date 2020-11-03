@@ -20,16 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="deeplearninglib.h" />
-    <ClInclude Include="deeplearning_mnist_cnn.hpp" />
+    <ClInclude Include="deeplearning_mnist.hpp" />
     <ClInclude Include="deeplearning_model.hpp" />
     <ClInclude Include="deeplearning_speech.hpp" />
     <ClInclude Include="deeplearning_xor.hpp" />
-    <ClInclude Include="include\other\ctc\CTCLossNode.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="deeplearninglib.cpp" />
-    <ClCompile Include="include\other\ctc\CTCLossNode.cpp" />
-    <ClCompile Include="include\other\ctc\src\ctc_entrypoint.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -120,14 +117,14 @@
       <PreprocessorDefinitions>_DEBUG;THIRDPARTY_EXPORTS;_WINDOWS;_USRDLL;LUA_BUILD_AS_DLL;LUA_LIB;ASIO_STANDALONE;_WIN32_WINNT=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\lua\;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)deeplearning\include\;$(SolutionDir)..\carp\;$(SolutionDir)..\;$(SolutionDir)..\SDL\include\;$(SolutionDir)deeplearning\include\Eigen\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\lua\;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)deeplearning\include\;$(SolutionDir)..\carp\;$(SolutionDir)..\;$(SolutionDir)..\SDL\include\;$(SolutionDir)deeplearning\include\Eigen\;$(SolutionDir)deeplearning\include\libtorch\torch\csrc\api\include\;$(SolutionDir)deeplearning\include\libtorch\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\ALittle\lib\lua\;$(SolutionDir)deeplearning\lib\dynet\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>luad.lib;dynetd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\ALittle\lib\lua\;$(SolutionDir)deeplearning\lib\dynet\;$(SolutionDir)deeplearning\lib\libtorch\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>luad.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -160,7 +157,7 @@
       <PreprocessorDefinitions>NDEBUG;THIRDPARTY_EXPORTS;_WINDOWS;_USRDLL;LUA_BUILD_AS_DLL;LUA_LIB;ASIO_STANDALONE;_WIN32_WINNT=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\lua\;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)deeplearning\include\;$(SolutionDir)..\carp\;$(SolutionDir)..\;$(SolutionDir)..\SDL\include\;$(SolutionDir)deeplearning\include\Eigen\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\lua\;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)deeplearning\include\;$(SolutionDir)..\carp\;$(SolutionDir)..\;$(SolutionDir)..\SDL\include\;$(SolutionDir)deeplearning\include\Eigen\;$(SolutionDir)deeplearning\include\libtorch\torch\csrc\api\include\;$(SolutionDir)deeplearning\include\libtorch\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -168,8 +165,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\ALittle\lib\lua\;$(SolutionDir)deeplearning\lib\dynet\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>lua.lib;dynet.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\ALittle\lib\lua\;$(SolutionDir)deeplearning\lib\dynet\;$(SolutionDir)deeplearning\lib\libtorch\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>lua.lib;torch_cpu.lib;c10.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

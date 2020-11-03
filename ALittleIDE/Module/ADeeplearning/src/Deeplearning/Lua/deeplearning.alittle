@@ -1,10 +1,6 @@
 
 register namespace deeplearning;
 
-public static Initialize() {}
-public static Cleanup() {}
-public static GetNumberOfGraph() : int {}
-
 public class DeeplearningModel
 {
     // 加载与保存
@@ -43,13 +39,11 @@ public class DeeplearningXorModel : DeeplearningModel
     public fun Output(double x1, double x2) : double {}
 }
 
-// Mnist CNN版本
-public class DeeplearningMnistCNNModel : DeeplearningModel
+// Mnist
+public class DeeplearningMnistModel : DeeplearningModel
 {
-    // model_path 事先训练的模型数据
-    // train_image 从http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz下载的文件后的本地路径
-    // train_labels 从http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz下载的文件后的本地路径
-    public fun SetTrainDataPath(string train_image, string train_labels) {}
+    // mnist_root mnist训练数据的根路径
+    public fun SetMnistRoot(string mnist_root) {}
     // 输入表面，然后预测0-9的数字
     public fun Output(int surface) : int {}
 }
@@ -71,7 +65,7 @@ public class DeeplearningSpeechModel : DeeplearningModel
     public fun Wav2MFCC(string desc_path, string wav_base_path, string word_out_path, string speech_out_path) : bool {}
 
     // mfcc_path 由Wav2MFCC输出的speech_out_path
-    public fun SetTrainDataPath(string mfcc_path) {}
+    public fun SetSpeechDataPath(string mfcc_path) {}
 
     // file_path wav的语音文件路径，采样率必须是16000，单声道
     // 返回拼音

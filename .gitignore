@@ -59,3 +59,15 @@
 /lualib/.vs
 /lualib/deeplearning/x64
 /lualib/x64
+/ALittleIDE/Module/ADeeplearning/Other/asmjit.dll
+/ALittleIDE/Module/ADeeplearning/Other/c10.dll
+/ALittleIDE/Module/ADeeplearning/Other/caffe2_detectron_ops.dll
+/ALittleIDE/Module/ADeeplearning/Other/caffe2_module_test_dynamic.dll
+/ALittleIDE/Module/ADeeplearning/Other/fbgemm.dll
+/ALittleIDE/Module/ADeeplearning/Other/libiomp5md.dll
+/ALittleIDE/Module/ADeeplearning/Other/libiompstubs5md.dll
+/ALittleIDE/Module/ADeeplearning/Other/torch.dll
+/ALittleIDE/Module/ADeeplearning/Other/torch_cpu.dll
+/ALittleIDE/Module/ADeeplearning/Other/torch_global_deps.dll
+/ALittleIDE/Module/ADeeplearning/Other/uv.dll
+/lualib/sqlite3/x64

@@ -1,51 +1,46 @@
 #ifndef DEEPLEARNING_SPEECH_INCLUDED
 #define DEEPLEARNING_SPEECH_INCLUDED
 
-#include "other/mfcc.h"
+#include "torch/torch.h"
 #include "deeplearning_model.hpp"
-#include "dynet/lstm.h"
-#include "dynet/dict.h"
-#include "other/mlp.h"
-#include "carp_string.hpp"
-#include <fstream>
-#include "other/ctc/CTCLossNode.h"
+#include "Carp/carp_message.hpp"
+#include "Carp/carp_string.hpp"
+#include "other/mfcc.h"
 
 #define _MFCCData 0
 #define _SpeechData 0
 #define _SpeechWordData 0
 
-CARP_MESSAGE_MACRO(MFCCData, std::vector<std::vector<float>>, mfcc, std::string, sentence, std::string, phoneme_word, std::string, phoneme_vowel);
+CARP_MESSAGE_MACRO(MFCCData, std::vector<float>, mfccs, size_t, count, std::string, sentence, std::string, phoneme_word, std::string, phoneme_vowel);
 CARP_MESSAGE_MACRO(SpeechData, std::vector<MFCCData>, data_list);
 CARP_MESSAGE_MACRO(SpeechWordData, std::vector<std::string>, word_list);
 
 class DeeplearningSpeechModel : public DeeplearningModel
 {
 public:
-	DeeplearningSpeechModel(const char* word_data_path) : m_trainer(m_collection)
-		, m_l2rbuilder(1, MFCC_SIZE, HIDDEN_DIM, m_collection)
-		, m_r2lbuilder(1, MFCC_SIZE, HIDDEN_DIM, m_collection)
-		, m_mlp(m_collection)
+	DeeplearningSpeechModel(const char* word_data_path)
 	{
 		size_t label_size = 1;
-		m_tag_BLANK = m_dict.convert("<BLANK>");
+		m_tag_BLANK = Convert("<BLANK>");
 
 		std::vector<char> out;
 		if (word_data_path != nullptr && CarpMessageReadFactory::LoadStdFile(word_data_path, out))
 		{
 			SpeechWordData data;
-			int result = data.Deserialize(out.data(), static_cast<int>(out.size()));
+			const int result = data.Deserialize(out.data(), static_cast<int>(out.size()));
 			if (result >= CARP_MESSAGE_DR_NO_DATA)
 			{
 				for (auto& word : data.word_list)
-					m_dict.convert(word);
-				label_size = m_dict.get_words().size();
+					Convert(word);
 			}
 		}
-		
-		m_mlp.append(m_collection, dynet::Layer(/* input_dim */ HIDDEN_DIM * 2, /* output_dim */ label_size, /* activation */ dynet::Activation::LINEAR, /* dropout_rate */ DROPOUT_RATE));
-	}
 
-public:
+		m_lstm = register_module("lstm", torch::nn::LSTM(torch::nn::LSTMOptions(MFCC_SIZE, 128).bidirectional(true)));
+		m_fc1 = register_module("fc1", torch::nn::Linear(256, m_word_map_tag.size()));
+
+		m_trainer = std::make_shared<torch::optim::SGD>(parameters(), torch::optim::SGDOptions(0.01));
+	}
+	
 	bool Wav2MFCC(const char* desc_path, const char* wav_base_path, const char* word_out_path, const char* speech_out_path)
 	{
 		std::ifstream desc_file(desc_path);
@@ -82,10 +77,10 @@ public:
 			back.phoneme_word = phoneme_word;
 			back.phoneme_vowel = phoneme_vowel;
 
-			back.mfcc.resize(mfcc_list.size());
+			back.count = mfcc_list.size();
 			for (size_t i = 0; i < mfcc_list.size(); ++i)
 				for (auto& value : mfcc_list[i])
-					back.mfcc[i].push_back(static_cast<float>(value));
+					back.mfccs.push_back(static_cast<float>(value));
 
 			std::vector<std::string> phoneme_list;
 			CarpString::Split(back.phoneme_word, " ", phoneme_list);
@@ -111,42 +106,13 @@ public:
 	}
 
 public:
-	void SetTrainDataPath(const char* mfcc_path)
+	void SetSpeechDataPath(const char* mfcc_path)
 	{
 		// 保存训练数据路径
 		m_train_mfcc_path.clear();
 		if (mfcc_path) m_train_mfcc_path = mfcc_path;
 	}
-
-	void Build(dynet::ComputationGraph& cg, const std::vector<dynet::Expression>& input_list, bool dropout, std::vector<dynet::Expression>& out_list)
-	{
-		// 双向lstm
-		m_l2rbuilder.new_graph(cg);  // reset RNN builder for new graph
-		m_l2rbuilder.start_new_sequence();
-		m_r2lbuilder.new_graph(cg);  // reset RNN builder for new graph
-		m_r2lbuilder.start_new_sequence();
-
-		// read sequence from left to right
-		std::vector<dynet::Expression> l2r;
-		for (int i = 0; i < (int)input_list.size(); ++i)
-			l2r.push_back(m_l2rbuilder.add_input(input_list[i]));
-		// read sequence from right to left
-		std::vector<dynet::Expression> r2l;
-		for (int i = (int)input_list.size() - 1; i >= 0; --i)
-			r2l.push_back(m_r2lbuilder.add_input(input_list[i]));
 	
-		// 合并
-		for (int i = 0; i < (int)input_list.size(); ++i)
-			out_list.push_back(dynet::concatenate({ l2r[i], r2l[i] }));
-
-		// MLP
-		if (dropout) m_mlp.enable_dropout();
-		else m_mlp.disable_dropout();
-
-		for (int i = 0; i < (int)out_list.size(); ++i)
-			out_list[i] = m_mlp.run(out_list[i], cg);
-	}
-
 	size_t TrainInit() override
 	{
 		m_data.data_list.clear();
@@ -154,7 +120,7 @@ public:
 		std::vector<char> out;
 		if (!CarpMessageReadFactory::LoadStdFile(m_train_mfcc_path, out)) return 0;
 
-		int result = m_data.Deserialize(out.data(), static_cast<int>(out.size()));
+		const int result = m_data.Deserialize(out.data(), static_cast<int>(out.size()));
 		if (result < CARP_MESSAGE_DR_NO_DATA) return 0;
 
 		return m_data.data_list.size();
@@ -164,63 +130,72 @@ public:
 	{
 		m_data.data_list.clear();
 	}
-
+	
 	double Training(size_t index, bool& right) override
 	{
-		if (dynet::get_number_of_active_graphs() > 0) return 0;
-
-		// 构建动态图
-		dynet::ComputationGraph cg;
+		// 重置误差项
+		m_trainer->zero_grad();
+		
 		// 设置输入
-		std::vector<dynet::Expression> input_list;
-		for (auto& data : m_data.data_list[index].mfcc)
-			input_list.push_back(input(cg, { MFCC_SIZE }, data));
+		auto& data = m_data.data_list[index];
 
-		// 获得隐藏层
-		std::vector<dynet::Expression> out_list;
-		Build(cg, input_list, true, out_list);
+		auto input = torch::from_blob(data.mfccs.data(), { (long long)data.count, 1, MFCC_SIZE });
+		
+		// 执行运算
+		auto output = forward(input, true);
+		// std::cout << "output:" << output.sizes() << std::endl;
 
-		// 预测
-		std::vector<int> label_list;
-		Prediction(cg, out_list, label_list);
+		auto labels = output.argmax(1);
+		// std::cout << "labels:" << labels.sizes() << std::endl;
 
-		right = Label2String(label_list) == m_data.data_list[index].phoneme_word;
+		// 判断预测是否正确
+		const auto pred = Label2String(labels, data.count);
+		std::cout << pred << std::endl;
+		right = m_data.data_list[index].phoneme_word == pred;
 
-		dynet::Expression loss_expr = ctc_loss(dynet::concatenate(out_list), m_dict.get_words().size(), label_list, m_tag_BLANK);
+		std::vector<std::string> word_list;
+		CarpString::Split(m_data.data_list[index].phoneme_word, " ", word_list);
+		std::vector<int> phoneme_list;
+		for (auto& word : word_list)
+		{
+			auto it = m_word_map_tag.find(word);
+			if (it != m_word_map_tag.end())
+				phoneme_list.push_back(it->second);
+			else
+				phoneme_list.push_back((int)m_word_map_tag.size());
+		}
+		torch::Tensor target = torch::from_blob(phoneme_list.data(), { 1, (long long)phoneme_list.size() }, at::TensorOptions(torch::ScalarType::Int));
 
-		// 累计损失值
-		const double loss = as_scalar(cg.incremental_forward(loss_expr));
-		// 反向传播
-		cg.backward(loss_expr);
-		// 更新参数
-		m_trainer.update();
+		auto input_lengths = torch::full({ 1 }, (long long)data.count);
+		auto target_lengths = torch::full({ 1 }, (long long)phoneme_list.size());
+
+		// 获得损失表达式
+		auto loss_expr = torch::ctc_loss(output.view({output.size(0), 1, output.size(1) }), target, input_lengths, target_lengths, m_tag_BLANK);
+		auto loss = loss_expr.item().toDouble();
+		// if (index == 0) std::cout << loss << std::endl;
+		
+		// 计算反向传播
+		loss_expr.backward();
+		// 更新训练
+		m_trainer->step();
 
 		return loss;
 	}
 
-	static void Prediction(dynet::ComputationGraph& cg, const std::vector<dynet::Expression>& softmax_list, std::vector<int>& label_list)
+	torch::Tensor forward(torch::Tensor x, bool training)
 	{
-		// 预测
-		int index = 0;
-	    for (auto& out : softmax_list)
-	    {
-			++index;
-			// Get values
-			const auto probs = dynet::as_vector(cg.incremental_forward(out));
-			// Get argmax
-			size_t argmax = 0;
-			for (size_t i = 1; i < probs.size(); ++i) {
-				if (probs[i] > probs[argmax])
-					argmax = i;
-			}
-			label_list.push_back(argmax);
-	    }
+		// 双向lstm
+		x = std::get<0>(m_lstm->forward(x));
+		
+		x = x.view({ -1, 256 });
+		// 全连接
+		x = m_fc1->forward(x);
+		return torch::log_softmax(x, 1);
 	}
 
 	const char* Output(const char* file_path)
 	{
 		m_output.clear();
-		if (dynet::get_number_of_active_graphs() > 0) return m_output.c_str();
 
 		std::string wav_path = file_path;
 		std::ifstream wav_file(wav_path, std::ios::binary);
@@ -231,65 +206,73 @@ public:
 		MFCC mfcc;
 		if (!mfcc.process(wav_file, mfcc_list, error)) return m_output.c_str();
 
-		std::vector<std::vector<float>> data_list;
-		data_list.resize(mfcc_list.size());
+		std::vector<float> data;
 		for (size_t i = 0; i < mfcc_list.size(); ++i)
 			for (auto& value : mfcc_list[i])
-				data_list[i].push_back(static_cast<float>(value));
+				data.push_back(static_cast<float>(value));
 
-		// 构建动态图
-		dynet::ComputationGraph cg;
-		// 设置输入
-		std::vector<dynet::Expression> input_list;
-		for (auto& data : data_list)
-			input_list.push_back(input(cg, { MFCC_SIZE }, data));
+		torch::Tensor input = torch::from_blob(data.data(), { (long long)mfcc_list.size(), 1, MFCC_SIZE });
 
-		// 获得隐藏层
-		std::vector<dynet::Expression> out_list;
-		Build(cg, input_list, false, out_list);
+		// 执行运算
+		auto output = forward(input, false);
+		auto labels = output.argmax(2);
 
-		// 预测
-		std::vector<int> label_list;
-		Prediction(cg, out_list, label_list);
-
-		m_output = Label2String(label_list);
+		m_output = Label2String(labels, data.size());
 		return m_output.c_str();
 	}
 
-	std::string Label2String(const std::vector<int>& label_list)
+	std::string Label2String(const torch::Tensor& labels, size_t count)
 	{
 		std::string out;
-		for (size_t i = 0; i < label_list.size(); ++i)
+		for (size_t i = 0; i < count; ++i)
 		{
-			out += m_dict.convert(label_list[i]);
-			if (i + 1 < label_list.size())
+			const auto label = labels[i].item().toInt();
+			if (label == m_tag_BLANK) continue;
+			
+			auto it = m_tag_map_word.find(label);
+			if (it != m_tag_map_word.end())
+				out += it->second;
+			else
+				out += "?";
+			if (i + 1 < count)
 				out += " ";
 		}
 
 		return out;
 	}
 
-private:
-	dynet::SimpleSGDTrainer m_trainer;
+	int Convert(const std::string& word)
+	{
+		auto it = m_word_map_tag.find(word);
+		if (it != m_word_map_tag.end()) return it->second;
+
+		const int id = m_max_id;
+		++m_max_id;
+		m_word_map_tag[word] = id;
+		m_tag_map_word[id] = word;
+		return id;
+	}
 
 private:
-	dynet::LSTMBuilder m_l2rbuilder;
-	dynet::LSTMBuilder m_r2lbuilder;
-	dynet::MLP m_mlp;
+	std::shared_ptr<torch::optim::SGD> m_trainer;
 
+private:
+	torch::nn::LSTM m_lstm{nullptr};
+	torch::nn::Linear m_fc1{ nullptr };
+	
 private:
 	std::string m_train_mfcc_path;
 	SpeechData m_data;
-
-	dynet::Dict m_dict;
-	int m_tag_BLANK = 0;
-
 	std::string m_output;
 
 private:
-	static const unsigned HIDDEN_DIM = 1024;
+	std::map<int, std::string> m_tag_map_word;
+	std::map<std::string, int> m_word_map_tag;
+	int m_max_id = 0;
+	int m_tag_BLANK = 0;
+
+
 	static const unsigned MFCC_SIZE = 13;
-	static constexpr float DROPOUT_RATE = 0.4f;
 };
 
 #endif

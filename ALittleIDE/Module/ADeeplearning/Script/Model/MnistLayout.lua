@@ -22,13 +22,12 @@ option_map = {}
 assert(ADeeplearning.CommonTrainLayout, " extends class:ADeeplearning.CommonTrainLayout is nil")
 ADeeplearning.MnistTrainLayout = Lua.Class(ADeeplearning.CommonTrainLayout, "ADeeplearning.MnistTrainLayout")
 
-function ADeeplearning.MnistTrainLayout:TCtor()
-	self._model = deeplearning.DeeplearningMnistModel()
-	self._model_path = ADeeplearning.g_ModuleBasePath .. "Other/mnist.model"
-	self._model:SetMnistRoot(ADeeplearning.g_ModuleBasePath .. "Data")
-end
-
 function ADeeplearning.MnistTrainLayout.__getter:model()
+	if self._model == nil then
+		self._model = deeplearning.DeeplearningMnistModel()
+		self._model_path = ADeeplearning.g_ModuleBasePath .. "Other/mnist.model"
+		self._model:SetMnistRoot(ADeeplearning.g_ModuleBasePath .. "Data")
+	end
 	return self._model
 end
 

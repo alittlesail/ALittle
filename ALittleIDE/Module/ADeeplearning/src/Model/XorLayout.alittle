@@ -5,13 +5,15 @@ public class XorTrainLayout : CommonTrainLayout
 {
     private deeplearning.DeeplearningXorModel _model;
 
-    public fun TCtor()
+    public get model() : deeplearning.DeeplearningModel
     {
-        this._model = new deeplearning.DeeplearningXorModel();
-        this._model_path = g_ModuleBasePath.."Other/xor.model";
+        if (this._model == null)
+        {
+            this._model = new deeplearning.DeeplearningXorModel();
+            this._model_path = g_ModuleBasePath.."Other/xor.model";
+        }
+        return this._model;
     }
-
-    public get model() : deeplearning.DeeplearningModel { return this._model; }
 }
 
 protected class XorLayout : ALittle.DisplayLayout

@@ -95,7 +95,7 @@ public:
 		x = torch::max_pool2d(x, 2);
 		x = torch::relu(x);
 
-		// 将矩阵转为 1 * 320
+		// 将矩阵转为
 		x = x.view({ -1, 4 * 4 * 128 });
 
 		// 第一层全连接

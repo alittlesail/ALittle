@@ -90,7 +90,7 @@ function AUIPlugin.AUIStatLayout:TryFreshMaxValue()
 	local i = min_index + 1
 	while true do
 		if not(i <= max_index) then break end
-		self:AddValue(loss_map[i], right_map[i])
+		self:AddValue(loss_map[i], right_map[i], true)
 		i = i+(1)
 	end
 end
@@ -103,7 +103,7 @@ function AUIPlugin.AUIStatLayout:GetAverageValue()
 	return self._sum_value / count
 end
 
-function AUIPlugin.AUIStatLayout:AddValue(loss, right)
+function AUIPlugin.AUIStatLayout:AddValue(loss, right, not_refresh)
 	self._sum_value = self._sum_value + (loss)
 	if self._max_index - self._min_index + 1 < ALittle.Math_Floor(self._draw_width / self._point_size) then
 		self._max_index = self._max_index + (1)
@@ -154,7 +154,9 @@ function AUIPlugin.AUIStatLayout:AddValue(loss, right)
 		end
 		col = col+(1)
 	end
-	self:TryFreshMaxValue()
+	if not not_refresh then
+		self:TryFreshMaxValue()
+	end
 end
 
 function AUIPlugin.AUIStatLayout:ClearContent()

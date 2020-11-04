@@ -34,8 +34,10 @@ public:
 			}
 		}
 
-		m_lstm = register_module("lstm", torch::nn::LSTM(torch::nn::LSTMOptions(MFCC_SIZE, 128).bidirectional(true)));
-		m_fc1 = register_module("fc1", torch::nn::Linear(256, m_word_map_tag.size()));
+		m_conv1 = register_module("conv1", torch::nn::Conv1d(torch::nn::Conv1dOptions(MFCC_SIZE, 50, {5})));
+		m_pool1 = register_module("pool1", torch::nn::MaxPool1d(torch::nn::MaxPool1dOptions(4)));
+		m_lstm = register_module("lstm", torch::nn::LSTM(torch::nn::LSTMOptions(50, 128).bidirectional(true)));
+		m_fc = register_module("fc", torch::nn::Linear(256, m_word_map_tag.size()));
 
 		m_trainer = std::make_shared<torch::optim::Adam>(parameters(), torch::optim::AdamOptions(0.01));
 	}
@@ -151,15 +153,12 @@ public:
 		auto input = torch::from_blob(data.mfccs.data(), { (long long)data.count, 1, MFCC_SIZE });
 		
 		// 执行运算
-		// std::cout << "input:" << input.sizes() << std::endl;
 		auto output = forward(input, true);
-		// std::cout << "output:" << output.sizes() << std::endl;
 
 		auto labels = output.argmax(2);
-		// std::cout << "labels:" << labels.sizes() << std::endl;
 
 		// 判断预测是否正确
-		const auto pred = Label2String(labels, data.count);
+		const auto pred = Label2String(labels, labels.size(0));
 		// std::cout << pred << std::endl;
 		right = m_data.data_list[index].phoneme_word == pred;
 
@@ -176,13 +175,12 @@ public:
 		}
 		torch::Tensor target = torch::from_blob(phoneme_list.data(), { (long long)phoneme_list.size() }, at::TensorOptions(torch::ScalarType::Int));
 
-		auto input_lengths = torch::full({ 1 }, (long long)data.count, at::TensorOptions(torch::ScalarType::Int));
-		auto target_lengths = torch::full({ 1 }, (long long)phoneme_list.size(), at::TensorOptions(torch::ScalarType::Int));
+		auto input_lengths = torch::full({ 1 }, output.size(0), at::TensorOptions(torch::ScalarType::Int));
+		auto target_lengths = torch::full({ 1 }, target.size(0), at::TensorOptions(torch::ScalarType::Int));
 
 		// 获得损失表达式
 		auto loss_expr = torch::ctc_loss(output, target, input_lengths, target_lengths, m_tag_BLANK);
 		auto loss = loss_expr.item().toDouble();
-		// if (index == 0) std::cout << loss << std::endl;
 		
 		// 计算反向传播
 		loss_expr.backward();
@@ -194,13 +192,16 @@ public:
 
 	torch::Tensor forward(torch::Tensor x, bool training)
 	{
+		x = x.transpose(0, 1).transpose(1, 2);
+		x = m_conv1->forward(x);
+		x = m_pool1->forward(x);
+		x = torch::relu(x);
+		x = x.transpose(1, 2).transpose(0, 1);
 		// 双向lstm
 		x = std::get<0>(m_lstm->forward(x));
-		// std::cout << "lstm:" << x.sizes() << std::endl;
 		
 		// 全连接
-		x = m_fc1->forward(x);
-		// std::cout << "fc:" << x.sizes() << std::endl;
+		x = m_fc->forward(x);
 		return torch::log_softmax(x, 2);
 	}
 
@@ -268,8 +269,10 @@ private:
 	std::shared_ptr<torch::optim::Adam> m_trainer;
 
 private:
+	torch::nn::Conv1d m_conv1{nullptr};
+	torch::nn::MaxPool1d m_pool1{ nullptr };
 	torch::nn::LSTM m_lstm{nullptr};
-	torch::nn::Linear m_fc1{nullptr};
+	torch::nn::Linear m_fc{nullptr};
 	
 private:
 	std::string m_train_mfcc_path;

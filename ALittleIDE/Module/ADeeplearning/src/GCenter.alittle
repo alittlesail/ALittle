@@ -30,7 +30,7 @@ protected class GCenter
         var main_scene = g_Control.CreateControl{ALittle.DisplayLayout}("main_scene");
         this._main_layer.AddChild(main_scene);
 
-        // this.Wav2MFCC(100);
+        // this.Wav2MFCC(4);
         // this.Thchs302DescFile("D:/Users/IGG/Downloads/data_thchs30/data/");
     }
 

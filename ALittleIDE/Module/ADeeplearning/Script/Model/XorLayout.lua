@@ -21,12 +21,11 @@ option_map = {}
 assert(ADeeplearning.CommonTrainLayout, " extends class:ADeeplearning.CommonTrainLayout is nil")
 ADeeplearning.XorTrainLayout = Lua.Class(ADeeplearning.CommonTrainLayout, "ADeeplearning.XorTrainLayout")
 
-function ADeeplearning.XorTrainLayout:TCtor()
-	self._model = deeplearning.DeeplearningXorModel()
-	self._model_path = ADeeplearning.g_ModuleBasePath .. "Other/xor.model"
-end
-
 function ADeeplearning.XorTrainLayout.__getter:model()
+	if self._model == nil then
+		self._model = deeplearning.DeeplearningXorModel()
+		self._model_path = ADeeplearning.g_ModuleBasePath .. "Other/xor.model"
+	end
 	return self._model
 end
 

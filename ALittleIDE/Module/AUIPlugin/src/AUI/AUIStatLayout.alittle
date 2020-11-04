@@ -11,6 +11,7 @@ public class AUIStatLayout : ALittle.DisplayLayout
     private int _min_index = 0;
     private int _max_index = 0;
     private double _max_value = 0;
+    private double _sum_value = 0;
     private Map<int, double> _loss_map = new Map<int, double>();
     private Map<int, bool> _right_map = new Map<int, bool>();
 
@@ -23,7 +24,7 @@ public class AUIStatLayout : ALittle.DisplayLayout
         this.AddChild(this._image);
     }
 
-    public fun Init(int point_size, int draw_width, int draw_height, double max_value)
+    public fun Init(int point_size, int draw_width, int draw_height)
     {
         this._point_size = point_size;
         if (this._point_size < 1) this._point_size = 1;
@@ -34,22 +35,73 @@ public class AUIStatLayout : ALittle.DisplayLayout
 
         this._min_index = 0;
         this._max_index = 0;
-        this._max_value = max_value;
-        if (this._max_value < 0) this._max_value = 0;
+        this._sum_value = 0;
         this._loss_map = new Map<int, double>();
         this._right_map = new Map<int, bool>();
+        this._max_value = this.CalcMaxValue();
 
         this._image.SetSurfaceSize(this._draw_width, this._draw_height, 0xFF000000);
     }
 
+    private fun CalcMaxValue() : double
+    {
+        var value = this.GetAverageValue();
+        if (value <= 0) return 1;
+
+        var max_value = value;
+        if (max_value < 1) max_value = 1;
+        return max_value;
+    }
+
+    private fun TryFreshMaxValue()
+    {
+        var value = this.GetAverageValue();
+        // 如果平均值是当前的1/4，或者超出max_value
+        var need_fresh = value <= this._max_value / 4 || value > this._max_value;
+        if (!need_fresh) return;
+
+        var target = value * 2;
+        if (target < 1) target = 1;
+        if (this._max_value == target) return;
+
+        this._max_value = target;
+
+        // 清空内容
+        this._image.SetSurfaceSize(this._draw_width, this._draw_height, 0xFF000000);
+
+        var min_index = this._min_index;
+        var max_index = this._max_index;
+        var loss_map = this._loss_map;
+        var right_map = this._right_map;
+
+        this._loss_map = new Map<int, double>();
+        this._right_map = new Map<int, bool>();
+        this._min_index = 0;
+        this._max_index = 0;
+        this._sum_value = 0;
+
+        for (var i = min_index + 1; i <= max_index; 1)
+            this.AddValue(loss_map[i], right_map[i]);
+    }
+
+    public fun GetAverageValue() : double
+    {
+        var count = this._max_index - this._min_index;
+        if (count <= 0) return 0;
+        return this._sum_value / count;
+    }
+
     public fun AddValue(double loss, bool right)
     {
-        if (this._max_index - this._min_index < ALittle.Math_Floor(this._draw_width / this._point_size))
+        this._sum_value += loss;
+        if (this._max_index - this._min_index + 1 < ALittle.Math_Floor(this._draw_width / this._point_size))
         {
             this._max_index += 1;
         }
         else
         {
+            if (this._min_index > 0)
+            	this._sum_value -= this._loss_map[this._min_index];
             this._loss_map[this._min_index] = null;
             this._right_map[this._min_index] = null;
             this._min_index += 1;
@@ -90,16 +142,18 @@ public class AUIStatLayout : ALittle.DisplayLayout
                 carp.SetCarpSurfacePixel(surface, col, row, color);
             }
         }
+
+        this.TryFreshMaxValue();
     }
 
     public fun ClearContent()
     {
+        this._sum_value = 0;
         this._min_index = 0;
         this._max_index = 0;
-        this._max_value = this._max_value;
-        if (this._max_value < 0) this._max_value = 0;
         this._loss_map = new Map<int, double>();
         this._right_map = new Map<int, bool>();
+        this._max_value = this.GetAverageValue();
         this._image.SetSurfaceSize(this._draw_width, this._draw_height, 0xFF000000);
     }
 

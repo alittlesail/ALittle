@@ -7,11 +7,12 @@ public class CommonTrainLayout : ALittle.DisplayLayout
 	private ALittle.Text _cur_train_count_text;
 	private ALittle.Text _cur_right_count_text;
 	private ALittle.Text _train_round_text;
+    private ALittle.Text _loss_average_text;
 
     private string _model_path;
 
 	private AUIPlugin.AUIStatLayout _stat;
-
+    
     private ALittle.LoopFrame _loop;
     private ALittle.DisplayObject _start_button;
     private ALittle.DisplayObject _stop_button;
@@ -38,7 +39,7 @@ public class CommonTrainLayout : ALittle.DisplayLayout
         this._train_round_text.text = 0;
         this._cur_right_count_text.text = 0;
 
-        this._stat.Init(1, ALittle.Math_Floor(this._stat.width), ALittle.Math_Floor(this._stat.height), 1);
+        this._stat.Init(1, ALittle.Math_Floor(this._stat.width), ALittle.Math_Floor(this._stat.height));
         this.model.Load(this._model_path);
         this.model.StartTraining();
     }
@@ -80,6 +81,7 @@ public class CommonTrainLayout : ALittle.DisplayLayout
             this._cur_train_count_text.text = this.model.GetCurTrainCount();
             this._train_round_text.text = this.model.GetTrainRound();
             this._cur_right_count_text.text = this.model.GetCurRightCount();
+            this._loss_average_text.text = ALittle.Math_Floor(this._stat.GetAverageValue() * 10000) / 10000;
         }
     }
 }

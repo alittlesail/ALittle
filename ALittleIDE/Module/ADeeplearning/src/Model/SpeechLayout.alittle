@@ -18,7 +18,6 @@ public class SpeechTrainLayout : CommonTrainLayout
 protected class SpeechLayout : ALittle.DisplayLayout
 {
 	private ADeeplearning.SpeechTrainLayout _train;
-
     private deeplearning.DeeplearningSpeechModel _model;
 
     private string _model_path;

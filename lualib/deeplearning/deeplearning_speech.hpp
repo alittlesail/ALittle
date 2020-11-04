@@ -20,7 +20,6 @@ class DeeplearningSpeechModel : public DeeplearningModel
 public:
 	DeeplearningSpeechModel(const char* word_data_path)
 	{
-		size_t label_size = 1;
 		m_tag_BLANK = Convert("<BLANK>");
 
 		std::vector<char> out;
@@ -38,10 +37,10 @@ public:
 		m_lstm = register_module("lstm", torch::nn::LSTM(torch::nn::LSTMOptions(MFCC_SIZE, 128).bidirectional(true)));
 		m_fc1 = register_module("fc1", torch::nn::Linear(256, m_word_map_tag.size()));
 
-		m_trainer = std::make_shared<torch::optim::SGD>(parameters(), torch::optim::SGDOptions(0.01));
+		m_trainer = std::make_shared<torch::optim::Adam>(parameters(), torch::optim::AdamOptions(0.01));
 	}
 	
-	bool Wav2MFCC(const char* desc_path, const char* wav_base_path, const char* word_out_path, const char* speech_out_path)
+	bool Wav2MFCC(const char* desc_path, const char* wav_base_path, int max_count, const char* word_out_path, const char* speech_out_path)
 	{
 		std::ifstream desc_file(desc_path);
 		if (!desc_file.is_open()) return false;
@@ -49,6 +48,8 @@ public:
 		SpeechData speech_data;
 
 		std::set<std::string> word_set;
+
+		int cur_count = 0;
 		while (true)
 		{
 			std::string file;
@@ -85,6 +86,14 @@ public:
 			std::vector<std::string> phoneme_list;
 			CarpString::Split(back.phoneme_word, " ", phoneme_list);
 			for (auto& value : phoneme_list) word_set.insert(value);
+
+			++cur_count;
+			std::cout << cur_count << std::endl;
+			if (max_count > 0)
+			{
+				--max_count;
+				if (max_count == 0) break;
+			}
 		}
 
 		{
@@ -142,15 +151,16 @@ public:
 		auto input = torch::from_blob(data.mfccs.data(), { (long long)data.count, 1, MFCC_SIZE });
 		
 		// 执行运算
+		// std::cout << "input:" << input.sizes() << std::endl;
 		auto output = forward(input, true);
 		// std::cout << "output:" << output.sizes() << std::endl;
 
-		auto labels = output.argmax(1);
+		auto labels = output.argmax(2);
 		// std::cout << "labels:" << labels.sizes() << std::endl;
 
 		// 判断预测是否正确
 		const auto pred = Label2String(labels, data.count);
-		std::cout << pred << std::endl;
+		// std::cout << pred << std::endl;
 		right = m_data.data_list[index].phoneme_word == pred;
 
 		std::vector<std::string> word_list;
@@ -164,13 +174,13 @@ public:
 			else
 				phoneme_list.push_back((int)m_word_map_tag.size());
 		}
-		torch::Tensor target = torch::from_blob(phoneme_list.data(), { 1, (long long)phoneme_list.size() }, at::TensorOptions(torch::ScalarType::Int));
+		torch::Tensor target = torch::from_blob(phoneme_list.data(), { (long long)phoneme_list.size() }, at::TensorOptions(torch::ScalarType::Int));
 
-		auto input_lengths = torch::full({ 1 }, (long long)data.count);
-		auto target_lengths = torch::full({ 1 }, (long long)phoneme_list.size());
+		auto input_lengths = torch::full({ 1 }, (long long)data.count, at::TensorOptions(torch::ScalarType::Int));
+		auto target_lengths = torch::full({ 1 }, (long long)phoneme_list.size(), at::TensorOptions(torch::ScalarType::Int));
 
 		// 获得损失表达式
-		auto loss_expr = torch::ctc_loss(output.view({output.size(0), 1, output.size(1) }), target, input_lengths, target_lengths, m_tag_BLANK);
+		auto loss_expr = torch::ctc_loss(output, target, input_lengths, target_lengths, m_tag_BLANK);
 		auto loss = loss_expr.item().toDouble();
 		// if (index == 0) std::cout << loss << std::endl;
 		
@@ -186,11 +196,12 @@ public:
 	{
 		// 双向lstm
 		x = std::get<0>(m_lstm->forward(x));
+		// std::cout << "lstm:" << x.sizes() << std::endl;
 		
-		x = x.view({ -1, 256 });
 		// 全连接
 		x = m_fc1->forward(x);
-		return torch::log_softmax(x, 1);
+		// std::cout << "fc:" << x.sizes() << std::endl;
+		return torch::log_softmax(x, 2);
 	}
 
 	const char* Output(const char* file_path)
@@ -226,7 +237,7 @@ public:
 		std::string out;
 		for (size_t i = 0; i < count; ++i)
 		{
-			const auto label = labels[i].item().toInt();
+			const auto label = labels[i][0].item().toInt();
 			if (label == m_tag_BLANK) continue;
 			
 			auto it = m_tag_map_word.find(label);
@@ -254,11 +265,11 @@ public:
 	}
 
 private:
-	std::shared_ptr<torch::optim::SGD> m_trainer;
+	std::shared_ptr<torch::optim::Adam> m_trainer;
 
 private:
 	torch::nn::LSTM m_lstm{nullptr};
-	torch::nn::Linear m_fc1{ nullptr };
+	torch::nn::Linear m_fc1{nullptr};
 	
 private:
 	std::string m_train_mfcc_path;
@@ -270,7 +281,6 @@ private:
 	std::map<std::string, int> m_word_map_tag;
 	int m_max_id = 0;
 	int m_tag_BLANK = 0;
-
 
 	static const unsigned MFCC_SIZE = 13;
 };

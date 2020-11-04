@@ -30,17 +30,18 @@ protected class GCenter
         var main_scene = g_Control.CreateControl{ALittle.DisplayLayout}("main_scene");
         this._main_layer.AddChild(main_scene);
 
-        // this.Wav2MFCC();
+        // this.Wav2MFCC(100);
+        // this.Thchs302DescFile("D:/Users/IGG/Downloads/data_thchs30/data/");
     }
 
     public fun Shutdown()
     {
     }
 
-    public fun Wav2MFCC()
+    public fun Wav2MFCC(int max_count)
     {
         var model = new deeplearning.DeeplearningSpeechModel(null);
-        model.Wav2MFCC(g_ModuleBasePath.."Data/thchs30.txt", "D:/Users/IGG/Downloads/data_thchs30/data/", g_ModuleBasePath.."Data/thchs30_word.dat", g_ModuleBasePath.."Data/thchs30_speech.dat");
+        model.Wav2MFCC(g_ModuleBasePath.."Data/thchs30.txt", "D:/Users/IGG/Downloads/data_thchs30/data/", max_count, g_ModuleBasePath.."Data/thchs30_word.dat", g_ModuleBasePath.."Data/thchs30_speech.dat");
     }
 
     // thchs30_path 是thchs30下data数据的路径 比如 D:/Users/IGG/Downloads/data_thchs30/data

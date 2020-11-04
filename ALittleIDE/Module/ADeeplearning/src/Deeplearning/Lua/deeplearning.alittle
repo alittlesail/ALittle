@@ -60,9 +60,10 @@ public class DeeplearningSpeechModel : DeeplearningModel
     // 第三行 每个字的拼音
     // 第四行 辅音，元音
     // wav_base_path 语音文件的根路径
+    // max_count 最大数量
     // word_out_path 输出标记数据
     // speech_out_path 输出MFCC的数据
-    public fun Wav2MFCC(string desc_path, string wav_base_path, string word_out_path, string speech_out_path) : bool {}
+    public fun Wav2MFCC(string desc_path, string wav_base_path, int max_count, string word_out_path, string speech_out_path) : bool {}
 
     // mfcc_path 由Wav2MFCC输出的speech_out_path
     public fun SetSpeechDataPath(string mfcc_path) {}

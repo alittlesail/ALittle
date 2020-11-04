@@ -27,9 +27,9 @@ end
 function ADeeplearning.GCenter:Shutdown()
 end
 
-function ADeeplearning.GCenter:Wav2MFCC()
+function ADeeplearning.GCenter:Wav2MFCC(max_count)
 	local model = deeplearning.DeeplearningSpeechModel(nil)
-	model:Wav2MFCC(ADeeplearning.g_ModuleBasePath .. "Data/thchs30.txt", "D:/Users/IGG/Downloads/data_thchs30/data/", ADeeplearning.g_ModuleBasePath .. "Data/thchs30_word.dat", ADeeplearning.g_ModuleBasePath .. "Data/thchs30_speech.dat")
+	model:Wav2MFCC(ADeeplearning.g_ModuleBasePath .. "Data/thchs30.txt", "D:/Users/IGG/Downloads/data_thchs30/data/", max_count, ADeeplearning.g_ModuleBasePath .. "Data/thchs30_word.dat", ADeeplearning.g_ModuleBasePath .. "Data/thchs30_speech.dat")
 end
 
 function ADeeplearning.GCenter:Thchs302DescFile(thchs30_path)

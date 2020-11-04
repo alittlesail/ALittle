@@ -42,7 +42,7 @@ function ADeeplearning.CommonTrainLayout:HandleStartClick(event)
 	self._cur_train_count_text.text = 0
 	self._train_round_text.text = 0
 	self._cur_right_count_text.text = 0
-	self._stat:Init(1, ALittle.Math_Floor(self._stat.width), ALittle.Math_Floor(self._stat.height), 1)
+	self._stat:Init(1, ALittle.Math_Floor(self._stat.width), ALittle.Math_Floor(self._stat.height))
 	self.model:Load(self._model_path)
 	self.model:StartTraining()
 end
@@ -76,6 +76,7 @@ function ADeeplearning.CommonTrainLayout:UpdateFrame(frame_time)
 		self._cur_train_count_text.text = self.model:GetCurTrainCount()
 		self._train_round_text.text = self.model:GetTrainRound()
 		self._cur_right_count_text.text = self.model:GetCurRightCount()
+		self._loss_average_text.text = ALittle.Math_Floor(self._stat:GetAverageValue() * 10000) / 10000
 	end
 end
 

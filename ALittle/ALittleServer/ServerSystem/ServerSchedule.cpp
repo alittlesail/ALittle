@@ -5,7 +5,6 @@
 
 #include "../HttpSystem/HttpServer.h"
 #include "../HttpSystem/HttpSender.h"
-#include "../ClientSystem/ClientReceiver.h"
 
 #include "Carp/carp_mysql.hpp"
 #include "Carp/carp_file.hpp"
@@ -22,7 +21,6 @@ ServerSchedule::ServerSchedule(const std::string& core_path
 	, const std::string& module_path
 	, const std::string& config_path)
 {
-    m_is_exit = false;
 	m_core_path = core_path;
 	m_std_path = std_path;
 	m_sengine_path = sengine_path;
@@ -102,10 +100,10 @@ void ServerSchedule::RegisterToScript()
 		.endClass();
 }
 
-int ServerSchedule::Run()
+int ServerSchedule::Start()
 {
 	// 初始化脚本系统
-	m_script_system.Init();
+	m_script_system.Setup();
 	
 	// 把相关接口注册到脚本
 	RegisterToScript();
@@ -121,14 +119,10 @@ int ServerSchedule::Run()
 
 	// 创建定时器
 	m_current_time = CarpTime::GetCurMSTime();
-	const int HEARTBEAT = 20;
-	m_timer = AsioTimerPtr(new AsioTimer(m_io_service, std::chrono::milliseconds(HEARTBEAT)));
-	m_timer->async_wait(std::bind(&ServerSchedule::Update, this, std::placeholders::_1, HEARTBEAT));
-
-	// run
-	asio::error_code ec;
-	m_io_service.run(ec);
-	if (ec) CARP_ERROR("io server run error: " << ec.value());
+	// 间隔20毫秒执行一次update
+	TimerLoop(20, std::bind(&ServerSchedule::Update, this, std::placeholders::_1));
+	// 阻塞执行
+	Run(false);
 
 	m_mysql_system.Shutdown();
 	m_script_system.Invoke("__ALITTLEAPI_ShutdownMainModule", m_module_name.c_str());
@@ -157,21 +151,11 @@ int ServerSchedule::Run()
 	return 0;
 }
 
-void ServerSchedule::Update(const asio::error_code& ec, int interval)
+void ServerSchedule::Update(time_t cur_time)
 {
-	if (m_is_exit) return;
-
-	time_t time = CarpTime::GetCurMSTime();
-
 	// update script logic
-	m_script_system.Invoke("__ALITTLEAPI_Update", time - m_current_time);
-	m_current_time = time;
-
-	
-	if (m_is_exit) return;
-	m_timer->expires_at(std::chrono::system_clock::now() + std::chrono::milliseconds(interval));
-	if (m_is_exit) return;
-	m_timer->async_wait(std::bind(&ServerSchedule::Update, this, std::placeholders::_1, interval));
+	m_script_system.Invoke("__ALITTLEAPI_Update", cur_time - m_current_time);
+	m_current_time = cur_time;
 }
 
 void ServerSchedule::StartMysqlQuery(int thread_count, const char* ip, const char* username, const char* password, unsigned int port, const char* db_name)
@@ -308,7 +292,7 @@ void ServerSchedule::HttpGet(int id, const char* url)
 				m_script_system.Invoke("__ALITTLEAPI_HttpSucceed", id, body.c_str());
 			else
 				m_script_system.Invoke("__ALITTLEAPI_HttpFailed", id, head.c_str());
-		}, nullptr, &m_io_service, "", 0, "");
+		}, nullptr, &GetIOService(), "", 0, "");
 }
 
 void ServerSchedule::HttpPost(int id, const char* url, const char* type, const char* content)
@@ -321,7 +305,7 @@ void ServerSchedule::HttpPost(int id, const char* url, const char* type, const c
 				m_script_system.Invoke("__ALITTLEAPI_HttpSucceed", id, body.c_str());
 			else
 				m_script_system.Invoke("__ALITTLEAPI_HttpFailed", id, head.c_str());
-		}, nullptr, &m_io_service, "", 0, "");
+		}, nullptr, &GetIOService(), "", 0, "");
 }
 
 void ServerSchedule::HttpClose(int id)
@@ -390,7 +374,7 @@ void ServerSchedule::HttpStartReceiveFile(int id, const char* file_path, int sta
 void ServerSchedule::HandleHttpFileCompletedMessage(HttpSenderPtr sender, const std::string& file_path, bool succeed, const std::string& reason)
 {
 	// 这里保证lua协程执行有严格的顺序
-	m_io_service.post(std::bind(&ServerSchedule::HandleHttpFileCompletedMessageImpl, this, sender, std::string(file_path), succeed, reason));
+	GetIOService().post(std::bind(&ServerSchedule::HandleHttpFileCompletedMessageImpl, this, sender, std::string(file_path), succeed, reason));
 }
 
 void ServerSchedule::HandleHttpFileCompletedMessageImpl(HttpSenderPtr sender, const std::string& file_path, bool succeed, const std::string& reason)
@@ -413,7 +397,7 @@ bool ServerSchedule::CreateClientServer(const char* yun_ip, const char* ip, int 
 	if (yun_ip != nullptr) yun_ip_str = yun_ip;
 	std::string ip_str;
 	if (ip != nullptr) ip_str = ip;
-	ClientServerPtr server = ClientServerPtr(new ClientServer());
+	CarpConnectServerPtr server = std::make_shared<CarpConnectServerImpl>();
 	if (!server->Start(yun_ip_str, ip_str, port, 30, this)) return false;
 	m_client_server_set.insert(server);
 	return true;
@@ -443,7 +427,7 @@ int ServerSchedule::GetClientServerPort() const
 	return (*it)->GetPort();
 }
 
-void ServerSchedule::HandleClientConnect(ClientReceiverPtr sender)
+void ServerSchedule::HandleClientConnect(CarpConnectReceiverPtr sender)
 {
 	int id = m_id_creator.CreateID();
 	m_id_map_client[id] = sender;
@@ -452,7 +436,7 @@ void ServerSchedule::HandleClientConnect(ClientReceiverPtr sender)
 	m_script_system.Invoke("__ALITTLEAPI_ClientConnect", id, sender->GetRemoteIP().c_str(), sender->GetRemotePort());
 }
 
-void ServerSchedule::HandleClientDisconnect(ClientReceiverPtr sender)
+void ServerSchedule::HandleClientDisconnect(CarpConnectReceiverPtr sender)
 {
 	auto it = m_client_map_id.find(sender);
 	if (it == m_client_map_id.end()) return;
@@ -465,7 +449,7 @@ void ServerSchedule::HandleClientDisconnect(ClientReceiverPtr sender)
 	m_script_system.Invoke("__ALITTLEAPI_ClientDisconnect", id);
 }
 
-void ServerSchedule::HandleClientMessage(ClientReceiverPtr sender, int message_size, int message_id, int message_rpcid, void* memory)
+void ServerSchedule::HandleClientMessage(CarpConnectReceiverPtr sender, int message_size, int message_id, int message_rpcid, void* memory)
 {
 	auto it = m_client_map_id.find(sender);
 	if (it == m_client_map_id.end()) return;
@@ -508,7 +492,7 @@ void ServerSchedule::StartRouteSystem(int route_type, int route_num)
 	m_route_system->Start(route_id, 30, 5, this);
 }
 
-int ServerSchedule::GetRouteType()
+int ServerSchedule::GetRouteType() const
 {
 	if (m_route_system == nullptr)
 	{
@@ -519,7 +503,7 @@ int ServerSchedule::GetRouteType()
 	return RouteIdDefine::CalcRouteType(m_route_system->GetRouteId());
 }
 
-int ServerSchedule::GetRouteNum()
+int ServerSchedule::GetRouteNum() const
 {
 	if (m_route_system == nullptr)
 	{
@@ -530,7 +514,7 @@ int ServerSchedule::GetRouteNum()
 	return RouteIdDefine::CalcRouteNum(m_route_system->GetRouteId());
 }
 
-int ServerSchedule::GetRouteId()
+int ServerSchedule::GetRouteId() const
 {
 	if (m_route_system == nullptr)
 	{
@@ -634,22 +618,6 @@ void ServerSchedule::SessionSend(CONNECT_KEY connect_key, CarpMessageWriteFactor
 	if (it == m_session_map.end()) return;
 
 	it->second->Send(*factory);
-}
-
-void ServerSchedule::Exit()
-{
-	m_is_exit = true;
-	if (m_timer)
-	{
-		asio::error_code ec;
-		m_timer->cancel(ec);
-	}
-	m_io_service.stop();
-}
-
-void ServerSchedule::Execute(std::function<void()> func)
-{
-	m_io_service.post(func);
 }
 
 void ServerSchedule::HandleConsoleCmd(std::string cmd)

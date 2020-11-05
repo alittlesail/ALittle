@@ -99,6 +99,9 @@ IfExpr = IF@ ValueStat THEN AllExpr* (ELSEIF@ ValueStat THEN AllExpr*)* (ELSE@ A
 // 表达式包装 比如 { 表达式列表 }
 WrapExpr = DEFINE_DO@ AllExpr* DEFINE_END;
 
+// 函数定义表达式
+FunctionValue = FUNCTION@ MethodParamDec AllExpr* DEFINE_END;
+
 // return
 ReturnExpr = RETURN@ ((ValueStat (','@ ValueStat)*))?;
 
@@ -119,7 +122,7 @@ Op1Expr = UnOp@ ValueStat;
 
 //复合值///////////////////////////////////////////////////////////////////
 ValueStat = UnOpStat | ValueOpStat;
-ValueFactorStat = WrapValueStat | ConstValue | TableValue | PropertyValue | MethodParamTailDec;
+ValueFactorStat = WrapValueStat | ConstValue | TableValue | PropertyValue | MethodParamTailDec | FunctionValue;
 ValueOpStat = ValueFactorStat (BinOpStat)?;
 
 // 值

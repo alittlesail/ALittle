@@ -183,7 +183,7 @@ function GatewayServer.HandleQNormalRegister(client, msg)
 	info.phone_number = ""
 	info.device_id = ""
 	info.account_name = msg.account_name
-	info.account_pwd = ALittle.String_MD5("ALittle" .. msg.account_pwd .. "ALittle")
+	info.account_pwd = ALittle.String_Md5("ALittle" .. msg.account_pwd .. "ALittle")
 	info.create_time = os.time()
 	error = A_MysqlSystem:InsertInto(___all_struct[90250184], info)
 	if error ~= nil then
@@ -224,7 +224,7 @@ function GatewayServer.HandleQPhoneRegister(client, msg)
 	info.phone_number = msg.phone_number
 	info.device_id = ""
 	info.account_name = ""
-	info.account_pwd = ALittle.String_MD5("ALittle" .. msg.phone_pwd .. "ALittle")
+	info.account_pwd = ALittle.String_Md5("ALittle" .. msg.phone_pwd .. "ALittle")
 	info.create_time = os.time()
 	error = A_MysqlSystem:InsertInto(___all_struct[90250184], info)
 	if error ~= nil then
@@ -302,7 +302,7 @@ function GatewayServer.HandleQLogin(client, msg)
 			end
 			Lua.Assert(info ~= nil, "账号或密码错误")
 		end
-		Lua.Assert(info.account_pwd == ALittle.String_MD5("ALittle" .. msg.account_pwd .. "ALittle"), "账号或密码错误")
+		Lua.Assert(info.account_pwd == ALittle.String_Md5("ALittle" .. msg.account_pwd .. "ALittle"), "账号或密码错误")
 	end
 	local data_route_num = ALittle.GET_DATA_ROUTE_NUM_BY_ACCOUNT_ID(info.account_id)
 	local data_route_info = GatewayServer.g_DataRouteManager:FindRouteInfo(data_route_num)
@@ -329,8 +329,8 @@ function GatewayServer.HandleQChangePwd(client, msg)
 		Lua.Throw("密码修改失败:" .. error)
 	end
 	Lua.Assert(info ~= nil, "账号不存在")
-	Lua.Assert(info.account_pwd ~= nil and info.account_pwd == ALittle.String_MD5("ALittle" .. msg.old_pwd .. "ALittle"), "原密码不正确")
-	local account_pwd_md5 = ALittle.String_MD5("ALittle" .. msg.new_pwd .. "ALittle")
+	Lua.Assert(info.account_pwd ~= nil and info.account_pwd == ALittle.String_Md5("ALittle" .. msg.old_pwd .. "ALittle"), "原密码不正确")
+	local account_pwd_md5 = ALittle.String_Md5("ALittle" .. msg.new_pwd .. "ALittle")
 	error = A_MysqlSystem:UpdateSet(___all_struct[90250184], "account_pwd", account_pwd_md5, "account_id", info.account_id)
 	if error ~= nil then
 		Lua.Throw("密码修改失败:" .. error)
@@ -351,7 +351,7 @@ function GatewayServer.HandleQForgotPwd(client, msg)
 	if error ~= nil then
 		Lua.Throw(error)
 	end
-	local new_pwd_md5 = ALittle.String_MD5("ALittle" .. msg.new_pwd .. "ALittle")
+	local new_pwd_md5 = ALittle.String_Md5("ALittle" .. msg.new_pwd .. "ALittle")
 	error = A_MysqlSystem:UpdateSet(___all_struct[90250184], "account_pwd", new_pwd_md5, "phone_number", msg.phone_number)
 	if error ~= nil then
 		Lua.Throw("修改失败:" .. error)

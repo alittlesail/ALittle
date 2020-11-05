@@ -17,10 +17,6 @@
     <ClCompile Include="..\..\lualib\cjson\strbuf.c" />
     <ClCompile Include="..\..\lualib\sqlite3\lsqlite3.c" />
     <ClCompile Include="..\..\lualib\sqlite3\sqlite3.c" />
-    <ClCompile Include="ClientSystem\ClientReceiver.cpp" />
-    <ClCompile Include="ClientSystem\ClientReceiverBinary.cpp" />
-    <ClCompile Include="ClientSystem\ClientReceiverWebSocket.cpp" />
-    <ClCompile Include="ClientSystem\ClientServer.cpp" />
     <ClCompile Include="HttpSystem\HttpReceiver.cpp" />
     <ClCompile Include="HttpSystem\HttpSender.cpp" />
     <ClCompile Include="HttpSystem\HttpServer.cpp" />
@@ -46,8 +42,6 @@
     <ClInclude Include="..\..\lualib\sqlite3\lsqlite3.h" />
     <ClInclude Include="..\..\lualib\sqlite3\sqlite3.h" />
     <ClInclude Include="..\..\lualib\sqlite3\sqlite3ext.h" />
-    <ClInclude Include="ClientSystem\ClientReceiver.h" />
-    <ClInclude Include="ClientSystem\ClientServer.h" />
     <ClInclude Include="HttpSystem\HttpReceiver.h" />
     <ClInclude Include="HttpSystem\HttpSender.h" />
     <ClInclude Include="HttpSystem\HttpServer.h" />

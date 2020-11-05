@@ -51,7 +51,7 @@ option_map = {}
 ALittle.RegStruct(888437463, "ALittle.SessionConnectEvent", {
 name = "ALittle.SessionConnectEvent", ns_name = "ALittle", rl_name = "SessionConnectEvent", hash_code = 888437463,
 name_list = {"target","connect_key","route_type","route_num","session"},
-type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>"},
+type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,carp.CarpMessageWriteFactory>"},
 option_map = {}
 })
 ALittle.RegStruct(-370290946, "GatewayServer.NUpdateRouteInfo", {
@@ -63,7 +63,7 @@ option_map = {}
 ALittle.RegStruct(-36908822, "ALittle.SessionDisconnectEvent", {
 name = "ALittle.SessionDisconnectEvent", ns_name = "ALittle", rl_name = "SessionDisconnectEvent", hash_code = -36908822,
 name_list = {"target","connect_key","route_type","route_num","session"},
-type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>"},
+type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,carp.CarpMessageWriteFactory>"},
 option_map = {}
 })
 

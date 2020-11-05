@@ -167,7 +167,7 @@ void ServerSystem::HandleConsoleHelp()
 
 int ServerSystem::ScheduleRun(ServerSchedule* self)
 {
-	return self->Run();
+	return self->Start();
 }
 
 } // ALittle

@@ -5,27 +5,20 @@
 #include <set>
 #include <map>
 #include <string>
-#include <thread>
-#include <functional>
-#include <asio.hpp>
 
-#include "Carp/carp_message.hpp"
+#include "Carp/carp_connect_server.hpp"
 #include "Carp/carp_safe_id_creator.hpp"
 #include "Carp/carp_file_cache.hpp"
 
 #include "../HttpSystem/HttpServer.h"
-#include "../ClientSystem/ClientServer.h"
 #include "../RouteSystem/RouteSystem.h"
 #include "../MysqlSystem/MysqlSystem.h"
 #include "../ScriptSystem/ScriptSystem.h"
 
-typedef asio::basic_waitable_timer<std::chrono::system_clock> AsioTimer;
-typedef std::shared_ptr<AsioTimer> AsioTimerPtr;
-
 namespace ALittle
 {
 
-class ServerSchedule
+class ServerSchedule : public CarpConnectSchedule
 {
 public:
 	ServerSchedule(const std::string& core_path
@@ -41,37 +34,23 @@ private:
 	void RegisterToScript();
 
 public:
-	int Run();
-
-	/* execute handle
-		* @param func: handle function
-		*/
-	void Execute(std::function<void()> func);
+	int Start();
 
 	// 处理控制台命令，因为cmd是从另一个线程来的，所以这里不要使用const std::string&
 	void HandleConsoleCmd(std::string cmd);
-
-	/* exit
-		*/
-	void Exit();
 
 public:
 	/* get io service
 		* @return io service
 		*/
-	asio::io_service& GetIOService() { return m_io_service; }
 	CarpFileCacheGroup& GetFileCacheGroup() { return m_file_cache; }
 	ScriptSystem& GetScriptSystem() { return m_script_system; }
 	const std::string& GetModuleTitle() const { return m_module_title; }
 
-public:
-	bool IsExit() const { return m_is_exit; }
+private:
+	void Update(time_t cur_time);
 
 private:
-	void Update(const asio::error_code& ec, int interval);
-
-private:
-	bool m_is_exit;
 	std::string m_core_path;
 	std::string m_std_path;
 	std::string m_sengine_path;
@@ -82,7 +61,6 @@ private:
 	std::string m_string;
 
 private:
-	asio::io_service m_io_service;
 	CarpFileCacheGroup m_file_cache;
 	ScriptSystem m_script_system;
 	MysqlSystem m_mysql_system;
@@ -148,25 +126,25 @@ public:
 	int GetClientServerPort() const;
 
 	// handle client connect
-	void HandleClientConnect(ClientReceiverPtr sender);
+	void HandleClientConnect(CarpConnectReceiverPtr sender) override;
 	// handle client disconnect
-	void HandleClientDisconnect(ClientReceiverPtr sender);
+	void HandleClientDisconnect(CarpConnectReceiverPtr sender) override;
 	// handle client message
-	void HandleClientMessage(ClientReceiverPtr sender, int message_size, int message_id, int message_rpcid, void* memory);
+	void HandleClientMessage(CarpConnectReceiverPtr sender, int message_size, int message_id, int message_rpcid, void* memory) override;
 
 private:
 	void ClientClose(int id);
 	void ClientSend(int id, CarpMessageWriteFactory* factory);
 
-	std::set<ClientServerPtr> m_client_server_set;
-	std::map<int, ClientReceiverPtr> m_id_map_client;
-	std::map<ClientReceiverPtr, int> m_client_map_id;
+	std::set<CarpConnectServerPtr> m_client_server_set;
+	std::map<int, CarpConnectReceiverPtr> m_id_map_client;
+	std::map<CarpConnectReceiverPtr, int> m_client_map_id;
 
 private:
 	void StartRouteSystem(int route_type, int route_num);
-	int GetRouteType();
-	int GetRouteNum();
-	int GetRouteId();
+	int GetRouteType() const;
+	int GetRouteNum() const;
+	int GetRouteId() const;
 	bool CreateConnectServer(const char* yun_ip, const char* ip, int port);
 	bool CreateConnectClient(const char* ip, int port);
 	void ConnectSession(int route_type, int route_num);

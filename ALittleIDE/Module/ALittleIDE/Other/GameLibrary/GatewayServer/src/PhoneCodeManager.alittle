@@ -205,7 +205,7 @@ public await static HandleQPhoneCode(ALittle.IMsgCommon client, QPhoneCode msg) 
     send_param.mobile = msg.phone_number;
     var error, content = A_HttpSystem.PostJson(cfg.url, send_param);
     assert(error == null, "验证码发送失败");
-    var result, response:PhoneCodeSendResult = tcall(lua.json.decode, content);
+    var result, response:PhoneCodeSendResult = tcall(ALittle.String_JsonDecode, content);
     assert(result == null, "验证码发送结果解析错误");
     assert(response.code == "000000", "验证码发送失败");
     g_PhoneCodeManager.AddPhoneCode(msg.phone_number, phone_code);

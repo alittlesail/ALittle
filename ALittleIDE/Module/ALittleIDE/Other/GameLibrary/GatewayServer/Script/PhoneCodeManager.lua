@@ -170,7 +170,7 @@ function GatewayServer.HandleQPhoneCode(client, msg)
 	send_param.mobile = msg.phone_number
 	local error, content = A_HttpSystem:PostJson(cfg.url, send_param)
 	Lua.Assert(error == nil, "验证码发送失败")
-	local result, response = Lua.TCall(json.decode, content)
+	local result, response = Lua.TCall(ALittle.String_JsonDecode, content)
 	Lua.Assert(result == nil, "验证码发送结果解析错误")
 	Lua.Assert(response.code == "000000", "验证码发送失败")
 	GatewayServer.g_PhoneCodeManager:AddPhoneCode(msg.phone_number, phone_code)

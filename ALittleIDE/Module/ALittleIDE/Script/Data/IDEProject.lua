@@ -1,6 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
+local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
@@ -80,6 +81,10 @@ option_map = {}
 
 assert(ALittle.EventDispatcher, " extends class:ALittle.EventDispatcher is nil")
 ALittleIDE.IDEProject = Lua.Class(ALittle.EventDispatcher, "ALittleIDE.IDEProject")
+
+function ALittleIDE.IDEProject:Ctor()
+	___rawset(self, "_in_debug", false)
+end
 
 function ALittleIDE.IDEProject:AddProjectConfig(name)
 	local project_map = ALittleIDE.g_IDEConfig:GetConfig("project_map", {})
@@ -211,6 +216,11 @@ function ALittleIDE.IDEProject:CloseProject()
 		self._project.code:Stop()
 	end
 	self._project = nil
+	if self._debug_client ~= nil then
+		self._debug_client:Close()
+		self._debug_client = nil
+	end
+	self._in_debug = false
 	return nil
 end
 
@@ -235,6 +245,34 @@ function ALittleIDE.IDEProject:RunProject()
 		return
 	end
 	os.execute("start ALittleClient.exe " .. self._project.name .. " debug")
+end
+
+function ALittleIDE.IDEProject:IsDebug()
+	return self._in_debug
+end
+
+function ALittleIDE.IDEProject:StartDebugProject()
+	if self._project == nil then
+		g_AUITool:ShowNotice("提示", "当前没有打开的项目")
+		return
+	end
+	if self._debug_client == nil then
+		self._debug_client = carp.CarpLuaDebugClient()
+	end
+	self._debug_client:Start("127.0.0.1", 1001)
+	self._in_debug = true
+end
+
+function ALittleIDE.IDEProject:StopDebugProject()
+	if self._project == nil then
+		g_AUITool:ShowNotice("提示", "当前没有打开的项目")
+		return
+	end
+	if self._debug_client == nil then
+		return
+	end
+	self._debug_client:Close()
+	self._in_debug = false
 end
 
 function ALittleIDE.IDEProject.__getter:project()

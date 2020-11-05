@@ -1,0 +1,19 @@
+
+register namespace carp;
+
+public class CarpLuaDebugClient
+{
+    public fun Start(string ip, int port) {}
+    public fun Close() {}
+    public fun AddBreakPoint(string file_path, int file_line) {}
+    public fun RemoveBreakPoint(string file_path, int file_line) {}
+    public fun ClearBreakPoint() {}
+}
+
+public class CarpLuaDebugServer
+{
+    public fun Start(string yun_ip, string ip, int port) {}
+    public fun Stop() {}
+}
+
+public var carp_CarpLuaDebugServer:CarpLuaDebugServer;

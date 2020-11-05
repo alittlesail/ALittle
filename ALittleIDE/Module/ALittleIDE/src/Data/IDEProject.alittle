@@ -38,6 +38,10 @@ public class IDEProject : ALittle.EventDispatcher
 {
 	// 当前项目的项目信息
 	private IDEProjectInfo _project;
+    // 调试数据
+    [Language(Lua)]
+    private carp.CarpLuaDebugClient _debug_client;
+    bool _in_debug = false;
 
 	private fun AddProjectConfig(string name)
 	{
@@ -225,6 +229,14 @@ public class IDEProject : ALittle.EventDispatcher
         }
 
 		this._project = null;
+
+        [Language(Lua)]
+        if (this._debug_client != null)
+        {
+            this._debug_client.Close();
+            this._debug_client = null;
+        }
+        this._in_debug = false;
 		return null;
 	}
 
@@ -255,12 +267,37 @@ public class IDEProject : ALittle.EventDispatcher
 			return;
 		}
 
-		[Language(JavaScript)]
-		g_AUITool.ShowNotice("提示", "JavaScript不支持运行项目");
-
 		[Language(Lua)]
 		lua.os.execute("start ALittleClient.exe "..this._project.name.." debug");
 	}
+
+    public fun IsDebug() : bool { return this._in_debug; }
+
+    public fun StartDebugProject()
+    {
+		if (this._project == null)
+		{
+			g_AUITool.ShowNotice("提示", "当前没有打开的项目");
+			return;
+		}
+
+        if (this._debug_client == null) this._debug_client = new carp.CarpLuaDebugClient();
+        this._debug_client.Start("127.0.0.1", 1001);
+        this._in_debug = true;
+    }
+
+    public fun StopDebugProject()
+    {
+		if (this._project == null)
+		{
+			g_AUITool.ShowNotice("提示", "当前没有打开的项目");
+			return;
+		}
+
+        if (this._debug_client == null) return;
+        this._debug_client.Close();
+        this._in_debug = false;
+    }
 
 	// 获取当前项目
 	public get project() : IDEProjectInfo

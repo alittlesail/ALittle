@@ -23,9 +23,10 @@
 #include "Carp/carp_console.hpp"
 #include "Carp/carp_dump.hpp"
 #include "Carp/carp_log.hpp"
-#include "Carp/carp_surface_bind.hpp"
 #include "Carp/carp_task_consumer.hpp"
+#include "Carp/carp_lua_debug.hpp"
 
+extern CarpLuaDebugServer s_alittle_lua_debug_server;
 class Application;
 
 #define DEFAULT_FPS 60
@@ -70,6 +71,8 @@ private:
 		s_alittle_audio.Bind(s_alittle_script.GetLuaState());
 		ALittleCsv::Bind(s_alittle_script.GetLuaState());
 		ALittleNet::Bind(s_alittle_script.GetLuaState());
+		s_alittle_lua_debug_server.Bind(s_alittle_script.GetLuaState());
+		CarpLuaDebugClient::Bind(s_alittle_script.GetLuaState());
 		
 		// load engine
 		CARP_INFO("==>ScheduleSystem Lua Init Begin<==");
@@ -383,8 +386,9 @@ public:
 			// handle last event
 			while (SDL_PollEvent(&event))
 				HandleEvent(event);
-
+			
 			// close all system
+			s_alittle_lua_debug_server.Stop();
 			s_alittle_script.Shutdown();
 
 			// handle last event

@@ -175,6 +175,9 @@ function ALittle.ModuleSystem:MainSetup(base_path, module_name, debug_info)
 		ALittle.Log("Module:" .. module_name .. " load failed!")
 		return
 	end
+	if debug_info ~= nil and debug_info ~= "" then
+		carp_CarpLuaDebugServer:Start("", "0.0.0.0", 1001)
+	end
 	A_LayerManager:AddChild(info.layer_group, A_LayerManager.group_count - 1)
 	self._main_module = info
 	self._debug_info = debug_info

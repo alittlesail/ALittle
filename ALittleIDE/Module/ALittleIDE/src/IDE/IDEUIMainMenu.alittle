@@ -78,6 +78,12 @@ protected class IDEUIMainMenu : ALittle.Linear
 		var menu = new AUIPlugin.AUIRightMenu();
         [Language(Lua)]
 		menu.AddItem("启动", bind(g_IDEProject.RunProject, g_IDEProject));
+        [Language(Lua)]
+        if (!g_IDEProject.IsDebug())
+			menu.AddItem("开始调试", bind(g_IDEProject.StartDebugProject, g_IDEProject));
+        [Language(Lua)]
+        if (g_IDEProject.IsDebug())
+			menu.AddItem("停止调试", bind(g_IDEProject.StopDebugProject, g_IDEProject));
 		menu.Show(event.target, bind(this.HandleMenuHide, this, event.target));
     }
 
@@ -313,6 +319,7 @@ protected class IDEUIMainMenu : ALittle.Linear
 		ALittle.List_Push(file_list, base_path.."CEngine/Utility/ModuleSystem.js");
 		ALittle.List_Push(file_list, base_path.."CEngine/Utility/CsvConfigManager.js");
 		ALittle.List_Push(file_list, base_path.."CEngine/Utility/Revocation.js");
+		ALittle.List_Push(file_list, base_path.."CEngine/Utility/Debug.js");
 		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path.."CEngine/LoopSystem/"));
 		ALittle.List_Push(file_list, base_path.."CEngine/UISystem/UIEnumTypes.js");
 		ALittle.List_Push(file_list, base_path.."CEngine/UISystem/UIEventDispatcher.js");

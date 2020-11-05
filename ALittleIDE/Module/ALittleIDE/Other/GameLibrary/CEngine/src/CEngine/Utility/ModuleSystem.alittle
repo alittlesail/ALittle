@@ -281,6 +281,10 @@ class ModuleSystem
             return;
         }
 
+        // 如果是debug模式，那么自动启动调试端口
+        [Language(Lua)]
+        if (debug_info != null && debug_info != "") carp_CarpLuaDebugServer.Start("", "0.0.0.0", 1001);
+
         // 把组模块的层组放进层管理器
         A_LayerManager.AddChild(info.layer_group, A_LayerManager.group_count - 1);
         this._main_module = info;

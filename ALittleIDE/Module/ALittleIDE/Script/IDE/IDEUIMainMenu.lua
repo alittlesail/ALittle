@@ -65,6 +65,12 @@ end
 function ALittleIDE.IDEUIMainMenu:HandleRunMenuClick(event)
 	local menu = AUIPlugin.AUIRightMenu()
 	menu:AddItem("启动", Lua.Bind(ALittleIDE.g_IDEProject.RunProject, ALittleIDE.g_IDEProject))
+	if not ALittleIDE.g_IDEProject:IsDebug() then
+		menu:AddItem("开始调试", Lua.Bind(ALittleIDE.g_IDEProject.StartDebugProject, ALittleIDE.g_IDEProject))
+	end
+	if ALittleIDE.g_IDEProject:IsDebug() then
+		menu:AddItem("停止调试", Lua.Bind(ALittleIDE.g_IDEProject.StopDebugProject, ALittleIDE.g_IDEProject))
+	end
 	menu:Show(event.target, Lua.Bind(self.HandleMenuHide, self, event.target))
 end
 
@@ -263,6 +269,7 @@ function ALittleIDE.IDEUIMainMenu:HandleGenCEngineAllInOneClick()
 	ALittle.List_Push(file_list, base_path .. "CEngine/Utility/ModuleSystem.js")
 	ALittle.List_Push(file_list, base_path .. "CEngine/Utility/CsvConfigManager.js")
 	ALittle.List_Push(file_list, base_path .. "CEngine/Utility/Revocation.js")
+	ALittle.List_Push(file_list, base_path .. "CEngine/Utility/Debug.js")
 	ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path .. "CEngine/LoopSystem/"))
 	ALittle.List_Push(file_list, base_path .. "CEngine/UISystem/UIEnumTypes.js")
 	ALittle.List_Push(file_list, base_path .. "CEngine/UISystem/UIEventDispatcher.js")

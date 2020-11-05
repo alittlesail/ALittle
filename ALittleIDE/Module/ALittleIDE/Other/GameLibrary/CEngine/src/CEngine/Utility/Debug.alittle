@@ -1,0 +1,14 @@
+
+namespace ALittle;
+
+[Cmd]
+public static StartDebugServer(int port)
+{
+    carp_CarpLuaDebugServer.Start("", "127.0.0.1", port);
+}
+
+[Cmd]
+public static StopDebugServer()
+{
+    carp_CarpLuaDebugServer.Stop();
+}

@@ -62,3 +62,6 @@ int main(int argc, char* argv[])
 #include "Carp/carp_surface_bind.hpp"
 #define CARP_MIXER_IMPL
 #include "Carp/carp_mixer.hpp"
+
+#include "Carp/carp_lua_debug.hpp"
+CarpLuaDebugServer s_alittle_lua_debug_server;

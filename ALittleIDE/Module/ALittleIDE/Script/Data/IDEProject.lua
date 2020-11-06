@@ -244,7 +244,7 @@ function ALittleIDE.IDEProject:RunProject()
 		g_AUITool:ShowNotice("提示", "当前没有打开的项目")
 		return
 	end
-	os.execute("start ALittleClient.exe " .. self._project.name .. " debug")
+	os.execute("start ALittleClientd.exe " .. self._project.name .. " debug")
 end
 
 function ALittleIDE.IDEProject:IsDebug()

@@ -268,7 +268,7 @@ public class IDEProject : ALittle.EventDispatcher
 		}
 
 		[Language(Lua)]
-		lua.os.execute("start ALittleClient.exe "..this._project.name.." debug");
+		lua.os.execute("start ALittleClientd.exe "..this._project.name.." debug");
 	}
 
     public fun IsDebug() : bool { return this._in_debug; }

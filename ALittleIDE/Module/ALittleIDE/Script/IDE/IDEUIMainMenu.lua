@@ -38,7 +38,6 @@ function ALittleIDE.IDEUIMainMenu:HandleFileMenuClick(event)
 	menu:AddItem("刷新", Lua.Bind(ALittleIDE.g_IDECenter.RefreshProject, ALittleIDE.g_IDECenter))
 	menu:AddItem("导出项目", Lua.Bind(ALittleIDE.g_IDEProjectExportDialog.ShowExportProject, ALittleIDE.g_IDEProjectExportDialog))
 	menu:Show(event.target, Lua.Bind(self.HandleMenuHide, self, event.target))
-	ALittle.Log("asda")
 end
 
 function ALittleIDE.IDEUIMainMenu:HandleEditMenuClick(event)

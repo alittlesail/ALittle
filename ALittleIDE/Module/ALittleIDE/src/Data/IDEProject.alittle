@@ -352,6 +352,13 @@ public class IDEProject : ALittle.EventDispatcher
                 this._debug_client.AddBreakPoint(file_path, line);
     }
 
+    public fun ContinueDebug()
+    {
+        if (this._debug_client == null) return;
+
+        this._debug_client.DoContinue();
+    }
+
     private fun HandleDebugFrame(int frame_time)
     {
         var event = this._debug_client.HandleEvent();

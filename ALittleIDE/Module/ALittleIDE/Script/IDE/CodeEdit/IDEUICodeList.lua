@@ -173,7 +173,12 @@ function ALittleIDE.IDEUICodeList:OpenByFullPath(full_path, line_start, char_sta
 	local user_info = {}
 	user_info.name = ALittle.File_GetFileNameByPath(full_path)
 	user_info.path = full_path
-	return ALittleIDE.g_IDECenter.center.content_edit:StartEditCodeBySelect(user_info.name, user_info)
+	local child = ALittleIDE.g_IDECenter.center.content_edit:StartEditCodeBySelect(user_info.name, user_info)
+	if child == nil then
+		return nil
+	end
+	child:JumpFocus(line_start, char_start, line_end, char_end)
+	return child
 end
 
 function ALittleIDE.IDEUICodeList:GetCodeTree(full_path)

@@ -46,7 +46,10 @@ class IDECenter
 		// 判断F5，运行当前项目快捷键
 		if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_F5])
 		{
-			g_IDEProject.RunProject();
+            if (g_IDEProject.IsDebug())
+            	g_IDEProject.ContinueDebug();
+            else
+				g_IDEProject.RunProject();
 			return;
 		}
 

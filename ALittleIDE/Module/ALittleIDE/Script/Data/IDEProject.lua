@@ -339,6 +339,13 @@ function ALittleIDE.IDEProject:StartDebugProject()
 	end
 end
 
+function ALittleIDE.IDEProject:ContinueDebug()
+	if self._debug_client == nil then
+		return
+	end
+	self._debug_client:DoContinue()
+end
+
 function ALittleIDE.IDEProject:HandleDebugFrame(frame_time)
 	local event = self._debug_client:HandleEvent()
 	if event == nil then

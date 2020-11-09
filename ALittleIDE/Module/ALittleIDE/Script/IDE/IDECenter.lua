@@ -40,7 +40,11 @@ ALittleIDE.IDECenter.RefreshProject = Lua.CoWrap(ALittleIDE.IDECenter.RefreshPro
 
 function ALittleIDE.IDECenter:HandleShortcutKey(mod, sym, scancode)
 	if A_UISystem.sym_map[1073741886] then
-		ALittleIDE.g_IDEProject:RunProject()
+		if ALittleIDE.g_IDEProject:IsDebug() then
+			ALittleIDE.g_IDEProject:ContinueDebug()
+		else
+			ALittleIDE.g_IDEProject:RunProject()
+		end
 		return
 	end
 	if self._center ~= nil then

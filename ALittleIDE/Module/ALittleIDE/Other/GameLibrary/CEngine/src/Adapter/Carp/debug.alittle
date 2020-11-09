@@ -31,6 +31,8 @@ public class CarpLuaDebugClient
     public fun AddBreakPoint(string file_path, int file_line) {}
     public fun RemoveBreakPoint(string file_path, int file_line) {}
     public fun ClearBreakPoint() {}
+    public fun DoContinue() {}
+    public fun DoNextLine() {}
 }
 
 public class CarpLuaDebugServer

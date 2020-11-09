@@ -190,7 +190,10 @@ public class IDEUICodeList : ALittle.DisplayLayout
 		var user_info = new IDECodeTreeUserInfo();
 		user_info.name = ALittle.File_GetFileNameByPath(full_path);
 		user_info.path = full_path;
-		return g_IDECenter.center.content_edit.StartEditCodeBySelect(user_info.name, user_info);
+		var child = g_IDECenter.center.content_edit.StartEditCodeBySelect(user_info.name, user_info);
+        if (child == null) return null;
+        child.JumpFocus(line_start, char_start, line_end, char_end);
+        return child;
     }
 
     public fun GetCodeTree(string full_path) : IDECodeTreeLogic

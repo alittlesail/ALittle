@@ -64,9 +64,14 @@ end
 
 function ALittleIDE.IDEUIMainMenu:HandleRunMenuClick(event)
 	local menu = AUIPlugin.AUIRightMenu()
-	menu:AddItem("启动", Lua.Bind(ALittleIDE.g_IDEProject.RunProject, ALittleIDE.g_IDEProject))
+	menu:AddItem("启动(F6)", Lua.Bind(ALittleIDE.g_IDEProject.RunProject, ALittleIDE.g_IDEProject))
 	if not ALittleIDE.g_IDEProject:IsDebug() then
-		menu:AddItem("开始调试", Lua.Bind(ALittleIDE.g_IDEProject.StartDebugProject, ALittleIDE.g_IDEProject))
+		menu:AddItem("开始调试(F5)", Lua.Bind(ALittleIDE.g_IDEProject.StartDebugProject, ALittleIDE.g_IDEProject))
+	else
+		menu:AddItem("继续(F5)", Lua.Bind(ALittleIDE.g_IDEProject.StartDebugProject, ALittleIDE.g_IDEProject))
+	end
+	if ALittleIDE.g_IDEProject:IsDebug() then
+		menu:AddItem("下一行(F10)", Lua.Bind(ALittleIDE.g_IDEProject.NextLineDebug, ALittleIDE.g_IDEProject))
 	end
 	if ALittleIDE.g_IDEProject:IsDebug() then
 		menu:AddItem("停止调试", Lua.Bind(ALittleIDE.g_IDEProject.StopDebugProject, ALittleIDE.g_IDEProject))

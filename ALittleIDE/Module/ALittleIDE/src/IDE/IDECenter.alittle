@@ -49,9 +49,27 @@ class IDECenter
             if (g_IDEProject.IsDebug())
             	g_IDEProject.ContinueDebug();
             else
+            {
 				g_IDEProject.RunProject();
+                g_IDEProject.StartDebugProject();
+            }
 			return;
 		}
+        
+        if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_F6])
+        {
+            g_IDEProject.StopDebugProject();
+            g_IDEProject.RunProject();
+
+            return;
+        }
+
+        if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_F10])
+        {
+            if (g_IDEProject.IsDebug())
+            	g_IDEProject.NextLineDebug();
+            return;
+        }
 
 		if (this._center != null)
 			this._center.HandleShortcutKey();

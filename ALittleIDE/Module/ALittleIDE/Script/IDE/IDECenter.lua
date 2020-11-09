@@ -44,6 +44,18 @@ function ALittleIDE.IDECenter:HandleShortcutKey(mod, sym, scancode)
 			ALittleIDE.g_IDEProject:ContinueDebug()
 		else
 			ALittleIDE.g_IDEProject:RunProject()
+			ALittleIDE.g_IDEProject:StartDebugProject()
+		end
+		return
+	end
+	if A_UISystem.sym_map[1073741887] then
+		ALittleIDE.g_IDEProject:StopDebugProject()
+		ALittleIDE.g_IDEProject:RunProject()
+		return
+	end
+	if A_UISystem.sym_map[1073741891] then
+		if ALittleIDE.g_IDEProject:IsDebug() then
+			ALittleIDE.g_IDEProject:NextLineDebug()
 		end
 		return
 	end

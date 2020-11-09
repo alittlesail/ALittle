@@ -355,8 +355,13 @@ public class IDEProject : ALittle.EventDispatcher
     public fun ContinueDebug()
     {
         if (this._debug_client == null) return;
-
         this._debug_client.DoContinue();
+    }
+
+    public fun NextLineDebug()
+    {
+        if (this._debug_client == null) return;
+        this._debug_client.DoNextLine();
     }
 
     private fun HandleDebugFrame(int frame_time)

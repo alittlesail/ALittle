@@ -60,6 +60,9 @@ public class AUICodeEdit : ALittle.DisplayLayout
     private bool _in_drag = false;
     private bool _force_query_error = false;
 
+    // 断点信息
+    private Map<int, bool> _break_points;
+
     // 帮助层
     private ALittle.DisplayLayout _help_container;
     private AUICodeCompleteScreen _complete_screen;
@@ -147,13 +150,43 @@ public class AUICodeEdit : ALittle.DisplayLayout
     public get revoke_list() : ALittle.RevokeList { return this._revoke_list; }
     public get help_container() : ALittle.DisplayLayout { return this._help_container; }
 
-    private fun DispatchJumEvent()
+    private fun DispatchJumpEvent()
     {
         var event = new AUICodeEditJumpEvent();
         event.file_path = this._file_path;
         event.it_line = this._cursor.line;
         event.it_char = this._cursor.char;
         this.DispatchEvent(event);
+    }
+
+    public get file_path() : string { return this._file_path; }
+
+    public fun GetBreakPoint(int line_number) : bool
+    {
+        if (this._break_points == null) return false;
+        return this._break_points[line_number];
+    }
+    public fun AddBreakPoint(int line_number)
+    {
+        if (this._break_points == null) this._break_points = new Map<int, bool>();
+        this._break_points[line_number] = true;
+
+        var break_event = new AUICodeEditBreakPointEvent();
+        break_event.file_path = this._file_path;
+        break_event.file_line = line_number;
+        break_event.add_or_remove = true;
+        this.DispatchEvent(break_event);
+    }
+    public fun RemoveBreakPoint(int line_number)
+    {
+        if (this._break_points == null) this._break_points = new Map<int, bool>();
+        this._break_points[line_number] = false;
+
+        var break_event = new AUICodeEditBreakPointEvent();
+        break_event.file_path = this._file_path;
+        break_event.file_line = line_number;
+        break_event.add_or_remove = false;
+        this.DispatchEvent(break_event);
     }
 
     public fun FocusLineCharToCenter(int it_line, int it_char) : bool
@@ -277,7 +310,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         this._complete_screen.TryHide();
         this._param_dialog.TryHide();
         this._cursor.AdjustShowCursor();
-        this.DispatchJumEvent();
+        this.DispatchJumpEvent();
     }
 
     private async fun DoQueryGoto(int it_line, int it_char)
@@ -291,7 +324,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 this._select_cursor.StartLineChar(info.line_start, info.char_start - 1);
                 this._select_cursor.UpdateLineChar(info.line_end, info.char_end);
                 this.FocusLineCharToCenter(this._cursor.line, this._cursor.char);
-                this.DispatchJumEvent();
+                this.DispatchJumpEvent();
             }
             // 对外发送事件，让外面打开，然后再聚焦到某个代码段
             else
@@ -408,12 +441,12 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
         for (var index = this._line_number.child_count + 1; index <= child_count; 1)
         {
-            var text = new AUICodeLineNumber(this._ctrl_sys, CODE_FONT_PATH, CODE_FONT_SIZE, this._ascii_width, this._word_width);
+            var text = new AUICodeLineNumber(this._ctrl_sys, CODE_FONT_PATH, CODE_FONT_SIZE, this._ascii_width, this._word_width, this);
             text.height = CODE_LINE_HEIGHT;
             text.red = CODE_LINE_NUMBER_RED;
             text.green = CODE_LINE_NUMBER_GREEN;
             text.blue = CODE_LINE_NUMBER_BLUE;
-            text.text = ALittle.String_ToString(index);
+            text.SetLineNumber(index);
             this._line_number.AddChild(text);
         }
     }
@@ -1447,10 +1480,18 @@ public class AUICodeEdit : ALittle.DisplayLayout
         if (this._language != null) this._language.OnClose();
     }
 
-    public fun Load(string file_path, string content, ALittle.RevokeList revoke_list, [Nullable] AUICodeLanguage language) : bool
+    public fun Load(string file_path, string content, ALittle.RevokeList revoke_list, [Nullable] AUICodeLanguage language, [Nullable] List<int> break_points) : bool
     {
         // 保存代码解析器
         this._language = language;
+
+        // 保存断点信息
+        if (break_points != null)
+        {
+            this._break_points = new Map<int, bool>();
+            for (var index, value in break_points)
+                this._break_points[value] = true;
+        }
 
         var upper_ext = ALittle.File_GetFileExtByPathAndUpper(file_path);
         // 如果没有指定language，并且是abnf文件，那么就创建一个默认的

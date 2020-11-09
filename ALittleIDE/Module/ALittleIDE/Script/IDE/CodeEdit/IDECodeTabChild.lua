@@ -12,6 +12,12 @@ name_list = {"target","file_path","it_line","it_char"},
 type_list = {"ALittle.DisplayObject","string","int","int"},
 option_map = {}
 })
+ALittle.RegStruct(1575183661, "AUIPlugin.AUICodeEditBreakPointEvent", {
+name = "AUIPlugin.AUICodeEditBreakPointEvent", ns_name = "AUIPlugin", rl_name = "AUICodeEditBreakPointEvent", hash_code = 1575183661,
+name_list = {"target","add_or_remove","file_path","file_line"},
+type_list = {"ALittle.DisplayObject","bool","string","int"},
+option_map = {}
+})
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
 name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
 name_list = {"target"},
@@ -40,6 +46,7 @@ function ALittleIDE.IDECodeTabChild:Ctor(ctrl_sys, module, name, save, user_info
 	self._edit:AddEventListener(___all_struct[958494922], self, self.HandleChangedEvent)
 	self._edit:AddEventListener(___all_struct[631224630], self, self.HandleEditGotoEvent)
 	self._edit:AddEventListener(___all_struct[-1898137181], self, self.HandleJumpCodeEvent)
+	self._edit:AddEventListener(___all_struct[1575183661], self, self.HandleBreakPointEvent)
 	self._edit._user_data = self
 end
 
@@ -69,7 +76,7 @@ function ALittleIDE.IDECodeTabChild:OnOpen()
 	if self._language == nil and self._user_info.project ~= nil and ALittle.File_GetFileExtByPathAndUpper(self._user_info.path) == self._user_info.project.upper_ext then
 		self._language = AUIPlugin.AUICodeALittleScript(self._user_info.project, self._user_info.path, self._user_info.module_path)
 	end
-	self._edit:Load(self._user_info.path, nil, self._revoke_list, self._language)
+	self._edit:Load(self._user_info.path, nil, self._revoke_list, self._language, ALittleIDE.g_IDEProject:GetBreakPoint(self._user_info.path))
 end
 
 function ALittleIDE.IDECodeTabChild:OnTabRightMenu(menu)
@@ -100,6 +107,14 @@ function ALittleIDE.IDECodeTabChild:HandleJumpCodeEvent(event)
 	info.it_line = event.it_line
 	info.it_char = event.it_char
 	ALittleIDE.g_IDECenter.center.code_list:AddCodeJump(info)
+end
+
+function ALittleIDE.IDECodeTabChild:HandleBreakPointEvent(event)
+	if event.add_or_remove then
+		ALittleIDE.g_IDEProject:AddBreakPoint(event.file_path, event.file_line)
+	else
+		ALittleIDE.g_IDEProject:RemoveBreakPoint(event.file_path, event.file_line)
+	end
 end
 
 function ALittleIDE.IDECodeTabChild:HandleChangedEvent(event)

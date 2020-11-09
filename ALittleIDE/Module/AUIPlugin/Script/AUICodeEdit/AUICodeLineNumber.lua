@@ -18,18 +18,30 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
+ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
+name = "ALittle.UIChangedEvent", ns_name = "ALittle", rl_name = "UIChangedEvent", hash_code = 958494922,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 AUIPlugin.AUICodeLineNumber = Lua.Class(ALittle.DisplayLayout, "AUIPlugin.AUICodeLineNumber")
 
-function AUIPlugin.AUICodeLineNumber:Ctor(ctrl_sys, font_path, font_size, ascii_width, word_width)
+function AUIPlugin.AUICodeLineNumber:Ctor(ctrl_sys, font_path, font_size, ascii_width, word_width, edit)
 	___rawset(self, "_showd", false)
 	___rawset(self, "_text", "")
 	___rawset(self, "_font_path", font_path)
 	___rawset(self, "_font_size", font_size)
 	___rawset(self, "_ascii_width", ascii_width)
 	___rawset(self, "_word_width", word_width)
+	___rawset(self, "_edit", edit)
 	self:AddEventListener(___all_struct[1862557463], self, self.HandleShow)
+end
+
+function AUIPlugin.AUICodeLineNumber:SetLineNumber(line_number)
+	self._line_number = line_number
+	self.text = ALittle.String_ToString(self._line_number)
 end
 
 function AUIPlugin.AUICodeLineNumber:HandleShow(event)
@@ -40,9 +52,31 @@ function AUIPlugin.AUICodeLineNumber:HandleShow(event)
 	self:UpdateShow()
 end
 
+function AUIPlugin.AUICodeLineNumber:HandleBreakChanged(event)
+	if event.target.selected then
+		self._edit:AddBreakPoint(self._line_number)
+	else
+		self._edit:RemoveBreakPoint(self._line_number)
+	end
+end
+
 function AUIPlugin.AUICodeLineNumber:UpdateShow()
 	local text_list = ALittle.String_SplitUTF8(self._text)
 	self:RemoveAllChild()
+	local quad = ALittle.Quad(self._ctrl_sys)
+	quad.red = AUIPlugin.CODE_BACKGROUND_RED
+	quad.green = AUIPlugin.CODE_BACKGROUND_GREEN
+	quad.blue = AUIPlugin.CODE_BACKGROUND_BLUE
+	quad.width_type = 4
+	quad.height_type = 4
+	self:AddChild(quad)
+	local break_btn = AUIPlugin.g_Control:CreateControl("code_break_check_btn")
+	break_btn.y_type = 3
+	break_btn.x = 2
+	break_btn.y_value = 1
+	self:AddChild(break_btn)
+	break_btn:AddEventListener(___all_struct[958494922], self, self.HandleBreakChanged)
+	break_btn.selected = self._edit:GetBreakPoint(self._line_number)
 	local offset = 0.0
 	local len = ALittle.List_MaxN(text_list)
 	local index = len

@@ -103,6 +103,64 @@ function ALittleIDE.IDEProject:RemoveProjectConfig(name)
 	ALittleIDE.g_IDEConfig:SetConfig("project_map", project_map)
 end
 
+function ALittleIDE.IDEProject:GetBreakPoint(file_path)
+	if self._project == nil then
+		return nil
+	end
+	local map = self._project.config:GetConfig("break_points", nil)
+	if map == nil then
+		return nil
+	end
+	return map[file_path]
+end
+
+function ALittleIDE.IDEProject:AddBreakPoint(file_path, line)
+	if self._project == nil then
+		return
+	end
+	local map = self._project.config:GetConfig("break_points", nil)
+	if map == nil then
+		map = {}
+	end
+	local lines = map[file_path]
+	if lines == nil then
+		lines = {}
+		map[file_path] = lines
+	end
+	if ALittle.List_IndexOf(lines, line) == nil then
+		ALittle.List_Push(lines, line)
+	end
+	self._project.config:SetConfig("break_points", map)
+	if self._debug_client ~= nil then
+		self._debug_client:AddBreakPoint(file_path, line)
+	end
+end
+
+function ALittleIDE.IDEProject:RemoveBreakPoint(file_path, line)
+	if self._project == nil then
+		return
+	end
+	local map = self._project.config:GetConfig("break_points", nil)
+	if map == nil then
+		return
+	end
+	local lines = map[file_path]
+	if lines == nil then
+		return
+	end
+	local index = ALittle.List_IndexOf(lines, line)
+	if index ~= nil then
+		ALittle.List_Remove(lines, index)
+	end
+	if ALittle.IsEmpty(lines) then
+		map[file_path] = nil
+	end
+	self._project.config:SetConfig("break_points", map)
+	if self._debug_client ~= nil then
+		self._debug_client:RemoveBreakPoint(file_path, line)
+	end
+end
+
 function ALittleIDE.IDEProject:NewProject(name, window_width, window_height, font_path, font_size)
 	ALittle.File_MakeDeepDir(ALittle.File_BaseFilePath() .. "Module/" .. name)
 	ALittle.File_MakeDir(ALittle.File_BaseFilePath() .. "Module/" .. name .. "/Texture")
@@ -216,6 +274,10 @@ function ALittleIDE.IDEProject:CloseProject()
 		self._project.code:Stop()
 	end
 	self._project = nil
+	if self._debug_loop ~= nil then
+		self._debug_loop:Stop()
+		self._debug_loop = nil
+	end
 	if self._debug_client ~= nil then
 		self._debug_client:Close()
 		self._debug_client = nil
@@ -244,7 +306,7 @@ function ALittleIDE.IDEProject:RunProject()
 		g_AUITool:ShowNotice("提示", "当前没有打开的项目")
 		return
 	end
-	os.execute("start ALittleClientd.exe " .. self._project.name .. " debug")
+	os.execute("start ALittleClient.exe " .. self._project.name .. " debug")
 end
 
 function ALittleIDE.IDEProject:IsDebug()
@@ -256,11 +318,36 @@ function ALittleIDE.IDEProject:StartDebugProject()
 		g_AUITool:ShowNotice("提示", "当前没有打开的项目")
 		return
 	end
+	if self._in_debug then
+		g_AUITool:ShowNotice("提示", "已启动调试")
+		return
+	end
 	if self._debug_client == nil then
 		self._debug_client = carp.CarpLuaDebugClient()
 	end
 	self._debug_client:Start("127.0.0.1", 1001)
 	self._in_debug = true
+	if self._debug_loop == nil then
+		self._debug_loop = ALittle.LoopFrame(Lua.Bind(self.HandleDebugFrame, self))
+	end
+	self._debug_loop:Start()
+	local break_map = self._project.config:GetConfig("break_points", nil)
+	for file_path, lines in ___pairs(break_map) do
+		for line, _ in ___pairs(lines) do
+			self._debug_client:AddBreakPoint(file_path, line)
+		end
+	end
+end
+
+function ALittleIDE.IDEProject:HandleDebugFrame(frame_time)
+	local event = self._debug_client:HandleEvent()
+	if event == nil then
+		return
+	end
+	if event.type == 1 then
+		ALittleIDE.g_IDECenter.center.code_list:OpenByFullPath(event.file_path, event.file_line, 1, event.file_line, 1)
+	elseif event.type == 2 then
+	end
 end
 
 function ALittleIDE.IDEProject:StopDebugProject()
@@ -268,10 +355,14 @@ function ALittleIDE.IDEProject:StopDebugProject()
 		g_AUITool:ShowNotice("提示", "当前没有打开的项目")
 		return
 	end
-	if self._debug_client == nil then
-		return
+	if self._debug_loop ~= nil then
+		self._debug_loop:Stop()
+		self._debug_loop = nil
 	end
-	self._debug_client:Close()
+	if self._debug_client ~= nil then
+		self._debug_client:Close()
+		self._debug_client = nil
+	end
 	self._in_debug = false
 end
 

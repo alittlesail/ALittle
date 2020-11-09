@@ -243,12 +243,47 @@ function AUIPlugin.AUICodeEdit.__getter:help_container()
 	return self._help_container
 end
 
-function AUIPlugin.AUICodeEdit:DispatchJumEvent()
+function AUIPlugin.AUICodeEdit:DispatchJumpEvent()
 	local event = {}
 	event.file_path = self._file_path
 	event.it_line = self._cursor.line
 	event.it_char = self._cursor.char
 	self:DispatchEvent(___all_struct[-1898137181], event)
+end
+
+function AUIPlugin.AUICodeEdit.__getter:file_path()
+	return self._file_path
+end
+
+function AUIPlugin.AUICodeEdit:GetBreakPoint(line_number)
+	if self._break_points == nil then
+		return false
+	end
+	return self._break_points[line_number]
+end
+
+function AUIPlugin.AUICodeEdit:AddBreakPoint(line_number)
+	if self._break_points == nil then
+		self._break_points = {}
+	end
+	self._break_points[line_number] = true
+	local break_event = {}
+	break_event.file_path = self._file_path
+	break_event.file_line = line_number
+	break_event.add_or_remove = true
+	self:DispatchEvent(___all_struct[1575183661], break_event)
+end
+
+function AUIPlugin.AUICodeEdit:RemoveBreakPoint(line_number)
+	if self._break_points == nil then
+		self._break_points = {}
+	end
+	self._break_points[line_number] = false
+	local break_event = {}
+	break_event.file_path = self._file_path
+	break_event.file_line = line_number
+	break_event.add_or_remove = false
+	self:DispatchEvent(___all_struct[1575183661], break_event)
 end
 
 function AUIPlugin.AUICodeEdit:FocusLineCharToCenter(it_line, it_char)
@@ -356,7 +391,7 @@ function AUIPlugin.AUICodeEdit:HandleLButtonDown(event)
 	self._complete_screen:TryHide()
 	self._param_dialog:TryHide()
 	self._cursor:AdjustShowCursor()
-	self:DispatchJumEvent()
+	self:DispatchJumpEvent()
 end
 
 function AUIPlugin.AUICodeEdit:DoQueryGoto(it_line, it_char)
@@ -367,7 +402,7 @@ function AUIPlugin.AUICodeEdit:DoQueryGoto(it_line, it_char)
 			self._select_cursor:StartLineChar(info.line_start, info.char_start - 1)
 			self._select_cursor:UpdateLineChar(info.line_end, info.char_end)
 			self:FocusLineCharToCenter(self._cursor.line, self._cursor.char)
-			self:DispatchJumEvent()
+			self:DispatchJumpEvent()
 		else
 			local goto_event = {}
 			goto_event.file_path = info.file_path
@@ -466,12 +501,12 @@ function AUIPlugin.AUICodeEdit:UpdateLineNumber()
 	local index = self._line_number.child_count + 1
 	while true do
 		if not(index <= child_count) then break end
-		local text = AUIPlugin.AUICodeLineNumber(self._ctrl_sys, AUIPlugin.CODE_FONT_PATH, AUIPlugin.CODE_FONT_SIZE, self._ascii_width, self._word_width)
+		local text = AUIPlugin.AUICodeLineNumber(self._ctrl_sys, AUIPlugin.CODE_FONT_PATH, AUIPlugin.CODE_FONT_SIZE, self._ascii_width, self._word_width, self)
 		text.height = AUIPlugin.CODE_LINE_HEIGHT
 		text.red = AUIPlugin.CODE_LINE_NUMBER_RED
 		text.green = AUIPlugin.CODE_LINE_NUMBER_GREEN
 		text.blue = AUIPlugin.CODE_LINE_NUMBER_BLUE
-		text.text = ALittle.String_ToString(index)
+		text:SetLineNumber(index)
 		self._line_number:AddChild(text)
 		index = index+(1)
 	end
@@ -1393,8 +1428,14 @@ function AUIPlugin.AUICodeEdit:OnClose()
 	end
 end
 
-function AUIPlugin.AUICodeEdit:Load(file_path, content, revoke_list, language)
+function AUIPlugin.AUICodeEdit:Load(file_path, content, revoke_list, language, break_points)
 	self._language = language
+	if break_points ~= nil then
+		self._break_points = {}
+		for index, value in ___ipairs(break_points) do
+			self._break_points[value] = true
+		end
+	end
 	local upper_ext = ALittle.File_GetFileExtByPathAndUpper(file_path)
 	if self._language == nil and upper_ext == "ABNF" then
 		self._language = AUIPlugin.AUICodeABnf(nil, file_path)

@@ -42,6 +42,7 @@ public class IDEProject : ALittle.EventDispatcher
     [Language(Lua)]
     private carp.CarpLuaDebugClient _debug_client;
     bool _in_debug = false;
+    private ALittle.LoopFrame _debug_loop;
 
 	private fun AddProjectConfig(string name)
 	{
@@ -60,6 +61,51 @@ public class IDEProject : ALittle.EventDispatcher
 		project_map[name] = null;
 		g_IDEConfig.SetConfig("project_map", project_map);
 	}
+
+    public fun GetBreakPoint(string file_path) : List<int>
+    {
+        if (this._project == null) return null;
+        var map = this._project.config.GetConfig{Map<string, List<int>>}("break_points", null);
+        if (map == null) return null;
+        return map[file_path];
+    }
+
+    public fun AddBreakPoint(string file_path, int line)
+    {
+        if (this._project == null) return;
+
+        var map = this._project.config.GetConfig{Map<string, List<int>>}("break_points", null);
+        if (map == null) map = new Map<string, List<int>>();
+        var lines = map[file_path];
+        if (lines == null)
+        {
+            lines = new List<int>();
+            map[file_path] = lines;
+        }
+        if (ALittle.List_IndexOf(lines, line) == null)
+            ALittle.List_Push(lines, line);
+        this._project.config.SetConfig("break_points", map);
+
+        if (this._debug_client != null)
+            this._debug_client.AddBreakPoint(file_path, line);
+    }
+
+    public fun RemoveBreakPoint(string file_path, int line)
+    {
+        if (this._project == null) return;
+
+        var map = this._project.config.GetConfig{Map<string, List<int>>}("break_points", null);
+        if (map == null) return;
+        var lines = map[file_path];
+        if (lines == null) return;
+        var index = ALittle.List_IndexOf(lines, line);
+        if (index != null) ALittle.List_Remove(lines, index);
+        if (ALittle.IsEmpty(lines)) map[file_path] = null;
+        this._project.config.SetConfig("break_points", map);
+
+        if (this._debug_client != null)
+            this._debug_client.RemoveBreakPoint(file_path, line);
+    }
 
 	// 新建项目
 	public fun NewProject(string name, int window_width, int window_height, string font_path, int font_size) : bool
@@ -230,7 +276,12 @@ public class IDEProject : ALittle.EventDispatcher
 
 		this._project = null;
 
-        [Language(Lua)]
+        if (this._debug_loop != null)
+        {
+            this._debug_loop.Stop();
+            this._debug_loop = null;
+        }
+
         if (this._debug_client != null)
         {
             this._debug_client.Close();
@@ -268,7 +319,7 @@ public class IDEProject : ALittle.EventDispatcher
 		}
 
 		[Language(Lua)]
-		lua.os.execute("start ALittleClientd.exe "..this._project.name.." debug");
+		lua.os.execute("start ALittleClient.exe "..this._project.name.." debug");
 	}
 
     public fun IsDebug() : bool { return this._in_debug; }
@@ -281,9 +332,39 @@ public class IDEProject : ALittle.EventDispatcher
 			return;
 		}
 
+        if (this._in_debug)
+        {
+			g_AUITool.ShowNotice("提示", "已启动调试");
+			return;
+        }
+
+        // 创建调试客户端并
         if (this._debug_client == null) this._debug_client = new carp.CarpLuaDebugClient();
         this._debug_client.Start("127.0.0.1", 1001);
         this._in_debug = true;
+        if (this._debug_loop == null) this._debug_loop = new ALittle.LoopFrame(bind(this.HandleDebugFrame, this));
+        this._debug_loop.Start();
+
+        // 添加断点信息
+        var break_map = this._project.config.GetConfig{Map<string, Map<int, bool>>}("break_points", null);
+        for (var file_path, lines in break_map)
+            for (var line, _ in lines)
+                this._debug_client.AddBreakPoint(file_path, line);
+    }
+
+    private fun HandleDebugFrame(int frame_time)
+    {
+        var event = this._debug_client.HandleEvent();
+        if (event == null) return;
+
+        if (event.type == carp.CarpLuaDebugEventTypes.CLDE_BREAK_IN)
+        {
+            g_IDECenter.center.code_list.OpenByFullPath(event.file_path, event.file_line, 1, event.file_line, 1);
+        }
+        elseif (event.type == carp.CarpLuaDebugEventTypes.CLDE_BREAK_OUT)
+        {
+
+        }
     }
 
     public fun StopDebugProject()
@@ -294,8 +375,18 @@ public class IDEProject : ALittle.EventDispatcher
 			return;
 		}
 
-        if (this._debug_client == null) return;
-        this._debug_client.Close();
+        if (this._debug_loop != null)
+        {
+            this._debug_loop.Stop();
+            this._debug_loop = null;
+        }
+
+        if (this._debug_client != null)
+        {
+            this._debug_client.Close();
+            this._debug_client = null;
+        }
+        
         this._in_debug = false;
     }
 

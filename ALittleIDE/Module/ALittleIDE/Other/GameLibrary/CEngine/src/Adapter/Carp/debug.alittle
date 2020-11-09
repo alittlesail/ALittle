@@ -1,10 +1,26 @@
 
 register namespace carp;
 
+public enum CarpLuaDebugEventTypes
+{
+	CLDE_BREAK_IN = 1;
+    CLDE_BREAK_OUT = 2;
+}
+
+public struct CarpLuaDebugEvent
+{
+    int type;
+
+    // CLDE_BREAK_IN
+    string file_path;
+    int file_line;
+}
+
 public class CarpLuaDebugClient
 {
     public fun Start(string ip, int port) {}
     public fun Close() {}
+    public fun HandleEvent() : CarpLuaDebugEvent {}
     public fun AddBreakPoint(string file_path, int file_line) {}
     public fun RemoveBreakPoint(string file_path, int file_line) {}
     public fun ClearBreakPoint() {}

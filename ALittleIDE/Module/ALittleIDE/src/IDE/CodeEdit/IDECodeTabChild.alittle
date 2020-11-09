@@ -17,6 +17,7 @@ public class IDECodeTabChild : IDETabChild
         this._edit.AddEventListener(this, this.HandleChangedEvent);
         this._edit.AddEventListener(this, this.HandleEditGotoEvent);
         this._edit.AddEventListener(this, this.HandleJumpCodeEvent);
+        this._edit.AddEventListener(this, this.HandleBreakPointEvent);
 		this._edit._user_data = this;
     }
 
@@ -40,7 +41,8 @@ public class IDECodeTabChild : IDETabChild
         [Language(Lua)]
         if (this._language == null && this._user_info.project != null && ALittle.File_GetFileExtByPathAndUpper(this._user_info.path) == this._user_info.project.upper_ext)
             this._language = new AUIPlugin.AUICodeALittleScript(this._user_info.project, this._user_info.path, this._user_info.module_path);
-        this._edit.Load(this._user_info.path, null, this._revoke_list, this._language);
+
+        this._edit.Load(this._user_info.path, null, this._revoke_list, this._language, g_IDEProject.GetBreakPoint(this._user_info.path));
     }
 
     private fun OnTabRightMenu(AUIPlugin.AUIRightMenu menu)
@@ -75,6 +77,14 @@ public class IDECodeTabChild : IDETabChild
         info.it_line = event.it_line;
         info.it_char = event.it_char;
         g_IDECenter.center.code_list.AddCodeJump(info);
+    }
+
+    private fun HandleBreakPointEvent(AUIPlugin.AUICodeEditBreakPointEvent event)
+    {
+        if (event.add_or_remove)
+        	g_IDEProject.AddBreakPoint(event.file_path, event.file_line);
+        else
+            g_IDEProject.RemoveBreakPoint(event.file_path, event.file_line);
     }
 
     private fun HandleChangedEvent(ALittle.UIChangedEvent event)

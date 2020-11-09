@@ -45,6 +45,7 @@ protected class IDEUIMainMenu : ALittle.Linear
 		menu.AddItem("刷新", bind(g_IDECenter.RefreshProject, g_IDECenter));
 		menu.AddItem("导出项目", bind(g_IDEProjectExportDialog.ShowExportProject, g_IDEProjectExportDialog));
 		menu.Show(event.target, bind(this.HandleMenuHide, this, event.target));
+        ALittle.Log("asda");
 	}
 	// 处理编辑菜单
 	private fun HandleEditMenuClick(ALittle.UIClickEvent event)

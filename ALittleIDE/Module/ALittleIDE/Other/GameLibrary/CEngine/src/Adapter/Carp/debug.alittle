@@ -16,6 +16,13 @@ public struct CarpLuaDebugEvent
     int file_line;
 }
 
+public class CarpScript
+{
+
+}
+
+public var carp_CarpScript:CarpScript;
+
 public class CarpLuaDebugClient
 {
     public fun Start(string ip, int port) {}
@@ -28,7 +35,7 @@ public class CarpLuaDebugClient
 
 public class CarpLuaDebugServer
 {
-    public fun Start(string yun_ip, string ip, int port) {}
+    public fun Start(CarpScript script, string yun_ip, string ip, int port) {}
     public fun Stop() {}
 }
 

@@ -333,7 +333,7 @@ function ALittleIDE.IDEProject:StartDebugProject()
 	self._debug_loop:Start()
 	local break_map = self._project.config:GetConfig("break_points", nil)
 	for file_path, lines in ___pairs(break_map) do
-		for line, _ in ___pairs(lines) do
+		for index, line in ___ipairs(lines) do
 			self._debug_client:AddBreakPoint(file_path, line)
 		end
 	end

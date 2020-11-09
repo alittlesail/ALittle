@@ -242,6 +242,9 @@ function _G.__ALITTLEAPI_SystemSaveFile(path)
 end
 
 function _G.__ALITTLEAPI_SetupMainModule(base_path, module_name, debug_info)
+	if debug_info ~= nil and debug_info ~= "" then
+		carp_CarpLuaDebugServer:Start(carp_CarpScript, "", "0.0.0.0", 1001)
+	end
 	A_ModuleSystem:MainSetup(base_path, module_name, debug_info)
 end
 

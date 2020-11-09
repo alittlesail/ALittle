@@ -314,6 +314,10 @@ public static __ALITTLEAPI_SystemSaveFile(string path)
 // Æô¶¯ºËĞÄÄ£¿é×ÊÔ´
 public static __ALITTLEAPI_SetupMainModule(string base_path, string module_name, string debug_info)
 {
+    // å¦‚æœæ˜¯debugæ¨¡å¼ï¼Œé‚£ä¹ˆè‡ªåŠ¨å¯åŠ¨è°ƒè¯•ç«¯å£
+    [Language(Lua)]
+    if (debug_info != null && debug_info != "") carp_CarpLuaDebugServer.Start(carp_CarpScript, "", "0.0.0.0", 1001);
+
     A_ModuleSystem.MainSetup(base_path, module_name, debug_info);
 }
 

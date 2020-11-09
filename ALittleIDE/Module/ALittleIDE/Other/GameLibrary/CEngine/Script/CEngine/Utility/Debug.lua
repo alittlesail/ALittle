@@ -6,7 +6,7 @@ local ___ipairs = ipairs
 
 
 function ALittle.StartDebugServer(port)
-	carp_CarpLuaDebugServer:Start("", "127.0.0.1", port)
+	carp_CarpLuaDebugServer:Start(carp_CarpScript, "", "0.0.0.0", port)
 end
 
 ALittle.RegCmdCallback("StartDebugServer", ALittle.StartDebugServer, {"int"}, {"port"}, "")

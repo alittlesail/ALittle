@@ -50,15 +50,15 @@ public:
     virtual ABnfGuessError GuessType(ABnfGuessPtr& out);
 
     // 获取解析细节
-    inline ABnfFile* GetFile() { return m_file; }
+    inline ABnfFile* GetFile() const { return m_file; }
     // 获取文件全路径
-    const std::string& GetFullPath();
+    const std::string& GetFullPath() const;
     // 获取所在模块路径
-    const std::string& GetModulePath();
+    const std::string& GetModulePath() const;
 
     // 设置父节点
-    void SetParent(ABnfElementPtr parent);
-    ABnfElementPtr GetParent();
+    void SetParent(const ABnfElementPtr& parent);
+    ABnfElementPtr GetParent() const;
 
     // 当前节点是否和指定范围有交集
     bool IntersectsWith(int start, int end);
@@ -108,4 +108,4 @@ public:
     virtual int GetEndCol() { return m_col; }
 };
 
-#endif // _ALITTLE_ABNFELEMENT_H_
+#endif

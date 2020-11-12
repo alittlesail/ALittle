@@ -45,22 +45,21 @@ protected:
 	virtual void ClearImpl() {}
 
 public:
-	ABnfProject();
-	virtual ~ABnfProject();
+	virtual ~ABnfProject() { Stop(); }
 
 public:
 	void Start(const std::string& abnf_buffer);
 	void Stop();
-	inline bool IsStoped() const { return m_run == false; }
+	inline bool IsStopped() const { return m_run == false; }
 	int PollOne(lua_State* L);
-	void Add(std::function<void()> fun);
+	void Add(const std::function<void()>& fun);
 
 public:
 	virtual ABnfFactory& RefFactory() { return m_default_factory; };
 	virtual ABnf& RefABnf() { return m_abnf; }
 	virtual ABnf& RefABnfUI() { return m_abnf_ui; }
 
-	int QueryRuleColor(lua_State* L);
+	int QueryRuleColor(lua_State* L) const;
 
 	virtual void FindDefineImpl(const std::string& pre_input, const std::string& input, std::vector<ALanguageCompletionInfo>& info_list) {}
 	virtual void FindGotoImpl(const std::string& text, ALanguageGotoInfo& info) { }
@@ -86,4 +85,4 @@ public:
 	void QueryError(const std::string& full_path, int query_id, int version, bool force);
 };
 
-#endif // _ALITTLE_ABNFPROJECT_H_
+#endif

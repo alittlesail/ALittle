@@ -30,7 +30,7 @@ const std::unordered_map<char, std::vector<int>>* ABnfRuleInfo::CalcNextChar()
     if (prediction.type != ABnfRuleTokenType::TT_NONE)
     {
         if (prediction.regex == nullptr)
-            prediction.regex = std::shared_ptr<ARegex>(new ARegex(prediction.value));
+            prediction.regex = std::make_shared<ARegex>(prediction.value);
 
         for (char i = '!'; i <= '~'; ++i)
         {
@@ -39,12 +39,12 @@ const std::unordered_map<char, std::vector<int>>* ABnfRuleInfo::CalcNextChar()
             if (prediction.regex->Match(value.c_str(), result_length))
             {
                 std::vector<int>& list = next_char_map[i];
-                std::set<int> set;
-                for (int index = 0; index < node->node_list.size(); ++index)
+                std::set<size_t> set;
+                for (size_t index = 0; index < node->node_list.size(); ++index)
                 {
                     if (set.find(index) != set.end()) continue;
                     set.insert(index);
-                    list.push_back(index);
+                    list.push_back(static_cast<int>(index));
                 }
             }
         }
@@ -52,7 +52,7 @@ const std::unordered_map<char, std::vector<int>>* ABnfRuleInfo::CalcNextChar()
     }
 
     // 直接根据组规则运算
-    auto* map = node->CalcNextChar(rule);
+    const auto* map = node->CalcNextChar(rule);
     if (map != nullptr) next_char_map = *map;
     return &next_char_map;
 }
@@ -64,7 +64,7 @@ const std::string& ABnfRuleInfo::GetStopToken()
 
     // 没有option
     if (node->node_list.size() != 1) return stop_token;
-    if (node->node_list[0].size() == 0) return stop_token;
+    if (node->node_list[0].empty()) return stop_token;
 
     auto& last_node = node->node_list[0][node->node_list[0].size() - 1];
     if (last_node->value.type == ABnfRuleTokenType::TT_NONE) return stop_token;

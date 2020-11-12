@@ -48,7 +48,7 @@ ABnfGuessError ABnfElement::GuessType(ABnfGuessPtr& out)
     auto error = GuessTypes(guess_list);
     if (error) return error;
 
-    if (guess_list.size() == 0)
+    if (guess_list.empty())
     {
         error.element = shared_from_this();
         error.error = "unknown type";
@@ -60,7 +60,7 @@ ABnfGuessError ABnfElement::GuessType(ABnfGuessPtr& out)
 }
 
 // 获取文件全路径
-const std::string& ABnfElement::GetFullPath()
+const std::string& ABnfElement::GetFullPath() const
 {
     static std::string empty;
     if (m_file == nullptr) return empty;
@@ -68,7 +68,7 @@ const std::string& ABnfElement::GetFullPath()
 }
 
 // 获取所在工程路径
-const std::string& ABnfElement::GetModulePath()
+const std::string& ABnfElement::GetModulePath() const
 {
     static std::string empty;
     if (m_file == nullptr) return empty;
@@ -76,8 +76,8 @@ const std::string& ABnfElement::GetModulePath()
 }
 
 // 设置父节点
-void ABnfElement::SetParent(ABnfElementPtr parent) { m_parent = parent; }
-ABnfElementPtr ABnfElement::GetParent() { return m_parent.lock(); }
+void ABnfElement::SetParent(const ABnfElementPtr& parent) { m_parent = parent; }
+ABnfElementPtr ABnfElement::GetParent() const { return m_parent.lock(); }
 
 // 当前节点是否和指定范围有交集
 bool ABnfElement::IntersectsWith(int start, int end)
@@ -95,13 +95,13 @@ const std::string& ABnfElement::GetLeafType() { static std::string empty; return
 // 获取文本
 const std::string& ABnfElement::GetElementText()
 {
-    if (m_element_text.size() > 0) return m_element_text;
+    if (!m_element_text.empty()) return m_element_text;
 
-    int start = GetStart();
+    const int start = GetStart();
     if (start >= m_file->GetLength())
         return m_element_text;
 
-    int length = GetLength();
+    const int length = GetLength();
     if (length == 0) return m_element_text;
 
     m_element_text = m_file->Substring(start, length);
@@ -114,7 +114,7 @@ std::string ABnfElement::GetElementString()
     int length = GetLength();
     if (length <= 2) return "";
     length -= 2;
-    int start = GetStart() + 1;
+    const int start = GetStart() + 1;
     if (start >= m_file->GetLength()) return "";
     return m_file->Substring(start, length);
 }
@@ -122,8 +122,8 @@ std::string ABnfElement::GetElementString()
 // 计算indent
 int ABnfElement::GetStartIndent()
 {
-    int start = GetStart();
-    int end = start + GetStartCol();
+    const int start = GetStart();
+    const int end = start + GetStartCol();
     int count = 0;
     for (int i = start; i < end; ++i)
     {

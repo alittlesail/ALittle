@@ -3,7 +3,6 @@
 #define _ALITTLE_ALITTLESCRIPTCLASSDATA_H_
 
 #include <unordered_map>
-#include <set>
 #include <memory>
 
 #include "ALittleScriptDefine.h"
@@ -21,7 +20,7 @@ private:
 
 public:
     // 添加新元素
-    void AddClassChildDec(std::shared_ptr<ABnfElement> dec, std::shared_ptr<ABnfElement> pre_dec, std::shared_ptr<ABnfElement> next_dec);
+    void AddClassChildDec(std::shared_ptr<ABnfElement> dec, const std::shared_ptr<ABnfElement>& pre_dec, const std::shared_ptr<ABnfElement>& next_dec);
 
     // 查找元素
     void FindClassAttrList(int access_level, ClassAttrType attr_type, const std::string& name, std::vector<std::shared_ptr<ABnfElement>>& result) const;

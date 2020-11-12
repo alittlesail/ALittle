@@ -42,8 +42,8 @@ ABnfElementPtr ABnfNodeElement::GetException(int it_line, int it_char)
         if (element != nullptr) return element;
     }
 
-    auto start_line = GetStartLine();
-    auto end_line = GetEndLine();
+    const auto start_line = GetStartLine();
+    const auto end_line = GetEndLine();
 
     if (start_line > it_line) return nullptr;
     if (end_line < it_line) return nullptr;
@@ -71,7 +71,7 @@ int ABnfNodeElement::GetEnd()
 {
     if (m_end >= 0) return m_end;
 
-    if (m_childs.size() == 0)
+    if (m_childs.empty())
     {
         m_end = m_start;
         return m_end;
@@ -100,8 +100,7 @@ void ABnfNodeElement::CalcEnd()
     m_end_line = m_line;
     m_end_col = m_col;
 
-    if (m_childs.size() == 0)
-        return;
+    if (m_childs.empty()) return;
 
     m_end_line = m_childs[m_childs.size() - 1]->GetEndLine();
     m_end_col = m_childs[m_childs.size() - 1]->GetEndCol();

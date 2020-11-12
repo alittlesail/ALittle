@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include <map>
 #include <unordered_map>
 
 class ABnf;
@@ -45,8 +44,8 @@ protected:
     int m_error_version = -1;
     int m_color_version = -1;
     // 收集错误
-    std::map<ABnfElementPtr, std::string> m_analysis_error_map;
-    std::map<ABnfElementPtr, std::string> m_check_error_map;
+    std::unordered_map<ABnfElementPtr, std::string> m_analysis_error_map;
+    std::unordered_map<ABnfElementPtr, std::string> m_check_error_map;
     std::unordered_map<int, std::vector<ALanguageColorInfo>> m_color_map;
 
     // 持有ABnfGuess的引用
@@ -54,7 +53,7 @@ protected:
 
 public:
     ABnfFile(ABnfProject* project, const std::string& module_path, const std::string& full_path, const char* text, size_t len, bool in_ui);
-    virtual ~ABnfFile();
+    virtual ~ABnfFile() = default;
 
     // 设置文本
     void SetText(const char* text, size_t len);
@@ -72,7 +71,7 @@ public:
     void DeleteText(int it_line_start, int it_char_start, int it_line_end, int it_char_end);
 
     // 是否包含改文本
-    bool ContainText(const std::string& text);
+    bool ContainText(const std::string& text) const;
 
     // 获取颜色
     // it_line 从0开始算
@@ -96,7 +95,7 @@ public:
     // 获取插入缩进
     int QueryDesiredIndent(int version, int it_line, int it_char);
     // 获取格式化缩进
-    int QueryFormateIndent(int version, int it_line, int it_char);
+    int QueryFormatIndent(int version, int it_line, int it_char);
     // 查询自动匹配
     bool QueryAutoPair(int version, int it_line, int it_char, const std::string& left_pair, const std::string& right_pair);
     // utf8字符切割
@@ -106,7 +105,7 @@ public:
     // 移除内容
     virtual void OnRemove() {}
     // 添加ABnfGuess，为了持有这个对象的引用
-    inline void AddGuessType(ABnfGuessPtr ptr) { m_guess_cache.push_back(ptr); }
+    inline void AddGuessType(const ABnfGuessPtr& ptr) { m_guess_cache.push_back(ptr); }
     // 清空引用
     inline void ClearGuessType() { m_guess_cache.resize(0); }
 
@@ -124,17 +123,17 @@ public:
     // 获取文件路径
     inline const std::string& GetModulePath() const { return m_module_path; }
     // 获取工程信息
-    inline ABnfProject* GetProject() { return m_project; }
+    inline ABnfProject* GetProject() const { return m_project; }
     // 获取文本
-    inline const std::string& GetText() { return m_text; }
+    inline const std::string& GetText() const { return m_text; }
     // 获取文本长度
-    inline int GetLength() { return static_cast<int>(m_text.size()); }
+    inline int GetLength() const { return static_cast<int>(m_text.size()); }
     // 获取文本子串
-    inline std::string Substring(int start, int length) { return m_text.substr(start, length); }
+    inline std::string Substring(int start, int length) const { return m_text.substr(start, length); }
     
 public:
     // 获取根节点
-    ABnfNodeElementPtr GetRoot() { return m_root; }
+    ABnfNodeElementPtr GetRoot() const { return m_root; }
     
 public:
     // 更新解析
@@ -148,19 +147,19 @@ public:
     inline bool HasError() const { return m_analysis_error_map.size() > 0 || m_check_error_map.size() > 0; }
 
     // 获取所有错误节点
-    inline const std::map<ABnfElementPtr, std::string>& GetAnalysisErrorMap() { return m_analysis_error_map; }
-    inline const std::map<ABnfElementPtr, std::string>& GetCheckErrorMap() { return m_check_error_map; }
+    inline const std::unordered_map<ABnfElementPtr, std::string>& GetAnalysisErrorMap() const { return m_analysis_error_map; }
+    inline const std::unordered_map<ABnfElementPtr, std::string>& GetCheckErrorMap() const { return m_check_error_map; }
 
     // 添加错误节点
-    inline void AddAnalysisErrorInfo(ABnfElementPtr element, const std::string& error) { if (element == nullptr) return; m_analysis_error_map[element] = error; }
-    inline void AddCheckErrorInfo(ABnfElementPtr element, const std::string& error) { if (element == nullptr) return; m_check_error_map[element] = error; }
+    inline void AddAnalysisErrorInfo(const ABnfElementPtr& element, const std::string& error) { if (element == nullptr) return; m_analysis_error_map[element] = error; }
+    inline void AddCheckErrorInfo(const ABnfElementPtr& element, const std::string& error) { if (element == nullptr) return; m_check_error_map[element] = error; }
 
     // 收集语法着色
-    void CollectColor(ABnfElementPtr element, const std::unordered_map<std::string, ABnfRuleInfo*>& rule_set, bool blur);
+    void CollectColor(const ABnfElementPtr& element, const std::unordered_map<std::string, ABnfRuleInfo*>& rule_set, bool blur);
     // 收集语法错误
-    void CollectError(ABnfElementPtr element);
+    void CollectError(const ABnfElementPtr& element);
     // 收集语义错误
-    void AnalysisError(ABnfElementPtr element);
+    void AnalysisError(const ABnfElementPtr& element);
 };
 
-#endif // _ALITTLE_ABNFFILE_H_
+#endif

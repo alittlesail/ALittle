@@ -9,8 +9,8 @@
 class ALittleScriptPropertyValueMethodTemplateReference : public ALittleScriptReferenceTemplate<ALittleScriptPropertyValueMethodTemplateElement>
 {
 public:
-    ALittleScriptPropertyValueMethodTemplateReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptPropertyValueMethodTemplateElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptPropertyValueMethodTemplateReference(element); }
+    ALittleScriptPropertyValueMethodTemplateReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptPropertyValueMethodTemplateElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptPropertyValueMethodTemplateReference(element); }
     ABnfGuessError CheckError() override;
 };
 

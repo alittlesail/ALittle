@@ -63,7 +63,7 @@
 
 #include "ALittleScriptPropertyValueMethodCallReference.h"
 
-ALittleScriptReference::ALittleScriptReference(ABnfElementPtr p_element)
+ALittleScriptReference::ALittleScriptReference(const ABnfElementPtr& p_element)
 {
 	m_ref_element = p_element;
 }
@@ -75,14 +75,14 @@ void ALittleScriptReference::QueryQuickInfo(std::string& info)
     if (element == nullptr) return;
 
     ABnfGuessPtr guess;
-    auto error = element->GuessType(guess);
+    const auto error = element->GuessType(guess);
     if (error) return;
     info = guess->GetValue();
 }
 
-int ALittleScriptReference::QueryDesiredIndent(int it_line, int it_char, ABnfElementPtr select)
+int ALittleScriptReference::QueryDesiredIndent(int it_line, int it_char, const ABnfElementPtr& select)
 {
-    auto element = m_ref_element.lock();
+    const auto element = m_ref_element.lock();
     if (element == nullptr) return 0;
 
     auto parent = element->GetParent();
@@ -120,9 +120,9 @@ int ALittleScriptReference::QueryDesiredIndent(int it_line, int it_char, ABnfEle
     {
         if (m_desire_indent >= 0) return m_desire_indent;
 
-        auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
+        const auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
         const auto& childs = node->GetChilds();
-        if (childs.size() > 0)
+        if (!childs.empty())
         {
             m_desire_indent = childs[0]->GetStartIndent();
             return m_desire_indent;
@@ -146,11 +146,11 @@ int ALittleScriptReference::QueryDesiredIndent(int it_line, int it_char, ABnfEle
     return m_desire_indent;
 }
 
-int ALittleScriptReference::QueryFormateIndent(int it_line, int it_char, ABnfElementPtr select)
+int ALittleScriptReference::QueryFormatIndent(int it_line, int it_char, const ABnfElementPtr& select)
 {
     if (m_format_indent >= 0) return m_format_indent;
 
-    auto element = m_ref_element.lock();
+    const auto element = m_ref_element.lock();
     if (element == nullptr) return 0;
 
     auto parent = element->GetParent();
@@ -164,7 +164,7 @@ int ALittleScriptReference::QueryFormateIndent(int it_line, int it_char, ABnfEle
         || std::dynamic_pointer_cast<ALittleScriptLineCommentElement>(element)
         || std::dynamic_pointer_cast<ALittleScriptBlockCommentElement>(element))
     {
-        m_format_indent = parent->GetReference()->QueryFormateIndent(it_line, it_char, nullptr);
+        m_format_indent = parent->GetReference()->QueryFormatIndent(it_line, it_char, nullptr);
         if (std::dynamic_pointer_cast<ALittleScriptForExprElement>(parent)
             || std::dynamic_pointer_cast<ALittleScriptWhileExprElement>(parent)
             || std::dynamic_pointer_cast<ALittleScriptIfExprElement>(parent)
@@ -191,7 +191,7 @@ int ALittleScriptReference::QueryFormateIndent(int it_line, int it_char, ABnfEle
         || std::dynamic_pointer_cast<ALittleScriptStructVarDecElement>(element)
         || std::dynamic_pointer_cast<ALittleScriptStructOptionDecElement>(element))
     {
-        m_format_indent = parent->GetReference()->QueryFormateIndent(it_line, it_char, nullptr) + s_indent_size;
+        m_format_indent = parent->GetReference()->QueryFormatIndent(it_line, it_char, nullptr) + s_indent_size;
         return m_format_indent;
     }
     else if (std::dynamic_pointer_cast<ALittleScriptMethodParamDecElement>(element)
@@ -201,9 +201,9 @@ int ALittleScriptReference::QueryFormateIndent(int it_line, int it_char, ABnfEle
         || std::dynamic_pointer_cast<ALittleScriptTcallStatElement>(element)
         || std::dynamic_pointer_cast<ALittleScriptOpNewStatElement>(element))
     {
-        auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
+        const auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
         const auto& childs = node->GetChilds();
-        if (childs.size() > 0)
+        if (!childs.empty())
         {
             m_format_indent = childs[0]->GetStartIndent();
             return m_format_indent;
@@ -217,15 +217,15 @@ int ALittleScriptReference::QueryFormateIndent(int it_line, int it_char, ABnfEle
         || std::dynamic_pointer_cast<ALittleScriptOp3Element>(element)
         || std::dynamic_pointer_cast<ALittleScriptOp2Element>(element))
     {
-        m_format_indent = parent->GetReference()->QueryFormateIndent(it_line, it_char, nullptr) + s_indent_size;
+        m_format_indent = parent->GetReference()->QueryFormatIndent(it_line, it_char, nullptr) + s_indent_size;
         return m_format_indent;
     }
 
-    m_format_indent = parent->GetReference()->QueryFormateIndent(it_line, it_char, nullptr);
+    m_format_indent = parent->GetReference()->QueryFormatIndent(it_line, it_char, nullptr);
     return m_format_indent;
 }
 
-int ALittleScriptReference::QueryParamIndex(int it_line, int it_char, ABnfElementPtr select, int& start_offset)
+int ALittleScriptReference::QueryParamIndex(int it_line, int it_char, const ABnfElementPtr& select, int& start_offset)
 {
     ABnfElementPtr parent = m_ref_element.lock();
     if (parent == nullptr) return -1;
@@ -261,7 +261,7 @@ int ALittleScriptReference::QueryParamIndex(int it_line, int it_char, ABnfElemen
             int index = 0;
             for (size_t i = start; i < symbol_list->size(); ++i)
             {
-                auto& symbol = (*symbol_list)[i];
+                const auto& symbol = (*symbol_list)[i];
                 if (symbol->GetElementText() == "(") continue;
 
                 if (it_line < symbol->GetEndLine()) return index;
@@ -282,11 +282,11 @@ int ALittleScriptReference::QueryParamIndex(int it_line, int it_char, ABnfElemen
     return false;
 }
 
-bool ALittleScriptReference::QueryKeyWord(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
+bool ALittleScriptReference::QueryKeyWord(const ABnfElementPtr& select, std::vector<ALanguageCompletionInfo>& list)
 {
     auto& abnf = select->GetFile()->GetProject()->RefABnf();
 
-    for (auto& key : abnf.GetKeySet())
+    for (const auto& key : abnf.GetKeySet())
         list.emplace_back(key, 0, "");
     return false;
 }
@@ -294,16 +294,16 @@ bool ALittleScriptReference::QueryKeyWord(ABnfElementPtr select, std::vector<ALa
 bool ALittleScriptReference::QueryParamList(int& line_start, int& char_start, int& line_end, int& char_end, std::vector<ALanguageParameterInfo>& param_list)
 {
     ABnfElementPtr parent = m_ref_element.lock();
-    if (parent == nullptr) return 0;
+    if (parent == nullptr) return false;
     while (parent != nullptr)
     {
         if (std::dynamic_pointer_cast<ALittleScriptPropertyValueMethodCallElement>(parent))
         {
-            auto refe = dynamic_cast<ALittleScriptPropertyValueMethodCallReference*>(parent->GetReference());
-            if (refe == nullptr) return false;
+	        auto* refer = dynamic_cast<ALittleScriptPropertyValueMethodCallReference*>(parent->GetReference());
+            if (refer == nullptr) return false;
 
             ABnfGuessPtr guess;
-            auto error = refe->GuessPreType(guess);
+            auto error = refer->GuessPreType(guess);
             if (error) return false;
 
             auto guess_functor = std::dynamic_pointer_cast<ALittleScriptGuessFunctor>(guess);
@@ -311,7 +311,7 @@ bool ALittleScriptReference::QueryParamList(int& line_start, int& char_start, in
 
             for (size_t i = 0; i < guess_functor->param_name_list.size(); ++i)
             {
-                std::string type = "";
+                std::string type;
                 if (i < guess_functor->param_nullable_list.size() && guess_functor->param_nullable_list[i])
                     type = "[Nullable] ";
                 if (i < guess_functor->param_list.size())
@@ -376,7 +376,7 @@ bool ALittleScriptReference::QueryParamList(int& line_start, int& char_start, in
                 if (param_dec == nullptr) return false;
 
                 const auto& param_one_dec_list = param_dec->GetMethodParamOneDecList();
-                if (param_one_dec_list.size() == 0) return false;
+                if (param_one_dec_list.empty()) return false;
 
                 for (size_t i = 0; i < param_one_dec_list.size(); ++i)
                 {
@@ -438,9 +438,9 @@ bool ALittleScriptReference::QueryParamList(int& line_start, int& char_start, in
     return false;
 }
 
-ALittleScriptIndex* ALittleScriptReference::GetIndex()
+ALittleScriptIndex* ALittleScriptReference::GetIndex() const
 {
-    auto element = m_ref_element.lock();
+    const auto element = m_ref_element.lock();
     if (element == nullptr) return nullptr;
 
     return dynamic_cast<ALittleScriptIndex*>(element->GetFile()->GetProject());

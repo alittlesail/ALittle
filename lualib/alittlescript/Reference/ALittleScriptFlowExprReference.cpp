@@ -12,7 +12,7 @@
 
 ABnfGuessError ALittleScriptFlowExprReference::CheckError()
 {
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(element, u8"节点失效");
     // 获取对应的函数对象
     ABnfElementPtr parent = element;

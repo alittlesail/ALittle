@@ -9,8 +9,8 @@
 class ALittleScriptMethodReturnTailDecReference : public ALittleScriptReferenceTemplate<ALittleScriptMethodReturnTailDecElement>
 {
 public:
-    ALittleScriptMethodReturnTailDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptMethodReturnTailDecElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptMethodReturnTailDecReference(element); }
+    ALittleScriptMethodReturnTailDecReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptMethodReturnTailDecElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptMethodReturnTailDecReference(element); }
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 };
 

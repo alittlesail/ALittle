@@ -4,8 +4,6 @@
 
 #include "ALittleScriptGuess.h"
 
-#include <map>
-
 class ALittleScriptStructDecElement;
 
 class ALittleScriptGuessStruct : public ALittleScriptGuess
@@ -20,7 +18,7 @@ public:
 
 public:
     ALittleScriptGuessStruct(const std::string& p_namespace_name, const std::string& p_struct_name
-        , std::shared_ptr<ALittleScriptStructDecElement> p_struct_dec, bool p_is_const);
+        , const std::shared_ptr<ALittleScriptStructDecElement>& p_struct_dec, bool p_is_const);
 
     std::shared_ptr<ABnfElement> GetElement() override;
     bool NeedReplace() const override;

@@ -3,7 +3,6 @@
 #define _ALITTLE_ALITTLESCRIPTINDEX_H_
 
 #include <unordered_map>
-#include <map>
 #include <set>
 #include <memory>
 #include <vector>
@@ -94,16 +93,16 @@ protected:
 
 public:
     // 获取类型列表
-    const std::vector<std::shared_ptr<ABnfGuess>>* GetGuessTypeList(std::shared_ptr<ABnfElement> element);
+    const std::vector<std::shared_ptr<ABnfGuess>>* GetGuessTypeList(const std::shared_ptr<ABnfElement>& element);
 
     // 添加类型
-    void AddGuessTypeList(std::shared_ptr<ABnfElement> element, const std::vector<std::shared_ptr<ABnfGuess>>& guess_type_list);
+    void AddGuessTypeList(const std::shared_ptr<ABnfElement>& element, const std::vector<std::shared_ptr<ABnfGuess>>& guess_type_list);
 
     // 获取类型错误
-    ABnfGuessError GetGuessError(std::shared_ptr<ABnfElement> element);
+    ABnfGuessError GetGuessError(const std::shared_ptr<ABnfElement>& element);
 
     // 添加类型错误
-    void AddGuessError(std::shared_ptr<ABnfElement> element, const ABnfGuessError& error);
+    void AddGuessError(const std::shared_ptr<ABnfElement>& element, const ABnfGuessError& error);
 
 public:
     // 删除文件夹
@@ -136,36 +135,36 @@ public:
 
     ABnfGuessError FindALittleClassGuessList(const std::string& namespace_name, const std::string& name, std::vector<ABnfGuessPtr>& guess_list);
 
-    void FindClassAttrList(std::shared_ptr<ALittleScriptClassDecElement> dec
+    void FindClassAttrList(const std::shared_ptr<ALittleScriptClassDecElement>& dec
         , int access_level, ClassAttrType attr_type, const std::string& name, std::vector<std::shared_ptr<ABnfElement>>& result);
 
-    std::shared_ptr<ABnfElement> FindClassAttr(std::shared_ptr<ALittleScriptClassDecElement> dec
+    std::shared_ptr<ABnfElement> FindClassAttr(const std::shared_ptr<ALittleScriptClassDecElement>& dec
         , int access_level, ClassAttrType attr_type, const std::string& name);
 
 
     // 添加类索引数据
-    void AddClassData(std::shared_ptr<ALittleScriptClassDecElement> dec);
+    void AddClassData(const std::shared_ptr<ALittleScriptClassDecElement>& dec);
 
     // 获取类索引数据
-    const ALittleScriptClassData* GetClassData(std::shared_ptr<ALittleScriptClassDecElement> dec);
+    const ALittleScriptClassData* GetClassData(const std::shared_ptr<ALittleScriptClassDecElement>& dec);
 
     // 添加结构体数据
-    void AddStructData(std::shared_ptr<ALittleScriptStructDecElement> dec);
+    void AddStructData(const std::shared_ptr<ALittleScriptStructDecElement>& dec);
 
     // 获取结构体数据
-    const ALittleScriptStructData* GetStructData(std::shared_ptr<ALittleScriptStructDecElement> dec);
+    const ALittleScriptStructData* GetStructData(const std::shared_ptr<ALittleScriptStructDecElement>& dec);
 
     // 添加枚举数据
-    void AddEnumData(std::shared_ptr<ALittleScriptEnumDecElement> dec);
+    void AddEnumData(const std::shared_ptr<ALittleScriptEnumDecElement>& dec);
 
     // 获取枚举数据
-    const ALittleScriptEnumData* GetEnumData(std::shared_ptr<ALittleScriptEnumDecElement> dec);
+    const ALittleScriptEnumData* GetEnumData(const std::shared_ptr<ALittleScriptEnumDecElement>& dec);
 
     // 添加命名域
-    void AddRoot(std::shared_ptr<ALittleScriptRootElement> root);
+    void AddRoot(const std::shared_ptr<ALittleScriptRootElement>& root);
 
     // 移除命名域
-    void RemoveRoot(std::shared_ptr<ALittleScriptRootElement> root);
+    void RemoveRoot(const std::shared_ptr<ALittleScriptRootElement>& root);
 
     // 移除guess
     void RemoveGuess(ABnfFile* file);

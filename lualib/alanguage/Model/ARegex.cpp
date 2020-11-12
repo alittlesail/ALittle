@@ -18,7 +18,7 @@ bool ARegex::Match(const char* src, int& length)
 bool ARegex::MatchNode(const char* src, const ARegexNode& node, int& length)
 {
 	if (src[length] == 0) return false;
-	char c = src[length];
+	const char c = src[length];
 
 	if (node.type == ARegexType::T_CHAR)
 	{
@@ -32,7 +32,7 @@ bool ARegex::MatchNode(const char* src, const ARegexNode& node, int& length)
 
 	if (node.type == ARegexType::T_FIND_STRING)
 	{
-		auto* find = strstr(src + length, node.find.c_str());
+		const auto* find = strstr(src + length, node.find.c_str());
 		if (find != nullptr)
 		{
 			length += static_cast<int>(find - src - length) + static_cast<int>(node.find.length());
@@ -479,12 +479,10 @@ bool ARegex::CompileFindString(const std::string& rule, size_t& offset, ARegexNo
 
 	while (offset < rule.size())
 	{
-		char c = rule[offset];
+		const char c = rule[offset];
 		char next_c = 0;
 		if (offset + 1 < rule.size()) next_c = rule[offset + 1];
-		char next_next_c = 0;
-		if (offset + 2 < rule.size()) next_next_c = rule[offset + 2];
-
+		
 		if (c == '{')
 		{
 			error = "find string can't not nested find string";

@@ -42,7 +42,7 @@
 #include "../Guess/ALittleScriptGuessStructName.h"
 #include "../Guess/ALittleScriptGuessPrimitive.h"
 
-ALittleScriptPropertyValueDotIdNameReference::ALittleScriptPropertyValueDotIdNameReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptPropertyValueDotIdNameElement>(element)
+ALittleScriptPropertyValueDotIdNameReference::ALittleScriptPropertyValueDotIdNameReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptPropertyValueDotIdNameElement>(element)
 {
     m_namespace_name = ALittleScriptUtility::GetNamespaceName(element);
     m_key = element->GetElementText();
@@ -58,42 +58,49 @@ void ALittleScriptPropertyValueDotIdNameReference::ReloadInfo()
         {
             break;
         }
-        else if (std::dynamic_pointer_cast<ALittleScriptClassDecElement>(parent))
+        
+        if (std::dynamic_pointer_cast<ALittleScriptClassDecElement>(parent))
         {
             break;
         }
-        else if (std::dynamic_pointer_cast<ALittleScriptClassCtorDecElement>(parent))
+        
+        if (std::dynamic_pointer_cast<ALittleScriptClassCtorDecElement>(parent))
         {
             m_method_dec = parent;
             m_method_body_dec = std::dynamic_pointer_cast<ALittleScriptClassCtorDecElement>(parent)->GetMethodBodyDec();
             break;
         }
-        else if (std::dynamic_pointer_cast<ALittleScriptClassSetterDecElement>(parent))
+        
+        if (std::dynamic_pointer_cast<ALittleScriptClassSetterDecElement>(parent))
         {
             m_method_dec = parent;
             m_method_body_dec = std::dynamic_pointer_cast<ALittleScriptClassSetterDecElement>(parent)->GetMethodBodyDec();
             break;
         }
-        else if (std::dynamic_pointer_cast<ALittleScriptClassGetterDecElement>(parent))
+        
+        if (std::dynamic_pointer_cast<ALittleScriptClassGetterDecElement>(parent))
         {
             m_method_dec = parent;
             m_method_body_dec = std::dynamic_pointer_cast<ALittleScriptClassGetterDecElement>(parent)->GetMethodBodyDec();
             break;
         }
-        else if (std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(parent))
+        
+        if (std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(parent))
         {
             m_method_dec = parent;
             m_method_body_dec = std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(parent)->GetMethodBodyDec();
             break;
 
         }
-        else if (std::dynamic_pointer_cast<ALittleScriptClassStaticDecElement>(parent))
+        
+        if (std::dynamic_pointer_cast<ALittleScriptClassStaticDecElement>(parent))
         {
             m_method_dec = parent;
             m_method_body_dec = std::dynamic_pointer_cast<ALittleScriptClassStaticDecElement>(parent)->GetMethodBodyDec();
             break;
         }
-        else if (std::dynamic_pointer_cast<ALittleScriptGlobalMethodDecElement>(parent))
+        
+        if (std::dynamic_pointer_cast<ALittleScriptGlobalMethodDecElement>(parent))
         {
             m_method_dec = parent;
             m_method_body_dec = std::dynamic_pointer_cast<ALittleScriptGlobalMethodDecElement>(parent)->GetMethodBodyDec();
@@ -104,12 +111,11 @@ void ALittleScriptPropertyValueDotIdNameReference::ReloadInfo()
     }
 }
 
-ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::ReplaceTemplate(ABnfGuessPtr guess, ABnfGuessPtr& result)
+ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::ReplaceTemplate(const ABnfGuessPtr& guess, ABnfGuessPtr& result) const
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(element, u8"节点失效");
 
-    result = nullptr;
     auto class_guess = m_class_guess.lock();
     if (class_guess == nullptr)
     {
@@ -117,7 +123,7 @@ ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::ReplaceTemplate(ABn
         return nullptr;
     }
 
-    if (std::dynamic_pointer_cast<ALittleScriptGuessTemplate>(guess) && class_guess->template_map.size() > 0)
+    if (std::dynamic_pointer_cast<ALittleScriptGuessTemplate>(guess) && !class_guess->template_map.empty())
     {
         auto it = class_guess->template_map.find(guess->GetValueWithoutConst());
         if (it != class_guess->template_map.end() && it->second.lock())
@@ -141,7 +147,7 @@ ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::ReplaceTemplate(ABn
     if (std::dynamic_pointer_cast<ALittleScriptGuessFunctor>(guess))
     {
         auto guess_functor = std::dynamic_pointer_cast<ALittleScriptGuessFunctor>(guess);
-        auto info = std::shared_ptr<ALittleScriptGuessFunctor>(new ALittleScriptGuessFunctor(guess_functor->GetElement()));
+        auto info = std::make_shared<ALittleScriptGuessFunctor>(guess_functor->GetElement());
         info->await_modifier = guess_functor->await_modifier;
         info->const_modifier = guess_functor->const_modifier;
         info->proto = guess_functor->proto;
@@ -158,22 +164,22 @@ ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::ReplaceTemplate(ABn
         {
             info->param_list.push_back(class_guess);
             info->param_nullable_list.push_back(false);
-            if (info->param_name_list.size() > 0)
+            if (!info->param_name_list.empty())
                 info->param_name_list[0] = class_guess->GetValue();
             start_index = 1;
         }
-        for (int i = start_index; i < guess_functor->param_list.size(); ++i)
+        for (size_t i = start_index; i < guess_functor->param_list.size(); ++i)
         {
             ABnfGuessPtr guess_info;
             auto error = ReplaceTemplate(guess_functor->param_list[i].lock(), guess_info);
             if (error) return error;
             info->param_list.push_back(guess_info);
         }
-        for (int i = start_index; i < guess_functor->param_nullable_list.size(); ++i)
+        for (size_t i = start_index; i < guess_functor->param_nullable_list.size(); ++i)
         {
             info->param_nullable_list.push_back(guess_functor->param_nullable_list[i]);
         }
-        for (int i = 0; i < guess_functor->return_list.size(); ++i)
+        for (size_t i = 0; i < guess_functor->return_list.size(); ++i)
         {
             ABnfGuessPtr guess_info;
             auto error = ReplaceTemplate(guess_functor->return_list[i].lock(), guess_info);
@@ -192,7 +198,8 @@ ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::ReplaceTemplate(ABn
         ABnfGuessPtr sub_info;
         auto error = ReplaceTemplate(guess_list->sub_type.lock(), sub_info);
         if (error) return error;
-        auto info = ABnfGuessPtr(new ALittleScriptGuessList(sub_info, guess_list->is_const, guess_list->is_native));
+        auto info = std::static_pointer_cast<ABnfGuess>(
+	        std::make_shared<ALittleScriptGuessList>(sub_info, guess_list->is_const, guess_list->is_native));
         info->UpdateValue();
         element->GetFile()->AddGuessType(info);
         result = info;
@@ -209,7 +216,8 @@ ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::ReplaceTemplate(ABn
         error = ReplaceTemplate(guess_map->value_type.lock(), value_info);
         if (error) return error;
 
-        auto info = ABnfGuessPtr(new ALittleScriptGuessMap(key_info, value_info, guess->is_const));
+        auto info = std::static_pointer_cast<ABnfGuess>(
+	        std::make_shared<ALittleScriptGuessMap>(key_info, value_info, guess->is_const));
         info->UpdateValue();
         element->GetFile()->AddGuessType(info);
         result = info;
@@ -219,8 +227,10 @@ ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::ReplaceTemplate(ABn
     if (std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess))
     {
         auto guess_class = std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess);
-        auto info = std::shared_ptr<ALittleScriptGuessClass>(new ALittleScriptGuessClass(guess_class->namespace_name,
-            guess_class->class_name, guess_class->class_dec.lock(), guess_class->using_name, guess_class->is_const, guess_class->is_native));
+        auto info = std::make_shared<ALittleScriptGuessClass>(guess_class->namespace_name,
+                                                              guess_class->class_name, guess_class->class_dec.lock(),
+                                                              guess_class->using_name, guess_class->is_const,
+                                                              guess_class->is_native);
         info->template_list = guess_class->template_list;
         for (auto& pair : guess_class->template_map)
         {
@@ -252,7 +262,7 @@ ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::CalcResolve(std::ve
 {
     pre_type = nullptr;
     result_list.resize(0);
-    if (m_key.size() == 0) return nullptr;
+    if (m_key.empty()) return nullptr;
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(element, u8"节点失效");
     auto* index_e = GetIndex();
@@ -275,7 +285,7 @@ ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::CalcResolve(std::ve
             break;
         }
     }
-    if (index == -1) return nullptr;
+    if (index == -1) return ABnfGuessError(element, u8"节点失效");
 
     ABnfGuessError error;
     if (index == 0)
@@ -286,7 +296,7 @@ ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::CalcResolve(std::ve
 
     // 判断当前后缀是否是最后一个后缀
     std::shared_ptr<ALittleScriptPropertyValueSuffixElement> next_suffix;
-    if (index + 1 < suffix_list.size())
+    if (index + 1 < static_cast<int>(suffix_list.size()))
         next_suffix = suffix_list[index + 1];
 
     bool is_const = false;
@@ -346,8 +356,8 @@ ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::CalcResolve(std::ve
         ALittleScriptUtility::FilterSameName(class_method_name_dec_list, class_method_name_dec_list);
         for (auto& class_method_name_dec : class_method_name_dec_list)
             result_list.push_back(class_method_name_dec);
-        // 处理结构体的实例对象
     }
+    // 处理结构体的实例对象
     else if (std::dynamic_pointer_cast<ALittleScriptGuessStruct>(pre_type))
     {
         auto struct_dec = std::dynamic_pointer_cast<ALittleScriptGuessStruct>(pre_type)->struct_dec.lock();
@@ -356,8 +366,8 @@ ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::CalcResolve(std::ve
         ALittleScriptUtility::FindStructVarDecList(struct_dec, m_key, struct_var_dec_list, 100);
         for (auto& struct_var_dec : struct_var_dec_list)
             result_list.push_back(struct_var_dec);
-        // 比如 ALittleName.XXX
     }
+    // 比如 ALittleName.XXX
     else if (std::dynamic_pointer_cast<ALittleScriptGuessNamespaceName>(pre_type))
     {
         auto namespace_name_dec = std::dynamic_pointer_cast<ALittleScriptGuessNamespaceName>(pre_type)->namespace_name_dec.lock();
@@ -392,8 +402,8 @@ ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::CalcResolve(std::ve
             ABnfElementType::INSTANCE_NAME, element->GetFile(), namespace_name, m_key, false, instance_name_dec_list);
         for (auto& instance_name_dec : instance_name_dec_list)
             result_list.push_back(instance_name_dec);
-        // 比如 AClassName.XXX
     }
+    // 比如 AClassName.XXX
     else if (std::dynamic_pointer_cast<ALittleScriptGuessClassName>(pre_type))
     {
         auto class_name_dec = std::dynamic_pointer_cast<ALittleScriptGuessClassName>(pre_type)->class_name_dec.lock();
@@ -431,9 +441,10 @@ ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::CalcResolve(std::ve
         ALittleScriptUtility::FilterSameName(class_method_name_dec_list, class_method_name_dec_list);
         for (auto& class_method_name_dec : class_method_name_dec_list)
             result_list.push_back(class_method_name_dec);
-        // 比如 AEnumName.XXX
     }
-    else if (std::dynamic_pointer_cast<ALittleScriptGuessEnumName>(pre_type)) {
+    // 比如 AEnumName.XXX
+    else if (std::dynamic_pointer_cast<ALittleScriptGuessEnumName>(pre_type))
+	{
         // 所有枚举字段
         auto enum_name_dec = std::dynamic_pointer_cast<ALittleScriptGuessEnumName>(pre_type)->enum_name_dec.lock();
         auto enum_dec = std::dynamic_pointer_cast<ALittleScriptEnumDecElement>(enum_name_dec->GetParent());
@@ -478,10 +489,9 @@ ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::GuessTypes(std::vec
                     guess_template = it->second.lock();
                 else
                 {
-                    for (int i = 0; i < class_guess->template_list.size(); ++i)
+                    for (auto& weak_template : class_guess->template_list)
                     {
-                        guess_template = class_guess->template_list[i].lock();
-
+                        guess_template = weak_template.lock();
                         if (guess_template->GetValueWithoutConst() == guess->GetValueWithoutConst())
                             break;
                     }
@@ -569,7 +579,9 @@ ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::GuessTypes(std::vec
             if (!std::dynamic_pointer_cast<ALittleScriptGuessEnum>(enum_guess))
                 return ABnfGuessError(element, u8"ALittleEnumNameDec.guessType的结果不是ALittleGuessEnum");
             auto enum_guess_enum = std::dynamic_pointer_cast<ALittleScriptGuessEnum>(enum_guess);
-            auto info = ABnfGuessPtr(new ALittleScriptGuessEnumName(enum_guess_enum->namespace_name, enum_guess_enum->enum_name, std::dynamic_pointer_cast<ALittleScriptEnumNameDecElement>(result)));
+            auto info = std::static_pointer_cast<ABnfGuess>(std::make_shared<ALittleScriptGuessEnumName>(
+	            enum_guess_enum->namespace_name, enum_guess_enum->enum_name,
+	            std::dynamic_pointer_cast<ALittleScriptEnumNameDecElement>(result)));
             info->UpdateValue();
             element->GetFile()->AddGuessType(info);
             guess = info;
@@ -581,7 +593,9 @@ ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::GuessTypes(std::vec
             if (!std::dynamic_pointer_cast<ALittleScriptGuessStruct>(struct_guess))
                 return ABnfGuessError(element, u8"ALittleStructNameDec.guessType的结果不是ALittleGuessStruct");
             auto struct_guess_struct = std::dynamic_pointer_cast<ALittleScriptGuessStruct>(struct_guess);
-            auto info = ABnfGuessPtr(new ALittleScriptGuessStructName(struct_guess_struct->namespace_name, struct_guess_struct->struct_name, std::dynamic_pointer_cast<ALittleScriptStructNameDecElement>(result)));
+            auto info = std::static_pointer_cast<ABnfGuess>(std::make_shared<ALittleScriptGuessStructName>(
+	            struct_guess_struct->namespace_name, struct_guess_struct->struct_name,
+	            std::dynamic_pointer_cast<ALittleScriptStructNameDecElement>(result)));
             info->UpdateValue();
             element->GetFile()->AddGuessType(info);
             guess = info;
@@ -595,7 +609,9 @@ ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::GuessTypes(std::vec
             auto class_guess_class = std::dynamic_pointer_cast<ALittleScriptGuessClass>(class_guess);
             if (class_guess_class->template_list.size() > 0)
                 return ABnfGuessError(element, u8"模板类" + class_guess_class->GetValue() + u8"不能直接使用");
-            auto info = ABnfGuessPtr(new ALittleScriptGuessClassName(class_guess_class->namespace_name, class_guess_class->class_name, std::dynamic_pointer_cast<ALittleScriptClassNameDecElement>(result)));
+            auto info = std::static_pointer_cast<ABnfGuess>(std::make_shared<ALittleScriptGuessClassName>(
+	            class_guess_class->namespace_name, class_guess_class->class_name,
+	            std::dynamic_pointer_cast<ALittleScriptClassNameDecElement>(result)));
             info->UpdateValue();
             element->GetFile()->AddGuessType(info);
             guess = info;
@@ -637,13 +653,13 @@ int ALittleScriptPropertyValueDotIdNameReference::QueryClassificationTag(bool& b
 
     blur = false;
     ABnfGuessPtr guess;
-    auto error = element->GuessType(guess);
+    const auto error = element->GuessType(guess);
     if (error) return 0;
 
     if (std::dynamic_pointer_cast<ALittleScriptGuessFunctor>(guess))
     {
         auto guess_functor = std::dynamic_pointer_cast<ALittleScriptGuessFunctor>(guess);
-        auto guess_functor_element = guess_functor->GetElement();
+        const auto guess_functor_element = guess_functor->GetElement();
         if (std::dynamic_pointer_cast<ALittleScriptClassStaticDecElement>(guess_functor_element)
             || std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(guess_functor_element)
             || std::dynamic_pointer_cast<ALittleScriptClassGetterDecElement>(guess_functor_element)
@@ -677,9 +693,9 @@ ABnfGuessError ALittleScriptPropertyValueDotIdNameReference::CheckError()
     return nullptr;
 }
 
-bool ALittleScriptPropertyValueDotIdNameReference::QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
+bool ALittleScriptPropertyValueDotIdNameReference::QueryCompletion(const ABnfElementPtr& select, std::vector<ALanguageCompletionInfo>& list)
 {
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return false;
 
     auto parent = element->GetParent();
@@ -690,12 +706,12 @@ bool ALittleScriptPropertyValueDotIdNameReference::QueryCompletion(ABnfElementPt
 
 ABnfElementPtr ALittleScriptPropertyValueDotIdNameReference::GotoDefinition()
 {
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return nullptr;
 
     std::vector<ABnfElementPtr> result_list;
     ABnfGuessPtr pre_type;
-    auto error = CalcResolve(result_list, pre_type);
+    const auto error = CalcResolve(result_list, pre_type);
     if (error) return nullptr;
     for (auto& result : result_list)
         return result;
@@ -712,24 +728,25 @@ void ALittleScriptPropertyValueDotIdNameReference::QueryHighlightWordTag(std::ve
     auto element = m_element.lock();
     if (element == nullptr) return;
 
-    auto method_dec = m_method_dec.lock();
+    const auto method_dec = m_method_dec.lock();
     if (method_dec == nullptr)
         ReloadInfo();
 
     ABnfGuessPtr guess;
-    auto error = element->GuessType(guess);
+    const auto error = element->GuessType(guess);
     if (error) return;
     CollectHighlight(guess, method_dec, list);
 }
 
-void ALittleScriptPropertyValueDotIdNameReference::CollectHighlight(ABnfGuessPtr target_guess, ABnfElementPtr element, std::vector<ALanguageHighlightWordInfo>& list)
+void ALittleScriptPropertyValueDotIdNameReference::CollectHighlight(const ABnfGuessPtr& target_guess,
+                                                                    const ABnfElementPtr& element, std::vector<ALanguageHighlightWordInfo>& list) const
 {
     if (std::dynamic_pointer_cast<ALittleScriptPropertyValueDotIdNameElement>(element))
     {
         if (element->GetElementText() != m_key) return;
 
         ABnfGuessPtr guess;
-        auto error = element->GuessType(guess);
+        const auto error = element->GuessType(guess);
         if (error) return;
         if (guess->GetValue() == target_guess->GetValue())
         {
@@ -743,11 +760,11 @@ void ALittleScriptPropertyValueDotIdNameReference::CollectHighlight(ABnfGuessPtr
         return;
     }
 
-    auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
+    const auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
     if (node)
     {
         const auto& childs = node->GetChilds();
-        for (auto& child : childs)
+        for (const auto& child : childs)
             CollectHighlight(target_guess, child, list);
     }
 }

@@ -3,9 +3,7 @@
 #define _ALITTLE_ALITTLESCRIPTFILECLASS_H_
 
 #include "../../alanguage/Index/ABnfFile.h"
-#include <unordered_map>
 #include <unordered_set>
-#include <map>
 #include <string>
 
 class ALittleScriptFileClass : public ABnfFile

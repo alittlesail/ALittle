@@ -3,7 +3,6 @@
 #define _ALITTLE_ALANGUAGEHELPERINFO_H_
 
 #include <string>
-#include <vector>
 
 const int s_indent_size = 4;
 
@@ -14,7 +13,7 @@ struct ALanguageColorInfo
     int line_end = 0;
     int char_end = 0;
     int tag = 0;
-    bool blur = 0;
+    bool blur = false;
 };
 
 struct ALanguageQuickInfo
@@ -37,9 +36,9 @@ struct ALanguageGotoInfo
 
 struct ALanguageCompletionInfo
 {
-    ALanguageCompletionInfo() {}
-    ALanguageCompletionInfo(const std::string& p_display, int p_tag, const std::string& p_descriptor) : display(p_display), tag(p_tag), descriptor(p_descriptor) {}
-    ALanguageCompletionInfo(const std::string& p_display, const std::string& p_insert, int p_tag, const std::string& p_descriptor) : display(p_display), insert(p_insert), tag(p_tag), descriptor(p_descriptor) {}
+    ALanguageCompletionInfo() = default;
+    ALanguageCompletionInfo(const std::string& p_display, int p_tag, const std::string& p_descriptor) : display(p_display), descriptor(p_descriptor), tag(p_tag) {}
+    ALanguageCompletionInfo(const std::string& p_display, const std::string& p_insert, int p_tag, const std::string& p_descriptor) : display(p_display), insert(p_insert), descriptor(p_descriptor), tag(p_tag) {}
     std::string display;
     std::string insert;
     std::string descriptor;

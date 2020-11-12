@@ -14,12 +14,12 @@
 
 ABnfGuessError ALittleScriptPropertyValueBracketValueReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
 {
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"节点失效");
     guess_list.resize(0);
 
     // 获取父节点
-    auto property_value_suffix = std::dynamic_pointer_cast<ALittleScriptPropertyValueSuffixElement>(element->GetParent());
+    const auto property_value_suffix = std::dynamic_pointer_cast<ALittleScriptPropertyValueSuffixElement>(element->GetParent());
     auto property_value = std::dynamic_pointer_cast<ALittleScriptPropertyValueElement>(property_value_suffix->GetParent());
     auto property_value_first_type = property_value->GetPropertyValueFirstType();
     const auto& suffix_list = property_value->GetPropertyValueSuffixList();
@@ -34,7 +34,7 @@ ABnfGuessError ALittleScriptPropertyValueBracketValueReference::GuessTypes(std::
             break;
         }
     }
-    if (index == -1) return nullptr;
+    if (index == -1) return ABnfGuessError(element, u8"节点失效");
 
     // 获取前一个类型
     ABnfGuessPtr pre_type;
@@ -84,7 +84,7 @@ ABnfGuessError ALittleScriptPropertyValueBracketValueReference::CheckError()
     if (value_stat == nullptr) return ABnfGuessError(element, u8"请填写索引值");
 
     // 获取父节点
-    auto property_value_suffix = std::dynamic_pointer_cast<ALittleScriptPropertyValueSuffixElement>(element->GetParent());
+    const auto property_value_suffix = std::dynamic_pointer_cast<ALittleScriptPropertyValueSuffixElement>(element->GetParent());
     auto property_value = std::dynamic_pointer_cast<ALittleScriptPropertyValueElement>(property_value_suffix->GetParent());
     auto property_value_first_type = property_value->GetPropertyValueFirstType();
     const auto& suffixList = property_value->GetPropertyValueSuffixList();
@@ -99,7 +99,7 @@ ABnfGuessError ALittleScriptPropertyValueBracketValueReference::CheckError()
             break;
         }
     }
-    if (index == -1) return nullptr;
+    if (index == -1) return ABnfGuessError(element, u8"节点失效");
 
     // 获取前一个类型
     ABnfGuessPtr pre_type;
@@ -128,14 +128,14 @@ ABnfGuessError ALittleScriptPropertyValueBracketValueReference::CheckError()
     }
     else if (std::dynamic_pointer_cast<ALittleScriptGuessMap>(pre_type))
     {
-        auto pre_type_map = std::dynamic_pointer_cast<ALittleScriptGuessMap>(pre_type);
+        const auto pre_type_map = std::dynamic_pointer_cast<ALittleScriptGuessMap>(pre_type);
         error = ALittleScriptOp::GuessTypeEqual(pre_type_map->key_type.lock(), value_stat, key_guess_type, true, false);
         if (error)
             return ABnfGuessError(error.element, u8"索引值的类型不能是:" + key_guess_type->GetValue() + " :" + error.error);
     }
 
     {
-        std::vector<ABnfGuessPtr> guess_list;
+        guess_list.resize(0);
         error = element->GuessTypes(guess_list);
         if (error) return error;
         if (guess_list.size() == 0)

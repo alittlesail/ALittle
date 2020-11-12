@@ -22,14 +22,14 @@ protected:
 	ABnfElementWeakPtr m_element;
 
 public:
-    ABnfCommonReference(ABnfElementPtr element);
+    ABnfCommonReference(const ABnfElementPtr& element);
     virtual ~ABnfCommonReference() {}
 
     // 配色
     virtual int QueryClassificationTag(bool& blur) override;
 
     // 获取缩进
-    virtual int QueryDesiredIndent(int it_line, int it_char, ABnfElementPtr select) override;
+    virtual int QueryDesiredIndent(int it_line, int it_char, const ABnfElementPtr& select) override;
 };
 
 #endif // _ALITTLE_ABNFCOMMONREFERENCE_H_

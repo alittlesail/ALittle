@@ -17,8 +17,8 @@ private:
     std::weak_ptr<ALittleScriptMethodBodyDecElement> m_method_body_dec;
 
 public:
-    ALittleScriptPropertyValueCustomTypeReference(ABnfElementPtr element);
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptPropertyValueCustomTypeReference(element); }
+    ALittleScriptPropertyValueCustomTypeReference(const ABnfElementPtr& element);
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptPropertyValueCustomTypeReference(element); }
 
     int QueryClassificationTag(bool& blur) override;
 
@@ -27,16 +27,16 @@ private:
 
     // 计算命名域前缀
 public:
-    ABnfGuessError CalcNamespaceName(std::string& namespace_name);
+    ABnfGuessError CalcNamespaceName(std::string& namespace_name) const;
 
 private:
-    void CalcResolve(std::vector<ABnfElementPtr>& result_list);
+    void CalcResolve(std::vector<ABnfElementPtr>& result_list) const;
 
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 
     ABnfGuessError CheckError() override;
 
-    bool QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list) override;
+    bool QueryCompletion(const ABnfElementPtr& select, std::vector<ALanguageCompletionInfo>& list) override;
 
     ABnfElementPtr GotoDefinition() override;
 
@@ -44,7 +44,7 @@ private:
 
     void QueryHighlightWordTag(std::vector<ALanguageHighlightWordInfo>& list) override;
 
-    void CollectHighlight(ABnfGuessPtr target_guess, ABnfElementPtr element, std::vector<ALanguageHighlightWordInfo>& list);
+    void CollectHighlight(const ABnfGuessPtr& target_guess, const ABnfElementPtr& element, std::vector<ALanguageHighlightWordInfo>& list) const;
 };
 
 #endif // _ALITTLE_ALITTLESCRIPTPROPERTYVALUECUSTOMTYPEREFERENCE_H_

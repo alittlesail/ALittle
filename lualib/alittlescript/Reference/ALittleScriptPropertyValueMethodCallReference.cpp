@@ -24,14 +24,13 @@
 #include "../Index/ALittleScriptUtility.h"
 #include "../Index/ALittleScriptOp.h"
 
-inline ABnfGuessError ALittleScriptPropertyValueMethodCallReference::GuessPreType(ABnfGuessPtr& guess)
+inline ABnfGuessError ALittleScriptPropertyValueMethodCallReference::GuessPreType(ABnfGuessPtr& guess) const
 {
-    guess = nullptr;
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(element, u8"节点失效");
 
     // 获取父节点
-    auto property_value_suffix = std::dynamic_pointer_cast<ALittleScriptPropertyValueSuffixElement>(element->GetParent());
+    const auto property_value_suffix = std::dynamic_pointer_cast<ALittleScriptPropertyValueSuffixElement>(element->GetParent());
     auto property_value = std::dynamic_pointer_cast<ALittleScriptPropertyValueElement>(property_value_suffix->GetParent());
     auto property_value_first_type = property_value->GetPropertyValueFirstType();
     const auto& suffix_list = property_value->GetPropertyValueSuffixList();
@@ -46,7 +45,7 @@ inline ABnfGuessError ALittleScriptPropertyValueMethodCallReference::GuessPreTyp
             break;
         }
     }
-    if (index == -1) return nullptr;
+    if (index == -1) return ABnfGuessError(element, u8"节点失效");
 
     // 获取前一个类型
     ABnfGuessPtr pre_type;
@@ -84,7 +83,7 @@ inline ABnfGuessError ALittleScriptPropertyValueMethodCallReference::GuessPreTyp
             && (std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(pre_type_functor->GetElement())
                 || std::dynamic_pointer_cast<ALittleScriptClassGetterDecElement>(pre_type_functor->GetElement())
                 || std::dynamic_pointer_cast<ALittleScriptClassSetterDecElement>(pre_type_functor->GetElement()))) {
-            auto new_pre_type_functor = std::shared_ptr<ALittleScriptGuessFunctor>(new ALittleScriptGuessFunctor(pre_type_functor->GetElement()));
+            auto new_pre_type_functor = std::make_shared<ALittleScriptGuessFunctor>(pre_type_functor->GetElement());
             pre_type = new_pre_type_functor;
 
             new_pre_type_functor->await_modifier = pre_type_functor->await_modifier;
@@ -114,7 +113,7 @@ inline ABnfGuessError ALittleScriptPropertyValueMethodCallReference::GuessPreTyp
 
 ABnfGuessError ALittleScriptPropertyValueMethodCallReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
 {
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"节点失效");
     guess_list.resize(0);
 
@@ -140,14 +139,15 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::GuessTypes(std::ve
             guess_list.push_back(guess_e);
     }
 
-    auto return_tail_e = pre_type_functor->return_tail.lock();
+    const auto return_tail_e = pre_type_functor->return_tail.lock();
     if (return_tail_e != nullptr)
         guess_list.push_back(return_tail_e);
 
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptPropertyValueMethodCallReference::AnalysisTemplate(std::unordered_map<std::string, ABnfGuessPtr>& fill_map, ABnfGuessPtr left_guess, ABnfElementPtr right_src, ABnfGuessPtr right_guess, bool assign_or_call)
+ABnfGuessError ALittleScriptPropertyValueMethodCallReference::AnalysisTemplate(std::unordered_map<std::string, ABnfGuessPtr>& fill_map
+    , const ABnfGuessPtr& left_guess, const ABnfElementPtr& right_src, ABnfGuessPtr right_guess, bool assign_or_call) const
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(element, u8"节点失效");
@@ -226,25 +226,25 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::AnalysisTemplate(s
             return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
         }
 
-        for (int i = 0; i < left_guess_functor->template_param_list.size(); ++i)
+        for (size_t i = 0; i < left_guess_functor->template_param_list.size(); ++i)
         {
             auto error = AnalysisTemplate(fill_map, left_guess_functor->template_param_list[i].lock(), right_src, right_guess_functor->template_param_list[i].lock(), false);
             if (error) return error;
         }
 
-        for (int i = 0; i < left_guess_functor->param_list.size(); ++i)
+        for (size_t i = 0; i < left_guess_functor->param_list.size(); ++i)
         {
             auto error = AnalysisTemplate(fill_map, left_guess_functor->param_list[i].lock(), right_src, right_guess_functor->param_list[i].lock(), false);
             if (error) return error;
         }
 
-        for (int i = 0; i < left_guess_functor->param_nullable_list.size(); ++i)
+        for (size_t i = 0; i < left_guess_functor->param_nullable_list.size(); ++i)
         {
             if (left_guess_functor->param_nullable_list[i] != right_guess_functor->param_nullable_list[i])
                 return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
         }
 
-        for (int i = 0; i < left_guess_functor->return_list.size(); ++i)
+        for (size_t i = 0; i < left_guess_functor->return_list.size(); ++i)
         {
             auto error = AnalysisTemplate(fill_map, left_guess_functor->return_list[i].lock(), right_src, right_guess_functor->return_list[i].lock(), false);
             if (error) return error;
@@ -375,7 +375,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::AnalysisTemplate(s
     return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
 }
 
-ABnfGuessError ALittleScriptPropertyValueMethodCallReference::CheckTemplateMap(std::unordered_map<std::string, std::shared_ptr<ALittleScriptGuessTemplate>>& src_map, std::unordered_map<std::string, ABnfGuessPtr>& fill_map, std::shared_ptr<ALittleScriptGuessFunctor>& guess)
+ABnfGuessError ALittleScriptPropertyValueMethodCallReference::CheckTemplateMap(std::unordered_map<std::string, std::shared_ptr<ALittleScriptGuessTemplate>>& src_map, std::unordered_map<std::string, ABnfGuessPtr>& fill_map, std::shared_ptr<ALittleScriptGuessFunctor>& guess) const
 {
     guess = nullptr;
 
@@ -385,10 +385,9 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::CheckTemplateMap(s
     ABnfGuessPtr pre_type;
     auto error = GuessPreType(pre_type);
     if (error) return error;
-    if (pre_type == nullptr) return nullptr;
 
     // 如果需要处理
-    if (!std::dynamic_pointer_cast<ALittleScriptGuessFunctor>(pre_type)) return nullptr;
+    if (!std::dynamic_pointer_cast<ALittleScriptGuessFunctor>(pre_type)) return ABnfGuessError(element, u8"节点失效");
     auto pre_type_functor = std::dynamic_pointer_cast<ALittleScriptGuessFunctor>(pre_type);
 
     const auto& value_stat_list = element->GetValueStatList();
@@ -396,7 +395,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::CheckTemplateMap(s
         return ABnfGuessError(element, u8"函数调用最多需要" + std::to_string(pre_type_functor->param_list.size()) + u8"个参数,不能是:" + std::to_string(value_stat_list.size()) + u8"个");
 
     // 检查模板参数
-    if (pre_type_functor->template_param_list.size() > 0)
+    if (!pre_type_functor->template_param_list.empty())
     {
         for (auto& template_param : pre_type_functor->template_param_list)
         {
@@ -411,7 +410,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::CheckTemplateMap(s
             if (all_type_list.size() > pre_type_functor->template_param_list.size())
                 return ABnfGuessError(element, u8"函数调用最多需要" + std::to_string(pre_type_functor->template_param_list.size()) + u8"个模板参数,不能是:" + std::to_string(all_type_list.size()) + u8"个");
 
-            for (int i = 0; i < all_type_list.size(); ++i)
+            for (size_t i = 0; i < all_type_list.size(); ++i)
             {
                 ABnfGuessPtr all_type_guess;
                 error = all_type_list[i]->GuessType(all_type_guess);
@@ -433,7 +432,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::CheckTemplateMap(s
         }
 
         // 根据填充的参数来分析以及判断
-        for (int i = 0; i < value_stat_list.size(); ++i)
+        for (size_t i = 0; i < value_stat_list.size(); ++i)
         {
             auto value_stat = value_stat_list[i];
             ABnfGuessPtr value_stat_guess;
@@ -460,7 +459,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::CheckTemplateMap(s
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptPropertyValueMethodCallReference::GenerateTemplateParamList(std::vector<ABnfGuessPtr>& param_list)
+ABnfGuessError ALittleScriptPropertyValueMethodCallReference::GenerateTemplateParamList(std::vector<ABnfGuessPtr>& param_list) const
 {
     param_list.resize(0);
 
@@ -471,7 +470,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::GenerateTemplatePa
     if (error) return error;
     if (pre_type_functor == nullptr) return nullptr;
 
-    for (int i = 0; i < pre_type_functor->template_param_list.size(); ++i)
+    for (size_t i = 0; i < pre_type_functor->template_param_list.size(); ++i)
     {
         auto guess_template = pre_type_functor->template_param_list[i].lock();
         if (guess_template == nullptr) continue;
@@ -498,7 +497,7 @@ ABnfGuessError ALittleScriptPropertyValueMethodCallReference::CheckError()
 
     // 检查填写的和函数定义的参数是否一致
     const auto& value_stat_list = element->GetValueStatList();
-    for (int i = 0; i < value_stat_list.size(); ++i)
+    for (size_t i = 0; i < value_stat_list.size(); ++i)
     {
         auto value_stat = value_stat_list[i];
 

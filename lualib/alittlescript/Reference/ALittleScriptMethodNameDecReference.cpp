@@ -33,7 +33,7 @@
 #include "../Index/ALittleScriptIndex.h"
 #include "../Index/ALittleScriptOp.h"
 
-ALittleScriptMethodNameDecReference::ALittleScriptMethodNameDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptMethodNameDecElement>(element)
+ALittleScriptMethodNameDecReference::ALittleScriptMethodNameDecReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptMethodNameDecElement>(element)
 {
     m_namespace_name = ALittleScriptUtility::GetNamespaceName(element);
     m_key = element->GetElementText();
@@ -62,7 +62,7 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
         auto class_body_dec = class_element_dec->GetParent();
         auto class_dec = std::dynamic_pointer_cast<ALittleScriptClassDecElement>(class_body_dec->GetParent());
 
-        auto info = std::shared_ptr<ALittleScriptGuessFunctor>(new ALittleScriptGuessFunctor(class_getter_dec));
+        auto info = std::make_shared<ALittleScriptGuessFunctor>(class_getter_dec);
         info->const_modifier = ALittleScriptUtility::IsConst(class_element_dec->GetModifierList());
 
         // 第一个参数是类
@@ -92,7 +92,7 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
         auto class_body_dec = class_element_dec->GetParent();
         auto class_dec = std::dynamic_pointer_cast<ALittleScriptClassDecElement>(class_body_dec->GetParent());
 
-        auto info = std::shared_ptr<ALittleScriptGuessFunctor>(new ALittleScriptGuessFunctor(class_setter_dec));
+        auto info = std::make_shared<ALittleScriptGuessFunctor>(class_setter_dec);
         info->const_modifier = ALittleScriptUtility::IsConst(class_element_dec->GetModifierList());
 
         // 第一个参数是类
@@ -124,7 +124,7 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
             info->param_name_list.push_back(one_dec->GetMethodParamNameDec()->GetElementText());
         }
         else {
-            info->param_name_list.push_back("");
+            info->param_name_list.emplace_back("");
         }
 
         info->UpdateValue();
@@ -138,7 +138,7 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
         auto class_body_dec = class_element_dec->GetParent();
         auto class_dec = std::dynamic_pointer_cast<ALittleScriptClassDecElement>(class_body_dec->GetParent());
 
-        auto info = std::shared_ptr<ALittleScriptGuessFunctor>(new ALittleScriptGuessFunctor(class_method_dec));
+        auto info = std::make_shared<ALittleScriptGuessFunctor>(class_method_dec);
         const auto& modifier = class_element_dec->GetModifierList();
         info->const_modifier = ALittleScriptUtility::IsConst(class_element_dec->GetModifierList());
         info->await_modifier = ALittleScriptUtility::GetCoroutineType(modifier) == "await";
@@ -186,7 +186,7 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
                     if (one_dec->GetMethodParamNameDec() != nullptr)
                         info->param_name_list.push_back(one_dec->GetMethodParamNameDec()->GetElementText());
                     else
-                        info->param_name_list.push_back("");
+                        info->param_name_list.emplace_back("");
                 }
                 else if (param_tail != nullptr)
                 {
@@ -237,7 +237,7 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
         auto class_static_dec = std::dynamic_pointer_cast<ALittleScriptClassStaticDecElement>(parent);
         auto class_element_dec = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(class_static_dec->GetParent());
 
-        auto info = std::shared_ptr<ALittleScriptGuessFunctor>(new ALittleScriptGuessFunctor(class_static_dec));
+        auto info = std::make_shared<ALittleScriptGuessFunctor>(class_static_dec);
         info->await_modifier = ALittleScriptUtility::GetCoroutineType(class_element_dec->GetModifierList()) == "await";
 
         // 添加模板参数列表
@@ -295,7 +295,7 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
         if (return_dec != nullptr)
         {
             const auto& one_dec_list = return_dec->GetMethodReturnOneDecList();
-            for (int i = 0; i < one_dec_list.size(); ++i)
+            for (size_t i = 0; i < one_dec_list.size(); ++i)
             {
                 auto one_dec = one_dec_list[i];
                 auto all_type = one_dec->GetAllType();
@@ -327,11 +327,11 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
         auto global_method_dec = std::dynamic_pointer_cast<ALittleScriptGlobalMethodDecElement>(parent);
         auto namespace_element_dec = std::dynamic_pointer_cast<ALittleScriptNamespaceElementDecElement>(global_method_dec->GetParent());
 
-        auto info = std::shared_ptr<ALittleScriptGuessFunctor>(new ALittleScriptGuessFunctor(global_method_dec));
+        auto info = std::make_shared<ALittleScriptGuessFunctor>(global_method_dec);
         info->await_modifier = ALittleScriptUtility::GetCoroutineType(namespace_element_dec->GetModifierList()) == "await";
 
         auto protocol_type = ALittleScriptUtility::GetProtocolType(namespace_element_dec->GetModifierList());
-        if (protocol_type.size())
+        if (!protocol_type.empty())
         {
             ABnfElementPtr error_element = global_method_dec->GetMethodNameDec();
             if (error_element == nullptr) error_element = global_method_dec;
@@ -366,10 +366,10 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
                 if (error) return error;
                 info->param_list.push_back(class_name_dec_guess);
                 info->param_nullable_list.push_back(false);
-                info->param_name_list.push_back("sender");
+                info->param_name_list.emplace_back("sender");
                 info->param_list.push_back(guess);
                 info->param_nullable_list.push_back(false);
-                info->param_name_list.push_back("param");
+                info->param_name_list.emplace_back("param");
 
                 auto return_dec = global_method_dec->GetMethodReturnDec();
                 if (return_dec == nullptr) return ABnfGuessError(error_element, u8"带" + info->proto + u8"注解的函数返回值必须是struct");
@@ -394,10 +394,10 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
                 if (error) return error;
                 info->param_list.push_back(class_name_dec_guess);
                 info->param_nullable_list.push_back(false);
-                info->param_name_list.push_back("sender");
+                info->param_name_list.emplace_back("sender");
                 info->param_list.push_back(guess);
                 info->param_nullable_list.push_back(false);
-                info->param_name_list.push_back("param");
+                info->param_name_list.emplace_back("param");
 
                 info->return_list.push_back(ALittleScriptStatic::Inst().sStringGuess);
                 ABnfGuessPtr sender_guess;
@@ -415,10 +415,10 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
                 if (error) return error;
                 info->param_list.push_back(class_name_dec_guess);
                 info->param_nullable_list.push_back(false);
-                info->param_name_list.push_back("sender");
+                info->param_name_list.emplace_back("sender");
                 info->param_list.push_back(guess);
                 info->param_nullable_list.push_back(false);
-                info->param_name_list.push_back("param");
+                info->param_name_list.emplace_back("param");
 
                 info->return_list.push_back(ALittleScriptStatic::Inst().sStringGuess);
             }
@@ -432,16 +432,16 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
                 if (error) return error;
                 info->param_list.push_back(class_name_dec_guess);
                 info->param_nullable_list.push_back(false);
-                info->param_name_list.push_back("sender");
+                info->param_name_list.emplace_back("sender");
                 info->param_list.push_back(guess);
                 info->param_nullable_list.push_back(false);
-                info->param_name_list.push_back("param");
+                info->param_name_list.emplace_back("param");
 
                 auto return_dec = global_method_dec->GetMethodReturnDec();
                 if (return_dec != nullptr)
                 {
                     const auto& return_one_list = return_dec->GetMethodReturnOneDecList();
-                    if (return_one_list.size() > 0)
+                    if (!return_one_list.empty())
                     {
                         auto return_one_all_type = return_one_list[0]->GetAllType();
                         if (return_one_all_type == nullptr)
@@ -498,7 +498,7 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
                         if (one_dec->GetMethodParamNameDec() != nullptr)
                             info->param_name_list.push_back(one_dec->GetMethodParamNameDec()->GetElementText());
                         else
-                            info->param_name_list.push_back("");
+                            info->param_name_list.emplace_back("");
                     }
                     else if (param_tail != nullptr)
                     {
@@ -553,17 +553,17 @@ ABnfGuessError ALittleScriptMethodNameDecReference::CheckError()
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(element, u8"节点失效");
-    auto method_dec = element->GetParent();
+    const auto method_dec = element->GetParent();
     if (method_dec == nullptr) return nullptr;
-    auto class_element_dec = method_dec->GetParent();
+    const auto class_element_dec = method_dec->GetParent();
     if (class_element_dec == nullptr) return nullptr;
-    auto class_body = class_element_dec->GetParent();
+    const auto class_body = class_element_dec->GetParent();
     if (class_body == nullptr) return nullptr;
-    auto class_dec = std::dynamic_pointer_cast<ALittleScriptClassDecElement>(class_body->GetParent());
+    const auto class_dec = std::dynamic_pointer_cast<ALittleScriptClassDecElement>(class_body->GetParent());
     if (class_dec == nullptr) return nullptr;
 
     // 计算父类
-    auto class_extends_dec = ALittleScriptUtility::FindClassExtends(class_dec);
+    const auto class_extends_dec = ALittleScriptUtility::FindClassExtends(class_dec);
     if (class_extends_dec == nullptr) return nullptr;
 
     ClassAttrType attrType;
@@ -578,7 +578,7 @@ ABnfGuessError ALittleScriptMethodNameDecReference::CheckError()
     else
         return nullptr;
 
-    auto result = ALittleScriptUtility::FindFirstClassAttrFromExtends(class_extends_dec, attrType, m_key, 100);
+    const auto result = ALittleScriptUtility::FindFirstClassAttrFromExtends(class_extends_dec, attrType, m_key, 100);
     if (!std::dynamic_pointer_cast<ALittleScriptMethodNameDecElement>(result)) return nullptr;
     auto method_name_dec = std::dynamic_pointer_cast<ALittleScriptMethodNameDecElement>(result);
 
@@ -594,22 +594,22 @@ ABnfGuessError ALittleScriptMethodNameDecReference::CheckError()
     return nullptr;
 }
 
-bool ALittleScriptMethodNameDecReference::QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
+bool ALittleScriptMethodNameDecReference::QueryCompletion(const ABnfElementPtr& select, std::vector<ALanguageCompletionInfo>& list)
 {
     auto element = m_element.lock();
     if (element == nullptr) return false;
     auto* index = GetIndex();
     if (index == nullptr) return false;
 
-    auto method_dec = element->GetParent();
+    const auto method_dec = element->GetParent();
     // 类内部的函数
     if (std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(method_dec->GetParent()))
     {
-        auto class_dec = ALittleScriptUtility::FindClassDecFromParent(method_dec->GetParent());
+        const auto class_dec = ALittleScriptUtility::FindClassDecFromParent(method_dec->GetParent());
 
         std::vector<ABnfElementPtr> dec_list;
         ALittleScriptUtility::FindClassMethodNameDecList(class_dec, ALittleScriptUtility::sAccessPrivateAndProtectedAndPublic, u8"", dec_list, 100);
-        for (int i = 0; i < dec_list.size(); ++i)
+        for (size_t i = 0; i < dec_list.size(); ++i)
         {
             if (m_key == dec_list[i]->GetElementText()) continue;
             list.emplace_back(dec_list[i]->GetElementText(), ALittleScriptIconType::MEMBER_METHOD, dec_list[i]->GetDescriptor());
@@ -634,19 +634,19 @@ bool ALittleScriptMethodNameDecReference::QueryCompletion(ABnfElementPtr select,
 
 ABnfElementPtr ALittleScriptMethodNameDecReference::GotoDefinition()
 {
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return nullptr;
-    auto method_dec = element->GetParent();
+    const auto method_dec = element->GetParent();
     if (method_dec == nullptr) return nullptr;
-    auto class_element_dec = method_dec->GetParent();
+    const auto class_element_dec = method_dec->GetParent();
     if (class_element_dec == nullptr) return nullptr;
-    auto class_body = method_dec->GetParent();
+    const auto class_body = method_dec->GetParent();
     if (class_body == nullptr) return nullptr;
-    auto class_dec = std::dynamic_pointer_cast<ALittleScriptClassDecElement>(class_body->GetParent());
+    const auto class_dec = std::dynamic_pointer_cast<ALittleScriptClassDecElement>(class_body->GetParent());
     if (class_dec == nullptr) return nullptr;
 
     // 计算父类
-    auto class_extends_dec = ALittleScriptUtility::FindClassExtends(class_dec);
+    const auto class_extends_dec = ALittleScriptUtility::FindClassExtends(class_dec);
     if (class_extends_dec == nullptr) return nullptr;
 
     ClassAttrType attrType;

@@ -18,7 +18,7 @@ ABnfGuessError ALittleScriptOpNewListStatReference::GuessTypes(std::vector<ABnfG
     ABnfGuessPtr guess;
     auto error = value_stat_list[0]->GuessType(guess);
     if (error) return error;
-    auto info = ABnfGuessPtr(new ALittleScriptGuessList(guess, false, false));
+    auto info = std::static_pointer_cast<ABnfGuess>(std::make_shared<ALittleScriptGuessList>(guess, false, false));
     info->UpdateValue();
     element->GetFile()->AddGuessType(info);
     guess_list.push_back(info);
@@ -37,7 +37,7 @@ ABnfGuessError ALittleScriptOpNewListStatReference::CheckError()
     ABnfGuessPtr value_stat_first;
     auto error = value_stat_list[0]->GuessType(value_stat_first);
     if (error) return error;
-    for (int i = 1; i < value_stat_list.size(); ++i)
+    for (size_t i = 1; i < value_stat_list.size(); ++i)
     {
         auto value_stat = value_stat_list[i];
         int return_count = 0;

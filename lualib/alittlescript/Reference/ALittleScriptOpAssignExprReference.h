@@ -9,8 +9,8 @@
 class ALittleScriptOpAssignExprReference : public ALittleScriptReferenceTemplate<ALittleScriptOpAssignExprElement>
 {
 public:
-    ALittleScriptOpAssignExprReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptOpAssignExprElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptOpAssignExprReference(element); }
+    ALittleScriptOpAssignExprReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptOpAssignExprElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptOpAssignExprReference(element); }
     ABnfGuessError CheckError() override;
 };
 

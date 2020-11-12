@@ -10,16 +10,16 @@
 class ALittleScriptGlobalMethodDecReference : public ALittleScriptReferenceTemplate<ALittleScriptGlobalMethodDecElement>
 {
 public:
-    ALittleScriptGlobalMethodDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptGlobalMethodDecElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptGlobalMethodDecReference(element); }
+    ALittleScriptGlobalMethodDecReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptGlobalMethodDecElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptGlobalMethodDecReference(element); }
 private:
-    ABnfGuessError CheckCmdError();
+    ABnfGuessError CheckCmdError() const;
 
     ABnfGuessError CheckProtoError();
 
-    ABnfGuessError CheckMsgStruct(ABnfElementPtr element, ABnfGuessPtr guess, std::unordered_set<std::string>& map);
+    ABnfGuessError CheckMsgStruct(const ABnfElementPtr& element, ABnfGuessPtr guess, std::unordered_set<std::string>& map) const;
 
-    ABnfGuessError CheckJsonStruct(ABnfElementPtr element, ABnfGuessPtr guess, std::unordered_set<std::string>& map);
+    ABnfGuessError CheckJsonStruct(const ABnfElementPtr& element, ABnfGuessPtr guess, std::unordered_set<std::string>& map) const;
 
     ABnfGuessError CheckError() override;
 };

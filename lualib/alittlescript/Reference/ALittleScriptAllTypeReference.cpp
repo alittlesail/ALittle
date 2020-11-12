@@ -17,7 +17,7 @@ ABnfGuessError ALittleScriptAllTypeReference::GuessTypes(std::vector<ABnfGuessPt
     if (element == nullptr) return ABnfGuessError(element, u8"节点丢失");
 
     ABnfGuessError error;
-    bool is_const = element->GetAllTypeConst() != nullptr;
+    const bool is_const = element->GetAllTypeConst() != nullptr;
 
     if (element->GetCustomType() != nullptr)
         error = element->GetCustomType()->GuessTypes(guess_list);
@@ -28,7 +28,7 @@ ABnfGuessError ALittleScriptAllTypeReference::GuessTypes(std::vector<ABnfGuessPt
 
     if (error) return error;
 
-    if (guess_list.size())
+    if (!guess_list.empty())
     {
         if (!is_const) return nullptr;
 
@@ -39,7 +39,7 @@ ABnfGuessError ALittleScriptAllTypeReference::GuessTypes(std::vector<ABnfGuessPt
 
             if (std::dynamic_pointer_cast<ALittleScriptGuessPrimitive>(guess))
             {
-                auto it = ALittleScriptStatic::Inst().sPrimitiveGuessListMap.find("const " + guess->GetValue());
+                const auto it = ALittleScriptStatic::Inst().sPrimitiveGuessListMap.find("const " + guess->GetValue());
                 if (it == ALittleScriptStatic::Inst().sPrimitiveGuessListMap.end())
                     return ABnfGuessError(element, u8"找不到const " + guess->GetValue());
                 guess_list = it->second;

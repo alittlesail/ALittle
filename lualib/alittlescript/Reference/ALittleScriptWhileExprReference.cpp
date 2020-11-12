@@ -1,7 +1,6 @@
 #include "ALittleScriptWhileExprReference.h"
 
 #include "../Generate/ALittleScriptValueStatElement.h"
-#include "../Index/ALittleScriptUtility.h"
 #include "../Guess/ALittleScriptGuessPrimitive.h"
 
 ABnfGuessError ALittleScriptWhileExprReference::CheckError()

@@ -10,7 +10,7 @@
 #include "../Generate/ALittleScriptEnumDecElement.h"
 
 ALittleScriptGuessEnum::ALittleScriptGuessEnum(const std::string& p_namespace_name, const std::string& p_enum_name
-    , std::shared_ptr<ALittleScriptEnumDecElement> p_enum_dec)
+    , const std::shared_ptr<ALittleScriptEnumDecElement>& p_enum_dec)
 {
     is_register = ALittleScriptUtility::IsRegister(p_enum_dec);
     namespace_name = p_namespace_name;
@@ -32,7 +32,7 @@ ABnfGuessPtr ALittleScriptGuessEnum::ReplaceTemplate(ABnfFile* file, const std::
 
 ABnfGuessPtr ALittleScriptGuessEnum::Clone() const
 {
-    return ABnfGuessPtr(new ALittleScriptGuessEnum(namespace_name, enum_name, enum_dec.lock()));
+    return std::make_shared<ALittleScriptGuessEnum>(namespace_name, enum_name, enum_dec.lock());
 }
 
 void ALittleScriptGuessEnum::UpdateValue()
@@ -43,7 +43,7 @@ void ALittleScriptGuessEnum::UpdateValue()
 
 bool ALittleScriptGuessEnum::IsChanged() const
 {
-    auto element = enum_dec.lock();
+    const auto element = enum_dec.lock();
     if (element == nullptr) return true;
 
     return dynamic_cast<ALittleScriptIndex*>(element->GetFile()->GetProject())->GetGuessTypeList(element) == nullptr;

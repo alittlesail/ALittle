@@ -9,7 +9,7 @@
 #include "../../alanguage/Index/ABnfFile.h"
 #include "../../alanguage/Index/ABnfProject.h"
 
-ALittleScriptGuessClass::ALittleScriptGuessClass(const std::string& p_namespace_name, const std::string& p_class_name, std::shared_ptr<ALittleScriptClassDecElement> p_class_dec, const std::string& p_using_name, bool p_is_const, bool p_is_native)
+ALittleScriptGuessClass::ALittleScriptGuessClass(const std::string& p_namespace_name, const std::string& p_class_name, const std::shared_ptr<ALittleScriptClassDecElement>& p_class_dec, const std::string& p_using_name, bool p_is_const, bool p_is_native)
 {
     is_register = ALittleScriptUtility::IsRegister(p_class_dec);
     namespace_name = p_namespace_name;
@@ -26,7 +26,7 @@ bool ALittleScriptGuessClass::NeedReplace() const
 {
     if (template_list.empty()) return false;
 
-    for (auto& pair : template_map)
+    for (const auto& pair : template_map)
     {
         auto guess = pair.second.lock();
         if (guess == nullptr) return false;
@@ -64,7 +64,8 @@ ABnfGuessPtr ALittleScriptGuessClass::ReplaceTemplate(ABnfFile* file, const std:
 
 ABnfGuessPtr ALittleScriptGuessClass::Clone() const
 {
-    auto guess = std::shared_ptr< ALittleScriptGuessClass>(new ALittleScriptGuessClass(namespace_name, class_name, class_dec.lock(), using_name, is_const, is_native));
+    auto guess = std::make_shared<ALittleScriptGuessClass>(namespace_name, class_name, class_dec.lock(), using_name,
+                                                           is_const, is_native);
     guess->template_list = template_list;
     guess->template_map = template_map;
     guess->UpdateValue();
@@ -77,7 +78,7 @@ void ALittleScriptGuessClass::UpdateValue()
     if (is_native) value += "native ";
     value += namespace_name + "." + class_name;
     std::vector<std::string> name_list;
-    for (auto template_guess : template_list)
+    for (const auto& template_guess : template_list)
     {
         auto guess = template_guess.lock();
         if (guess == nullptr) continue;
@@ -99,7 +100,7 @@ void ALittleScriptGuessClass::UpdateValue()
         else
             name_list.push_back(guess->GetValue());
     }
-    if (name_list.size() > 0)
+    if (!name_list.empty())
         value += "<" + ABnfFactory::Join(name_list, ",") + ">";
 
     value_without_const = value;
@@ -108,20 +109,20 @@ void ALittleScriptGuessClass::UpdateValue()
 
 bool ALittleScriptGuessClass::IsChanged() const
 {
-    for (auto& template_guess : template_list)
+    for (const auto& template_guess : template_list)
     {
         auto guess = template_guess.lock();
         if (guess == nullptr || guess->IsChanged())
             return true;
     }
-    for (auto& pair : template_map)
+    for (const auto& pair : template_map)
     {
         auto guess = pair.second.lock();
         if (guess == nullptr || guess->IsChanged())
             return true;
     }
 
-    auto element = class_dec.lock();
+    const auto element = class_dec.lock();
     if (element == nullptr) return true;
 
     return dynamic_cast<ALittleScriptIndex*>(element->GetFile()->GetProject())->GetGuessTypeList(element) == nullptr;

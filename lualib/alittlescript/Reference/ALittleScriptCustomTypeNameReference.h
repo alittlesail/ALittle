@@ -9,10 +9,8 @@
 class ALittleScriptCustomTypeNameReference : public ALittleScriptCustomTypeCommonReference
 {
 public:
-    ALittleScriptCustomTypeNameReference(ABnfElementPtr element) : ALittleScriptCustomTypeCommonReference(std::dynamic_pointer_cast<ALittleScriptCustomTypeElement>(element->GetParent()), element)
-    {
-    }
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptCustomTypeNameReference(element); }
+    ALittleScriptCustomTypeNameReference(const ABnfElementPtr& element) : ALittleScriptCustomTypeCommonReference(std::dynamic_pointer_cast<ALittleScriptCustomTypeElement>(element->GetParent()), element) { }
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptCustomTypeNameReference(element); }
 
     int QueryClassificationTag(bool& blur) override
     {

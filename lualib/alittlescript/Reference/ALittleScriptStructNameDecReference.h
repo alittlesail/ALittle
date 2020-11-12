@@ -13,8 +13,8 @@ private:
     std::string m_key;
 
 public:
-    ALittleScriptStructNameDecReference(ABnfElementPtr element);
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptStructNameDecReference(element); }
+    ALittleScriptStructNameDecReference(const ABnfElementPtr& element);
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptStructNameDecReference(element); }
 
     int QueryClassificationTag(bool& blur) override;
 
@@ -22,7 +22,7 @@ public:
 
     ABnfElementPtr GotoDefinition() override;
 
-    bool QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list) override;
+    bool QueryCompletion(const ABnfElementPtr& select, std::vector<ALanguageCompletionInfo>& list) override;
 
     ABnfGuessError CheckError() override;
 };

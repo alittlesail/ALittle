@@ -12,8 +12,8 @@ private:
     std::string m_namespace_name;
 
 public:
-    ALittleScriptEnumDecReference(ABnfElementPtr element);
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptEnumDecReference(element); }
+    ALittleScriptEnumDecReference(const ABnfElementPtr& element);
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptEnumDecReference(element); }
 
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 

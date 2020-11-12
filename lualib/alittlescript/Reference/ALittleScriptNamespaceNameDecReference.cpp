@@ -2,7 +2,7 @@
 
 #include "../Index/ALittleScriptIndex.h"
 
-ALittleScriptNamespaceNameDecReference::ALittleScriptNamespaceNameDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptNamespaceNameDecElement>(element)
+ALittleScriptNamespaceNameDecReference::ALittleScriptNamespaceNameDecReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptNamespaceNameDecElement>(element)
 {
     m_key = element->GetElementText();
 }
@@ -15,13 +15,13 @@ int ALittleScriptNamespaceNameDecReference::QueryClassificationTag(bool& blur)
 
 ABnfGuessError ALittleScriptNamespaceNameDecReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
 {
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"节点失效");
     auto* index = GetIndex();
     if (index == nullptr) return ABnfGuessError(nullptr, u8"不再工程中");
 
     guess_list.resize(0);
-    if (m_key.size() == 0) return nullptr;
+    if (m_key.empty()) return nullptr;
 
     std::unordered_map<std::string, std::shared_ptr<ALittleScriptNamespaceNameDecElement>> name_dec_map;
     index->FindNamespaceNameDecList(m_key, name_dec_map);
@@ -54,7 +54,7 @@ ABnfGuessError ALittleScriptNamespaceNameDecReference::CheckError()
 
 ABnfElementPtr ALittleScriptNamespaceNameDecReference::GotoDefinition()
 {
-    auto element = m_element.lock();
+	const auto element = m_element.lock();
     if (element == nullptr) return nullptr;
     auto* index = GetIndex();
     if (index == nullptr) return nullptr;
@@ -65,7 +65,7 @@ ABnfElementPtr ALittleScriptNamespaceNameDecReference::GotoDefinition()
     return nullptr;
 }
 
-bool ALittleScriptNamespaceNameDecReference::QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
+bool ALittleScriptNamespaceNameDecReference::QueryCompletion(const ABnfElementPtr& select, std::vector<ALanguageCompletionInfo>& list)
 {
     auto* index = GetIndex();
     if (index == nullptr) return false;

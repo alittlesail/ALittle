@@ -9,9 +9,10 @@
 
 ABnfGuessError ALittleScriptPathsValueReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
 {
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"½ÚµãÊ§Ð§");
-    auto info = ABnfGuessPtr(new ALittleScriptGuessList(ALittleScriptStatic::Inst().sStringGuess, false, false));
+    auto info = std::static_pointer_cast<ABnfGuess>(
+	    std::make_shared<ALittleScriptGuessList>(ALittleScriptStatic::Inst().sStringGuess, false, false));
     info->UpdateValue();
     element->GetFile()->AddGuessType(info);
     guess_list.push_back(info);

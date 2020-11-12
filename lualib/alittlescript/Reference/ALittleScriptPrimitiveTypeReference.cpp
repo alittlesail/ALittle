@@ -6,7 +6,7 @@ ABnfGuessError ALittleScriptPrimitiveTypeReference::GuessTypes(std::vector<ABnfG
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"½ÚµãÊ§Ð§");
-    auto it = ALittleScriptStatic::Inst().sPrimitiveGuessListMap.find(element->GetElementText());
+    const auto it = ALittleScriptStatic::Inst().sPrimitiveGuessListMap.find(element->GetElementText());
     if (it != ALittleScriptStatic::Inst().sPrimitiveGuessListMap.end())
     {
         guess_list = it->second;

@@ -9,10 +9,6 @@ ABnfFileClass::ABnfFileClass(ABnfProject* project, const std::string& full_path,
 {
 }
 
-ABnfFileClass::~ABnfFileClass()
-{
-}
-
 // 更新分析内容
 void ABnfFileClass::UpdateAnalysis()
 {
@@ -34,7 +30,7 @@ void ABnfFileClass::UpdateAnalysis()
     }
 }
 
-void ABnfFileClass::CollectIndex(ABnfNodeElementPtr node)
+void ABnfFileClass::CollectIndex(const ABnfNodeElementPtr& node)
 {
     if (node->GetNodeType() == "Id")
     {
@@ -42,7 +38,7 @@ void ABnfFileClass::CollectIndex(ABnfNodeElementPtr node)
         m_index[value].insert(node);
     }
 
-    for (auto child : node->GetChilds())
+    for (const auto& child : node->GetChilds())
     {
         auto node_child = std::dynamic_pointer_cast<ABnfNodeElement>(child);
         if (node_child != nullptr)
@@ -54,7 +50,7 @@ void ABnfFileClass::CollectIndex(ABnfNodeElementPtr node)
 void ABnfFileClass::CollectRule()
 {
     std::string comment;
-    for (auto element : m_root->GetChilds())
+    for (const auto& element : m_root->GetChilds())
     {
         if (element->GetNodeType() == "LineComment" || element->GetNodeType() == "BlockComment")
             comment = element->GetElementText();
@@ -64,7 +60,7 @@ void ABnfFileClass::CollectRule()
         auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
         ABnfElementPtr id = nullptr;
         ABnfElementPtr value = nullptr;
-        for (auto child : node->GetChilds())
+        for (const auto& child : node->GetChilds())
         {
             if (child->GetNodeType() == "Id")
                 id = child;
@@ -80,17 +76,17 @@ void ABnfFileClass::CollectRule()
     }
 }
 
-void ABnfFileClass::CollectCompile(ABnfElementPtr element, CollectCompileInfo& info, bool multi)
+void ABnfFileClass::CollectCompile(const ABnfElementPtr& element, CollectCompileInfo& info, bool multi) const
 {
     if (element->GetNodeType() == "List")
     {
-        auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
+        const auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
         if (node == nullptr) return;
 
         std::vector<CollectCompileInfo> option_list;
         option_list.push_back(info);
         CollectCompileInfo& leaf_or_group = option_list.back();
-        for (auto& child : node->GetChilds())
+        for (const auto& child : node->GetChilds())
         {
             if (child->GetNodeType() == "Option")
             {
@@ -130,21 +126,21 @@ void ABnfFileClass::CollectCompile(ABnfElementPtr element, CollectCompileInfo& i
     }
     else if (element->GetNodeType() == "Option" || element->GetNodeType() == "Node")
     {
-        auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
+        const auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
         if (node == nullptr) return;
 
-        for (auto& child : node->GetChilds())
+        for (const auto& child : node->GetChilds())
             CollectCompile(child, info, multi);
     }
     else if (element->GetNodeType() == "Group" || element->GetNodeType() == "Leaf")
     {
-        auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
+        const auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
         if (node == nullptr) return;
 
         if (multi == false)
         {
             ABnfElementPtr tail_node = nullptr;
-            for (auto& child : node->GetChilds())
+            for (const auto& child : node->GetChilds())
             {
                 if (child->GetNodeType() == "NodeTail")
                     tail_node = child;
@@ -152,18 +148,18 @@ void ABnfFileClass::CollectCompile(ABnfElementPtr element, CollectCompileInfo& i
 
             if (tail_node != nullptr)
             {
-                auto tail_value = tail_node->GetElementText();
-                multi = tail_value.find("+") == 0 || tail_value.find("*") == 0;
+                const auto tail_value = tail_node->GetElementText();
+                multi = tail_value.find('+') == 0 || tail_value.find('*') == 0;
             }
         }
 
-        for (auto& child : node->GetChilds())
+        for (const auto& child : node->GetChilds())
             CollectCompile(child, info, multi);
     }
     else if (element->GetNodeType() == "Id")
     {
         int cur_count = 0;
-        auto it = info.id_map.find(element->GetElementText());
+        const auto it = info.id_map.find(element->GetElementText());
         if (it != info.id_map.end()) cur_count = it->second;
 
         info.id_map[element->GetElementText()] = cur_count + (multi ? 2 : 1);
@@ -292,7 +288,7 @@ static std::string ABnfRegexElementTemplate =
 "class @@LANGUAGE@@RegexElement : public ABnfRegexElement\n"
 "{\n"
 "public:\n"
-"    @@LANGUAGE@@RegexElement(ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type, std::shared_ptr<ARegex> regex)\n"
+"    @@LANGUAGE@@RegexElement(ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type, const std::shared_ptr<ARegex>& regex)\n"
 "        : ABnfRegexElement(factory, file, line, col, offset, type, regex) { }\n"
 "    virtual ~@@LANGUAGE@@RegexElement() { }\n"
 "};\n"
@@ -330,17 +326,17 @@ static std::string ABnfFactoryTemplate =
 
 "    std::shared_ptr<ABnfKeyElement> CreateKeyElement(ABnfFile* file, int line, int col, int offset, const std::string& type) override\n"
 "    {\n"
-"        return std::shared_ptr<ABnfKeyElement>(new @@LANGUAGE@@KeyElement(this, file, line, col, offset, type));\n"
+"        return std::make_shared<@@LANGUAGE@@KeyElement>(this, file, line, col, offset, type);\n"
 "    }\n"
 
 "    std::shared_ptr<ABnfStringElement> CreateStringElement(ABnfFile* file, int line, int col, int offset, const std::string& type) override\n"
 "    {\n"
-"        return std::shared_ptr<ABnfStringElement>(new @@LANGUAGE@@StringElement(this, file, line, col, offset, type));\n"
+"        return std::make_shared<@@LANGUAGE@@StringElement>(this, file, line, col, offset, type);\n"
 "    }\n"
 
-"    std::shared_ptr<ABnfRegexElement> CreateRegexElement(ABnfFile* file, int line, int col, int offset, const std::string& type, std::shared_ptr<ARegex> regex) override\n"
+"    std::shared_ptr<ABnfRegexElement> CreateRegexElement(ABnfFile* file, int line, int col, int offset, const std::string& type, const std::shared_ptr<ARegex>& regex) override\n"
 "    {\n"
-"        return std::shared_ptr<ABnfRegexElement>(new @@LANGUAGE@@RegexElement(this, file, line, col, offset, type, regex));\n"
+"        return std::make_shared<@@LANGUAGE@@RegexElement>(this, file, line, col, offset, type, regex);\n"
 "    }\n"
 "};\n"
 "\n"
@@ -350,10 +346,10 @@ std::string ABnfFileClass::Generate(int version, const std::string& target_path,
 {
     AnalysisText(version);
 
-    if (m_root == nullptr) return "syntex error";
+    if (m_root == nullptr) return "syntax error";
     if (HasError()) return "Please fix the error before generating";
 
-    std::string add_new_buffer = "";
+    std::string add_new_buffer;
     std::vector<std::string> element_include_list;
     for (auto& rule : m_rule)
     {
@@ -369,7 +365,7 @@ std::string ABnfFileClass::Generate(int version, const std::string& target_path,
             return "count of " + rule.first + " is " + std::to_string(rule.second.size());
 
         ABnfNodeElementPtr value = nullptr;
-        for (auto& child : node->GetChilds())
+        for (const auto& child : node->GetChilds())
         {
             if (child->GetNodeType() == "Node" && std::dynamic_pointer_cast<ABnfNodeElement>(child))
                 value = std::dynamic_pointer_cast<ABnfNodeElement>(child);
@@ -391,14 +387,14 @@ std::string ABnfFileClass::Generate(int version, const std::string& target_path,
         buffer_cpp = ABnfFactory::ReplaceAll(buffer_cpp, "@@LANGUAGE@@", language_name);
         buffer_cpp = ABnfFactory::ReplaceAll(buffer_cpp, "@@NAME@@", rule.first);
 
-        add_new_buffer += "        m_create_map[\"" + rule.first + "\"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::shared_ptr<ABnfNodeElement>(new " + language_name + rule.first + "Element(factory, file, line, col, offset, type)); };\n";
+        add_new_buffer += "        m_create_map[\"" + rule.first + "\"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<" + language_name + rule.first + "Element>(factory, file, line, col, offset, type); };\n";
         element_include_list.push_back("#include \"" + language_name + rule.first + "Element.h\"\n");
 
-        std::string element_define = "";
-        std::string element_include = "";
+        std::string element_define;
+        std::string element_include;
 
-        std::string get_child_buffer_hpp = "";
-        std::string get_child_buffer_cpp = "";
+        std::string get_child_buffer_hpp;
+        std::string get_child_buffer_cpp;
         for (auto& id_pair : info.id_map)
         {
             if (id_pair.second == 1)

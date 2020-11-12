@@ -9,11 +9,11 @@
 class ALittleScriptLanguageNameDecReference : public ALittleScriptReferenceTemplate<ALittleScriptLanguageNameDecElement>
 {
 public:
-    ALittleScriptLanguageNameDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptLanguageNameDecElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptLanguageNameDecReference(element); }
+    ALittleScriptLanguageNameDecReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptLanguageNameDecElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptLanguageNameDecReference(element); }
     ABnfGuessError CheckError() override;
 
-    bool QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list) override;
+    bool QueryCompletion(const ABnfElementPtr& select, std::vector<ALanguageCompletionInfo>& list) override;
 
     int QueryClassificationTag(bool& blur) override;
 };

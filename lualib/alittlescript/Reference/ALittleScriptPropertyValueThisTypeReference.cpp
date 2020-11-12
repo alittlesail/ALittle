@@ -17,7 +17,7 @@
 #include "../Index/ALittleScriptFileClass.h"
 #include "../Guess/ALittleScriptGuessPrimitive.h"
 
-ALittleScriptPropertyValueThisTypeReference::ALittleScriptPropertyValueThisTypeReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptPropertyValueThisTypeElement>(element)
+ALittleScriptPropertyValueThisTypeReference::ALittleScriptPropertyValueThisTypeReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptPropertyValueThisTypeElement>(element)
 {
     ReloadInfo();
 }
@@ -46,19 +46,19 @@ void ALittleScriptPropertyValueThisTypeReference::ReloadInfo()
             m_class_ctor_dec = std::dynamic_pointer_cast<ALittleScriptClassCtorDecElement>(parent);
         }
         else if (std::dynamic_pointer_cast<ALittleScriptClassGetterDecElement>(parent)) {
-            auto class_getter_dec = std::dynamic_pointer_cast<ALittleScriptClassGetterDecElement>(parent);
+            const auto class_getter_dec = std::dynamic_pointer_cast<ALittleScriptClassGetterDecElement>(parent);
             m_class_getter_dec = class_getter_dec;
             const auto& modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(class_getter_dec->GetParent())->GetModifierList();
             m_is_const = ALittleScriptUtility::IsConst(modifier);
         }
         else if (std::dynamic_pointer_cast<ALittleScriptClassSetterDecElement>(parent)) {
-            auto class_setter_dec = std::dynamic_pointer_cast<ALittleScriptClassSetterDecElement>(parent);
+            const auto class_setter_dec = std::dynamic_pointer_cast<ALittleScriptClassSetterDecElement>(parent);
             m_class_setter_dec = class_setter_dec;
             const auto& modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(class_setter_dec->GetParent())->GetModifierList();
             m_is_const = ALittleScriptUtility::IsConst(modifier);
         }
         else if (std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(parent)) {
-            auto class_method_dec = std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(parent);
+            const auto class_method_dec = std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(parent);
             m_class_method_dec = class_method_dec;
             const auto& modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(class_method_dec->GetParent())->GetModifierList();
             m_is_const = ALittleScriptUtility::IsConst(modifier);
@@ -74,19 +74,19 @@ void ALittleScriptPropertyValueThisTypeReference::ReloadInfo()
     }
 }
 
-void ALittleScriptPropertyValueThisTypeReference::CalcResolve(std::vector<ABnfElementPtr>& result_list)
+void ALittleScriptPropertyValueThisTypeReference::CalcResolve(std::vector<ABnfElementPtr>& result_list) const
 {
     result_list.resize(0);
-    auto class_dec = m_class_dec.lock();
-    auto global_method_dec = m_global_method_dec.lock();
-    auto class_static_dec = m_class_static_dec.lock();
+    const auto class_dec = m_class_dec.lock();
+    const auto global_method_dec = m_global_method_dec.lock();
+    const auto class_static_dec = m_class_static_dec.lock();
     if (class_dec != nullptr && global_method_dec == nullptr && class_static_dec == nullptr)
         result_list.push_back(class_dec);
 }
 
 ABnfGuessError ALittleScriptPropertyValueThisTypeReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
 {
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"½ÚµãÊ§Ð§");
     
     guess_list.resize(0);

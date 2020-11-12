@@ -4,8 +4,6 @@
 
 #include "ALittleScriptGuess.h"
 
-#include <map>
-
 class ALittleScriptEnumDecElement;
 
 class ALittleScriptGuessEnum : public ALittleScriptGuess
@@ -20,7 +18,7 @@ public:
 
 public:
     ALittleScriptGuessEnum(const std::string& p_namespace_name, const std::string& p_enum_name
-        , std::shared_ptr<ALittleScriptEnumDecElement> p_enum_dec);
+        , const std::shared_ptr<ALittleScriptEnumDecElement>& p_enum_dec);
 
     std::shared_ptr<ABnfElement> GetElement() override;
     bool NeedReplace() const override;

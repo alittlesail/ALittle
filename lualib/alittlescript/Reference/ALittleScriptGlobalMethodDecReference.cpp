@@ -20,7 +20,7 @@
 #include "../Guess/ALittleScriptGuessClass.h"
 #include "../Guess/ALittleScriptGuessFunctor.h"
 
-ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckCmdError()
+ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckCmdError() const
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(element, u8"节点失效");
@@ -49,7 +49,7 @@ ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckProtoError()
     auto param_dec = element->GetMethodParamDec();
     auto return_dec = element->GetMethodReturnDec();
 
-    std::string text = proto_type;
+    const std::string& text = proto_type;
 
     if (element->GetTemplateDec() != nullptr)
         return ABnfGuessError(element, u8"带" + text + u8"的全局函数，不能使用模板");
@@ -59,7 +59,7 @@ ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckProtoError()
     if (return_dec != nullptr)
     {
         const auto& return_one_list = return_dec->GetMethodReturnOneDecList();
-        for (auto& return_one : return_one_list)
+        for (const auto& return_one : return_one_list)
         {
             if (return_one->GetMethodReturnTailDec() != nullptr)
                 return ABnfGuessError(element, u8"带" + text + u8"的全局函数，不能使用返回值占位符");
@@ -72,7 +72,7 @@ ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckProtoError()
 
     const auto& param_one_dec_list = param_dec->GetMethodParamOneDecList();
     std::vector<ABnfGuessPtr> param_guess_list;
-    for (auto& param_one_dec : param_one_dec_list)
+    for (const auto& param_one_dec : param_one_dec_list)
     {
         if (param_one_dec->GetMethodParamTailDec() != nullptr)
             return ABnfGuessError(element, u8"带" + text + u8"的全局函数，不能使用参数占位符");
@@ -172,7 +172,7 @@ ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckProtoError()
         if (error) return error;
 
         // 返回值
-        if (return_guess_list.size() > 0)
+        if (!return_guess_list.empty())
         {
             if (co_text != "await")
                 return ABnfGuessError(element, u8"带" + text + u8"的全局函数，并且有返回值，必须使用await修饰");
@@ -194,11 +194,11 @@ ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckProtoError()
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckMsgStruct(ABnfElementPtr element, ABnfGuessPtr guess, std::unordered_set<std::string>& map)
+ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckMsgStruct(const ABnfElementPtr& element, ABnfGuessPtr guess, std::unordered_set<std::string>& map) const
 {
     if (std::dynamic_pointer_cast<ALittleScriptGuessList>(guess))
     {
-        auto guess_list = std::dynamic_pointer_cast<ALittleScriptGuessList>(guess);
+	    const auto guess_list = std::dynamic_pointer_cast<ALittleScriptGuessList>(guess);
         auto error = CheckMsgStruct(element, guess_list->sub_type.lock(), map);
         if (error) return error;
     }
@@ -214,7 +214,7 @@ ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckMsgStruct(ABnfElement
     }
     else if (std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess))
     {
-        auto guess_struct = std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess);
+	    const auto guess_struct = std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess);
         // 如果有继承，那么就检查一下继承
         auto struct_dec = guess_struct->struct_dec.lock();
         if (struct_dec != nullptr && struct_dec->GetStructExtendsDec() != nullptr)
@@ -225,7 +225,7 @@ ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckMsgStruct(ABnfElement
                 ABnfGuessPtr extends_guess;
                 auto extends_error = extends_name->GuessType(extends_guess);
                 if (extends_error) return extends_error;
-                auto extends_struct_guess = std::dynamic_pointer_cast<ALittleScriptGuessStruct>(extends_guess);
+                const auto extends_struct_guess = std::dynamic_pointer_cast<ALittleScriptGuessStruct>(extends_guess);
                 extends_error = CheckMsgStruct(element, extends_struct_guess, map);
                 if (extends_error) return extends_error;
             }
@@ -243,7 +243,7 @@ ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckMsgStruct(ABnfElement
             return ABnfGuessError(element, u8"struct不完整");
 
         const auto& var_dec_list = body_dec->GetStructVarDecList();
-        for (auto& var_dec : var_dec_list)
+        for (const auto& var_dec : var_dec_list)
         {
             auto error = var_dec->GuessType(guess);
             if (error) return error;
@@ -267,17 +267,17 @@ ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckMsgStruct(ABnfElement
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckJsonStruct(ABnfElementPtr element, ABnfGuessPtr guess, std::unordered_set<std::string>& map)
+ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckJsonStruct(const ABnfElementPtr& element, ABnfGuessPtr guess, std::unordered_set<std::string>& map) const
 {
     if (std::dynamic_pointer_cast<ALittleScriptGuessList>(guess))
     {
-        auto guess_list = std::dynamic_pointer_cast<ALittleScriptGuessList>(guess);
+	    const auto guess_list = std::dynamic_pointer_cast<ALittleScriptGuessList>(guess);
         auto error = CheckJsonStruct(element, guess_list->sub_type.lock(), map);
         if (error) return error;
     }
     else if (std::dynamic_pointer_cast<ALittleScriptGuessMap>(guess))
     {
-        auto guess_map = std::dynamic_pointer_cast<ALittleScriptGuessMap>(guess);
+	    const auto guess_map = std::dynamic_pointer_cast<ALittleScriptGuessMap>(guess);
         if (!std::dynamic_pointer_cast<ALittleScriptGuessString>(guess_map->key_type.lock()))
             return ABnfGuessError(element, u8"http协议接口的参数使用json序列化，内部使用的Map的key必须是string类型");
         auto error = CheckJsonStruct(element, guess_map->value_type.lock(), map);
@@ -285,7 +285,7 @@ ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckJsonStruct(ABnfElemen
     }
     else if (std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess))
     {
-        auto guess_struct = std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess);
+	    const auto guess_struct = std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess);
         // 如果有继承，那么就检查一下继承
         auto struct_dec = guess_struct->struct_dec.lock();
         if (struct_dec != nullptr && struct_dec->GetStructExtendsDec() != nullptr)
@@ -296,7 +296,7 @@ ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckJsonStruct(ABnfElemen
                 ABnfGuessPtr extends_guess;
                 auto extends_error = extends_name->GuessType(extends_guess);
                 if (extends_error) return extends_error;
-                auto extends_struct_guess = std::dynamic_pointer_cast<ALittleScriptGuessStruct>(extends_guess);
+                const auto extends_struct_guess = std::dynamic_pointer_cast<ALittleScriptGuessStruct>(extends_guess);
                 extends_error = CheckJsonStruct(element, extends_struct_guess, map);
                 if (extends_error) return extends_error;
             }
@@ -312,7 +312,7 @@ ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckJsonStruct(ABnfElemen
             return ABnfGuessError(element, u8"struct不完整");
 
         const auto& var_dec_list = body_dec->GetStructVarDecList();
-        for (auto& var_dec : var_dec_list)
+        for (const auto& var_dec : var_dec_list)
         {
             auto error = var_dec->GuessType(guess);
             if (error) return error;

@@ -19,7 +19,7 @@ protected:
     std::weak_ptr<ALittleScriptTemplateDecElement> m_template_param_dec;
     std::weak_ptr<ALittleScriptCustomTypeElement> m_custom_type;
 
-    ALittleScriptCustomTypeCommonReference(std::shared_ptr<ALittleScriptCustomTypeElement> custom_type, ABnfElementPtr element);
+    ALittleScriptCustomTypeCommonReference(const std::shared_ptr<ALittleScriptCustomTypeElement>& custom_type, const ABnfElementPtr& element);
 
     std::shared_ptr<ALittleScriptClassDecElement> GetClassDec();
 
@@ -30,7 +30,7 @@ protected:
 
     ABnfElementPtr GotoDefinition() override;
 
-    bool QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list) override;
+    bool QueryCompletion(const ABnfElementPtr& select, std::vector<ALanguageCompletionInfo>& list) override;
 
 public:
     ABnfGuessError CalcNamespaceName(std::string& namespace_name);

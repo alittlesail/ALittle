@@ -4,8 +4,6 @@
 
 #include "ALittleScriptGuess.h"
 
-#include <map>
-
 class ALittleScriptGuessTemplate;
 
 class ALittleScriptGuessFunctor : public ALittleScriptGuess
@@ -35,7 +33,7 @@ public:
     std::weak_ptr<ABnfElement> element;
 
 public:
-    ALittleScriptGuessFunctor(std::shared_ptr<ABnfElement> p_element);
+    ALittleScriptGuessFunctor(const std::shared_ptr<ABnfElement>& p_element);
 
     std::shared_ptr<ABnfElement> GetElement() override;
     bool HasAny() const override;

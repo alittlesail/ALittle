@@ -10,25 +10,25 @@
 
 ABnfNodeElementPtr ABnfFactory::CreateNodeElement(ABnfFile* file, int line, int col, int offset, const std::string& type)
 {
-    return ABnfNodeElementPtr(new ABnfNodeElement(this, file, line, col, offset, type));
+    return std::make_shared<ABnfNodeElement>(this, file, line, col, offset, type);
 }
 
 ABnfKeyElementPtr ABnfFactory::CreateKeyElement(ABnfFile* file, int line, int col, int offset, const std::string& type)
 {
-    return ABnfKeyElementPtr(new ABnfKeyElement(this, file, line, col, offset, type));
+    return std::make_shared<ABnfKeyElement>(this, file, line, col, offset, type);
 }
 
 ABnfStringElementPtr ABnfFactory::CreateStringElement(ABnfFile* file, int line, int col, int offset, const std::string& type)
 {
-    return ABnfStringElementPtr(new ABnfStringElement(this, file, line, col, offset, type));
+    return std::make_shared<ABnfStringElement>(this, file, line, col, offset, type);
 }
 
-ABnfRegexElementPtr ABnfFactory::CreateRegexElement(ABnfFile* file, int line, int col, int offset, const std::string& type, std::shared_ptr<ARegex> regex)
+ABnfRegexElementPtr ABnfFactory::CreateRegexElement(ABnfFile* file, int line, int col, int offset, const std::string& type, const std::shared_ptr<ARegex>& regex)
 {
-    return ABnfRegexElementPtr(new ABnfRegexElement(this, file, line, col, offset, type, regex));
+    return std::make_shared<ABnfRegexElement>(this, file, line, col, offset, type, regex);
 }
 
-ABnfReference* ABnfFactory::CreateReference(ABnfElementPtr element)
+ABnfReference* ABnfFactory::CreateReference(const ABnfElementPtr& element)
 {
     return new ABnfReference();
 }

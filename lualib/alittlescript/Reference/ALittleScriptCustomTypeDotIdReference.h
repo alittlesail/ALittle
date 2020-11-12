@@ -9,8 +9,8 @@
 class ALittleScriptCustomTypeDotIdReference : public ALittleScriptCustomTypeCommonReference
 {
 public:
-    ALittleScriptCustomTypeDotIdReference(ABnfElementPtr element);
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptCustomTypeDotIdReference(element); }
+    ALittleScriptCustomTypeDotIdReference(const ABnfElementPtr& element);
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptCustomTypeDotIdReference(element); }
 };
 
 #endif // _ALITTLE_ALITTLESCRIPTCUSTOMTYPEDOTIDREFERENCE_H_

@@ -13,7 +13,7 @@ public:
     ABnfGuessWeakPtr value_type;
 
 public:
-    ALittleScriptGuessMap(ABnfGuessPtr p_key_type, ABnfGuessPtr p_value_type, bool p_is_const);
+    ALittleScriptGuessMap(const ABnfGuessPtr& p_key_type, const ABnfGuessPtr& p_value_type, bool p_is_const);
 
     bool HasAny() const override;
     bool NeedReplace() const override;

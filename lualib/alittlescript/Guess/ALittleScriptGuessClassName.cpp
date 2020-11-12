@@ -9,7 +9,7 @@
 #include "../../alanguage/Index/ABnfFile.h"
 #include "../../alanguage/Index/ABnfProject.h"
 
-ALittleScriptGuessClassName::ALittleScriptGuessClassName(const std::string& p_namespace_name, const std::string& p_class_name, std::shared_ptr<ALittleScriptClassNameDecElement> p_class_name_dec)
+ALittleScriptGuessClassName::ALittleScriptGuessClassName(const std::string& p_namespace_name, const std::string& p_class_name, const std::shared_ptr<ALittleScriptClassNameDecElement>& p_class_name_dec)
 {
     is_register = ALittleScriptUtility::IsRegister(p_class_name_dec);
     namespace_name = p_namespace_name;
@@ -31,7 +31,7 @@ ABnfGuessPtr ALittleScriptGuessClassName::ReplaceTemplate(ABnfFile* file, const 
 
 ABnfGuessPtr ALittleScriptGuessClassName::Clone() const
 {
-    auto guess = std::shared_ptr<ALittleScriptGuessClassName>(new ALittleScriptGuessClassName(namespace_name, class_name, class_name_dec.lock()));
+    auto guess = std::make_shared<ALittleScriptGuessClassName>(namespace_name, class_name, class_name_dec.lock());
     guess->UpdateValue();
     return guess;
 }
@@ -44,7 +44,7 @@ void ALittleScriptGuessClassName::UpdateValue()
 
 bool ALittleScriptGuessClassName::IsChanged() const
 {
-    auto element = class_name_dec.lock();
+    const auto element = class_name_dec.lock();
     if (element == nullptr) return true;
 
     return dynamic_cast<ALittleScriptIndex*>(element->GetFile()->GetProject())->GetGuessTypeList(element) == nullptr;

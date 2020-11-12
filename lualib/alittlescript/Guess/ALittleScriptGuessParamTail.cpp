@@ -19,6 +19,6 @@ ABnfGuessPtr ALittleScriptGuessParamTail::ReplaceTemplate(ABnfFile* file, const 
 
 ABnfGuessPtr ALittleScriptGuessParamTail::Clone() const
 {
-    return ABnfGuessPtr(new ALittleScriptGuessParamTail(value));
+    return std::make_shared<ALittleScriptGuessParamTail>(value);
 }
 

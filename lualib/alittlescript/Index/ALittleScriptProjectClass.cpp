@@ -1,7 +1,6 @@
 
 #include "ALittleScriptProjectClass.h"
 
-
 #include "ALittleScriptUtility.h"
 #include "../Reference/ALittleScriptReferenceTemplate.h"
 #include "../Translation/ALittleScriptTranslation.h"
@@ -18,10 +17,6 @@ ALittleScriptProjectClass::ALittleScriptProjectClass()
 	m_language_set.insert("JavaScript");
 }
 
-ALittleScriptProjectClass::~ALittleScriptProjectClass()
-{
-}
-
 void ALittleScriptProjectClass::FindDefineImpl(const std::string& pre_input, const std::string& input, std::vector<ALanguageCompletionInfo>& info_list)
 {
     std::list<std::string> pre_split;
@@ -32,12 +27,12 @@ void ALittleScriptProjectClass::FindDefineImpl(const std::string& pre_input, con
 	// 获取命名域
     std::string namespace_name;
     bool namespace_in_input = false;
-    if (pre_split.size() > 0)
+    if (!pre_split.empty())
     {
         namespace_name = pre_split.front();
         pre_split.pop_front();
     }
-    else if (split.size() > 0)
+    else if (!split.empty())
     {
         namespace_in_input = true;
         namespace_name = split.front();
@@ -57,12 +52,12 @@ void ALittleScriptProjectClass::FindDefineImpl(const std::string& pre_input, con
 	// 获取定义名
     std::string define_name;
     bool define_in_input = false;
-	if (pre_split.size() > 0)
+	if (!pre_split.empty())
 	{
 		define_name = pre_split.front();
         pre_split.pop_front();
 	}
-    else if (split.size() > 0)
+    else if (!split.empty())
     {
         define_in_input = true;
         define_name = split.front();
@@ -113,12 +108,12 @@ void ALittleScriptProjectClass::FindDefineImpl(const std::string& pre_input, con
 
     // 获取定义名
     std::string var_name;
-    if (pre_split.size() > 0)
+    if (!pre_split.empty())
     {
         var_name = pre_split.front();
         pre_split.pop_front();
     }
-    else if (split.size() > 0)
+    else if (!split.empty())
     {
         var_name = split.front();
         split.pop_front();
@@ -234,7 +229,7 @@ void ALittleScriptProjectClass::FindGotoImpl(const std::string& text, ALanguageG
     std::vector<std::string> split;
     ABnfFactory::Split(text, ".", split);
 
-    if (split.size() == 0) return;
+    if (split.empty()) return;
 
     // 如果命名域是空的，那么就是获取命名域
     if (split.size() <= 1)
@@ -401,13 +396,13 @@ void ALittleScriptProjectClass::SetTargetLanguageUI(const std::string& language)
 
 void ALittleScriptProjectClass::Generate(int query_id, const std::string& full_path)
 {
-    auto it = m_file_map.find(full_path);
+    const auto it = m_file_map.find(full_path);
     if (it != m_file_map.end())
     {
         auto translation = ALittleScriptTranslation::CreateTranslation(m_target_language);
         auto gen_error = translation->Generate(it->second, true);
 
-        std::string full_path;
+        std::string error_full_path;
         int line_start = 0;
         int char_start = 0;
         int line_end = 0;
@@ -417,7 +412,7 @@ void ALittleScriptProjectClass::Generate(int query_id, const std::string& full_p
         {
             if (gen_error.element != nullptr)
             {
-                full_path = gen_error.element->GetFullPath();
+                error_full_path = gen_error.element->GetFullPath();
                 line_start = gen_error.element->GetStartLine();
                 char_start = gen_error.element->GetStartCol();
                 line_end = gen_error.element->GetEndLine();
@@ -428,12 +423,12 @@ void ALittleScriptProjectClass::Generate(int query_id, const std::string& full_p
 
         
         std::unique_lock<std::mutex> lock(m_output_lock);
-        m_outputs.push_back([query_id, full_path, line_start, char_start, line_end, char_end, error](lua_State* L)->int
+        m_outputs.emplace_back([query_id, error_full_path, line_start, char_start, line_end, char_end, error](lua_State* L)->int
         {
             lua_newtable(L);
             lua_pushinteger(L, query_id);
             lua_setfield(L, -2, "query_id");
-            if (error.size())
+            if (!error.empty())
             {
                 lua_newtable(L);
                 lua_pushinteger(L, line_start + 1);
@@ -444,7 +439,7 @@ void ALittleScriptProjectClass::Generate(int query_id, const std::string& full_p
                 lua_setfield(L, -2, "line_end");
                 lua_pushinteger(L, char_end);
                 lua_setfield(L, -2, "char_end");
-                lua_pushstring(L, full_path.c_str());
+                lua_pushstring(L, error_full_path.c_str());
                 lua_setfield(L, -2, "full_path");
                 lua_pushstring(L, error.c_str());
                 lua_setfield(L, -2, "error");
@@ -458,7 +453,7 @@ void ALittleScriptProjectClass::Generate(int query_id, const std::string& full_p
     }
 
     std::unique_lock<std::mutex> lock(m_output_lock);
-    m_outputs.push_back([query_id, full_path](lua_State* L) -> int {
+    m_outputs.emplace_back([query_id, full_path](lua_State* L) -> int {
         lua_newtable(L);
         lua_pushinteger(L, query_id);
         lua_setfield(L, -2, "query_id");

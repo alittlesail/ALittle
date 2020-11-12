@@ -8,8 +8,8 @@
 class ALittleScriptForPairDecReference : public ALittleScriptReferenceTemplate<ALittleScriptForPairDecElement>
 {
 public:
-    ALittleScriptForPairDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptForPairDecElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptForPairDecReference(element); }
+    ALittleScriptForPairDecReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptForPairDecElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptForPairDecReference(element); }
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 };
 

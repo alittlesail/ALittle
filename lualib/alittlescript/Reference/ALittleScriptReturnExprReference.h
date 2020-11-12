@@ -9,8 +9,8 @@
 class ALittleScriptReturnExprReference : public ALittleScriptReferenceTemplate<ALittleScriptReturnExprElement>
 {
 public:
-    ALittleScriptReturnExprReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptReturnExprElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptReturnExprReference(element); }
+    ALittleScriptReturnExprReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptReturnExprElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptReturnExprReference(element); }
     ABnfGuessError CheckError() override;
 };
 

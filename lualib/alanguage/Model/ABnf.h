@@ -65,59 +65,59 @@ public:
     const std::unordered_map<std::string, ABnfRuleInfo*>& GetRuleSet() const;
 
     // 查询关键字
-    void QueryKeyWordCompletion(const std::string& input, std::vector<ALanguageCompletionInfo>& list);
+    void QueryKeyWordCompletion(const std::string& input, std::vector<ALanguageCompletionInfo>& list) const;
     // 创建节点
-    ABnfNodeElementPtr CreateNodeElement(int line, int col, int offset, const std::string& type);
-    ABnfKeyElementPtr CreateKeyElement(int line, int col, int offset, const std::string& value);
-    ABnfStringElementPtr CreateStringElement(int line, int col, int offset, const std::string& value);
-    ABnfRegexElementPtr CreateRegexElement(int line, int col, int offset, const std::string& value, std::shared_ptr<ARegex> regex);
+    ABnfNodeElementPtr CreateNodeElement(int line, int col, int offset, const std::string& type) const;
+    ABnfKeyElementPtr CreateKeyElement(int line, int col, int offset, const std::string& value) const;
+    ABnfStringElementPtr CreateStringElement(int line, int col, int offset, const std::string& value) const;
+    ABnfRegexElementPtr CreateRegexElement(int line, int col, int offset, const std::string& value, const std::shared_ptr<ARegex>& regex) const;
 
     // 解析文件
     ABnfNodeElementPtr Analysis(ABnfFile* file);
 
     // 分析规则语句
-    bool AnalysisABnfNode(ABnfRuleInfo* rule, ABnfRuleNodeInfo* node, ABnfNodeElementPtr parent, bool not_key
+    bool AnalysisABnfNode(ABnfRuleInfo* rule, ABnfRuleNodeInfo* node, const ABnfNodeElementPtr& parent, bool not_key
         , int& line, int& col, int& offset, int& pin_offset, bool ignore_error);
 
     bool AnalysisABnfNodeMore(ABnfRuleInfo* rule
-        , ABnfRuleNodeInfo* node, ABnfNodeElementPtr parent, bool not_key
+        , ABnfRuleNodeInfo* node, const ABnfNodeElementPtr& parent, bool not_key
         , int& line, int& col, int& offset, int& pin_offset, bool ignore_error);
 
     // 规则节点
-    bool AnalysisABnfRuleMatch(ABnfRuleInfo* rule, ABnfNodeElementPtr parent, bool not_key
+    bool AnalysisABnfRuleMatch(ABnfRuleInfo* rule, const ABnfNodeElementPtr& parent, bool not_key
         , int& line, int& col, int& offset, int& pin_offset, bool ignore_error);
 
     // 分析节点
     bool AnalysisABnfNodeMatch(ABnfRuleInfo* rule
-        , ABnfRuleNodeInfo* node, ABnfNodeElementPtr parent, bool not_key
+        , ABnfRuleNodeInfo* node, const ABnfNodeElementPtr& parent, bool not_key
         , int& line, int& col, int& offset, int& pin_offset, bool ignore_error);
 
     // 关键字匹配
     bool AnalysisABnfKeyMatch(ABnfRuleInfo* rule
-        , ABnfRuleNodeInfo* node, ABnfNodeElementPtr parent, bool not_key
+        , ABnfRuleNodeInfo* node, const ABnfNodeElementPtr& parent, bool not_key
         , int& line, int& col, int& offset, bool ignore_error);
 
     // 字符串匹配
     bool AnalysisABnfStringMatch(ABnfRuleInfo* rule
-        , ABnfRuleNodeInfo* node, ABnfNodeElementPtr parent, bool not_key
+        , ABnfRuleNodeInfo* node, const ABnfNodeElementPtr& parent, bool not_key
         , int& line, int& col, int& offset, bool ignore_error);
 
     // 正则表达式匹配
     bool AnalysisABnfRegexMatch(ABnfRuleInfo* rule
-        , ABnfRuleNodeInfo* node, ABnfNodeElementPtr parent, bool not_key
+        , ABnfRuleNodeInfo* node, const ABnfNodeElementPtr& parent, bool not_key
         , int& line, int& col, int& offset, int& pin_offset, bool ignore_error);
 
     // 行注释匹配
-    bool AnalysisABnfCommentMatch(ABnfRuleInfo* rule, ABnfNodeElementPtr parent, bool not_key, int& line, int& col, int& offset);
+    bool AnalysisABnfCommentMatch(ABnfRuleInfo* rule, const ABnfNodeElementPtr& parent, bool not_key, int& line, int& col, int& offset);
 
     // 根据接收的大小，进行偏移
-    void AnalysisOffset(int value_len, int& line, int& col, int& offset);
+    void AnalysisOffset(int value_len, int& line, int& col, int& offset) const;
 
     // 跳到另一行
-    bool JumpToNextLine(int& line, int& col, int& offset);
+    bool JumpToNextLine(int& line, int& col, int& offset) const;
 
     // 对切割字符进行跳跃
-    void AnalysisSkip(int& line, int& col, int& offset);
+    void AnalysisSkip(int& line, int& col, int& offset) const;
 };
 
 #endif // _ALITTLE_ABNF_H_

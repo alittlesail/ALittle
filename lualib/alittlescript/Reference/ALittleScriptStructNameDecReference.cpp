@@ -7,13 +7,13 @@
 #include "../Index/ALittleScriptUtility.h"
 #include "../Index/ALittleScriptIndex.h"
 
-ALittleScriptStructNameDecReference::ALittleScriptStructNameDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptStructNameDecElement>(element)
+ALittleScriptStructNameDecReference::ALittleScriptStructNameDecReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptStructNameDecElement>(element)
 {
     m_key = element->GetElementText();
     m_namespace_name = ALittleScriptUtility::GetNamespaceName(element);
 
     // 如果父节点是extends，那么就获取指定的命名域
-    auto parent = element->GetParent();
+    const auto parent = element->GetParent();
     if (std::dynamic_pointer_cast<ALittleScriptStructExtendsDecElement>(parent))
     {
         auto namespace_name_dec = std::dynamic_pointer_cast<ALittleScriptStructExtendsDecElement>(parent)->GetNamespaceNameDec();
@@ -30,7 +30,7 @@ int ALittleScriptStructNameDecReference::QueryClassificationTag(bool& blur)
 
 ABnfGuessError ALittleScriptStructNameDecReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
 {
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"节点失效");
     auto* index = GetIndex();
     if (index == nullptr) return ABnfGuessError(element, u8"不在工程内");
@@ -49,7 +49,7 @@ ABnfGuessError ALittleScriptStructNameDecReference::GuessTypes(std::vector<ABnfG
     }
     else if (std::dynamic_pointer_cast<ALittleScriptStructExtendsDecElement>(parent))
     {
-        if (m_key.size() == 0) return nullptr;
+        if (m_key.empty()) return nullptr;
         std::vector<std::shared_ptr<ABnfElement>> struct_name_dec_list;
         index->FindALittleNameDecList(
             ABnfElementType::STRUCT_NAME, element->GetFile(), m_namespace_name, m_key, true, struct_name_dec_list);
@@ -66,7 +66,7 @@ ABnfGuessError ALittleScriptStructNameDecReference::GuessTypes(std::vector<ABnfG
 
 ABnfElementPtr ALittleScriptStructNameDecReference::GotoDefinition()
 {
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return nullptr;
     auto* index = GetIndex();
     if (index == nullptr) return nullptr;
@@ -78,9 +78,9 @@ ABnfElementPtr ALittleScriptStructNameDecReference::GotoDefinition()
     return nullptr;
 }
 
-bool ALittleScriptStructNameDecReference::QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
+bool ALittleScriptStructNameDecReference::QueryCompletion(const ABnfElementPtr& select, std::vector<ALanguageCompletionInfo>& list)
 {
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return false;
     auto* index = GetIndex();
     if (index == nullptr) return false;

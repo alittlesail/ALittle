@@ -10,7 +10,7 @@ int ALittleScriptUsingNameDecReference::QueryClassificationTag(bool& blur)
 
 ABnfGuessError ALittleScriptUsingNameDecReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
 {
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"½ÚµãÊ§Ð§");
     auto parent = element->GetParent();
     if (std::dynamic_pointer_cast<ALittleScriptUsingDecElement>(parent))

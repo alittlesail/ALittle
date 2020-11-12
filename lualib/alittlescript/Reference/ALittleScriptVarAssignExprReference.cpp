@@ -25,7 +25,7 @@ ABnfGuessError ALittleScriptVarAssignExprReference::CheckError()
         if (guess_error) return guess_error;
         if (method_call_guess_list.size() == 0)
             return ABnfGuessError(value_stat, u8"调用的函数没有返回值");
-        bool has_tail = std::dynamic_pointer_cast<ALittleScriptGuessReturnTail>(method_call_guess_list[method_call_guess_list.size() - 1]) != nullptr;
+        const bool has_tail = std::dynamic_pointer_cast<ALittleScriptGuessReturnTail>(method_call_guess_list[method_call_guess_list.size() - 1]) != nullptr;
         if (has_tail)
         {
             // 不需要检查
@@ -36,7 +36,7 @@ ABnfGuessError ALittleScriptVarAssignExprReference::CheckError()
                 return ABnfGuessError(value_stat, u8"调用的函数返回值数量少于定义的变量数量");
         }
 
-        for (int i = 0; i < pair_dec_list.size(); ++i)
+        for (size_t i = 0; i < pair_dec_list.size(); ++i)
         {
             auto pair_dec = pair_dec_list[i];
             if (i >= method_call_guess_list.size()) break;

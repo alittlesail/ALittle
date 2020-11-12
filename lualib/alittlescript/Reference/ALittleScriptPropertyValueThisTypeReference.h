@@ -27,13 +27,13 @@ private:
     bool m_is_const = false;
 
 public:
-    ALittleScriptPropertyValueThisTypeReference(ABnfElementPtr element);
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptPropertyValueThisTypeReference(element); }
+    ALittleScriptPropertyValueThisTypeReference(const ABnfElementPtr& element);
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptPropertyValueThisTypeReference(element); }
 
 private:
     void ReloadInfo();
 
-    void CalcResolve(std::vector<ABnfElementPtr>& result_list);
+    void CalcResolve(std::vector<ABnfElementPtr>& result_list) const;
 
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 

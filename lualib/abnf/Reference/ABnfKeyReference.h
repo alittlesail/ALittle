@@ -7,7 +7,7 @@
 class ABnfKeyReference : public ABnfCommonReference
 {
 public:
-    ABnfKeyReference(ABnfElementPtr element);
+    ABnfKeyReference(const ABnfElementPtr& element);
     virtual ~ABnfKeyReference() {}
 
     ABnfGuessError CheckError() override;

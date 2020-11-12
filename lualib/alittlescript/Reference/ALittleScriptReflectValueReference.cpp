@@ -46,7 +46,7 @@ ABnfGuessError ALittleScriptReflectValueReference::GuessTypes(std::vector<ABnfGu
         return index->FindALittleStructGuessList("ALittle", u8"ClassInfo", guess_list);
     else if (std::dynamic_pointer_cast<ALittleScriptGuessTemplate>(guess))
     {
-        auto guess_template = std::dynamic_pointer_cast<ALittleScriptGuessTemplate>(guess);
+        const auto guess_template = std::dynamic_pointer_cast<ALittleScriptGuessTemplate>(guess);
         if (std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess_template->template_extends.lock()) || guess_template->is_class)
             return index->FindALittleStructGuessList("ALittle", u8"ClassInfo", guess_list);
         else if (std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess_template->template_extends.lock())  || guess_template->is_struct)
@@ -88,10 +88,11 @@ ABnfGuessError ALittleScriptReflectValueReference::CheckError()
 
     if (std::dynamic_pointer_cast<ALittleScriptGuessTemplate>(guess))
     {
-        auto guess_template = std::dynamic_pointer_cast<ALittleScriptGuessTemplate>(guess);
+        const auto guess_template = std::dynamic_pointer_cast<ALittleScriptGuessTemplate>(guess);
         if (std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess_template->template_extends.lock()) || guess_template->is_class)
             return nullptr;
-        else if (element->GetReflectCustomType() != nullptr
+        
+        if (element->GetReflectCustomType() != nullptr
             && (std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess_template->template_extends.lock()) || guess_template->is_struct))
             return nullptr;
     }

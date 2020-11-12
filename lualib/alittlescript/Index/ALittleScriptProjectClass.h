@@ -23,7 +23,7 @@ protected:
 
 public:
     ALittleScriptProjectClass();
-    virtual ~ALittleScriptProjectClass();
+    virtual ~ALittleScriptProjectClass() = default;
 
 public:
     ABnfFactory& RefFactory() override { return m_factory; }

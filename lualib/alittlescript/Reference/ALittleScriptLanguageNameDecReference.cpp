@@ -7,16 +7,16 @@ ABnfGuessError ALittleScriptLanguageNameDecReference::CheckError()
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(element, u8"节点失效");
-    auto text = element->GetElementText();
+    const auto text = element->GetElementText();
     auto* project = dynamic_cast<ALittleScriptProjectClass*>(element->GetFile()->GetProject());
     if (project != nullptr && project->GetLanguageSet().find(text) == project->GetLanguageSet().end())
         return ABnfGuessError(element, u8"不支持该目标语言");
     return nullptr;
 }
 
-bool ALittleScriptLanguageNameDecReference::QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
+bool ALittleScriptLanguageNameDecReference::QueryCompletion(const ABnfElementPtr& select, std::vector<ALanguageCompletionInfo>& list)
 {
-    auto element = m_element.lock();
+	const auto element = m_element.lock();
     if (element == nullptr) return false;
 
     auto* project = dynamic_cast<ALittleScriptProjectClass*>(element->GetFile()->GetProject());

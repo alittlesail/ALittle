@@ -5,7 +5,6 @@
 #include "ABnfRuleTokenInfo.h"
 #include <vector>
 #include <unordered_map>
-#include <memory>
 
 class ABnfRuleNodeInfo;
 class ABnfRule;
@@ -29,7 +28,7 @@ private:
     ABnfRuleTokenInfo pre_check_value;
     
 public:
-    ABnfRuleNodeInfo() {}
+    ABnfRuleNodeInfo() = default;
     ABnfRuleNodeInfo(const ABnfRuleTokenInfo& v) : value(v) { }
     ~ABnfRuleNodeInfo();
 

@@ -63,14 +63,16 @@ ABnfGuessError ALittleScriptTemplatePairDecReference::GuessTypes(std::vector<ABn
     // 根据定义区分类模板还是函数模板
     if (std::dynamic_pointer_cast<ALittleScriptClassDecElement>(parent))
     {
-        auto info = ABnfGuessPtr(new ALittleScriptGuessClassTemplate(element, template_extends, is_class, is_struct));
+        auto info = std::static_pointer_cast<ABnfGuess>(
+	        std::make_shared<ALittleScriptGuessClassTemplate>(element, template_extends, is_class, is_struct));
         info->UpdateValue();
         element->GetFile()->AddGuessType(info);
         guess_list.push_back(info);
     }
     else
     {
-        auto info = ABnfGuessPtr(new ALittleScriptGuessMethodTemplate(element, template_extends, is_class, is_struct));
+        auto info = std::static_pointer_cast<ABnfGuess>(
+	        std::make_shared<ALittleScriptGuessMethodTemplate>(element, template_extends, is_class, is_struct));
         info->UpdateValue();
         element->GetFile()->AddGuessType(info);
         guess_list.push_back(info);

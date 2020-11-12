@@ -3,7 +3,6 @@
 #define _ALITTLE_ABNFRULE_H_
 
 #include <string>
-#include <memory>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -24,8 +23,7 @@ private:
     std::unordered_set<std::string> m_symbol_set;
 
 public:
-    ABnfRule();
-    ~ABnfRule();
+    ~ABnfRule() { Clear(); }
 
     // 初始化参数
     void Clear();
@@ -50,10 +48,10 @@ private:
     ABnfRuleInfo* CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token_list, int rule_id, size_t& offset, std::string& error);
 
     // 解析规则节点
-    ABnfRuleNodeInfo* CalcABnfNode(const std::vector<ABnfRuleTokenInfo>& token_list, size_t& offset, std::string& error);
+    ABnfRuleNodeInfo* CalcABnfNode(const std::vector<ABnfRuleTokenInfo>& token_list, size_t& offset, std::string& error) const;
 
     // Token解析
     void CalcToken(std::vector<ABnfRuleTokenInfo>& token_list);
 };
 
-#endif // _ALITTLE_ABNFRULE_H_
+#endif

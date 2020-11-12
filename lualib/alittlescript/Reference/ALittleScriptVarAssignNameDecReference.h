@@ -15,8 +15,8 @@ private:
     std::weak_ptr<ALittleScriptMethodBodyDecElement> m_method_body_dec;
 
 public:
-    ALittleScriptVarAssignNameDecReference(ABnfElementPtr element);
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptVarAssignNameDecReference(element); }
+    ALittleScriptVarAssignNameDecReference(const ABnfElementPtr& element);
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptVarAssignNameDecReference(element); }
 
 private:
     void ReloadInfo();
@@ -32,7 +32,7 @@ private:
     void QueryHighlightWordTag(std::vector<ALanguageHighlightWordInfo>& list) override;
 
 private:
-    void CollectHighlight(ABnfGuessPtr target_guess, ABnfElementPtr element, std::vector<ALanguageHighlightWordInfo>& list);
+    void CollectHighlight(const ABnfGuessPtr& target_guess, const ABnfElementPtr& element, std::vector<ALanguageHighlightWordInfo>& list) const;
 };
 
 #endif // _ALITTLE_ALITTLESCRIPTVARASSIGNNAMEDECREFERENCE_H_

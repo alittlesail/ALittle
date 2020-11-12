@@ -17,7 +17,7 @@ private:
 
 public:
     ABnfLeafElement(ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& value);
-    virtual ~ABnfLeafElement() {}
+    virtual ~ABnfLeafElement() = default;
 
     bool IsLeafOrHasChildOrError() override { return true; }
 
@@ -31,7 +31,7 @@ public:
     int GetEndCol() override { if (m_end_col < 0) CalcEnd(); return m_end_col; }
 
     // 获取节点文本
-    const std::string& GetValue() { return m_value; }
+    const std::string& GetValue() const { return m_value; }
 
     // 根据偏移位置，获取期望的元素
     ABnfElementPtr GetException(int offset) override;

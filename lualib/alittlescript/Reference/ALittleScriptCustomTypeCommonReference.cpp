@@ -23,7 +23,7 @@
 #include "../Guess/ALittleScriptGuessStruct.h"
 #include "../Guess/ALittleScriptGuessEnum.h"
 
-ALittleScriptCustomTypeCommonReference::ALittleScriptCustomTypeCommonReference(std::shared_ptr<ALittleScriptCustomTypeElement> custom_type, ABnfElementPtr element) : ALittleScriptReferenceTemplate<ABnfElement>(element)
+ALittleScriptCustomTypeCommonReference::ALittleScriptCustomTypeCommonReference(const std::shared_ptr<ALittleScriptCustomTypeElement>& custom_type, const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ABnfElement>(element)
 {
     m_namespace_name = ALittleScriptUtility::GetNamespaceName(element);
     m_key = element->GetElementText();
@@ -116,22 +116,24 @@ ABnfGuessError ALittleScriptCustomTypeCommonReference::GuessTypes(std::vector<AB
                 return ABnfGuessError(element, u8"模板参数数量和类定义的不一致, namespace:" + m_namespace_name + ", key:" + m_key);
 
             // 对比两种
-            for (int i = 0; i < template_list.size(); ++i)
+            for (size_t i = 0; i < template_list.size(); ++i)
             {
                 error = ALittleScriptOp::GuessTypeEqual(guess_class->template_list[i].lock(), template_list[i], src_guess_list[i], false, false);
                 if (error) return error;
             }
 
-            if (guess_class->template_list.size() > 0)
+            if (!guess_class->template_list.empty())
             {
                 auto src_class_dec = guess_class->class_dec.lock();
                 auto src_class_name_dec = src_class_dec->GetClassNameDec();
                 if (src_class_name_dec == nullptr)
                     return ABnfGuessError(custom_type, u8"类模板没有定义类名");
 
-                auto info = std::shared_ptr<ALittleScriptGuessClass>(new ALittleScriptGuessClass(ALittleScriptUtility::GetNamespaceName(src_class_dec),
-                    src_class_name_dec->GetElementText(),
-                    guess_class->class_dec.lock(), guess_class->using_name, guess_class->is_const, guess_class->is_native));
+                auto info = std::make_shared<ALittleScriptGuessClass>(
+	                ALittleScriptUtility::GetNamespaceName(src_class_dec),
+	                src_class_name_dec->GetElementText(),
+	                guess_class->class_dec.lock(), guess_class->using_name, guess_class->is_const,
+	                guess_class->is_native);
 
                 info->template_list = guess_class->template_list;
                 for (size_t i = 0; i < guess_class->template_list.size(); ++i)
@@ -171,7 +173,7 @@ ABnfGuessError ALittleScriptCustomTypeCommonReference::GuessTypes(std::vector<AB
         if (template_dec != nullptr)
         {
             const auto& pair_dec_list = template_dec->GetTemplatePairDecList();
-            for (auto& dec : pair_dec_list)
+            for (const auto& dec : pair_dec_list)
             {
                 auto name_dec = dec->GetTemplateNameDec();
                 if (name_dec == nullptr) continue;
@@ -230,7 +232,7 @@ ABnfGuessError ALittleScriptCustomTypeCommonReference::GuessTypes(std::vector<AB
 
 ABnfElementPtr ALittleScriptCustomTypeCommonReference::GotoDefinition()
 {
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return nullptr;
 
     auto* index = GetIndex();
@@ -247,7 +249,7 @@ ABnfElementPtr ALittleScriptCustomTypeCommonReference::GotoDefinition()
         for (auto& dec : dec_list) return dec;
     }
     {
-        auto class_dec = GetClassDec();
+        const auto class_dec = GetClassDec();
         if (class_dec != nullptr)
         {
             std::vector<ABnfElementPtr> dec_list;
@@ -260,7 +262,7 @@ ABnfElementPtr ALittleScriptCustomTypeCommonReference::GotoDefinition()
         if (template_dec != nullptr)
         {
             const auto& pair_dec_list = template_dec->GetTemplatePairDecList();
-            for (auto& pair_dec : pair_dec_list)
+            for (const auto& pair_dec : pair_dec_list)
             {
                 auto pair_name_dec = pair_dec->GetTemplateNameDec();
                 if (pair_name_dec != nullptr && pair_name_dec->GetElementText() == m_key)
@@ -284,7 +286,7 @@ ABnfElementPtr ALittleScriptCustomTypeCommonReference::GotoDefinition()
     return nullptr;
 }
 
-bool ALittleScriptCustomTypeCommonReference::QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
+bool ALittleScriptCustomTypeCommonReference::QueryCompletion(const ABnfElementPtr& select, std::vector<ALanguageCompletionInfo>& list)
 {
     auto element = m_element.lock();
     if (element == nullptr) return false;
@@ -373,7 +375,7 @@ bool ALittleScriptCustomTypeCommonReference::QueryCompletion(ABnfElementPtr sele
         if (template_dec != nullptr)
         {
             const auto& pair_dec_list = template_dec->GetTemplatePairDecList();
-            for (auto& pair_dec : pair_dec_list)
+            for (const auto& pair_dec : pair_dec_list)
             {
                 auto pair_name_dec = pair_dec->GetTemplateNameDec();
                 if (pair_name_dec == nullptr) continue;

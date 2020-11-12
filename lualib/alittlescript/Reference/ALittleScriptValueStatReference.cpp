@@ -46,7 +46,7 @@ ABnfGuessError ALittleScriptValueStatReference::CheckError()
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(element, u8"½ÚµãÊ§Ğ§");
-    auto parent = element->GetParent();
+    const auto parent = element->GetParent();
     if (std::dynamic_pointer_cast<ALittleScriptIfExprElement>(parent)
         || std::dynamic_pointer_cast<ALittleScriptElseIfExprElement>(parent)
         || std::dynamic_pointer_cast<ALittleScriptWhileExprElement>(parent)

@@ -20,7 +20,7 @@ protected:
 
 public:
     ABnfNodeElement(ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type);
-    virtual ~ABnfNodeElement() {}
+    virtual ~ABnfNodeElement() = default;
 
     bool IsLeafOrHasChildOrError() override;
     bool IsNode() override { return true; }
@@ -29,7 +29,7 @@ public:
     void AddChild(ABnfElementPtr child);
 
     // 获取所有元素
-    inline const std::vector<ABnfElementPtr>& GetChilds() { return m_childs; }
+    inline const std::vector<ABnfElementPtr>& GetChilds() const { return m_childs; }
 
     inline void ResizeChild(int count) { m_childs.resize(count); }
 
@@ -57,4 +57,4 @@ private:
     void CalcEnd();
 };
 
-#endif // _ALITTLE_ABNFNODEELEMENT_H_
+#endif

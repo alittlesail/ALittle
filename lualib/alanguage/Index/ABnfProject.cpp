@@ -4,15 +4,6 @@
 #include "ABnfFile.h"
 #include "../Model/ABnfRuleInfo.h"
 
-ABnfProject::ABnfProject()
-{
-}
-
-ABnfProject::~ABnfProject()
-{
-	Stop();
-}
-
 void ABnfProject::Start(const std::string& abnf_buffer)
 {
 	std::string error;
@@ -69,13 +60,13 @@ int ABnfProject::PollOne(lua_State* L)
         return 1;
     }
      
-    int result = m_outputs.front()(L);
+    const int result = m_outputs.front()(L);
     m_outputs.pop_front();
     return result;
 }
 
 // 添加
-void ABnfProject::Add(std::function<void()> fun)
+void ABnfProject::Add(const std::function<void()>& fun)
 {
     if (m_thread == nullptr) return;
 
@@ -85,10 +76,10 @@ void ABnfProject::Add(std::function<void()> fun)
     m_cv.notify_one();
 }
 
-int ABnfProject::QueryRuleColor(lua_State* L)
+int ABnfProject::QueryRuleColor(lua_State* L) const
 {
     lua_newtable(L);
-    for (auto& pair : m_abnf_ui.GetRuleSet())
+    for (const auto& pair : m_abnf_ui.GetRuleSet())
     {
         if (!pair.second->has_color) continue;
         lua_newtable(L);
@@ -106,7 +97,7 @@ int ABnfProject::QueryRuleColor(lua_State* L)
 
 ABnfFile* ABnfProject::GetFile(const std::string& full_path)
 {
-    auto it = m_file_map.find(full_path);
+    const auto it = m_file_map.find(full_path);
     if (it == m_file_map.end()) return nullptr;
     return it->second;
 }
@@ -128,7 +119,7 @@ void ABnfProject::UpdateFile(const std::string& module_path, const std::string& 
     char buffer[1024];
     while (true)
     {
-        size_t read_size = fread(buffer, 1, sizeof(buffer), file);
+        const size_t read_size = fread(buffer, 1, sizeof(buffer), file);
         if (read_size == 0) break;
         for (size_t i = 0; i < read_size; ++i)
             out.push_back(buffer[i]);
@@ -139,9 +130,9 @@ void ABnfProject::UpdateFile(const std::string& module_path, const std::string& 
     auto it = m_file_map.find(full_path);
     if (it == m_file_map.end())
     {
-        auto file = RefFactory().CreateFile(this, module_path, full_path, out.data(), out.size());
-        m_file_map[full_path] = file;
-        file->AnalysisText(version);
+        auto* abnf_file = RefFactory().CreateFile(this, module_path, full_path, out.data(), out.size());
+        m_file_map[full_path] = abnf_file;
+        abnf_file->AnalysisText(version);
     }
     else
     {
@@ -157,7 +148,7 @@ void ABnfProject::TempFile(const std::string& module_path, const std::string& fu
     auto it = m_file_map.find(full_path);
     if (it == m_file_map.end())
     {
-        auto file = RefFactory().CreateFile(this, module_path, full_path, text.data(), text.size());
+        const auto file = RefFactory().CreateFile(this, module_path, full_path, text.data(), text.size());
         m_file_map[full_path] = file;
         file->AnalysisText(version);
     }
@@ -188,7 +179,7 @@ void ABnfProject::FindFile(int query_id, const std::string& text)
     }
 
     std::unique_lock<std::mutex> lock(m_output_lock);
-    m_outputs.push_back([query_id, file_list](lua_State* L)->int
+    m_outputs.emplace_back([query_id, file_list](lua_State* L)->int
     {
         lua_newtable(L);
         lua_pushinteger(L, query_id);
@@ -212,7 +203,7 @@ void ABnfProject::FindDefine(int query_id, const std::string& pre_input, const s
     FindDefineImpl(pre_input, input, info_list);
 
     std::unique_lock<std::mutex> lock(m_output_lock);
-    m_outputs.push_back([query_id, info_list](lua_State* L)->int
+    m_outputs.emplace_back([query_id, info_list](lua_State* L)->int
     {
         lua_newtable(L);
         lua_pushinteger(L, query_id);
@@ -221,17 +212,17 @@ void ABnfProject::FindDefine(int query_id, const std::string& pre_input, const s
         lua_newtable(L);
         for (size_t i = 0; i < info_list.size(); ++i)
         {
-            auto& complete = info_list[i];
+            const auto& complete = info_list[i];
 
             lua_newtable(L);
             lua_pushstring(L, complete.display.c_str());
             lua_setfield(L, -2, "display");
-            if (complete.insert.size())
+            if (!complete.insert.empty())
             {
                 lua_pushstring(L, complete.insert.c_str());
                 lua_setfield(L, -2, "insert");
             }
-            if (complete.descriptor.size())
+            if (!complete.descriptor.empty())
             {
                 lua_pushstring(L, complete.descriptor.c_str());
                 lua_setfield(L, -2, "descriptor");
@@ -252,7 +243,7 @@ void ABnfProject::FindGoto(int query_id, const std::string& text)
     FindGotoImpl(text, info);
 
     std::unique_lock<std::mutex> lock(m_output_lock);
-    m_outputs.push_back([query_id, info](lua_State* L)->int
+    m_outputs.emplace_back([query_id, info](lua_State* L)->int
     {
         lua_newtable(L);
         lua_pushinteger(L, query_id);
@@ -307,11 +298,11 @@ void ABnfProject::QueryColor(const std::string& full_path, int query_id, int ver
     auto it = m_file_map.find(full_path);
     if (it != m_file_map.end())
     {
-        auto* list = it->second->QueryColor(version, line);
+        const auto* list = it->second->QueryColor(version, line);
         if (list != nullptr)
         {
             std::unique_lock<std::mutex> lock(m_output_lock);
-            m_outputs.push_back([query_id, temp = *list](lua_State* L)->int
+            m_outputs.emplace_back([query_id, temp = *list](lua_State* L)->int
             {
                 lua_newtable(L);
                 lua_pushinteger(L, query_id);
@@ -346,7 +337,7 @@ void ABnfProject::QueryColor(const std::string& full_path, int query_id, int ver
     }
 
     std::unique_lock<std::mutex> lock(m_output_lock);
-    m_outputs.push_back([query_id](lua_State* L) -> int {
+    m_outputs.emplace_back([query_id](lua_State* L) -> int {
         lua_newtable(L);
         lua_pushinteger(L, query_id);
         lua_setfield(L, -2, "query_id");
@@ -363,7 +354,7 @@ void ABnfProject::QueryInfo(const std::string& full_path, int query_id, int vers
         if (it->second->QueryInfo(version, it_line, it_char, info))
         {
             std::unique_lock<std::mutex> lock(m_output_lock);
-            m_outputs.push_back([query_id, info](lua_State* L)->int
+            m_outputs.emplace_back([query_id, info](lua_State* L)->int
             {
                 lua_newtable(L);
                 lua_pushinteger(L, query_id);
@@ -392,7 +383,7 @@ void ABnfProject::QueryInfo(const std::string& full_path, int query_id, int vers
     }
 
     std::unique_lock<std::mutex> lock(m_output_lock);
-    m_outputs.push_back([query_id](lua_State* L) -> int {
+    m_outputs.emplace_back([query_id](lua_State* L) -> int {
         lua_newtable(L);
         lua_pushinteger(L, query_id);
         lua_setfield(L, -2, "query_id");
@@ -409,7 +400,7 @@ void ABnfProject::QueryGoto(const std::string& full_path, int query_id, int vers
         if (it->second->QueryGoto(version, it_line, it_char, info))
         {
             std::unique_lock<std::mutex> lock(m_output_lock);
-            m_outputs.push_back([query_id, info](lua_State* L)->int
+            m_outputs.emplace_back([query_id, info](lua_State* L)->int
                 {
                     lua_newtable(L);
                     lua_pushinteger(L, query_id);
@@ -438,7 +429,7 @@ void ABnfProject::QueryGoto(const std::string& full_path, int query_id, int vers
     }
 
     std::unique_lock<std::mutex> lock(m_output_lock);
-    m_outputs.push_back([query_id](lua_State* L) -> int {
+    m_outputs.emplace_back([query_id](lua_State* L) -> int {
         lua_newtable(L);
         lua_pushinteger(L, query_id);
         lua_setfield(L, -2, "query_id");
@@ -454,10 +445,10 @@ void ABnfProject::QueryComplete(const std::string& full_path, int query_id, int 
         std::vector<ALanguageCompletionInfo> info_list;
         int line_start; int char_start; int line_end; int char_end;
         if (it->second->QueryComplete(version, it_line, it_char, info_list, line_start, char_start, line_end, char_end)
-            && info_list.size())
+            && !info_list.empty())
         {
             std::unique_lock<std::mutex> lock(m_output_lock);
-            m_outputs.push_back([query_id, info_list, line_start, char_start, line_end, char_end](lua_State* L)->int
+            m_outputs.emplace_back([query_id, info_list, line_start, char_start, line_end, char_end](lua_State* L)->int
                 {
                     lua_newtable(L);
                     lua_pushinteger(L, query_id);
@@ -508,7 +499,7 @@ void ABnfProject::QueryComplete(const std::string& full_path, int query_id, int 
     }
 
     std::unique_lock<std::mutex> lock(m_output_lock);
-    m_outputs.push_back([query_id](lua_State* L) -> int {
+    m_outputs.emplace_back([query_id](lua_State* L) -> int {
         lua_newtable(L);
         lua_pushinteger(L, query_id);
         lua_setfield(L, -2, "query_id");
@@ -526,7 +517,7 @@ void ABnfProject::QueryParamList(const std::string& full_path, int query_id, int
         if (it->second->QueryParamList(version, it_line, it_char, info_list, line_start, char_start, line_end, char_end))
         {
             std::unique_lock<std::mutex> lock(m_output_lock);
-            m_outputs.push_back([query_id, info_list, line_start, char_start, line_end, char_end](lua_State* L)->int
+            m_outputs.emplace_back([query_id, info_list, line_start, char_start, line_end, char_end](lua_State* L)->int
                 {
                     lua_newtable(L);
                     lua_pushinteger(L, query_id);
@@ -546,12 +537,12 @@ void ABnfProject::QueryParamList(const std::string& full_path, int query_id, int
                         lua_newtable(L);
                         for (size_t i = 0; i < info_list.size(); ++i)
                         {
-                            auto& info = info_list[i];
+                            const auto& info = info_list[i];
 
                             lua_newtable(L);
                             lua_pushstring(L, info.name.c_str());
                             lua_setfield(L, -2, "name");
-                            if (info.descriptor.size())
+                            if (!info.descriptor.empty())
                             {
                                 lua_pushstring(L, info.descriptor.c_str());
                                 lua_setfield(L, -2, "descriptor");
@@ -570,7 +561,7 @@ void ABnfProject::QueryParamList(const std::string& full_path, int query_id, int
     }
 
     std::unique_lock<std::mutex> lock(m_output_lock);
-    m_outputs.push_back([query_id](lua_State* L) -> int {
+    m_outputs.emplace_back([query_id](lua_State* L) -> int {
         lua_newtable(L);
         lua_pushinteger(L, query_id);
         lua_setfield(L, -2, "query_id");
@@ -584,12 +575,11 @@ void ABnfProject::QueryError(const std::string& full_path, int query_id, int ver
     if (it != m_file_map.end())
     {
         std::vector<ALanguageErrorInfo> info_list;
-        int line_start; int char_start; int line_end; int char_end;
         if (it->second->QueryError(version, force, info_list)
             && info_list.size())
         {
             std::unique_lock<std::mutex> lock(m_output_lock);
-            m_outputs.push_back([query_id, info_list, line_start, char_start, line_end, char_end](lua_State* L)->int
+            m_outputs.emplace_back([query_id, info_list](lua_State* L)->int
                 {
                     lua_newtable(L);
                     lua_pushinteger(L, query_id);
@@ -625,7 +615,7 @@ void ABnfProject::QueryError(const std::string& full_path, int query_id, int ver
     }
 
     std::unique_lock<std::mutex> lock(m_output_lock);
-    m_outputs.push_back([query_id](lua_State* L) -> int {
+    m_outputs.emplace_back([query_id](lua_State* L) -> int {
         lua_newtable(L);
         lua_pushinteger(L, query_id);
         lua_setfield(L, -2, "query_id");

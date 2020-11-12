@@ -18,7 +18,7 @@ public:
     std::weak_ptr<ALittleScriptNamespaceDecElement> namespace_dec;
 
 public:
-    ALittleScriptGuessNamespace(const std::string& p_namespace_name, std::shared_ptr<ALittleScriptNamespaceDecElement> p_namespace_dec);
+    ALittleScriptGuessNamespace(const std::string& p_namespace_name, const std::shared_ptr<ALittleScriptNamespaceDecElement>& p_namespace_dec);
 
     std::shared_ptr<ABnfElement> GetElement() override;
     bool NeedReplace() const override;

@@ -8,8 +8,8 @@
 class ALittleScriptWhileExprReference : public ALittleScriptReferenceTemplate<ALittleScriptWhileExprElement>
 {
 public:
-    ALittleScriptWhileExprReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptWhileExprElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptWhileExprReference(element); }
+    ALittleScriptWhileExprReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptWhileExprElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptWhileExprReference(element); }
     ABnfGuessError CheckError() override;
 };
 

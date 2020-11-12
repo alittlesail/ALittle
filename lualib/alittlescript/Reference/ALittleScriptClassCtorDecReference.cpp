@@ -9,13 +9,13 @@
 
 ABnfElementPtr ALittleScriptClassCtorDecReference::GotoDefinition()
 {
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return nullptr;
 
-    auto class_dec = ALittleScriptUtility::FindClassDecFromParent(element);
+    const auto class_dec = ALittleScriptUtility::FindClassDecFromParent(element);
     if (class_dec == nullptr) return nullptr;
 
-    auto class_extends_dec = ALittleScriptUtility::FindClassExtends(class_dec);
+    const auto class_extends_dec = ALittleScriptUtility::FindClassExtends(class_dec);
     if (class_extends_dec == nullptr) return nullptr;
 
     auto extends_ctor_dec = ALittleScriptUtility::FindFirstCtorDecFromExtends(class_extends_dec, 100);
@@ -28,10 +28,10 @@ ABnfGuessError ALittleScriptClassCtorDecReference::CheckError()
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(element, u8"节点失效");
-    auto class_dec = ALittleScriptUtility::FindClassDecFromParent(element);
+    const auto class_dec = ALittleScriptUtility::FindClassDecFromParent(element);
     if (class_dec == nullptr) return nullptr;
 
-    auto class_extends_dec = ALittleScriptUtility::FindClassExtends(class_dec);
+    const auto class_extends_dec = ALittleScriptUtility::FindClassExtends(class_dec);
     if (class_extends_dec == nullptr) return nullptr;
 
     auto extends_ctor_dec = ALittleScriptUtility::FindFirstCtorDecFromExtends(class_extends_dec, 100);
@@ -49,7 +49,7 @@ ABnfGuessError ALittleScriptClassCtorDecReference::CheckError()
     if (extends_param_one_dec_list.size() > my_param_one_dec_list.size())
         return ABnfGuessError(my_method_param_dec, u8"该函数是从父类继承下来，但是子类的参数数量少于父类的构造函数");
 
-    for (int i = 0; i < extends_param_one_dec_list.size(); ++i)
+    for (size_t i = 0; i < extends_param_one_dec_list.size(); ++i)
     {
         auto extends_one_dec = extends_param_one_dec_list[i];
         auto extends_name_dec = extends_one_dec->GetMethodParamNameDec();

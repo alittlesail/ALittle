@@ -6,7 +6,7 @@
 #include "../Index/ALittleScriptIndex.h"
 #include "../Index/ALittleScriptFileClass.h"
 
-ALittleScriptClassExtendsDecReference::ALittleScriptClassExtendsDecReference(ABnfElementPtr p_element) : ALittleScriptReferenceTemplate<ALittleScriptClassExtendsDecElement>(p_element)
+ALittleScriptClassExtendsDecReference::ALittleScriptClassExtendsDecReference(const ABnfElementPtr& p_element) : ALittleScriptReferenceTemplate<ALittleScriptClassExtendsDecElement>(p_element)
 {
     auto element = m_element.lock();
     if (element == nullptr) return;
@@ -35,9 +35,9 @@ ABnfGuessError ALittleScriptClassExtendsDecReference::GuessTypes(std::vector<ABn
     return class_name_dec->GuessTypes(guess_list);
 }
 
-bool ALittleScriptClassExtendsDecReference::QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
+bool ALittleScriptClassExtendsDecReference::QueryCompletion(const ABnfElementPtr& select, std::vector<ALanguageCompletionInfo>& list)
 {
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return false;
     {
         auto* index = GetIndex();

@@ -9,8 +9,8 @@
 class ALittleScriptMethodParamOneDecReference : public ALittleScriptReferenceTemplate<ALittleScriptMethodParamOneDecElement>
 {
 public:
-    ALittleScriptMethodParamOneDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptMethodParamOneDecElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptMethodParamOneDecReference(element); }
+    ALittleScriptMethodParamOneDecReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptMethodParamOneDecElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptMethodParamOneDecReference(element); }
     ABnfGuessError CheckError() override;
 };
 

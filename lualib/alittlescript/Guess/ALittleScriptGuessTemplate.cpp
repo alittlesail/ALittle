@@ -10,8 +10,8 @@
 #include "../../alanguage/Index/ABnfFile.h"
 #include "../../alanguage/Index/ABnfProject.h"
 
-ALittleScriptGuessTemplate::ALittleScriptGuessTemplate(std::shared_ptr<ALittleScriptTemplatePairDecElement> p_template_pair_dec
-    , ABnfGuessPtr p_template_extends
+ALittleScriptGuessTemplate::ALittleScriptGuessTemplate(const std::shared_ptr<ALittleScriptTemplatePairDecElement>& p_template_pair_dec
+    , const ABnfGuessPtr& p_template_extends
     , bool p_is_class, bool p_is_struct)
 {
     is_register = ALittleScriptUtility::IsRegister(p_template_pair_dec);
@@ -37,7 +37,7 @@ bool ALittleScriptGuessTemplate::NeedReplace() const
 
 ABnfGuessPtr ALittleScriptGuessTemplate::ReplaceTemplate(ABnfFile* file, const std::unordered_map<std::string, ABnfGuessPtr>& fill_map)
 {
-    auto it = fill_map.find(native_value);
+    const auto it = fill_map.find(native_value);
     if (it != fill_map.end()) return it->second;
     return shared_from_this();
 }
@@ -48,7 +48,7 @@ const std::string& ALittleScriptGuessTemplate::GetTotalValue()
     if (is_const) total_value += "const ";
     total_value += native_value;
 
-    auto template_extends_e = template_extends.lock();
+    const auto template_extends_e = template_extends.lock();
     if (template_extends_e != nullptr)
     {
         total_value += ":" + template_extends_e->GetValue();
@@ -80,9 +80,9 @@ void ALittleScriptGuessTemplate::UpdateValue()
 
 bool ALittleScriptGuessTemplate::IsChanged() const
 {
-    auto template_extends_e = template_extends.lock();
+    const auto template_extends_e = template_extends.lock();
     if (template_extends_e != nullptr && template_extends_e->IsChanged()) return true;
-    auto template_pair_dec_e = template_pair_dec.lock();
+    const auto template_pair_dec_e = template_pair_dec.lock();
     if (template_pair_dec_e == nullptr) return true;
     return dynamic_cast<ALittleScriptIndex*>(template_pair_dec_e->GetFile()->GetProject())->GetGuessTypeList(template_pair_dec_e) == nullptr;
 }

@@ -100,7 +100,7 @@ ABnfGuessError ALittleScriptForExprReference::CheckError()
         const auto& pair_dec_list_temp = in_condition->GetForPairDecList();
         std::vector<std::shared_ptr<ALittleScriptForPairDecElement>> pair_dec_list;
         pair_dec_list.push_back(for_pair_dec);
-        for (auto& pair_dec : pair_dec_list_temp) pair_dec_list.push_back(pair_dec);
+        for (const auto& pair_dec : pair_dec_list_temp) pair_dec_list.push_back(pair_dec);
 
         std::vector<ABnfGuessPtr> guess_list;
         error = value_stat->GuessTypes(guess_list);

@@ -73,7 +73,7 @@ ABnfGuessError ALittleScriptTcallStatReference::CheckError()
     }
 
     // 遍历所有的表达式，看下是否符合
-    for (int i = 1; i < value_stat_list.size(); ++i)
+    for (size_t i = 1; i < value_stat_list.size(); ++i)
     {
         if (i - 1 >= guess_functor->param_list.size()) break;
         auto param_guess = guess_functor->param_list[i - 1];

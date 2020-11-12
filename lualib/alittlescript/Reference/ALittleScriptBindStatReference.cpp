@@ -23,7 +23,7 @@ ABnfGuessError ALittleScriptBindStatReference::GuessTypes(std::vector<ABnfGuessP
     auto error = value_stat->GuessType(guess);
     if (error) return error;
 
-    auto guess_functor = std::dynamic_pointer_cast<ALittleScriptGuessFunctor>(guess);
+    const auto guess_functor = std::dynamic_pointer_cast<ALittleScriptGuessFunctor>(guess);
     if (guess_functor == nullptr)
         return ABnfGuessError(element, u8"bind表达式第一个参数必须是一个函数");
 
@@ -31,7 +31,7 @@ ABnfGuessError ALittleScriptBindStatReference::GuessTypes(std::vector<ABnfGuessP
         return ABnfGuessError(element, u8"bind表达式要绑定的函数不能有模板定义");
 
     // 开始构建类型
-    auto info = std::shared_ptr<ALittleScriptGuessFunctor>(new ALittleScriptGuessFunctor(element));
+    auto info = std::make_shared<ALittleScriptGuessFunctor>(element);
     info->await_modifier = guess_functor->await_modifier;
     info->const_modifier = guess_functor->const_modifier;
     info->proto = guess_functor->proto;
@@ -45,9 +45,9 @@ ABnfGuessError ALittleScriptBindStatReference::GuessTypes(std::vector<ABnfGuessP
     // 移除已填写的参数
     int param_count = static_cast<int>(value_stat_list.size()) - 1;
     while (param_count > 0
-        && info->param_list.size() > 0
-        && info->param_nullable_list.size() > 0
-        && info->param_name_list.size() > 0)
+        && !info->param_list.empty()
+        && !info->param_nullable_list.empty()
+        && !info->param_name_list.empty())
     {
         info->param_list.erase(info->param_list.begin());
         info->param_nullable_list.erase(info->param_nullable_list.begin());

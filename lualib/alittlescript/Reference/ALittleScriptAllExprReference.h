@@ -9,8 +9,8 @@
 class ALittleScriptAllExprReference : public ALittleScriptReferenceTemplate<ALittleScriptAllExprElement>
 {
 public:
-    ALittleScriptAllExprReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptAllExprElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptAllExprReference(element); }
+    ALittleScriptAllExprReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptAllExprElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptAllExprReference(element); }
     ABnfGuessError CheckError() override;
 
     int QueryClassificationTag(bool& blur) override;

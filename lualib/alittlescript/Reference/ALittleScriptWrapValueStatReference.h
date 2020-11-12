@@ -8,8 +8,8 @@
 class ALittleScriptWrapValueStatReference : public ALittleScriptReferenceTemplate<ALittleScriptWrapValueStatElement>
 {
 public:
-    ALittleScriptWrapValueStatReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptWrapValueStatElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptWrapValueStatReference(element); }
+    ALittleScriptWrapValueStatReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptWrapValueStatElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptWrapValueStatReference(element); }
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
     ABnfGuessError CheckError() override;
 };

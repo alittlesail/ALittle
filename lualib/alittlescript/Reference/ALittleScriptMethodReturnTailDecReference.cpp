@@ -7,7 +7,8 @@ ABnfGuessError ALittleScriptMethodReturnTailDecReference::GuessTypes(std::vector
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"½ÚµãÊ§Ð§");
-    auto info = ABnfGuessPtr(new ALittleScriptGuessReturnTail(element->GetElementText()));
+    auto info = std::static_pointer_cast<ABnfGuess>(
+	    std::make_shared<ALittleScriptGuessReturnTail>(element->GetElementText()));
     info->UpdateValue();
     element->GetFile()->AddGuessType(info);
     guess_list.push_back(info);

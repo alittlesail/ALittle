@@ -36,7 +36,7 @@ void ABnfRuleNodeInfo::CalcPreCheck()
 {
     pre_check_value = ABnfRuleTokenInfo();
     if (node_list.size() != 1) return;
-    if (node_list[0].size() < 1) return;
+    if (node_list[0].empty()) return;
     if (node_list[0][0]->repeat == ABnfRuleNodeRepeatType::NRT_NOT_OR_MORE || node_list[0][0]->repeat == ABnfRuleNodeRepeatType::NRT_ONE_OR_NOT) return;
     if (node_list[0][0]->value.type == ABnfRuleTokenType::TT_NONE) return;
     auto& value = node_list[0][0]->value;

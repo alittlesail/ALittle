@@ -16,23 +16,23 @@ private:
     ABnfElementWeakPtr m_ref_element;
 
 public:
-    ALittleScriptReference(ABnfElementPtr p_element);
-    virtual ~ALittleScriptReference() {}
+    ALittleScriptReference(const ABnfElementPtr& p_element);
+    virtual ~ALittleScriptReference() = default;
 
     // 鼠标移入时，显示的快捷信息
     virtual void QueryQuickInfo(std::string& info) override;
 
-    virtual int QueryDesiredIndent(int it_line, int it_char, ABnfElementPtr select) override;
+    virtual int QueryDesiredIndent(int it_line, int it_char, const ABnfElementPtr& select) override;
 
-    virtual int QueryFormateIndent(int it_line, int it_char, ABnfElementPtr select) override;
-    virtual int QueryParamIndex(int it_line, int it_char, ABnfElementPtr select, int& start_offset) override;
+    virtual int QueryFormatIndent(int it_line, int it_char, const ABnfElementPtr& select) override;
+    virtual int QueryParamIndex(int it_line, int it_char, const ABnfElementPtr& select, int& start_offset) override;
 
-    virtual bool QueryKeyWord(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list) override;
+    virtual bool QueryKeyWord(const ABnfElementPtr& select, std::vector<ALanguageCompletionInfo>& list) override;
 
     // 函数调用时的函数提示
     virtual bool QueryParamList(int& line_start, int& char_start, int& line_end, int& char_end, std::vector<ALanguageParameterInfo>& param_list) override;
 
-    ALittleScriptIndex* GetIndex();
+    ALittleScriptIndex* GetIndex() const;
 };
 
 enum ALittleScriptColorType

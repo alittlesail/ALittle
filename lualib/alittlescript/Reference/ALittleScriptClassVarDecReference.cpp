@@ -23,10 +23,10 @@ ABnfGuessError ALittleScriptClassVarDecReference::GuessTypes(std::vector<ABnfGue
         auto class_element_dec = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(element->GetParent());
         if (class_element_dec == nullptr) return ABnfGuessError(element, u8"父节点不是ALittleScriptClassElementDecElement类型");
 
-        bool is_native = ALittleScriptUtility::IsNative(class_element_dec->GetModifierList());
-        for (int i = 0; i < guess_list.size(); ++i)
+        const bool is_native = ALittleScriptUtility::IsNative(class_element_dec->GetModifierList());
+        for (auto& guess_e : guess_list)
         {
-            auto guess = std::dynamic_pointer_cast<ALittleScriptGuessList>(guess_list[i]);
+            auto guess = std::dynamic_pointer_cast<ALittleScriptGuessList>(guess_e);
             if (guess != nullptr && guess->is_native != is_native)
             {
                 guess->is_native = is_native;

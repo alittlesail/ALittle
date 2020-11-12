@@ -4,7 +4,6 @@
 
 #include <memory>
 #include <regex>
-#include <unordered_map>
 
 #include "../Model/ABnfGuess.h"
 #include "../Model/ARegex.h"
@@ -29,7 +28,7 @@ class ABnfReference;
 class ABnfFactory
 {
 public:
-    virtual ~ABnfFactory() {}
+    virtual ~ABnfFactory() = default;
 
     virtual ABnfNodeElementPtr CreateNodeElement(ABnfFile* file, int line, int col, int offset, const std::string& type);
 
@@ -37,11 +36,11 @@ public:
 
     virtual ABnfStringElementPtr CreateStringElement(ABnfFile* file, int line, int col, int offset, const std::string& type);
 
-    virtual ABnfRegexElementPtr CreateRegexElement(ABnfFile* file, int line, int col, int offset, const std::string& type, std::shared_ptr<ARegex> regex);
+    virtual ABnfRegexElementPtr CreateRegexElement(ABnfFile* file, int line, int col, int offset, const std::string& type, const std::shared_ptr<ARegex>& regex);
 
-    virtual ABnfReference* CreateReference(ABnfElementPtr element);
+    virtual ABnfReference* CreateReference(const ABnfElementPtr& element);
 
-    virtual ABnfGuessError GuessTypes(ABnfElementPtr element, std::vector<ABnfGuessPtr>& guess_list) { return "no implement"; }
+    virtual ABnfGuessError GuessTypes(const ABnfElementPtr& element, std::vector<ABnfGuessPtr>& guess_list) { return "no implement"; }
 
 public:
     virtual ABnfFile* CreateFile(ABnfProject* project, const std::string& module_path, const std::string& full_path, const char* text, size_t len);
@@ -49,8 +48,8 @@ public:
 private:
     template <typename T>
     static void AddElement(T& list, const std::string& v) { list.push_back(v); }
-    static void AddElement(std::list<int>& list, const std::string& v) { list.push_back(std::atoi(v.c_str())); }
-    static void AddElement(std::vector<int>& list, const std::string& v) { list.push_back(std::atoi(v.c_str())); }
+    static void AddElement(std::list<int>& list, const std::string& v) { list.push_back(std::atoi(v.c_str())); }  // NOLINT(cert-err34-c)
+    static void AddElement(std::vector<int>& list, const std::string& v) { list.push_back(std::atoi(v.c_str())); }  // NOLINT(cert-err34-c)
 
 public:
     // ÇÐ¸î×Ö·û´®
@@ -63,7 +62,7 @@ public:
         size_t start_index = 0;
         while (true)
         {
-            size_t pos = content.find(split, start_index);
+            const size_t pos = content.find(split, start_index);
             if (pos != std::string::npos)
             {
                 AddElement(list, content.substr(start_index, pos - start_index));
@@ -109,4 +108,4 @@ public:
     static bool WriteAllText(const std::string& file_path, const std::string& content);
 };
 
-#endif // _ALITTLE_ALANGUAGECOMPLETIONINFO_H_
+#endif

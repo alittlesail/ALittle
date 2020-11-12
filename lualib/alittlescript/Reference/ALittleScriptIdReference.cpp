@@ -2,7 +2,7 @@
 
 void ALittleScriptIdReference::QueryQuickInfo(std::string& info)
 {
-    auto element = m_element.lock();
+	const auto element = m_element.lock();
     if (element == nullptr) return;
 
     auto parent = element->GetParent();
@@ -12,16 +12,16 @@ void ALittleScriptIdReference::QueryQuickInfo(std::string& info)
 
 ABnfElementPtr ALittleScriptIdReference::GotoDefinition()
 {
-    auto element = m_element.lock();
+	const auto element = m_element.lock();
     if (element == nullptr) return nullptr;
     auto parent = element->GetParent();
     if (parent == nullptr) return nullptr;
     return parent->GetReference()->GotoDefinition();
 }
 
-bool ALittleScriptIdReference::QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
+bool ALittleScriptIdReference::QueryCompletion(const ABnfElementPtr& select, std::vector<ALanguageCompletionInfo>& list)
 {
-    auto element = m_element.lock();
+	const auto element = m_element.lock();
     if (element == nullptr) return false;
 
     auto parent = element->GetParent();
@@ -31,7 +31,7 @@ bool ALittleScriptIdReference::QueryCompletion(ABnfElementPtr select, std::vecto
 
 bool ALittleScriptIdReference::PeekHighlightWord()
 {
-    auto element = m_element.lock();
+	const auto element = m_element.lock();
     if (element == nullptr) return false;
 
     auto parent = element->GetParent();
@@ -41,7 +41,7 @@ bool ALittleScriptIdReference::PeekHighlightWord()
 
 void ALittleScriptIdReference::QueryHighlightWordTag(std::vector<ALanguageHighlightWordInfo>& list)
 {
-    auto element = m_element.lock();
+	const auto element = m_element.lock();
     if (element == nullptr) return;
 
     auto parent = element->GetParent();

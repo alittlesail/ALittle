@@ -8,7 +8,7 @@
 
 #include <unordered_set>
 
-ABnfIdReference::ABnfIdReference(ABnfElementPtr element) : ABnfCommonReference(element)
+ABnfIdReference::ABnfIdReference(const ABnfElementPtr& element) : ABnfCommonReference(element)
 {
 }
 
@@ -17,28 +17,28 @@ void ABnfIdReference::QueryQuickInfo(std::string& info)
     auto element = m_element.lock();
     if (element == nullptr) return;
 
-    ABnfFileClass* file = dynamic_cast<ABnfFileClass*>(element->GetFile());
+    auto* file = dynamic_cast<ABnfFileClass*>(element->GetFile());
     if (file == nullptr) return;
 
     auto it = file->GetRuleSet().find(element->GetElementText());
     if (it == file->GetRuleSet().end()) return;
 
     std::vector<std::string> content_list;
-    for (auto pair : it->second)
+    for (const auto& pair : it->second)
         content_list.push_back(pair.first->GetElementText());
 
     info = ABnfFactory::Join(content_list, "\n");
 }
 
-bool ABnfIdReference::QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
+bool ABnfIdReference::QueryCompletion(const ABnfElementPtr& select, std::vector<ALanguageCompletionInfo>& list)
 {
     auto element = m_element.lock();
     if (element == nullptr) return false;
 
-    ABnfFileClass* file = dynamic_cast<ABnfFileClass*>(element->GetFile());
+    auto* file = dynamic_cast<ABnfFileClass*>(element->GetFile());
     if (file == nullptr) return false;
 
-    for (auto& pair : file->GetRuleSet())
+    for (const auto& pair : file->GetRuleSet())
     {
         if (pair.first.find(element->GetElementText()) == 0)
         {
@@ -58,22 +58,22 @@ ABnfGuessError ABnfIdReference::CheckError()
     auto element = m_element.lock();
     if (element == nullptr) return nullptr;
 
-    ABnfFileClass* file = dynamic_cast<ABnfFileClass*>(element->GetFile());
+    auto* file = dynamic_cast<ABnfFileClass*>(element->GetFile());
     if (file == nullptr) return nullptr;
 
     const auto& text = element->GetElementText();
 
-    auto it = file->GetRuleSet().find(text);
+    const auto it = file->GetRuleSet().find(text);
     if (it == file->GetRuleSet().end())
     {
         auto parent = element->GetParent();
         if (parent == nullptr || parent->GetNodeType() != "Expression")
-            return ABnfGuessError(element, "unknow type");
+            return ABnfGuessError(element, "unknown type");
     }
     else if (it->second.size() > 1)
         return ABnfGuessError(element, "repeated define");
 
-    if (text.size() != 0 && text[0] >= '0' && text[0] <= '9')
+    if (!text.empty() && text[0] >= '0' && text[0] <= '9')
         return ABnfGuessError(element, "rule name must not start with number");
 
     return nullptr;
@@ -84,19 +84,19 @@ void ABnfIdReference::QueryHighlightWordTag(std::vector<ALanguageHighlightWordIn
     auto element = m_element.lock();
     if (element == nullptr) return;
 
-    ABnfFileClass* file = dynamic_cast<ABnfFileClass*>(element->GetFile());
+    auto* file = dynamic_cast<ABnfFileClass*>(element->GetFile());
     if (file == nullptr) return;
 
     auto it = file->GetIndex().find(element->GetElementText());
     if (it == file->GetIndex().end()) return;
 
-    for (auto element : it->second)
+    for (const auto& child : it->second)
     {
         ALanguageHighlightWordInfo info;
-        info.line_start = element->GetStartLine();
-        info.char_start = element->GetStartCol();
-        info.line_end = element->GetEndLine();
-        info.char_end = element->GetEndCol();
+        info.line_start = child->GetStartLine();
+        info.char_start = child->GetStartCol();
+        info.line_end = child->GetEndLine();
+        info.char_end = child->GetEndCol();
         list.push_back(info);
     }
 }
@@ -107,16 +107,16 @@ ABnfElementPtr ABnfIdReference::GotoDefinition()
     auto element = m_element.lock();
     if (element == nullptr) return nullptr;
 
-    ABnfFileClass* file = dynamic_cast<ABnfFileClass*>(element->GetFile());
+    auto* file = dynamic_cast<ABnfFileClass*>(element->GetFile());
     if (file == nullptr) return nullptr;
 
     auto it = file->GetRuleSet().find(element->GetElementText());
     if (it == file->GetRuleSet().end())
         return nullptr;
 
-    for (auto pair : it->second)
+    for (const auto& pair : it->second)
     {
-        if (pair.first->GetChilds().size() > 0)
+        if (!pair.first->GetChilds().empty())
             return pair.first->GetChilds()[0];
     }
     return nullptr;

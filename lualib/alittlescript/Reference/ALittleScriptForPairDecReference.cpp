@@ -81,12 +81,12 @@ ABnfGuessError ALittleScriptForPairDecReference::GuessTypes(std::vector<ABnfGues
             {
                 if (value_guess_list[0]->is_const)
                 {
-                    auto it = ALittleScriptStatic::Inst().sPrimitiveGuessListMap.find("const int");
+                    const auto it = ALittleScriptStatic::Inst().sPrimitiveGuessListMap.find("const int");
                     if (it != ALittleScriptStatic::Inst().sPrimitiveGuessListMap.end()) guess_list = it->second;
                 }
                 else
                 {
-                    auto it = ALittleScriptStatic::Inst().sPrimitiveGuessListMap.find("int");
+                    const auto it = ALittleScriptStatic::Inst().sPrimitiveGuessListMap.find("int");
                     if (it != ALittleScriptStatic::Inst().sPrimitiveGuessListMap.end()) guess_list = it->second;
                 }
                 return nullptr;

@@ -13,9 +13,9 @@ private:
 public:
     ALittleScriptFactoryClassEx();
 
-    ABnfReference* CreateReference(ABnfElementPtr element) override;
+    ABnfReference* CreateReference(const ABnfElementPtr& element) override;
 
-    ABnfGuessError GuessTypes(ABnfElementPtr element, std::vector<ABnfGuessPtr>& guess_list) override;
+    ABnfGuessError GuessTypes(const ABnfElementPtr& element, std::vector<ABnfGuessPtr>& guess_list) override;
 };
 
 #endif // _ALITTLE_ALITTLESCRIPTFACTORYCLASSEX_H_

@@ -18,15 +18,15 @@ private:
 
 public:
 	ABnfFileClass(ABnfProject* project, const std::string& full_path, const char* text, size_t len, bool in_ui);
-    virtual ~ABnfFileClass();
+    virtual ~ABnfFileClass() = default;
 
-    inline const std::unordered_map<std::string, std::map<ABnfNodeElementPtr, std::string>>& GetRuleSet() { return m_rule; }
-    inline const std::unordered_map<std::string, std::unordered_set<ABnfNodeElementPtr>>& GetIndex() { return m_index; }
+    inline const std::unordered_map<std::string, std::map<ABnfNodeElementPtr, std::string>>& GetRuleSet() const { return m_rule; }
+    inline const std::unordered_map<std::string, std::unordered_set<ABnfNodeElementPtr>>& GetIndex() const { return m_index; }
 
     // 更新分析内容
     void UpdateAnalysis() override;
     // 收集索引
-    void CollectIndex(ABnfNodeElementPtr node);
+    void CollectIndex(const ABnfNodeElementPtr& node);
     // 收集规则ID
     void CollectRule();
 
@@ -43,7 +43,7 @@ private:
         int has_regex = 0;
         int has_key = 0;
     };
-    void CollectCompile(ABnfElementPtr element, CollectCompileInfo& info, bool multi);
+    void CollectCompile(const ABnfElementPtr& element, CollectCompileInfo& info, bool multi) const;
 };
 
 #endif // _ALITTLE_ABNFFILECLASS_H_

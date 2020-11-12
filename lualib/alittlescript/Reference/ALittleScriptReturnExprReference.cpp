@@ -21,16 +21,14 @@
 
 ABnfGuessError ALittleScriptReturnExprReference::CheckError()
 {
-    auto element = m_element.lock();
+    ABnfElementPtr element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(element, u8"节点失效");
     ABnfElementPtr parent;
-    if (element->GetReturnYield() != nullptr)
+    if (m_element.lock()->GetReturnYield() != nullptr)
     {
         // 对于ReturnYield就不需要做返回值检查
         // 对所在函数进行检查，必须要有async和await表示
         // 获取对应的函数对象
-        ABnfElementPtr element;
-
         parent = element;
         while (parent != nullptr)
         {
@@ -76,7 +74,7 @@ ABnfGuessError ALittleScriptReturnExprReference::CheckError()
         return nullptr;
     }
 
-    const auto& value_stat_list = element->GetValueStatList();
+    const auto& value_stat_list = m_element.lock()->GetValueStatList();
     std::vector<std::shared_ptr<ALittleScriptAllTypeElement>> return_type_list;
     std::shared_ptr<ALittleScriptMethodReturnTailDecElement> return_tail_dec;
 
@@ -104,7 +102,7 @@ ABnfGuessError ALittleScriptReturnExprReference::CheckError()
             if (return_dec != nullptr)
             {
                 const auto& return_one_list = return_dec->GetMethodReturnOneDecList();
-                for (auto& return_one : return_one_list)
+                for (const auto& return_one : return_one_list)
                 {
                     auto all_type = return_one->GetAllType();
                     if (all_type != nullptr) return_type_list.push_back(all_type);
@@ -122,7 +120,7 @@ ABnfGuessError ALittleScriptReturnExprReference::CheckError()
             if (return_dec != nullptr)
             {
                 const auto& return_one_list = return_dec->GetMethodReturnOneDecList();
-                for (auto& return_one : return_one_list)
+                for (const auto& return_one : return_one_list)
                 {
                     auto all_type = return_one->GetAllType();
                     if (all_type != nullptr) return_type_list.push_back(all_type);
@@ -140,7 +138,7 @@ ABnfGuessError ALittleScriptReturnExprReference::CheckError()
             if (return_dec != nullptr)
             {
                 const auto& return_one_list = return_dec->GetMethodReturnOneDecList();
-                for (auto& return_one : return_one_list)
+                for (const auto& return_one : return_one_list)
                 {
                     auto all_type = return_one->GetAllType();
                     if (all_type != nullptr) return_type_list.push_back(all_type);
@@ -163,8 +161,8 @@ ABnfGuessError ALittleScriptReturnExprReference::CheckError()
         auto value_stat = value_stat_list[0];
         auto error = value_stat->GuessTypes(guess_list);
         if (error) return error;
-        bool has_value_tail = guess_list.size() > 0
-            && std::dynamic_pointer_cast<ALittleScriptGuessReturnTail>(guess_list[guess_list.size() - 1]);
+        bool has_value_tail = !guess_list.empty()
+	        && std::dynamic_pointer_cast<ALittleScriptGuessReturnTail>(guess_list[guess_list.size() - 1]);
 
         if (return_tail_dec == nullptr)
         {
@@ -205,7 +203,7 @@ ABnfGuessError ALittleScriptReturnExprReference::CheckError()
                 return ABnfGuessError(element, u8"return的返回值数量少于函数定义的返回值数量");
         }
         guess_list.resize(0);
-        for (auto& value_stat : value_stat_list)
+        for (const auto& value_stat : value_stat_list)
         {
             int return_count = 0;
             std::vector<ABnfGuessPtr> guess_temp;

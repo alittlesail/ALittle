@@ -16,7 +16,7 @@
 
 #include <set>
 
-ALittleScriptStructDecReference::ALittleScriptStructDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptStructDecElement>(element)
+ALittleScriptStructDecReference::ALittleScriptStructDecReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptStructDecElement>(element)
 {
     m_namespace_name = ALittleScriptUtility::GetNamespaceName(element);
 }
@@ -30,7 +30,9 @@ ABnfGuessError ALittleScriptStructDecReference::GuessTypes(std::vector<ABnfGuess
     if (struct_name_dec == nullptr)
         return ABnfGuessError(element, u8"没有定义结构体名");
 
-    auto info = ABnfGuessPtr(new ALittleScriptGuessStruct(m_namespace_name, struct_name_dec->GetElementText(), element, false));
+    auto info = std::static_pointer_cast<ABnfGuess>(
+	    std::make_shared<ALittleScriptGuessStruct>(m_namespace_name, struct_name_dec->GetElementText(), element,
+	                                               false));
     info->UpdateValue();
     element->GetFile()->AddGuessType(info);
     guess_list.push_back(info);
@@ -41,7 +43,7 @@ ABnfGuessError ALittleScriptStructDecReference::CheckError()
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(element, u8"节点失效");
-    auto struct_name_dec = element->GetStructNameDec();
+    const auto struct_name_dec = element->GetStructNameDec();
     if (struct_name_dec == nullptr)
         return ABnfGuessError(element, u8"没有定义结构体名");
 

@@ -18,14 +18,14 @@
 #include "../Generate/ALittleScriptBlockCommentElement.h"
 
 // 添加新元素
-void ALittleScriptClassData::AddClassChildDec(std::shared_ptr<ABnfElement> dec, std::shared_ptr<ABnfElement> pre_dec, std::shared_ptr<ABnfElement> next_dec)
+void ALittleScriptClassData::AddClassChildDec(std::shared_ptr<ABnfElement> dec, const std::shared_ptr<ABnfElement>& pre_dec, const std::shared_ptr<ABnfElement>& next_dec)
 {
     // 模板定义特殊处理
     auto template_dec = std::dynamic_pointer_cast<ALittleScriptTemplateDecElement>(dec);
     if (template_dec)
     {
         const auto& pair_dec_list = template_dec->GetTemplatePairDecList();
-        for (auto& pair_dec : pair_dec_list)
+        for (const auto& pair_dec : pair_dec_list)
             AddClassChildDec(pair_dec, nullptr, nullptr);
         return;
     }
@@ -139,12 +139,12 @@ void ALittleScriptClassData::FindClassAttrList(int access_level, ClassAttrType a
         {
             if (name.empty())
             {
-                for (auto& pair : *map)
+                for (const auto& pair : *map)
                     result.push_back(pair.second);
             }   
             else
             {
-                auto it = map->find(name);
+                const auto it = map->find(name);
                 if (it != map->end())
                     result.push_back(it->second);
             }
@@ -158,12 +158,12 @@ void ALittleScriptClassData::FindClassAttrList(int access_level, ClassAttrType a
         {
             if (name.empty())
             {
-                for (auto& pair : *map)
+                for (const auto& pair : *map)
                     result.push_back(pair.second);
             }   
             else
             {
-                auto it = map->find(name);
+                const auto it = map->find(name);
                 if (it != map->end())
                     result.push_back(it->second);
             }
@@ -177,12 +177,12 @@ void ALittleScriptClassData::FindClassAttrList(int access_level, ClassAttrType a
         {
             if (name.empty())
             {
-                for (auto& pair : *map)
+                for (const auto& pair : *map)
                     result.push_back(pair.second);
             }
             else
             {
-                auto it = map->find(name);
+                const auto it = map->find(name);
                 if (it != map->end())
                     result.push_back(it->second);
             }
@@ -192,9 +192,9 @@ void ALittleScriptClassData::FindClassAttrList(int access_level, ClassAttrType a
 
 const std::unordered_map<std::string, std::shared_ptr<ABnfElement>>* ALittleScriptClassData::GetElementMap(ClassAttrType attr_type, ClassAccessType access_type) const
 {
-    auto it = m_element_map.find(access_type);
+    const auto it = m_element_map.find(access_type);
     if (it == m_element_map.end()) return nullptr;
-    auto sub_it = it->second.find(attr_type);
+    const auto sub_it = it->second.find(attr_type);
     if (sub_it == it->second.end()) return nullptr;
     return &sub_it->second;
 }

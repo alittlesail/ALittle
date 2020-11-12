@@ -23,14 +23,14 @@ private:
     std::weak_ptr<ALittleScriptMethodBodyDecElement> m_method_body_dec;
 
 public:
-    ALittleScriptPropertyValueDotIdNameReference(ABnfElementPtr element);
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptPropertyValueDotIdNameReference(element); }
+    ALittleScriptPropertyValueDotIdNameReference(const ABnfElementPtr& element);
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptPropertyValueDotIdNameReference(element); }
 
 private:
     void ReloadInfo();
 
 
-    ABnfGuessError ReplaceTemplate(ABnfGuessPtr guess, ABnfGuessPtr& result);
+    ABnfGuessError ReplaceTemplate(const ABnfGuessPtr& guess, ABnfGuessPtr& result) const;
 
     ABnfGuessError CalcResolve(std::vector<ABnfElementPtr>& result_list, ABnfGuessPtr& pre_type);
 
@@ -40,7 +40,7 @@ private:
 
     ABnfGuessError CheckError() override;
 
-    bool QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list) override;
+    bool QueryCompletion(const ABnfElementPtr& select, std::vector<ALanguageCompletionInfo>& list) override;
 
     ABnfElementPtr GotoDefinition() override;
 
@@ -48,7 +48,7 @@ private:
 
     void QueryHighlightWordTag(std::vector<ALanguageHighlightWordInfo>& list) override;
 
-    void CollectHighlight(ABnfGuessPtr target_guess, ABnfElementPtr element, std::vector<ALanguageHighlightWordInfo>& list);
+    void CollectHighlight(const ABnfGuessPtr& target_guess, const ABnfElementPtr& element, std::vector<ALanguageHighlightWordInfo>& list) const;
 };
 
 #endif // _ALITTLE_ALITTLESCRIPTPROPERTYVALUEDOTIDNAMEREFERENCE_H_

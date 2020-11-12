@@ -9,7 +9,7 @@
 #include "../Reference/ABnfNumberReference.h"
 #include "../../alanguage/Model/ABnfElement.h"
 
-ABnfReference* ABnfFactoryClass::CreateReference(ABnfElementPtr element)
+ABnfReference* ABnfFactoryClass::CreateReference(const ABnfElementPtr& element)
 {
     if (element->GetNodeType() == "Id")
         return new ABnfIdReference(element);

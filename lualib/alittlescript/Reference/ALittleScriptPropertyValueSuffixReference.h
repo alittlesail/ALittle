@@ -9,8 +9,8 @@
 class ALittleScriptPropertyValueSuffixReference : public ALittleScriptReferenceTemplate<ALittleScriptPropertyValueSuffixElement>
 {
 public:
-    ALittleScriptPropertyValueSuffixReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptPropertyValueSuffixElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptPropertyValueSuffixReference(element); }
+    ALittleScriptPropertyValueSuffixReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptPropertyValueSuffixElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptPropertyValueSuffixReference(element); }
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 };
 

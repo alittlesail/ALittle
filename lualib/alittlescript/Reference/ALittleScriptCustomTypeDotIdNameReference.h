@@ -9,8 +9,8 @@
 class ALittleScriptCustomTypeDotIdNameReference : public ALittleScriptCustomTypeCommonReference
 {
 public:
-    ALittleScriptCustomTypeDotIdNameReference(ABnfElementPtr element);
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptCustomTypeDotIdNameReference(element); }
+    ALittleScriptCustomTypeDotIdNameReference(const ABnfElementPtr& element);
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptCustomTypeDotIdNameReference(element); }
 
     int QueryClassificationTag(bool& blur) override;
 };

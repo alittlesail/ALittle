@@ -7,8 +7,8 @@
 class ABnfNumberReference : public ABnfCommonReference
 {
 public:
-    ABnfNumberReference(ABnfElementPtr element);
-    virtual ~ABnfNumberReference() {}
+    ABnfNumberReference(const ABnfElementPtr& element);
+    virtual ~ABnfNumberReference() = default;
 
     void QueryQuickInfo(std::string& info) override;
 };

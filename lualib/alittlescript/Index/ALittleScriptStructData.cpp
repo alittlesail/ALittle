@@ -6,7 +6,8 @@
 #include "../Generate/ALittleScriptLineCommentElement.h"
 
 // Ìí¼ÓÐÂÔªËØ
-void ALittleScriptStructData::AddVarDec(std::shared_ptr<ABnfElement> dec, std::shared_ptr<ABnfElement> next_dec)
+void ALittleScriptStructData::AddVarDec(const std::shared_ptr<ABnfElement>& dec, const std::shared_ptr<ABnfElement>&
+                                        next_dec)
 {
     auto var_dec = std::dynamic_pointer_cast<ALittleScriptStructVarDecElement>(dec);
     if (var_dec == nullptr) return;
@@ -26,12 +27,12 @@ void ALittleScriptStructData::FindVarDecList(const std::string& name, std::vecto
 {
     if (name.empty())
     {
-        for (auto& pair : m_element_map)
+        for (const auto& pair : m_element_map)
             result.push_back(pair.second);
     }
     else
     {
-        auto it = m_element_map.find(name);
+        const auto it = m_element_map.find(name);
         if (it != m_element_map.end())
             result.push_back(it->second);
     }

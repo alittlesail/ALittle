@@ -8,8 +8,8 @@
 class ALittleScriptUsingNameDecReference : public ALittleScriptReferenceTemplate<ALittleScriptUsingNameDecElement>
 {
 public:
-    ALittleScriptUsingNameDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptUsingNameDecElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptUsingNameDecReference(element); }
+    ALittleScriptUsingNameDecReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptUsingNameDecElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptUsingNameDecReference(element); }
     int QueryClassificationTag(bool& blur) override;
 
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;

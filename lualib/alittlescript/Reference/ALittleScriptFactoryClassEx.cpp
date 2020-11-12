@@ -201,7 +201,7 @@ ALittleScriptFactoryClassEx::ALittleScriptFactoryClassEx()
     m_create_map["BlockComment"] = ALittleScriptBlockCommentReference::Create;
 }
 
-ABnfReference* ALittleScriptFactoryClassEx::CreateReference(ABnfElementPtr element)
+ABnfReference* ALittleScriptFactoryClassEx::CreateReference(const ABnfElementPtr& element)
 {
     auto it = m_create_map.find(element->GetNodeType());
     if (it != m_create_map.end()) return it->second(element);
@@ -212,7 +212,7 @@ ABnfReference* ALittleScriptFactoryClassEx::CreateReference(ABnfElementPtr eleme
     return new ALittleScriptReference(element);
 }
 
-ABnfGuessError ALittleScriptFactoryClassEx::GuessTypes(ABnfElementPtr element, std::vector<ABnfGuessPtr>& guess_list)
+ABnfGuessError ALittleScriptFactoryClassEx::GuessTypes(const ABnfElementPtr& element, std::vector<ABnfGuessPtr>& guess_list)
 {
     guess_list.resize(0);
 

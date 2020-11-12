@@ -8,8 +8,8 @@
 class ALittleScriptVarAssignExprReference : public ALittleScriptReferenceTemplate<ALittleScriptVarAssignExprElement>
 {
 public:
-    ALittleScriptVarAssignExprReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptVarAssignExprElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptVarAssignExprReference(element); }
+    ALittleScriptVarAssignExprReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptVarAssignExprElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptVarAssignExprReference(element); }
     ABnfGuessError CheckError() override;
 };
 

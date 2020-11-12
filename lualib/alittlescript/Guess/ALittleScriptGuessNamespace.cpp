@@ -9,7 +9,7 @@
 
 #include "../Generate/ALittleScriptNamespaceDecElement.h"
 
-ALittleScriptGuessNamespace::ALittleScriptGuessNamespace(const std::string& p_namespace_name, std::shared_ptr<ALittleScriptNamespaceDecElement> p_namespace_dec)
+ALittleScriptGuessNamespace::ALittleScriptGuessNamespace(const std::string& p_namespace_name, const std::shared_ptr<ALittleScriptNamespaceDecElement>& p_namespace_dec)
 {
     is_register = ALittleScriptUtility::IsRegister(p_namespace_dec);
     namespace_name = p_namespace_name;
@@ -30,7 +30,7 @@ ABnfGuessPtr ALittleScriptGuessNamespace::ReplaceTemplate(ABnfFile* file, const 
 
 ABnfGuessPtr ALittleScriptGuessNamespace::Clone() const
 {
-    return ABnfGuessPtr(new ALittleScriptGuessNamespace(namespace_name, namespace_dec.lock()));
+    return std::make_shared<ALittleScriptGuessNamespace>(namespace_name, namespace_dec.lock());
 }
 
 void ALittleScriptGuessNamespace::UpdateValue()
@@ -41,7 +41,7 @@ void ALittleScriptGuessNamespace::UpdateValue()
 
 bool ALittleScriptGuessNamespace::IsChanged() const
 {
-    auto element = namespace_dec.lock();
+    const auto element = namespace_dec.lock();
     if (element == nullptr) return true;
 
     return dynamic_cast<ALittleScriptIndex*>(element->GetFile()->GetProject())->GetGuessTypeList(element) == nullptr;

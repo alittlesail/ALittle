@@ -18,16 +18,16 @@ private:
 
 public:
     // 获取集合
-    const std::unordered_map<ABnfElementType, std::unordered_map<std::string, std::set<std::shared_ptr<ABnfElement>>>>& GetElementMap() { return m_element_map; }
+    const std::unordered_map<ABnfElementType, std::unordered_map<std::string, std::set<std::shared_ptr<ABnfElement>>>>& GetElementMap() const { return m_element_map; }
 
     // 添加新元素
-    void AddNameDec(std::shared_ptr<ABnfElement> dec);
+    void AddNameDec(const std::shared_ptr<ABnfElement>& dec);
 
     // 查找元素
     void FindNameDecList(ABnfElementType type, const std::string& name, std::vector<std::shared_ptr<ABnfElement>>& result);
 
     // 移除元素
-    void RemoveNameDec(std::shared_ptr<ABnfElement> dec);
+    void RemoveNameDec(const std::shared_ptr<ABnfElement>& dec);
 };
 
 #endif // _ALITTLE_ALITTLESCRIPTACCESSDATA_H_

@@ -21,10 +21,6 @@ ABnfFile::ABnfFile(ABnfProject* project, const std::string& module_path, const s
     SetText(text, len);
 }
 
-ABnfFile::~ABnfFile()
-{
-}
-
 // 设置文本
 void ABnfFile::SetText(const char* text, size_t len)
 {
@@ -39,12 +35,12 @@ void ABnfFile::InsertText(const char* content, size_t len, int it_line, int it_c
     int cur_line = 0;
     int cur_char = 0;
 
-    int index = 0;
+    size_t index = 0;
     while (index < m_text.size())
     {
         if (cur_line == it_line && cur_char == it_char) break;
 
-        int byte_count = GetByteCountOfOneWord(m_text[index]);
+        const int byte_count = GetByteCountOfOneWord(m_text[index]);
         if (byte_count == 1 && m_text[index] == '\n')
         {
             ++cur_line;
@@ -82,12 +78,12 @@ void ABnfFile::DeleteText(int it_line_start, int it_char_start, int it_line_end,
     int cur_line = 0;
     int cur_char = 0;
 
-    int start_index = 0;
+    size_t start_index = 0;
     while (start_index < m_text.size())
     {
         if (cur_line == it_line_start && cur_char == it_char_start) break;
 
-        int byte_count = GetByteCountOfOneWord(m_text[start_index]);
+        const int byte_count = GetByteCountOfOneWord(m_text[start_index]);
         if (byte_count == 1 && m_text[start_index] == '\n')
         {
             ++cur_line;
@@ -101,10 +97,10 @@ void ABnfFile::DeleteText(int it_line_start, int it_char_start, int it_line_end,
         start_index += byte_count;
     }
 
-    int end_index = start_index;
+    size_t end_index = start_index;
     while (end_index < m_text.size())
     {
-        int byte_count = GetByteCountOfOneWord(m_text[end_index]);
+        const int byte_count = GetByteCountOfOneWord(m_text[end_index]);
 
         if (cur_line == it_line_end && cur_char == it_char_end)
         {
@@ -128,7 +124,7 @@ void ABnfFile::DeleteText(int it_line_start, int it_char_start, int it_line_end,
     m_text.erase(start_index, end_index - start_index);
 }
 
-bool ABnfFile::ContainText(const std::string& text)
+bool ABnfFile::ContainText(const std::string& text) const
 {
     return m_text.find(text) != std::string::npos;
 }
@@ -245,7 +241,7 @@ int ABnfFile::QueryParamIndex(int version, int it_line, int it_char, int* start_
     AnalysisText(version);
     if (m_root == nullptr) return 0;
 
-    auto element = m_root->GetException(it_line, it_char);
+    const auto element = m_root->GetException(it_line, it_char);
     if (element == nullptr) return 0;
 
     auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
@@ -260,10 +256,10 @@ bool ABnfFile::QueryError(int version, bool force, std::vector<ALanguageErrorInf
     AnalysisText(version);
     AnalysisError(version, force);
 
-    std::unordered_set<ABnfElementPtr> fliter;
+    std::unordered_set<ABnfElementPtr> filter;
     for (auto& pair : m_check_error_map)
     {
-        if (fliter.find(pair.first) != fliter.end()) continue;
+        if (filter.find(pair.first) != filter.end()) continue;
         ALanguageErrorInfo info;
         info.line_start = pair.first->GetStartLine();
         info.char_start = pair.first->GetStartCol();
@@ -271,12 +267,12 @@ bool ABnfFile::QueryError(int version, bool force, std::vector<ALanguageErrorInf
         info.char_end = pair.first->GetEndCol();
         info.error = pair.second;
         info_list.push_back(info);
-        fliter.insert(pair.first);
+        filter.insert(pair.first);
     }
 
     for (auto& pair : m_analysis_error_map)
     {
-        if (fliter.find(pair.first) != fliter.end()) continue;
+        if (filter.find(pair.first) != filter.end()) continue;
         ALanguageErrorInfo info;
         info.line_start = pair.first->GetStartLine();
         info.char_start = pair.first->GetStartCol();
@@ -284,7 +280,7 @@ bool ABnfFile::QueryError(int version, bool force, std::vector<ALanguageErrorInf
         info.char_end = pair.first->GetEndCol();
         info.error = pair.second;
         info_list.push_back(info);
-        fliter.insert(pair.first);
+        filter.insert(pair.first);
     }
     return true;
 }
@@ -294,7 +290,7 @@ int ABnfFile::QueryDesiredIndent(int version, int it_line, int it_char)
     AnalysisText(version);
     if (m_root == nullptr) return 0;
 
-    auto element = m_root->GetException(it_line, it_char);
+    const auto element = m_root->GetException(it_line, it_char);
     if (element == nullptr) return 0;
 
     auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
@@ -304,19 +300,19 @@ int ABnfFile::QueryDesiredIndent(int version, int it_line, int it_char)
     return node->GetReference()->QueryDesiredIndent(it_line, it_char, element);
 }
 
-int ABnfFile::QueryFormateIndent(int version, int it_line, int it_char)
+int ABnfFile::QueryFormatIndent(int version, int it_line, int it_char)
 {
     AnalysisText(version);
     if (m_root == nullptr) return 0;
 
-    auto element = m_root->GetException(it_line, it_char);
+    const auto element = m_root->GetException(it_line, it_char);
     if (element == nullptr) return 0;
 
     auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
     if (node == nullptr) node = std::dynamic_pointer_cast<ABnfNodeElement>(element->GetParent());
     if (node == nullptr) return 0;
 
-    return node->GetReference()->QueryFormateIndent(it_line, it_char, element);
+    return node->GetReference()->QueryFormatIndent(it_line, it_char, element);
 }
 
 bool ABnfFile::QueryAutoPair(int version, int it_line, int it_char, const std::string& left_pair, const std::string& right_pair)
@@ -332,7 +328,7 @@ bool ABnfFile::QueryAutoPair(int version, int it_line, int it_char, const std::s
     // 如果是错误元素，那么就以目标元素来判定
     if (element->IsError())
     {
-        auto error_element = std::dynamic_pointer_cast<ABnfErrorElement>(element);
+        const auto error_element = std::dynamic_pointer_cast<ABnfErrorElement>(element);
         if (std::dynamic_pointer_cast<ABnfRegexElement>(error_element->GetTargetElement()))
             return std::dynamic_pointer_cast<ABnfRegexElement>(error_element->GetTargetElement())->IsMatch(left_pair + right_pair);
         else if (std::dynamic_pointer_cast<ABnfStringElement>(error_element->GetTargetElement())) // 如果节点文本正是期望值，那么就可以返回true
@@ -350,7 +346,7 @@ bool ABnfFile::QueryAutoPair(int version, int it_line, int it_char, const std::s
     if (node == nullptr) return false;
 
     // 查找规则 
-    auto rule = m_project->RefABnfUI().GetRule(node->GetNodeType());
+    const auto rule = m_project->RefABnfUI().GetRule(node->GetNodeType());
     if (rule == nullptr || rule->node == nullptr) return false;
     for (auto& node_list : rule->node->node_list)
     {
@@ -400,7 +396,7 @@ int ABnfFile::GetByteCountOfOneWord(unsigned char first_char)
     unsigned char temp = 0x80;
     int num = 0;
 
-    unsigned char char_value = first_char;
+    const unsigned char char_value = first_char;
 
     if (char_value < 0x80) // ascii code.(0-127)
         return 1;
@@ -441,7 +437,7 @@ void ABnfFile::AnalysisColor(int version)
 
     m_color_map.clear();
     if (m_root == nullptr) return;
-    auto& rule_set = GetProject()->RefABnf().GetRuleSet();
+    const auto& rule_set = GetProject()->RefABnf().GetRuleSet();
     CollectColor(m_root, rule_set, false);
 }
 
@@ -456,14 +452,14 @@ void ABnfFile::UpdateAnalysis()
         m_root = GetProject()->RefABnf().Analysis(this);
 }
 
-void ABnfFile::CollectColor(ABnfElementPtr element, const std::unordered_map<std::string, ABnfRuleInfo*>& rule_set, bool blur)
+void ABnfFile::CollectColor(const ABnfElementPtr& element, const std::unordered_map<std::string, ABnfRuleInfo*>& rule_set, bool blur)
 {
     if (element->IsError()) return;
 
     bool blur_temp = false;
     int tag = 0;
 
-    auto rule_it = rule_set.find(element->GetNodeType());
+    const auto rule_it = rule_set.find(element->GetNodeType());
     if (rule_it != rule_set.end() && rule_it->second->has_color)
         tag = rule_it->second->rule_id;
     else
@@ -485,46 +481,46 @@ void ABnfFile::CollectColor(ABnfElementPtr element, const std::unordered_map<std
         return;
     }
 
-    auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
+    const auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
     if (node != nullptr)
     {
-        for (auto child : node->GetChilds())
+        for (auto& child : node->GetChilds())
             CollectColor(child, rule_set, blur || blur_temp);
     }
 }
 
 // 收集语法错误
-void ABnfFile::CollectError(ABnfElementPtr element)
+void ABnfFile::CollectError(const ABnfElementPtr& element)
 {
-    auto error_element = std::dynamic_pointer_cast<ABnfErrorElement>(element);
+    const auto error_element = std::dynamic_pointer_cast<ABnfErrorElement>(element);
     if (error_element != nullptr)
     {
         AddCheckErrorInfo(element, error_element->GetValue());
         return;
     }
 
-    auto node_element = std::dynamic_pointer_cast<ABnfNodeElement>(element);
+    const auto node_element = std::dynamic_pointer_cast<ABnfNodeElement>(element);
     if (node_element == nullptr) return;
 
-    for (auto child : node_element->GetChilds())
+    for (auto& child : node_element->GetChilds())
         CollectError(child);
 }
 
-void ABnfFile::AnalysisError(ABnfElementPtr element)
+void ABnfFile::AnalysisError(const ABnfElementPtr& element)
 {
     if (element->IsError()) return;
 
-    ABnfGuessError error = element->GetReference()->CheckError();
+    const auto error = element->GetReference()->CheckError();
     if (error)
     {
         if (error.element != nullptr && error.element->GetFile() == this)
             AddAnalysisErrorInfo(error.element, error.error);
     }
 
-    auto node_element = std::dynamic_pointer_cast<ABnfNodeElement>(element);
+    const auto node_element = std::dynamic_pointer_cast<ABnfNodeElement>(element);
     if (node_element == nullptr) return;
 
-    for (auto child : node_element->GetChilds())
+    for (auto& child : node_element->GetChilds())
         AnalysisError(child);
 }
 

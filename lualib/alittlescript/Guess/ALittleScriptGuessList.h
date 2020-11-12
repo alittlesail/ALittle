@@ -13,7 +13,7 @@ public:
     bool is_native;
 
 public:
-    ALittleScriptGuessList(ABnfGuessPtr p_sub_type, bool p_is_const, bool p_is_native);
+    ALittleScriptGuessList(const ABnfGuessPtr& p_sub_type, bool p_is_const, bool p_is_native);
 
     bool HasAny() const override;
     bool NeedReplace() const override;

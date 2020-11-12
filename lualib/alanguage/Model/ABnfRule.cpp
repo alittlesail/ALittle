@@ -5,15 +5,6 @@
 #include "ABnfRuleNodeInfo.h"
 #include "ARegex.h"
 
-ABnfRule::ABnfRule()
-{
-}
-
-ABnfRule::~ABnfRule()
-{
-    Clear();
-}
-
 // 初始化参数
 void ABnfRule::Clear()
 {
@@ -38,7 +29,7 @@ bool ABnfRule::Load(const std::string& buffer, std::string& error)
     CalcToken(token_list);
 
     int rule_id = 0;
-    // 对tokencol表进line语法分析
+    // 对token col表进line语法分析
     size_t offset = 0;
     while (offset < token_list.size())
     {
@@ -55,7 +46,7 @@ bool ABnfRule::Load(const std::string& buffer, std::string& error)
         auto it = m_rule_map.find(rule->id.value);
         if (it != m_rule_map.end())
         {
-            std::string name = rule->id.value;
+            const std::string name = rule->id.value;
             delete rule;
             Clear();
             error = "rule name repeated:" + name;
@@ -73,7 +64,7 @@ bool ABnfRule::Load(const std::string& buffer, std::string& error)
 // 根绝规则名称查找规则对象
 ABnfRuleInfo* ABnfRule::FindRuleInfo(const std::string& id)
 {
-    auto it = m_rule_map.find(id);
+    const auto it = m_rule_map.find(id);
     if (it == m_rule_map.end()) return nullptr;
     return it->second;
 }
@@ -86,7 +77,7 @@ const std::unordered_map<std::string, ABnfRuleInfo*>& ABnfRule::GetRuleSet() con
 // 解析规则语句
 ABnfRuleInfo* ABnfRule::CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token_list, int rule_id, size_t& offset, std::string& error)
 {
-    ABnfRuleInfo* rule = new ABnfRuleInfo(this);
+	auto* rule = new ABnfRuleInfo(this);
 
     rule->rule_id = rule_id;
 
@@ -99,14 +90,14 @@ ABnfRuleInfo* ABnfRule::CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token
     // 处理ID
     if (offset >= token_list.size())
     {
-        if (rule != nullptr) delete rule;
+        delete rule;
         error = "the last rule is incomplete";
         return nullptr;
     }
 
     if (token_list[offset].type != ABnfRuleTokenType::TT_ID)
     {
-        if (rule != nullptr) delete rule;
+        delete rule;
         error = "line:" + std::to_string(token_list[offset].line) + "col:" + std::to_string(token_list[offset].col)
             + " expect ID bug get:" + token_list[offset].value;
         return nullptr;
@@ -117,7 +108,7 @@ ABnfRuleInfo* ABnfRule::CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token
     static ARegex pattern("[_a-zA-Z][_a-zA-Z0-9]*");
     if (!pattern.Match(token_list[offset].value.c_str(), result_length))
     {
-        if (rule != nullptr) delete rule;
+        delete rule;
         error = "line:" + std::to_string(token_list[offset].line) + "col:" + std::to_string(token_list[offset].col)
             + "ID must be alpha, number, _, and not start with number, but get:" + token_list[offset].value;
         return nullptr;
@@ -129,7 +120,7 @@ ABnfRuleInfo* ABnfRule::CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token
     // 处理冒号
     if (offset >= token_list.size())
     {
-        if (rule != nullptr) delete rule;
+        delete rule;
         error = "the last rule is incomplete";
         return nullptr;
     }
@@ -140,14 +131,14 @@ ABnfRuleInfo* ABnfRule::CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token
         // 处理预测正则表达式
         if (offset >= token_list.size())
         {
-            if (rule != nullptr) delete rule;
+            delete rule;
             error = "the last rule is incomplete";
             return nullptr;
         }
             
         if (token_list[offset].type != ABnfRuleTokenType::TT_REGEX)
         {
-            if (rule != nullptr) delete rule;
+            delete rule;
             error = "line:" + std::to_string(token_list[offset].line) + "col:" + std::to_string(token_list[offset].col)
                 + " expect regex but get:" + token_list[offset].value;
             return nullptr;
@@ -168,7 +159,7 @@ ABnfRuleInfo* ABnfRule::CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token
 
     if (offset >= token_list.size())
     {
-        if (rule != nullptr) delete rule;
+        delete rule;
         error = "the last rule is incomplete";
         return nullptr;
     }
@@ -182,7 +173,7 @@ ABnfRuleInfo* ABnfRule::CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token
         // 处理预测正则表达式
         if (offset >= token_list.size())
         {
-            if (rule != nullptr) delete rule;
+            delete rule;
             error = "the last rule is incomplete";
             return nullptr;
         }
@@ -190,18 +181,18 @@ ABnfRuleInfo* ABnfRule::CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token
         // red
         if (token_list[offset].type != ABnfRuleTokenType::TT_ID)
         {
-            if (rule != nullptr) delete rule;
+            delete rule;
             error = "line:" + std::to_string(token_list[offset].line) + "col:" + std::to_string(token_list[offset].col)
                 + " expect number of red but get:" + token_list[offset].value;
             return nullptr;
         }
-        rule->red = std::atoi(token_list[offset].value.c_str());
+        rule->red = std::atoi(token_list[offset].value.c_str());  // NOLINT(cert-err34-c)
 
         ++offset;
         // 处理预测正则表达式
         if (offset >= token_list.size())
         {
-            if (rule != nullptr) delete rule;
+            delete rule;
             error = "the last rule is incomplete";
             return nullptr;
         }
@@ -209,7 +200,7 @@ ABnfRuleInfo* ABnfRule::CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token
         // ,
         if (token_list[offset].type != ABnfRuleTokenType::TT_SYMBOL || token_list[offset].value != ",")
         {
-            if (rule != nullptr) delete rule;
+            delete rule;
             error = "line:" + std::to_string(token_list[offset].line) + "col:" + std::to_string(token_list[offset].col)
                 + " expect , but get:" + token_list[offset].value;
             return nullptr;
@@ -219,7 +210,7 @@ ABnfRuleInfo* ABnfRule::CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token
         // 处理预测正则表达式
         if (offset >= token_list.size())
         {
-            if (rule != nullptr) delete rule;
+            delete rule;
             error = "the last rule is incomplete";
             return nullptr;
         }
@@ -227,18 +218,18 @@ ABnfRuleInfo* ABnfRule::CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token
         // green
         if (token_list[offset].type != ABnfRuleTokenType::TT_ID)
         {
-            if (rule != nullptr) delete rule;
+            delete rule;
             error = "line:" + std::to_string(token_list[offset].line) + "col:" + std::to_string(token_list[offset].col)
                 + " expect number of green but get:" + token_list[offset].value;
             return nullptr;
         }
-        rule->green = std::atoi(token_list[offset].value.c_str());
+        rule->green = std::atoi(token_list[offset].value.c_str());  // NOLINT(cert-err34-c)
 
         ++offset;
         // 处理预测正则表达式
         if (offset >= token_list.size())
         {
-            if (rule != nullptr) delete rule;
+            delete rule;
             error = "the last rule is incomplete";
             return nullptr;
         }
@@ -246,7 +237,7 @@ ABnfRuleInfo* ABnfRule::CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token
         // ,
         if (token_list[offset].type != ABnfRuleTokenType::TT_SYMBOL || token_list[offset].value != ",")
         {
-            if (rule != nullptr) delete rule;
+            delete rule;
             error = "line:" + std::to_string(token_list[offset].line) + "col:" + std::to_string(token_list[offset].col)
                 + " expect , but get:" + token_list[offset].value;
             return nullptr;
@@ -256,7 +247,7 @@ ABnfRuleInfo* ABnfRule::CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token
         // 处理预测正则表达式
         if (offset >= token_list.size())
         {
-            if (rule != nullptr) delete rule;
+            delete rule;
             error = "the last rule is incomplete";
             return nullptr;
         }
@@ -264,18 +255,18 @@ ABnfRuleInfo* ABnfRule::CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token
         // blue
         if (token_list[offset].type != ABnfRuleTokenType::TT_ID)
         {
-            if (rule != nullptr) delete rule;
+            delete rule;
             error = "line:" + std::to_string(token_list[offset].line) + "col:" + std::to_string(token_list[offset].col)
                 + " expect number of blue but get:" + token_list[offset].value;
             return nullptr;
         }
-        rule->blue = std::atoi(token_list[offset].value.c_str());
+        rule->blue = std::atoi(token_list[offset].value.c_str());  // NOLINT(cert-err34-c)
 
         ++offset;
         // 处理预测正则表达式
         if (offset >= token_list.size())
         {
-            if (rule != nullptr) delete rule;
+            delete rule;
             error = "the last rule is incomplete";
             return nullptr;
         }
@@ -283,7 +274,7 @@ ABnfRuleInfo* ABnfRule::CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token
         // ]
         if (token_list[offset].type != ABnfRuleTokenType::TT_SYMBOL || token_list[offset].value != "]")
         {
-            if (rule != nullptr) delete rule;
+            delete rule;
             error = "line:" + std::to_string(token_list[offset].line) + "col:" + std::to_string(token_list[offset].col)
                 + " expect ] but get:" + token_list[offset].value;
             return nullptr;
@@ -295,14 +286,14 @@ ABnfRuleInfo* ABnfRule::CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token
     // 处理等号
     if (offset >= token_list.size())
     {
-        if (rule != nullptr) delete rule;
+        delete rule;
         error = "the last rule is incomplete";
         return nullptr;
     }
         
     if (token_list[offset].type != ABnfRuleTokenType::TT_SYMBOL && token_list[offset].value != "=")
     {
-        if (rule != nullptr) delete rule;
+        delete rule;
         error = "line:" + std::to_string(token_list[offset].line) + "col:" + std::to_string(token_list[offset].col)
             + " expect = but get:" + token_list[offset].value;
         return nullptr;
@@ -312,9 +303,9 @@ ABnfRuleInfo* ABnfRule::CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token
 
     // 获取规则内容
     rule->node = CalcABnfNode(token_list, offset, error);
-    if (rule->node == nullptr || rule->node->node_list.size() == 0)
+    if (rule->node == nullptr || rule->node->node_list.empty())
     {
-        if (rule != nullptr) delete rule;
+        delete rule;
         error = "line:" + std::to_string(rule->id.line) + "col:" + std::to_string(token_list[offset].col)
             + " node create failed:" + error;
         return nullptr;
@@ -323,14 +314,14 @@ ABnfRuleInfo* ABnfRule::CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token
     // 如果遇到分号表示结束
     if (offset >= token_list.size())
     {
-        if (rule != nullptr) delete rule;
+        delete rule;
         error = "the last rule is incomplete";
         return nullptr;
     }
         
     if (token_list[offset].type != ABnfRuleTokenType::TT_SYMBOL || token_list[offset].value != ";")
     {
-        if (rule != nullptr) delete rule;
+        delete rule;
         error = "line:" + std::to_string(token_list[offset].line) + "col:" + std::to_string(token_list[offset].col)
             + " expect; but get:" + token_list[offset].value;
         return nullptr;
@@ -340,9 +331,9 @@ ABnfRuleInfo* ABnfRule::CalcABnfRule(const std::vector<ABnfRuleTokenInfo>& token
     return rule;
 }
 
-ABnfRuleNodeInfo* ABnfRule::CalcABnfNode(const std::vector<ABnfRuleTokenInfo>& token_list, size_t& offset, std::string& error)
+ABnfRuleNodeInfo* ABnfRule::CalcABnfNode(const std::vector<ABnfRuleTokenInfo>& token_list, size_t& offset, std::string& error) const
 {
-    auto node = new ABnfRuleNodeInfo();
+    auto* node = new ABnfRuleNodeInfo();
 
     while (offset < token_list.size())
     {
@@ -363,14 +354,14 @@ ABnfRuleNodeInfo* ABnfRule::CalcABnfNode(const std::vector<ABnfRuleTokenInfo>& t
             static ARegex pattern("[_a-zA-Z][_a-zA-Z0-9]*");
             if (!pattern.Match(token.value.c_str(), result_length))
             {
-                if (node != nullptr) delete node;
+                delete node;
                 error = "line:" + std::to_string(token.line) + "col:" + std::to_string(token.col)
                     + "ID must be alpha, number, _, and not start with number, but get:" + token.value;
                 return nullptr;
             }
 
-            if (node->node_list.size() == 0)
-                node->node_list.push_back(std::vector<ABnfRuleNodeInfo*>());
+            if (node->node_list.empty())
+                node->node_list.emplace_back(std::vector<ABnfRuleNodeInfo*>());
             node->node_list[node->node_list.size() - 1].push_back(new ABnfRuleNodeInfo(token));
 
             ++offset;
@@ -382,8 +373,8 @@ ABnfRuleNodeInfo* ABnfRule::CalcABnfNode(const std::vector<ABnfRuleTokenInfo>& t
             || token.type == ABnfRuleTokenType::TT_KEY
             || token.type == ABnfRuleTokenType::TT_REGEX)
         {
-            if (node->node_list.size() == 0)
-                node->node_list.push_back(std::vector<ABnfRuleNodeInfo*>());
+            if (node->node_list.empty())
+                node->node_list.emplace_back(std::vector<ABnfRuleNodeInfo*>());
             node->node_list[node->node_list.size() - 1].push_back(new ABnfRuleNodeInfo(token));
 
             ++offset;
@@ -397,12 +388,12 @@ ABnfRuleNodeInfo* ABnfRule::CalcABnfNode(const std::vector<ABnfRuleTokenInfo>& t
             {
                 ++offset;
 
-                if (node->node_list.size() == 0)
-                    node->node_list.push_back(std::vector<ABnfRuleNodeInfo*>());
-                auto sub_node = CalcABnfNode(token_list, offset, error);
+                if (node->node_list.empty())
+                    node->node_list.emplace_back(std::vector<ABnfRuleNodeInfo*>());
+                const auto sub_node = CalcABnfNode(token_list, offset, error);
                 if (sub_node == nullptr)
                 {
-                    if (node != nullptr) delete node;
+                    delete node;
                     error = "line:" + std::to_string(token.line) + "col:" + std::to_string(token.col)
                         + " node create failed:" + error;
                     return nullptr;
@@ -411,7 +402,7 @@ ABnfRuleNodeInfo* ABnfRule::CalcABnfNode(const std::vector<ABnfRuleTokenInfo>& t
 
                 if (offset >= token_list.size() || token_list[offset].value != ")")
                 {
-                    if (node != nullptr) delete node;
+                    delete node;
                     error = "line:" + std::to_string(token.line) + "col:" + std::to_string(token.col)
                         + " expect ), but get :" + token.value;
                     return nullptr;
@@ -422,9 +413,9 @@ ABnfRuleNodeInfo* ABnfRule::CalcABnfNode(const std::vector<ABnfRuleTokenInfo>& t
             }
             else if (token.value == "*")
             {
-                if (node->node_list.size() == 0 || node->node_list[node->node_list.size() - 1].size() == 0)
+                if (node->node_list.empty() || node->node_list[node->node_list.size() - 1].empty())
                 {
-                    if (node != nullptr) delete node;
+                    delete node;
                     error = "line:" + std::to_string(token.line) + "col:" + std::to_string(token.col) + " is nothing before *";
                     return nullptr;
                 }
@@ -432,7 +423,7 @@ ABnfRuleNodeInfo* ABnfRule::CalcABnfNode(const std::vector<ABnfRuleTokenInfo>& t
                 auto& node_list = node->node_list[node->node_list.size() - 1];
                 if (node_list[node_list.size() - 1]->repeat != ABnfRuleNodeRepeatType::NRT_NONE)
                 {
-                    if (node != nullptr) delete node;
+                    delete node;
                     error = "line:" + std::to_string(token.line) + "col:" + std::to_string(token.col)
                         + " repeat * rule";
                     return nullptr;
@@ -445,9 +436,9 @@ ABnfRuleNodeInfo* ABnfRule::CalcABnfNode(const std::vector<ABnfRuleTokenInfo>& t
             }
             else if (token.value == "+")
             {
-                if (node->node_list.size() == 0 || node->node_list[node->node_list.size() - 1].size() == 0)
+                if (node->node_list.empty() || node->node_list[node->node_list.size() - 1].empty())
                 {
-                    if (node != nullptr) delete node;
+                    delete node;
                     error = "line:" + std::to_string(token.line) + "col:" + std::to_string(token.col)
                         + " is nothing before +";
                     return nullptr;
@@ -456,7 +447,7 @@ ABnfRuleNodeInfo* ABnfRule::CalcABnfNode(const std::vector<ABnfRuleTokenInfo>& t
                 auto& node_list = node->node_list[node->node_list.size() - 1];
                 if (node_list[node_list.size() - 1]->repeat != ABnfRuleNodeRepeatType::NRT_NONE)
                 {
-                    if (node != nullptr) delete node;
+                    delete node;
                     error = "line:" + std::to_string(token.line) + "col:" + std::to_string(token.col)
                         + " repeat + rule";
                     return nullptr;
@@ -469,9 +460,9 @@ ABnfRuleNodeInfo* ABnfRule::CalcABnfNode(const std::vector<ABnfRuleTokenInfo>& t
             }
             else if (token.value == "?")
             {
-                if (node->node_list.size() == 0 || node->node_list[node->node_list.size() - 1].size() == 0)
+                if (node->node_list.empty() || node->node_list[node->node_list.size() - 1].empty())
                 {
-                    if (node != nullptr) delete node;
+                    delete node;
                     error = "line:" + std::to_string(token.line) + "col:" + std::to_string(token.col)
                         + " is nothing before ?";
                     return nullptr;
@@ -480,7 +471,7 @@ ABnfRuleNodeInfo* ABnfRule::CalcABnfNode(const std::vector<ABnfRuleTokenInfo>& t
                 auto& node_list = node->node_list[node->node_list.size() - 1];
                 if (node_list[node_list.size() - 1]->repeat != ABnfRuleNodeRepeatType::NRT_NONE)
                 {
-                    if (node != nullptr) delete node;
+                    delete node;
                     error = "line:" + std::to_string(token.line) + "col:" + std::to_string(token.col)
                         + " repeat ? rule";
                     return nullptr;
@@ -493,9 +484,9 @@ ABnfRuleNodeInfo* ABnfRule::CalcABnfNode(const std::vector<ABnfRuleTokenInfo>& t
             }
             else if (token.value == "@")
             {
-                if (node->node_list.size() == 0 || node->node_list[node->node_list.size() - 1].size() == 0)
+                if (node->node_list.empty() || node->node_list[node->node_list.size() - 1].empty())
                 {
-                    if (node != nullptr) delete node;
+                    delete node;
                     error = "line:" + std::to_string(token.line) + "col:" + std::to_string(token.col)
                         + " is nothing before @";
                     return nullptr;
@@ -504,7 +495,7 @@ ABnfRuleNodeInfo* ABnfRule::CalcABnfNode(const std::vector<ABnfRuleTokenInfo>& t
                 auto& node_list = node->node_list[node->node_list.size() - 1];
                 if (node_list[node_list.size() - 1]->pin != ABnfRuleNodePinType::NPT_NONE)
                 {
-                    if (node != nullptr) delete node;
+                    delete node;
                     error = "line:" + std::to_string(token.line) + "col:" + std::to_string(token.col)
                         + " repeat @ rule";
                     return nullptr;
@@ -517,9 +508,9 @@ ABnfRuleNodeInfo* ABnfRule::CalcABnfNode(const std::vector<ABnfRuleTokenInfo>& t
             }
             else if (token.value == "#")
             {
-                if (node->node_list.size() == 0 || node->node_list[node->node_list.size() - 1].size() == 0)
+                if (node->node_list.empty() || node->node_list[node->node_list.size() - 1].empty())
                 {
-                    if (node != nullptr) delete node;
+                    delete node;
                     error = "line:" + std::to_string(token.line) + "col:" + std::to_string(token.col)
                         + " is nothing before #";
                     return nullptr;
@@ -528,7 +519,7 @@ ABnfRuleNodeInfo* ABnfRule::CalcABnfNode(const std::vector<ABnfRuleTokenInfo>& t
                 auto& node_list = node->node_list[node->node_list.size() - 1];
                 if (node_list[node_list.size() - 1]->not_key != ABnfRuleNodeNotKeyType::NNKT_NONE)
                 {
-                    if (node != nullptr) delete node;
+                    delete node;
                     error = "line:" + std::to_string(token.line) + "col:" + std::to_string(token.col)
                         + " repeated # rule";
                     return nullptr;
@@ -541,9 +532,9 @@ ABnfRuleNodeInfo* ABnfRule::CalcABnfNode(const std::vector<ABnfRuleTokenInfo>& t
             }
             else if (token.value == "|")
             {
-                if (node->node_list.size() == 0 || node->node_list[node->node_list.size() - 1].size() == 0)
+                if (node->node_list.empty() || node->node_list[node->node_list.size() - 1].empty())
                 {
-                    if (node != nullptr) delete node;
+                    delete node;
                     error = "line:" + std::to_string(token.line) + "col:" + std::to_string(token.col)
                         + " is nothing before |";
                     return nullptr;
@@ -554,7 +545,7 @@ ABnfRuleNodeInfo* ABnfRule::CalcABnfNode(const std::vector<ABnfRuleTokenInfo>& t
                     && token_list[offset + 1].type == ABnfRuleTokenType::TT_SYMBOL
                     && token_list[offset + 1].value == ";")
                 {
-                    if (node != nullptr) delete node;
+                    delete node;
                     error = "line:" + std::to_string(token.line) + "col:" + std::to_string(token.col)
                         + " is nothing behind |";
                     return nullptr;
@@ -571,16 +562,16 @@ ABnfRuleNodeInfo* ABnfRule::CalcABnfNode(const std::vector<ABnfRuleTokenInfo>& t
             }
             else
             {
-                if (node != nullptr) delete node;
+				delete node;
                 error = "line:" + std::to_string(token.line) + "col:" + std::to_string(token.col)
                     + " now can't handle:" + token.value;
                 return nullptr;
             }
         }
 
-        if (node != nullptr) delete node;
+        delete node;
         error = "line:" + std::to_string(token.line) + "col:" + std::to_string(token.col)
-            + " unknow token type:" + token.value;
+            + " unknown token type:" + token.value;
         return nullptr;
     }
 
@@ -602,7 +593,7 @@ void ABnfRule::CalcToken(std::vector<ABnfRuleTokenInfo>& token_list)
         if (index + 1 < m_buffer.size())
             next_c = m_buffer[index + 1];
 
-        // 计算linecol
+        // 计算line col
         if (c == '\n')
         {
             ++line;

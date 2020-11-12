@@ -74,7 +74,7 @@ ABnfGuessError ALittleScriptOpNewStatReference::CheckError()
 
         if (std::dynamic_pointer_cast<ALittleScriptGuessTemplate>(guess))
         {
-            auto guess_template = std::dynamic_pointer_cast<ALittleScriptGuessTemplate>(guess);
+            const auto guess_template = std::dynamic_pointer_cast<ALittleScriptGuessTemplate>(guess);
             if (guess_template->template_extends.lock() != nullptr)
                 guess = guess_template->template_extends.lock();
             else if (guess_template->is_struct)
@@ -96,7 +96,7 @@ ABnfGuessError ALittleScriptOpNewStatReference::CheckError()
 
         if (std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess))
         {
-            auto class_dec = std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess)->class_dec.lock();
+            const auto class_dec = std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess)->class_dec.lock();
             auto ctor_dec = ALittleScriptUtility::FindFirstCtorDecFromExtends(class_dec, 100);
             if (ctor_dec == nullptr)
             {
@@ -117,7 +117,7 @@ ABnfGuessError ALittleScriptOpNewStatReference::CheckError()
             std::vector<ABnfGuessPtr> param_guess_list;
             std::vector<bool> param_nullable_list;
             bool has_param_tail = false;
-            for (auto& param_one_dec : param_one_dec_list)
+            for (const auto& param_one_dec : param_one_dec_list)
             {
                 auto all_type = param_one_dec->GetAllType();
                 auto param_tail = param_one_dec->GetMethodParamTailDec();

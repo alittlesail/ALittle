@@ -6,7 +6,7 @@
 #include "../Generate/ALittleScriptCustomTypeNameElement.h"
 #include "../Generate/ALittleScriptCustomTypeDotIdElement.h"
 
-ALittleScriptCustomTypeReference::ALittleScriptCustomTypeReference(ABnfElementPtr p_element) : ALittleScriptCustomTypeCommonReference(std::dynamic_pointer_cast<ALittleScriptCustomTypeElement>(p_element), p_element)
+ALittleScriptCustomTypeReference::ALittleScriptCustomTypeReference(const ABnfElementPtr& p_element) : ALittleScriptCustomTypeCommonReference(std::dynamic_pointer_cast<ALittleScriptCustomTypeElement>(p_element), p_element)
 {
     auto element = std::dynamic_pointer_cast<ALittleScriptCustomTypeElement>(p_element);
     if (element == nullptr) return;

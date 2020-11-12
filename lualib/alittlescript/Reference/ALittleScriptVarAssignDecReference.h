@@ -16,8 +16,8 @@ private:
     std::weak_ptr<ALittleScriptTemplateDecElement> m_template_param_dec;
 
 public:
-    ALittleScriptVarAssignDecReference(ABnfElementPtr element);
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptVarAssignDecReference(element); }
+    ALittleScriptVarAssignDecReference(const ABnfElementPtr& element);
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptVarAssignDecReference(element); }
 
     std::shared_ptr<ALittleScriptClassDecElement> GetClassDec();
 
@@ -25,7 +25,7 @@ public:
 
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 
-    bool QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list) override;
+    bool QueryCompletion(const ABnfElementPtr& select, std::vector<ALanguageCompletionInfo>& list) override;
 };
 
 #endif // _ALITTLE_ALITTLESCRIPTVARASSIGNDECREFERENCE_H_

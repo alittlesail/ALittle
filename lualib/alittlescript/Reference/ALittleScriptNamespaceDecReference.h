@@ -9,8 +9,8 @@
 class ALittleScriptNamespaceDecReference : public ALittleScriptReferenceTemplate<ALittleScriptNamespaceDecElement>
 {
 public:
-    ALittleScriptNamespaceDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptNamespaceDecElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptNamespaceDecReference(element); }
+    ALittleScriptNamespaceDecReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptNamespaceDecElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptNamespaceDecReference(element); }
 
     ABnfGuessError CheckError() override;
 

@@ -22,7 +22,7 @@
 
 #include "../Index/ALittleScriptUtility.h"
 
-ALittleScriptVarAssignNameDecReference::ALittleScriptVarAssignNameDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptVarAssignNameDecElement>(element)
+ALittleScriptVarAssignNameDecReference::ALittleScriptVarAssignNameDecReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptVarAssignNameDecElement>(element)
 {
     m_key = element->GetElementText();
 }
@@ -90,12 +90,12 @@ int ALittleScriptVarAssignNameDecReference::QueryClassificationTag(bool& blur)
     if (element == nullptr) return 0;
 
     ABnfGuessPtr guess;
-    auto error = element->GuessType(guess);
+    const auto error = element->GuessType(guess);
     if (error) return 0;
     if (std::dynamic_pointer_cast<ALittleScriptGuessFunctor>(guess))
     {
         auto guess_functor = std::dynamic_pointer_cast<ALittleScriptGuessFunctor>(guess);
-        auto guess_functor_element = guess_functor->GetElement();
+        const auto guess_functor_element = guess_functor->GetElement();
         if (std::dynamic_pointer_cast<ALittleScriptClassStaticDecElement>(guess_functor_element)
             || std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(guess_functor_element)
             || std::dynamic_pointer_cast<ALittleScriptClassGetterDecElement>(guess_functor_element)
@@ -116,7 +116,7 @@ int ALittleScriptVarAssignNameDecReference::QueryClassificationTag(bool& blur)
 
 ABnfGuessError ALittleScriptVarAssignNameDecReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
 {
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"节点失效");
     auto parent = element->GetParent();
     if (std::dynamic_pointer_cast<ALittleScriptVarAssignDecElement>(parent)) {
@@ -148,7 +148,7 @@ ABnfGuessError ALittleScriptVarAssignNameDecReference::CheckError()
         ReloadInfo();
 
     // 处理参数
-    auto method_dec = m_method_dec.lock();
+    const auto method_dec = m_method_dec.lock();
     if (method_dec != nullptr)
     {
         std::vector<std::shared_ptr<ALittleScriptMethodParamNameDecElement>> dec_list;
@@ -181,13 +181,13 @@ void ALittleScriptVarAssignNameDecReference::QueryHighlightWordTag(std::vector<A
         ReloadInfo();
 
     ABnfGuessPtr guess;
-    auto error = element->GuessType(guess);
+    const auto error = element->GuessType(guess);
     if (error) return;
 
     CollectHighlight(guess, m_method_body_dec.lock(), list);
 
     // 处理参数
-    auto method_dec = m_method_dec.lock();
+    const auto method_dec = m_method_dec.lock();
     if (method_dec != nullptr)
     {
         std::vector<std::shared_ptr<ALittleScriptMethodParamNameDecElement>> dec_list;
@@ -204,7 +204,7 @@ void ALittleScriptVarAssignNameDecReference::QueryHighlightWordTag(std::vector<A
     }
 }
 
-void ALittleScriptVarAssignNameDecReference::CollectHighlight(ABnfGuessPtr target_guess, ABnfElementPtr element, std::vector<ALanguageHighlightWordInfo>& list)
+void ALittleScriptVarAssignNameDecReference::CollectHighlight(const ABnfGuessPtr& target_guess, const ABnfElementPtr& element, std::vector<ALanguageHighlightWordInfo>& list) const
 {
     if (std::dynamic_pointer_cast<ALittleScriptPropertyValueCustomTypeElement>(element)
         || std::dynamic_pointer_cast<ALittleScriptVarAssignNameDecElement>(element))
@@ -212,7 +212,7 @@ void ALittleScriptVarAssignNameDecReference::CollectHighlight(ABnfGuessPtr targe
         if (element->GetElementText() != m_key) return;
 
         ABnfGuessPtr guess;
-        auto error = element->GuessType(guess);
+        const auto error = element->GuessType(guess);
         if (error) return;
         if (guess->GetValue() == target_guess->GetValue())
         {
@@ -226,11 +226,11 @@ void ALittleScriptVarAssignNameDecReference::CollectHighlight(ABnfGuessPtr targe
         return;
     }
 
-    auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
+    const auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
     if (node)
     {
         const auto& childs = node->GetChilds();
-        for (auto& child : childs)
+        for (const auto& child : childs)
             CollectHighlight(target_guess, child, list);
     }
 }

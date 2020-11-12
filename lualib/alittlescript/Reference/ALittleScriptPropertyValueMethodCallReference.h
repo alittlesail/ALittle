@@ -17,19 +17,20 @@ class ALittleScriptPropertyValueMethodCallReference : public ALittleScriptRefere
     }
 
 public:
-    ALittleScriptPropertyValueMethodCallReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptPropertyValueMethodCallElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptPropertyValueMethodCallReference(element); }
-    ABnfGuessError GuessPreType(ABnfGuessPtr& guess);
+    ALittleScriptPropertyValueMethodCallReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptPropertyValueMethodCallElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptPropertyValueMethodCallReference(element); }
+    ABnfGuessError GuessPreType(ABnfGuessPtr& guess) const;
 
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 
 private:
-    ABnfGuessError AnalysisTemplate(std::unordered_map<std::string, ABnfGuessPtr>& fill_map, ABnfGuessPtr left_guess, ABnfElementPtr right_src, ABnfGuessPtr right_guess, bool assign_or_call);
+    ABnfGuessError AnalysisTemplate(std::unordered_map<std::string, ABnfGuessPtr>& fill_map, const ABnfGuessPtr&
+                                    left_guess, const ABnfElementPtr& right_src, ABnfGuessPtr right_guess, bool assign_or_call) const;
 
-    ABnfGuessError CheckTemplateMap(std::unordered_map<std::string, std::shared_ptr<ALittleScriptGuessTemplate>>& src_map, std::unordered_map<std::string, ABnfGuessPtr>& fill_map, std::shared_ptr<ALittleScriptGuessFunctor>& guess);
+    ABnfGuessError CheckTemplateMap(std::unordered_map<std::string, std::shared_ptr<ALittleScriptGuessTemplate>>& src_map, std::unordered_map<std::string, ABnfGuessPtr>& fill_map, std::shared_ptr<ALittleScriptGuessFunctor>& guess) const;
 
 public:
-    ABnfGuessError GenerateTemplateParamList(std::vector<ABnfGuessPtr>& param_list);
+    ABnfGuessError GenerateTemplateParamList(std::vector<ABnfGuessPtr>& param_list) const;
 
     ABnfGuessError CheckError() override;
 };

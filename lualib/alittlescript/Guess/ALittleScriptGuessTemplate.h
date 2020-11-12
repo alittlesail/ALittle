@@ -4,8 +4,6 @@
 
 #include "ALittleScriptGuess.h"
 
-#include <map>
-
 class ALittleScriptTemplatePairDecElement;
 
 class ALittleScriptGuessTemplate : public ALittleScriptGuess
@@ -24,8 +22,8 @@ private:
     std::string total_value;
 
 public:
-    ALittleScriptGuessTemplate(std::shared_ptr<ALittleScriptTemplatePairDecElement> p_template_pair_dec
-        , ABnfGuessPtr p_template_extends
+    ALittleScriptGuessTemplate(const std::shared_ptr<ALittleScriptTemplatePairDecElement>& p_template_pair_dec
+        , const ABnfGuessPtr& p_template_extends
         , bool p_is_class, bool p_is_struct);
 
     std::shared_ptr<ABnfElement> GetElement() override;

@@ -9,8 +9,8 @@
 class ALittleScriptPropertyValueBracketValueReference : public ALittleScriptReferenceTemplate<ALittleScriptPropertyValueBracketValueElement>
 {
 public:
-    ALittleScriptPropertyValueBracketValueReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptPropertyValueBracketValueElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptPropertyValueBracketValueReference(element); }
+    ALittleScriptPropertyValueBracketValueReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptPropertyValueBracketValueElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptPropertyValueBracketValueReference(element); }
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 
     ABnfGuessError CheckError() override;

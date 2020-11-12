@@ -8,8 +8,8 @@
 class ALittleScriptEnumVarNameDecReference : public ALittleScriptReferenceTemplate<ALittleScriptEnumVarNameDecElement>
 {
 public:
-    ALittleScriptEnumVarNameDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptEnumVarNameDecElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptEnumVarNameDecReference(element); }
+    ALittleScriptEnumVarNameDecReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptEnumVarNameDecElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptEnumVarNameDecReference(element); }
     int QueryClassificationTag(bool& blur) override
     {
         blur = false;

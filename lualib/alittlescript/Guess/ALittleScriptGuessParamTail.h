@@ -4,8 +4,6 @@
 
 #include "ALittleScriptGuess.h"
 
-#include <map>
-
 class ALittleScriptGuessParamTail : public ALittleScriptGuess
 {
 public:

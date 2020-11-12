@@ -117,7 +117,7 @@
 
 void ALittleScriptUtility::TrimLeft(std::string& target)
 {
-    std::string::size_type pos = target.find_first_not_of(' ');
+	const std::string::size_type pos = target.find_first_not_of(' ');
     if (pos == std::string::npos) return;
     if (pos == 0) return;
 
@@ -126,7 +126,7 @@ void ALittleScriptUtility::TrimLeft(std::string& target)
 
 void ALittleScriptUtility::TrimRight(std::string& target)
 {
-    std::string::size_type pos = target.find_last_not_of(' ');
+	const std::string::size_type pos = target.find_last_not_of(' ');
     if (pos == std::string::npos) return;
     if (pos + 1 == target.size()) return;
 
@@ -213,23 +213,23 @@ void ALittleScriptUtility::GetNameListInFolder(const std::string& path, std::vec
     //文件句柄
     std::intptr_t   hFile = 0;
     //文件信息
-    struct _finddata_t fileinfo;
+    struct _finddata_t file_info{};
     std::string p;
-    if ((hFile = _findfirst(p.assign(path).append("\\*").c_str(), &fileinfo)) != -1)
+    if ((hFile = _findfirst(p.assign(path).append("\\*").c_str(), &file_info)) != -1)
     {
         do
         {
             //如果不是,加入列表
-            if ((fileinfo.attrib & _A_SUBDIR))
+            if ((file_info.attrib & _A_SUBDIR))
             {
-                if (strcmp(fileinfo.name, ".") != 0 && strcmp(fileinfo.name, "..") != 0)
-                    dir_list.push_back(fileinfo.name);
+                if (strcmp(file_info.name, ".") != 0 && strcmp(file_info.name, "..") != 0)
+                    dir_list.emplace_back(file_info.name);
             }
             else
             {
-                file_list.push_back(fileinfo.name);
+                file_list.emplace_back(file_info.name);
             }
-        } while (_findnext(hFile, &fileinfo) == 0);
+        } while (_findnext(hFile, &file_info) == 0);
         _findclose(hFile);
     }
 #else
@@ -267,9 +267,9 @@ bool ALittleScriptUtility::IsInt(const std::shared_ptr<ALittleScriptNumberElemen
 // 计算哈希值
 inline int ALittleScriptUtility::JSHash(const std::string& content)
 {
-	int l = static_cast<int>(content.size());
+	const int l = static_cast<int>(content.size());
 	int h = l;
-	int step = (l >> 5) + 1;
+	const int step = (l >> 5) + 1;
 
 	for (int i = l; i >= step; i -= step)
 	{
@@ -287,7 +287,7 @@ int ALittleScriptUtility::StructHash(const std::shared_ptr<ALittleScriptGuessStr
 
 bool ALittleScriptUtility::IsLanguageEnable(const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list)
 {
-	for (auto& element : element_list)
+	for (const auto& element : element_list)
 	{
 		if (element->GetAttributeModifier() != nullptr)
 		{
@@ -308,7 +308,7 @@ bool ALittleScriptUtility::IsLanguageEnable(const std::vector<std::shared_ptr<AL
 // 是否使用原生
 bool ALittleScriptUtility::IsNative(const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list)
 {
-	for (auto& element : element_list)
+	for (const auto& element : element_list)
 	{
 		if (element->GetAttributeModifier() != nullptr)
 		{
@@ -373,7 +373,7 @@ ABnfGuessError ALittleScriptUtility::CheckInvokeAwait(std::shared_ptr<ABnfElemen
 }
 
 // 判断是否存在
-ABnfGuessError ALittleScriptUtility::CheckError(std::shared_ptr<ABnfElement> parent, const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list)
+ABnfGuessError ALittleScriptUtility::CheckError(const std::shared_ptr<ABnfElement>& parent, const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list)
 {
     int register_count = 0;
     int coroutine_count = 0;
@@ -385,7 +385,7 @@ ABnfGuessError ALittleScriptUtility::CheckError(std::shared_ptr<ABnfElement> par
     int proto_cmd_count = 0;
     int native_count = 0;
 
-    for (auto& element : element_list)
+    for (const auto& element : element_list)
     {
         if (element->GetRegisterModifier() != nullptr)
         {
@@ -553,7 +553,7 @@ ABnfGuessError ALittleScriptUtility::CheckError(std::shared_ptr<ABnfElement> par
 // 获取是否是register
 bool ALittleScriptUtility::IsRegister(const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list)
 {
-    for (auto& element : element_list)
+    for (const auto& element : element_list)
     {
         if (element->GetRegisterModifier() != nullptr)
             return true;
@@ -564,7 +564,7 @@ bool ALittleScriptUtility::IsRegister(const std::vector<std::shared_ptr<ALittleS
 // 获取是否是Const
 bool ALittleScriptUtility::IsConst(const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list)
 {
-    for (auto& element : element_list)
+    for (const auto& element : element_list)
     {
         if (element->GetAttributeModifier() != nullptr
             && element->GetAttributeModifier()->GetConstModifier() != nullptr)
@@ -576,7 +576,7 @@ bool ALittleScriptUtility::IsConst(const std::vector<std::shared_ptr<ALittleScri
 // 获取是否是Nullable
 bool ALittleScriptUtility::IsNullable(const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list)
 {
-    for (auto& element : element_list)
+    for (const auto& element : element_list)
     {
         if (element->GetAttributeModifier() != nullptr
             && element->GetAttributeModifier()->GetNullableModifier() != nullptr)
@@ -588,7 +588,7 @@ bool ALittleScriptUtility::IsNullable(const std::vector<std::shared_ptr<ALittleS
 // 获取协程类型
 std::string ALittleScriptUtility::GetCoroutineType(const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list)
 {
-    for (auto& element : element_list)
+    for (const auto& element : element_list)
     {
         if (element->GetCoroutineModifier() != nullptr)
         {
@@ -601,7 +601,7 @@ std::string ALittleScriptUtility::GetCoroutineType(const std::vector<std::shared
 // 获取协议类型
 std::string ALittleScriptUtility::GetProtocolType(const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list)
 {
-    for (auto& element : element_list)
+    for (const auto& element : element_list)
     {
         if (element->GetAttributeModifier() != nullptr
             && element->GetAttributeModifier()->GetProtocolModifier() != nullptr)
@@ -616,7 +616,7 @@ std::string ALittleScriptUtility::GetProtocolType(const std::vector<std::shared_
 // 获取命令类型
 bool ALittleScriptUtility::GetCommandDetail(const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list, std::string& cmd, std::string& desc)
 {
-    for (auto& element : element_list)
+    for (const auto& element : element_list)
     {
         if (element->GetAttributeModifier() != nullptr
             && element->GetAttributeModifier()->GetCommandModifier() != nullptr)
@@ -634,7 +634,7 @@ bool ALittleScriptUtility::GetCommandDetail(const std::vector<std::shared_ptr<AL
 // 获取访问权限类型
 ClassAccessType ALittleScriptUtility::CalcAccessType(const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list)
 {
-    for (auto& element : element_list)
+    for (const auto& element : element_list)
     {
         if (element->GetAccessModifier() != nullptr)
         {
@@ -664,14 +664,14 @@ std::shared_ptr<ALittleScriptNamespaceDecElement> ALittleScriptUtility::GetNames
 // 获取某个元素的命名域名对象
 std::shared_ptr<ALittleScriptNamespaceNameDecElement> ALittleScriptUtility::GetNamespaceNameDec(ABnfFile* file)
 {
-    auto namesapce_dec = GetNamespaceDec(file);
-    if (namesapce_dec == nullptr) return nullptr;
+    auto namespace_dec = GetNamespaceDec(file);
+    if (namespace_dec == nullptr) return nullptr;
 
-    return namesapce_dec->GetNamespaceNameDec();
+    return namespace_dec->GetNamespaceNameDec();
 }
 
 // 判断某个是不是register
-bool ALittleScriptUtility::IsRegister(std::shared_ptr<ABnfElement> element)
+bool ALittleScriptUtility::IsRegister(const std::shared_ptr<ABnfElement>& element)
 {
     auto namespace_dec = GetNamespaceDec(element->GetFile());
     if (namespace_dec == nullptr) return false;
@@ -690,7 +690,7 @@ bool ALittleScriptUtility::IsRegister(ABnfFile* file)
 }
 
 // 获取某个元素的命名域名
-const std::string& ALittleScriptUtility::GetNamespaceName(std::shared_ptr<ABnfElement> element)
+const std::string& ALittleScriptUtility::GetNamespaceName(const std::shared_ptr<ABnfElement>& element)
 {
     static std::string empty;
     if (element == nullptr) return empty;
@@ -727,17 +727,23 @@ std::shared_ptr<ALittleScriptTemplateDecElement> ALittleScriptUtility::FindMetho
     {
         if (std::dynamic_pointer_cast<ALittleScriptRootElement>(dec))
             return nullptr;
-        else if (std::dynamic_pointer_cast<ALittleScriptClassDecElement>(dec))
+        
+        if (std::dynamic_pointer_cast<ALittleScriptClassDecElement>(dec))
             return nullptr;
-        else if (std::dynamic_pointer_cast<ALittleScriptClassCtorDecElement>(dec))
+        
+        if (std::dynamic_pointer_cast<ALittleScriptClassCtorDecElement>(dec))
             return nullptr;
-        else if (std::dynamic_pointer_cast<ALittleScriptClassSetterDecElement>(dec))
+        
+        if (std::dynamic_pointer_cast<ALittleScriptClassSetterDecElement>(dec))
             return nullptr;
-        else if (std::dynamic_pointer_cast<ALittleScriptClassStaticDecElement>(dec))
+        
+        if (std::dynamic_pointer_cast<ALittleScriptClassStaticDecElement>(dec))
             return std::dynamic_pointer_cast<ALittleScriptClassStaticDecElement>(dec)->GetTemplateDec();
-        else if (std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(dec))
+        
+        if (std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(dec))
             return std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(dec)->GetTemplateDec();
-        else if (std::dynamic_pointer_cast<ALittleScriptGlobalMethodDecElement>(dec))
+        
+        if (std::dynamic_pointer_cast<ALittleScriptGlobalMethodDecElement>(dec))
             return std::dynamic_pointer_cast<ALittleScriptGlobalMethodDecElement>(dec)->GetTemplateDec();
 
         dec = dec->GetParent();
@@ -746,7 +752,7 @@ std::shared_ptr<ALittleScriptTemplateDecElement> ALittleScriptUtility::FindMetho
 }
 
 // 检查是否在静态函数中
-bool ALittleScriptUtility::IsInClassStaticMethod(std::shared_ptr<ABnfElement> dec)
+bool ALittleScriptUtility::IsInClassStaticMethod(const std::shared_ptr<ABnfElement>& dec)
 {
     std::shared_ptr<ABnfElement> parent = dec;
     while (true)
@@ -755,15 +761,20 @@ bool ALittleScriptUtility::IsInClassStaticMethod(std::shared_ptr<ABnfElement> de
 
         if (std::dynamic_pointer_cast<ALittleScriptRootElement>(parent))
             return false;
-        else if (std::dynamic_pointer_cast<ALittleScriptClassDecElement>(parent))
+        
+        if (std::dynamic_pointer_cast<ALittleScriptClassDecElement>(parent))
             return false;
-        else if (std::dynamic_pointer_cast<ALittleScriptClassSetterDecElement>(parent))
+        
+        if (std::dynamic_pointer_cast<ALittleScriptClassSetterDecElement>(parent))
             return false;
-        else if (std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(parent))
+        
+        if (std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(parent))
             return false;
-        else if (std::dynamic_pointer_cast<ALittleScriptClassStaticDecElement>(parent))
+        
+        if (std::dynamic_pointer_cast<ALittleScriptClassStaticDecElement>(parent))
             return true;
-        else if (std::dynamic_pointer_cast<ALittleScriptGlobalMethodDecElement>(parent))
+        
+        if (std::dynamic_pointer_cast<ALittleScriptGlobalMethodDecElement>(parent))
             return false;
 
         parent = parent->GetParent();
@@ -773,31 +784,31 @@ bool ALittleScriptUtility::IsInClassStaticMethod(std::shared_ptr<ABnfElement> de
 }
 
 // 根据名称，获取这个结构体的成员列表
-void ALittleScriptUtility::FindStructVarDecList(std::shared_ptr<ALittleScriptStructDecElement> dec, const std::string& name, std::vector<std::shared_ptr<ALittleScriptStructVarDecElement>>& result, int deep)
+void ALittleScriptUtility::FindStructVarDecList(const std::shared_ptr<ALittleScriptStructDecElement>& dec, const std::string& name, std::vector<std::shared_ptr<ALittleScriptStructVarDecElement>>& result, int deep)
 {
     if (deep <= 0) return;
 
     // 处理当前
-    auto* data = dynamic_cast<ALittleScriptIndex*>(dec->GetFile()->GetProject())->GetStructData(dec);
+    const auto* data = dynamic_cast<ALittleScriptIndex*>(dec->GetFile()->GetProject())->GetStructData(dec);
     if (data != nullptr)
         data->FindVarDecList(name, result);
 
     // 处理继承
-    auto extends_dec = FindStructExtends(dec);
+    const auto extends_dec = FindStructExtends(dec);
     if (extends_dec != nullptr)
         FindStructVarDecList(extends_dec, name, result, deep - 1);
 }
 
 // 根据名称，获取这个枚举中的成员
-void ALittleScriptUtility::FindEnumVarDecList(std::shared_ptr<ALittleScriptEnumDecElement> dec, const std::string& name, std::vector<std::shared_ptr<ALittleScriptEnumVarDecElement>>& result)
+void ALittleScriptUtility::FindEnumVarDecList(const std::shared_ptr<ALittleScriptEnumDecElement>& dec, const std::string& name, std::vector<std::shared_ptr<ALittleScriptEnumVarDecElement>>& result)
 {
-    auto* data = dynamic_cast<ALittleScriptIndex*>(dec->GetFile()->GetProject())->GetEnumData(dec);
+    const auto* data = dynamic_cast<ALittleScriptIndex*>(dec->GetFile()->GetProject())->GetEnumData(dec);
     if (data != nullptr)
         data->FindVarDecList(name, result);
 }
 
 // 计算struct的父类
-std::shared_ptr<ALittleScriptStructDecElement> ALittleScriptUtility::FindStructExtends(std::shared_ptr<ALittleScriptStructDecElement> dec)
+std::shared_ptr<ALittleScriptStructDecElement> ALittleScriptUtility::FindStructExtends(const std::shared_ptr<ALittleScriptStructDecElement>& dec)
 {
     // 获取继承
     auto extends_dec = dec->GetStructExtendsDec();
@@ -816,7 +827,7 @@ std::shared_ptr<ALittleScriptStructDecElement> ALittleScriptUtility::FindStructE
         namespace_name = GetNamespaceName(dec);
 
     // 获取元素对象
-    auto result = dynamic_cast<ALittleScriptIndex*>(dec->GetFile()->GetProject())->FindALittleNameDec(
+    const auto result = dynamic_cast<ALittleScriptIndex*>(dec->GetFile()->GetProject())->FindALittleNameDec(
         ABnfElementType::STRUCT_NAME, dec->GetFile(), namespace_name, name_dec->GetElementText(), true);
     if (std::dynamic_pointer_cast<ALittleScriptStructNameDecElement>(result))
         return std::dynamic_pointer_cast<ALittleScriptStructDecElement>(result->GetParent());
@@ -825,7 +836,7 @@ std::shared_ptr<ALittleScriptStructDecElement> ALittleScriptUtility::FindStructE
 }
 
 // 计算class的父类
-std::shared_ptr<ALittleScriptClassDecElement> ALittleScriptUtility::FindClassExtends(std::shared_ptr<ALittleScriptClassDecElement> dec)
+std::shared_ptr<ALittleScriptClassDecElement> ALittleScriptUtility::FindClassExtends(const std::shared_ptr<ALittleScriptClassDecElement>& dec)
 {
     // 获取继承
     auto extends_dec = dec->GetClassExtendsDec();
@@ -844,7 +855,7 @@ std::shared_ptr<ALittleScriptClassDecElement> ALittleScriptUtility::FindClassExt
         namespace_name = GetNamespaceName(dec);
 
     // 获取元素对象
-    auto result = dynamic_cast<ALittleScriptIndex*>(dec->GetFile()->GetProject())->FindALittleNameDec(
+    const auto result = dynamic_cast<ALittleScriptIndex*>(dec->GetFile()->GetProject())->FindALittleNameDec(
         ABnfElementType::CLASS_NAME, dec->GetFile(), namespace_name, name_dec->GetElementText(), true);
     if (std::dynamic_pointer_cast<ALittleScriptClassNameDecElement>(result))
         return std::dynamic_pointer_cast<ALittleScriptClassDecElement>(result->GetParent());
@@ -864,7 +875,8 @@ void ALittleScriptUtility::FilterSameName(const std::vector<std::shared_ptr<ABnf
 }
 
 // 计算在dec这个类中，对targetDec成员的访问权限
-int ALittleScriptUtility::CalcAccessLevelByTargetClassDec(int access_level, std::shared_ptr<ALittleScriptClassDecElement> dec, std::shared_ptr<ALittleScriptClassDecElement> target_dec)
+int ALittleScriptUtility::CalcAccessLevelByTargetClassDec(int access_level, const std::shared_ptr<ALittleScriptClassDecElement>& dec
+    , const std::shared_ptr<ALittleScriptClassDecElement>& target_dec)
 {
     // 如果当前访问权限已经只剩下public，就直接返回
     if (access_level <= sAccessOnlyPublic)
@@ -875,7 +887,7 @@ int ALittleScriptUtility::CalcAccessLevelByTargetClassDec(int access_level, std:
         return access_level;
 
     // 检查dec的父类，然后判断父类和targetDec的访问权限
-    auto extends_dec = FindClassExtends(dec);
+    const auto extends_dec = FindClassExtends(dec);
     if (extends_dec != nullptr)
         return CalcAccessLevelByTargetClassDec(access_level, extends_dec, target_dec);
 
@@ -888,13 +900,13 @@ int ALittleScriptUtility::CalcAccessLevelByTargetClassDec(int access_level, std:
 }
 
 // 计算任意元素访问targetDec的访问权限
-int ALittleScriptUtility::CalcAccessLevelByTargetClassDecForElement(std::shared_ptr<ABnfElement> element, std::shared_ptr<ALittleScriptClassDecElement> target_dec)
+int ALittleScriptUtility::CalcAccessLevelByTargetClassDecForElement(const std::shared_ptr<ABnfElement>& element, const std::shared_ptr<ALittleScriptClassDecElement>& target_dec)
 {
     // 默认为public
     int access_level = sAccessOnlyPublic;
 
     // 如果这个元素在类中，那么可以通过类和targetDec访问权限直接计算
-    auto dec = FindClassDecFromParent(element);
+    const auto dec = FindClassDecFromParent(element);
     if (dec != nullptr)
     {
         access_level = CalcAccessLevelByTargetClassDec(sAccessPrivateAndProtectedAndPublic, dec, target_dec);
@@ -903,7 +915,7 @@ int ALittleScriptUtility::CalcAccessLevelByTargetClassDecForElement(std::shared_
     // 如果在同一个文件中，则返回sAccessPrivateAndProtectedAndPublic
     else
     {
-        std::string namespace_name = GetNamespaceName(element);
+	    const std::string namespace_name = GetNamespaceName(element);
         if (element->GetFullPath() == target_dec->GetFullPath())
             access_level = sAccessPrivateAndProtectedAndPublic;
         else if (namespace_name == "alittle" || namespace_name == GetNamespaceName(target_dec))
@@ -914,13 +926,13 @@ int ALittleScriptUtility::CalcAccessLevelByTargetClassDecForElement(std::shared_
 }
 
 // 根据名称，获取函数列表
-void ALittleScriptUtility::FindClassMethodNameDecList(std::shared_ptr<ALittleScriptClassDecElement> dec, int access_level, const std::string& name, std::vector<std::shared_ptr<ABnfElement>>& result, int deep)
+void ALittleScriptUtility::FindClassMethodNameDecList(const std::shared_ptr<ALittleScriptClassDecElement>& dec, int access_level, const std::string& name, std::vector<std::shared_ptr<ABnfElement>>& result, int deep)
 {
     // 这个用于跳出无限递归
     if (deep <= 0) return;
 
     // 查找类中的元素
-    auto data = dynamic_cast<ALittleScriptIndex*>(dec->GetFile()->GetProject())->GetClassData(dec);
+    const auto* data = dynamic_cast<ALittleScriptIndex*>(dec->GetFile()->GetProject())->GetClassData(dec);
     if (data != nullptr)
     {
         data->FindClassAttrList(access_level, ClassAttrType::FUN, name, result);
@@ -930,13 +942,13 @@ void ALittleScriptUtility::FindClassMethodNameDecList(std::shared_ptr<ALittleScr
     }
 
     // 处理继承
-    auto extends_dec = FindClassExtends(dec);
+    const auto extends_dec = FindClassExtends(dec);
     if (extends_dec != nullptr)
         FindClassMethodNameDecList(extends_dec, access_level, name, result, deep - 1);
 }
 
 // 根据名称，获取类的属性列表
-void ALittleScriptUtility::FindClassAttrList(std::shared_ptr<ALittleScriptClassDecElement> dec, int access_level, ClassAttrType attr_type, const std::string& name, std::vector<std::shared_ptr<ABnfElement>>& result, int deep)
+void ALittleScriptUtility::FindClassAttrList(const std::shared_ptr<ALittleScriptClassDecElement>& dec, int access_level, ClassAttrType attr_type, const std::string& name, std::vector<std::shared_ptr<ABnfElement>>& result, int deep)
 {
     // 这个用于跳出无限递归
     if (deep <= 0) return;
@@ -945,13 +957,13 @@ void ALittleScriptUtility::FindClassAttrList(std::shared_ptr<ALittleScriptClassD
     dynamic_cast<ALittleScriptIndex*>(dec->GetFile()->GetProject())->FindClassAttrList(dec, access_level, attr_type, name, result);
 
     // 处理继承
-    auto extends_dec = FindClassExtends(dec);
+    const auto extends_dec = FindClassExtends(dec);
     if (extends_dec != nullptr)
         FindClassAttrList(extends_dec, access_level, attr_type, name, result, deep - 1);
 }
 
 // 根据名称，获取继承的构造函数
-std::shared_ptr<ALittleScriptClassCtorDecElement> ALittleScriptUtility::FindFirstCtorDecFromExtends(std::shared_ptr<ALittleScriptClassDecElement> dec, int deep)
+std::shared_ptr<ALittleScriptClassCtorDecElement> ALittleScriptUtility::FindFirstCtorDecFromExtends(const std::shared_ptr<ALittleScriptClassDecElement> & dec, int deep)
 {
     // 这个用于跳出无限递归
     if (deep <= 0) return nullptr;
@@ -962,14 +974,14 @@ std::shared_ptr<ALittleScriptClassCtorDecElement> ALittleScriptUtility::FindFirs
 
     // 处理成员函数
     const auto& element_dec_list = body_dec->GetClassElementDecList();
-    for (auto& element_dec : element_dec_list)
+    for (const auto& element_dec : element_dec_list)
     {
         if (element_dec->GetClassCtorDec() != nullptr)
             return element_dec->GetClassCtorDec();
     }
 
     // 处理继承
-    auto extends_dec = FindClassExtends(dec);
+    const auto extends_dec = FindClassExtends(dec);
     if (extends_dec != nullptr)
         return FindFirstCtorDecFromExtends(extends_dec, deep - 1);
 
@@ -977,7 +989,7 @@ std::shared_ptr<ALittleScriptClassCtorDecElement> ALittleScriptUtility::FindFirs
 }
 
 // 根据名称，获取继承的属性
-std::shared_ptr<ABnfElement> ALittleScriptUtility::FindFirstClassAttrFromExtends(std::shared_ptr<ALittleScriptClassDecElement> dec, ClassAttrType attr_type, const std::string& name, int deep)
+std::shared_ptr<ABnfElement> ALittleScriptUtility::FindFirstClassAttrFromExtends(const std::shared_ptr<ALittleScriptClassDecElement>& dec, ClassAttrType attr_type, const std::string& name, int deep)
 {
     // 这个用于跳出无限递归
     if (deep <= 0) return nullptr;
@@ -988,7 +1000,7 @@ std::shared_ptr<ABnfElement> ALittleScriptUtility::FindFirstClassAttrFromExtends
     if (result != nullptr) return result;
 
     // 处理继承
-    auto extends_dec = FindClassExtends(dec);
+    const auto extends_dec = FindClassExtends(dec);
     if (extends_dec != nullptr)
         return FindFirstClassAttrFromExtends(extends_dec, attr_type, name, deep - 1);
 
@@ -996,7 +1008,7 @@ std::shared_ptr<ABnfElement> ALittleScriptUtility::FindFirstClassAttrFromExtends
 }
 
 // 根据名称，查找函数的参数列表
-void ALittleScriptUtility::FindMethodParamNameDecList(std::shared_ptr<ABnfElement> method_dec, const std::string& name, std::vector<std::shared_ptr<ALittleScriptMethodParamNameDecElement>>& result)
+void ALittleScriptUtility::FindMethodParamNameDecList(const std::shared_ptr<ABnfElement>& method_dec, const std::string& name, std::vector<std::shared_ptr<ALittleScriptMethodParamNameDecElement>>& result)
 {
     result.resize(0);
 
@@ -1028,7 +1040,7 @@ void ALittleScriptUtility::FindMethodParamNameDecList(std::shared_ptr<ABnfElemen
         auto method_setter_param_dec = std::dynamic_pointer_cast<ALittleScriptClassSetterDecElement>(method_dec)->GetMethodSetterParamDec();
         if (method_setter_param_dec != nullptr)
         {
-            auto param_one_dec = method_setter_param_dec->GetMethodParamOneDec();
+            const auto param_one_dec = method_setter_param_dec->GetMethodParamOneDec();
             if (param_one_dec != nullptr)
                 param_one_dec_list.push_back(param_one_dec);
         }
@@ -1052,7 +1064,7 @@ void ALittleScriptUtility::FindMethodParamNameDecList(std::shared_ptr<ABnfElemen
 }
 
 // 根据名称，查找变量名所在的定义元素
-void ALittleScriptUtility::FindVarAssignNameDecList(std::shared_ptr<ABnfElement> element, const std::string& name, std::vector<std::shared_ptr<ALittleScriptVarAssignNameDecElement>>& result)
+void ALittleScriptUtility::FindVarAssignNameDecList(const std::shared_ptr<ABnfElement>& element, const std::string& name, std::vector<std::shared_ptr<ALittleScriptVarAssignNameDecElement>>& result)
 {
     result.resize(0);
 
@@ -1067,22 +1079,22 @@ void ALittleScriptUtility::FindVarAssignNameDecList(std::shared_ptr<ABnfElement>
         }
         if (std::dynamic_pointer_cast<ALittleScriptForStartStatElement>(parent))
         {
-            auto for_step_condition = std::dynamic_pointer_cast<ALittleScriptForStepConditionElement>(parent->GetParent());
+            const auto for_step_condition = std::dynamic_pointer_cast<ALittleScriptForStepConditionElement>(parent->GetParent());
             if (for_step_condition == nullptr) break;
-            auto for_condition = std::dynamic_pointer_cast<ALittleScriptForConditionElement>(for_step_condition->GetParent());
+            const auto for_condition = std::dynamic_pointer_cast<ALittleScriptForConditionElement>(for_step_condition->GetParent());
             if (for_condition == nullptr) break;
-            auto for_expr = std::dynamic_pointer_cast<ALittleScriptForExprElement>(for_condition->GetParent());
+            const auto for_expr = std::dynamic_pointer_cast<ALittleScriptForExprElement>(for_condition->GetParent());
             if (for_expr == nullptr) break;
-            auto all_expr = std::dynamic_pointer_cast<ALittleScriptAllExprElement>(for_expr->GetParent());
+            const auto all_expr = std::dynamic_pointer_cast<ALittleScriptAllExprElement>(for_expr->GetParent());
             if (all_expr == nullptr) break;
             FindVarAssignNameDecList(all_expr, result, name);
             break;
         }
         if (std::dynamic_pointer_cast<ALittleScriptForStepConditionElement>(parent))
         {
-            auto for_condition = std::dynamic_pointer_cast<ALittleScriptForConditionElement>(parent->GetParent());
+            const auto for_condition = std::dynamic_pointer_cast<ALittleScriptForConditionElement>(parent->GetParent());
             if (for_condition == nullptr) break;
-            auto for_expr = std::dynamic_pointer_cast<ALittleScriptForExprElement>(for_condition->GetParent());
+            const auto for_expr = std::dynamic_pointer_cast<ALittleScriptForExprElement>(for_condition->GetParent());
             if (for_expr == nullptr) break;
             FindVarAssignNameDecList(for_expr, result, name);
             break;
@@ -1092,7 +1104,7 @@ void ALittleScriptUtility::FindVarAssignNameDecList(std::shared_ptr<ABnfElement>
 }
 
 // 根据名称，查找定义表达式名列表
-void ALittleScriptUtility::FindVarAssignNameDecList(std::shared_ptr<ALittleScriptAllExprElement> all_expr, std::vector<std::shared_ptr<ALittleScriptVarAssignNameDecElement>>& result, const std::string& name)
+void ALittleScriptUtility::FindVarAssignNameDecList(const std::shared_ptr<ALittleScriptAllExprElement>& all_expr, std::vector<std::shared_ptr<ALittleScriptVarAssignNameDecElement>>& result, const std::string& name)
 {
     auto parent = all_expr->GetParent();
     std::vector<std::shared_ptr<ALittleScriptAllExprElement>> all_expr_list;
@@ -1119,7 +1131,7 @@ void ALittleScriptUtility::FindVarAssignNameDecList(std::shared_ptr<ALittleScrip
             all_expr_list.push_back(cur_expr->GetAllExpr());
         }
 
-        auto for_condition = cur_expr->GetForCondition();
+        const auto for_condition = cur_expr->GetForCondition();
         if (for_condition != nullptr)
             FindVarAssignNameDecList(for_condition, result, name);
     }
@@ -1205,7 +1217,7 @@ void ALittleScriptUtility::FindVarAssignNameDecList(std::shared_ptr<ALittleScrip
 
         // 获取变量名列表
         const auto& var_assign_dec_list = var_assign_expr->GetVarAssignDecList();
-        for (auto& var_assign_dec : var_assign_dec_list)
+        for (const auto& var_assign_dec : var_assign_dec_list)
         {
             auto var_assign_name_dec = var_assign_dec->GetVarAssignNameDec();
             if (var_assign_name_dec == nullptr) continue;
@@ -1228,7 +1240,7 @@ bool ALittleScriptUtility::IsPairsFunction(const std::vector<ABnfGuessPtr>& gues
     // 函数不能带proto
     if (!guess->proto.empty()) return false;
     // 函数不能是模板函数
-    if (guess->template_param_list.size() > 0) return false;
+    if (!guess->template_param_list.empty()) return false;
     // 函数参数必须是2个
     if (guess->param_list.size() != 2) return false;
     if (guess->param_nullable_list.size() != 2) return false;
@@ -1236,24 +1248,24 @@ bool ALittleScriptUtility::IsPairsFunction(const std::vector<ABnfGuessPtr>& gues
     if (guess->param_nullable_list[0]) return false;
     if (guess->param_nullable_list[1]) return false;
     // 函数不能有参数占位符
-    auto param_tail_e = guess->param_tail.lock();
+    const auto param_tail_e = guess->param_tail.lock();
     if (param_tail_e != nullptr) return false;
     // 函数必须有返回值，可以是任意个，这个也表示for的变量列表的数量
-    if (guess->return_list.size() > 0) return false;
+    if (!guess->return_list.empty()) return false;
     // 函数不能有返回值占位符
-    auto return_tail_e = guess->return_tail.lock();
+    const auto return_tail_e = guess->return_tail.lock();
     if (return_tail_e != nullptr) return false;
     // 函数的第一个参数必须和guess_list第二个参数一致
-    auto param_list_0 = guess->param_list[0].lock();
+    const auto param_list_0 = guess->param_list[0].lock();
     if (param_list_0 == nullptr || param_list_0->GetValue() != guess_list[1]->GetValue()) return false;
     // 函数的第二个参数必须和guess_list第二个参数一致
-    auto param_list_1 = guess->param_list[1].lock();
+    const auto param_list_1 = guess->param_list[1].lock();
     if (param_list_1 == nullptr || param_list_1->GetValue() != guess_list[2]->GetValue()) return false;
     return true;
 }
 
 // 计算表达式需要使用什么样的变量方式
-ABnfGuessError ALittleScriptUtility::CalcPairsTypeForLua(std::shared_ptr<ALittleScriptValueStatElement> value_stat, std::string& result)
+ABnfGuessError ALittleScriptUtility::CalcPairsTypeForLua(const std::shared_ptr<ALittleScriptValueStatElement>& value_stat, std::string& result)
 {
     result = "";
     std::vector<ABnfGuessPtr> guess_list;
@@ -1279,7 +1291,7 @@ ABnfGuessError ALittleScriptUtility::CalcPairsTypeForLua(std::shared_ptr<ALittle
 }
 
 // 计算表达式在for中使用in还是of
-ABnfGuessError ALittleScriptUtility::CalcPairsTypeForJavaScript(std::shared_ptr<ALittleScriptValueStatElement> value_stat, std::string& result, bool& is_native)
+ABnfGuessError ALittleScriptUtility::CalcPairsTypeForJavaScript(const std::shared_ptr<ALittleScriptValueStatElement>& value_stat, std::string& result, bool& is_native)
 {
     result = "Other";
     is_native = false;
@@ -1310,7 +1322,7 @@ ABnfGuessError ALittleScriptUtility::CalcPairsTypeForJavaScript(std::shared_ptr<
 }
 
 // 判断 parent是否是child的父类
-ABnfGuessError ALittleScriptUtility::IsClassSuper(std::shared_ptr<ALittleScriptClassDecElement> child, const std::string& parent, bool& result)
+ABnfGuessError ALittleScriptUtility::IsClassSuper(const std::shared_ptr<ALittleScriptClassDecElement>& child, const std::string& parent, bool& result)
 {
     result = false;
     // 获取继承
@@ -1327,7 +1339,7 @@ ABnfGuessError ALittleScriptUtility::IsClassSuper(std::shared_ptr<ALittleScriptC
     if (error) return error;
 
     // 继续判断父类的父类
-    auto guess_class = std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess);
+    const auto guess_class = std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess);
     if (guess_class == nullptr) return nullptr;
 
     // 检查是否一致
@@ -1341,7 +1353,7 @@ ABnfGuessError ALittleScriptUtility::IsClassSuper(std::shared_ptr<ALittleScriptC
 }
 
 // 判断 parent是否是child的父类
-ABnfGuessError ALittleScriptUtility::IsStructSuper(std::shared_ptr<ABnfElement> child, const std::string& parent, bool& result)
+ABnfGuessError ALittleScriptUtility::IsStructSuper(const std::shared_ptr<ABnfElement>& child, const std::string& parent, bool& result)
 {
     result = false;
 
@@ -1362,7 +1374,7 @@ ABnfGuessError ALittleScriptUtility::IsStructSuper(std::shared_ptr<ABnfElement> 
     if (error) return error;
 
     // 继续判断父结构体的父结构体
-    auto guess_struct = std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess);
+    const auto guess_struct = std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess);
     if (guess_struct == nullptr) return nullptr;
 
     // 判断是否一致
@@ -1378,7 +1390,7 @@ ABnfGuessError ALittleScriptUtility::IsStructSuper(std::shared_ptr<ABnfElement> 
 // 获取目标根路径
 std::string ALittleScriptUtility::CalcRootFullPath(const std::string& project_path, const std::string& ext)
 {
-    std::string out_pre = "";
+    std::string out_pre;
     if (ext == "js") out_pre = "JS";
     return project_path + out_pre + "Script/";
 }
@@ -1387,7 +1399,7 @@ std::string ALittleScriptUtility::CalcRootFullPath(const std::string& project_pa
 std::string ALittleScriptUtility::CalcTargetFullPath(const std::string& project_path, const std::string& ali_full_path, const std::string& ext, std::string& error)
 {
     error = "";
-    std::string ali_rel_path = ChangeFileExtByPath(ali_full_path.substr(project_path.size()), ext);
+    const std::string ali_rel_path = ChangeFileExtByPath(ali_full_path.substr(project_path.size()), ext);
     if (ali_rel_path.find("src/") != 0)
     {
         error = u8"请把代码文件工程目录下的src文件夹中:" + project_path + "src/";
@@ -1398,7 +1410,7 @@ std::string ALittleScriptUtility::CalcTargetFullPath(const std::string& project_
 }
 
 // 判断ValueStat
-ABnfGuessError ALittleScriptUtility::CalcReturnCount(std::shared_ptr<ALittleScriptValueStatElement> value_stat, int& count, std::vector<ABnfGuessPtr>& guess_list)
+ABnfGuessError ALittleScriptUtility::CalcReturnCount(const std::shared_ptr<ALittleScriptValueStatElement>& value_stat, int& count, std::vector<ABnfGuessPtr>& guess_list)
 {
     count = 0;
     // 获取右边表达式的
@@ -1406,22 +1418,22 @@ ABnfGuessError ALittleScriptUtility::CalcReturnCount(std::shared_ptr<ALittleScri
     if (error) return error;
 
     count = static_cast<int>(guess_list.size());
-    if (guess_list.size() > 0 && std::dynamic_pointer_cast<ALittleScriptGuessReturnTail>(guess_list.back()))
+    if (!guess_list.empty() && std::dynamic_pointer_cast<ALittleScriptGuessReturnTail>(guess_list.back()))
         count = -1;
 
     return nullptr;
 }
 
-void ALittleScriptUtility::FindVarAssignNameDecList(std::shared_ptr<ALittleScriptForExprElement> for_expr, std::vector<std::shared_ptr<ALittleScriptVarAssignNameDecElement>>& result, const std::string& name)
+void ALittleScriptUtility::FindVarAssignNameDecList(const std::shared_ptr<ALittleScriptForExprElement>& for_expr, std::vector<std::shared_ptr<ALittleScriptVarAssignNameDecElement>>& result, const std::string& name)
 {
     FindVarAssignNameDecList(std::dynamic_pointer_cast<ALittleScriptAllExprElement>(for_expr->GetParent()), result, name);
 
-    auto for_condition = for_expr->GetForCondition();
+    const auto for_condition = for_expr->GetForCondition();
     if (for_condition != nullptr)
         FindVarAssignNameDecList(for_condition, result, name);
 }
 
-void ALittleScriptUtility::FindVarAssignNameDecList(std::shared_ptr<ALittleScriptForConditionElement> for_condition, std::vector<std::shared_ptr<ALittleScriptVarAssignNameDecElement>>& result, const std::string& name)
+void ALittleScriptUtility::FindVarAssignNameDecList(const std::shared_ptr<ALittleScriptForConditionElement>& for_condition, std::vector<std::shared_ptr<ALittleScriptVarAssignNameDecElement>>& result, const std::string& name)
 {
     auto for_pair_dec = for_condition->GetForPairDec();
     if (for_pair_dec != nullptr)
@@ -1429,7 +1441,7 @@ void ALittleScriptUtility::FindVarAssignNameDecList(std::shared_ptr<ALittleScrip
         // 步进式的for有一个临时变量
         if (for_condition->GetForStepCondition() != nullptr)
         {
-            auto start_stat = for_condition->GetForStepCondition()->GetForStartStat();
+            const auto start_stat = for_condition->GetForStepCondition()->GetForStartStat();
             if (start_stat != nullptr)
             {
                 auto var_assign_name_dec = for_pair_dec->GetVarAssignNameDec();
@@ -1446,7 +1458,7 @@ void ALittleScriptUtility::FindVarAssignNameDecList(std::shared_ptr<ALittleScrip
             const auto& pair_dec_list_temp = for_condition->GetForInCondition()->GetForPairDecList();
             std::vector<std::shared_ptr<ALittleScriptForPairDecElement>> pair_dec_list;
             pair_dec_list.push_back(for_pair_dec);
-            for (auto& pair_dec : pair_dec_list_temp) pair_dec_list.push_back(pair_dec);
+            for (const auto& pair_dec : pair_dec_list_temp) pair_dec_list.push_back(pair_dec);
 
             for (auto& pair_dec : pair_dec_list)
             {

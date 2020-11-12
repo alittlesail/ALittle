@@ -7,8 +7,8 @@
 class ABnfStringReference : public ABnfCommonReference
 {
 public:
-    ABnfStringReference(ABnfElementPtr element);
-    virtual ~ABnfStringReference() {}
+    ABnfStringReference(const ABnfElementPtr& element);
+    virtual ~ABnfStringReference() = default;
 
     ABnfGuessError CheckError() override;
 };

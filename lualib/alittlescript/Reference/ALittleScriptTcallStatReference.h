@@ -8,8 +8,8 @@
 class ALittleScriptTcallStatReference : public ALittleScriptReferenceTemplate<ALittleScriptTcallStatElement>
 {
 public:
-    ALittleScriptTcallStatReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptTcallStatElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptTcallStatReference(element); }
+    ALittleScriptTcallStatReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptTcallStatElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptTcallStatReference(element); }
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 
     ABnfGuessError CheckError() override;

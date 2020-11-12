@@ -19,8 +19,8 @@ ABnfElementPtr ABnfLeafElement::GetException(int offset)
 // 根据偏移位置，获取期望的元素
 ABnfElementPtr ABnfLeafElement::GetException(int it_line, int it_char)
 {
-    auto start_line = GetStartLine();
-    auto end_line = GetEndLine();
+    const auto start_line = GetStartLine();
+    const auto end_line = GetEndLine();
 
     if (start_line > it_line) return nullptr;
     if (end_line < it_line) return nullptr;
@@ -38,7 +38,7 @@ void ABnfLeafElement::CalcEnd()
 
     for (size_t i = 0; i < m_value.size(); ++i)
     {
-        char value = m_file->GetText()[m_start + i];
+        const char value = m_file->GetText()[m_start + i];
         if (value == '\n')
         {
             m_end_col = 1;

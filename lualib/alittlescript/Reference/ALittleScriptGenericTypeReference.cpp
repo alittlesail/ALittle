@@ -36,7 +36,7 @@ ABnfGuessError ALittleScriptGenericTypeReference::GuessTypes(std::vector<ABnfGue
         auto error = all_type->GuessType(guess);
         if (error) return error;
 
-        auto info = ABnfGuessPtr(new ALittleScriptGuessList(guess, false, false));
+        auto info = std::static_pointer_cast<ABnfGuess>(std::make_shared<ALittleScriptGuessList>(guess, false, false));
         info->UpdateValue();
         element->GetFile()->AddGuessType(info);
         guess_list.push_back(info);
@@ -56,7 +56,8 @@ ABnfGuessError ALittleScriptGenericTypeReference::GuessTypes(std::vector<ABnfGue
         error = all_type_list[1]->GuessType(value_guess);
         if (error) return error;
 
-        auto info = ABnfGuessPtr(new ALittleScriptGuessMap(key_guess, value_guess, false));
+        auto info = std::static_pointer_cast<ABnfGuess>(
+	        std::make_shared<ALittleScriptGuessMap>(key_guess, value_guess, false));
         info->UpdateValue();
         element->GetFile()->AddGuessType(info);
         guess_list.push_back(info);
@@ -66,7 +67,7 @@ ABnfGuessError ALittleScriptGenericTypeReference::GuessTypes(std::vector<ABnfGue
     {
         auto dec = element->GetGenericFunctorType();
 
-        auto info = std::shared_ptr<ALittleScriptGuessFunctor>(new ALittleScriptGuessFunctor(element));
+        auto info = std::make_shared<ALittleScriptGuessFunctor>(element);
         // 处理是不是const
         info->const_modifier = dec->GetAllTypeConst() != nullptr;
         // 处理是不是await
@@ -77,7 +78,7 @@ ABnfGuessError ALittleScriptGenericTypeReference::GuessTypes(std::vector<ABnfGue
         if (param_type != nullptr)
         {
             const auto& param_one_list = param_type->GetGenericFunctorParamOneTypeList();
-            for (int i = 0; i < param_one_list.size(); ++i)
+            for (size_t i = 0; i < param_one_list.size(); ++i)
             {
                 auto param_one = param_one_list[i];
                 auto all_type = param_one->GetAllType();
@@ -97,7 +98,8 @@ ABnfGuessError ALittleScriptGenericTypeReference::GuessTypes(std::vector<ABnfGue
                         return ABnfGuessError(param_one, u8"未知类型");
                     if (i + 1 != param_one_list.size())
                         return ABnfGuessError(param_one, u8"参数占位符必须定义在最后");
-                    auto cache = ABnfGuessPtr(new ALittleScriptGuessParamTail(param_tail->GetElementText()));
+                    auto cache = std::static_pointer_cast<ABnfGuess>(
+	                    std::make_shared<ALittleScriptGuessParamTail>(param_tail->GetElementText()));
                     info->param_tail = cache;
                     element->GetFile()->AddGuessType(cache);
                 }
@@ -127,7 +129,8 @@ ABnfGuessError ALittleScriptGenericTypeReference::GuessTypes(std::vector<ABnfGue
                         return ABnfGuessError(return_one, u8"未知类型");
                     if (i + 1 != return_one_list.size())
                         return ABnfGuessError(return_one, u8"返回值占位符必须定义在最后");
-                    auto cache = ABnfGuessPtr(new ALittleScriptGuessParamTail(return_tail->GetElementText()));
+                    auto cache = std::static_pointer_cast<ABnfGuess>(
+	                    std::make_shared<ALittleScriptGuessParamTail>(return_tail->GetElementText()));
                     info->return_tail = cache;
                     element->GetFile()->AddGuessType(cache);
                 }
@@ -150,7 +153,7 @@ ABnfGuessError ALittleScriptGenericTypeReference::CheckError()
     if (element->GetGenericListType() != nullptr)
     {
         auto dec = element->GetGenericListType();
-        auto all_type = dec->GetAllType();
+        const auto all_type = dec->GetAllType();
         if (all_type == nullptr) return ABnfGuessError(element, u8"没有定义元素类型");
     }
     // 处理Map

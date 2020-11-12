@@ -12,8 +12,8 @@ private:
     std::string m_namespace_name;
     std::string m_key;
 public:
-    ALittleScriptClassNameDecReference(ABnfElementPtr element);
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptClassNameDecReference(element); }
+    ALittleScriptClassNameDecReference(const ABnfElementPtr& element);
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptClassNameDecReference(element); }
 
     int QueryClassificationTag(bool& blur) override;
 
@@ -24,7 +24,7 @@ public:
     ABnfElementPtr GotoDefinition() override;
 
     // 输入智能补全
-    bool QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list) override;
+    bool QueryCompletion(const ABnfElementPtr& select, std::vector<ALanguageCompletionInfo>& list) override;
 };
 
 #endif // _ALITTLE_ALITTLESCRIPTCLASSNAMEDECREFERENCE_H_

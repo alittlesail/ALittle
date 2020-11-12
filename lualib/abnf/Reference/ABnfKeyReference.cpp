@@ -1,13 +1,9 @@
 
 #include "ABnfKeyReference.h"
 #include "../../alanguage/Model/ABnfElement.h"
-#include "../../alanguage/Model/ABnfNodeElement.h"
 #include "../../alanguage/Model/ABnf.h"
-#include "../Index/ABnfFileClass.h"
 
-#include <unordered_set>
-
-ABnfKeyReference::ABnfKeyReference(ABnfElementPtr element) : ABnfCommonReference(element)
+ABnfKeyReference::ABnfKeyReference(const ABnfElementPtr& element) : ABnfCommonReference(element)
 {
 }
 

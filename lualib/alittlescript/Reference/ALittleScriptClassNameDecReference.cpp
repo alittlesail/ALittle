@@ -10,7 +10,7 @@
 #include "../Index/ALittleScriptOp.h"
 #include "../Guess/ALittleScriptGuessClass.h"
 
-ALittleScriptClassNameDecReference::ALittleScriptClassNameDecReference(ABnfElementPtr p_element) : ALittleScriptReferenceTemplate<ALittleScriptClassNameDecElement>(p_element)
+ALittleScriptClassNameDecReference::ALittleScriptClassNameDecReference(const ABnfElementPtr& p_element) : ALittleScriptReferenceTemplate<ALittleScriptClassNameDecElement>(p_element)
 {
     auto element = m_element.lock();
     if (element == nullptr) return;
@@ -18,7 +18,7 @@ ALittleScriptClassNameDecReference::ALittleScriptClassNameDecReference(ABnfEleme
     m_namespace_name = ALittleScriptUtility::GetNamespaceName(element);
 
     // 如果父节点是extends，那么就获取指定的命名域
-    auto parent = element->GetParent();
+    const auto parent = element->GetParent();
     auto extends = std::dynamic_pointer_cast<ALittleScriptClassExtendsDecElement>(parent);
     if (extends != nullptr)
     {
@@ -38,7 +38,7 @@ int ALittleScriptClassNameDecReference::QueryClassificationTag(bool& blur)
 
 ABnfGuessError ALittleScriptClassNameDecReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
 {
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"节点失效");
     guess_list.resize(0);
     auto parent = element->GetParent();
@@ -74,7 +74,7 @@ ABnfGuessError ALittleScriptClassNameDecReference::GuessTypes(std::vector<ABnfGu
                 return ABnfGuessError(element, u8"继承的不是一个类, namespace:" + m_namespace_name + ", key:" + m_key);
 
             auto guess_class = std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess);
-            if (guess_class->template_list.size() > 0)
+            if (!guess_class->template_list.empty())
             {
                 auto sub_class = std::dynamic_pointer_cast<ALittleScriptClassDecElement>(parent->GetParent());
                 if (sub_class == nullptr)
@@ -88,7 +88,7 @@ ABnfGuessError ALittleScriptClassNameDecReference::GuessTypes(std::vector<ABnfGu
                 if (sub_template_pair_list.size() < guess_class->template_list.size())
                     return ABnfGuessError(parent, u8"子类的模板参数列表必须涵盖父类的模板参数列表");
 
-                for (int i = 0; i < guess_class->template_list.size(); ++i)
+                for (size_t i = 0; i < guess_class->template_list.size(); ++i)
                 {
                     ABnfGuessPtr sub_template;
                     error = sub_template_pair_list[i]->GuessType(sub_template);
@@ -128,7 +128,7 @@ ABnfGuessError ALittleScriptClassNameDecReference::CheckError()
 
 ABnfElementPtr ALittleScriptClassNameDecReference::GotoDefinition()
 {
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return nullptr;
 
     auto* index = GetIndex();
@@ -139,9 +139,9 @@ ABnfElementPtr ALittleScriptClassNameDecReference::GotoDefinition()
 }
 
 // 输入智能补全
-bool ALittleScriptClassNameDecReference::QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
+bool ALittleScriptClassNameDecReference::QueryCompletion(const ABnfElementPtr& select, std::vector<ALanguageCompletionInfo>& list)
 {
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return false;
 
     auto* index = GetIndex();

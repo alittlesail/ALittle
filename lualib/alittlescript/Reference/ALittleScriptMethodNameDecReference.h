@@ -13,8 +13,8 @@ private:
     std::string m_key;
 
 public:
-    ALittleScriptMethodNameDecReference(ABnfElementPtr element);
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptMethodNameDecReference(element); }
+    ALittleScriptMethodNameDecReference(const ABnfElementPtr& element);
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptMethodNameDecReference(element); }
 
     int QueryClassificationTag(bool& blur) override;
 
@@ -22,7 +22,7 @@ public:
 
     ABnfGuessError CheckError() override;
 
-    bool QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list) override;
+    bool QueryCompletion(const ABnfElementPtr& select, std::vector<ALanguageCompletionInfo>& list) override;
 
     ABnfElementPtr GotoDefinition() override;
 };

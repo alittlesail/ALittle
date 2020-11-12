@@ -7,7 +7,7 @@ ABnfGuessError ALittleScriptWrapValueStatReference::GuessTypes(std::vector<ABnfG
 {
     auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"½ÚµãÊ§Ð§");
-    auto value_stat = element->GetValueStat();
+    const auto value_stat = element->GetValueStat();
     if (value_stat != nullptr)
     {
         int return_count = 0;

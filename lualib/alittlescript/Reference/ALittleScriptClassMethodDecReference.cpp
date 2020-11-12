@@ -18,7 +18,7 @@ ABnfGuessError ALittleScriptClassMethodDecReference::CheckError()
     if (parent == nullptr)
         return ABnfGuessError(element, u8"ALittleScriptClassMethodDecElement的父节点不是ALittleScriptClassElementDecElement");
 
-    auto co_text = ALittleScriptUtility::GetCoroutineType(parent->GetModifierList());
+    const auto co_text = ALittleScriptUtility::GetCoroutineType(parent->GetModifierList());
 
     int return_count = 0;
     auto return_dec = element->GetMethodReturnDec();

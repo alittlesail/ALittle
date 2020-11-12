@@ -8,8 +8,8 @@
 class ALittleScriptStructVarDecReference : public ALittleScriptReferenceTemplate<ALittleScriptStructVarDecElement>
 {
 public:
-    ALittleScriptStructVarDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptStructVarDecElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptStructVarDecReference(element); }
+    ALittleScriptStructVarDecReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptStructVarDecElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptStructVarDecReference(element); }
     ABnfGuessError GuessTypes(std::vector<ABnfGuessPtr>& guess_list) override;
 };
 

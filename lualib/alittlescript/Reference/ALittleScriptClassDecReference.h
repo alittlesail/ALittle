@@ -12,8 +12,8 @@ private:
     std::string m_namespace_name;
 
 public:
-    ALittleScriptClassDecReference(ABnfElementPtr element);
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptClassDecReference(element); }
+    ALittleScriptClassDecReference(const ABnfElementPtr& element);
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptClassDecReference(element); }
 
     ABnfGuessError CheckError() override;
 

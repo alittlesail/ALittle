@@ -9,8 +9,8 @@
 class ALittleScriptClassElementDecReference : public ALittleScriptReferenceTemplate<ALittleScriptClassElementDecElement>
 {
 public:
-    ALittleScriptClassElementDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptClassElementDecElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptClassElementDecReference(element); }
+    ALittleScriptClassElementDecReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptClassElementDecElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptClassElementDecReference(element); }
     ABnfGuessError CheckError() override;
 
     int QueryClassificationTag(bool& blur) override;

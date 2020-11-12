@@ -10,7 +10,7 @@
 #include "../Generate/ALittleScriptStructNameDecElement.h"
 
 ALittleScriptGuessStructName::ALittleScriptGuessStructName(const std::string& p_namespace_name, const std::string& p_struct_name
-    , std::shared_ptr<ALittleScriptStructNameDecElement> p_struct_name_dec)
+    , const std::shared_ptr<ALittleScriptStructNameDecElement>& p_struct_name_dec)
 {
     is_register = ALittleScriptUtility::IsRegister(p_struct_name_dec);
     namespace_name = p_namespace_name;
@@ -32,7 +32,7 @@ ABnfGuessPtr ALittleScriptGuessStructName::ReplaceTemplate(ABnfFile* file, const
 
 ABnfGuessPtr ALittleScriptGuessStructName::Clone() const
 {
-    return ABnfGuessPtr(new ALittleScriptGuessStructName(namespace_name, struct_name, struct_name_dec.lock()));
+    return std::make_shared<ALittleScriptGuessStructName>(namespace_name, struct_name, struct_name_dec.lock());
 }
 
 void ALittleScriptGuessStructName::UpdateValue()
@@ -43,7 +43,7 @@ void ALittleScriptGuessStructName::UpdateValue()
 
 bool ALittleScriptGuessStructName::IsChanged() const
 {
-    auto element = struct_name_dec.lock();
+    const auto element = struct_name_dec.lock();
     if (element == nullptr) return true;
 
     return dynamic_cast<ALittleScriptIndex*>(element->GetFile()->GetProject())->GetGuessTypeList(element) == nullptr;

@@ -35,11 +35,10 @@
 #include "../Generate/ALittleScriptOp2StatElement.h"
 #include "../Generate/ALittleScriptOp2ValueElement.h"
 #include "../Generate/ALittleScriptOp2Element.h"
+#include "../Generate/ALittleScriptStructDecElement.h"
 
 #include "../Generate/ALittleScriptValueFactorStatElement.h"
 #include "../Generate/ALittleScriptValueOpStatElement.h"
-#include "../Generate/ALittleScriptStructDecElement.h"
-#include "../Generate/ALittleScriptClassDecElement.h"
 
 #include "../Guess/ALittleScriptGuessPrimitive.h"
 #include "../Guess/ALittleScriptGuessTemplate.h"
@@ -52,10 +51,10 @@
 #include "../Index/ALittleScriptIndex.h"
 #include "../Index/ALittleScriptUtility.h"
 
-ABnfGuessError ALittleScriptOp::GuessTypeForOp8Impl(const std::string& op_string, ABnfElementPtr left_src, ABnfGuessPtr left_guess_type, ABnfElementPtr right_src, ABnfGuessPtr right_guess_type, std::shared_ptr<ALittleScriptOp8SuffixElement> op_8_suffix, ABnfGuessPtr& guess)
+ABnfGuessError ALittleScriptOp::GuessTypeForOp8Impl(const std::string& op_string, const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
+    , const ABnfElementPtr& right_src, const ABnfGuessPtr& right_guess_type
+    , const std::shared_ptr<ALittleScriptOp8SuffixElement>& op_8_suffix, ABnfGuessPtr& guess)
 {
-    guess = nullptr;
-
     if (!std::dynamic_pointer_cast<ALittleScriptGuessBool>(left_guess_type))
         return ABnfGuessError(left_src, op_string + u8"运算符左边必须是bool类型.不能是:" + left_guess_type->GetValue());
 
@@ -66,9 +65,9 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp8Impl(const std::string& op_string
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptOp::GuessTypeForOp8(ABnfElementPtr left_src, ABnfGuessPtr left_guess_type, std::shared_ptr<ALittleScriptOp8SuffixElement> op_8_suffix, ABnfGuessPtr& guess)
+ABnfGuessError ALittleScriptOp::GuessTypeForOp8(const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
+    , const std::shared_ptr<ALittleScriptOp8SuffixElement>& op_8_suffix, ABnfGuessPtr& guess)
 {
-    guess = nullptr;
     const auto& op_string = op_8_suffix->GetOp8()->GetElementText();
 
     ABnfGuessPtr suffix_guess_type;
@@ -94,7 +93,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp8(ABnfElementPtr left_src, ABnfGue
     }
 
     const auto& suffix_ee_list = op_8_suffix->GetOp8SuffixEeList();
-    for (auto& suffix_ee : suffix_ee_list)
+    for (const auto& suffix_ee : suffix_ee_list)
     {
         if (suffix_ee->GetOp3Suffix() != nullptr)
         {
@@ -135,9 +134,9 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp8(ABnfElementPtr left_src, ABnfGue
     return GuessTypeForOp8Impl(op_string, left_src, left_guess_type, last_src, suffix_guess_type, op_8_suffix, guess);
 }
 
-ABnfGuessError ALittleScriptOp::GuessTypeForOp7(ABnfElementPtr left_src, ABnfGuessPtr left_guess_type, std::shared_ptr<ALittleScriptOp7SuffixElement> op_7_suffix, ABnfGuessPtr& guess)
+ABnfGuessError ALittleScriptOp::GuessTypeForOp7(const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
+    , const std::shared_ptr<ALittleScriptOp7SuffixElement>& op_7_suffix, ABnfGuessPtr& guess)
 {
-    guess = nullptr;
     const auto& op_string = op_7_suffix->GetOp7()->GetElementText();
 
     ABnfGuessPtr suffix_guess_type;
@@ -163,7 +162,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp7(ABnfElementPtr left_src, ABnfGue
     }
 
     const auto& suffix_ee_list = op_7_suffix->GetOp7SuffixEeList();
-    for (auto& suffix_ee : suffix_ee_list)
+    for (const auto& suffix_ee : suffix_ee_list)
     {
         if (suffix_ee->GetOp3Suffix() != nullptr)
         {
@@ -198,9 +197,9 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp7(ABnfElementPtr left_src, ABnfGue
     return GuessTypeForOp7Impl(op_string, left_src, left_guess_type, last_src, suffix_guess_type, op_7_suffix, guess);
 }
 
-ABnfGuessError ALittleScriptOp::GuessTypeForOp6Impl(const std::string& op_string, ABnfElementPtr left_src, ABnfGuessPtr left_guess_type, ABnfElementPtr right_src, ABnfGuessPtr right_guess_type, std::shared_ptr<ALittleScriptOp6SuffixElement> op_6_suffix, ABnfGuessPtr& guess)
+ABnfGuessError ALittleScriptOp::GuessTypeForOp6Impl(const std::string& op_string, const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
+    , const ABnfElementPtr& right_src, const ABnfGuessPtr& right_guess_type, const std::shared_ptr<ALittleScriptOp6SuffixElement>& op_6_suffix, ABnfGuessPtr& guess)
 {
-    guess = nullptr;
     if (op_string == "==" || op_string == "!=")
     {
         if (std::dynamic_pointer_cast<ALittleScriptGuessAny>(left_guess_type) || left_guess_type->GetValue() == "null"
@@ -261,16 +260,16 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp6Impl(const std::string& op_string
     }
 }
 
-ABnfGuessError ALittleScriptOp::GuessTypeForOp6(ABnfElementPtr left_src, ABnfGuessPtr left_guess_type, std::shared_ptr<ALittleScriptOp6SuffixElement> op_6_suffix, ABnfGuessPtr& guess)
+ABnfGuessError ALittleScriptOp::GuessTypeForOp6(const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
+    , const std::shared_ptr<ALittleScriptOp6SuffixElement>& op_6_suffix, ABnfGuessPtr& guess)
 {
-    guess = nullptr;
     const auto& op_string = op_6_suffix->GetOp6()->GetElementText();
 
     ABnfGuessPtr suffix_guess_type;
     ABnfElementPtr last_src;
 
     auto value_factor_stat = op_6_suffix->GetValueFactorStat();
-    auto op_2_value = op_6_suffix->GetOp2Value();
+    const auto op_2_value = op_6_suffix->GetOp2Value();
     if (value_factor_stat != nullptr)
     {
         auto error = value_factor_stat->GuessType(suffix_guess_type);
@@ -289,7 +288,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp6(ABnfElementPtr left_src, ABnfGue
     }
 
     const auto& suffix_ee_list = op_6_suffix->GetOp6SuffixEeList();
-    for (auto& suffix_ee : suffix_ee_list)
+    for (const auto& suffix_ee : suffix_ee_list)
     {
         if (suffix_ee->GetOp3Suffix() != nullptr)
         {
@@ -317,14 +316,14 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp6(ABnfElementPtr left_src, ABnfGue
     return GuessTypeForOp6Impl(op_string, left_src, left_guess_type, last_src, suffix_guess_type, op_6_suffix, guess);
 }
 
-ABnfGuessError ALittleScriptOp::GuessTypeForOp5Impl(const std::string& op_string, ABnfElementPtr left_src, ABnfGuessPtr left_guess_type, ABnfElementPtr right_src, ABnfGuessPtr right_guess_type, std::shared_ptr<ALittleScriptOp5SuffixElement> op_5_suffix, ABnfGuessPtr& guess)
+ABnfGuessError ALittleScriptOp::GuessTypeForOp5Impl(const std::string& op_string, const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
+    , const ABnfElementPtr& right_src, const ABnfGuessPtr& right_guess_type, const std::shared_ptr<ALittleScriptOp5SuffixElement>& op_5_suffix, ABnfGuessPtr& guess)
 {
-    guess = nullptr;
-    bool left_check = std::dynamic_pointer_cast<ALittleScriptGuessInt>(left_guess_type) || std::dynamic_pointer_cast<ALittleScriptGuessLong>(left_guess_type) || std::dynamic_pointer_cast<ALittleScriptGuessDouble>(left_guess_type) || std::dynamic_pointer_cast<ALittleScriptGuessString>(left_guess_type);
+    const bool left_check = std::dynamic_pointer_cast<ALittleScriptGuessInt>(left_guess_type) || std::dynamic_pointer_cast<ALittleScriptGuessLong>(left_guess_type) || std::dynamic_pointer_cast<ALittleScriptGuessDouble>(left_guess_type) || std::dynamic_pointer_cast<ALittleScriptGuessString>(left_guess_type);
     if (!left_check)
         return ABnfGuessError(left_src, op_string + u8"运算符左边必须是int,long,double,string类型.不能是:" + left_guess_type->GetValue());
 
-    bool right_check = std::dynamic_pointer_cast<ALittleScriptGuessInt>(right_guess_type) || std::dynamic_pointer_cast<ALittleScriptGuessLong>(right_guess_type) || std::dynamic_pointer_cast<ALittleScriptGuessDouble>(right_guess_type) || std::dynamic_pointer_cast<ALittleScriptGuessString>(right_guess_type);
+    const bool right_check = std::dynamic_pointer_cast<ALittleScriptGuessInt>(right_guess_type) || std::dynamic_pointer_cast<ALittleScriptGuessLong>(right_guess_type) || std::dynamic_pointer_cast<ALittleScriptGuessDouble>(right_guess_type) || std::dynamic_pointer_cast<ALittleScriptGuessString>(right_guess_type);
     if (!right_check)
         return ABnfGuessError(right_src, op_string + u8"运算符右边必须是int,long,double,string类型.不能是:" + right_guess_type->GetValue());
 
@@ -335,16 +334,16 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp5Impl(const std::string& op_string
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptOp::GuessTypeForOp5(ABnfElementPtr left_src, ABnfGuessPtr left_guess_type, std::shared_ptr<ALittleScriptOp5SuffixElement> op_5_suffix, ABnfGuessPtr& guess)
+ABnfGuessError ALittleScriptOp::GuessTypeForOp5(const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
+    , const std::shared_ptr<ALittleScriptOp5SuffixElement>& op_5_suffix, ABnfGuessPtr& guess)
 {
-    guess = nullptr;
     const auto& op_string = op_5_suffix->GetOp5()->GetElementText();
 
     ABnfGuessPtr suffix_guess_type;
     ABnfElementPtr last_src;
 
     auto value_factor_stat = op_5_suffix->GetValueFactorStat();
-    auto op_2_value = op_5_suffix->GetOp2Value();
+    const auto op_2_value = op_5_suffix->GetOp2Value();
     if (value_factor_stat != nullptr)
     {
         auto error = value_factor_stat->GuessType(suffix_guess_type);
@@ -363,7 +362,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp5(ABnfElementPtr left_src, ABnfGue
     }
 
     const auto& suffix_ee_list = op_5_suffix->GetOp5SuffixEeList();
-    for (auto& suffix_ee : suffix_ee_list)
+    for (const auto& suffix_ee : suffix_ee_list)
     {
         if (suffix_ee->GetOp3Suffix() != nullptr)
         {
@@ -386,9 +385,9 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp5(ABnfElementPtr left_src, ABnfGue
     return GuessTypeForOp5Impl(op_string, left_src, left_guess_type, last_src, suffix_guess_type, op_5_suffix, guess);
 }
 
-ABnfGuessError ALittleScriptOp::GuessTypeForOp4Impl(const std::string& op_string, ABnfElementPtr left_src, ABnfGuessPtr left_guess_type, ABnfElementPtr right_src, ABnfGuessPtr right_guess_type, std::shared_ptr<ALittleScriptOp4SuffixElement> op_4_suffix, ABnfGuessPtr& guess)
+ABnfGuessError ALittleScriptOp::GuessTypeForOp4Impl(const std::string& op_string, const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
+    , const ABnfElementPtr& right_src, const ABnfGuessPtr& right_guess_type, const std::shared_ptr<ALittleScriptOp4SuffixElement>& op_4_suffix, ABnfGuessPtr& guess)
 {
-    guess = nullptr;
     if (std::dynamic_pointer_cast<ALittleScriptGuessInt>(left_guess_type) || std::dynamic_pointer_cast<ALittleScriptGuessLong>(left_guess_type))
     {
         if (std::dynamic_pointer_cast<ALittleScriptGuessInt>(right_guess_type) || std::dynamic_pointer_cast<ALittleScriptGuessLong>(right_guess_type))
@@ -425,16 +424,16 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp4Impl(const std::string& op_string
     return ABnfGuessError(left_src, op_string + u8"运算符左边必须是int,long,double类型.不能是:" + left_guess_type->GetValue());
 }
 
-ABnfGuessError ALittleScriptOp::GuessTypeForOp4(ABnfElementPtr left_src, ABnfGuessPtr left_guess_type, std::shared_ptr<ALittleScriptOp4SuffixElement> op_4_suffix, ABnfGuessPtr& guess)
+ABnfGuessError ALittleScriptOp::GuessTypeForOp4(const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
+    , const std::shared_ptr<ALittleScriptOp4SuffixElement>& op_4_suffix, ABnfGuessPtr& guess)
 {
-    guess = nullptr;
     const auto& op_string = op_4_suffix->GetOp4()->GetElementText();
 
     ABnfGuessPtr suffix_guess_type;
     ABnfElementPtr last_src;
 
     auto value_factor_stat = op_4_suffix->GetValueFactorStat();
-    auto op_2_value = op_4_suffix->GetOp2Value();
+    const auto op_2_value = op_4_suffix->GetOp2Value();
     if (value_factor_stat != nullptr)
     {
         auto error = value_factor_stat->GuessType(suffix_guess_type);
@@ -453,7 +452,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp4(ABnfElementPtr left_src, ABnfGue
     }
 
     const auto& suffix_ee_list = op_4_suffix->GetOp4SuffixEeList();
-    for (auto& suffix_ee : suffix_ee_list)
+    for (const auto& suffix_ee : suffix_ee_list)
     {
         if (suffix_ee->GetOp3Suffix() != nullptr)
         {
@@ -470,16 +469,16 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp4(ABnfElementPtr left_src, ABnfGue
     return GuessTypeForOp4Impl(op_string, left_src, left_guess_type, last_src, suffix_guess_type, op_4_suffix, guess);
 }
 
-ABnfGuessError ALittleScriptOp::GuessTypeForOp3(ABnfElementPtr left_src, ABnfGuessPtr left_guess_type, std::shared_ptr<ALittleScriptOp3SuffixElement> op_3_suffix, ABnfGuessPtr& guess)
+ABnfGuessError ALittleScriptOp::GuessTypeForOp3(const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
+    , const std::shared_ptr<ALittleScriptOp3SuffixElement>& op_3_suffix, ABnfGuessPtr& guess)
 {
-    guess = nullptr;
     const auto& op_string = op_3_suffix->GetOp3()->GetElementText();
 
     ABnfGuessPtr right_guess_type;
     ABnfElementPtr right_src;
 
     auto value_factor_stat = op_3_suffix->GetValueFactorStat();
-    auto op_2_value = op_3_suffix->GetOp2Value();
+    const auto op_2_value = op_3_suffix->GetOp2Value();
     if (value_factor_stat != nullptr)
     {
         auto error = value_factor_stat->GuessType(right_guess_type);
@@ -575,9 +574,9 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp3(ABnfElementPtr left_src, ABnfGue
     return ABnfGuessError(left_src, op_string + u8"运算符左边必须是int,long,double类型.不能是:" + left_guess_type->GetValue());
 }
 
-ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp3StatElement> op_3_stat, ABnfGuessPtr& guess)
+ABnfGuessError ALittleScriptOp::GuessType(const std::shared_ptr<ALittleScriptValueFactorStatElement>& value_factor_stat
+    , const std::shared_ptr<ALittleScriptOp3StatElement>& op_3_stat, ABnfGuessPtr& guess)
 {
-    guess = nullptr;
     ABnfGuessPtr factor_guess_type;
     auto error = value_factor_stat->GuessType(factor_guess_type);
     if (error) return error;
@@ -588,7 +587,7 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFact
 
     ABnfElementPtr last_src = op_3_stat->GetOp3Suffix();
     const auto& suffix_ex_list = op_3_stat->GetOp3SuffixExList();
-    for (auto& suffix_ex : suffix_ex_list)
+    for (const auto& suffix_ex : suffix_ex_list)
     {
         if (suffix_ex->GetOp3Suffix() != nullptr)
         {
@@ -636,7 +635,7 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFact
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptOp::GuessTypes(std::shared_ptr<ALittleScriptValueOpStatElement> value_op_stat, std::vector<ABnfGuessPtr>& guess_list)
+ABnfGuessError ALittleScriptOp::GuessTypes(const std::shared_ptr<ALittleScriptValueOpStatElement>& value_op_stat, std::vector<ABnfGuessPtr>& guess_list)
 {
     guess_list.resize(0);
     auto value_factor_stat = value_op_stat->GetValueFactorStat();
@@ -698,17 +697,16 @@ ABnfGuessError ALittleScriptOp::GuessTypes(std::shared_ptr<ALittleScriptValueOpS
     return value_factor_stat->GuessTypes(guess_list);
 }
 
-ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptOp2StatElement> op_2_stat, ABnfGuessPtr& guess)
+ABnfGuessError ALittleScriptOp::GuessType(const std::shared_ptr<ALittleScriptOp2StatElement>& op_2_stat, ABnfGuessPtr& guess)
 {
-    guess = nullptr;
-    auto op_2_value = op_2_stat->GetOp2Value();
+    const auto op_2_value = op_2_stat->GetOp2Value();
     ABnfGuessPtr suffix_guess_type;
     auto error = GuessType(op_2_value, suffix_guess_type);
     if (error) return error;
 
     ABnfElementPtr last_src = op_2_value;
     const auto& suffix_ex_list = op_2_stat->GetOp2SuffixExList();
-    for (auto& suffix_ex : suffix_ex_list)
+    for (const auto& suffix_ex : suffix_ex_list)
     {
         if (suffix_ex->GetOp3Suffix() != nullptr)
         {
@@ -757,8 +755,7 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptOp2StatEl
 }
 
 // assign_or_call 填true表示赋值，否则是函数调用的参数传递
-
-ABnfGuessError ALittleScriptOp::GuessTypeEqual(ABnfGuessPtr left_guess, ABnfElementPtr right_src, ABnfGuessPtr right_guess, bool assign_or_call, bool is_return)
+ABnfGuessError ALittleScriptOp::GuessTypeEqual(const ABnfGuessPtr& left_guess, const ABnfElementPtr& right_src, ABnfGuessPtr right_guess, bool assign_or_call, bool is_return)
 {
     // 如果值等于null，那么可以赋值
     if (right_guess->GetValue() == "null") return nullptr;
@@ -868,25 +865,25 @@ ABnfGuessError ALittleScriptOp::GuessTypeEqual(ABnfGuessPtr left_guess, ABnfElem
             return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
         }
 
-        for (int i = 0; i < left_guess_functor->template_param_list.size(); ++i)
+        for (size_t i = 0; i < left_guess_functor->template_param_list.size(); ++i)
         {
             auto error = GuessTypeEqual(left_guess_functor->template_param_list[i].lock(), right_src, right_guess_functor->template_param_list[i].lock(), assign_or_call, is_return);
             if (error) return error;
         }
 
-        for (int i = 0; i < left_guess_functor->param_list.size(); ++i)
+        for (size_t i = 0; i < left_guess_functor->param_list.size(); ++i)
         {
             auto error = GuessTypeEqual(left_guess_functor->param_list[i].lock(), right_src, right_guess_functor->param_list[i].lock(), assign_or_call, is_return);
             if (error) return error;
         }
 
-        for (int i = 0; i < left_guess_functor->param_nullable_list.size(); ++i)
+        for (size_t i = 0; i < left_guess_functor->param_nullable_list.size(); ++i)
         {
             if (left_guess_functor->param_nullable_list[i] != right_guess_functor->param_nullable_list[i])
                 return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
         }
 
-        for (int i = 0; i < left_guess_functor->return_list.size(); ++i)
+        for (size_t i = 0; i < left_guess_functor->return_list.size(); ++i)
         {
             auto error = GuessTypeEqual(left_guess_functor->return_list[i].lock(), right_src, right_guess_functor->return_list[i].lock(), assign_or_call, is_return);
             if (error) return error;
@@ -995,10 +992,8 @@ ABnfGuessError ALittleScriptOp::GuessTypeEqual(ABnfGuessPtr left_guess, ABnfElem
     return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
 }
 
-ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptOp2ValueElement> op_2_value, ABnfGuessPtr& guess)
+ABnfGuessError ALittleScriptOp::GuessType(const std::shared_ptr<ALittleScriptOp2ValueElement>& op_2_value, ABnfGuessPtr& guess)
 {
-    guess = nullptr;
-
     auto value_factor_stat = op_2_value->GetValueFactorStat();
     if (value_factor_stat == nullptr)
         return ABnfGuessError(value_factor_stat, u8"单目运算没有目标表达式");
@@ -1029,9 +1024,9 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptOp2ValueE
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp4StatElement> op_4_stat, ABnfGuessPtr& guess)
+ABnfGuessError ALittleScriptOp::GuessType(const std::shared_ptr<ALittleScriptValueFactorStatElement>& value_factor_stat
+    , const std::shared_ptr<ALittleScriptOp4StatElement>& op_4_stat, ABnfGuessPtr& guess)
 {
-    guess = nullptr;
     ABnfGuessPtr factor_guess_type;
     auto error = value_factor_stat->GuessType(factor_guess_type);
     if (error) return error;
@@ -1042,7 +1037,7 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFact
 
     ABnfElementPtr last_src = op_4_stat->GetOp4Suffix();
     const auto& suffix_ex_list = op_4_stat->GetOp4SuffixExList();
-    for (auto& suffix_ex : suffix_ex_list)
+    for (const auto& suffix_ex : suffix_ex_list)
     {
         if (suffix_ex->GetOp4Suffix() != nullptr)
         {
@@ -1084,9 +1079,9 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFact
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp5StatElement> op_5_stat, ABnfGuessPtr& guess)
+ABnfGuessError ALittleScriptOp::GuessType(const std::shared_ptr<ALittleScriptValueFactorStatElement>& value_factor_stat
+    , const std::shared_ptr<ALittleScriptOp5StatElement>& op_5_stat, ABnfGuessPtr& guess)
 {
-    guess = nullptr;
     ABnfGuessPtr factor_guess_type;
     auto error = value_factor_stat->GuessType(factor_guess_type);
     if (error) return error;
@@ -1097,7 +1092,7 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFact
 
     ABnfElementPtr last_src = op_5_stat->GetOp5Suffix();
     const auto& suffix_ex_list = op_5_stat->GetOp5SuffixExList();
-    for (auto& suffix_ex : suffix_ex_list)
+    for (const auto& suffix_ex : suffix_ex_list)
     {
         if (suffix_ex->GetOp5Suffix() != nullptr)
         {
@@ -1133,9 +1128,9 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFact
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp6StatElement> op_6_stat, ABnfGuessPtr& guess)
+ABnfGuessError ALittleScriptOp::GuessType(const std::shared_ptr<ALittleScriptValueFactorStatElement>& value_factor_stat
+    , const std::shared_ptr<ALittleScriptOp6StatElement>& op_6_stat, ABnfGuessPtr& guess)
 {
-    guess = nullptr;
     ABnfGuessPtr factor_guess_type;
     auto error = value_factor_stat->GuessType(factor_guess_type);
     if (error) return error;
@@ -1146,7 +1141,7 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFact
 
     ABnfElementPtr last_src = op_6_stat->GetOp6Suffix();
     const auto& suffix_ex_list = op_6_stat->GetOp6SuffixExList();
-    for (auto& suffix_ex : suffix_ex_list)
+    for (const auto& suffix_ex : suffix_ex_list)
     {
         if (suffix_ex->GetOp6Suffix() != nullptr)
         {
@@ -1176,9 +1171,9 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFact
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp7StatElement> op_7_stat, ABnfGuessPtr& guess)
+ABnfGuessError ALittleScriptOp::GuessType(const std::shared_ptr<ALittleScriptValueFactorStatElement>& value_factor_stat
+    , const std::shared_ptr<ALittleScriptOp7StatElement>& op_7_stat, ABnfGuessPtr& guess)
 {
-    guess = nullptr;
     ABnfGuessPtr factor_guess_type;
     auto error = value_factor_stat->GuessType(factor_guess_type);
     if (error) return error;
@@ -1189,7 +1184,7 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFact
 
     ABnfElementPtr last_src = op_7_stat->GetOp7Suffix();
     const auto& suffix_ex_list = op_7_stat->GetOp7SuffixExList();
-    for (auto& suffix_ex : suffix_ex_list)
+    for (const auto& suffix_ex : suffix_ex_list)
     {
         if (suffix_ex->GetOp7Suffix() != nullptr)
         {
@@ -1213,9 +1208,9 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFact
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp8StatElement> op_8_stat, ABnfGuessPtr& guess)
+ABnfGuessError ALittleScriptOp::GuessType(const std::shared_ptr<ALittleScriptValueFactorStatElement>& value_factor_stat
+    , const std::shared_ptr<ALittleScriptOp8StatElement>& op_8_stat, ABnfGuessPtr& guess)
 {
-    guess = nullptr;
     ABnfGuessPtr factor_guess_type;
     auto error = value_factor_stat->GuessType(factor_guess_type);
     if (error) return error;
@@ -1226,13 +1221,12 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFact
 
     ABnfElementPtr last_src = op_8_stat->GetOp8Suffix();
     const auto& suffix_ex_list = op_8_stat->GetOp8SuffixExList();
-    for (auto& suffix_ex : suffix_ex_list)
+    for (const auto& suffix_ex : suffix_ex_list)
     {
         if (suffix_ex->GetOp8Suffix() != nullptr)
         {
             error = GuessTypeForOp8(last_src, suffix_guess_type, suffix_ex->GetOp8Suffix(), suffix_guess_type);
             if (error) return error;
-            if (suffix_guess_type == nullptr) return nullptr;
             last_src = suffix_ex->GetOp8Suffix();
         }
         else
@@ -1245,9 +1239,10 @@ ABnfGuessError ALittleScriptOp::GuessType(std::shared_ptr<ALittleScriptValueFact
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptOp::GuessTypeForOp7Impl(const std::string& op_string, ABnfElementPtr left_src, ABnfGuessPtr left_guess_type, ABnfElementPtr right_src, ABnfGuessPtr right_guess_type, std::shared_ptr<ALittleScriptOp7SuffixElement> op_7_suffix, ABnfGuessPtr& guess)
+ABnfGuessError ALittleScriptOp::GuessTypeForOp7Impl(const std::string& op_string, const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
+    , const ABnfElementPtr& right_src, const ABnfGuessPtr& right_guess_type
+    , const std::shared_ptr<ALittleScriptOp7SuffixElement>& op_7_suffix, ABnfGuessPtr& guess)
 {
-    guess = nullptr;
     if (!(std::dynamic_pointer_cast<ALittleScriptGuessBool>(left_guess_type)))
         return ABnfGuessError(left_src, op_string + u8"运算符左边必须是bool类型.不能是:" + left_guess_type->GetValue());
 

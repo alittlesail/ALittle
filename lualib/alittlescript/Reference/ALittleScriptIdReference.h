@@ -8,14 +8,14 @@
 class ALittleScriptIdReference : public ALittleScriptReferenceTemplate<ALittleScriptIdElement>
 {
 public:
-    ALittleScriptIdReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptIdElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptIdReference(element); }
+    ALittleScriptIdReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptIdElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptIdReference(element); }
 
     void QueryQuickInfo(std::string& info) override;
 
     ABnfElementPtr GotoDefinition() override;
 
-    bool QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list) override;
+    bool QueryCompletion(const ABnfElementPtr& select, std::vector<ALanguageCompletionInfo>& list) override;
 
     bool PeekHighlightWord() override;
 

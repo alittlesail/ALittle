@@ -4,8 +4,6 @@
 
 #include "ALittleScriptGuess.h"
 
-#include <map>
-
 class ALittleScriptClassDecElement;
 
 class ALittleScriptGuessClass : public ALittleScriptGuess
@@ -28,7 +26,7 @@ public:
     bool is_native = false;
 
     ALittleScriptGuessClass(const std::string& p_namespace_name, const std::string& p_class_name
-        , std::shared_ptr<ALittleScriptClassDecElement> p_class_dec, const std::string& p_using_name, bool p_is_const, bool p_is_native);
+        , const std::shared_ptr<ALittleScriptClassDecElement>& p_class_dec, const std::string& p_using_name, bool p_is_const, bool p_is_native);
 
     std::shared_ptr<ABnfElement> GetElement() override;
     bool NeedReplace() const override;

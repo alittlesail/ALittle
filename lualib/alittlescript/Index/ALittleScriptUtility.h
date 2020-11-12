@@ -81,7 +81,7 @@ public:
     static ABnfGuessError CheckInvokeAwait(std::shared_ptr<ABnfElement> element);
 
     // 判断是否存在
-    static ABnfGuessError CheckError(std::shared_ptr<ABnfElement> parent, const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list);
+    static ABnfGuessError CheckError(const std::shared_ptr<ABnfElement>& parent, const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list);
 
     // 获取是否是register
     static bool IsRegister(const std::vector<std::shared_ptr<ALittleScriptModifierElement>>& element_list);
@@ -116,11 +116,11 @@ public:
     static std::shared_ptr<ALittleScriptNamespaceNameDecElement> GetNamespaceNameDec(ABnfFile* file);
 
     // 判断某个是不是register
-    static bool IsRegister(std::shared_ptr<ABnfElement> element);
+    static bool IsRegister(const std::shared_ptr<ABnfElement>& element);
     static bool IsRegister(ABnfFile* file);
 
     // 获取某个元素的命名域名
-    static const std::string& GetNamespaceName(std::shared_ptr<ABnfElement> element);
+    static const std::string& GetNamespaceName(const std::shared_ptr<ABnfElement>& element);
 
     // 获取命名域名
     static const std::string& GetNamespaceName(ABnfFile* file);
@@ -132,70 +132,76 @@ public:
     static std::shared_ptr<ALittleScriptTemplateDecElement> FindMethodTemplateDecFromParent(std::shared_ptr<ABnfElement> dec);
 
     // 检查是否在静态函数中
-    static bool IsInClassStaticMethod(std::shared_ptr<ABnfElement> dec);
+    static bool IsInClassStaticMethod(const std::shared_ptr<ABnfElement>& dec);
 
     // 根据名称，获取这个结构体的成员列表
-    static void FindStructVarDecList(std::shared_ptr<ALittleScriptStructDecElement> dec, const std::string& name, std::vector<std::shared_ptr<ALittleScriptStructVarDecElement>>& result, int deep);
+    static void FindStructVarDecList(const std::shared_ptr<ALittleScriptStructDecElement>& dec, const std::string& name, std::vector<std::shared_ptr<ALittleScriptStructVarDecElement>>& result, int deep);
 
     // 根据名称，获取这个枚举中的成员
-    static void FindEnumVarDecList(std::shared_ptr<ALittleScriptEnumDecElement> dec, const std::string& name, std::vector<std::shared_ptr<ALittleScriptEnumVarDecElement>>& result);
+    static void FindEnumVarDecList(const std::shared_ptr<ALittleScriptEnumDecElement>& dec, const std::string& name, std::vector<std::shared_ptr<ALittleScriptEnumVarDecElement>>& result);
 
     // 计算struct的父类
-    static std::shared_ptr<ALittleScriptStructDecElement> FindStructExtends(std::shared_ptr<ALittleScriptStructDecElement> dec);
+    static std::shared_ptr<ALittleScriptStructDecElement> FindStructExtends(const std::shared_ptr<ALittleScriptStructDecElement>
+	    & dec);
 
     // 计算class的父类
-    static std::shared_ptr<ALittleScriptClassDecElement> FindClassExtends(std::shared_ptr<ALittleScriptClassDecElement> dec);
+    static std::shared_ptr<ALittleScriptClassDecElement> FindClassExtends(const std::shared_ptr<ALittleScriptClassDecElement>
+	    & dec);
 
     // 过滤名称相同的元素
     static void FilterSameName(const std::vector<std::shared_ptr<ABnfElement>>& list, std::vector<std::shared_ptr<ABnfElement>>& out);
 
 
     // 计算在dec这个类中，对targetDec成员的访问权限
-    static int CalcAccessLevelByTargetClassDec(int access_level, std::shared_ptr<ALittleScriptClassDecElement> dec, std::shared_ptr<ALittleScriptClassDecElement> target_dec);
+    static int CalcAccessLevelByTargetClassDec(int access_level, const std::shared_ptr<ALittleScriptClassDecElement>&
+                                               dec, const std::shared_ptr<ALittleScriptClassDecElement>& target_dec);
 
     // 计算任意元素访问targetDec的访问权限
-    static int CalcAccessLevelByTargetClassDecForElement(std::shared_ptr<ABnfElement> element, std::shared_ptr<ALittleScriptClassDecElement> target_dec);
+    static int CalcAccessLevelByTargetClassDecForElement(const std::shared_ptr<ABnfElement>& element, const std::shared_ptr<ALittleScriptClassDecElement>
+                                                         & target_dec);
 
     // 根据名称，获取函数列表
-    static void FindClassMethodNameDecList(std::shared_ptr<ALittleScriptClassDecElement> dec, int access_level, const std::string& name, std::vector<std::shared_ptr<ABnfElement>>& result, int deep);
+    static void FindClassMethodNameDecList(const std::shared_ptr<ALittleScriptClassDecElement>& dec, int access_level, const std::string& name, std::vector<std::shared_ptr<ABnfElement>>& result, int deep);
 
     // 根据名称，获取类的属性列表
-    static void FindClassAttrList(std::shared_ptr<ALittleScriptClassDecElement> dec
-        , int access_level, ClassAttrType attr_type, const std::string& name, std::vector<std::shared_ptr<ABnfElement>>& result, int deep);
+    static void FindClassAttrList(const std::shared_ptr<ALittleScriptClassDecElement>& dec
+                                  , int access_level, ClassAttrType attr_type, const std::string& name, std::vector<std::shared_ptr<ABnfElement>>& result, int deep);
 
     // 根据名称，获取继承的构造函数
-    static std::shared_ptr<ALittleScriptClassCtorDecElement> FindFirstCtorDecFromExtends(std::shared_ptr<ALittleScriptClassDecElement> dec, int deep);
+    static std::shared_ptr<ALittleScriptClassCtorDecElement> FindFirstCtorDecFromExtends(const std::shared_ptr<ALittleScriptClassDecElement>
+                                                                                         & dec, int deep);
 
     // 根据名称，获取继承的属性
-    static std::shared_ptr<ABnfElement> FindFirstClassAttrFromExtends(std::shared_ptr<ALittleScriptClassDecElement> dec, ClassAttrType attr_type, const std::string& name, int deep);
+    static std::shared_ptr<ABnfElement> FindFirstClassAttrFromExtends(const std::shared_ptr<ALittleScriptClassDecElement>
+                                                                      & dec, ClassAttrType attr_type, const std::string& name, int deep);
 
     // 根据名称，查找函数的参数列表
-    static void FindMethodParamNameDecList(std::shared_ptr<ABnfElement> method_dec, const std::string& name, std::vector<std::shared_ptr<ALittleScriptMethodParamNameDecElement>>& result);
+    static void FindMethodParamNameDecList(const std::shared_ptr<ABnfElement>& method_dec, const std::string& name, std::vector<std::shared_ptr<ALittleScriptMethodParamNameDecElement>>& result);
 
     // 根据名称，查找变量名所在的定义元素
-    static void FindVarAssignNameDecList(std::shared_ptr<ABnfElement> element, const std::string& name, std::vector<std::shared_ptr<ALittleScriptVarAssignNameDecElement>>& result);
+    static void FindVarAssignNameDecList(const std::shared_ptr<ABnfElement>& element, const std::string& name, std::vector<std::shared_ptr<ALittleScriptVarAssignNameDecElement>>& result);
 
-    static void FindVarAssignNameDecList(std::shared_ptr<ALittleScriptForExprElement> for_expr, std::vector<std::shared_ptr<ALittleScriptVarAssignNameDecElement>>& result, const std::string& name);
+    static void FindVarAssignNameDecList(const std::shared_ptr<ALittleScriptForExprElement>& for_expr, std::vector<std::shared_ptr<ALittleScriptVarAssignNameDecElement>>& result, const std::string& name);
     
-    static void FindVarAssignNameDecList(std::shared_ptr<ALittleScriptForConditionElement> for_condition, std::vector<std::shared_ptr<ALittleScriptVarAssignNameDecElement>>& result, const std::string& name);
+    static void FindVarAssignNameDecList(const std::shared_ptr<ALittleScriptForConditionElement>& for_condition, std::vector<std::shared_ptr<ALittleScriptVarAssignNameDecElement>>& result, const std::string& name);
 
     // 根据名称，查找定义表达式名列表
-    static void FindVarAssignNameDecList(std::shared_ptr<ALittleScriptAllExprElement> all_expr, std::vector<std::shared_ptr<ALittleScriptVarAssignNameDecElement>>& result, const std::string& name);
+    static void FindVarAssignNameDecList(const std::shared_ptr<ALittleScriptAllExprElement>& all_expr, std::vector<std::shared_ptr<ALittleScriptVarAssignNameDecElement>>& result, const std::string& name);
 
     // 检查迭代函数
     static bool IsPairsFunction(const std::vector<ABnfGuessPtr>& guess_list);
 
     // 计算表达式需要使用什么样的变量方式
-    static ABnfGuessError CalcPairsTypeForLua(std::shared_ptr<ALittleScriptValueStatElement> value_stat, std::string& result);
+    static ABnfGuessError CalcPairsTypeForLua(const std::shared_ptr<ALittleScriptValueStatElement>& value_stat, std::string& result);
 
     // 计算表达式在for中使用in还是of
-    static ABnfGuessError CalcPairsTypeForJavaScript(std::shared_ptr<ALittleScriptValueStatElement> value_stat, std::string& result, bool& is_native);
+    static ABnfGuessError CalcPairsTypeForJavaScript(const std::shared_ptr<ALittleScriptValueStatElement>& value_stat, std::string& result, bool& is_native);
 
     // 判断 parent是否是child的父类
-    static ABnfGuessError IsClassSuper(std::shared_ptr<ALittleScriptClassDecElement> child, const std::string& parent, bool& result);
+    static ABnfGuessError IsClassSuper(const std::shared_ptr<ALittleScriptClassDecElement>& child, const std::string& parent, bool& result);
 
     // 判断 parent是否是child的父类
-    static ABnfGuessError IsStructSuper(std::shared_ptr<ABnfElement> child, const std::string& parent, bool& result);
+    static ABnfGuessError IsStructSuper(const std::shared_ptr<ABnfElement>& child, const std::string& parent, bool& result);
 
     // 获取目标根路径
     static std::string CalcRootFullPath(const std::string& project_path, const std::string& ext);
@@ -204,7 +210,7 @@ public:
     static std::string CalcTargetFullPath(const std::string& project_path, const std::string& ali_full_path, const std::string& ext, std::string& error);
 
     // 判断ValueStat
-    static ABnfGuessError CalcReturnCount(std::shared_ptr<ALittleScriptValueStatElement> value_stat, int& count, std::vector<ABnfGuessPtr>& guess_list);
+    static ABnfGuessError CalcReturnCount(const std::shared_ptr<ALittleScriptValueStatElement>& value_stat, int& count, std::vector<ABnfGuessPtr>& guess_list);
 };
 
 #endif // _ALITTLE_ALITTLESCRIPTUTILITY_H_

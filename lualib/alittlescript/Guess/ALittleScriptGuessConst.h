@@ -4,8 +4,6 @@
 
 #include "ALittleScriptGuess.h"
 
-#include <map>
-
 class ALittleScriptGuessConst : public ALittleScriptGuess
 {
 public:

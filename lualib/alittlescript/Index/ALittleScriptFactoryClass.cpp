@@ -3,7 +3,7 @@
 #include "ALittleScriptFileClass.h"
 #include "../../alanguage/Model/ABnfElement.h"
 
-ABnfReference* ALittleScriptFactoryClass::CreateReference(ABnfElementPtr element)
+ABnfReference* ALittleScriptFactoryClass::CreateReference(const ABnfElementPtr& element)
 {
 	return nullptr;
 }

@@ -9,11 +9,11 @@
 class ALittleScriptRegexReference : public ALittleScriptReferenceTemplate<ALittleScriptRegexElement>
 {
 public:
-    ALittleScriptRegexReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptRegexElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptRegexReference(element); }
+    ALittleScriptRegexReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptRegexElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptRegexReference(element); }
     bool CanGotoDefinition() override
     {
-        auto element = m_element.lock();
+        const auto element = m_element.lock();
         if (element == nullptr) return false;
 
         auto parent = element->GetParent();

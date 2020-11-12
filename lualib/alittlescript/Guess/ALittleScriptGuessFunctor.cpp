@@ -10,7 +10,7 @@
 #include "../../alanguage/Index/ABnfProject.h"
 #include "../../alanguage/Model/ABnfElement.h"
 
-ALittleScriptGuessFunctor::ALittleScriptGuessFunctor(std::shared_ptr<ABnfElement> p_element)
+ALittleScriptGuessFunctor::ALittleScriptGuessFunctor(const std::shared_ptr<ABnfElement>& p_element)
 {
     is_register = ALittleScriptUtility::IsRegister(p_element);
     element = p_element;
@@ -23,13 +23,13 @@ std::shared_ptr<ABnfElement> ALittleScriptGuessFunctor::GetElement()
 
 bool ALittleScriptGuessFunctor::HasAny() const
 {
-    for (auto& guess : param_list)
+    for (const auto& guess : param_list)
     {
         auto guess_e = guess.lock();
         if (guess_e != nullptr && guess_e->HasAny()) return true;
     }
     
-    for (auto& guess : return_list)
+    for (const auto& guess : return_list)
     {
         auto guess_e = guess.lock();
         if (guess_e != nullptr && guess_e->HasAny()) return true;
@@ -39,14 +39,14 @@ bool ALittleScriptGuessFunctor::HasAny() const
 
 bool ALittleScriptGuessFunctor::NeedReplace() const
 {
-    for (auto& guess : param_list)
+    for (const auto& guess : param_list)
     {
         auto guess_e = guess.lock();
         if (guess_e != nullptr && guess_e->NeedReplace())
             return true;
     }
 
-    for (auto& guess : return_list)
+    for (const auto& guess : return_list)
     {
         auto guess_e = guess.lock();
         if (guess_e != nullptr && guess_e->NeedReplace())
@@ -97,7 +97,7 @@ ABnfGuessPtr ALittleScriptGuessFunctor::ReplaceTemplate(ABnfFile* file, const st
 
 ABnfGuessPtr ALittleScriptGuessFunctor::Clone() const
 {
-    auto guess = std::shared_ptr<ALittleScriptGuessFunctor>(new ALittleScriptGuessFunctor(element.lock()));
+    auto guess = std::make_shared<ALittleScriptGuessFunctor>(element.lock());
     guess->template_param_list = template_param_list;
     guess->param_list = param_list;
     guess->param_nullable_list = param_nullable_list;
@@ -118,13 +118,13 @@ void ALittleScriptGuessFunctor::UpdateValue()
 
     // proto和await修饰
     std::vector<std::string> pre_list;
-    if (proto.size()) pre_list.push_back(proto);
-    if (const_modifier) pre_list.push_back("const");
-    if (await_modifier) pre_list.push_back("await");
+    if (!proto.empty()) pre_list.push_back(proto);
+    if (const_modifier) pre_list.emplace_back("const");
+    if (await_modifier) pre_list.emplace_back("await");
     value += ABnfFactory::Join(pre_list, ",");
 
     // 模板参数列表
-    if (template_param_list.size() > 0)
+    if (!template_param_list.empty())
     {
         std::vector<std::string> template_string_list;
         for (auto& guess : template_param_list)
@@ -147,7 +147,7 @@ void ALittleScriptGuessFunctor::UpdateValue()
         else
             param_string_list.push_back(param_e->GetValue());
     }
-    auto param_tail_e = param_tail.lock();
+    const auto param_tail_e = param_tail.lock();
     if (param_tail_e != nullptr)
         param_string_list.push_back(param_tail_e->GetValue());
     value += "(" + ABnfFactory::Join(param_string_list, ",") + ")";
@@ -160,10 +160,10 @@ void ALittleScriptGuessFunctor::UpdateValue()
         if (guess_e == nullptr) continue;
         return_string_list.push_back(guess_e->GetValue());
     }
-    auto return_tail_e = return_tail.lock();
+    const auto return_tail_e = return_tail.lock();
     if (return_tail_e != nullptr)
         return_string_list.push_back(return_tail_e->GetValue());
-    if (return_string_list.size() > 0) value += ":";
+    if (!return_string_list.empty()) value += ":";
     value += ABnfFactory::Join(return_string_list, ",");
 
     value += ">";
@@ -173,25 +173,25 @@ void ALittleScriptGuessFunctor::UpdateValue()
 
 bool ALittleScriptGuessFunctor::IsChanged() const
 {
-    for (auto& guess : param_list)
+    for (const auto& guess : param_list)
     {
         auto guess_e = guess.lock();
         if (guess_e == nullptr || guess_e->IsChanged())
             return true;
     }
-    for (auto& guess : return_list)
+    for (const auto& guess : return_list)
     {
         auto guess_e = guess.lock();
         if (guess_e == nullptr || guess_e->IsChanged())
             return true;
     }
-    auto param_tail_e = param_tail.lock();
+    const auto param_tail_e = param_tail.lock();
     if (param_tail_e != nullptr && param_tail_e->IsChanged())
         return true;
-    auto return_tail_e = return_tail.lock();
+    const auto return_tail_e = return_tail.lock();
     if (return_tail_e != nullptr && return_tail_e->IsChanged())
         return true;
-    auto element_e = element.lock();
+    const auto element_e = element.lock();
     if (element_e == nullptr) return true;
 
     return dynamic_cast<ALittleScriptIndex*>(element_e->GetFile()->GetProject())->GetGuessTypeList(element_e) == nullptr;

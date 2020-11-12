@@ -2,7 +2,7 @@
 #include "ABnfCommonReference.h"
 #include "../../alanguage/Model/ABnfElement.h"
 
-ABnfCommonReference::ABnfCommonReference(ABnfElementPtr element)
+ABnfCommonReference::ABnfCommonReference(const ABnfElementPtr& element)
 {
     m_element = element;
 }
@@ -45,7 +45,7 @@ int ABnfCommonReference::QueryClassificationTag(bool& blur)
     return 0;
 }
 
-int ABnfCommonReference::QueryDesiredIndent(int it_line, int it_char, ABnfElementPtr select)
+int ABnfCommonReference::QueryDesiredIndent(int it_line, int it_char, const ABnfElementPtr& select)
 {
     auto element = m_element.lock();
     if (element == nullptr) return 0;

@@ -24,7 +24,8 @@
 
 #include "../Index/ALittleScriptUtility.h"
 
-inline ABnfGuessError ALittleScriptMethodBodyDecReference::CheckAllExpr(const std::vector<ABnfGuessPtr>& return_list, std::shared_ptr<ALittleScriptAllExprElement> all_expr, bool& result)
+inline ABnfGuessError ALittleScriptMethodBodyDecReference::CheckAllExpr(const std::vector<ABnfGuessPtr>& return_list
+    , const std::shared_ptr<ALittleScriptAllExprElement>& all_expr, bool& result)
 {
     result = false;
     if (all_expr->GetIfExpr() != nullptr)
@@ -52,7 +53,7 @@ inline ABnfGuessError ALittleScriptMethodBodyDecReference::CheckAllExpr(const st
         }
 
         const auto& else_if_expr_list = if_expr->GetElseIfExprList();
-        for (auto& else_if_expr : else_if_expr_list)
+        for (const auto& else_if_expr : else_if_expr_list)
         {
             sub_all_expr = else_if_expr->GetAllExpr();
             auto else_if_body = else_if_expr->GetElseIfBody();
@@ -153,7 +154,7 @@ ABnfGuessError ALittleScriptMethodBodyDecReference::CheckAllExprList(const std::
     result = false;
     // 如果没有就检查子表达式
     int index = -1;
-    for (int i = 0; i < all_expr_list.size(); ++i)
+    for (int i = 0; i < static_cast<int>(all_expr_list.size()); ++i)
     {
         auto all_expr = all_expr_list[i];
         if (!ALittleScriptUtility::IsLanguageEnable(all_expr->GetModifierList()))
@@ -171,7 +172,7 @@ ABnfGuessError ALittleScriptMethodBodyDecReference::CheckAllExprList(const std::
     if (index == -1)
         return nullptr;
 
-    for (int i = index + 1; i < all_expr_list.size(); ++i)
+    for (size_t i = index + 1; i < all_expr_list.size(); ++i)
     {
         auto all_expr = all_expr_list[i];
         if (!ALittleScriptUtility::IsLanguageEnable(all_expr->GetModifierList()))
@@ -184,10 +185,12 @@ ABnfGuessError ALittleScriptMethodBodyDecReference::CheckAllExprList(const std::
 }
 
 // 检查函数体
-ABnfGuessError ALittleScriptMethodBodyDecReference::CheckMethodBody(const std::vector<ABnfGuessPtr>& return_list, std::shared_ptr<ALittleScriptMethodNameDecElement> method_name_dec, std::shared_ptr<ALittleScriptMethodBodyDecElement> method_body_dec)
+ABnfGuessError ALittleScriptMethodBodyDecReference::CheckMethodBody(const std::vector<ABnfGuessPtr>& return_list
+    , const std::shared_ptr<ALittleScriptMethodNameDecElement>& method_name_dec
+    , const std::shared_ptr<ALittleScriptMethodBodyDecElement>& method_body_dec)
 {
     // 检查return
-    if (return_list.size() > 0 && !ALittleScriptUtility::IsRegister(method_name_dec))
+    if (!return_list.empty() && !ALittleScriptUtility::IsRegister(method_name_dec))
     {
         const auto& all_expr_list = method_body_dec->GetAllExprList();
         bool result = false;
@@ -202,9 +205,9 @@ ABnfGuessError ALittleScriptMethodBodyDecReference::CheckMethodBody(const std::v
 
 ABnfGuessError ALittleScriptMethodBodyDecReference::CheckError()
 {
-    auto element = m_element.lock();
+	const auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(element, u8"节点失效");
-    auto parent = element->GetParent();
+	const auto parent = element->GetParent();
 
     if (std::dynamic_pointer_cast<ALittleScriptClassCtorDecElement>(parent)) return nullptr;
     if (std::dynamic_pointer_cast<ALittleScriptClassSetterDecElement>(parent)) return nullptr;

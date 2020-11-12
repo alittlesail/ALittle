@@ -16,7 +16,7 @@
 #include "../Guess/ALittleScriptGuessReturnTail.h"
 #include "../Guess/ALittleScriptGuessStruct.h"
 
-ALittleScriptVarAssignDecReference::ALittleScriptVarAssignDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptVarAssignDecElement>(element)
+ALittleScriptVarAssignDecReference::ALittleScriptVarAssignDecReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptVarAssignDecElement>(element)
 {
     m_namespace_name = ALittleScriptUtility::GetNamespaceName(element);
 }
@@ -25,7 +25,7 @@ std::shared_ptr<ALittleScriptClassDecElement> ALittleScriptVarAssignDecReference
 {
     auto class_dec = m_class_dec.lock();
     if (class_dec != nullptr) return class_dec;
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return nullptr;
     class_dec = ALittleScriptUtility::FindClassDecFromParent(element);
     m_class_dec = class_dec;
@@ -36,7 +36,7 @@ std::shared_ptr<ALittleScriptTemplateDecElement> ALittleScriptVarAssignDecRefere
 {
     auto template_param_dec = m_template_param_dec.lock();
     if (template_param_dec != nullptr) return template_param_dec;
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return nullptr;
     template_param_dec = ALittleScriptUtility::FindMethodTemplateDecFromParent(element);
     m_template_param_dec = template_param_dec;
@@ -52,7 +52,7 @@ ABnfGuessError ALittleScriptVarAssignDecReference::GuessTypes(std::vector<ABnfGu
     if (all_type != nullptr) return all_type->GuessTypes(guess_list);
 
     guess_list.resize(0);
-    auto name_dec = element->GetVarAssignNameDec();
+    const auto name_dec = element->GetVarAssignNameDec();
     if (name_dec == nullptr) return nullptr;
 
     auto parent = std::dynamic_pointer_cast<ALittleScriptVarAssignExprElement>(element->GetParent());
@@ -77,17 +77,17 @@ ABnfGuessError ALittleScriptVarAssignDecReference::GuessTypes(std::vector<ABnfGu
     auto error = value_stat->GuessTypes(method_call_guess_list);
     if (error) return error;
     // 如果有"..."作为返回值结尾
-    bool hasTail = method_call_guess_list.size() > 0 && std::dynamic_pointer_cast<ALittleScriptGuessReturnTail>(method_call_guess_list[method_call_guess_list.size() - 1]);
+    const bool hasTail = !method_call_guess_list.empty() && std::dynamic_pointer_cast<ALittleScriptGuessReturnTail>(method_call_guess_list[method_call_guess_list.size() - 1]);
     if (hasTail)
     {
-        if (index >= method_call_guess_list.size() - 1)
+        if (index >= static_cast<int>(method_call_guess_list.size()) - 1)
             guess_list.push_back(ALittleScriptStatic::Inst().sAnyGuess);
         else
             guess_list.push_back(method_call_guess_list[index]);
     }
     else
     {
-        if (index >= method_call_guess_list.size())
+        if (index >= static_cast<int>(method_call_guess_list.size()))
             return ABnfGuessError(element, u8"没有赋值对象，无法推导类型");
         guess_list.push_back(method_call_guess_list[index]);
     }
@@ -95,7 +95,7 @@ ABnfGuessError ALittleScriptVarAssignDecReference::GuessTypes(std::vector<ABnfGu
     return nullptr;
 }
 
-bool ALittleScriptVarAssignDecReference::QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
+bool ALittleScriptVarAssignDecReference::QueryCompletion(const ABnfElementPtr& select, std::vector<ALanguageCompletionInfo>& list)
 {
     auto element = m_element.lock();
     if (element == nullptr) return false;
@@ -158,7 +158,7 @@ bool ALittleScriptVarAssignDecReference::QueryCompletion(ABnfElementPtr select, 
         if (template_dec != nullptr)
         {
             const auto& pair_dec_list = template_dec->GetTemplatePairDecList();
-            for (auto& pair_dec : pair_dec_list)
+            for (const auto& pair_dec : pair_dec_list)
             {
                 auto pair_name_dec = pair_dec->GetTemplateNameDec();
                 if (pair_name_dec != nullptr)

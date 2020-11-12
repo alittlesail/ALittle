@@ -9,8 +9,8 @@
 class ALittleScriptClassGetterDecReference : public ALittleScriptReferenceTemplate<ALittleScriptClassGetterDecElement>
 {
 public:
-    ALittleScriptClassGetterDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptClassGetterDecElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptClassGetterDecReference(element); }
+    ALittleScriptClassGetterDecReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptClassGetterDecElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptClassGetterDecReference(element); }
 
     ABnfGuessError CheckError() override
     {

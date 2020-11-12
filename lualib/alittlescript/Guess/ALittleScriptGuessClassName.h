@@ -4,8 +4,6 @@
 
 #include "ALittleScriptGuess.h"
 
-#include <map>
-
 class ALittleScriptClassNameDecElement;
 
 class ALittleScriptGuessClassName : public ALittleScriptGuess
@@ -18,7 +16,7 @@ public:
     std::weak_ptr<ALittleScriptClassNameDecElement> class_name_dec;
 
     ALittleScriptGuessClassName(const std::string& p_namespace_name, const std::string& p_class_name
-        , std::shared_ptr<ALittleScriptClassNameDecElement> p_class_name_dec);
+        , const std::shared_ptr<ALittleScriptClassNameDecElement>& p_class_name_dec);
 
     std::shared_ptr<ABnfElement> GetElement() override;
     bool NeedReplace() const override;

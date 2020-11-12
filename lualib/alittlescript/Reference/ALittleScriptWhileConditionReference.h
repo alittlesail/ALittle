@@ -8,8 +8,8 @@
 class ALittleScriptWhileConditionReference : public ALittleScriptReferenceTemplate<ALittleScriptWhileConditionElement>
 {
 public:
-    ALittleScriptWhileConditionReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptWhileConditionElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptWhileConditionReference(element); }
+    ALittleScriptWhileConditionReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptWhileConditionElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptWhileConditionReference(element); }
     ABnfGuessError CheckError() override;
 };
 

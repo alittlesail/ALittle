@@ -3,23 +3,20 @@
 #include "../../alanguage/Model/ABnfElement.h"
 #include "../../alanguage/Model/ABnfNodeElement.h"
 #include "../../alanguage/Model/ABnf.h"
-#include "../Index/ABnfFileClass.h"
 
-#include <unordered_set>
-
-ABnfNodeReference::ABnfNodeReference(ABnfElementPtr element) : ABnfCommonReference(element)
+ABnfNodeReference::ABnfNodeReference(const ABnfElementPtr& element) : ABnfCommonReference(element)
 {
 }
 
 ABnfGuessError ABnfNodeReference::CheckError()
 {
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return nullptr;
 
-    auto parent = std::dynamic_pointer_cast<ABnfNodeElement>(element->GetParent());
+    const auto parent = std::dynamic_pointer_cast<ABnfNodeElement>(element->GetParent());
     if (parent == nullptr) return nullptr;
 
-    for (auto child : parent->GetChilds())
+    for (const auto& child : parent->GetChilds())
     {
         if (child->GetNodeType() == "Id" && child->GetElementText() == "Root")
             return nullptr;
@@ -28,15 +25,15 @@ ABnfGuessError ABnfNodeReference::CheckError()
     return CheckElementError(element);
 }
 
-ABnfGuessError ABnfNodeReference::CheckElementError(ABnfElementPtr element)
+ABnfGuessError ABnfNodeReference::CheckElementError(const ABnfElementPtr& element) const
 {
     if (element->GetNodeType() == "List")
     {
-        auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
+        const auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
         if (node == nullptr) return nullptr;
 
         bool has_child = false;
-        for (auto child : node->GetChilds())
+        for (const auto& child : node->GetChilds())
         {
             if (child->GetNodeType() == "Option")
             {
@@ -45,7 +42,7 @@ ABnfGuessError ABnfNodeReference::CheckElementError(ABnfElementPtr element)
             }
             else
             {
-                auto error = CheckElementError(child);
+                const auto error = CheckElementError(child);
                 if (!error)
                 {
                     has_child = true;
@@ -60,10 +57,10 @@ ABnfGuessError ABnfNodeReference::CheckElementError(ABnfElementPtr element)
     }
     else if (element->GetNodeType() == "Option" || element->GetNodeType() == "Node")
     {
-        auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
+        const auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
         if (node == nullptr) return nullptr;
 
-        for (auto child : node->GetChilds())
+        for (const auto& child : node->GetChilds())
         {
             auto error = CheckElementError(child);
             if (error) return error;
@@ -71,11 +68,11 @@ ABnfGuessError ABnfNodeReference::CheckElementError(ABnfElementPtr element)
     }
     else if (element->GetNodeType() == "Group" || element->GetNodeType() == "Leaf")
     {
-        auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
+        const auto node = std::dynamic_pointer_cast<ABnfNodeElement>(element);
         if (node == nullptr) return nullptr;
 
         ABnfElementPtr tail_node = nullptr;
-        for (auto child : node->GetChilds())
+        for (const auto& child : node->GetChilds())
         {
             if (child->GetNodeType() == "NodeTail")
                 tail_node = child;
@@ -84,7 +81,7 @@ ABnfGuessError ABnfNodeReference::CheckElementError(ABnfElementPtr element)
         if (tail_node != nullptr && (tail_node->GetElementText() == "*" | tail_node->GetElementText() == "?"))
             return ABnfGuessError(element, "The rule cannot guarantee that there will be child nodes");
 
-        for (auto child : node->GetChilds())
+        for (const auto& child : node->GetChilds())
         {
             auto error = CheckElementError(child);
             if (error) return error;

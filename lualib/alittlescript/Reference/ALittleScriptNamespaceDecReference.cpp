@@ -22,7 +22,8 @@ ABnfGuessError ALittleScriptNamespaceDecReference::GuessTypes(std::vector<ABnfGu
     if (name_dec == nullptr)
         return ABnfGuessError(element, u8"没有定义命名域");
 
-    auto info = ABnfGuessPtr(new ALittleScriptGuessNamespace(name_dec->GetElementText(), element));
+    auto info = std::static_pointer_cast<ABnfGuess>(
+	    std::make_shared<ALittleScriptGuessNamespace>(name_dec->GetElementText(), element));
     info->UpdateValue();
     element->GetFile()->AddGuessType(info);
     guess_list.push_back(info);

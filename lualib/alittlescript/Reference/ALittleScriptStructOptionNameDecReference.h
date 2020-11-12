@@ -8,8 +8,8 @@
 class ALittleScriptStructOptionNameDecReference : public ALittleScriptReferenceTemplate<ALittleScriptStructOptionNameDecElement>
 {
 public:
-    ALittleScriptStructOptionNameDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptStructOptionNameDecElement>(element) {}
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptStructOptionNameDecReference(element); }
+    ALittleScriptStructOptionNameDecReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptStructOptionNameDecElement>(element) {}
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptStructOptionNameDecReference(element); }
     int QueryClassificationTag(bool& blur) override
     {
         auto element = m_element.lock();

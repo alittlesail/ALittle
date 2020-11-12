@@ -9,8 +9,8 @@
 class ALittleScriptCustomTypeReference : public ALittleScriptCustomTypeCommonReference
 {
 public:
-    ALittleScriptCustomTypeReference(ABnfElementPtr p_element);
-    static ABnfReference* Create(ABnfElementPtr element) { return new ALittleScriptCustomTypeReference(element); }
+    ALittleScriptCustomTypeReference(const ABnfElementPtr& p_element);
+    static ABnfReference* Create(const ABnfElementPtr& element) { return new ALittleScriptCustomTypeReference(element); }
 
     ABnfGuessError CheckError() override;
 };

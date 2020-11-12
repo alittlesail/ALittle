@@ -12,9 +12,9 @@ int ALittleScriptMethodParamNameDecReference::QueryClassificationTag(bool& blur)
 ABnfGuessError ALittleScriptMethodParamNameDecReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
 {
     guess_list.resize(0);
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"½ÚµãÊ§Ð§");
-    auto parent = element->GetParent();
+    const auto parent = element->GetParent();
     auto one_dec = std::dynamic_pointer_cast<ALittleScriptMethodParamOneDecElement>(parent);
     if (one_dec != nullptr)
     {

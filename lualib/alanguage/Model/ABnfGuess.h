@@ -19,7 +19,7 @@ protected:
     std::string value_without_const;
 
 public:
-    virtual ~ABnfGuess() {}
+    virtual ~ABnfGuess() = default;
 
     bool is_const = false;
 
@@ -40,15 +40,15 @@ using ABnfElementWeakPtr = std::weak_ptr<ABnfElement>;
 
 struct ABnfGuessError
 {
-    std::string error;
     ABnfElementPtr element;
+    std::string error;
 
-    ABnfGuessError() {}
+    ABnfGuessError() = default;
     ABnfGuessError(const char* p_error) : error(p_error) { }
     ABnfGuessError(std::nullptr_t t) { }
-    ABnfGuessError(ABnfElementPtr p_element, const std::string& p_error) : element(p_element), error(p_error) {}
-    ABnfGuessError(ABnfElementPtr p_element, const char* p_error) : element(p_element), error(p_error) {}
-    operator bool() { return !error.empty(); }
+    ABnfGuessError(const ABnfElementPtr& p_element, const std::string& p_error) : element(p_element), error(p_error) {}
+    ABnfGuessError(const ABnfElementPtr& p_element, const char* p_error) : element(p_element), error(p_error) {}
+    operator bool() const { return !error.empty(); }
 };
 
-#endif // _ALITTLE_ABNFGUESS_H_
+#endif

@@ -10,7 +10,7 @@ public:
     ABnfKeyElement(ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& value)
         : ABnfLeafElement(factory, file, line, col, offset, value)
     { }
-    virtual ~ABnfKeyElement() {}
+    virtual ~ABnfKeyElement() = default;
 
     virtual const std::string& GetLeafType() override { static std::string type = "Key"; return type; }
 };

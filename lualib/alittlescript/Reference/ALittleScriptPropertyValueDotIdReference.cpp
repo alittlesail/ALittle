@@ -40,7 +40,7 @@ ABnfGuessError ALittleScriptPropertyValueDotIdReference::GuessTypes(std::vector<
     return nullptr;
 }
 
-bool ALittleScriptPropertyValueDotIdReference::QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
+bool ALittleScriptPropertyValueDotIdReference::QueryCompletion(const ABnfElementPtr& select, std::vector<ALanguageCompletionInfo>& list)
 {
     auto element = m_element.lock();
     if (element == nullptr) return false;
@@ -50,7 +50,7 @@ bool ALittleScriptPropertyValueDotIdReference::QueryCompletion(ABnfElementPtr se
     bool is_dot_id = std::dynamic_pointer_cast<ALittleScriptPropertyValueDotIdElement>(select) != nullptr;
 
     // 获取父节点
-    auto property_value_dot_id = element;
+    const auto& property_value_dot_id = element;
     auto property_value_suffix = std::dynamic_pointer_cast<ALittleScriptPropertyValueSuffixElement>(property_value_dot_id->GetParent());
     auto property_value = std::dynamic_pointer_cast<ALittleScriptPropertyValueElement>(property_value_suffix->GetParent());
     auto property_value_first_type = property_value->GetPropertyValueFirstType();

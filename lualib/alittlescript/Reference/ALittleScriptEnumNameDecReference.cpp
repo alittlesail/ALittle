@@ -3,7 +3,7 @@
 #include "../Index/ALittleScriptUtility.h"
 #include "../Index/ALittleScriptIndex.h"
 
-ALittleScriptEnumNameDecReference::ALittleScriptEnumNameDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptEnumNameDecElement>(element)
+ALittleScriptEnumNameDecReference::ALittleScriptEnumNameDecReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptEnumNameDecElement>(element)
 {
     m_namespace_name = ALittleScriptUtility::GetNamespaceName(element);
     m_key = element->GetElementText();
@@ -17,7 +17,7 @@ int ALittleScriptEnumNameDecReference::QueryClassificationTag(bool& blur)
 
 ABnfGuessError ALittleScriptEnumNameDecReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
 {
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"½ÚµãÊ§Ð§");
     return element->GetParent()->GuessTypes(guess_list);
 }
@@ -34,9 +34,9 @@ ABnfElementPtr ALittleScriptEnumNameDecReference::GotoDefinition()
     return nullptr;
 }
 
-bool ALittleScriptEnumNameDecReference::QueryCompletion(ABnfElementPtr select, std::vector<ALanguageCompletionInfo>& list)
+bool ALittleScriptEnumNameDecReference::QueryCompletion(const ABnfElementPtr& select, std::vector<ALanguageCompletionInfo>& list)
 {
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return false;
 
     auto* index = GetIndex();

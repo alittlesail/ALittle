@@ -10,7 +10,7 @@
 #include "../Generate/ALittleScriptUsingNameDecElement.h"
 
 // 添加新元素
-void ALittleScriptAccessData::AddNameDec(std::shared_ptr<ABnfElement> dec)
+void ALittleScriptAccessData::AddNameDec(const std::shared_ptr<ABnfElement>& dec)
 {
     // 获取名称
     const std::string& name = dec->GetElementText();
@@ -55,12 +55,12 @@ void ALittleScriptAccessData::FindNameDecList(ABnfElementType type, const std::s
     auto sub_it = it->second.find(name);
     if (sub_it == it->second.end()) return;
 
-    for (auto& e : sub_it->second)
+    for (const auto& e : sub_it->second)
         result.push_back(e);
 }
 
 // 移除元素
-void ALittleScriptAccessData::RemoveNameDec(std::shared_ptr<ABnfElement> dec)
+void ALittleScriptAccessData::RemoveNameDec(const std::shared_ptr<ABnfElement>& dec)
 {
     // 获取名称
     const auto& name = dec->GetElementText();

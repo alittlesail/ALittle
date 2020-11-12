@@ -15,7 +15,7 @@
 
 ABnfGuessError ALittleScriptCoroutineStatReference::CheckError()
 {
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(element, u8"节点失效");
     // 检查这次所在的函数必须要有await或者async修饰
     ABnfElementPtr parent = element;
@@ -25,33 +25,39 @@ ABnfGuessError ALittleScriptCoroutineStatReference::CheckError()
         {
             break;
         }
-        else if (std::dynamic_pointer_cast<ALittleScriptClassCtorDecElement>(parent))
+        
+        if (std::dynamic_pointer_cast<ALittleScriptClassCtorDecElement>(parent))
         {
             break;
         }
-        else if (std::dynamic_pointer_cast<ALittleScriptClassGetterDecElement>(parent))
+        
+        if (std::dynamic_pointer_cast<ALittleScriptClassGetterDecElement>(parent))
         {
             break;
         }
-        else if (std::dynamic_pointer_cast<ALittleScriptClassSetterDecElement>(parent))
+        
+        if (std::dynamic_pointer_cast<ALittleScriptClassSetterDecElement>(parent))
         {
             break;
         }
-        else if (std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(parent))
-        {
-            const auto& modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(parent->GetParent())->GetModifierList();
-            if (ALittleScriptUtility::GetCoroutineType(modifier) == "await")
-                return nullptr;
-            break;
-        }
-        else if (std::dynamic_pointer_cast<ALittleScriptClassStaticDecElement>(parent))
+        
+        if (std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(parent))
         {
             const auto& modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(parent->GetParent())->GetModifierList();
             if (ALittleScriptUtility::GetCoroutineType(modifier) == "await")
                 return nullptr;
             break;
         }
-        else if (std::dynamic_pointer_cast<ALittleScriptGlobalMethodDecElement>(parent))
+        
+        if (std::dynamic_pointer_cast<ALittleScriptClassStaticDecElement>(parent))
+        {
+            const auto& modifier = std::dynamic_pointer_cast<ALittleScriptClassElementDecElement>(parent->GetParent())->GetModifierList();
+            if (ALittleScriptUtility::GetCoroutineType(modifier) == "await")
+                return nullptr;
+            break;
+        }
+        
+        if (std::dynamic_pointer_cast<ALittleScriptGlobalMethodDecElement>(parent))
         {
             const auto& modifier = std::dynamic_pointer_cast<ALittleScriptNamespaceElementDecElement>(parent->GetParent())->GetModifierList();
             if (ALittleScriptUtility::GetCoroutineType(modifier) == "await")
@@ -66,7 +72,7 @@ ABnfGuessError ALittleScriptCoroutineStatReference::CheckError()
 
 ABnfGuessError ALittleScriptCoroutineStatReference::GuessTypes(std::vector<ABnfGuessPtr>& guess_list)
 {
-    auto element = m_element.lock();
+    const auto element = m_element.lock();
     if (element == nullptr) return ABnfGuessError(nullptr, u8"节点失效");
 
     auto* index = GetIndex();

@@ -7,7 +7,7 @@
 #include "../Index/ALittleScriptFileClass.h"
 #include "../Guess/ALittleScriptGuessClass.h"
 
-ALittleScriptUsingDecReference::ALittleScriptUsingDecReference(ABnfElementPtr element) : ALittleScriptReferenceTemplate<ALittleScriptUsingDecElement>(element)
+ALittleScriptUsingDecReference::ALittleScriptUsingDecReference(const ABnfElementPtr& element) : ALittleScriptReferenceTemplate<ALittleScriptUsingDecElement>(element)
 {
     m_namespace_name = ALittleScriptUtility::GetNamespaceName(element);
 }
@@ -30,8 +30,8 @@ inline ABnfGuessError ALittleScriptUsingDecReference::GuessTypes(std::vector<ABn
         {
             if (std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess))
             {
-                auto guess_class = std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess);
-                if (guess_class->template_list.size() > 0)
+                const auto guess_class = std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess);
+                if (!guess_class->template_list.empty())
                 {
                     has_template = true;
                     break;
@@ -46,7 +46,7 @@ inline ABnfGuessError ALittleScriptUsingDecReference::GuessTypes(std::vector<ABn
             if (std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess))
             {
                 auto guess_class = std::dynamic_pointer_cast<ALittleScriptGuessClass>(guess);
-                if (guess_class->template_list.size() == 0)
+                if (guess_class->template_list.empty())
                 {
                     new_guess_list.push_back(guess);
                 }

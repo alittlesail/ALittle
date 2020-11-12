@@ -2084,11 +2084,11 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GeneratePropertyValue(std::sh
         if (method_call != nullptr)
         {
             // 是否是调用了带注解函数，要进行特殊处理
-            auto refe = method_call->GetReference();
-            if (!dynamic_cast<ALittleScriptPropertyValueMethodCallReference*>(refe))
+            auto refer = method_call->GetReference();
+            if (!dynamic_cast<ALittleScriptPropertyValueMethodCallReference*>(refer))
                 return ABnfGuessError(nullptr, u8"ALittlePropertyValueMethodCall->GetReference()得到的不是ALittlePropertyValueMethodCallReference");
 
-            auto reference = dynamic_cast<ALittleScriptPropertyValueMethodCallReference*>(refe);
+            auto reference = dynamic_cast<ALittleScriptPropertyValueMethodCallReference*>(refer);
             ABnfGuessPtr pre_type;
             error = reference->GuessPreType(pre_type);
             if (error) return error;

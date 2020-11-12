@@ -3,7 +3,7 @@
 #include "../Generate/ALittleScriptCustomTypeElement.h"
 #include "../Generate/ALittleScriptCustomTypeNameElement.h"
 
-ALittleScriptCustomTypeDotIdNameReference::ALittleScriptCustomTypeDotIdNameReference(ABnfElementPtr element) : ALittleScriptCustomTypeCommonReference(std::dynamic_pointer_cast<ALittleScriptCustomTypeElement>(element->GetParent()->GetParent()), element)
+ALittleScriptCustomTypeDotIdNameReference::ALittleScriptCustomTypeDotIdNameReference(const ABnfElementPtr& element) : ALittleScriptCustomTypeCommonReference(std::dynamic_pointer_cast<ALittleScriptCustomTypeElement>(element->GetParent()->GetParent()), element)
 {
     auto custom_type = std::dynamic_pointer_cast<ALittleScriptCustomTypeElement>(element->GetParent()->GetParent());
     auto custom_type_name = custom_type->GetCustomTypeName();

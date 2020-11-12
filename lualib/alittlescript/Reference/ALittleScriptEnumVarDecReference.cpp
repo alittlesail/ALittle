@@ -12,12 +12,12 @@ ABnfGuessError ALittleScriptEnumVarDecReference::GuessTypes(std::vector<ABnfGues
 
     if (element->GetText() != nullptr)
     {
-        auto it = ALittleScriptStatic::Inst().sPrimitiveGuessListMap.find("string");
+        const auto it = ALittleScriptStatic::Inst().sPrimitiveGuessListMap.find("string");
         if (it != ALittleScriptStatic::Inst().sPrimitiveGuessListMap.end()) guess_list = it->second;
     }
     else
     {
-        auto it = ALittleScriptStatic::Inst().sPrimitiveGuessListMap.find("int");
+        const auto it = ALittleScriptStatic::Inst().sPrimitiveGuessListMap.find("int");
         if (it != ALittleScriptStatic::Inst().sPrimitiveGuessListMap.end()) guess_list = it->second;
     }
         

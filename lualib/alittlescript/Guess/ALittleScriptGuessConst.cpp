@@ -19,6 +19,6 @@ ABnfGuessPtr ALittleScriptGuessConst::ReplaceTemplate(ABnfFile* file, const std:
 
 ABnfGuessPtr ALittleScriptGuessConst::Clone() const
 {
-    return ABnfGuessPtr(new ALittleScriptGuessConst(value));
+    return std::make_shared<ALittleScriptGuessConst>(value);
 }
 

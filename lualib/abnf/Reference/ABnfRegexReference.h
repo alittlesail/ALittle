@@ -7,7 +7,7 @@
 class ABnfRegexReference : public ABnfCommonReference
 {
 public:
-    ABnfRegexReference(ABnfElementPtr element);
+    ABnfRegexReference(const ABnfElementPtr& element);
     virtual ~ABnfRegexReference() {}
 
     void QueryQuickInfo(std::string& info) override;

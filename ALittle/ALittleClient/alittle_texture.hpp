@@ -358,7 +358,7 @@ public:
 	{
 		Clear();
 
-		if (width <= 0 || height <= 0) return false;
+		if (width <= 0 || height <= 0 || file_path == nullptr || object == nullptr) return false;
 		if (!SDL_RenderTargetSupported(s_alittle_render.GetRender())) return false;
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN

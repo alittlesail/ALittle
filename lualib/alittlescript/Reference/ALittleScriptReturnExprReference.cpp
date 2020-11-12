@@ -21,15 +21,16 @@
 
 ABnfGuessError ALittleScriptReturnExprReference::CheckError()
 {
-    ABnfElementPtr element = m_element.lock();
-    if (element == nullptr) return ABnfGuessError(element, u8"节点失效");
-    ABnfElementPtr parent;
+    auto my_element = m_element.lock();
+    if (my_element == nullptr) return ABnfGuessError(my_element, u8"节点失效");
+	
     if (m_element.lock()->GetReturnYield() != nullptr)
     {
         // 对于ReturnYield就不需要做返回值检查
         // 对所在函数进行检查，必须要有async和await表示
         // 获取对应的函数对象
-        parent = element;
+        ABnfElementPtr element;
+        ABnfElementPtr parent = my_element;
         while (parent != nullptr)
         {
             if (std::dynamic_pointer_cast<ALittleScriptClassMethodDecElement>(parent))
@@ -79,7 +80,7 @@ ABnfGuessError ALittleScriptReturnExprReference::CheckError()
     std::shared_ptr<ALittleScriptMethodReturnTailDecElement> return_tail_dec;
 
     // 获取对应的函数对象
-    parent = element;
+    ABnfElementPtr parent = my_element;
     while (parent != nullptr)
     {
         if (std::dynamic_pointer_cast<ALittleScriptClassGetterDecElement>(parent))
@@ -169,12 +170,12 @@ ABnfGuessError ALittleScriptReturnExprReference::CheckError()
             if (has_value_tail)
             {
                 if (guess_list.size() < return_type_list.size() - 1)
-                    return ABnfGuessError(element, u8"return的函数调用的返回值数量超过函数定义的返回值数量");
+                    return ABnfGuessError(my_element, u8"return的函数调用的返回值数量超过函数定义的返回值数量");
             }
             else
             {
                 if (guess_list.size() != return_type_list.size())
-                    return ABnfGuessError(element, u8"return的函数调用的返回值数量和函数定义的返回值数量不相等");
+                    return ABnfGuessError(my_element, u8"return的函数调用的返回值数量和函数定义的返回值数量不相等");
             }
         }
         else
@@ -186,7 +187,7 @@ ABnfGuessError ALittleScriptReturnExprReference::CheckError()
             else
             {
                 if (guess_list.size() < return_type_list.size())
-                    return ABnfGuessError(element, u8"return的函数调用的返回值数量少于函数定义的返回值数量");
+                    return ABnfGuessError(my_element, u8"return的函数调用的返回值数量少于函数定义的返回值数量");
             }
         }
     }
@@ -195,12 +196,12 @@ ABnfGuessError ALittleScriptReturnExprReference::CheckError()
         if (return_tail_dec == nullptr)
         {
             if (value_stat_list.size() != return_type_list.size())
-                return ABnfGuessError(element, u8"return的返回值数量和函数定义的返回值数量不相等");
+                return ABnfGuessError(my_element, u8"return的返回值数量和函数定义的返回值数量不相等");
         }
         else
         {
             if (value_stat_list.size() < return_type_list.size())
-                return ABnfGuessError(element, u8"return的返回值数量少于函数定义的返回值数量");
+                return ABnfGuessError(my_element, u8"return的返回值数量少于函数定义的返回值数量");
         }
         guess_list.resize(0);
         for (const auto& value_stat : value_stat_list)

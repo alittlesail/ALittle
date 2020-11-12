@@ -30,3 +30,6 @@
 	path = Carp
 	url = https://github.com/alittlesail/ALittle-Carp.git
 	branch = master
+[submodule "kcp"]
+	path = kcp
+	url = https://github.com/skywind3000/kcp.git

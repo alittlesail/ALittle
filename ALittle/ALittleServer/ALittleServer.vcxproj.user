@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerWorkingDirectory>D:\ALittleIDE</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerWorkingDirectory>$(TargetDir)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>Module/ALittleIDE/Other/GameLibrary/Core/ Module/ALittleIDE/Other/GameLibrary/Std/ Module/ALittleIDE/Other/GameLibrary/SEngine/ GatewayServer,GatewayServer,Module/ALittleIDE/Other/GameLibrary/GatewayServer/,Module/GGOD/Server/GatewayServer.cfg;FileServer,FileServer,Module/ALittleIDE/Other/GameLibrary/FileServer/,Module/GGOD/Server/FileServer.cfg;LogServer,LogServer,Module/ALittleIDE/Other/GameLibrary/LogServer/,Module/GGOD/Server/LogServer.cfg;DataServer1,DataServer,Module/ALittleIDE/Other/GameLibrary/DataServer/,Module/GGOD/Server/DataServer1.cfg;DataServer2,DataServer,Module/ALittleIDE/Other/GameLibrary/DataServer/,Module/GGOD/Server/DataServer2.cfg;GameServer1,GGODGameServer,Module/GGOD/Server/GGODGameServer/,Module/GGOD/Server/GGODGameServer1.cfg;GameServer2,GGODGameServer,Module/GGOD/Server/GGODGameServer/,Module/GGOD/Server/GGODGameServer2.cfg</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>Module/ALittleIDE/Other/GameLibrary/Core/ Module/ALittleIDE/Other/GameLibrary/Std/ Module/ALittleIDE/Other/GameLibrary/SEngine/ GatewayServer,GatewayServer,Module/ALittleIDE/Other/GameLibrary/GatewayServer/,Module/ALittleIDE/Other/GameLibrary/GatewayServer.cfg;VersionServer,VersionServer,Module/ALittleIDE/Other/GameLibrary/VersionServer/,Module/ALittleIDE/Other/GameLibrary/VersionServer.cfg</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerWorkingDirectory>$(TargetDir)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerCommandArguments>Module/ALittleIDE/Other/GameLibrary/Core/ Module/ALittleIDE/Other/GameLibrary/Std/ Module/ALittleIDE/Other/GameLibrary/SEngine/ GatewayServer,GatewayServer,Module/ALittleIDE/Other/GameLibrary/GatewayServer/,Module/ALittleIDE/Other/GameLibrary/GatewayServer.cfg;VersionServer,VersionServer,Module/ALittleIDE/Other/GameLibrary/VersionServer/,Module/ALittleIDE/Other/GameLibrary/VersionServer.cfg</LocalDebuggerCommandArguments>
   </PropertyGroup>
 </Project>

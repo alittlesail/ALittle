@@ -138,8 +138,16 @@ int ServerSchedule::Start()
 	for (auto it = m_client_server_set.begin(); it != m_client_server_set.end(); ++it)
 		(*it)->Close();
 	m_client_server_set.clear();
+
 	m_id_map_client.clear();
 	m_client_map_id.clear();
+	
+	for (auto it = m_rudp_server_set.begin(); it != m_rudp_server_set.end(); ++it)
+		(*it)->Close();
+	m_rudp_server_set.clear();
+
+	m_id_map_rudp.clear();
+	m_rudp_map_id.clear();
 
 	if (m_route_system != nullptr)
 	{
@@ -202,8 +210,8 @@ bool ServerSchedule::CreateHttpServer(const char* yun_ip, const char* ip, int po
 	std::string ip_str;
 	if (ip != nullptr) ip_str = ip;
 
-	HttpServerPtr server = HttpServerPtr(new HttpServer);
-	bool result = server->Start(yun_ip_str, ip_str, port, 30, is_ssl, this, "", "", "");
+	auto server = std::make_shared<HttpServer>();
+	const bool result = server->Start(yun_ip_str, ip_str, port, 30, is_ssl, this, "", "", "");
 	if (!result) return false;
 
 	m_http_server_set.insert(server);
@@ -236,7 +244,7 @@ int ServerSchedule::GetHttpServerPort() const
 
 void ServerSchedule::HandleHttpMessage(HttpSenderPtr sender, const std::string& msg)
 {
-	int id = m_id_creator.CreateID();
+	const int id = m_id_creator.CreateID();
 	m_id_map_http[id] = sender;
 	sender->m_id = id;
 

@@ -232,9 +232,8 @@ public:
 	 * @param ip ip or domain
 	 * @param port port
 	 */
-	void Connect(const char* ip, unsigned int port)
+	virtual void Connect(const char* ip, unsigned int port)
 	{
-
 		// if current is connected then close first
 		if (m_state == CONNECT_ED) Close();
 
@@ -275,7 +274,7 @@ public:
 #endif
 	}
 
-	void Close()
+	virtual void Close()
 	{
 		if (m_state == CONNECT_IDLE) return;
 		if (m_connect_client)
@@ -290,7 +289,7 @@ public:
 		m_ip = "";
 	}
 
-	bool IsConnected() const { return m_state == CONNECT_ED; }
+	virtual bool IsConnected() const { return m_state == CONNECT_ED; }
 
 private:
 	void HandleConnectFailed()
@@ -363,7 +362,7 @@ public:
 	 * send message
 	 * @param message
 	 */
-	void Send(const CarpMessage& message) const
+	virtual void Send(const CarpMessage& message) const
 	{
 		if (!m_connect_client && !m_rudp_client) return;
 
@@ -379,7 +378,7 @@ public:
 	 * send message factory
 	 * @param message
 	 */
-	void SendFactory(const CarpMessageWriteFactory* message) const
+	virtual void SendFactory(const CarpMessageWriteFactory* message) const
 	{
 		if (!m_connect_client && !m_rudp_client) return;
 

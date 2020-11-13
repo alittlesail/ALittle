@@ -111,7 +111,15 @@ public class AUIWebLoginManager : ALittle.EventDispatcher
 			return;
 		}
 
-		this._msg_client = ALittle.CreateMsgSender(60, true, bind(this.OnDisconnected, this));
+        if (result.client_ip == null || result.client_ip == "" || result.client_port == null)
+        {
+			this._msg_client = null;
+			this.OnConnectFailed();
+			A_LoopSystem.AddTimer(5000, bind(this.Connect, this));
+			return;
+        }
+
+		this._msg_client = ALittle.CreateMsgSender(60, true, bind(this.OnDisconnected, this), true);
 		this._msg_client._user_data = this;
 		error = this._msg_client.Connect(result.client_ip, result.client_port);
 		if (error != null)

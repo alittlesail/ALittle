@@ -90,7 +90,7 @@ void HttpSender::HandleSend(std::size_t bytes_transferred)
 	m_http_content = "";
 
 	// check is sending file
-	if (m_file->IsOpen())
+	if (m_file && m_file->IsOpen())
 	{
 		// read file
 		int size = m_file->Read(&(m_file_buffer[0]), (int)m_file_buffer.size());
@@ -172,7 +172,7 @@ void HttpSender::SendFile(const char* path, const char* content_type, bool for_d
 	m_file = m_schedule->GetFileCacheGroup().Create(path, use_cache);
 
 	// if file is open failed, then send error response
-	if (!m_file->IsOpen())
+	if (m_file == nullptr || !m_file->IsOpen())
 	{
 		m_http_content = "";
 		m_http_content += "HTTP/1.1 404 Not Found\r\n";

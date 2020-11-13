@@ -25,6 +25,7 @@ LOCAL_SRC_FILES := \
 	../lualib/sqlite3/lsqlite3.c \
 	../lualib/sqlite3/sqlite3.c \
 	../lua/onelua.c \
+	../kcp/ikcp.c \
 	ALittleClient/Main.cpp
 
 LOCAL_SHARED_LIBRARIES := SDL2

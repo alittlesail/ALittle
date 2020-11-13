@@ -222,8 +222,12 @@ function ALittle.System_OpenUrlBySystemBrowser(url)
 	__CPPAPI_System:OpenUrlBySystemBrowser(url)
 end
 
-function ALittle.CreateMsgSender(heartbeat, check_heartbeat, callback)
-	return Lua.Template(ALittle.MsgSenderTemplate, "ALittle.MsgSenderTemplate<lua.__CPPAPIMsgInterface, carp.CarpMessageWriteFactory>", __CPPAPIMsgInterface, carp.CarpMessageWriteFactory)(heartbeat, check_heartbeat, A_LuaLoopSystem, callback)
+function ALittle.CreateMsgSender(heartbeat, check_heartbeat, callback, rudp)
+	if rudp then
+		return Lua.Template(ALittle.MsgSenderTemplate, "ALittle.MsgSenderTemplate<lua.__CPPAPIUMsgInterface, carp.CarpMessageWriteFactory>", __CPPAPIUMsgInterface, carp.CarpMessageWriteFactory)(heartbeat, true, A_LuaLoopSystem, callback)
+	else
+		return Lua.Template(ALittle.MsgSenderTemplate, "ALittle.MsgSenderTemplate<lua.__CPPAPIMsgInterface, carp.CarpMessageWriteFactory>", __CPPAPIMsgInterface, carp.CarpMessageWriteFactory)(heartbeat, check_heartbeat, A_LuaLoopSystem, callback)
+	end
 end
 
 function ALittle.CreateHttpSender(ip, port)

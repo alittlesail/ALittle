@@ -457,10 +457,17 @@ public static System_OpenUrlBySystemBrowser(string url)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-public static CreateMsgSender(int heartbeat, bool check_heartbeat, [Nullable] Functor<()> callback) : IMsgCommonTemplate
+// heartbeat 心跳间隔，用于保活
+// check_heartbeat 是否进行心跳检查
+// callback 断开连接的回调函数
+// rudp 是否使用UDP的可靠性传输，可提高传输效率。在rudp下check_heartbeat强制为true。不支持javascript
+public static CreateMsgSender(int heartbeat, bool check_heartbeat, [Nullable] Functor<()> callback, [Nullable] bool rudp) : IMsgCommonTemplate
 {
     [Language(Lua)]
-    return new MsgSenderTemplate<lua.__CPPAPIMsgInterface, carp.CarpMessageWriteFactory>(heartbeat, check_heartbeat, A_LuaLoopSystem, callback);
+    if (rudp)
+    	return new MsgSenderTemplate<lua.__CPPAPIUMsgInterface, carp.CarpMessageWriteFactory>(heartbeat, true, A_LuaLoopSystem, callback);
+    else
+        return new MsgSenderTemplate<lua.__CPPAPIMsgInterface, carp.CarpMessageWriteFactory>(heartbeat, check_heartbeat, A_LuaLoopSystem, callback);
     [Language(JavaScript)]
     return new MsgSenderTemplate<JavaScript.JMsgInterface, JavaScript.JMessageWriteFactory>(heartbeat, check_heartbeat, A_JLoopSystem, callback);
 }

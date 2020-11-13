@@ -20,6 +20,9 @@
     <ClCompile Include="..\..\lualib\sqlite3\sqlite3.c">
       <Filter>lualib\sqlite3</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\kcp\ikcp.c">
+      <Filter>kcp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Carp">
@@ -39,6 +42,9 @@
     </Filter>
     <Filter Include="lualib\sqlite3">
       <UniqueIdentifier>{4d64c931-d0bd-432d-8bda-8985475e64cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kcp">
+      <UniqueIdentifier>{a555f07c-4853-498c-b587-1b45e1d06301}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -257,6 +263,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Carp\carp_rudp_client.hpp">
       <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\kcp\ikcp.h">
+      <Filter>kcp</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

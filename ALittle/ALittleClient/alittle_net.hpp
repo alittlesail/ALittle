@@ -5,6 +5,7 @@
 
 #include "Carp/carp_http.hpp"
 #include "Carp/carp_connect_client.hpp"
+#include "Carp/carp_rudp_client.hpp"
 #include "Carp/carp_schedule.hpp"
 #include "Carp/carp_log.hpp"
 #include "Carp/carp_task_consumer.hpp"
@@ -209,7 +210,7 @@ public:
 		m_id = s_alittle_net_id_creator;
 		s_alittle_net_id_set.insert(m_id);
 	}
-	~ALittleMsgClient()
+	virtual ~ALittleMsgClient()
 	{
 		s_alittle_net_id_set.erase(m_id);
 		Close();
@@ -253,19 +254,34 @@ public:
 		// flag to connecting
 		m_state = CONNECT_ING;
 
-		m_client = std::make_shared<CarpConnectClient>();
-		m_client->Connect(m_ip, m_port, &s_carp_schedule.GetIOService()
-			, std::bind(&ALittleMsgClient::HandleConnectFailed, this)
-			, std::bind(&ALittleMsgClient::HandleConnectSucceed, this)
-			, std::bind(&ALittleMsgClient::HandleDisconnected, this)
-			, std::bind(&ALittleMsgClient::HandleMessage, this, std::placeholders::_1, std::placeholders::_2));
+		if (m_rudp)
+		{
+			m_rudp_client = std::make_shared<CarpRudpClient>();
+			m_rudp_client->Connect(m_ip, m_port, &s_carp_schedule.GetIOService()
+				, std::bind(&ALittleMsgClient::HandleConnectFailed, this)
+				, std::bind(&ALittleMsgClient::HandleConnectSucceed, this)
+				, std::bind(&ALittleMsgClient::HandleDisconnected, this)
+				, std::bind(&ALittleMsgClient::HandleMessage, this, std::placeholders::_1, std::placeholders::_2));
+		}
+		else
+		{
+			m_connect_client = std::make_shared<CarpConnectClient>();
+			m_connect_client->Connect(m_ip, m_port, &s_carp_schedule.GetIOService()
+				, std::bind(&ALittleMsgClient::HandleConnectFailed, this)
+				, std::bind(&ALittleMsgClient::HandleConnectSucceed, this)
+				, std::bind(&ALittleMsgClient::HandleDisconnected, this)
+				, std::bind(&ALittleMsgClient::HandleMessage, this, std::placeholders::_1, std::placeholders::_2));
+		}
 #endif
 	}
 
 	void Close()
 	{
 		if (m_state == CONNECT_IDLE) return;
-		m_client->Close();
+		if (m_connect_client)
+			m_connect_client->Close();
+		if (m_rudp_client)
+			m_rudp_client->Close();
 
 		// flag to idle
 		m_state = CONNECT_IDLE;
@@ -284,11 +300,12 @@ private:
 		{
 			// 检查是否被析构了
 			if (s_alittle_net_id_set.find(id) == s_alittle_net_id_set.end()) return;
-			// set conected
+			// set connected
 			m_state = CONNECT_IDLE;
 			m_port = 0;
 			m_ip = "";
-			m_client = CarpConnectClientPtr();
+			m_connect_client = CarpConnectClientPtr();
+			m_rudp_client = CarpRudpClientPtr();
 			// notify script system
 			s_alittle_script.Invoke("__ALITTLEAPI_ConnectFailed", id);
 		});
@@ -318,7 +335,7 @@ private:
 			m_state = CONNECT_IDLE;
 			m_port = 0;
 			m_ip = "";
-			m_client = CarpConnectClientPtr();
+			m_connect_client = CarpConnectClientPtr();
 			// notify script system
 			s_alittle_script.Invoke("__ALITTLEAPI_Disconnected", id);
 		});
@@ -348,11 +365,14 @@ public:
 	 */
 	void Send(const CarpMessage& message) const
 	{
-		if (!m_client) return;
+		if (!m_connect_client && !m_rudp_client) return;
 
 		int size = 0;
 		void* memory = message.CreateMemoryForSend(&size);
-		m_client->SendPocket(memory, size);
+		if (m_connect_client)
+			m_connect_client->SendPocket(memory, size);
+		else if (m_rudp_client)
+			m_rudp_client->SendPocket(memory, size);
 	}
 
 	/**
@@ -361,11 +381,14 @@ public:
 	 */
 	void SendFactory(const CarpMessageWriteFactory* message) const
 	{
-		if (!m_client) return;
+		if (!m_connect_client && !m_rudp_client) return;
 
 		int size = 0;
 		void* memory = message->CreateMemoryForSend(&size);
-		m_client->SendPocket(memory, size);
+		if (m_connect_client)
+			m_connect_client->SendPocket(memory, size);
+		else if (m_rudp_client)
+			m_rudp_client->SendPocket(memory, size);
 	}
 
 private:
@@ -376,7 +399,17 @@ private:
 
 private:
 	CarpMessageReadFactory m_read_factory;	// read factory
-	CarpConnectClientPtr m_client;
+	CarpConnectClientPtr m_connect_client;
+	CarpRudpClientPtr m_rudp_client;
+
+protected:
+	bool m_rudp = false;
+};
+
+class ALittleUMsgClient : public ALittleMsgClient
+{
+public:
+	ALittleUMsgClient() { m_rudp = true; }
 };
 
 class ALittleNet
@@ -393,6 +426,11 @@ public:
 			.addFunction("Close", &ALittleMsgClient::Close)
 			.addFunction("IsConnected", &ALittleMsgClient::IsConnected)
 			.addFunction("SendFactory", &ALittleMsgClient::SendFactory)
+			.endClass();
+
+		luabridge::getGlobalNamespace(l_state)
+			.deriveClass<ALittleUMsgClient, ALittleMsgClient>("__CPPAPIUMsgInterface")
+			.addConstructor<void(*)()>()
 			.endClass();
 
 		luabridge::getGlobalNamespace(l_state)

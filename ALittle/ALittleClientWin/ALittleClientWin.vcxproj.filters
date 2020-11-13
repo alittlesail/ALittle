@@ -20,6 +20,9 @@
     <ClCompile Include="..\..\lualib\sqlite3\sqlite3.c">
       <Filter>lualib\sqlite3</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\kcp\ikcp.c">
+      <Filter>kcp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="lualib">
@@ -33,6 +36,9 @@
     </Filter>
     <Filter Include="lualib\sqlite3">
       <UniqueIdentifier>{26fae395-fe3f-4e92-b2e4-590d3561894b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kcp">
+      <UniqueIdentifier>{649afd95-beef-458f-aca7-e9f9a9fdb33a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -56,6 +62,9 @@
     </ClInclude>
     <ClInclude Include="..\..\lualib\sqlite3\sqlite3.h">
       <Filter>lualib\sqlite3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\kcp\ikcp.h">
+      <Filter>kcp</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

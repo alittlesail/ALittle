@@ -143,7 +143,7 @@ int ServerSchedule::Start()
 	m_client_map_id.clear();
 	
 	for (auto it = m_rudp_server_set.begin(); it != m_rudp_server_set.end(); ++it)
-		(*it)->Close();
+		(*it)->Close(true);
 	m_rudp_server_set.clear();
 
 	m_id_map_rudp.clear();
@@ -513,7 +513,7 @@ void ServerSchedule::ClientClose(int id)
 		auto it = m_id_map_rudp.find(id);
 		if (it != m_id_map_rudp.end())
 		{
-			it->second->Close();
+			it->second->Close(false);
 			m_id_map_rudp.erase(it);
 			return;
 		}

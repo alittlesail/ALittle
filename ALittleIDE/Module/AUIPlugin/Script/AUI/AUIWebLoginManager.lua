@@ -148,7 +148,7 @@ function AUIPlugin.AUIWebLoginManager:Connect()
 		A_LoopSystem:AddTimer(5000, Lua.Bind(self.Connect, self))
 		return
 	end
-	self._msg_client = ALittle.CreateMsgSender(60, true, Lua.Bind(self.OnDisconnected, self), true)
+	self._msg_client = ALittle.CreateMsgSender(60, true, Lua.Bind(self.OnDisconnected, self))
 	self._msg_client._user_data = self
 	error = self._msg_client:Connect(result.client_ip, result.client_port)
 	if error ~= nil then

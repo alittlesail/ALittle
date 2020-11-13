@@ -119,7 +119,7 @@ public class AUIWebLoginManager : ALittle.EventDispatcher
 			return;
         }
 
-		this._msg_client = ALittle.CreateMsgSender(60, true, bind(this.OnDisconnected, this), true);
+		this._msg_client = ALittle.CreateMsgSender(60, true, bind(this.OnDisconnected, this));
 		this._msg_client._user_data = this;
 		error = this._msg_client.Connect(result.client_ip, result.client_port);
 		if (error != null)

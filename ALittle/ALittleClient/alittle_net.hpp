@@ -335,6 +335,7 @@ private:
 			m_port = 0;
 			m_ip = "";
 			m_connect_client = CarpConnectClientPtr();
+			m_rudp_client = CarpRudpClientPtr();
 			// notify script system
 			s_alittle_script.Invoke("__ALITTLEAPI_Disconnected", id);
 		});

@@ -24,8 +24,8 @@ public class __CPPAPIServerSchedule
     public fun HttpSendFile(int http_id, string file_path, int start_size) {}
     public fun HttpStartReceiveFile(int http_id, string file_path, int start_size) : bool {}
 
-    // 客户端服务
-    public fun CreateClientServer(string yun_ip, string ip, int port) : bool {}
+    // 客户端服务，如果rudp设置为true，表示打开udp可靠性服务
+    public fun CreateClientServer(string yun_ip, string ip, int port, bool rudp) : bool {}
     public fun GetClientServerYunIp() : string {}
     public fun GetClientServerIp() : string {}
     public fun GetClientServerPort() : int {}

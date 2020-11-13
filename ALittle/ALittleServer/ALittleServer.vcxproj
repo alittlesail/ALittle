@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\kcp\ikcp.c" />
     <ClCompile Include="..\..\lualib\ajson\lua_ajson.c" />
     <ClCompile Include="..\..\lualib\cjson\fpconv.c" />
     <ClCompile Include="..\..\lualib\cjson\lua_cjson.c" />
@@ -35,6 +36,7 @@
     <ClCompile Include="ServerSystem\ServerSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\kcp\ikcp.h" />
     <ClInclude Include="..\..\lualib\ajson\lua_ajson.h" />
     <ClInclude Include="..\..\lualib\cjson\fpconv.h" />
     <ClInclude Include="..\..\lualib\cjson\lua_cjson.h" />

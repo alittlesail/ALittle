@@ -65,6 +65,9 @@
     <ClCompile Include="ServerSystem\ServerSystem.cpp">
       <Filter>ServerSystem</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\kcp\ikcp.c">
+      <Filter>kcp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="HttpSystem">
@@ -90,6 +93,9 @@
     </Filter>
     <Filter Include="ServerSystem">
       <UniqueIdentifier>{583d2b78-83a0-411d-ba69-6d753f0cda86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kcp">
+      <UniqueIdentifier>{97068cf1-f8d1-4cce-8bac-0c5c0910d715}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -164,6 +170,9 @@
     </ClInclude>
     <ClInclude Include="ServerSystem\ServerSchedule.h">
       <Filter>ServerSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\kcp\ikcp.h">
+      <Filter>kcp</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

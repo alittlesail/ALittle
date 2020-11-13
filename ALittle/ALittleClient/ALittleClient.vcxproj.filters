@@ -267,5 +267,8 @@
     <ClInclude Include="..\..\kcp\ikcp.h">
       <Filter>kcp</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_rudp_server.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

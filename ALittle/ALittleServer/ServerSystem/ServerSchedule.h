@@ -7,6 +7,7 @@
 #include <string>
 
 #include "Carp/carp_connect_server.hpp"
+#include "Carp/carp_rudp_server.hpp"
 #include "Carp/carp_safe_id_creator.hpp"
 #include "Carp/carp_file_cache.hpp"
 
@@ -18,7 +19,7 @@
 namespace ALittle
 {
 
-class ServerSchedule : public CarpConnectSchedule
+class ServerSchedule : public CarpSchedule, public CarpConnectInterface, public CarpRudpInterface
 {
 public:
 	ServerSchedule(const std::string& core_path
@@ -120,7 +121,7 @@ private:
 	std::map<int, HttpSenderWeakPtr> m_id_map_http;
 
 public:
-	bool CreateClientServer(const char* yun_ip, const char* ip, int port);
+	bool CreateClientServer(const char* yun_ip, const char* ip, int port, bool rudp);
 	const char* GetClientServerYunIp() const;
 	const char* GetClientServerIp() const;
 	int GetClientServerPort() const;
@@ -139,6 +140,19 @@ private:
 	std::set<CarpConnectServerPtr> m_client_server_set;
 	std::map<int, CarpConnectReceiverPtr> m_id_map_client;
 	std::map<CarpConnectReceiverPtr, int> m_client_map_id;
+
+public:
+	// handle client connect
+	void HandleRudpConnect(CarpRudpReceiverPtr sender) override;
+	// handle client disconnect
+	void HandleRudpDisconnect(CarpRudpReceiverPtr sender) override;
+	// handle client message
+	void HandleRudpMessage(CarpRudpReceiverPtr sender, int message_size, int message_id, int message_rpcid, void* memory) override;
+
+private:
+	std::set<CarpRudpServerPtr> m_rudp_server_set;
+	std::map<int, CarpRudpReceiverPtr> m_id_map_rudp;
+	std::map<CarpRudpReceiverPtr, int> m_rudp_map_id;
 
 private:
 	void StartRouteSystem(int route_type, int route_num);

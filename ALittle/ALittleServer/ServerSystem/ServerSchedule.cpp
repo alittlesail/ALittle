@@ -391,24 +391,43 @@ void ServerSchedule::HandleHttpFileCompletedMessageImpl(HttpSenderPtr sender, co
 		m_script_system.Invoke("__ALITTLEAPI_HttpFileCompletedTask", id, reason.c_str());
 }
 
-bool ServerSchedule::CreateClientServer(const char* yun_ip, const char* ip, int port)
+bool ServerSchedule::CreateClientServer(const char* yun_ip, const char* ip, int port, bool rudp)
 {
 	std::string yun_ip_str;
 	if (yun_ip != nullptr) yun_ip_str = yun_ip;
 	std::string ip_str;
 	if (ip != nullptr) ip_str = ip;
-	CarpConnectServerPtr server = std::make_shared<CarpConnectServerImpl>();
-	if (!server->Start(yun_ip_str, ip_str, port, 30, this)) return false;
-	m_client_server_set.insert(server);
+
+	if (rudp)
+	{
+		auto server = std::make_shared<CarpRudpServerImpl>();
+		if (!server->Start(yun_ip_str, ip_str, port, 30, this, this)) return false;
+		m_rudp_server_set.insert(server);
+	}
+	else
+	{
+		auto server = std::make_shared<CarpConnectServerImpl>();
+		if (!server->Start(yun_ip_str, ip_str, port, 30, this, this)) return false;
+		m_client_server_set.insert(server);
+	}
 	return true;
 }
 
 const char* ServerSchedule::GetClientServerYunIp() const
 {
-	if (m_client_server_set.empty()) return nullptr;
+	if (!m_client_server_set.empty())
+	{
+		auto it = m_client_server_set.begin();
+		return (*it)->GetYunIp().c_str();
+	}
 
-	auto it = m_client_server_set.begin();
-	return (*it)->GetYunIp().c_str();
+	if (!m_rudp_server_set.empty())
+	{
+		auto it = m_rudp_server_set.begin();
+		return (*it)->GetYunIp().c_str();
+	}
+
+	return nullptr;
 }
 
 const char* ServerSchedule::GetClientServerIp() const
@@ -421,10 +440,19 @@ const char* ServerSchedule::GetClientServerIp() const
 
 int ServerSchedule::GetClientServerPort() const
 {
-	if (m_client_server_set.empty()) return 0;
+	if (!m_client_server_set.empty())
+	{
+		auto it = m_client_server_set.begin();
+		return (*it)->GetPort();
+	}
 
-	auto it = m_client_server_set.begin();
-	return (*it)->GetPort();
+	if (!m_rudp_server_set.empty())
+	{
+		auto it = m_rudp_server_set.begin();
+		return (*it)->GetPort();
+	}
+
+	return 0;
 }
 
 void ServerSchedule::HandleClientConnect(CarpConnectReceiverPtr sender)
@@ -463,21 +491,82 @@ void ServerSchedule::HandleClientMessage(CarpConnectReceiverPtr sender, int mess
 
 void ServerSchedule::ClientClose(int id)
 {
-	auto it = m_id_map_client.find(id);
-	if (it == m_id_map_client.end()) return;
+	{
+		auto it = m_id_map_client.find(id);
+		if (it != m_id_map_client.end())
+		{
+			it->second->Close();
+			m_id_map_client.erase(it);
+			return;
+		}
+	}
 
-	it->second->Close();
-	m_id_map_client.erase(it);
+	{
+		auto it = m_id_map_rudp.find(id);
+		if (it != m_id_map_rudp.end())
+		{
+			it->second->Close();
+			m_id_map_rudp.erase(it);
+			return;
+		}
+	}
 }
 
 void ServerSchedule::ClientSend(int id, CarpMessageWriteFactory* factory)
 {
-	auto it = m_id_map_client.find(id);
-	if (it == m_id_map_client.end()) return;
+	{
+		auto it = m_id_map_client.find(id);
+		if (it != m_id_map_client.end())
+		{
+			it->second->Send(*factory);
+			return;
+		}
+	}
 
-	it->second->Send(*factory);
+	{
+		auto it = m_id_map_rudp.find(id);
+		if (it != m_id_map_rudp.end())
+		{
+			it->second->Send(*factory);
+			return;
+		}
+	}
 }
 
+void ServerSchedule::HandleRudpConnect(CarpRudpReceiverPtr sender)
+{
+	int id = m_id_creator.CreateID();
+	m_id_map_rudp[id] = sender;
+	m_rudp_map_id[sender] = id;
+
+	m_script_system.Invoke("__ALITTLEAPI_ClientConnect", id, sender->GetRemoteIP().c_str(), sender->GetRemotePort());
+}
+
+void ServerSchedule::HandleRudpDisconnect(CarpRudpReceiverPtr sender)
+{
+	auto it = m_rudp_map_id.find(sender);
+	if (it == m_rudp_map_id.end()) return;
+	int id = it->second;
+	m_rudp_map_id.erase(it);
+
+	m_id_map_rudp.erase(id);
+	m_id_creator.ReleaseID(id);
+
+	m_script_system.Invoke("__ALITTLEAPI_ClientDisconnect", id);
+}
+
+void ServerSchedule::HandleRudpMessage(CarpRudpReceiverPtr sender, int message_size, int message_id, int message_rpcid, void* memory)
+{
+	auto it = m_rudp_map_id.find(sender);
+	if (it == m_rudp_map_id.end()) return;
+
+	m_read_factory.Deserialize(memory, message_size);
+	m_read_factory.SetID(message_id);
+	m_read_factory.SetRpcID(message_rpcid);
+
+	m_script_system.Invoke("__ALITTLEAPI_ClientMessage", it->second, message_id, message_rpcid, &m_read_factory);
+}
+	
 void ServerSchedule::StartRouteSystem(int route_type, int route_num)
 {
 	if (m_route_system != nullptr)

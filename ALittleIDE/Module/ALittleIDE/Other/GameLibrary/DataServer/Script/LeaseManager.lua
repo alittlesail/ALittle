@@ -27,7 +27,7 @@ option_map = {}
 ALittle.RegStruct(-1076468151, "DataServer.LeaseGameServerInfo", {
 name = "DataServer.LeaseGameServerInfo", ns_name = "DataServer", rl_name = "LeaseGameServerInfo", hash_code = -1076468151,
 name_list = {"client_ip","client_port","count","session"},
-type_list = {"string","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>"},
+type_list = {"string","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,carp.CarpMessageWriteFactory>"},
 option_map = {}
 })
 ALittle.RegStruct(-1057357327, "DataServer.GS2DATA_QRenewLease", {
@@ -57,7 +57,7 @@ option_map = {}
 ALittle.RegStruct(-36908822, "ALittle.SessionDisconnectEvent", {
 name = "ALittle.SessionDisconnectEvent", ns_name = "ALittle", rl_name = "SessionDisconnectEvent", hash_code = -36908822,
 name_list = {"target","connect_key","route_type","route_num","session"},
-type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,lua.__CPPAPIMessageWriteFactory>"},
+type_list = {"ALittle.EventDispatcher","int","int","int","ALittle.MsgSessionTemplate<ALittle.MsgSessionNative,carp.CarpMessageWriteFactory>"},
 option_map = {}
 })
 

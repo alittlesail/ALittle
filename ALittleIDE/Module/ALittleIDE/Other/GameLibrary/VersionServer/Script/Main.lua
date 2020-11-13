@@ -21,7 +21,7 @@ function VersionServer.__Module_Setup(sengine_path, module_path, config_path)
 	__CPPAPI_ServerSchedule:CreateConnectClient(wan_ip, 1001 + port_offset)
 	__CPPAPI_ServerSchedule:StartMysqlQuery(1, VersionServer.g_ConfigSystem:GetString("main_conn_ip", nil), VersionServer.g_ConfigSystem:GetString("main_conn_username", nil), VersionServer.g_ConfigSystem:GetString("main_conn_password", nil), VersionServer.g_ConfigSystem:GetInt("main_conn_port", nil), VersionServer.g_ConfigSystem:GetString("main_conn_dbname", nil))
 	__CPPAPI_ServerSchedule:CreateHttpServer(yun_ip, wan_ip, 1100 + port_offset, false)
-	__CPPAPI_ServerSchedule:CreateClientServer(yun_ip, wan_ip, 1101 + port_offset)
+	__CPPAPI_ServerSchedule:CreateClientServer(yun_ip, wan_ip, 1101 + port_offset, false)
 	A_WebAccountManager:Setup()
 	VersionServer.g_VersionManager:Setup()
 end

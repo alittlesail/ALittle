@@ -206,6 +206,11 @@ public static __ALITTLEAPI_WindowLeave()
 {
     A_UISystem.HandleWindowLeave();
 }
+
+public static __ALITTLEAPI_Quit()
+{
+    A_UISystem.HandleQuit();
+}
     
 //////////////////////////////////////////////////////////////////-
 public static __ALITTLEAPI_Update(int frame_time)

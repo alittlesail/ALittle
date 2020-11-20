@@ -123,7 +123,14 @@ private:
 	 */
 	bool HandleEvent(const SDL_Event& event)
 	{
-		if (event.type == SDL_QUIT) return false;
+		// SDL_USEREVENT used for exit
+		if (event.type == SDL_USEREVENT) return false;
+		
+		if (event.type == SDL_QUIT)
+		{
+			s_alittle_script.Invoke("__ALITTLEAPI_Quit");
+			return true;
+		}
 
 		// handle windows event
 		if (event.type == SDL_WINDOWEVENT)
@@ -432,7 +439,7 @@ public:
 	void Exit() const
 	{
 		SDL_Event event;
-		event.type = SDL_QUIT;
+		event.type = SDL_USEREVENT;
 		SDL_PushEvent(&event);
 	}
 

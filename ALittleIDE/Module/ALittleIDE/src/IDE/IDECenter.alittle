@@ -16,6 +16,8 @@ class IDECenter
 		g_IDEProject.OpenLastProject();
 		// 初始化组合键
 		A_UISystem.keydown_callback = bind(this.HandleShortcutKey, this);
+        // 退出处理
+        A_UISystem.quit_callback = bind(this.HandleQuit, this);
 	}
 	
 	public fun Shutdown()
@@ -74,6 +76,23 @@ class IDECenter
 		if (this._center != null)
 			this._center.HandleShortcutKey();
 	}
+
+    // 处理退出
+    public fun HandleQuit() : bool
+    {
+		// 检查是否都保存了
+		if (this._center.content_edit.IsSaveAll()) return true;
+        this.HandleQuitImpl();
+        return false;
+    }
+
+    private async fun HandleQuitImpl()
+    {
+        var result = g_AUITool.SaveNotice("提示", "是否保存当前项目?");
+        if (result == AUIPlugin.AUIToolOption.YES)
+            this._center.content_edit.SaveAllTab();
+        ALittle.System_Exit();
+    }
 }
 
 protected var g_IDECenter = new IDECenter();

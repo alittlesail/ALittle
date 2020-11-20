@@ -69,6 +69,14 @@ function ALittle.UISystem.__getter:keydown_callback()
 	return self._keydown_callback
 end
 
+function ALittle.UISystem.__setter:quit_callback(value)
+	self._quit_callback = value
+end
+
+function ALittle.UISystem.__getter:quit_callback()
+	return self._quit_callback
+end
+
 function ALittle.UISystem.__getter:sym_map()
 	return self._sym_map
 end
@@ -538,6 +546,13 @@ function ALittle.UISystem:HandleWindowLeave()
 	if self._lbutton_down then
 		self:HandleLButtonUp(self._mouse_x, self._mouse_y)
 	end
+end
+
+function ALittle.UISystem:HandleQuit()
+	if self._quit_callback ~= nil and not self._quit_callback() then
+		return
+	end
+	ALittle.System_Exit()
 end
 
 function ALittle.UISystem:HandleFingerDown(x, y, finger_id, touch_id)

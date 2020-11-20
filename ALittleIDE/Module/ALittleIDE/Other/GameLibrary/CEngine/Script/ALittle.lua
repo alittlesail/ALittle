@@ -159,6 +159,10 @@ function _G.__ALITTLEAPI_WindowLeave()
 	A_UISystem:HandleWindowLeave()
 end
 
+function _G.__ALITTLEAPI_Quit()
+	A_UISystem:HandleQuit()
+end
+
 function _G.__ALITTLEAPI_Update(frame_time)
 	A_LoopSystem:Update(frame_time)
 	A_WeakLoopSystem:Update(frame_time)

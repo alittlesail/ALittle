@@ -12,6 +12,7 @@ function ALittleIDE.IDECenter:Setup()
 	ALittleIDE.g_Control:CreateControl("ide_main_scene", self, ALittleIDE.g_MainLayer)
 	ALittleIDE.g_IDEProject:OpenLastProject()
 	A_UISystem.keydown_callback = Lua.Bind(self.HandleShortcutKey, self)
+	A_UISystem.quit_callback = Lua.Bind(self.HandleQuit, self)
 end
 
 function ALittleIDE.IDECenter:Shutdown()
@@ -63,6 +64,23 @@ function ALittleIDE.IDECenter:HandleShortcutKey(mod, sym, scancode)
 		self._center:HandleShortcutKey()
 	end
 end
+
+function ALittleIDE.IDECenter:HandleQuit()
+	if self._center.content_edit:IsSaveAll() then
+		return true
+	end
+	self:HandleQuitImpl()
+	return false
+end
+
+function ALittleIDE.IDECenter:HandleQuitImpl()
+	local result = g_AUITool:SaveNotice("提示", "是否保存当前项目?")
+	if result == "YES" then
+		self._center.content_edit:SaveAllTab()
+	end
+	ALittle.System_Exit()
+end
+ALittleIDE.IDECenter.HandleQuitImpl = Lua.CoWrap(ALittleIDE.IDECenter.HandleQuitImpl)
 
 ALittleIDE.g_IDECenter = ALittleIDE.IDECenter()
 end

@@ -50,6 +50,9 @@ class UISystem
     // 参数：open开关，text正在编辑的文本，start光标偏移，list候选字符串列表, target目标控件
     private Functor<(bool, string, int, List<string>, DisplayObject)>   _ime_editing_callback;
 
+    // 退出通知回调
+    private Functor<():bool> _quit_callback;
+
     private Map<int, bool>              _sym_map;
     private Functor<(int, int, int)>    _keydown_callback;
     private Functor<(int, int)>         _view_resize_callback;
@@ -128,6 +131,16 @@ class UISystem
     public get keydown_callback() : Functor<(int, int, int)>
     {
         return this._keydown_callback;
+    }
+
+    // 退出通知回调
+    public set quit_callback(Functor<():bool> value)
+    {
+        this._quit_callback = value;
+    }
+    public get quit_callback() : Functor<():bool>
+    {
+        return this._quit_callback;
     }
 
     // 获取按下的按键映射表
@@ -766,6 +779,14 @@ class UISystem
     {
         if (this._lbutton_down)
             this.HandleLButtonUp(this._mouse_x, this._mouse_y);
+    }
+
+    // 处理退出
+    public fun HandleQuit()
+    {
+        if (this._quit_callback != null && !this._quit_callback()) return;
+
+        System_Exit();
     }
     
     // 处理多点触控按下，如果Mouse左键事件都没有按下去，那么把这个触控定义为鼠标事件

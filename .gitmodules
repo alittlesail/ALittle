@@ -33,3 +33,8 @@
 [submodule "kcp"]
 	path = kcp
 	url = https://github.com/skywind3000/kcp.git
+	branch = master
+[submodule "SDL"]
+	path = SDL
+	url = https://github.com/alittlesail/SDL.git
+	branch = master

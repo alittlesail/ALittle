@@ -1052,3 +1052,110 @@ public class IDEVersionWeChat : ALittle.DisplayLayout
 		g_IDEExport.SubmitPlatform(g_IDEProject.project.name, "WeChat");
 	}
 }
+
+public class IDEVersionEmscripten : ALittle.DisplayLayout
+{
+	private IDEVersionList _version_list;					// 版本列表
+	private ALittle.DisplayObject _export_new_log;			// 新版本日志
+
+	public ctor(ALittle.ControlSystem ctrl_sys)
+	{
+	}
+
+	public fun TCtor()
+	{
+		this._version_list.platform = "Emscripten";
+		this._version_list.config_key = "emscripten_export_info";
+	}
+
+	public set config_key(string value) { this._version_list.config_key = value; }
+	public get config_key() : string { return this._version_list.config_key; }
+
+	// 加载配置信息
+	public fun LoadConfigImpl() : bool
+	{
+		if (g_IDEProject.project == null)
+		{
+			g_AUITool.ShowNotice("错误", "当前没有打开的项目");
+			return false;
+		}
+
+            // 加载配置信息
+		this._version_list.LoadConfig();
+		// 刷新版本列表
+		this._version_list.HandleRefreshVersionList(null);
+		// 清空日志
+		this._version_list.export_old_log.text = "";
+
+		// 获取包信息
+		var export_info = g_IDEProject.project.config.GetConfig(this.config_key, new IDEPackageInfo());
+	
+		// 安装包信息
+		var install_info = export_info.install_info;
+		if (install_info == null) install_info = new IDEInstallInfo();
+        // 新版本日志
+		if (install_info.new_log != null)
+			this._export_new_log.text = install_info.new_log;
+		else
+			this._export_new_log.text = "";
+	
+		return true;
+	}
+
+	// 保存版本信息
+	public fun SaveConfigImpl() : bool
+	{
+		if (g_IDEProject.project == null)
+		{
+			g_AUITool.ShowNotice("错误", "当前没有打开的项目");
+			return false;
+		}
+	
+		var version_info = this._version_list.GetConfig();
+		if (version_info == null) return false;
+        
+            // 从界面上获取数据
+		var export_info = new IDEPackageInfo();
+		export_info.version_info = version_info;
+    
+		// 安装包信息
+		var install_info = new IDEInstallInfo();
+		export_info.install_info = install_info;
+		install_info.file_name = "Install.html";
+		// 检查安装包名
+		if (install_info.install_name == "")
+		{
+			g_AUITool.ShowNotice("错误", "安装包名不能为空");
+			return false;
+		}
+            // 设置新版本日志
+		install_info.new_log = this._export_new_log.text;
+		// 保存配置信息
+		g_IDEProject.project.config.SetConfig(this.config_key, export_info);
+		return true;
+	}
+
+	public fun HandleSaveConfig(ALittle.UIEvent event)
+	{
+		if (this.SaveConfigImpl() == false) return;
+		g_AUITool.ShowNotice("提示", "配置保存成功");
+	}
+
+	public async fun HandleExport(ALittle.UIEvent event)
+	{
+		if (this.SaveConfigImpl() == false) return;
+
+		var export_info = g_IDEProject.project.config.GetConfig{IDEPackageInfo}(this.config_key, null);
+		if (export_info == null) return;
+	
+		[Language(JavaScript)]
+		g_AUITool.ShowNotice("提示", "JavaScript版本不支持导出项目功能");
+		[Language(Lua)]
+		g_IDEExport.PackagePlatform(g_IDEProject.project.name, export_info.version_info, export_info.install_info, "Emscripten");
+	}
+
+	public async fun HandleSubmit(ALittle.UIEvent event)
+	{
+		g_IDEExport.SubmitPlatform(g_IDEProject.project.name, "Emscripten");
+	}
+}	

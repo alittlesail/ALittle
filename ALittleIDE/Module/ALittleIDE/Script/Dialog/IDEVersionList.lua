@@ -957,4 +957,91 @@ function ALittleIDE.IDEVersionWeChat:HandleSubmit(event)
 end
 ALittleIDE.IDEVersionWeChat.HandleSubmit = Lua.CoWrap(ALittleIDE.IDEVersionWeChat.HandleSubmit)
 
+assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
+ALittleIDE.IDEVersionEmscripten = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEVersionEmscripten")
+
+function ALittleIDE.IDEVersionEmscripten:Ctor(ctrl_sys)
+end
+
+function ALittleIDE.IDEVersionEmscripten:TCtor()
+	self._version_list.platform = "Emscripten"
+	self._version_list.config_key = "emscripten_export_info"
+end
+
+function ALittleIDE.IDEVersionEmscripten.__setter:config_key(value)
+	self._version_list.config_key = value
+end
+
+function ALittleIDE.IDEVersionEmscripten.__getter:config_key()
+	return self._version_list.config_key
+end
+
+function ALittleIDE.IDEVersionEmscripten:LoadConfigImpl()
+	if ALittleIDE.g_IDEProject.project == nil then
+		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
+		return false
+	end
+	self._version_list:LoadConfig()
+	self._version_list:HandleRefreshVersionList(nil)
+	self._version_list.export_old_log.text = ""
+	local export_info = ALittleIDE.g_IDEProject.project.config:GetConfig(self.config_key, {})
+	local install_info = export_info.install_info
+	if install_info == nil then
+		install_info = {}
+	end
+	if install_info.new_log ~= nil then
+		self._export_new_log.text = install_info.new_log
+	else
+		self._export_new_log.text = ""
+	end
+	return true
+end
+
+function ALittleIDE.IDEVersionEmscripten:SaveConfigImpl()
+	if ALittleIDE.g_IDEProject.project == nil then
+		g_AUITool:ShowNotice("错误", "当前没有打开的项目")
+		return false
+	end
+	local version_info = self._version_list:GetConfig()
+	if version_info == nil then
+		return false
+	end
+	local export_info = {}
+	export_info.version_info = version_info
+	local install_info = {}
+	export_info.install_info = install_info
+	install_info.file_name = "Install.html"
+	if install_info.install_name == "" then
+		g_AUITool:ShowNotice("错误", "安装包名不能为空")
+		return false
+	end
+	install_info.new_log = self._export_new_log.text
+	ALittleIDE.g_IDEProject.project.config:SetConfig(self.config_key, export_info)
+	return true
+end
+
+function ALittleIDE.IDEVersionEmscripten:HandleSaveConfig(event)
+	if self:SaveConfigImpl() == false then
+		return
+	end
+	g_AUITool:ShowNotice("提示", "配置保存成功")
+end
+
+function ALittleIDE.IDEVersionEmscripten:HandleExport(event)
+	if self:SaveConfigImpl() == false then
+		return
+	end
+	local export_info = ALittleIDE.g_IDEProject.project.config:GetConfig(self.config_key, nil)
+	if export_info == nil then
+		return
+	end
+	ALittleIDE.g_IDEExport:PackagePlatform(ALittleIDE.g_IDEProject.project.name, export_info.version_info, export_info.install_info, "Emscripten")
+end
+ALittleIDE.IDEVersionEmscripten.HandleExport = Lua.CoWrap(ALittleIDE.IDEVersionEmscripten.HandleExport)
+
+function ALittleIDE.IDEVersionEmscripten:HandleSubmit(event)
+	ALittleIDE.g_IDEExport:SubmitPlatform(ALittleIDE.g_IDEProject.project.name, "Emscripten")
+end
+ALittleIDE.IDEVersionEmscripten.HandleSubmit = Lua.CoWrap(ALittleIDE.IDEVersionEmscripten.HandleSubmit)
+
 end

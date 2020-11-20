@@ -26,6 +26,10 @@
 #include "Carp/carp_task_consumer.hpp"
 #include "Carp/carp_lua_debug.hpp"
 
+#ifdef __EMSCRIPTEN__
+#include "emscripten.h"
+#endif
+
 extern CarpLuaDebugServer s_alittle_lua_debug_server;
 class Application;
 
@@ -296,6 +300,9 @@ private:
 		// get current time
 		m_current_time = SDL_GetTicks();
 		s_carp_task_consumer.HandleEvent();
+#ifdef __EMSCRIPTEN__
+		s_carp_schedule.PollOne();
+#endif
 
 		// check fps
 		if (m_current_time < m_last_time + m_interval) return;

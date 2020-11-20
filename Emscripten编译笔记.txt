@@ -13,11 +13,11 @@
 
 	【开始】
 	拉取ubuntu镜像  docker pull ubuntu
-	创建ubuntu容器  docker run -it --name alittle -v /D/Software/ALittle/trunk/Emscripten:/alittle ubuntu /bin/bash
+	创建ubuntu容器  docker run -it --name alittle -v /D/Software/ALittle/ALittle:/alittle ubuntu /bin/bash
 	此时已进入ubuntu
 	更新系统 apt update
 	安装git  apt install git
-	安装python apt install python
+	安装python apt install python3
 	安装xml2 apt install xml2
 	安装gcc apt install gcc
 	更新gcc apt upgrade gcc
@@ -31,11 +31,9 @@
 	激活emsdk		sh emsdk activate latest
 	设置环境变量		source ./emsdk_env.sh
 
-	把D:\Software\ALittle\trunk\Emscripten\emsdk\upstream\emscripten\system\include里面的SDL文件夹重命名为SDL1
-
-3. 编译lua5.3.5:https://www.lua.org/download.html
-	a. 把src中lua.c luac.c lutf8lib.c 文件删除
-	b. 和ALittle一起编译
+	把emsdk自带的SDL改名不用
+	cd upstream/emscripten/system/include
+	mv SDL SDL-backup
 
 4. 编译SDL2
 	a. mkdir build
@@ -43,69 +41,7 @@
 	c. emcmake cmake ..
 	d. emmake make
 	e. emmake make install
-	
-
-5. 编译SDL2_net
-	a. sh autogen.sh
-	b. emconfigure ./configure --with-sdl-prefix=/usr/local
-	c. emmake make
-	d. emmake make install
-
-6.1. 编译SDL2_image内的zlib
-	a. 进入zlib
-	b. mkdir build
-	c. cd build
-	d. emcmake cmake ..
-	e. emmake make
-	f. emmake make install
-
-6.2. 编译SDL2_image
-	CMakeLists.txt 文件头部添加以下代码
-	INCLUDE_DIRECTORIES(/usr/local/include/SDL2)
-	LINK_DIRECTORIES("/usr/local/lib")
-	LINK_LIBRARIES("z")
-
-	a. mkdir build
-	b. cd build
-	c. emcmake cmake .. -DZLIB_INCLUDE_DIR=/usr/local/include -DZLIB_LIBRARY=/usr/local/lib -DSDL2_DIR:STRING=/alittle/SDL2 -DBUILD_SHARED_LIBS=OFF
-	d. emmake make
-	e. emmake make install
-	f. cp /alittle/SDL2_image/SDL_image.h /usr/local/include/SDL2
-		cp /alittle/SDL2_image/build/libSDL2_image.a /usr/local/lib/
-
-
-7.1 编译SDL2_ttf内的freetype
-	a. mkdir build
-	b. cd build
-	c. emcmake cmake ..
-	d. emcmake make
-	e. emcmake make install
-
-7.2 编译SDL2_ttf
-	CMakeLists.txt 文件头部添加以下代码
-	INCLUDE_DIRECTORIES(/usr/local/include/SDL2)
-	INCLUDE_DIRECTORIES(/usr/local/include/freetype2)
-	LINK_DIRECTORIES("/usr/local/lib")
-
-	a. mkdir build
-	b. cd build
-	c. emcmake cmake .. -DFREETYPE_INCLUDE_DIRS=/usr/local/include -DFREETYPE_LIBRARY=/usr/local/lib -DSDL2_DIR:STRING=/alittle/SDL2
-	d. emcmake make
-	e. emcmake make install
-
-
-8 编译SDL2_mixer(内部libogg-1.3.2，libvorbis-1.3.5，libvorbisidec-1.2.1都使用emcmake cmake编译一下，然后把libvorbis-1.3.5内的include文件夹拷贝到libvorbisidec-1.2.1里，这样在mixer编译成功后才可以emmake make install才能成功)
-	CMakeLists.txt 把if(ANDROID)的判断删除 文件头部添加以下代码
-	INCLUDE_DIRECTORIES(/usr/local/include/SDL2)
-	a. mkdir build
-	b. cd build
-	c. emcmake cmake .. -DSDL2_DIR:STRING=/alittle/SDL2
-	d. emcmake make
-	e. emcmake make install
-
-	f. cp /alittle/SDL2_mixer/SDL_mixer.h /usr/local/include/SDL2
-		cp /alittle/SDL2_mixer/build/libSDL2_mixer.a /usr/local/lib/
 
 
 9 编译ALittle
-emcc ../lua-5.3.5/src/*.c -DLUA_COMPAT_5_1 -DLUA_COMPAT_5_2 LibCommon/Helper/*.cpp LibCommon/Protocol/*.cpp LibCommon/ScriptSystem/*.cpp LibCommon/Tool/*.cpp LibCommon/ThirdParty/base64/*.c LibCommon/ThirdParty/csv/*.c LibCommon/ThirdParty/dump/*.c LibCommon/ThirdParty/json/*.c LibCommon/ThirdParty/lfs/*.c LibCommon/ThirdParty/klib/kstring.c LibCommon/ThirdParty/md5/*.c LibCommon/ThirdParty/net/*.c LibCommon/ThirdParty/sqlite3/*.c LibCommon/ThirdParty/timer/*.c LibCommon/ThirdParty/utf8/*.c LibClient/Tool/*.cpp LibClient/Helper/*.cpp LibClient/AudioSystem/*.cpp LibClient/AudioSystem/bcg729/*.c LibClient/NetSystem/*.cpp LibClient/RenderSystem/DisplayObject/*.cpp LibClient/RenderSystem/Image/*.cpp LibClient/RenderSystem/Text/*.cpp LibClient/RenderSystem/TextArea/*.cpp LibClient/RenderSystem/TextEdit/*.cpp LibClient/RenderSystem/TextInput/*.cpp LibClient/RenderSystem/Texture/*.cpp LibClient/RenderSystem/*.cpp LibClient/ScheduleSystem/*.cpp LibClient/ScriptSystem/*.cpp LibClient/ThreadSystem/*.cpp ALittleClient/*.cpp -I/usr/local/include -I/usr/local/include/SDL2 -I/alittle -L/usr/local/lib -lpng16 -ljpeg -lfreetype -lvorbisfile -lvorbisidec -lz -logg -lSDL2_net -lSDL2_mixer -lSDL2_image -lSDL2_ttf -lSDL2 -s ALLOW_MEMORY_GROWTH=1 -o a.html --preload-file Module
+emcc ../../../../../lua/onelua.c -DMAKE_LIB ../../../../../ALittle/ALittleClient/Main.cpp ../../../../../lualib/ajson/lua_ajson.c ../../../../../lualib/cjson/*.c ../../../../../lualib/sqlite3/*.c ../../../../../kcp/*.c -I/usr/local/include -I/alittle/lua -I/alittle/LuaBridge/Source -I/alittle/asio/asio/include -I/usr/local/include/SDL2 -I/alittle -L/usr/local/lib -lSDL2 -s ALLOW_MEMORY_GROWTH=1 -o ALittle.html --preload-file Module -O3

@@ -609,6 +609,8 @@ function ALittleIDE.IDEExport:HandleQueryNewCurVersionImpl(package_info, is_logi
 		install_name = self:GenerateWeb(package_info)
 	elseif package_info.platform == "WeChat" then
 		install_name = self:GenerateWeChat(package_info)
+	elseif package_info.platform == "Emscripten" then
+		install_name = self:GenerateEmscripten(package_info)
 	end
 	submit_info.project_path = package_info.project_path
 	submit_info.export_module_path = package_info.export_module_path
@@ -828,7 +830,6 @@ function ALittleIDE.IDEExport:GenerateExe(package_info)
 	ALittle.File_CopyFile("libtcmalloc_minimal.dll", "Export/Windows/Engine/libtcmalloc_minimal.dll")
 	ALittle.File_CopyFile("libmysql.dll", "Export/Windows/Engine/libmysql.dll")
 	ALittle.File_CopyDeepDir("Export/Windows/Engine", package_info.export_path)
-	ALittle.File_MakeDeepDir(package_info.export_path .. "/Dump")
 	local install_ico = package_info.project_path .. "/Icon/install.ico"
 	if ALittle.File_GetFileAttr(install_ico) == nil then
 		ALittle.File_CopyFile(ALittle.File_BaseFilePath() .. "Export/Icon/install.ico", package_info.project_path .. "/Export/Windows/install.ico")
@@ -1205,6 +1206,36 @@ function ALittleIDE.IDEExport:GenerateWeChat(package_info)
 		ALittle.File_SaveFile(package_info.project_path .. "/Export/WeChat/project.config.json", content, -1)
 	end
 	return "Install.js"
+end
+
+function ALittleIDE.IDEExport:GenerateEmscripten(package_info)
+	ALittle.Log("==================GenerateEmscripten:" .. package_info.project_name .. "==================")
+	if ALittle.File_GetFileAttr(package_info.project_path) == nil then
+		ALittle.Log("IDEExport:GenerateEmscripten project_path is not exist:", package_info.project_path)
+		return nil
+	end
+	local install_ico = package_info.project_path .. "/Icon/install.ico"
+	if ALittle.File_GetFileAttr(install_ico) == nil then
+		ALittle.File_CopyFile(ALittle.File_BaseFilePath() .. "Export/Icon/install.ico", package_info.project_path .. "/Export/Web/favicon.ico")
+	else
+		ALittle.File_CopyFile(install_ico, package_info.project_path .. "/Export/Emscripten/favicon.ico")
+	end
+	local file = carp.CarpLocalFile()
+	file:SetPath(ALittle.File_BaseFilePath() .. "Export/Emscripten/index.js")
+	if file:Load(false) then
+		local content = file:GetContent()
+		content = ALittle.String_Replace(content, "abcd@project_name@abcd", package_info.project_name)
+		ALittle.File_SaveFile(package_info.project_path .. "/Export/Emscripten/" .. package_info.project_name .. ".js", content, -1)
+	end
+	file = carp.CarpLocalFile()
+	file:SetPath(ALittle.File_BaseFilePath() .. "Export/Emscripten/index.html")
+	if file:Load(false) then
+		local content = file:GetContent()
+		content = ALittle.String_Replace(content, "abcd@project_name@abcd", package_info.project_name)
+		ALittle.File_SaveFile(package_info.project_path .. "/Export/Emscripten/" .. package_info.project_name .. ".html", content, -1)
+		ALittle.File_SaveFile(package_info.project_path .. "/Export/Install.html", content, -1)
+	end
+	return "Install.html"
 end
 
 ALittleIDE.g_IDEExport = ALittleIDE.IDEExport()

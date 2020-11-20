@@ -813,6 +813,8 @@ class IDEExport
 			install_name = this.GenerateWeb(package_info);
 		elseif (package_info.platform == "WeChat")
 			install_name = this.GenerateWeChat(package_info);
+        elseif (package_info.platform == "Emscripten")
+        	install_name = this.GenerateEmscripten(package_info);
 	
 		submit_info.project_path = package_info.project_path;
 		submit_info.export_module_path = package_info.export_module_path;
@@ -1095,8 +1097,6 @@ class IDEExport
 	
 		// 直接把dll和exe文件复制到导出目录
 		ALittle.File_CopyDeepDir("Export/Windows/Engine", package_info.export_path);
-	
-		ALittle.File_MakeDeepDir(package_info.export_path.."/Dump");
 	
 		// 先判断是否有install复制Install.ico
 		var install_ico = package_info.project_path.."/Icon/install.ico";
@@ -1623,6 +1623,52 @@ class IDEExport
 			ALittle.File_SaveFile(package_info.project_path.."/Export/WeChat/project.config.json", content, -1);
 		}
 		return "Install.js";
+	}
+
+	//========================================Emscripten部分=================================================
+	// 生成Emscripte打包文件
+	public fun GenerateEmscripten(IDEPackageInfo package_info) : string
+	{
+		ALittle.Log("==================GenerateEmscripten:"..package_info.project_name.."==================");
+    
+		// 检查路径是否存在
+		if (ALittle.File_GetFileAttr(package_info.project_path) == null)
+		{
+			ALittle.Log("IDEExport:GenerateEmscripten project_path is not exist:", package_info.project_path);
+			return null;
+		}
+        
+            // 先判断是否有install复制Install.ico
+		var install_ico = package_info.project_path.."/Icon/install.ico";
+		if (ALittle.File_GetFileAttr(install_ico) == null)
+			ALittle.File_CopyFile(ALittle.File_BaseFilePath().."Export/Icon/install.ico", package_info.project_path.."/Export/Web/favicon.ico");
+		else
+			ALittle.File_CopyFile(install_ico, package_info.project_path.."/Export/Emscripten/favicon.ico");
+	
+        // 生成js
+		var file = new carp.CarpLocalFile();
+		file.SetPath(ALittle.File_BaseFilePath().."Export/Emscripten/index.js");
+		if (file.Load(false))
+		{
+			var content = file.GetContent();
+			content = ALittle.String_Replace(content, "abcd@project_name@abcd", package_info.project_name);
+        
+			ALittle.File_SaveFile(package_info.project_path.."/Export/Emscripten/"..package_info.project_name..".js", content, -1);
+		}
+
+		// 生成html
+		file = new carp.CarpLocalFile();
+		file.SetPath(ALittle.File_BaseFilePath().."Export/Emscripten/index.html");
+		if (file.Load(false))
+		{
+			var content = file.GetContent();
+			content = ALittle.String_Replace(content, "abcd@project_name@abcd", package_info.project_name);
+        
+			ALittle.File_SaveFile(package_info.project_path.."/Export/Emscripten/"..package_info.project_name..".html", content, -1);
+            ALittle.File_SaveFile(package_info.project_path.."/Export/Install.html", content, -1);
+		}
+
+		return "Install.html";
 	}
 }
 

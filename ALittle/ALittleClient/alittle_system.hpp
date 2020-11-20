@@ -262,26 +262,7 @@ public:
 
 	void OpenUrlBySystemBrowser(const char* url)
 	{
-		if (url == 0) return;
-#ifdef _WIN32
-		std::string commond = "start \"\" ";
-		commond.append("\"").append(url).append("\"");
-		_wsystem(CarpString::UTF82Unicode(commond.c_str()).c_str());
-#elif __ANDROID__
-		JNIEnv* jni_env = (JNIEnv*)SDL_AndroidGetJNIEnv();
-		if (jni_env == 0) return;
-
-		jclass login_api = jni_env->FindClass("org/libsdl/app/GlobalFunc");
-		jmethodID login_func = jni_env->GetStaticMethodID(login_api, "C2J_OpenUrlBySystemBrowser", "(Ljava/lang/String;)I");
-		jstring j_url = Android_stdstring2jstring(jni_env, url);
-		int result = jni_env->CallStaticIntMethod(login_api, login_func, j_url);
-
-		jni_env->DeleteLocalRef(login_api);
-		jni_env->DeleteLocalRef(j_url);
-#elif __IPHONEOS__
-		NSString* ns_url = [NSString stringWithUTF8String : url];
-		[[UIApplication sharedApplication]openURL:[NSURL URLWithString : ns_url] ];
-#endif
+		SDL_OpenURL(url);
 	}
 
 private:

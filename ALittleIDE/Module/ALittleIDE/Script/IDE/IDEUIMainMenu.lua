@@ -64,7 +64,7 @@ end
 
 function ALittleIDE.IDEUIMainMenu:HandleRunMenuClick(event)
 	local menu = AUIPlugin.AUIRightMenu()
-	menu:AddItem("启动(F6)", Lua.Bind(ALittleIDE.g_IDEProject.RunProject, ALittleIDE.g_IDEProject))
+	menu:AddItem("启动(F6)", Lua.Bind(ALittleIDE.g_IDEProject.RunProject, ALittleIDE.g_IDEProject, false))
 	if not ALittleIDE.g_IDEProject:IsDebug() then
 		menu:AddItem("开始调试(F5)", Lua.Bind(ALittleIDE.g_IDEProject.StartDebugProject, ALittleIDE.g_IDEProject))
 	else

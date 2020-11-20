@@ -77,7 +77,7 @@ protected class IDEUIMainMenu : ALittle.Linear
     {
 		var menu = new AUIPlugin.AUIRightMenu();
         [Language(Lua)]
-		menu.AddItem("启动(F6)", bind(g_IDEProject.RunProject, g_IDEProject));
+		menu.AddItem("启动(F6)", bind(g_IDEProject.RunProject, g_IDEProject, false));
         [Language(Lua)]
         if (!g_IDEProject.IsDebug())
 			menu.AddItem("开始调试(F5)", bind(g_IDEProject.StartDebugProject, g_IDEProject));

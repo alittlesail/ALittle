@@ -301,12 +301,16 @@ function ALittleIDE.IDEProject:RemoveProject(name)
 	return nil
 end
 
-function ALittleIDE.IDEProject:RunProject()
+function ALittleIDE.IDEProject:RunProject(debug)
 	if self._project == nil then
 		g_AUITool:ShowNotice("提示", "当前没有打开的项目")
 		return
 	end
-	os.execute("start ALittleClient.exe " .. self._project.name .. " debug")
+	local debug_info = ""
+	if debug then
+		debug_info = "debug"
+	end
+	os.execute("start ALittleClient.exe " .. self._project.name .. " " .. debug_info)
 end
 
 function ALittleIDE.IDEProject:IsDebug()

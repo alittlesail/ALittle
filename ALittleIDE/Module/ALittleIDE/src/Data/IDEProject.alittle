@@ -310,7 +310,7 @@ public class IDEProject : ALittle.EventDispatcher
 		return null;
 	}
 
-	public fun RunProject()
+	public fun RunProject(bool debug)
 	{
 		if (this._project == null)
 		{
@@ -318,8 +318,11 @@ public class IDEProject : ALittle.EventDispatcher
 			return;
 		}
 
+        var debug_info = "";
+        if (debug) debug_info = "debug";
+
 		[Language(Lua)]
-		lua.os.execute("start ALittleClient.exe "..this._project.name.." debug");
+		lua.os.execute("start ALittleClient.exe "..this._project.name.." "..debug_info);
 	}
 
     public fun IsDebug() : bool { return this._in_debug; }

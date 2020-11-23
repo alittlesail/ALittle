@@ -372,8 +372,14 @@ function AUIPlugin.AUICodeEdit:HandleLButtonDown(event)
 		rel_x = rel_x - (self._code_linear.x)
 		rel_y = rel_y - (self._code_screen.container_y)
 	end
-	self._select_cursor:Hide()
-	self._cursor:SetOffsetXY(rel_x, rel_y)
+	if A_UISystem.sym_map[1073742049] or A_UISystem.sym_map[1073742053] then
+		self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
+		self._cursor:SetOffsetXY(rel_x, rel_y)
+		self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
+	else
+		self._select_cursor:Hide()
+		self._cursor:SetOffsetXY(rel_x, rel_y)
+	end
 	if event.count > 1 then
 		local it_start, it_end = self._cursor:CalcSelectWord()
 		if it_start == nil then

@@ -287,8 +287,18 @@ public class AUICodeEdit : ALittle.DisplayLayout
             rel_y -= this._code_screen.container_y;
         } 
 
-        this._select_cursor.Hide();
-        this._cursor.SetOffsetXY(rel_x, rel_y);
+        // 如果有按下Shit键，那么就是范围选择
+        if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_LSHIFT] || A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_RSHIFT])
+        {
+            this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
+            this._cursor.SetOffsetXY(rel_x, rel_y);
+            this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);
+        }
+        else
+        {
+            this._select_cursor.Hide();
+            this._cursor.SetOffsetXY(rel_x, rel_y);
+        }
         
         // 如果多次点击，那么就选中文本
         if (event.count > 1)

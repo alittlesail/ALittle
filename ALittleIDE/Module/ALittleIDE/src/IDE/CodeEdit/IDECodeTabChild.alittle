@@ -56,6 +56,7 @@ public class IDECodeTabChild : IDETabChild
         var tree = g_IDECenter.center.code_list.GetCodeTree(this._user_info.path);
         if (tree == null) return;
 
+        g_IDECenter.center.project_edit_tab.tab = g_IDECenter.center.code_list;
         g_IDECenter.center.code_list.ShowTreeItemFocus(tree);
     }
 

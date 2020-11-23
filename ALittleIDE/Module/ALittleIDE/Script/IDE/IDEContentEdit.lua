@@ -476,4 +476,23 @@ function ALittleIDE.IDEContentEdit:StartEditCodeBySelect(name, info)
 	return tab_child
 end
 
+function ALittleIDE.IDEContentEdit:StartEditTileBySelect(name, info)
+	local child = self:GetTabById(ALittleIDE.IDETileTabChild, info.info.path)
+	if child ~= nil then
+		local child_from = self._main_tab.tab
+		self._main_tab.tab = child
+		self:ChangeTabEdit(child_from, self._main_tab.tab)
+		return child._user_data
+	end
+	local child_from = self._main_tab.tab
+	local tab_child = ALittleIDE.IDETileTabChild(ALittleIDE.g_Control, info.module_name, name, true, info)
+	tab_child:CreateBySelect(info)
+	self._main_tab:AddChild(tab_child.tab_body, 1)
+	tab_child:OnOpen()
+	self._main_tab.tab = tab_child.tab_body
+	self:ChangeTabEdit(child_from, self._main_tab.tab)
+	tab_child:UpdateTitle()
+	return tab_child
+end
+
 end

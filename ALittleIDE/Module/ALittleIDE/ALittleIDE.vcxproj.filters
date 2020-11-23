@@ -29,14 +29,17 @@
     <Filter Include="源文件\IDE\CodeEdit">
       <UniqueIdentifier>{981c04d6-66d7-40ef-bdab-88e2b06d5544}</UniqueIdentifier>
     </Filter>
-    <Filter Include="源文件\IDE\BlueprintEdit">
-      <UniqueIdentifier>{b5cd0158-389d-47ea-b2bc-81c728d81a35}</UniqueIdentifier>
-    </Filter>
     <Filter Include="源文件\IDE\CodeEdit\Tree">
       <UniqueIdentifier>{2263ff86-b77c-4485-b4ca-ce227da09757}</UniqueIdentifier>
     </Filter>
-    <Filter Include="源文件\IDE\CodeEdit\Code">
-      <UniqueIdentifier>{406fedbf-8a1b-40a6-9aa0-56d80ab0017e}</UniqueIdentifier>
+    <Filter Include="源文件\IDE\ControlEdit">
+      <UniqueIdentifier>{9f5ac114-1e70-47a6-86ef-82e15fbf7f70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\IDE\ControlEdit\Tree">
+      <UniqueIdentifier>{611bf469-6479-43e2-aa02-67ebb5782a93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\IDE\TileEdit">
+      <UniqueIdentifier>{83491fdd-116c-4038-bf6f-ddb40ccaf2f2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -51,27 +54,6 @@
     </None>
     <None Include="src\Data\IDEEnum.alittle">
       <Filter>源文件\Data</Filter>
-    </None>
-    <None Include="src\IDE\IDECenter.alittle">
-      <Filter>源文件\IDE</Filter>
-    </None>
-    <None Include="src\IDE\IDEUIAccount.alittle">
-      <Filter>源文件\IDE</Filter>
-    </None>
-    <None Include="src\IDE\IDEUIProjectDropdown.alittle">
-      <Filter>源文件\IDE</Filter>
-    </None>
-    <None Include="src\IDE\IDEUIMainMenu.alittle">
-      <Filter>源文件\IDE</Filter>
-    </None>
-    <None Include="src\Dialog\IDEVersionList.alittle">
-      <Filter>源文件\Dialog</Filter>
-    </None>
-    <None Include="src\Dialog\IDEImageSelectDialog.alittle">
-      <Filter>源文件\Dialog</Filter>
-    </None>
-    <None Include="src\IDE\IDEUICenter.alittle">
-      <Filter>源文件\IDE</Filter>
     </None>
     <None Include="src\IDE\UIEdit\IDEUIControlTree.alittle">
       <Filter>源文件\IDE\UIEdit</Filter>
@@ -91,11 +73,110 @@
     <None Include="src\IDE\UIEdit\IDEUIRevocation.alittle">
       <Filter>源文件\IDE\UIEdit</Filter>
     </None>
-    <None Include="src\IDE\UIEdit\Setting\Grid3S.alittle">
-      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    <None Include="src\IDE\UIEdit\IDEUITabChild.alittle">
+      <Filter>源文件\IDE\UIEdit</Filter>
     </None>
-    <None Include="src\IDE\UIEdit\Setting\Grid9ImageS.alittle">
-      <Filter>源文件\IDE\UIEdit\Setting</Filter>
+    <None Include="src\IDE\UIEdit\Tree\IDEUITree.alittle">
+      <Filter>源文件\IDE\UIEdit\Tree</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Tree\IDEUITreeItem.alittle">
+      <Filter>源文件\IDE\UIEdit\Tree</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Tree\IDEUITreeLogic.alittle">
+      <Filter>源文件\IDE\UIEdit\Tree</Filter>
+    </None>
+    <None Include="src\IDE\CodeEdit\Tree\IDECodeTreeItem.alittle">
+      <Filter>源文件\IDE\CodeEdit\Tree</Filter>
+    </None>
+    <None Include="src\IDE\CodeEdit\Tree\IDECodeTreeLogic.alittle">
+      <Filter>源文件\IDE\CodeEdit\Tree</Filter>
+    </None>
+    <None Include="src\IDE\CodeEdit\Tree\IDECodeTree.alittle">
+      <Filter>源文件\IDE\CodeEdit\Tree</Filter>
+    </None>
+    <None Include="src\IDE\UIEdit\Dialog\IDEAttrControlDialog.alittle">
+      <Filter>源文件\IDE\UIEdit\Dialog</Filter>
+    </None>
+    <None Include="src\Dialog\IDEProjectFindFileDialog.alittle">
+      <Filter>源文件\Dialog</Filter>
+    </None>
+    <None Include="src\Dialog\IDEProjectNewDialog.alittle">
+      <Filter>源文件\Dialog</Filter>
+    </None>
+    <None Include="src\Dialog\IDEProjectOpenDialog.alittle">
+      <Filter>源文件\Dialog</Filter>
+    </None>
+    <None Include="src\Dialog\IDEProjectSettingDialog.alittle">
+      <Filter>源文件\Dialog</Filter>
+    </None>
+    <None Include="src\Dialog\IDEVersionList.alittle">
+      <Filter>源文件\Dialog</Filter>
+    </None>
+    <None Include="src\Dialog\IDEExport.alittle">
+      <Filter>源文件\Dialog</Filter>
+    </None>
+    <None Include="src\Dialog\IDEImageSelectDialog.alittle">
+      <Filter>源文件\Dialog</Filter>
+    </None>
+    <None Include="src\Dialog\IDEProjectExportDialog.alittle">
+      <Filter>源文件\Dialog</Filter>
+    </None>
+    <None Include="src\IDE\IDEUIAccount.alittle">
+      <Filter>源文件\IDE</Filter>
+    </None>
+    <None Include="src\IDE\IDEUICenter.alittle">
+      <Filter>源文件\IDE</Filter>
+    </None>
+    <None Include="src\IDE\IDEUIMainMenu.alittle">
+      <Filter>源文件\IDE</Filter>
+    </None>
+    <None Include="src\IDE\IDEUIProjectDropdown.alittle">
+      <Filter>源文件\IDE</Filter>
+    </None>
+    <None Include="src\IDE\IDEUIProjectList.alittle">
+      <Filter>源文件\IDE</Filter>
+    </None>
+    <None Include="src\IDE\IDEUtility.alittle">
+      <Filter>源文件\IDE</Filter>
+    </None>
+    <None Include="src\IDE\IDECenter.alittle">
+      <Filter>源文件\IDE</Filter>
+    </None>
+    <None Include="src\IDE\IDEContentEdit.alittle">
+      <Filter>源文件\IDE</Filter>
+    </None>
+    <None Include="src\IDE\CodeEdit\IDECodeUtility.alittle">
+      <Filter>源文件\IDE\CodeEdit</Filter>
+    </None>
+    <None Include="src\IDE\CodeEdit\IDEUICodeList.alittle">
+      <Filter>源文件\IDE\CodeEdit</Filter>
+    </None>
+    <None Include="src\IDE\CodeEdit\IDECodeTabChild.alittle">
+      <Filter>源文件\IDE\CodeEdit</Filter>
+    </None>
+    <None Include="src\IDE\ControlEdit\IDEUIControlList.alittle">
+      <Filter>源文件\IDE\ControlEdit</Filter>
+    </None>
+    <None Include="src\IDE\ControlEdit\IDEControlUtility.alittle">
+      <Filter>源文件\IDE\ControlEdit</Filter>
+    </None>
+    <None Include="src\IDE\ControlEdit\Tree\IDEControlTreeLogic.alittle">
+      <Filter>源文件\IDE\ControlEdit\Tree</Filter>
+    </None>
+    <None Include="src\IDE\ControlEdit\Tree\IDEControlTree.alittle">
+      <Filter>源文件\IDE\ControlEdit\Tree</Filter>
+    </None>
+    <None Include="src\IDE\ControlEdit\Tree\IDEControlTreeItem.alittle">
+      <Filter>源文件\IDE\ControlEdit\Tree</Filter>
+    </None>
+    <None Include="src\IDE\TileEdit\IDEUITileList.alittle">
+      <Filter>源文件\IDE\TileEdit</Filter>
+    </None>
+    <None Include="src\IDE\TileEdit\IDETileTabChild.alittle">
+      <Filter>源文件\IDE\TileEdit</Filter>
+    </None>
+    <None Include="src\IDE\TileEdit\IDEUITileBrush.alittle">
+      <Filter>源文件\IDE\TileEdit</Filter>
     </None>
     <None Include="src\IDE\UIEdit\Setting\Grid9S.alittle">
       <Filter>源文件\IDE\UIEdit\Setting</Filter>
@@ -202,65 +283,11 @@
     <None Include="src\IDE\UIEdit\Setting\FramePlayS.alittle">
       <Filter>源文件\IDE\UIEdit\Setting</Filter>
     </None>
-    <None Include="src\IDE\UIEdit\IDEUITabChild.alittle">
-      <Filter>源文件\IDE\UIEdit</Filter>
+    <None Include="src\IDE\UIEdit\Setting\Grid3S.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
     </None>
-    <None Include="src\IDE\IDEContentEdit.alittle">
-      <Filter>源文件\IDE</Filter>
-    </None>
-    <None Include="src\IDE\IDEUtility.alittle">
-      <Filter>源文件\IDE</Filter>
-    </None>
-    <None Include="src\IDE\UIEdit\Tree\IDEUITree.alittle">
-      <Filter>源文件\IDE\UIEdit\Tree</Filter>
-    </None>
-    <None Include="src\IDE\UIEdit\Tree\IDEUITreeItem.alittle">
-      <Filter>源文件\IDE\UIEdit\Tree</Filter>
-    </None>
-    <None Include="src\IDE\UIEdit\Tree\IDEUITreeLogic.alittle">
-      <Filter>源文件\IDE\UIEdit\Tree</Filter>
-    </None>
-    <None Include="src\Dialog\IDEProjectSettingDialog.alittle">
-      <Filter>源文件\Dialog</Filter>
-    </None>
-    <None Include="src\Dialog\IDEProjectNewDialog.alittle">
-      <Filter>源文件\Dialog</Filter>
-    </None>
-    <None Include="src\Dialog\IDEProjectOpenDialog.alittle">
-      <Filter>源文件\Dialog</Filter>
-    </None>
-    <None Include="src\Dialog\IDEExport.alittle">
-      <Filter>源文件\Dialog</Filter>
-    </None>
-    <None Include="src\Dialog\IDEProjectExportDialog.alittle">
-      <Filter>源文件\Dialog</Filter>
-    </None>
-    <None Include="src\IDE\IDEUIProjectList.alittle">
-      <Filter>源文件\IDE</Filter>
-    </None>
-    <None Include="src\IDE\IDEUIControlList.alittle">
-      <Filter>源文件\IDE</Filter>
-    </None>
-    <None Include="src\IDE\CodeEdit\IDECodeTabChild.alittle">
-      <Filter>源文件\IDE\CodeEdit</Filter>
-    </None>
-    <None Include="src\IDE\IDEUICodelList.alittle">
-      <Filter>源文件\IDE</Filter>
-    </None>
-    <None Include="src\IDE\CodeEdit\IDECodeUtility.alittle">
-      <Filter>源文件\IDE\CodeEdit</Filter>
-    </None>
-    <None Include="src\IDE\CodeEdit\Tree\IDECodeTreeItem.alittle">
-      <Filter>源文件\IDE\CodeEdit\Tree</Filter>
-    </None>
-    <None Include="src\IDE\CodeEdit\Tree\IDECodeTreeLogic.alittle">
-      <Filter>源文件\IDE\CodeEdit\Tree</Filter>
-    </None>
-    <None Include="src\IDE\CodeEdit\Tree\IDECodeTree.alittle">
-      <Filter>源文件\IDE\CodeEdit\Tree</Filter>
-    </None>
-    <None Include="src\IDE\UIEdit\Dialog\IDEAttrControlDialog.alittle">
-      <Filter>源文件\IDE\UIEdit\Dialog</Filter>
+    <None Include="src\IDE\UIEdit\Setting\Grid9ImageS.alittle">
+      <Filter>源文件\IDE\UIEdit\Setting</Filter>
     </None>
   </ItemGroup>
 </Project>

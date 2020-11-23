@@ -317,5 +317,8 @@
     <None Include="src\Adapter\Carp\MessageFactoryInterface.alittle">
       <Filter>Adapter\Carp</Filter>
     </None>
+    <None Include="src\CEngine\Utility\Debug.alittle">
+      <Filter>CEngine\Utility</Filter>
+    </None>
   </ItemGroup>
 </Project>

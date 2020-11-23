@@ -29,7 +29,7 @@ public struct IDEUICenterPreSeeOpChangedEvent : ALittle.UIEvent
 protected class IDEUICenter : ALittle.DisplayLayout
 {
 	private ALittle.Tab _main_tab;				// 编辑区标签容器
-	private ALittle.Tab _control_tree_tab;			// 控件树标签容器
+	private ALittle.Tab _detail_tree_tab;			// 控件树标签容器
 	private ALittle.Tab _project_edit_tab;			// 项目库，图片库，控件库标签容器
 	private ALittle.Tab _project_quick_tab;			// 便利控件查找，动画容器
 
@@ -68,8 +68,10 @@ protected class IDEUICenter : ALittle.DisplayLayout
     private ALittle.DisplayObject _tool_jumpnextcode;
 
 	private IDEUIControlTree _control_tree;	// 控件树
+    private IDEUITileBrush _tile_brush;		// 地图笔刷
 	private IDEUIControlList _control_list;	// 控件库
 	private IDEUICodeList    _code_list;	// 代码库
+    private IDEUITileList _tile_list;	// 地图列表
 	private IDEUIProjectList _project_list;	// 项目库
 	private IDEUIControlAnti _control_anti;	// 动画编辑器
 	private IDEContentEdit	 _content_edit;	// 内容编辑管理器
@@ -79,8 +81,8 @@ protected class IDEUICenter : ALittle.DisplayLayout
 		// 初始化左下角数据管理的标签页
 		this._project_edit_tab.DisableAllCloseButton();
 		this._project_edit_tab.tab_index = 1;
-		this._control_tree_tab.DisableAllCloseButton();
-		this._control_tree_tab.tab_index = 1;
+		this._detail_tree_tab.DisableAllCloseButton();
+		this._detail_tree_tab.tab_index = 1;
 
 		// 初始化下面快捷标签页，动画编辑器
 		this._project_quick_tab.DisableAllCloseButton();
@@ -98,9 +100,14 @@ protected class IDEUICenter : ALittle.DisplayLayout
         g_IDEProject.AddEventListener(this, this.HandleProjectOpen);
 	}
 	
+    public get project_edit_tab() : ALittle.Tab { return this._project_edit_tab; }
+    public get detail_tree_tab() : ALittle.Tab { return this._detail_tree_tab; }
+
 	public get control_tree() : IDEUIControlTree { return this._control_tree; }
+    public get tile_brush() : IDEUITileBrush { return this._tile_brush; }
 	public get control_list() : IDEUIControlList { return this._control_list; }
 	public get code_list() : IDEUICodeList { return this._code_list; }
+	public get tile_list() : IDEUITileList { return this._tile_list; }
 	public get project_list() : IDEUIProjectList { return this._project_list; }
 	public get control_anti() : IDEUIControlAnti { return this._control_anti; }
 	public get content_edit() : IDEContentEdit { return this._content_edit; }

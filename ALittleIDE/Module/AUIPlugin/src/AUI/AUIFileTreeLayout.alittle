@@ -17,7 +17,7 @@ public struct AUIFileTreeUserInfo
 
 public struct AUIFileSelectFileEvent : ALittle.UIEvent
 {
-    string path;
+    AUIFileTreeUserInfo info;
 }
 
 public struct AUIFileDeleteFileEvent : ALittle.UIEvent
@@ -561,7 +561,7 @@ public class AUIFileTreeLayout : ALittle.DisplayLayout
     private fun HandleSelectFile(AUIFileTreeUserInfo user_info)
     {
         var select_event = new AUIFileSelectFileEvent();
-        select_event.path = user_info.path;
+        select_event.info = user_info;
         this.DispatchEvent(select_event);
     }
 

@@ -2,6 +2,15 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <None Include="src\Main.alittle" />
+    <None Include="src\AUICodeEdit\ABnf\AUICodeABnf.alittle">
+      <Filter>AUICodeEdit\ABnf</Filter>
+    </None>
+    <None Include="src\AUICodeEdit\ABnf\AUICodeALittleScript.alittle">
+      <Filter>AUICodeEdit\ABnf</Filter>
+    </None>
+    <None Include="src\AUICodeEdit\ABnf\AUICodeCommon.alittle">
+      <Filter>AUICodeEdit\ABnf</Filter>
+    </None>
     <None Include="src\AUI\AUIImageCutPlugin.alittle">
       <Filter>AUI</Filter>
     </None>
@@ -9,6 +18,9 @@
       <Filter>AUI</Filter>
     </None>
     <None Include="src\AUI\AUIRightMenu.alittle">
+      <Filter>AUI</Filter>
+    </None>
+    <None Include="src\AUI\AUIStatLayout.alittle">
       <Filter>AUI</Filter>
     </None>
     <None Include="src\AUI\AUITool.alittle">
@@ -20,53 +32,83 @@
     <None Include="src\AUI\AUIWebLoginManager.alittle">
       <Filter>AUI</Filter>
     </None>
+    <None Include="src\AUI\AUIDrawingBoard.alittle">
+      <Filter>AUI</Filter>
+    </None>
     <None Include="src\AUI\AUIEditImageDialog.alittle">
       <Filter>AUI</Filter>
     </None>
     <None Include="src\AUI\AUIFileSelectDialog.alittle">
       <Filter>AUI</Filter>
     </None>
-    <None Include="src\AUICodeEdit\AUICodeEdit.alittle">
-      <Filter>AUICodeEdit</Filter>
+    <None Include="src\AUI\AUIFileSelectLayout.alittle">
+      <Filter>AUI</Filter>
     </None>
-    <None Include="src\AUICodeEdit\AUICodeSelectCursor.alittle">
-      <Filter>AUICodeEdit</Filter>
+    <None Include="src\AUI\AUIFileTreeLayout.alittle">
+      <Filter>AUI</Filter>
     </None>
-    <None Include="src\AUICodeEdit\AUICodeCursor.alittle">
-      <Filter>AUICodeEdit</Filter>
+    <None Include="src\Protobuf\Lua\memory.alittle">
+      <Filter>Protobuf\Lua</Filter>
     </None>
-    <None Include="src\AUICodeEdit\AUICodeRevocation.alittle">
-      <Filter>AUICodeEdit</Filter>
+    <None Include="src\Protobuf\Lua\protobuf.alittle">
+      <Filter>Protobuf\Lua</Filter>
     </None>
-    <None Include="src\AUICodeEdit\ABnf\AUICodeABnf.alittle">
-      <Filter>AUICodeEdit\ABnf</Filter>
+    <None Include="src\Protobuf\Lua\socket.alittle">
+      <Filter>Protobuf\Lua</Filter>
     </None>
-    <None Include="src\Adapter\ALanguage.alittle">
-      <Filter>Adapter</Filter>
+    <None Include="src\Protobuf\Lua\ISocket.alittle">
+      <Filter>Protobuf\Lua</Filter>
     </None>
-    <None Include="src\Adapter\ABnf.alittle">
-      <Filter>Adapter</Filter>
+    <None Include="src\Protobuf\Lua\LuaProtobufSchedule.alittle">
+      <Filter>Protobuf\Lua</Filter>
     </None>
-    <None Include="src\AUICodeEdit\AUICodeCompleteScreen.alittle">
-      <Filter>AUICodeEdit</Filter>
-    </None>
-    <None Include="src\AUICodeEdit\ABnf\AUICodeALittleScript.alittle">
-      <Filter>AUICodeEdit\ABnf</Filter>
-    </None>
-    <None Include="src\Adapter\ALittleScript.alittle">
-      <Filter>Adapter</Filter>
-    </None>
-    <None Include="src\AUICodeEdit\AUICodeProject.alittle">
-      <Filter>AUICodeEdit</Filter>
-    </None>
-    <None Include="src\AUICodeEdit\AUICodeLanguage.alittle">
+    <None Include="src\AUICodeEdit\AUICodeLineContainer.alittle">
       <Filter>AUICodeEdit</Filter>
     </None>
     <None Include="src\AUICodeEdit\AUICodeLineNumber.alittle">
       <Filter>AUICodeEdit</Filter>
     </None>
-    <None Include="src\AUICodeEdit\ABnf\AUICodeCommon.alittle">
-      <Filter>AUICodeEdit\ABnf</Filter>
+    <None Include="src\AUICodeEdit\AUICodeParamList.alittle">
+      <Filter>AUICodeEdit</Filter>
+    </None>
+    <None Include="src\AUICodeEdit\AUICodeProject.alittle">
+      <Filter>AUICodeEdit</Filter>
+    </None>
+    <None Include="src\AUICodeEdit\AUICodeRevocation.alittle">
+      <Filter>AUICodeEdit</Filter>
+    </None>
+    <None Include="src\AUICodeEdit\AUICodeSelectCursor.alittle">
+      <Filter>AUICodeEdit</Filter>
+    </None>
+    <None Include="src\AUICodeEdit\AUICodeCompleteScreen.alittle">
+      <Filter>AUICodeEdit</Filter>
+    </None>
+    <None Include="src\AUICodeEdit\AUICodeComponent.alittle">
+      <Filter>AUICodeEdit</Filter>
+    </None>
+    <None Include="src\AUICodeEdit\AUICodeCursor.alittle">
+      <Filter>AUICodeEdit</Filter>
+    </None>
+    <None Include="src\AUICodeEdit\AUICodeDefine.alittle">
+      <Filter>AUICodeEdit</Filter>
+    </None>
+    <None Include="src\AUICodeEdit\AUICodeEdit.alittle">
+      <Filter>AUICodeEdit</Filter>
+    </None>
+    <None Include="src\AUICodeEdit\AUICodeFilterScreen.alittle">
+      <Filter>AUICodeEdit</Filter>
+    </None>
+    <None Include="src\AUICodeEdit\AUICodeLanguage.alittle">
+      <Filter>AUICodeEdit</Filter>
+    </None>
+    <None Include="src\AUICodeEdit\Lua\alanguage.alittle">
+      <Filter>AUICodeEdit\Lua</Filter>
+    </None>
+    <None Include="src\AUICodeEdit\Lua\alittlescript.alittle">
+      <Filter>AUICodeEdit\Lua</Filter>
+    </None>
+    <None Include="src\AUICodeEdit\Lua\abnf.alittle">
+      <Filter>AUICodeEdit\Lua</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -79,8 +121,14 @@
     <Filter Include="AUICodeEdit\ABnf">
       <UniqueIdentifier>{319d2e5a-5de6-45ea-b960-4b876eadd032}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Adapter">
-      <UniqueIdentifier>{ad9141fe-c3e7-4bae-afd4-163092a5352f}</UniqueIdentifier>
+    <Filter Include="Protobuf">
+      <UniqueIdentifier>{673a6dfa-1285-40bf-a93c-9005f9412d29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Protobuf\Lua">
+      <UniqueIdentifier>{73714141-d5cf-4ddf-993e-6dc6b0001893}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AUICodeEdit\Lua">
+      <UniqueIdentifier>{f9039086-61f5-4ed8-95f1-e08d35dff11c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

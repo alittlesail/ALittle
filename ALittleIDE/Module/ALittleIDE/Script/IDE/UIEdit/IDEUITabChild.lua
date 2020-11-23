@@ -529,6 +529,7 @@ function ALittleIDE.IDEUITabChild:ShowControlFocus()
 	end
 	for index, child in ___ipairs(tree.childs) do
 		if child.user_info.name == self._name then
+			ALittleIDE.g_IDECenter.center.project_edit_tab.tab = ALittleIDE.g_IDECenter.center.control_list
 			ALittleIDE.g_IDECenter.center.control_list:ShowTreeItemFocus(child)
 			return
 		end

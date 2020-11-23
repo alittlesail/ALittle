@@ -8,8 +8,8 @@ local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(2117383637, "AUIPlugin.AUIFileSelectFileEvent", {
 name = "AUIPlugin.AUIFileSelectFileEvent", ns_name = "AUIPlugin", rl_name = "AUIFileSelectFileEvent", hash_code = 2117383637,
-name_list = {"target","path"},
-type_list = {"ALittle.DisplayObject","string"},
+name_list = {"target","info"},
+type_list = {"ALittle.DisplayObject","AUIPlugin.AUIFileTreeUserInfo"},
 option_map = {}
 })
 ALittle.RegStruct(-2082217254, "AUIPlugin.AUIFileCreateFileEvent", {
@@ -619,7 +619,7 @@ end
 
 function AUIPlugin.AUIFileTreeLayout:HandleSelectFile(user_info)
 	local select_event = {}
-	select_event.path = user_info.path
+	select_event.info = user_info
 	self:DispatchEvent(___all_struct[2117383637], select_event)
 end
 

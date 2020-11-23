@@ -19,29 +19,43 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\Adapter\ABnf.alittle" />
-    <None Include="src\Adapter\ALanguage.alittle" />
-    <None Include="src\Adapter\ALittleScript.alittle" />
     <None Include="src\AUICodeEdit\ABnf\AUICodeABnf.alittle" />
     <None Include="src\AUICodeEdit\ABnf\AUICodeALittleScript.alittle" />
     <None Include="src\AUICodeEdit\ABnf\AUICodeCommon.alittle" />
     <None Include="src\AUICodeEdit\AUICodeCompleteScreen.alittle" />
+    <None Include="src\AUICodeEdit\AUICodeComponent.alittle" />
     <None Include="src\AUICodeEdit\AUICodeCursor.alittle" />
+    <None Include="src\AUICodeEdit\AUICodeDefine.alittle" />
+    <None Include="src\AUICodeEdit\AUICodeEdit.alittle" />
+    <None Include="src\AUICodeEdit\AUICodeFilterScreen.alittle" />
     <None Include="src\AUICodeEdit\AUICodeLanguage.alittle" />
+    <None Include="src\AUICodeEdit\AUICodeLineContainer.alittle" />
     <None Include="src\AUICodeEdit\AUICodeLineNumber.alittle" />
+    <None Include="src\AUICodeEdit\AUICodeParamList.alittle" />
     <None Include="src\AUICodeEdit\AUICodeProject.alittle" />
     <None Include="src\AUICodeEdit\AUICodeRevocation.alittle" />
     <None Include="src\AUICodeEdit\AUICodeSelectCursor.alittle" />
-    <None Include="src\AUICodeEdit\AUICodeEdit.alittle" />
+    <None Include="src\AUICodeEdit\Lua\abnf.alittle" />
+    <None Include="src\AUICodeEdit\Lua\alanguage.alittle" />
+    <None Include="src\AUICodeEdit\Lua\alittlescript.alittle" />
+    <None Include="src\AUI\AUIDrawingBoard.alittle" />
     <None Include="src\AUI\AUIEditImageDialog.alittle" />
     <None Include="src\AUI\AUIFileSelectDialog.alittle" />
+    <None Include="src\AUI\AUIFileSelectLayout.alittle" />
+    <None Include="src\AUI\AUIFileTreeLayout.alittle" />
     <None Include="src\AUI\AUIImageCutPlugin.alittle" />
     <None Include="src\AUI\AUIIMEManager.alittle" />
     <None Include="src\AUI\AUIRightMenu.alittle" />
+    <None Include="src\AUI\AUIStatLayout.alittle" />
     <None Include="src\AUI\AUITool.alittle" />
     <None Include="src\AUI\AUIVersionManager.alittle" />
     <None Include="src\AUI\AUIWebLoginManager.alittle" />
     <None Include="src\Main.alittle" />
+    <None Include="src\Protobuf\Lua\ISocket.alittle" />
+    <None Include="src\Protobuf\Lua\LuaProtobufSchedule.alittle" />
+    <None Include="src\Protobuf\Lua\memory.alittle" />
+    <None Include="src\Protobuf\Lua\protobuf.alittle" />
+    <None Include="src\Protobuf\Lua\socket.alittle" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

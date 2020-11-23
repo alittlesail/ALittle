@@ -54,8 +54,8 @@ ALittleIDE.IDEUICenter = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUICente
 function ALittleIDE.IDEUICenter:TCtor()
 	self._project_edit_tab:DisableAllCloseButton()
 	self._project_edit_tab.tab_index = 1
-	self._control_tree_tab:DisableAllCloseButton()
-	self._control_tree_tab.tab_index = 1
+	self._detail_tree_tab:DisableAllCloseButton()
+	self._detail_tree_tab.tab_index = 1
 	self._project_quick_tab:DisableAllCloseButton()
 	self._project_quick_tab.tab_index = 1
 	self._tool_ui_container.visible = false
@@ -67,8 +67,20 @@ function ALittleIDE.IDEUICenter:TCtor()
 	ALittleIDE.g_IDEProject:AddEventListener(___all_struct[-975432877], self, self.HandleProjectOpen)
 end
 
+function ALittleIDE.IDEUICenter.__getter:project_edit_tab()
+	return self._project_edit_tab
+end
+
+function ALittleIDE.IDEUICenter.__getter:detail_tree_tab()
+	return self._detail_tree_tab
+end
+
 function ALittleIDE.IDEUICenter.__getter:control_tree()
 	return self._control_tree
+end
+
+function ALittleIDE.IDEUICenter.__getter:tile_brush()
+	return self._tile_brush
 end
 
 function ALittleIDE.IDEUICenter.__getter:control_list()
@@ -77,6 +89,10 @@ end
 
 function ALittleIDE.IDEUICenter.__getter:code_list()
 	return self._code_list
+end
+
+function ALittleIDE.IDEUICenter.__getter:tile_list()
+	return self._tile_list
 end
 
 function ALittleIDE.IDEUICenter.__getter:project_list()

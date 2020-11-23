@@ -1,0 +1,91 @@
+
+namespace ALittleIDE;
+
+public class IDETileTabChild : IDETabChild
+{
+    private IDETileTreeUserInfo _user_info;
+
+	private ALittle.ScrollScreen _tab_screen;        // 标签页
+
+	public ctor(ALittle.ControlSystem ctrl_sys, string module, string name, bool save, IDETileTreeUserInfo user_info)
+	{
+        this._user_info = user_info;
+
+		this._tab_screen = g_Control.CreateControl{ALittle.ScrollScreen}("ide_tile_tab_screen", this);
+		this._tab_screen._user_data = this;
+    }
+
+    private fun OnUndo() { }
+    private fun OnRedo() { }
+    private fun OnHide()
+    {
+    }
+    private fun OnShow()
+    {
+    }
+    private fun OnClose() { }
+
+    private fun OnOpen()
+    {
+        this._revoke_list = new ALittle.RevokeList();
+    }
+
+    private fun OnTabRightMenu(AUIPlugin.AUIRightMenu menu)
+    {
+		menu.AddItem("获取焦点", bind(this.ShowTileFocus, this));
+    }
+
+    public fun ShowTileFocus()
+    {
+        var tree = g_IDECenter.center.tile_list.GetFileTree(this._user_info.info.path);
+        if (tree == null) return;
+
+        g_IDECenter.center.project_edit_tab.tab = g_IDECenter.center.tile_list;
+        g_IDECenter.center.tile_list.ShowTreeItemFocus(tree);
+    }
+
+    public get tab_body() : ALittle.DisplayObject { return this._tab_screen; }
+
+    public set save(bool value)
+    {
+        if (this._save == value) return;
+		if (value == false)
+        {
+            this._save = false;
+            this.UpdateTitle();
+            return;
+		}
+        this._save = value;
+        this.UpdateTitle();
+	}
+
+    public get id() : string { return this._user_info.info.path; }
+
+	public fun Rename(string name)
+    {
+        this._name = name;
+        this.UpdateTitle();
+	}
+
+	public fun UpdateTitle()
+    {
+        var text = this._name;
+        if (this._save == false) text = text.." *";
+        g_IDECenter.center.content_edit.main_tab.SetChildText(this._tab_screen, text);
+	}
+
+	public get title() : string
+    {
+        return this._name;
+	}
+
+    public fun UpdateUserInfo(IDETileTreeUserInfo info)
+    {
+        this._user_info = info;
+    }
+
+    public fun CreateBySelect(IDETileTreeUserInfo info)
+    {
+        this._user_info = info;
+    }
+}

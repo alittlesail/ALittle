@@ -89,6 +89,7 @@ function ALittleIDE.IDECodeTabChild:ShowControlFocus()
 	if tree == nil then
 		return
 	end
+	ALittleIDE.g_IDECenter.center.project_edit_tab.tab = ALittleIDE.g_IDECenter.center.code_list
 	ALittleIDE.g_IDECenter.center.code_list:ShowTreeItemFocus(tree)
 end
 

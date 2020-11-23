@@ -1,0 +1,26 @@
+
+namespace ALittleIDE;
+
+public class IDEUITileBrush : ALittle.DisplayLayout
+{
+    private AUIPlugin.AUIFileSelectLayout _file_select;
+
+    public fun TCtor()
+    {
+        g_IDEProject.AddEventListener(this, this.HandleProjectOpen);
+        g_IDEProject.AddEventListener(this, this.HandleProjectClose);
+
+        this._file_select.Init(["png","jpg"]);
+    }
+
+	private fun HandleProjectClose(IDEProjectCloseEvent event)
+	{
+        this._file_select.SetBasePath(null);
+    }
+
+	private async fun HandleProjectOpen(IDEProjectOpenEvent event)
+	{
+		var module_path = ALittle.File_BaseFilePath().."Module/"..event.name.."/Texture";
+        this._file_select.SetBasePath(module_path);
+    }
+}

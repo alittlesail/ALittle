@@ -130,7 +130,10 @@ public class IDECodeTabChild : IDETabChild
 
     public fun UpdateUserInfo(IDECodeTreeUserInfo info)
     {
+        this.OnClose();
+        this._language = null;
         this._user_info = info;
+        this.OnOpen();
     }
 
     public fun CreateBySelect(IDECodeTreeUserInfo info)

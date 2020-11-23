@@ -214,7 +214,7 @@ function ALittleIDE.IDEControlTreeItem:HandleControlRename()
 	if tab_child ~= nil then
 		tab_child:Rename(self._user_info.name)
 	end
-	ALittleIDE.g_IDECenter.center.content_edit:RenameTabByName(ALittleIDE.IDEUITabChild, old_name, self._user_info.name)
+	ALittleIDE.g_IDECenter.center.content_edit.main_tab:SetChildText(tab_child.tab_body, self._user_info.name)
 end
 ALittleIDE.IDEControlTreeItem.HandleControlRename = Lua.CoWrap(ALittleIDE.IDEControlTreeItem.HandleControlRename)
 

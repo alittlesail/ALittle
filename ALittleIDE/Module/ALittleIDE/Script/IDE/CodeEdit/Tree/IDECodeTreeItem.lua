@@ -164,6 +164,9 @@ function ALittleIDE.IDECodeTreeItem:HandleRenameFile()
 		return
 	end
 	local new_path = ALittle.File_GetFilePathByPath(old_path) .. "/" .. new_name
+	if new_path == old_path then
+		return
+	end
 	if ALittle.File_GetFileAttr(new_path) ~= nil then
 		g_AUITool:ShowNotice("提示", "文件名已存在")
 		return
@@ -171,16 +174,18 @@ function ALittleIDE.IDECodeTreeItem:HandleRenameFile()
 	self._user_info.path = new_path
 	self._user_info.name = new_name
 	self._item_button.text = self._user_info.name
-	if self._user_info.project ~= nil and ALittle.File_GetFileExtByPathAndUpper(self._user_info.path) == self._user_info.project.upper_ext then
+	if tab_child ~= nil then
+		ALittleIDE.g_IDECenter.center.content_edit:CloseTab(tab_child.tab_body)
+	end
+	if self._user_info.project ~= nil and ALittle.File_GetFileExtByPathAndUpper(old_path) == self._user_info.project.upper_ext then
 		self._user_info.project:RemoveFile(old_path)
 	end
 	ALittle.File_RenameFile(old_path, new_path)
-	if tab_child ~= nil then
-		tab_child:UpdateUserInfo(self._user_info)
-	end
-	ALittleIDE.g_IDECenter.center.content_edit:RenameTabByName(ALittleIDE.IDECodeTabChild, old_name, self._user_info.name)
-	if self._user_info.project ~= nil and ALittle.File_GetFileExtByPathAndUpper(self._user_info.path) == self._user_info.project.upper_ext then
+	if self._user_info.project ~= nil and ALittle.File_GetFileExtByPathAndUpper(old_path) == self._user_info.project.upper_ext then
 		self._user_info.project:UpdateFile(self._user_info.module_path, self._user_info.path)
+	end
+	if tab_child ~= nil then
+		ALittleIDE.g_IDECenter.center.content_edit:StartEditCodeBySelect(self._user_info.name, self._user_info)
 	end
 end
 ALittleIDE.IDECodeTreeItem.HandleRenameFile = Lua.CoWrap(ALittleIDE.IDECodeTreeItem.HandleRenameFile)

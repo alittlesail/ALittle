@@ -120,6 +120,7 @@ public class IDECodeTreeItem : IDECodeTreeLogic
 		if (new_name == null || new_name == "") return;
 
 		var new_path = ALittle.File_GetFilePathByPath(old_path).."/"..new_name;
+        if (new_path == old_path) return;
 
         // 检查文件是否以存在
         if (ALittle.File_GetFileAttr(new_path) != null)
@@ -133,16 +134,22 @@ public class IDECodeTreeItem : IDECodeTreeLogic
 
 		this._item_button.text = this._user_info.name;
 
-		if (this._user_info.project != null && ALittle.File_GetFileExtByPathAndUpper(this._user_info.path) == this._user_info.project.upper_ext)
+        // 关闭标签页
+        if (tab_child != null) g_IDECenter.center.content_edit.CloseTab(tab_child.tab_body);
+
+        // 移除文件
+		if (this._user_info.project != null && ALittle.File_GetFileExtByPathAndUpper(old_path) == this._user_info.project.upper_ext)
 			this._user_info.project.RemoveFile(old_path);
 
+        // 文件重命名
 		ALittle.File_RenameFile(old_path, new_path);
 
-        if (tab_child != null) tab_child.UpdateUserInfo(this._user_info);
-		g_IDECenter.center.content_edit.RenameTabByName{IDECodeTabChild}(old_name, this._user_info.name);
-
-		if (this._user_info.project != null && ALittle.File_GetFileExtByPathAndUpper(this._user_info.path) == this._user_info.project.upper_ext)
+        // 添加文件
+		if (this._user_info.project != null && ALittle.File_GetFileExtByPathAndUpper(old_path) == this._user_info.project.upper_ext)
 			this._user_info.project.UpdateFile(this._user_info.module_path, this._user_info.path);
+
+        // 打开标签页
+        if (tab_child != null) g_IDECenter.center.content_edit.StartEditCodeBySelect(this._user_info.name, this._user_info);
     }
 
 	// 触发删除

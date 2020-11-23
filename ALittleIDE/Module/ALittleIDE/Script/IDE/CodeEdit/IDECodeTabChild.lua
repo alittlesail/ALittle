@@ -161,7 +161,10 @@ function ALittleIDE.IDECodeTabChild.__getter:title()
 end
 
 function ALittleIDE.IDECodeTabChild:UpdateUserInfo(info)
+	self:OnClose()
+	self._language = nil
 	self._user_info = info
+	self:OnOpen()
 end
 
 function ALittleIDE.IDECodeTabChild:CreateBySelect(info)

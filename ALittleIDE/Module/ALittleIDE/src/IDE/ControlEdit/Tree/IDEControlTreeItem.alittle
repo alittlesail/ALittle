@@ -178,7 +178,7 @@ public class IDEControlTreeItem : IDEControlTreeLogic
         this._item_button.text = this._user_info.name;
 
         if (tab_child != null) tab_child.Rename(this._user_info.name);
-		g_IDECenter.center.content_edit.RenameTabByName{IDEUITabChild}(old_name, this._user_info.name);
+        g_IDECenter.center.content_edit.main_tab.SetChildText(tab_child.tab_body, this._user_info.name);
 	}
 
 	// 复制继承代码

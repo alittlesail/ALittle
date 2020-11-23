@@ -245,17 +245,6 @@ function ALittleIDE.IDEContentEdit:CloseTabByName(T, name)
 	end
 end
 
-function ALittleIDE.IDEContentEdit:RenameTabByName(T, old_name, new_name)
-	for index, child in ___ipairs(self._main_tab.childs) do
-		local tab_child = child._user_data
-		local target_child = ALittle.Cast(T, ALittleIDE.IDETabChild, tab_child)
-		if target_child ~= nil and self._main_tab:GetChildText(child) == old_name then
-			self._main_tab:SetChildText(tab_child.tab_body, new_name)
-			break
-		end
-	end
-end
-
 function ALittleIDE.IDEContentEdit:SaveTab(child)
 	local tab_child = child._user_data
 	tab_child.save = true

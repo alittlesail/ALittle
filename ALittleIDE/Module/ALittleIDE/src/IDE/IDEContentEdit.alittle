@@ -190,20 +190,6 @@ public class IDEContentEdit : ALittle.DisplayLayout
         }
     }
 
-	public fun RenameTabByName<T:IDETabChild>(string old_name, string new_name)
-	{
-		for (var index, child in this._main_tab.childs)
-		{
-            var tab_child:IDETabChild = child._user_data;
-            var target_child = ALittle.Cast{T}(tab_child);
-			if (target_child != null && this._main_tab.GetChildText(child) == old_name)
-			{
-				this._main_tab.SetChildText(tab_child.tab_body, new_name);
-				break;
-            }
-        }
-    }
-
 	// 保存某个分页
 	public fun SaveTab(ALittle.DisplayObject child)
 	{

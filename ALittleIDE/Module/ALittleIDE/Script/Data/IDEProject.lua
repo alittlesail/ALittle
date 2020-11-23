@@ -170,6 +170,7 @@ function ALittleIDE.IDEProject:NewProject(name, window_width, window_height, fon
 	ALittle.File_MakeDir(ALittle.File_BaseFilePath() .. "Module/" .. name .. "/JSScript")
 	ALittle.File_MakeDir(ALittle.File_BaseFilePath() .. "Module/" .. name .. "/Script")
 	ALittle.File_MakeDir(ALittle.File_BaseFilePath() .. "Module/" .. name .. "/UI")
+	ALittle.File_MakeDir(ALittle.File_BaseFilePath() .. "Module/" .. name .. "/Tile")
 	ALittle.File_MakeDir(ALittle.File_BaseFilePath() .. "Module/" .. name .. "/Icon")
 	local base_path = ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameTemplate"
 	local target_path = ALittle.File_BaseFilePath() .. "Module/" .. name .. "/"

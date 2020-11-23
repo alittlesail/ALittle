@@ -209,6 +209,11 @@ function ALittleIDE.IDEExport:PackageCommon(export_path, project_path, project_n
 	file_info.crypt_mode = false
 	count = count + 1
 	file_list[count] = file_info
+	file_info = {}
+	file_info.path = "Tile"
+	file_info.crypt_mode = false
+	count = count + 1
+	file_list[count] = file_info
 	if platform == "Web" or platform == "WeChat" then
 		file_info = {}
 		file_info.path = "JSScript"

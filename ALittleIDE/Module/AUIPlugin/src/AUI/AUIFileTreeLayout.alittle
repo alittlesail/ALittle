@@ -522,7 +522,6 @@ struct AUIFileSearchInfo
 	string name;
 }
 
-
 public class AUIFileTreeLayout : ALittle.DisplayLayout
 {
 	private ALittle.ScrollScreen _file_scroll_screen;

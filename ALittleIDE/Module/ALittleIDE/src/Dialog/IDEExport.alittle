@@ -272,6 +272,8 @@ class IDEExport
         }
 		file_info = new IDEExportFileInfo(); file_info.path = "Other"; file_info.crypt_mode = false;
 		++ count; file_list[count] = file_info;
+		file_info = new IDEExportFileInfo(); file_info.path = "Tile"; file_info.crypt_mode = false;
+		++ count; file_list[count] = file_info;
 		if (platform == "Web" || platform == "WeChat")
 		{
 			file_info = new IDEExportFileInfo(); file_info.path = "JSScript"; file_info.crypt_mode = false;

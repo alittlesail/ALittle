@@ -120,6 +120,7 @@ public class IDEProject : ALittle.EventDispatcher
 		ALittle.File_MakeDir(ALittle.File_BaseFilePath().."Module/"..name.."/JSScript");
 		ALittle.File_MakeDir(ALittle.File_BaseFilePath().."Module/"..name.."/Script");
 		ALittle.File_MakeDir(ALittle.File_BaseFilePath().."Module/"..name.."/UI");
+		ALittle.File_MakeDir(ALittle.File_BaseFilePath().."Module/"..name.."/Tile");
 		ALittle.File_MakeDir(ALittle.File_BaseFilePath().."Module/"..name.."/Icon");
 
 		var base_path = ALittle.File_BaseFilePath().."Module/ALittleIDE/Other/GameTemplate";

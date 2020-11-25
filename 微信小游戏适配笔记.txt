@@ -24,3 +24,6 @@ instanceof HTMLCanvasElement  修改为  =='[object HTMLCanvasElement]'
 其他HTML相关也做类似修改
 instanceof OffscreenCanvas    修改为  =='[object OffscreenCanvas]'
 instanceof XMLDocument        修改为  =='[object XMLDocument]'
+
+c) 在第一次出现self之前合适的地方插入
+if(typeof self==="undefined")window.self=window;

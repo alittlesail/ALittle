@@ -6,9 +6,15 @@ require('./Module/abcd@project_name@abcd/JSNative/native')
 require('./Module/abcd@project_name@abcd/JSNative/md5.min')
 require('./Module/abcd@project_name@abcd/JSNative/Std')
 
-// 适配
-// if (!window.WebGLRenderingContext)
-//  window.WebGLRenderingContext = canvas.getContext("webgl");
+// 适配真机上的微信小游戏
+if (!window.WebGLRenderingContext)
+{
+	var contextOptions = {
+		stencil: true,
+		failIfMajorPerformanceCaveat: true,
+	};
+	window.WebGLRenderingContext  = canvas.getContext("webgl", contextOptions);
+}
 
 require('./Module/abcd@project_name@abcd/JSNative/pixi.min.wx');
 import {install} from './Module/abcd@project_name@abcd/JSNative/unsafe-eval/install';

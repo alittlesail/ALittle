@@ -20,10 +20,14 @@ a) 在pixi.min.wx.js最后下添加，微信环境下导出到全局
 window.PIXI = PIXI;
 
 b) instanceof语法替换
-instanceof HTMLCanvasElement  修改为  =='[object HTMLCanvasElement]'
+instanceof HTMLCanvasElement  修改为  =='[object HTMLCanvasElement]' || =='[object Canvas]'
+instanceof HTMLImageElement  修改为  =='[object HTMLImageElement]' || =='[object Image]'
 其他HTML相关也做类似修改
 instanceof OffscreenCanvas    修改为  =='[object OffscreenCanvas]'
 instanceof XMLDocument        修改为  =='[object XMLDocument]'
 
 c) 在第一次出现self之前合适的地方插入
 if(typeof self==="undefined")window.self=window;
+
+d) 查找getContextAttributes().stencil
+把这个条件判断去掉，因为微信小游戏暂时还不支持stencil

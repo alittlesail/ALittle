@@ -3977,8 +3977,8 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateGlobalMethod(const st
 
         content += pre_tab
             + "ALittle.RegCmdCallback(\"" + method_name + "\", " + m_namespace_name + "." + method_name
-            + ", {" + ABnfFactory::Join(var_list, ",") + "}, {" + ABnfFactory::Join(name_list, ",")
-            + "}, \"" + command_text + "\")\n";
+            + ", [" + ABnfFactory::Join(var_list, ",") + "], [" + ABnfFactory::Join(name_list, ",")
+            + "], \"" + command_text + "\")\n";
     }
 
     return nullptr;

@@ -66,11 +66,24 @@ ALittleIDE.IDEUIControlList = JavaScript.Class(ALittle.DisplayLayout, {
 			let tree = ALittle.NewObject(ALittleIDE.IDEControlTree, ALittleIDE.g_Control, info);
 			this._control_scroll_screen.AddChild(tree);
 		}
+		let ___OBJECT_2 = ALittleIDE.g_IDEProject.project.ui;
+		for (let child_name in ___OBJECT_2) {
+			let child_ui = ___OBJECT_2[child_name];
+			if (child_ui === undefined) continue;
+			let ___OBJECT_3 = ALittleIDE.g_IDEProject.project.ui;
+			for (let parent_name in ___OBJECT_3) {
+				let parent_ui = ___OBJECT_3[parent_name];
+				if (parent_ui === undefined) continue;
+				if (child_ui !== parent_ui) {
+					parent_ui.control.RegisterPlugin(child_name, child_ui.control);
+				}
+			}
+		}
 	},
 	GetControlTree : function(module) {
-		let ___OBJECT_2 = this._control_scroll_screen.childs;
-		for (let index = 1; index <= ___OBJECT_2.length; ++index) {
-			let child = ___OBJECT_2[index - 1];
+		let ___OBJECT_4 = this._control_scroll_screen.childs;
+		for (let index = 1; index <= ___OBJECT_4.length; ++index) {
+			let child = ___OBJECT_4[index - 1];
 			if (child === undefined) break;
 			if (child.user_info.module_name === module) {
 				return child;
@@ -87,9 +100,9 @@ ALittleIDE.IDEUIControlList = JavaScript.Class(ALittle.DisplayLayout, {
 			if (ui_manager === undefined) {
 				___COROUTINE(); return;
 			}
-			let ___OBJECT_3 = this._control_scroll_screen.childs;
-			for (let index = 1; index <= ___OBJECT_3.length; ++index) {
-				let tree = ___OBJECT_3[index - 1];
+			let ___OBJECT_5 = this._control_scroll_screen.childs;
+			for (let index = 1; index <= ___OBJECT_5.length; ++index) {
+				let tree = ___OBJECT_5[index - 1];
 				if (tree === undefined) break;
 				if (tree.user_info.module_name === name) {
 					___COROUTINE(); return;
@@ -149,9 +162,9 @@ ALittleIDE.IDEUIControlList = JavaScript.Class(ALittle.DisplayLayout, {
 			this._search_info.name = this._control_search_key.text;
 			this._search_info.index = 0;
 			this._search_info.list = [];
-			let ___OBJECT_4 = this._control_scroll_screen.childs;
-			for (let index = 1; index <= ___OBJECT_4.length; ++index) {
-				let child = ___OBJECT_4[index - 1];
+			let ___OBJECT_6 = this._control_scroll_screen.childs;
+			for (let index = 1; index <= ___OBJECT_6.length; ++index) {
+				let child = ___OBJECT_6[index - 1];
 				if (child === undefined) break;
 				child.SearchFile(this._search_info.name, this._search_info.list);
 			}
@@ -181,9 +194,9 @@ ALittleIDE.IDEUIControlList = JavaScript.Class(ALittle.DisplayLayout, {
 			this._new_control_type.data_list = ALittleIDE.g_IDEEnum.child_type_list;
 		}
 		let data_list = [];
-		let ___OBJECT_5 = ALittleIDE.g_IDEProject.project.ui;
-		for (let name in ___OBJECT_5) {
-			let ui = ___OBJECT_5[name];
+		let ___OBJECT_7 = ALittleIDE.g_IDEProject.project.ui;
+		for (let name in ___OBJECT_7) {
+			let ui = ___OBJECT_7[name];
 			if (ui === undefined) continue;
 			ALittle.List_Push(data_list, name);
 		}
@@ -251,18 +264,18 @@ ALittleIDE.IDEUIControlList = JavaScript.Class(ALittle.DisplayLayout, {
 			A_LayerManager.AddToModal(this._extends_control_dialog);
 		}
 		let data_list = [];
-		let ___OBJECT_6 = ALittleIDE.g_IDEProject.project.ui;
-		for (let name in ___OBJECT_6) {
-			let ui = ___OBJECT_6[name];
+		let ___OBJECT_8 = ALittleIDE.g_IDEProject.project.ui;
+		for (let name in ___OBJECT_8) {
+			let ui = ___OBJECT_8[name];
 			if (ui === undefined) continue;
 			ALittle.List_Push(data_list, name);
 		}
 		this._extends_control_module.data_list = data_list;
 		this._extends_control_module.text = module_name;
 		data_list = [];
-		let ___OBJECT_7 = ALittleIDE.g_IDEProject.project.ui;
-		for (let name in ___OBJECT_7) {
-			let ui = ___OBJECT_7[name];
+		let ___OBJECT_9 = ALittleIDE.g_IDEProject.project.ui;
+		for (let name in ___OBJECT_9) {
+			let ui = ___OBJECT_9[name];
 			if (ui === undefined) continue;
 			ALittle.List_Push(data_list, name);
 		}

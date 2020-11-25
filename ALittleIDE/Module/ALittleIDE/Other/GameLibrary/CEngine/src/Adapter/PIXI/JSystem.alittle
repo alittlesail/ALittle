@@ -44,7 +44,9 @@ public static JSystem_GetDeviceID() : string
         if (json == null) json = new Map<string, any>();
         id = "device_id_"..rand.."_"..time;
         json["device_id"] = id;
-        document.cookie = ALittle.String_JsonEncode(json);
+
+        // 微信环境不能操作cookie
+        if (window.wx == null) document.cookie = ALittle.String_JsonEncode(json);
     }
     return id;
 }

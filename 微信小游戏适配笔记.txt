@@ -1,0 +1,26 @@
+1. 修改weapp-adapter.js
+在TouchEvent定义的下方
+添加代码，目的是导出TouchEvent到全局
+window.TouchEvent = TouchEvent;
+
+
+2. 添加unsafe-eval库，讲PIXI导出到微信环境
+
+3. 添加runtime.js适配新js语法的协程
+
+4. 修改pixi-textinput.js
+在_createDOMInput函数内
+创建完_dom_input成员之后，添加对value属性的初始化。
+因为在微信环境下value是空的
+this._dom_input.value = ""
+
+5. 复制pixi.min.js 并改名为pixi.min.wx.js
+
+a) 在pixi.min.wx.js最后下添加，微信环境下导出到全局
+window.PIXI = PIXI;
+
+b) instanceof语法替换
+instanceof HTMLCanvasElement  修改为  =='[object HTMLCanvasElement]'
+其他HTML相关也做类似修改
+instanceof OffscreenCanvas    修改为  =='[object OffscreenCanvas]'
+instanceof XMLDocument        修改为  =='[object XMLDocument]'

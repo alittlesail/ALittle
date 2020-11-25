@@ -215,7 +215,7 @@ ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 			ALittle.List_Push(file_list, base_path + "Net/MsgReceiverTemplate.lua");
 			ALittle.List_Push(file_list, base_path + "Net/MsgSenderTemplate.lua");
 			ALittle.List_Push(file_list, base_path + "Net/MsgSessionTemplate.lua");
-			ALittle.List_Push(file_list, base_path + "Loop/Lua/LuaHeapTimer.lua");
+			ALittle.List_Push(file_list, base_path + "Loop/IHeapTimer.lua");
 			ALittle.List_Push(file_list, base_path + "Config/Lua/LuaCsvFile.lua");
 			ALittle.List_Push(file_list, base_path + "Net/Lua/LuaHttpFileInterface.lua");
 			ALittle.List_Push(file_list, base_path + "Net/Lua/LuaHttpInterface.lua");

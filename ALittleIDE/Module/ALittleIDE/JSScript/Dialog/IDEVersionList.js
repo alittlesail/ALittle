@@ -881,4 +881,81 @@ ALittleIDE.IDEVersionWeChat = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 }, "ALittleIDE.IDEVersionWeChat");
 
+if (ALittle.DisplayLayout === undefined) throw new Error(" extends class:ALittle.DisplayLayout is undefined");
+ALittleIDE.IDEVersionEmscripten = JavaScript.Class(ALittle.DisplayLayout, {
+	Ctor : function(ctrl_sys) {
+	},
+	TCtor : function() {
+		this._version_list.platform = "Emscripten";
+		this._version_list.config_key = "emscripten_export_info";
+	},
+	set config_key(value) {
+		this._version_list.config_key = value;
+	},
+	get config_key() {
+		return this._version_list.config_key;
+	},
+	LoadConfigImpl : function() {
+		if (ALittleIDE.g_IDEProject.project === undefined) {
+			g_AUITool.ShowNotice("错误", "当前没有打开的项目");
+			return false;
+		}
+		this._version_list.LoadConfig();
+		this._version_list.HandleRefreshVersionList(undefined);
+		this._version_list.export_old_log.text = "";
+		let export_info = ALittleIDE.g_IDEProject.project.config.GetConfig(this.config_key, {});
+		let install_info = export_info.install_info;
+		if (install_info === undefined) {
+			install_info = {};
+		}
+		if (install_info.new_log !== undefined) {
+			this._export_new_log.text = install_info.new_log;
+		} else {
+			this._export_new_log.text = "";
+		}
+		return true;
+	},
+	SaveConfigImpl : function() {
+		if (ALittleIDE.g_IDEProject.project === undefined) {
+			g_AUITool.ShowNotice("错误", "当前没有打开的项目");
+			return false;
+		}
+		let version_info = this._version_list.GetConfig();
+		if (version_info === undefined) {
+			return false;
+		}
+		let export_info = {};
+		export_info.version_info = version_info;
+		let install_info = {};
+		export_info.install_info = install_info;
+		install_info.file_name = "Install.html";
+		if (install_info.install_name === "") {
+			g_AUITool.ShowNotice("错误", "安装包名不能为空");
+			return false;
+		}
+		install_info.new_log = this._export_new_log.text;
+		ALittleIDE.g_IDEProject.project.config.SetConfig(this.config_key, export_info);
+		return true;
+	},
+	HandleSaveConfig : function(event) {
+		if (this.SaveConfigImpl() === false) {
+			return;
+		}
+		g_AUITool.ShowNotice("提示", "配置保存成功");
+	},
+	HandleExport : async function(event) {
+		if (this.SaveConfigImpl() === false) {
+			return;
+		}
+		let export_info = ALittleIDE.g_IDEProject.project.config.GetConfig(this.config_key, undefined);
+		if (export_info === undefined) {
+			return;
+		}
+		g_AUITool.ShowNotice("提示", "JavaScript版本不支持导出项目功能");
+	},
+	HandleSubmit : async function(event) {
+		await ALittleIDE.g_IDEExport.SubmitPlatform(ALittleIDE.g_IDEProject.project.name, "Emscripten");
+	},
+}, "ALittleIDE.IDEVersionEmscripten");
+
 }

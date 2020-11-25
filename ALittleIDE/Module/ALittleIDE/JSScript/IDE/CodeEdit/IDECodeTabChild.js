@@ -8,6 +8,12 @@ name_list : ["target","file_path","it_line","it_char"],
 type_list : ["ALittle.DisplayObject","string","int","int"],
 option_map : {}
 })
+ALittle.RegStruct(1575183661, "AUIPlugin.AUICodeEditBreakPointEvent", {
+name : "AUIPlugin.AUICodeEditBreakPointEvent", ns_name : "AUIPlugin", rl_name : "AUICodeEditBreakPointEvent", hash_code : 1575183661,
+name_list : ["target","add_or_remove","file_path","file_line"],
+type_list : ["ALittle.DisplayObject","bool","string","int"],
+option_map : {}
+})
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
 name : "ALittle.UIEvent", ns_name : "ALittle", rl_name : "UIEvent", hash_code : -1479093282,
 name_list : ["target"],
@@ -35,6 +41,7 @@ ALittleIDE.IDECodeTabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 		this._edit.AddEventListener(___all_struct.get(958494922), this, this.HandleChangedEvent);
 		this._edit.AddEventListener(___all_struct.get(631224630), this, this.HandleEditGotoEvent);
 		this._edit.AddEventListener(___all_struct.get(-1898137181), this, this.HandleJumpCodeEvent);
+		this._edit.AddEventListener(___all_struct.get(1575183661), this, this.HandleBreakPointEvent);
 		this._edit._user_data = this;
 	},
 	OnUndo : function() {
@@ -55,7 +62,7 @@ ALittleIDE.IDECodeTabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 	},
 	OnOpen : function() {
 		this._revoke_list = ALittle.NewObject(ALittle.RevokeList);
-		this._edit.Load(this._user_info.path, undefined, this._revoke_list, this._language);
+		this._edit.Load(this._user_info.path, undefined, this._revoke_list, this._language, ALittleIDE.g_IDEProject.GetBreakPoint(this._user_info.path));
 	},
 	OnTabRightMenu : function(menu) {
 		this._edit.OnTabRightMenu(menu);
@@ -66,6 +73,7 @@ ALittleIDE.IDECodeTabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 		if (tree === undefined) {
 			return;
 		}
+		ALittleIDE.g_IDECenter.center.project_edit_tab.tab = ALittleIDE.g_IDECenter.center.code_list;
 		ALittleIDE.g_IDECenter.center.code_list.ShowTreeItemFocus(tree);
 	},
 	HandleEditGotoEvent : function(event) {
@@ -82,6 +90,13 @@ ALittleIDE.IDECodeTabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 		info.it_line = event.it_line;
 		info.it_char = event.it_char;
 		ALittleIDE.g_IDECenter.center.code_list.AddCodeJump(info);
+	},
+	HandleBreakPointEvent : function(event) {
+		if (event.add_or_remove) {
+			ALittleIDE.g_IDEProject.AddBreakPoint(event.file_path, event.file_line);
+		} else {
+			ALittleIDE.g_IDEProject.RemoveBreakPoint(event.file_path, event.file_line);
+		}
 	},
 	HandleChangedEvent : function(event) {
 		this.save = false;
@@ -120,7 +135,10 @@ ALittleIDE.IDECodeTabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 		return this._name;
 	},
 	UpdateUserInfo : function(info) {
+		this.OnClose();
+		this._language = undefined;
 		this._user_info = info;
+		this.OnOpen();
 	},
 	CreateBySelect : function(info) {
 		this._user_info = info;

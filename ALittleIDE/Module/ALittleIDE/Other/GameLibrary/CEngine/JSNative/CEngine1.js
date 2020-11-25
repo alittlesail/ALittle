@@ -615,7 +615,9 @@ JavaScript.JSystem_GetDeviceID = function() {
 		}
 		id = "device_id_" + rand + "_" + time;
 		json["device_id"] = id;
-		document.cookie = ALittle.String_JsonEncode(json);
+		if (window.wx === undefined) {
+			document.cookie = ALittle.String_JsonEncode(json);
+		}
 	}
 	return id;
 }
@@ -2404,6 +2406,9 @@ ALittle.JClientFileLoader = JavaScript.Class(ALittle.IFileLoader, {
 if (ALittle.IFileSaver === undefined) throw new Error(" extends class:ALittle.IFileSaver is undefined");
 ALittle.JClientFileSaver = JavaScript.Class(ALittle.IFileSaver, {
 	Save : function(file_path, content) {
+		if (window.wx !== undefined) {
+			return false;
+		}
 		let json = undefined;
 		if (document.cookie !== undefined && document.cookie !== "") {
 			let error = undefined;

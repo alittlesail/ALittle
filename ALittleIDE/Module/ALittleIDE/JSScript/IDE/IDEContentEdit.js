@@ -225,28 +225,15 @@ ALittleIDE.IDEContentEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			}
 		}
 	},
-	RenameTabByName : function(T, old_name, new_name) {
-		let ___OBJECT_6 = this._main_tab.childs;
-		for (let index = 1; index <= ___OBJECT_6.length; ++index) {
-			let child = ___OBJECT_6[index - 1];
-			if (child === undefined) break;
-			let tab_child = child._user_data;
-			let target_child = ALittle.Cast(T, ALittleIDE.IDETabChild, tab_child);
-			if (target_child !== undefined && this._main_tab.GetChildText(child) === old_name) {
-				this._main_tab.SetChildText(tab_child.tab_body, new_name);
-				break;
-			}
-		}
-	},
 	SaveTab : function(child) {
 		let tab_child = child._user_data;
 		tab_child.save = true;
 	},
 	CloseAllTab : function() {
 		this.ChangeTabEdit(this._main_tab.tab, undefined);
-		let ___OBJECT_7 = this._main_tab.childs;
-		for (let k = 1; k <= ___OBJECT_7.length; ++k) {
-			let child = ___OBJECT_7[k - 1];
+		let ___OBJECT_6 = this._main_tab.childs;
+		for (let k = 1; k <= ___OBJECT_6.length; ++k) {
+			let child = ___OBJECT_6[k - 1];
 			if (child === undefined) break;
 			let tab_child = child._user_data;
 			tab_child.OnClose();
@@ -254,9 +241,9 @@ ALittleIDE.IDEContentEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		this._main_tab.RemoveAllChild();
 	},
 	SaveAllTab : function() {
-		let ___OBJECT_8 = this._main_tab.childs;
-		for (let k = 1; k <= ___OBJECT_8.length; ++k) {
-			let child = ___OBJECT_8[k - 1];
+		let ___OBJECT_7 = this._main_tab.childs;
+		for (let k = 1; k <= ___OBJECT_7.length; ++k) {
+			let child = ___OBJECT_7[k - 1];
 			if (child === undefined) break;
 			let tab_child = child._user_data;
 			tab_child.save = true;
@@ -316,9 +303,9 @@ ALittleIDE.IDEContentEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			return;
 		}
 		let menu = ALittle.NewObject(AUIPlugin.AUIRightMenu);
-		let ___OBJECT_9 = tab_childs;
-		for (let index = 1; index <= ___OBJECT_9.length; ++index) {
-			let child = ___OBJECT_9[index - 1];
+		let ___OBJECT_8 = tab_childs;
+		for (let index = 1; index <= ___OBJECT_8.length; ++index) {
+			let child = ___OBJECT_8[index - 1];
 			if (child === undefined) break;
 			let tab_child = child._user_data;
 			menu.AddItem(tab_child.title, this.SelectItemClick.bind(this, child));
@@ -348,9 +335,9 @@ ALittleIDE.IDEContentEdit = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	CloseLeftTab : function(child) {
 		let close_list = [];
-		let ___OBJECT_10 = this._main_tab.childs;
-		for (let index = 1; index <= ___OBJECT_10.length; ++index) {
-			let child_v = ___OBJECT_10[index - 1];
+		let ___OBJECT_9 = this._main_tab.childs;
+		for (let index = 1; index <= ___OBJECT_9.length; ++index) {
+			let child_v = ___OBJECT_9[index - 1];
 			if (child_v === undefined) break;
 			if (child_v === child) {
 				break;
@@ -360,9 +347,9 @@ ALittleIDE.IDEContentEdit = JavaScript.Class(ALittle.DisplayLayout, {
 				ALittle.List_Push(close_list, child_v);
 			}
 		}
-		let ___OBJECT_11 = close_list;
-		for (let index = 1; index <= ___OBJECT_11.length; ++index) {
-			let child_v = ___OBJECT_11[index - 1];
+		let ___OBJECT_10 = close_list;
+		for (let index = 1; index <= ___OBJECT_10.length; ++index) {
+			let child_v = ___OBJECT_10[index - 1];
 			if (child_v === undefined) break;
 			this.CloseTab(child_v);
 		}
@@ -379,9 +366,9 @@ ALittleIDE.IDEContentEdit = JavaScript.Class(ALittle.DisplayLayout, {
 				ALittle.List_Push(close_list, child_v);
 			}
 		}
-		let ___OBJECT_12 = close_list;
-		for (let index = 1; index <= ___OBJECT_12.length; ++index) {
-			let child_v = ___OBJECT_12[index - 1];
+		let ___OBJECT_11 = close_list;
+		for (let index = 1; index <= ___OBJECT_11.length; ++index) {
+			let child_v = ___OBJECT_11[index - 1];
 			if (child_v === undefined) break;
 			this.CloseTab(child_v);
 		}
@@ -454,6 +441,24 @@ ALittleIDE.IDEContentEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		let child_from = this._main_tab.tab;
 		let tab_child = ALittle.NewObject(ALittleIDE.IDECodeTabChild, ALittleIDE.g_Control, info.module_name, name, true, info);
+		tab_child.CreateBySelect(info);
+		this._main_tab.AddChild(tab_child.tab_body, 1);
+		tab_child.OnOpen();
+		this._main_tab.tab = tab_child.tab_body;
+		this.ChangeTabEdit(child_from, this._main_tab.tab);
+		tab_child.UpdateTitle();
+		return tab_child;
+	},
+	StartEditTileBySelect : function(name, info) {
+		let child = this.GetTabById(ALittleIDE.IDETileTabChild, info.info.path);
+		if (child !== undefined) {
+			let child_from = this._main_tab.tab;
+			this._main_tab.tab = child;
+			this.ChangeTabEdit(child_from, this._main_tab.tab);
+			return child._user_data;
+		}
+		let child_from = this._main_tab.tab;
+		let tab_child = ALittle.NewObject(ALittleIDE.IDETileTabChild, ALittleIDE.g_Control, info.module_name, name, true, info);
 		tab_child.CreateBySelect(info);
 		this._main_tab.AddChild(tab_child.tab_body, 1);
 		tab_child.OnOpen();

@@ -194,7 +194,7 @@ ALittleIDE.IDEControlTreeItem = JavaScript.Class(ALittleIDE.IDEControlTreeLogic,
 		if (tab_child !== undefined) {
 			tab_child.Rename(this._user_info.name);
 		}
-		ALittleIDE.g_IDECenter.center.content_edit.RenameTabByName(ALittleIDE.IDEUITabChild, old_name, this._user_info.name);
+		ALittleIDE.g_IDECenter.center.content_edit.main_tab.SetChildText(tab_child.tab_body, this._user_info.name);
 	},
 	HandleCopyExtends : function() {
 		let name = this._user_info.name;

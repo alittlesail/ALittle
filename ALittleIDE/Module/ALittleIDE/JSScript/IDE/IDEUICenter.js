@@ -50,8 +50,8 @@ ALittleIDE.IDEUICenter = JavaScript.Class(ALittle.DisplayLayout, {
 	TCtor : function() {
 		this._project_edit_tab.DisableAllCloseButton();
 		this._project_edit_tab.tab_index = 1;
-		this._control_tree_tab.DisableAllCloseButton();
-		this._control_tree_tab.tab_index = 1;
+		this._detail_tree_tab.DisableAllCloseButton();
+		this._detail_tree_tab.tab_index = 1;
 		this._project_quick_tab.DisableAllCloseButton();
 		this._project_quick_tab.tab_index = 1;
 		this._tool_ui_container.visible = false;
@@ -62,14 +62,26 @@ ALittleIDE.IDEUICenter = JavaScript.Class(ALittle.DisplayLayout, {
 		ALittle.TextRadioButton.SetGroup([this._tool_singleselect, this._tool_handdrag, this._tool_scale, this._tool_presee]);
 		ALittleIDE.g_IDEProject.AddEventListener(___all_struct.get(-975432877), this, this.HandleProjectOpen);
 	},
+	get project_edit_tab() {
+		return this._project_edit_tab;
+	},
+	get detail_tree_tab() {
+		return this._detail_tree_tab;
+	},
 	get control_tree() {
 		return this._control_tree;
+	},
+	get tile_brush() {
+		return this._tile_brush;
 	},
 	get control_list() {
 		return this._control_list;
 	},
 	get code_list() {
 		return this._code_list;
+	},
+	get tile_list() {
+		return this._tile_list;
 	},
 	get project_list() {
 		return this._project_list;

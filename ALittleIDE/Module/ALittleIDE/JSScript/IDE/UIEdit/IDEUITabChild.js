@@ -130,11 +130,14 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 		this._attr_screen = ALittleIDE.g_Control.CreateControl("ide_edit_attr_screen", this);
 		this._anti_panel = ALittleIDE.g_Control.CreateControl("ide_edit_anti_panel", this);
 		this._tree_object = undefined;
-		this._tab_screen.container = ALittle.NewObject(ALittle.DisplayGroup, ALittleIDE.g_Control);
 		this._tab_screen.container.scale_x = 1;
 		this._tab_screen.container.scale_y = 1;
 		this._tab_container.width = ALittleIDE.g_IDEProject.project.config.GetConfig("default_show_width", 800);
 		this._tab_container.height = ALittleIDE.g_IDEProject.project.config.GetConfig("default_show_height", 600);
+		this._tab_container.x = 100;
+		this._tab_container.y = 100;
+		this._tab_rb_quad.x = this._tab_container.x + this._tab_container.width + 100;
+		this._tab_rb_quad.y = this._tab_container.y + this._tab_container.height + 100;
 		this._tab_screen.AdjustScrollBar();
 		this._tab_select_container.visible = ALittleIDE.g_IDECenter.center.singleselect;
 		this._tab_handle_quad.AddEventListener(___all_struct.get(1883782801), this, this.HandleHandleContainerLButtonDown);
@@ -193,7 +196,6 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 		ALittleIDE.g_IDECenter.center.control_tree.AddChild(this._tree_screen);
 		ALittleIDE.g_IDEAttrControlDialog.attr_container.AddChild(this._attr_screen);
 		ALittleIDE.g_IDECenter.center.control_anti.AddChild(this._anti_panel);
-		this.ShowInCenter();
 	},
 	ShowInCenter : function() {
 		let object = this._tree_object.user_info.object;
@@ -512,6 +514,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 			let child = ___OBJECT_1[index - 1];
 			if (child === undefined) break;
 			if (child.user_info.name === this._name) {
+				ALittleIDE.g_IDECenter.center.project_edit_tab.tab = ALittleIDE.g_IDECenter.center.control_list;
 				ALittleIDE.g_IDECenter.center.control_list.ShowTreeItemFocus(child);
 				return;
 			}

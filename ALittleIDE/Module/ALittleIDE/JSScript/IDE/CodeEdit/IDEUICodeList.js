@@ -169,7 +169,12 @@ ALittleIDE.IDEUICodeList = JavaScript.Class(ALittle.DisplayLayout, {
 		let user_info = {};
 		user_info.name = ALittle.File_GetFileNameByPath(full_path);
 		user_info.path = full_path;
-		return ALittleIDE.g_IDECenter.center.content_edit.StartEditCodeBySelect(user_info.name, user_info);
+		let child = ALittleIDE.g_IDECenter.center.content_edit.StartEditCodeBySelect(user_info.name, user_info);
+		if (child === undefined) {
+			return undefined;
+		}
+		child.JumpFocus(line_start, char_start, line_end, char_end);
+		return child;
 	},
 	GetCodeTree : function(full_path) {
 		let ___OBJECT_4 = this._code_scroll_screen.childs;

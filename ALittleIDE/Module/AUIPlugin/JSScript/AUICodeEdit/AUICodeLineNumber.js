@@ -14,17 +14,28 @@ name_list : ["target"],
 type_list : ["ALittle.DisplayObject"],
 option_map : {}
 })
+ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
+name : "ALittle.UIChangedEvent", ns_name : "ALittle", rl_name : "UIChangedEvent", hash_code : 958494922,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
 
 if (ALittle.DisplayLayout === undefined) throw new Error(" extends class:ALittle.DisplayLayout is undefined");
 AUIPlugin.AUICodeLineNumber = JavaScript.Class(ALittle.DisplayLayout, {
-	Ctor : function(ctrl_sys, font_path, font_size, ascii_width, word_width) {
+	Ctor : function(ctrl_sys, font_path, font_size, ascii_width, word_width, edit) {
 		this._showd = false;
 		this._text = "";
 		this._font_path = font_path;
 		this._font_size = font_size;
 		this._ascii_width = ascii_width;
 		this._word_width = word_width;
+		this._edit = edit;
 		this.AddEventListener(___all_struct.get(1862557463), this, this.HandleShow);
+	},
+	SetLineNumber : function(line_number) {
+		this._line_number = line_number;
+		this.text = ALittle.String_ToString(this._line_number);
 	},
 	HandleShow : function(event) {
 		if (this._showd) {
@@ -33,9 +44,30 @@ AUIPlugin.AUICodeLineNumber = JavaScript.Class(ALittle.DisplayLayout, {
 		this._showd = true;
 		this.UpdateShow();
 	},
+	HandleBreakChanged : function(event) {
+		if (event.target.selected) {
+			this._edit.AddBreakPoint(this._line_number);
+		} else {
+			this._edit.RemoveBreakPoint(this._line_number);
+		}
+	},
 	UpdateShow : function() {
 		let text_list = ALittle.String_SplitUTF8(this._text);
 		this.RemoveAllChild();
+		let quad = ALittle.NewObject(ALittle.Quad, this._ctrl_sys);
+		quad.red = AUIPlugin.CODE_BACKGROUND_RED;
+		quad.green = AUIPlugin.CODE_BACKGROUND_GREEN;
+		quad.blue = AUIPlugin.CODE_BACKGROUND_BLUE;
+		quad.width_type = 4;
+		quad.height_type = 4;
+		this.AddChild(quad);
+		let break_btn = AUIPlugin.g_Control.CreateControl("code_break_check_btn");
+		break_btn.y_type = 3;
+		break_btn.x = 2;
+		break_btn.y_value = 1;
+		this.AddChild(break_btn);
+		break_btn.AddEventListener(___all_struct.get(958494922), this, this.HandleBreakChanged);
+		break_btn.selected = this._edit.GetBreakPoint(this._line_number);
 		let offset = 0.0;
 		let len = ALittle.List_MaxN(text_list);
 		for (let index = len; index >= 1; index += -1) {

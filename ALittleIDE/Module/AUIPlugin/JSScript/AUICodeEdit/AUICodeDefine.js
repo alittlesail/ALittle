@@ -13,6 +13,12 @@ name_list : ["target","file_path","it_line","it_char"],
 type_list : ["ALittle.DisplayObject","string","int","int"],
 option_map : {}
 })
+ALittle.RegStruct(1575183661, "AUIPlugin.AUICodeEditBreakPointEvent", {
+name : "AUIPlugin.AUICodeEditBreakPointEvent", ns_name : "AUIPlugin", rl_name : "AUICodeEditBreakPointEvent", hash_code : 1575183661,
+name_list : ["target","add_or_remove","file_path","file_line"],
+type_list : ["ALittle.DisplayObject","bool","string","int"],
+option_map : {}
+})
 ALittle.RegStruct(1494749965, "AUIPlugin.AUICodeCharInfo", {
 name : "AUIPlugin.AUICodeCharInfo", ns_name : "AUIPlugin", rl_name : "AUICodeCharInfo", hash_code : 1494749965,
 name_list : ["char","text","red","green","blue","pre_width","width"],
@@ -70,6 +76,9 @@ AUIPlugin.CODE_LINE_NUMBER_BLUE = 100 / 255;
 AUIPlugin.CODE_FOCUS_RED = 88 / 255;
 AUIPlugin.CODE_FOCUS_GREEN = 157 / 255;
 AUIPlugin.CODE_FOCUS_BLUE = 246 / 255;
+AUIPlugin.CODE_BACKGROUND_RED = 30 / 255;
+AUIPlugin.CODE_BACKGROUND_GREEN = 30 / 255;
+AUIPlugin.CODE_BACKGROUND_BLUE = 30 / 255;
 AUIPlugin.CODE_PARAMLIST_RED = 128 / 255;
 AUIPlugin.CODE_PARAMLIST_GREEN = 128 / 255;
 AUIPlugin.CODE_PARAMLIST_BLUE = 128 / 255;

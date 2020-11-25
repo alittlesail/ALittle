@@ -316,17 +316,23 @@ AUIPlugin.AUIFileSelectLayout = JavaScript.Class(ALittle.DisplayLayout, {
 		this.CreateItemAndAddToList([], item_list_img);
 	},
 	SetPath : function(base_path, rel_path) {
-		let attr = ALittle.File_GetFileAttr(base_path + "/" + rel_path);
-		if (attr === undefined || attr.directory !== true) {
-			g_AUITool.ShowNotice("错误", "无效路径");
-			return false;
+		if (base_path !== undefined && rel_path !== undefined) {
+			let attr = ALittle.File_GetFileAttr(base_path + "/" + rel_path);
+			if (attr === undefined || attr.directory !== true) {
+				g_AUITool.ShowNotice("错误", "无效路径");
+				return false;
+			}
 		}
 		this._base_path = base_path;
 		this._real_path = base_path;
-		if (rel_path !== "") {
+		if (rel_path !== undefined && rel_path !== "") {
 			this._real_path = this._real_path + "/" + rel_path;
 		}
-		this.Refresh();
+		if (this._base_path !== undefined) {
+			this.Refresh();
+		} else {
+			this._scroll_list.RemoveAllChild();
+		}
 		return true;
 	},
 	SetBasePath : function(base_path) {

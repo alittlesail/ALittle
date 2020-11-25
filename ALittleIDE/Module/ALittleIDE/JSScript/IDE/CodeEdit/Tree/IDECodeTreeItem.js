@@ -146,6 +146,9 @@ ALittleIDE.IDECodeTreeItem = JavaScript.Class(ALittleIDE.IDECodeTreeLogic, {
 			return;
 		}
 		let new_path = ALittle.File_GetFilePathByPath(old_path) + "/" + new_name;
+		if (new_path === old_path) {
+			return;
+		}
 		if (ALittle.File_GetFileAttr(new_path) !== undefined) {
 			g_AUITool.ShowNotice("提示", "文件名已存在");
 			return;
@@ -153,16 +156,18 @@ ALittleIDE.IDECodeTreeItem = JavaScript.Class(ALittleIDE.IDECodeTreeLogic, {
 		this._user_info.path = new_path;
 		this._user_info.name = new_name;
 		this._item_button.text = this._user_info.name;
-		if (this._user_info.project !== undefined && ALittle.File_GetFileExtByPathAndUpper(this._user_info.path) === this._user_info.project.upper_ext) {
+		if (tab_child !== undefined) {
+			ALittleIDE.g_IDECenter.center.content_edit.CloseTab(tab_child.tab_body);
+		}
+		if (this._user_info.project !== undefined && ALittle.File_GetFileExtByPathAndUpper(old_path) === this._user_info.project.upper_ext) {
 			this._user_info.project.RemoveFile(old_path);
 		}
 		ALittle.File_RenameFile(old_path, new_path);
-		if (tab_child !== undefined) {
-			tab_child.UpdateUserInfo(this._user_info);
-		}
-		ALittleIDE.g_IDECenter.center.content_edit.RenameTabByName(ALittleIDE.IDECodeTabChild, old_name, this._user_info.name);
-		if (this._user_info.project !== undefined && ALittle.File_GetFileExtByPathAndUpper(this._user_info.path) === this._user_info.project.upper_ext) {
+		if (this._user_info.project !== undefined && ALittle.File_GetFileExtByPathAndUpper(old_path) === this._user_info.project.upper_ext) {
 			this._user_info.project.UpdateFile(this._user_info.module_path, this._user_info.path);
+		}
+		if (tab_child !== undefined) {
+			ALittleIDE.g_IDECenter.center.content_edit.StartEditCodeBySelect(this._user_info.name, this._user_info);
 		}
 	},
 	OnDelete : function() {

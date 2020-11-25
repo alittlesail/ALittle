@@ -210,6 +210,11 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 		file_info.crypt_mode = false;
 		++ count;
 		file_list[count - 1] = file_info;
+		file_info = {};
+		file_info.path = "Tile";
+		file_info.crypt_mode = false;
+		++ count;
+		file_list[count - 1] = file_info;
 		if (platform === "Web" || platform === "WeChat") {
 			file_info = {};
 			file_info.path = "JSScript";
@@ -639,6 +644,8 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 			install_name = this.GenerateWeb(package_info);
 		} else if (package_info.platform === "WeChat") {
 			install_name = this.GenerateWeChat(package_info);
+		} else if (package_info.platform === "Emscripten") {
+			install_name = this.GenerateEmscripten(package_info);
 		}
 		submit_info.project_path = package_info.project_path;
 		submit_info.export_module_path = package_info.export_module_path;
@@ -861,7 +868,6 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 		ALittle.File_CopyFile("libtcmalloc_minimal.dll", "Export/Windows/Engine/libtcmalloc_minimal.dll");
 		ALittle.File_CopyFile("libmysql.dll", "Export/Windows/Engine/libmysql.dll");
 		ALittle.File_CopyDeepDir("Export/Windows/Engine", package_info.export_path);
-		ALittle.File_MakeDeepDir(package_info.export_path + "/Dump");
 		let install_ico = package_info.project_path + "/Icon/install.ico";
 		if (ALittle.File_GetFileAttr(install_ico) === undefined) {
 			ALittle.File_CopyFile(ALittle.File_BaseFilePath() + "Export/Icon/install.ico", package_info.project_path + "/Export/Windows/install.ico");
@@ -1240,6 +1246,35 @@ ALittleIDE.IDEExport = JavaScript.Class(undefined, {
 			ALittle.File_SaveFile(package_info.project_path + "/Export/WeChat/project.config.json", content, -1);
 		}
 		return "Install.js";
+	},
+	GenerateEmscripten : function(package_info) {
+		ALittle.Log("==================GenerateEmscripten:" + package_info.project_name + "==================");
+		if (ALittle.File_GetFileAttr(package_info.project_path) === undefined) {
+			ALittle.Log("IDEExport:GenerateEmscripten project_path is not exist:", package_info.project_path);
+			return undefined;
+		}
+		let install_ico = package_info.project_path + "/Icon/install.ico";
+		if (ALittle.File_GetFileAttr(install_ico) === undefined) {
+			ALittle.File_CopyFile(ALittle.File_BaseFilePath() + "Export/Icon/install.ico", package_info.project_path + "/Export/Web/favicon.ico");
+		} else {
+			ALittle.File_CopyFile(install_ico, package_info.project_path + "/Export/Emscripten/favicon.ico");
+		}
+		let file = ALittle.NewObject(carp.CarpLocalFile);
+		file.SetPath(ALittle.File_BaseFilePath() + "Export/Emscripten/index.js");
+		if (file.Load(false)) {
+			let content = file.GetContent();
+			content = ALittle.String_Replace(content, "abcd@project_name@abcd", package_info.project_name);
+			ALittle.File_SaveFile(package_info.project_path + "/Export/Emscripten/" + package_info.project_name + ".js", content, -1);
+		}
+		file = ALittle.NewObject(carp.CarpLocalFile);
+		file.SetPath(ALittle.File_BaseFilePath() + "Export/Emscripten/index.html");
+		if (file.Load(false)) {
+			let content = file.GetContent();
+			content = ALittle.String_Replace(content, "abcd@project_name@abcd", package_info.project_name);
+			ALittle.File_SaveFile(package_info.project_path + "/Export/Emscripten/" + package_info.project_name + ".html", content, -1);
+			ALittle.File_SaveFile(package_info.project_path + "/Export/Install.html", content, -1);
+		}
+		return "Install.html";
 	},
 }, "ALittleIDE.IDEExport");
 

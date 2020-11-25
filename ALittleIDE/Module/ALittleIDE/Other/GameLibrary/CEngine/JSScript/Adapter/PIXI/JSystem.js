@@ -58,7 +58,9 @@ JavaScript.JSystem_GetDeviceID = function() {
 		}
 		id = "device_id_" + rand + "_" + time;
 		json["device_id"] = id;
-		document.cookie = ALittle.String_JsonEncode(json);
+		if (window.wx === undefined) {
+			document.cookie = ALittle.String_JsonEncode(json);
+		}
 	}
 	return id;
 }

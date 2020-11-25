@@ -24,6 +24,9 @@ ALittle.JClientFileLoader = JavaScript.Class(ALittle.IFileLoader, {
 if (ALittle.IFileSaver === undefined) throw new Error(" extends class:ALittle.IFileSaver is undefined");
 ALittle.JClientFileSaver = JavaScript.Class(ALittle.IFileSaver, {
 	Save : function(file_path, content) {
+		if (window.wx !== undefined) {
+			return false;
+		}
 		let json = undefined;
 		if (document.cookie !== undefined && document.cookie !== "") {
 			let error = undefined;

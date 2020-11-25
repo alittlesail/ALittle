@@ -136,6 +136,12 @@ AUIPlugin.AUIWebLoginManager = JavaScript.Class(ALittle.EventDispatcher, {
 			A_LoopSystem.AddTimer(5000, this.Connect.bind(this));
 			return;
 		}
+		if (result.client_ip === undefined || result.client_ip === "" || result.client_port === undefined) {
+			this._msg_client = undefined;
+			this.OnConnectFailed();
+			A_LoopSystem.AddTimer(5000, this.Connect.bind(this));
+			return;
+		}
 		this._msg_client = ALittle.CreateMsgSender(60, true, this.OnDisconnected.bind(this));
 		this._msg_client._user_data = this;
 		error = await this._msg_client.Connect(result.client_ip, result.client_port);

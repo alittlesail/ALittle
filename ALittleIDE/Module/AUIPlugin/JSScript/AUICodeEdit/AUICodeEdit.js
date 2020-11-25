@@ -217,12 +217,43 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 	get help_container() {
 		return this._help_container;
 	},
-	DispatchJumEvent : function() {
+	DispatchJumpEvent : function() {
 		let event = {};
 		event.file_path = this._file_path;
 		event.it_line = this._cursor.line;
 		event.it_char = this._cursor.char;
 		this.DispatchEvent(___all_struct.get(-1898137181), event);
+	},
+	get file_path() {
+		return this._file_path;
+	},
+	GetBreakPoint : function(line_number) {
+		if (this._break_points === undefined) {
+			return false;
+		}
+		return this._break_points.get(line_number);
+	},
+	AddBreakPoint : function(line_number) {
+		if (this._break_points === undefined) {
+			this._break_points = new Map();
+		}
+		this._break_points.set(line_number, true);
+		let break_event = {};
+		break_event.file_path = this._file_path;
+		break_event.file_line = line_number;
+		break_event.add_or_remove = true;
+		this.DispatchEvent(___all_struct.get(1575183661), break_event);
+	},
+	RemoveBreakPoint : function(line_number) {
+		if (this._break_points === undefined) {
+			this._break_points = new Map();
+		}
+		this._break_points.set(line_number, false);
+		let break_event = {};
+		break_event.file_path = this._file_path;
+		break_event.file_line = line_number;
+		break_event.add_or_remove = false;
+		this.DispatchEvent(___all_struct.get(1575183661), break_event);
 	},
 	FocusLineCharToCenter : function(it_line, it_char) {
 		let line = this._line_list[it_line - 1];
@@ -303,8 +334,14 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			rel_x = rel_x - (this._code_linear.x);
 			rel_y = rel_y - (this._code_screen.container_y);
 		}
-		this._select_cursor.Hide();
-		this._cursor.SetOffsetXY(rel_x, rel_y);
+		if (A_UISystem.sym_map.get(1073742049) || A_UISystem.sym_map.get(1073742053)) {
+			this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
+			this._cursor.SetOffsetXY(rel_x, rel_y);
+			this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);
+		} else {
+			this._select_cursor.Hide();
+			this._cursor.SetOffsetXY(rel_x, rel_y);
+		}
 		if (event.count > 1) {
 			let [it_start, it_end] = this._cursor.CalcSelectWord();
 			if (it_start === undefined) {
@@ -322,7 +359,7 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		this._complete_screen.TryHide();
 		this._param_dialog.TryHide();
 		this._cursor.AdjustShowCursor();
-		this.DispatchJumEvent();
+		this.DispatchJumpEvent();
 	},
 	DoQueryGoto : async function(it_line, it_char) {
 		let info = await this._language.QueryGoto(it_line, it_char);
@@ -332,7 +369,7 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 				this._select_cursor.StartLineChar(info.line_start, info.char_start - 1);
 				this._select_cursor.UpdateLineChar(info.line_end, info.char_end);
 				this.FocusLineCharToCenter(this._cursor.line, this._cursor.char);
-				this.DispatchJumEvent();
+				this.DispatchJumpEvent();
 			} else {
 				let goto_event = {};
 				goto_event.file_path = info.file_path;
@@ -422,12 +459,12 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			return;
 		}
 		for (let index = this._line_number.child_count + 1; index <= child_count; index += 1) {
-			let text = ALittle.NewObject(AUIPlugin.AUICodeLineNumber, this._ctrl_sys, AUIPlugin.CODE_FONT_PATH, AUIPlugin.CODE_FONT_SIZE, this._ascii_width, this._word_width);
+			let text = ALittle.NewObject(AUIPlugin.AUICodeLineNumber, this._ctrl_sys, AUIPlugin.CODE_FONT_PATH, AUIPlugin.CODE_FONT_SIZE, this._ascii_width, this._word_width, this);
 			text.height = AUIPlugin.CODE_LINE_HEIGHT;
 			text.red = AUIPlugin.CODE_LINE_NUMBER_RED;
 			text.green = AUIPlugin.CODE_LINE_NUMBER_GREEN;
 			text.blue = AUIPlugin.CODE_LINE_NUMBER_BLUE;
-			text.text = ALittle.String_ToString(index);
+			text.SetLineNumber(index);
 			this._line_number.AddChild(text);
 		}
 	},
@@ -1318,8 +1355,17 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			this._language.OnClose();
 		}
 	},
-	Load : function(file_path, content, revoke_list, language) {
+	Load : function(file_path, content, revoke_list, language, break_points) {
 		this._language = language;
+		if (break_points !== undefined) {
+			this._break_points = new Map();
+			let ___OBJECT_8 = break_points;
+			for (let index = 1; index <= ___OBJECT_8.length; ++index) {
+				let value = ___OBJECT_8[index - 1];
+				if (value === undefined) break;
+				this._break_points.set(value, true);
+			}
+		}
 		let upper_ext = ALittle.File_GetFileExtByPathAndUpper(file_path);
 		if (this._language === undefined && upper_ext === "ABNF") {
 			this._language = ALittle.NewObject(AUIPlugin.AUICodeABnf, undefined, file_path);
@@ -1423,9 +1469,9 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			line_count = line_count + (1);
 			line_list[line_count - 1] = line;
 		}
-		let ___OBJECT_8 = line_list;
-		for (let i = 1; i <= ___OBJECT_8.length; ++i) {
-			let line_info = ___OBJECT_8[i - 1];
+		let ___OBJECT_9 = line_list;
+		for (let i = 1; i <= ___OBJECT_9.length; ++i) {
+			let line_info = ___OBJECT_9[i - 1];
 			if (line_info === undefined) break;
 			last_char = line_info.char_list[line_info.char_count - 1];
 			if (last_char !== undefined) {
@@ -1441,9 +1487,9 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		this._code_linear.RemoveAllChild();
 		let max_width = 0.0;
 		[this._line_list, this._line_count, max_width] = this.CreateLines(content);
-		let ___OBJECT_9 = this._line_list;
-		for (let index = 1; index <= ___OBJECT_9.length; ++index) {
-			let line = ___OBJECT_9[index - 1];
+		let ___OBJECT_10 = this._line_list;
+		for (let index = 1; index <= ___OBJECT_10.length; ++index) {
+			let line = ___OBJECT_10[index - 1];
 			if (line === undefined) break;
 			this._code_linear.AddChild(line.container);
 		}
@@ -1485,9 +1531,9 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 				this._language.InsertText("    ", index, 1);
 			}
 			let line = this._line_list[index - 1];
-			let ___OBJECT_10 = line.char_list;
-			for (let char_index = 1; char_index <= ___OBJECT_10.length; ++char_index) {
-				let char = ___OBJECT_10[char_index - 1];
+			let ___OBJECT_11 = line.char_list;
+			for (let char_index = 1; char_index <= ___OBJECT_11.length; ++char_index) {
+				let char = ___OBJECT_11[char_index - 1];
 				if (char === undefined) break;
 				char.pre_width = char.pre_width + (this._ascii_width * 4);
 				if (char.text !== undefined) {
@@ -1505,9 +1551,9 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			line.char_count = line.char_count + (4);
 		}
 		let max_width = 0.0;
-		let ___OBJECT_11 = this._line_list;
-		for (let index = 1; index <= ___OBJECT_11.length; ++index) {
-			let line = ___OBJECT_11[index - 1];
+		let ___OBJECT_12 = this._line_list;
+		for (let index = 1; index <= ___OBJECT_12.length; ++index) {
+			let line = ___OBJECT_12[index - 1];
 			if (line === undefined) break;
 			if (line.container.width > max_width) {
 				max_width = line.container.width;
@@ -1553,9 +1599,9 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			let line = this._line_list[index - 1];
 			let old_indent = 0;
 			let delete_count = 0;
-			let ___OBJECT_12 = line.char_list;
-			for (let i = 1; i <= ___OBJECT_12.length; ++i) {
-				let char = ___OBJECT_12[i - 1];
+			let ___OBJECT_13 = line.char_list;
+			for (let i = 1; i <= ___OBJECT_13.length; ++i) {
+				let char = ___OBJECT_13[i - 1];
 				if (char === undefined) break;
 				if (char.char === " ") {
 					old_indent = old_indent + (1);
@@ -1647,9 +1693,9 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 				if (this._language !== undefined) {
 					this._language.DeleteText(index, 1, index, delete_count);
 				}
-				let ___OBJECT_13 = line.char_list;
-				for (let char_index = 1; char_index <= ___OBJECT_13.length; ++char_index) {
-					let char = ___OBJECT_13[char_index - 1];
+				let ___OBJECT_14 = line.char_list;
+				for (let char_index = 1; char_index <= ___OBJECT_14.length; ++char_index) {
+					let char = ___OBJECT_14[char_index - 1];
 					if (char === undefined) break;
 					char.pre_width = char.pre_width - (this._ascii_width * 4);
 					if (char.text !== undefined) {
@@ -1674,9 +1720,9 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			this._select_cursor.StartLineChar(old_line_start, old_char_start);
 			this._select_cursor.UpdateLineChar(old_line_end, old_char_end);
 			let max_width = 0.0;
-			let ___OBJECT_14 = this._line_list;
-			for (let index = 1; index <= ___OBJECT_14.length; ++index) {
-				let line = ___OBJECT_14[index - 1];
+			let ___OBJECT_15 = this._line_list;
+			for (let index = 1; index <= ___OBJECT_15.length; ++index) {
+				let line = ___OBJECT_15[index - 1];
 				if (line === undefined) break;
 				if (line.container.width > max_width) {
 					max_width = line.container.width;
@@ -1915,9 +1961,9 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			split_next_line.container.width = pre_width;
 		}
 		max_width = 0.0;
-		let ___OBJECT_15 = this._line_list;
-		for (let index = 1; index <= ___OBJECT_15.length; ++index) {
-			let line = ___OBJECT_15[index - 1];
+		let ___OBJECT_16 = this._line_list;
+		for (let index = 1; index <= ___OBJECT_16.length; ++index) {
+			let line = ___OBJECT_16[index - 1];
 			if (line === undefined) break;
 			if (line.container.width > max_width) {
 				max_width = line.container.width;
@@ -1951,13 +1997,13 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		let text_list = [];
 		let text_count = 0;
-		let ___OBJECT_16 = this._line_list;
-		for (let i = 1; i <= ___OBJECT_16.length; ++i) {
-			let line = ___OBJECT_16[i - 1];
+		let ___OBJECT_17 = this._line_list;
+		for (let i = 1; i <= ___OBJECT_17.length; ++i) {
+			let line = ___OBJECT_17[i - 1];
 			if (line === undefined) break;
-			let ___OBJECT_17 = line.char_list;
-			for (let j = 1; j <= ___OBJECT_17.length; ++j) {
-				let char = ___OBJECT_17[j - 1];
+			let ___OBJECT_18 = line.char_list;
+			for (let j = 1; j <= ___OBJECT_18.length; ++j) {
+				let char = ___OBJECT_18[j - 1];
 				if (char === undefined) break;
 				text_count = text_count + (1);
 				text_list[text_count - 1] = char.char;
@@ -1977,13 +2023,13 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		let text_list = [];
 		let text_count = 0;
-		let ___OBJECT_18 = this._line_list;
-		for (let i = 1; i <= ___OBJECT_18.length; ++i) {
-			let line = ___OBJECT_18[i - 1];
+		let ___OBJECT_19 = this._line_list;
+		for (let i = 1; i <= ___OBJECT_19.length; ++i) {
+			let line = ___OBJECT_19[i - 1];
 			if (line === undefined) break;
-			let ___OBJECT_19 = line.char_list;
-			for (let j = 1; j <= ___OBJECT_19.length; ++j) {
-				let char = ___OBJECT_19[j - 1];
+			let ___OBJECT_20 = line.char_list;
+			for (let j = 1; j <= ___OBJECT_20.length; ++j) {
+				let char = ___OBJECT_20[j - 1];
 				if (char === undefined) break;
 				text_count = text_count + (1);
 				text_list[text_count - 1] = char.char;

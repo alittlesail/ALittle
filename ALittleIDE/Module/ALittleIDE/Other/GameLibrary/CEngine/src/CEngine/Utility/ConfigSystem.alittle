@@ -52,6 +52,9 @@ public class JClientFileSaver : IFileSaver
 {
     public fun Save(string file_path, string content) : bool
     {
+        // 如果是微信环境，那么不能保存cookie
+        if (window.wx != null) return false;
+
         // 先从cookie获取，如果没有就随机生成一个
         var json:Map<string, any> = null;
         if (document.cookie != null && document.cookie != "")

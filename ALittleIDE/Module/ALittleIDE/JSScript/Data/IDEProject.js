@@ -77,6 +77,9 @@ option_map : {}
 
 if (ALittle.EventDispatcher === undefined) throw new Error(" extends class:ALittle.EventDispatcher is undefined");
 ALittleIDE.IDEProject = JavaScript.Class(ALittle.EventDispatcher, {
+	Ctor : function() {
+		this._in_debug = false;
+	},
 	AddProjectConfig : function(name) {
 		let project_map = ALittleIDE.g_IDEConfig.GetConfig("project_map", {});
 		if (project_map[name] === undefined) {
@@ -92,6 +95,61 @@ ALittleIDE.IDEProject = JavaScript.Class(ALittle.EventDispatcher, {
 		delete project_map[name];
 		ALittleIDE.g_IDEConfig.SetConfig("project_map", project_map);
 	},
+	GetBreakPoint : function(file_path) {
+		if (this._project === undefined) {
+			return undefined;
+		}
+		let map = this._project.config.GetConfig("break_points", undefined);
+		if (map === undefined) {
+			return undefined;
+		}
+		return map[file_path];
+	},
+	AddBreakPoint : function(file_path, line) {
+		if (this._project === undefined) {
+			return;
+		}
+		let map = this._project.config.GetConfig("break_points", undefined);
+		if (map === undefined) {
+			map = {};
+		}
+		let lines = map[file_path];
+		if (lines === undefined) {
+			lines = [];
+			map[file_path] = lines;
+		}
+		if (ALittle.List_IndexOf(lines, line) === undefined) {
+			ALittle.List_Push(lines, line);
+		}
+		this._project.config.SetConfig("break_points", map);
+		if (this._debug_client !== undefined) {
+			this._debug_client.AddBreakPoint(file_path, line);
+		}
+	},
+	RemoveBreakPoint : function(file_path, line) {
+		if (this._project === undefined) {
+			return;
+		}
+		let map = this._project.config.GetConfig("break_points", undefined);
+		if (map === undefined) {
+			return;
+		}
+		let lines = map[file_path];
+		if (lines === undefined) {
+			return;
+		}
+		let index = ALittle.List_IndexOf(lines, line);
+		if (index !== undefined) {
+			ALittle.List_Remove(lines, index);
+		}
+		if (ALittle.IsEmpty(lines)) {
+			delete map[file_path];
+		}
+		this._project.config.SetConfig("break_points", map);
+		if (this._debug_client !== undefined) {
+			this._debug_client.RemoveBreakPoint(file_path, line);
+		}
+	},
 	NewProject : function(name, window_width, window_height, font_path, font_size) {
 		ALittle.File_MakeDeepDir(ALittle.File_BaseFilePath() + "Module/" + name);
 		ALittle.File_MakeDir(ALittle.File_BaseFilePath() + "Module/" + name + "/Texture");
@@ -101,6 +159,7 @@ ALittleIDE.IDEProject = JavaScript.Class(ALittle.EventDispatcher, {
 		ALittle.File_MakeDir(ALittle.File_BaseFilePath() + "Module/" + name + "/JSScript");
 		ALittle.File_MakeDir(ALittle.File_BaseFilePath() + "Module/" + name + "/Script");
 		ALittle.File_MakeDir(ALittle.File_BaseFilePath() + "Module/" + name + "/UI");
+		ALittle.File_MakeDir(ALittle.File_BaseFilePath() + "Module/" + name + "/Tile");
 		ALittle.File_MakeDir(ALittle.File_BaseFilePath() + "Module/" + name + "/Icon");
 		let base_path = ALittle.File_BaseFilePath() + "Module/ALittleIDE/Other/GameTemplate";
 		let target_path = ALittle.File_BaseFilePath() + "Module/" + name + "/";
@@ -192,6 +251,15 @@ ALittleIDE.IDEProject = JavaScript.Class(ALittle.EventDispatcher, {
 			this._project.code.Stop();
 		}
 		this._project = undefined;
+		if (this._debug_loop !== undefined) {
+			this._debug_loop.Stop();
+			this._debug_loop = undefined;
+		}
+		if (this._debug_client !== undefined) {
+			this._debug_client.Close();
+			this._debug_client = undefined;
+		}
+		this._in_debug = false;
 		return undefined;
 	},
 	RemoveProject : function(name) {
@@ -208,12 +276,86 @@ ALittleIDE.IDEProject = JavaScript.Class(ALittle.EventDispatcher, {
 		this.DispatchEvent(___all_struct.get(-277092447), event);
 		return undefined;
 	},
-	RunProject : function() {
+	RunProject : function(debug) {
 		if (this._project === undefined) {
 			g_AUITool.ShowNotice("提示", "当前没有打开的项目");
 			return;
 		}
-		g_AUITool.ShowNotice("提示", "JavaScript不支持运行项目");
+		let debug_info = "";
+		if (debug) {
+			debug_info = "debug";
+		}
+	},
+	IsDebug : function() {
+		return this._in_debug;
+	},
+	StartDebugProject : function() {
+		if (this._project === undefined) {
+			g_AUITool.ShowNotice("提示", "当前没有打开的项目");
+			return;
+		}
+		if (this._in_debug) {
+			g_AUITool.ShowNotice("提示", "已启动调试");
+			return;
+		}
+		if (this._debug_client === undefined) {
+			this._debug_client = ALittle.NewObject(carp.CarpLuaDebugClient);
+		}
+		this._debug_client.Start("127.0.0.1", 1001);
+		this._in_debug = true;
+		if (this._debug_loop === undefined) {
+			this._debug_loop = ALittle.NewObject(ALittle.LoopFrame, this.HandleDebugFrame.bind(this));
+		}
+		this._debug_loop.Start();
+		let break_map = this._project.config.GetConfig("break_points", undefined);
+		let ___OBJECT_2 = break_map;
+		for (let file_path in ___OBJECT_2) {
+			let lines = ___OBJECT_2[file_path];
+			if (lines === undefined) continue;
+			let ___OBJECT_3 = lines;
+			for (let index = 1; index <= ___OBJECT_3.length; ++index) {
+				let line = ___OBJECT_3[index - 1];
+				if (line === undefined) break;
+				this._debug_client.AddBreakPoint(file_path, line);
+			}
+		}
+	},
+	ContinueDebug : function() {
+		if (this._debug_client === undefined) {
+			return;
+		}
+		this._debug_client.DoContinue();
+	},
+	NextLineDebug : function() {
+		if (this._debug_client === undefined) {
+			return;
+		}
+		this._debug_client.DoNextLine();
+	},
+	HandleDebugFrame : function(frame_time) {
+		let event = this._debug_client.HandleEvent();
+		if (event === undefined) {
+			return;
+		}
+		if (event.type === 1) {
+			ALittleIDE.g_IDECenter.center.code_list.OpenByFullPath(event.file_path, event.file_line, 1, event.file_line, 1);
+		} else if (event.type === 2) {
+		}
+	},
+	StopDebugProject : function() {
+		if (this._project === undefined) {
+			g_AUITool.ShowNotice("提示", "当前没有打开的项目");
+			return;
+		}
+		if (this._debug_loop !== undefined) {
+			this._debug_loop.Stop();
+			this._debug_loop = undefined;
+		}
+		if (this._debug_client !== undefined) {
+			this._debug_client.Close();
+			this._debug_client = undefined;
+		}
+		this._in_debug = false;
 	},
 	get project() {
 		return this._project;

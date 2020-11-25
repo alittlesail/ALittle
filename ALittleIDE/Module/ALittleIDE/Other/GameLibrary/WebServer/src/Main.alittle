@@ -1,0 +1,42 @@
+
+namespace WebServer;
+    
+protected var g_ConfigSystem:ALittle.IJsonConfig;
+
+// 模块入口函数
+public async static __Module_Setup(string sengine_path, string module_path, string config_path)
+{
+    lua.math.randomseed(lua.os.time());
+    g_ConfigSystem = ALittle.CreateJsonConfig(config_path, true);
+    var wan_ip = g_ConfigSystem.GetConfig("wan_ip", "127.0.0.1");
+    var yun_ip = g_ConfigSystem.GetConfig("yun_ip", "");
+    var port_offset = g_ConfigSystem.GetConfig("port_offset", 0);
+    
+    __CPPAPI_ServerSchedule.StartRouteSystem(ALittle.RouteType.RT_WEB, ALittle.RouteNum.RN_DEFAULT);
+    __CPPAPI_ServerSchedule.CreateHttpServer(yun_ip, wan_ip, ALittle.RoutePort.RT_WEB_HTTP + port_offset, false);
+    // __CPPAPI_ServerSchedule.CreateConnectClient(wan_ip, ALittle.RoutePort.RT_GATEWAY_CONNECT + port_offset);
+
+    ALittle.RegHttpDownloadCallbackFactory(HttpDownloadCallbackFactory);
+    ALittle.Log("root_path:"..g_ConfigSystem.GetString("root_path", ""));
+}
+
+public static HttpDownloadCallbackFactory(string method) : Functor<await(ALittle.IHttpReceiver, any):string, int>
+{
+    return cast<Functor<await(ALittle.IHttpReceiver, any):string, int>>(HandleFileDownload);
+}
+
+// 模块结束函数
+public static __Module_Shutdown()
+{
+}
+
+public struct QFileDownload
+{
+
+}
+
+[HttpDownload]
+public await static HandleFileDownload(ALittle.IHttpReceiver client, QFileDownload msg) : string, int
+{
+    return g_ConfigSystem.GetString("root_path", "")..client.method, 0;
+}

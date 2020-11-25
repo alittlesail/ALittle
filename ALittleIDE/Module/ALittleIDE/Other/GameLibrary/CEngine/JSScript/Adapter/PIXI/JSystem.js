@@ -251,7 +251,9 @@ JavaScript.JSystem_CreateView = function(title, width, height, flag, scale) {
 	data.height = ALittle.Math_Floor(height * scale);
 	A_PixiApp = new PIXI.Application(data);
 	document.body.appendChild(A_PixiApp.view);
-	document.title = title;
+	if (window.wx === undefined) {
+		document.title = title;
+	}
 	A_PixiApp.stage.scale.x = scale;
 	A_PixiApp.stage.scale.y = scale;
 	if (window.wx !== undefined) {

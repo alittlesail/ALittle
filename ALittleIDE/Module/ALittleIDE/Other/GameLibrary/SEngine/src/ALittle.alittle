@@ -90,14 +90,14 @@ public static __ALITTLEAPI_HttpTask(int http_id, string path, string param, stri
     var http_callback = ALittle.FindHttpCallback(path);
     if (http_callback != null)
     {
-        ALittle.HttpSystem.HandleHttpTask(http_id, http_callback, ALittle.String_HttpAnalysisValueMap(param, content));
+        ALittle.HttpSystem.HandleHttpTask(path, http_id, http_callback, ALittle.String_HttpAnalysisValueMap(param, content));
         return;
     }
 
     var http_download_callback = ALittle.FindHttpDownloadCallback(path);
     if (http_download_callback != null)
     {
-        ALittle.HttpSystem.HandleHttpDownloadTask(http_id, http_download_callback, ALittle.String_HttpAnalysisValueMap(param, content));
+        ALittle.HttpSystem.HandleHttpDownloadTask(path, http_id, http_download_callback, ALittle.String_HttpAnalysisValueMap(param, content));
         return;
     }
 

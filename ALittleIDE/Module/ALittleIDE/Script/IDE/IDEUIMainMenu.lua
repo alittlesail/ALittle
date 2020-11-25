@@ -190,7 +190,7 @@ function ALittleIDE.IDEUIMainMenu:HandleGenStdAllInOneClick()
 		for index, path in ___ipairs(file_list) do
 			all_in_one[index] = ALittle.File_ReadTextFromStdFile(path)
 			if all_in_one[index] == nil then
-				g_AUITool:ShowNotice("提示", "生成失败")
+				g_AUITool:ShowNotice("提示", "生成失败! 文件加载失败:" .. path)
 				return
 			end
 		end
@@ -233,7 +233,7 @@ function ALittleIDE.IDEUIMainMenu:HandleGenStdAllInOneClick()
 		ALittle.List_Push(file_list, base_path .. "Net/MsgReceiverTemplate.lua")
 		ALittle.List_Push(file_list, base_path .. "Net/MsgSenderTemplate.lua")
 		ALittle.List_Push(file_list, base_path .. "Net/MsgSessionTemplate.lua")
-		ALittle.List_Push(file_list, base_path .. "Loop/Lua/LuaHeapTimer.lua")
+		ALittle.List_Push(file_list, base_path .. "Loop/IHeapTimer.lua")
 		ALittle.List_Push(file_list, base_path .. "Config/Lua/LuaCsvFile.lua")
 		ALittle.List_Push(file_list, base_path .. "Net/Lua/LuaHttpFileInterface.lua")
 		ALittle.List_Push(file_list, base_path .. "Net/Lua/LuaHttpInterface.lua")
@@ -244,7 +244,7 @@ function ALittleIDE.IDEUIMainMenu:HandleGenStdAllInOneClick()
 		for index, path in ___ipairs(file_list) do
 			all_in_one[index] = ALittle.File_ReadTextFromStdFile(path)
 			if all_in_one[index] == nil then
-				g_AUITool:ShowNotice("提示", "生成失败")
+				g_AUITool:ShowNotice("提示", "生成失败! 文件加载失败:" .. path)
 				return
 			end
 		end

@@ -77,16 +77,17 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		return new Promise((async function(___COROUTINE, ___) {
 			let path = this._ui_path + "../JSUI/ui_all_in_one.json";
 			ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path));
-			let error = await ALittle.HttpDownloadRequest(this._host, this._port, path, path);
+			let error = await ALittle.HttpDownloadRequest(this._host, this._port, path, path, undefined, true);
 			if (error !== undefined) {
 				ALittle.Error("ui load failed:" + error);
 				___COROUTINE(); return;
 			}
-			let [content] = JavaScript.File_LoadFile(path);
-			if (content === undefined) {
+			let [content, buffer] = JavaScript.File_LoadFile(path);
+			if (buffer === undefined) {
 				ALittle.Error("ui load failed:" + error);
 				___COROUTINE(); return;
 			}
+			content = UTF8ArrayToString(new Uint8Array(buffer));
 			JavaScript.File_DeleteFile(path);
 			let [jerror, json] = (function() { try { let ___VALUE = ALittle.String_JsonDecode.call(undefined, content); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
 			if (jerror !== undefined) {
@@ -384,7 +385,7 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 				} else {
 					let plugin = this._child_plugin_map[info.__module];
 					if (plugin === undefined) {
-						plugin = this._child_plugin_map[info.__module];
+						plugin = this._parent_plugin_map[info.__module];
 					}
 					if (plugin === undefined) {
 						ALittle.Log("ControlSystem CreateInfo extends Failed, can't find plugin. extends:" + extendsv + " module:" + info.__module);

@@ -168,6 +168,13 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 	HandleDelayFocus : function() {
 		this.focus = true;
 	},
+	DelayDisable : function() {
+		let loop = ALittle.NewObject(ALittle.LoopTimer, this.HandleDelayDisable.bind(this), 1);
+		loop.Start();
+	},
+	HandleDelayDisable : function() {
+		this.disabled = true;
+	},
 	set focus(value) {
 		if (value) {
 			A_UISystem.focus = this;

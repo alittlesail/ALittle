@@ -17,6 +17,7 @@ ALittle.RouteType = {
 	RT_LOG = 5,
 	RT_FILE = 6,
 	RT_GAME = 7,
+	RT_WEB = 8,
 }
 
 ALittle.RoutePort = {
@@ -30,6 +31,7 @@ ALittle.RoutePort = {
 	RT_FILE_HTTP = 1400,
 	RT_GAME_CLIENT_BEGIN = 1500,
 	RT_DATA_BEGIN = 1600,
+	RT_WEB_HTTP = 1500,
 }
 
 function ALittle.GetRouteName(route_type, route_num)
@@ -53,6 +55,9 @@ function ALittle.GetRouteName(route_type, route_num)
 	end
 	if route_type == ALittle.RouteType.RT_GAME then
 		return "Game_" .. route_num
+	end
+	if route_type == ALittle.RouteType.RT_WEB then
+		return "Web_" .. route_num
 	end
 	return "Unknow_" .. route_num
 end

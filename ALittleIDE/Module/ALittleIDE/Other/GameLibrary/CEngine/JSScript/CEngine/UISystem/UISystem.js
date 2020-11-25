@@ -59,6 +59,12 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 	get keydown_callback() {
 		return this._keydown_callback;
 	},
+	set quit_callback(value) {
+		this._quit_callback = value;
+	},
+	get quit_callback() {
+		return this._quit_callback;
+	},
 	get sym_map() {
 		return this._sym_map;
 	},
@@ -501,6 +507,12 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 		if (this._lbutton_down) {
 			this.HandleLButtonUp(this._mouse_x, this._mouse_y);
 		}
+	},
+	HandleQuit : function() {
+		if (this._quit_callback !== undefined && !this._quit_callback()) {
+			return;
+		}
+		ALittle.System_Exit();
 	},
 	HandleFingerDown : function(x, y, finger_id, touch_id) {
 		if (this._lbutton_down === false) {

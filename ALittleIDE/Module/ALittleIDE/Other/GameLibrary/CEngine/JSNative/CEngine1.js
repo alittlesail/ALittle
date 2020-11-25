@@ -68,6 +68,7 @@ window.RequireCEngine = function(base_path) {
 		await Require(base_path, "CEngine/UISystem/Plugin/SpringRadioButton");
 		await Require(base_path, "CEngine/UISystem/Plugin/SpringDialog");
 		await Require(base_path, "CEngine/UISystem/Effect/EffectImage");
+		await Require(base_path, "CEngine/UISystem/Effect/DynamicImage");
 		await Require(base_path, "CEngine/UISystem/UISystem");
 		await Require(base_path, "CEngine/UISystem/LayerManager");
 		await Require(base_path, "CEngine/UISystem/TextureManager");
@@ -154,6 +155,10 @@ window.__ALITTLEAPI_WindowEnter = function() {
 
 window.__ALITTLEAPI_WindowLeave = function() {
 	A_UISystem.HandleWindowLeave();
+}
+
+window.__ALITTLEAPI_Quit = function() {
+	A_UISystem.HandleQuit();
 }
 
 window.__ALITTLEAPI_Update = function(frame_time) {
@@ -803,7 +808,9 @@ JavaScript.JSystem_CreateView = function(title, width, height, flag, scale) {
 	data.height = ALittle.Math_Floor(height * scale);
 	A_PixiApp = new PIXI.Application(data);
 	document.body.appendChild(A_PixiApp.view);
-	document.title = title;
+	if (window.wx === undefined) {
+		document.title = title;
+	}
 	A_PixiApp.stage.scale.x = scale;
 	A_PixiApp.stage.scale.y = scale;
 	if (window.wx !== undefined) {
@@ -2328,7 +2335,7 @@ ALittle.System_OpenUrlBySystemBrowser = function(url) {
 	open(url);
 }
 
-ALittle.CreateMsgSender = function(heartbeat, check_heartbeat, callback) {
+ALittle.CreateMsgSender = function(heartbeat, check_heartbeat, callback, rudp) {
 	return ALittle.NewObject(JavaScript.Template(ALittle.MsgSenderTemplate, "ALittle.MsgSenderTemplate<JavaScript.JMsgInterface, JavaScript.JMessageWriteFactory>", JavaScript.JMsgInterface, JavaScript.JMessageWriteFactory), heartbeat, check_heartbeat, A_JLoopSystem, callback);
 }
 
@@ -3107,6 +3114,21 @@ ALittle.RevokeBind = JavaScript.Class(ALittle.RevokeObject, {
 {
 if (typeof ALittle === "undefined") window.ALittle = {};
 
+
+ALittle.StartDebugServer = function(port) {
+	carp_CarpLuaDebugServer.Start(carp_CarpScript, "", "0.0.0.0", port);
+}
+
+ALittle.RegCmdCallback("StartDebugServer", ALittle.StartDebugServer, ["int"], ["port"], "")
+ALittle.StopDebugServer = function() {
+	carp_CarpLuaDebugServer.Stop();
+}
+
+ALittle.RegCmdCallback("StopDebugServer", ALittle.StopDebugServer, [], [], "")
+}
+{
+if (typeof ALittle === "undefined") window.ALittle = {};
+
 ALittle.RegStruct(-1741432339, "ALittle.LoopListInfo", {
 name : "ALittle.LoopListInfo", ns_name : "ALittle", rl_name : "LoopListInfo", hash_code : -1741432339,
 name_list : ["link","attribute","init","childs"],
@@ -3675,6 +3697,9 @@ ALittle.UIEnumTypes = {
 	KEY_K : 107,
 	KEY_F2 : 1073741883,
 	KEY_F5 : 1073741886,
+	KEY_F6 : 1073741887,
+	KEY_F10 : 1073741891,
+	KEY_F11 : 1073741892,
 	KEY_F12 : 1073741893,
 	KEY_CTRL : 1073742048,
 	KEY_LEFT : 1073741904,
@@ -4405,6 +4430,13 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 	},
 	HandleDelayFocus : function() {
 		this.focus = true;
+	},
+	DelayDisable : function() {
+		let loop = ALittle.NewObject(ALittle.LoopTimer, this.HandleDelayDisable.bind(this), 1);
+		loop.Start();
+	},
+	HandleDelayDisable : function() {
+		this.disabled = true;
 	},
 	set focus(value) {
 		if (value) {

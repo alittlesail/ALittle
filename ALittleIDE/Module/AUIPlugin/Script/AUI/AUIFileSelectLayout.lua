@@ -317,17 +317,23 @@ function AUIPlugin.AUIFileSelectLayout:Search(name)
 end
 
 function AUIPlugin.AUIFileSelectLayout:SetPath(base_path, rel_path)
-	local attr = ALittle.File_GetFileAttr(base_path .. "/" .. rel_path)
-	if attr == nil or attr.directory ~= true then
-		g_AUITool:ShowNotice("错误", "无效路径")
-		return false
+	if base_path ~= nil and rel_path ~= nil then
+		local attr = ALittle.File_GetFileAttr(base_path .. "/" .. rel_path)
+		if attr == nil or attr.directory ~= true then
+			g_AUITool:ShowNotice("错误", "无效路径")
+			return false
+		end
 	end
 	self._base_path = base_path
 	self._real_path = base_path
-	if rel_path ~= "" then
+	if rel_path ~= nil and rel_path ~= "" then
 		self._real_path = self._real_path .. "/" .. rel_path
 	end
-	self:Refresh()
+	if self._base_path ~= nil then
+		self:Refresh()
+	else
+		self._scroll_list:RemoveAllChild()
+	end
 	return true
 end
 

@@ -74,12 +74,12 @@ end
 function _G.__ALITTLEAPI_HttpTask(http_id, path, param, content)
 	local http_callback = ALittle.FindHttpCallback(path)
 	if http_callback ~= nil then
-		ALittle.HttpSystem.HandleHttpTask(http_id, http_callback, ALittle.String_HttpAnalysisValueMap(param, content))
+		ALittle.HttpSystem.HandleHttpTask(path, http_id, http_callback, ALittle.String_HttpAnalysisValueMap(param, content))
 		return
 	end
 	local http_download_callback = ALittle.FindHttpDownloadCallback(path)
 	if http_download_callback ~= nil then
-		ALittle.HttpSystem.HandleHttpDownloadTask(http_id, http_download_callback, ALittle.String_HttpAnalysisValueMap(param, content))
+		ALittle.HttpSystem.HandleHttpDownloadTask(path, http_id, http_download_callback, ALittle.String_HttpAnalysisValueMap(param, content))
 		return
 	end
 	__CPPAPI_ServerSchedule:HttpClose(http_id)

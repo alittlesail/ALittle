@@ -7776,6 +7776,35 @@ if (typeof ALittle === "undefined") window.ALittle = {};
 
 
 if (ALittle.DisplayObject === undefined) throw new Error(" extends class:ALittle.DisplayObject is undefined");
+ALittle.DynamicImage = JavaScript.Class(ALittle.DisplayObject, {
+	Ctor : function(ctrl_sys) {
+		this._show = ALittle.NewObject(lua.__CPPAPIImage);
+		this._texture = ALittle.NewObject(lua.__CPPAPIDynamicTexture);
+		this._show.SetTexture(this._texture);
+	},
+	GetSurface : function(redraw) {
+		return this._texture.GetSurface(redraw);
+	},
+	SetSurfaceSize : function(width, height, color) {
+		this._texture.SetSurfaceSize(width, height, color);
+	},
+	SetRenderMode : function(mode) {
+		this._texture.SetRenderMode(mode);
+	},
+	Clear : function() {
+		if (this._texture === undefined) {
+			return;
+		}
+		this._texture.Clear();
+	},
+}, "ALittle.DynamicImage");
+
+}
+{
+if (typeof ALittle === "undefined") window.ALittle = {};
+
+
+if (ALittle.DisplayObject === undefined) throw new Error(" extends class:ALittle.DisplayObject is undefined");
 ALittle.EffectImage = JavaScript.Class(ALittle.DisplayObject, {
 	Ctor : function(ctrl_sys) {
 	},
@@ -7871,6 +7900,12 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 	},
 	get keydown_callback() {
 		return this._keydown_callback;
+	},
+	set quit_callback(value) {
+		this._quit_callback = value;
+	},
+	get quit_callback() {
+		return this._quit_callback;
 	},
 	get sym_map() {
 		return this._sym_map;
@@ -8314,6 +8349,12 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 		if (this._lbutton_down) {
 			this.HandleLButtonUp(this._mouse_x, this._mouse_y);
 		}
+	},
+	HandleQuit : function() {
+		if (this._quit_callback !== undefined && !this._quit_callback()) {
+			return;
+		}
+		ALittle.System_Exit();
 	},
 	HandleFingerDown : function(x, y, finger_id, touch_id) {
 		if (this._lbutton_down === false) {
@@ -9307,16 +9348,17 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 		return new Promise((async function(___COROUTINE, ___) {
 			let path = this._ui_path + "../JSUI/ui_all_in_one.json";
 			ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path));
-			let error = await ALittle.HttpDownloadRequest(this._host, this._port, path, path);
+			let error = await ALittle.HttpDownloadRequest(this._host, this._port, path, path, undefined, true);
 			if (error !== undefined) {
 				ALittle.Error("ui load failed:" + error);
 				___COROUTINE(); return;
 			}
-			let [content] = JavaScript.File_LoadFile(path);
-			if (content === undefined) {
+			let [content, buffer] = JavaScript.File_LoadFile(path);
+			if (buffer === undefined) {
 				ALittle.Error("ui load failed:" + error);
 				___COROUTINE(); return;
 			}
+			content = UTF8ArrayToString(new Uint8Array(buffer));
 			JavaScript.File_DeleteFile(path);
 			let [jerror, json] = (function() { try { let ___VALUE = ALittle.String_JsonDecode.call(undefined, content); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
 			if (jerror !== undefined) {
@@ -9614,7 +9656,7 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 				} else {
 					let plugin = this._child_plugin_map[info.__module];
 					if (plugin === undefined) {
-						plugin = this._child_plugin_map[info.__module];
+						plugin = this._parent_plugin_map[info.__module];
 					}
 					if (plugin === undefined) {
 						ALittle.Log("ControlSystem CreateInfo extends Failed, can't find plugin. extends:" + extendsv + " module:" + info.__module);

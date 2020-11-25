@@ -27,10 +27,10 @@ public class HttpSystem
     }
 
     // 处理http任务
-    protected async static HandleHttpTask(int http_id, Functor<await(IHttpReceiver, any):any> callback, Map<string, any> value_map)
+    protected async static HandleHttpTask(string method, int http_id, Functor<await(IHttpReceiver, any):any> callback, Map<string, any> value_map)
     {
         // 创建连接对象
-        var client = new HttpReceiver(http_id);
+        var client = new HttpReceiver(method, http_id);
         // 调用回调
         var error, result = tcall(callback, client, value_map);
         // 如果调用错误，那么返回错误内容
@@ -55,10 +55,10 @@ public class HttpSystem
     }
 
     // 处理下载任务
-    protected async static HandleHttpDownloadTask(int http_id, Functor<await(IHttpReceiver, any):string, int> callback, Map<string, any> value_map)
+    protected async static HandleHttpDownloadTask(string method, int http_id, Functor<await(IHttpReceiver, any):string, int> callback, Map<string, any> value_map)
     {
         // 创建连接对象
-        var client = new HttpReceiver(http_id);
+        var client = new HttpReceiver(method, http_id);
         // 调用回调
         var error, file_path, start_size = tcall(callback, client, value_map);
         // 如果出现调用错误，那么直接关闭连接

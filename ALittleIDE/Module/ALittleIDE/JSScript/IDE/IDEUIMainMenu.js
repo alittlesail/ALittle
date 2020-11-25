@@ -172,7 +172,7 @@ ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 				if (path === undefined) break;
 				all_in_one[index - 1] = ALittle.File_ReadTextFromStdFile(path);
 				if (all_in_one[index - 1] === undefined) {
-					g_AUITool.ShowNotice("提示", "生成失败");
+					g_AUITool.ShowNotice("提示", "生成失败! 文件加载失败:" + path);
 					return;
 				}
 			}
@@ -229,7 +229,7 @@ ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 				if (path === undefined) break;
 				all_in_one[index - 1] = ALittle.File_ReadTextFromStdFile(path);
 				if (all_in_one[index - 1] === undefined) {
-					g_AUITool.ShowNotice("提示", "生成失败");
+					g_AUITool.ShowNotice("提示", "生成失败! 文件加载失败:" + path);
 					return;
 				}
 			}
@@ -258,6 +258,7 @@ ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 		ALittle.List_Push(file_list, base_path + "CEngine/Utility/ModuleSystem.js");
 		ALittle.List_Push(file_list, base_path + "CEngine/Utility/CsvConfigManager.js");
 		ALittle.List_Push(file_list, base_path + "CEngine/Utility/Revocation.js");
+		ALittle.List_Push(file_list, base_path + "CEngine/Utility/Debug.js");
 		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path + "CEngine/LoopSystem/"));
 		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/UIEnumTypes.js");
 		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/UIEventDispatcher.js");
@@ -302,6 +303,7 @@ ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path + "CEngine/UISystem/Special/"));
 		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path + "CEngine/UISystem/Plugin/"));
 		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path + "CEngine/UISystem/Effect/"));
+		ALittle.List_PushList(file_list, ALittle.File_GetFileListByDir(base_path + "CEngine/UISystem/Tile/"));
 		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/UISystem.js");
 		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/LayerManager.js");
 		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/TextureManager.js");

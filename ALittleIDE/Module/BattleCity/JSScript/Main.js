@@ -11,7 +11,7 @@ BattleCity.__Browser_Setup = async function(layer_group, control, module_base_pa
 		scale = 1;
 	}
 	ALittle.System_CreateView("BattleCity", window_width, window_height, flag, scale);
-	ALittle.System_SetViewIcon(module_base_path + "/Other/ic_launcher.png");
+	ALittle.System_SetViewIcon(module_base_path + "Other/ic_launcher.png");
 	await A_ModuleSystem.LoadModule(module_base_path, "BattleCity");
 }
 

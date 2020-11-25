@@ -328,18 +328,26 @@ public class AUIFileSelectLayout : ALittle.DisplayLayout
 	public fun SetPath(string base_path, string rel_path) : bool
 	{
 		// 检查路径是否存在
-		var attr = ALittle.File_GetFileAttr(base_path.."/"..rel_path);
-		if (attr == null || attr.directory != true)
-		{
-			g_AUITool.ShowNotice("错误", "无效路径");
-			return false;
-		}
-            // 刷新界面
+        if (base_path != null && rel_path != null)
+        {
+            var attr = ALittle.File_GetFileAttr(base_path.."/"..rel_path);
+            if (attr == null || attr.directory != true)
+            {
+                g_AUITool.ShowNotice("错误", "无效路径");
+                return false;
+            }
+        }
+        
+        // 刷新界面
 		this._base_path = base_path;
 		this._real_path = base_path;
-		if (rel_path != "")
+		if (rel_path != null && rel_path != "")
 			this._real_path = this._real_path.."/"..rel_path;
-		this.Refresh();
+
+        if (this._base_path != null)
+			this.Refresh();
+        else
+            this._scroll_list.RemoveAllChild();
 
 		return true;
 	}

@@ -121,18 +121,19 @@ public class ControlSystem
     {
         var path = this._ui_path.."../JSUI/ui_all_in_one.json";
         ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path));
-		var error = ALittle.HttpDownloadRequest(this._host, this._port, path, path);
+		var error = ALittle.HttpDownloadRequest(this._host, this._port, path, path, null, true);
         if (error != null)
         {
             ALittle.Error("ui load failed:"..error);
             return;
         }
-        var content = JavaScript.File_LoadFile(path);
-        if (content == null)
+        var content, buffer = JavaScript.File_LoadFile(path);
+        if (buffer == null)
         {
             ALittle.Error("ui load failed:"..error);
             return;
         }
+        content = javascript.UTF8ArrayToString(new javascript.Uint8Array(buffer));
         JavaScript.File_DeleteFile(path);
         var jerror, json:Map<string, DisplayInfo> = tcall(ALittle.String_JsonDecode, content);
         if (jerror != null)

@@ -225,7 +225,7 @@ protected class IDEUIMainMenu : ALittle.Linear
     			all_in_one[index] = ALittle.File_ReadTextFromStdFile(path);
     			if (all_in_one[index] == null)
     			{
-    				g_AUITool.ShowNotice("提示", "生成失败");
+    				g_AUITool.ShowNotice("提示", "生成失败! 文件加载失败:"..path);
     				return;
                 }
     		}
@@ -277,7 +277,7 @@ protected class IDEUIMainMenu : ALittle.Linear
             ALittle.List_Push(file_list, base_path.."Net/MsgSenderTemplate.lua");
             ALittle.List_Push(file_list, base_path.."Net/MsgSessionTemplate.lua");
         
-            ALittle.List_Push(file_list, base_path.."Loop/Lua/LuaHeapTimer.lua");
+            ALittle.List_Push(file_list, base_path.."Loop/IHeapTimer.lua");
             ALittle.List_Push(file_list, base_path.."Config/Lua/LuaCsvFile.lua");
             ALittle.List_Push(file_list, base_path.."Net/Lua/LuaHttpFileInterface.lua");
             ALittle.List_Push(file_list, base_path.."Net/Lua/LuaHttpInterface.lua");
@@ -291,7 +291,7 @@ protected class IDEUIMainMenu : ALittle.Linear
     			all_in_one[index] = ALittle.File_ReadTextFromStdFile(path);
     			if (all_in_one[index] == null)
     			{
-    				g_AUITool.ShowNotice("提示", "生成失败");
+    				g_AUITool.ShowNotice("提示", "生成失败! 文件加载失败:"..path);
     				return;
                 }
     		}

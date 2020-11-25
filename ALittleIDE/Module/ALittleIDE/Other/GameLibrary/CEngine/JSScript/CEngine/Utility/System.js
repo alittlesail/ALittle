@@ -228,7 +228,7 @@ ALittle.System_OpenUrlBySystemBrowser = function(url) {
 	open(url);
 }
 
-ALittle.CreateMsgSender = function(heartbeat, check_heartbeat, callback) {
+ALittle.CreateMsgSender = function(heartbeat, check_heartbeat, callback, rudp) {
 	return ALittle.NewObject(JavaScript.Template(ALittle.MsgSenderTemplate, "ALittle.MsgSenderTemplate<JavaScript.JMsgInterface, JavaScript.JMessageWriteFactory>", JavaScript.JMsgInterface, JavaScript.JMessageWriteFactory), heartbeat, check_heartbeat, A_JLoopSystem, callback);
 }
 

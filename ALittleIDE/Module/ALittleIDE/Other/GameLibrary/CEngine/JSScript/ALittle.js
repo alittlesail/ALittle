@@ -68,6 +68,7 @@ window.RequireCEngine = function(base_path) {
 		await Require(base_path, "CEngine/UISystem/Plugin/SpringRadioButton");
 		await Require(base_path, "CEngine/UISystem/Plugin/SpringDialog");
 		await Require(base_path, "CEngine/UISystem/Effect/EffectImage");
+		await Require(base_path, "CEngine/UISystem/Effect/DynamicImage");
 		await Require(base_path, "CEngine/UISystem/UISystem");
 		await Require(base_path, "CEngine/UISystem/LayerManager");
 		await Require(base_path, "CEngine/UISystem/TextureManager");
@@ -154,6 +155,10 @@ window.__ALITTLEAPI_WindowEnter = function() {
 
 window.__ALITTLEAPI_WindowLeave = function() {
 	A_UISystem.HandleWindowLeave();
+}
+
+window.__ALITTLEAPI_Quit = function() {
+	A_UISystem.HandleQuit();
 }
 
 window.__ALITTLEAPI_Update = function(frame_time) {

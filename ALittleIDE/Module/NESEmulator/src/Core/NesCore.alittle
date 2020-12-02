@@ -1,0 +1,41 @@
+
+namespace NESEmulator;
+
+protected class NesCore
+{
+    // 音频的采样率
+    private int _sample_rate = 48000;
+    // 视频的帧率
+    private int _frame_rate = 60;
+
+    // 图像输出，提供外部继承
+    public fun OnFrame(List<int> frame_buffer)
+    {
+
+    }
+
+    // 声音输出，提供外部继承
+    public fun OnAudioSample(int left, int right)
+    {
+
+    }
+
+    // 模拟器状态输出函数，提供外部继承
+    public fun OnStatusUpdate(string content)
+    {
+
+    }
+
+    // 每帧的间隔时间，单位毫秒
+    private double _frame_time;
+
+    // 帧计数
+    private int _frame_count = 0;
+
+    public ctor()
+    {
+        this._frame_time = 1000 / this._frame_rate;
+    }
+
+
+}

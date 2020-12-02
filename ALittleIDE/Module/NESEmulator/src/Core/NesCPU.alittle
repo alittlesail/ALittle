@@ -1,0 +1,19 @@
+
+namespace NESEmulator;
+
+protected enum NesCPUIRQ
+{
+    IRQ_NORMAL = 0;
+    IRQ_NMI = 1;
+    IRQ_RESET = 2;
+}
+
+protected class NesCPU
+{
+    private NesCore _nes;
+
+    public ctor(NesCore nes)
+    {
+        this._nes = nes;
+    }
+}

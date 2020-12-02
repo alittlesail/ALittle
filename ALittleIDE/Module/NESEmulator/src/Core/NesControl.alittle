@@ -1,0 +1,29 @@
+
+namespace NESEmulator;
+
+public enum NesControlType
+{
+    BUTTON_A = 0;
+    BUTTON_B = 1;
+    BUTTON_SELECT = 2;
+    BUTTON_START = 3;
+    BUTTON_UP = 4;
+    BUTTON_DOWN = 5;
+    BUTTON_LEFT = 6;
+    BUTTON_RIGHT = 7;
+}
+
+protected class NesControl
+{
+    private Map<int, int> _state = new Map<int, int>();
+
+    public fun ButtonDown(int key)
+    {
+        this._state[key] = 0x41;
+    }
+
+    public fun ButtonUp(int key)
+    {
+        this._state[key] = 0x40;
+    }
+}

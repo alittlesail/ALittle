@@ -22,7 +22,9 @@ public class CarpLocalFile
     public fun GetPath() : string {}
     public fun GetSize() : int {}
     public fun ReadChar(int offset) : int {}
-    public fun ReadUint(int offset) : int {}
+    public fun ReadUShort(int offset) : int {}
+    public fun ReadShort(int offset) : int {}
+    public fun ReadUInt(int offset) : int {}
     public fun ReadInt(int offset) : int {}
     public fun ReadFloat(int offset) : double {}
     public fun ReadDouble(int offset) : double {}

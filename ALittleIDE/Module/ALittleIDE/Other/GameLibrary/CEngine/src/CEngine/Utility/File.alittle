@@ -1,6 +1,140 @@
 
 namespace ALittle;
 
+// 通用读取文件类
+public class LocalFile
+{
+    [Language(Lua)]
+    carp.CarpLocalFile _lua_file;
+    [Language(JavaScript)]
+    javascript.DataView _js_file;
+
+    public fun Clear()
+    {
+        [Language(Lua)]
+        if (this._lua_file != null)
+        {
+            this._lua_file.Clear();
+            this._lua_file = null;
+        }
+        [Language(JavaScript)]
+        this._js_file = null;
+    }
+
+    public fun Load(string path) : bool
+    {
+        this.Clear();
+
+        [Language(Lua)]
+        {
+            var file = new carp.CarpLocalFile();
+            file.SetPath(path);
+            if (!file.Load(false)) return false;
+
+            this._lua_file = file;
+        }
+
+        [Language(JavaScript)]
+        {
+            var content, buffer = JavaScript.File_LoadFile(path);
+            if (content == null && buffer == null) return false;
+
+            if (buffer == null)
+                buffer = javascript.StringToUTF8Array(content).buffer;
+
+            if (buffer == null) return false;
+
+            this._js_file = new javascript.DataView(buffer);
+        }
+
+        return true;
+    }
+
+    public fun GetSize() : int
+    {
+        [Language(Lua)]
+        if (this._lua_file == null) return 0;
+        else return this._lua_file.GetSize();
+
+        [Language(JavaScript)]
+        if (this._js_file == null) return 0;
+        else return this._js_file.byteLength;
+    }
+
+    public fun ReadChar(int offset) : int
+    {
+        [Language(Lua)]
+        return this._lua_file.ReadChar(offset);
+
+        [Language(JavaScript)]
+        return this._js_file.getInt8(offset);
+    }
+
+    public fun ReadUChar(int offset) : int
+    {
+        [Language(Lua)]
+        return this._lua_file.ReadUChar(offset);
+
+        [Language(JavaScript)]
+        return this._js_file.getUint8(offset);
+    }
+
+    public fun ReadShort(int offset) : int
+    {
+        [Language(Lua)]
+        return this._lua_file.ReadShort(offset);
+
+        [Language(JavaScript)]
+        return this._js_file.getInt16(offset, true);
+    }
+
+    public fun ReadUShort(int offset) : int
+    {
+        [Language(Lua)]
+        return this._lua_file.ReadUShort(offset);
+
+        [Language(JavaScript)]
+        return this._js_file.getUint16(offset, true);
+    }
+
+    public fun ReadInt(int offset) : int
+    {
+        [Language(Lua)]
+        return this._lua_file.ReadInt(offset);
+
+        [Language(JavaScript)]
+        return this._js_file.getInt32(offset, true);
+    }
+
+    public fun ReadUInt(int offset) : int
+    {
+        [Language(Lua)]
+        return this._lua_file.ReadUInt(offset);
+
+        [Language(JavaScript)]
+        return this._js_file.getUint32(offset, true);
+    }
+
+    public fun ReadFloat(int offset) : double
+    {
+        [Language(Lua)]
+        return this._lua_file.ReadFloat(offset);
+
+        [Language(JavaScript)]
+        return this._js_file.getFloat32(offset, true);
+    }
+
+    public fun ReadDouble(int offset) : double
+    {
+        [Language(Lua)]
+        return this._lua_file.ReadDouble(offset);
+
+        [Language(JavaScript)]
+        return this._js_file.getFloat64(offset, true);
+    }
+
+}
+
 // 获取程序的基本文件路径
 public static File_BaseFilePath() : string
 {

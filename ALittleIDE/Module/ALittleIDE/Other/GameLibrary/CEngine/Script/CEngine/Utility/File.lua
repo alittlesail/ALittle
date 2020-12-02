@@ -5,6 +5,68 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
+ALittle.LocalFile = Lua.Class(nil, "ALittle.LocalFile")
+
+function ALittle.LocalFile:Clear()
+	if self._lua_file ~= nil then
+		self._lua_file:Clear()
+		self._lua_file = nil
+	end
+end
+
+function ALittle.LocalFile:Load(path)
+	self:Clear()
+	do
+		local file = carp.CarpLocalFile()
+		file:SetPath(path)
+		if not file:Load(false) then
+			return false
+		end
+		self._lua_file = file
+	end
+	return true
+end
+
+function ALittle.LocalFile:GetSize()
+	if self._lua_file == nil then
+		return 0
+	else
+		return self._lua_file:GetSize()
+	end
+end
+
+function ALittle.LocalFile:ReadChar(offset)
+	return self._lua_file:ReadChar(offset)
+end
+
+function ALittle.LocalFile:ReadUChar(offset)
+	return self._lua_file:ReadUChar(offset)
+end
+
+function ALittle.LocalFile:ReadShort(offset)
+	return self._lua_file:ReadShort(offset)
+end
+
+function ALittle.LocalFile:ReadUShort(offset)
+	return self._lua_file:ReadUShort(offset)
+end
+
+function ALittle.LocalFile:ReadInt(offset)
+	return self._lua_file:ReadInt(offset)
+end
+
+function ALittle.LocalFile:ReadUInt(offset)
+	return self._lua_file:ReadUInt(offset)
+end
+
+function ALittle.LocalFile:ReadFloat(offset)
+	return self._lua_file:ReadFloat(offset)
+end
+
+function ALittle.LocalFile:ReadDouble(offset)
+	return self._lua_file:ReadDouble(offset)
+end
+
 function ALittle.File_BaseFilePath()
 	return carp.BaseFilePath()
 end

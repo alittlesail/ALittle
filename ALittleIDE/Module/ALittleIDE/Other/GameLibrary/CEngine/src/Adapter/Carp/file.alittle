@@ -21,6 +21,7 @@ public class CarpLocalFile
     public fun GetContent() : string {}
     public fun GetPath() : string {}
     public fun GetSize() : int {}
+    public fun ReadUChar(int offset) : int {}
     public fun ReadChar(int offset) : int {}
     public fun ReadUShort(int offset) : int {}
     public fun ReadShort(int offset) : int {}

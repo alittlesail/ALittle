@@ -71,12 +71,12 @@ ABnfGuessError ALittleScriptTranslation::Generate(ABnfFile* file, bool full_chec
 {
     // 解析失败
     auto root_dec = std::dynamic_pointer_cast<ALittleScriptRootElement>(file->GetRoot());
-    if (root_dec == nullptr) return ABnfGuessError(nullptr, "文件还未解析");
+    if (root_dec == nullptr) return ABnfGuessError(nullptr, u8"文件还未解析");
     auto namespace_dec = root_dec->GetNamespaceDec();
-    if (namespace_dec == nullptr) return ABnfGuessError(nullptr, "命名域没有定义名字");
+    if (namespace_dec == nullptr) return ABnfGuessError(nullptr, u8"命名域没有定义名字");
 
     auto name_dec = namespace_dec->GetNamespaceNameDec();
-    if (name_dec == nullptr) return ABnfGuessError(nullptr, "命名域没有定义名字");
+    if (name_dec == nullptr) return ABnfGuessError(nullptr, u8"命名域没有定义名字");
 
     m_namespace_name = name_dec->GetElementText();
 

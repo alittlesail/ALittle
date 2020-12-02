@@ -31,13 +31,11 @@ ALittleScript是一门兼顾强类型和弱类型的语言。
   * 打开Core项目的ALittle.alittle文件，然后按组合键Ctrl+B，语言插件就可以生成lua文件到Script文件夹
   * 打开HelloWorld项目Main.alittle文件，然后按组合键Ctrl+B，语言插件就可以生成lua文件到Script文件夹
   * 运行HelloWorld.bat。就可以看到HelloWorld
-  * ![HelloWorld](https://github.com/alittlesail/ALittle/blob/master/ALittle/Module/ALittleIDE/Other/GameLibrary/HelloWorld/HelloWorld.lua.png)
 * JavaScript版本
   * 把目标语言设置为JavaScript
   * 打开Core项目的ALittle.alittle文件，然后按组合键Ctrl+B，语言插件就可以生成js文件到JSScript文件夹
   * 打开HelloWorld项目Main.alittle文件，然后按组合键Ctrl+B，语言插件就可以生成js文件到JSScript文件夹
   * 使用浏览器打开HelloWorld.html。按F12打开浏览器调试界面，就可以看到HelloWorld
-  * ![HelloWorld](https://github.com/alittlesail/ALittle/blob/master/ALittle/Module/ALittleIDE/Other/GameLibrary/HelloWorld/HelloWorld.js.png)
   
 ## 线上 demo https://alittlesail.github.io/
 
@@ -70,6 +68,10 @@ ALittleScript是一门兼顾强类型和弱类型的语言。
 * 加法(+), 减法(-), 乘法(\*), 除法(/), 取模(%), 字符串连接(..)
 ## 逻辑运算符
 * ==, !=, >, <, >=, <=
+## 位运算符
+* 按位与`&`, 按位或`|`, 按位非`~`, 按位异或`^`
+## 移位运算符(之所以没有使用>>和<<,是为了避开`Map<int, List<int>>`中>>的符号)
+* 向右移位`->`, 向左移位`<-`
 ## 异常处理
 * 断言 assert
 * 抛异常 throw

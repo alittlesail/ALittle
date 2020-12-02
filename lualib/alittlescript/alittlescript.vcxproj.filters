@@ -1017,6 +1017,66 @@
     <ClInclude Include="..\alanguage\Index\ABnfFactory.h">
       <Filter>ALanguage\Index</Filter>
     </ClInclude>
+    <ClInclude Include="Generate\ALittleScriptOp9SuffixExElement.h">
+      <Filter>Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Generate\ALittleScriptOp10Element.h">
+      <Filter>Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Generate\ALittleScriptOp10StatElement.h">
+      <Filter>Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Generate\ALittleScriptOp10SuffixEeElement.h">
+      <Filter>Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Generate\ALittleScriptOp10SuffixElement.h">
+      <Filter>Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Generate\ALittleScriptOp10SuffixExElement.h">
+      <Filter>Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Generate\ALittleScriptOp11Element.h">
+      <Filter>Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Generate\ALittleScriptOp11StatElement.h">
+      <Filter>Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Generate\ALittleScriptOp11SuffixEeElement.h">
+      <Filter>Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Generate\ALittleScriptOp11SuffixElement.h">
+      <Filter>Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Generate\ALittleScriptOp11SuffixExElement.h">
+      <Filter>Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Generate\ALittleScriptOp12Element.h">
+      <Filter>Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Generate\ALittleScriptOp12StatElement.h">
+      <Filter>Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Generate\ALittleScriptOp12SuffixEeElement.h">
+      <Filter>Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Generate\ALittleScriptOp12SuffixElement.h">
+      <Filter>Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Generate\ALittleScriptOp12SuffixExElement.h">
+      <Filter>Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Generate\ALittleScriptOp9Element.h">
+      <Filter>Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Generate\ALittleScriptOp9StatElement.h">
+      <Filter>Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Generate\ALittleScriptOp9SuffixEeElement.h">
+      <Filter>Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Generate\ALittleScriptOp9SuffixElement.h">
+      <Filter>Generate</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="alittlescriptlib.c" />
@@ -1947,6 +2007,66 @@
     </ClCompile>
     <ClCompile Include="..\alanguage\Index\ABnfFactory.cpp">
       <Filter>ALanguage\Index</Filter>
+    </ClCompile>
+    <ClCompile Include="Generate\ALittleScriptOp9SuffixExElement.cpp">
+      <Filter>Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Generate\ALittleScriptOp10Element.cpp">
+      <Filter>Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Generate\ALittleScriptOp10StatElement.cpp">
+      <Filter>Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Generate\ALittleScriptOp10SuffixEeElement.cpp">
+      <Filter>Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Generate\ALittleScriptOp10SuffixElement.cpp">
+      <Filter>Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Generate\ALittleScriptOp10SuffixExElement.cpp">
+      <Filter>Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Generate\ALittleScriptOp11Element.cpp">
+      <Filter>Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Generate\ALittleScriptOp11StatElement.cpp">
+      <Filter>Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Generate\ALittleScriptOp11SuffixEeElement.cpp">
+      <Filter>Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Generate\ALittleScriptOp11SuffixElement.cpp">
+      <Filter>Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Generate\ALittleScriptOp11SuffixExElement.cpp">
+      <Filter>Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Generate\ALittleScriptOp12Element.cpp">
+      <Filter>Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Generate\ALittleScriptOp12StatElement.cpp">
+      <Filter>Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Generate\ALittleScriptOp12SuffixEeElement.cpp">
+      <Filter>Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Generate\ALittleScriptOp12SuffixElement.cpp">
+      <Filter>Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Generate\ALittleScriptOp12SuffixExElement.cpp">
+      <Filter>Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Generate\ALittleScriptOp9Element.cpp">
+      <Filter>Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Generate\ALittleScriptOp9StatElement.cpp">
+      <Filter>Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Generate\ALittleScriptOp9SuffixEeElement.cpp">
+      <Filter>Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Generate\ALittleScriptOp9SuffixElement.cpp">
+      <Filter>Generate</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

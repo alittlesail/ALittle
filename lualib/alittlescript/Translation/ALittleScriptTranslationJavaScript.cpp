@@ -820,8 +820,395 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateCustomType(std::share
     return ABnfGuessError(nullptr, u8"未知的表达式类型");
 }
 
-// 生成8级运算符
+// 生成12级运算符
 
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp12Suffix(std::shared_ptr<ALittleScriptOp12SuffixElement> suffix, const std::string& pre_tab, std::string& content)
+{
+    content = "";
+    std::string op_string = suffix->GetOp12()->GetElementText();
+
+    std::string value_functor_result;
+    if (suffix->GetValueFactorStat() != nullptr)
+    {
+        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), pre_tab, value_functor_result);
+        if (error) return error;
+    }
+    else if (suffix->GetOp2Value() != nullptr)
+    {
+        auto error = GenerateOp2Value(suffix->GetOp2Value(), pre_tab, value_functor_result);
+        if (error) return error;
+    }
+
+    std::vector<std::string> suffix_content_list;
+    const auto& suffix_ee_list = suffix->GetOp12SuffixEeList();
+    for (auto& suffix_ee : suffix_ee_list)
+    {
+        std::string suffix_ee_result;
+        auto error = GenerateOp12SuffixEe(suffix_ee, pre_tab, suffix_ee_result);
+        if (error) return error;
+        suffix_content_list.push_back(suffix_ee_result);
+    }
+    content = op_string + " " + value_functor_result;
+    if (suffix_content_list.size() > 0) content += " " + ABnfFactory::Join(suffix_content_list, " ");
+    return nullptr;
+}
+
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp12SuffixEe(std::shared_ptr<ALittleScriptOp12SuffixEeElement> suffix, const std::string& pre_tab, std::string& content)
+{
+    if (suffix->GetOp3Suffix() != nullptr)
+        return GenerateOp3Suffix(suffix->GetOp3Suffix(), pre_tab, content);
+    else if (suffix->GetOp4Suffix() != nullptr)
+        return GenerateOp4Suffix(suffix->GetOp4Suffix(), pre_tab, content);
+    else if (suffix->GetOp5Suffix() != nullptr)
+        return GenerateOp5Suffix(suffix->GetOp5Suffix(), pre_tab, content);
+    else if (suffix->GetOp6Suffix() != nullptr)
+        return GenerateOp6Suffix(suffix->GetOp6Suffix(), pre_tab, content);
+    else if (suffix->GetOp7Suffix() != nullptr)
+        return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
+    else if (suffix->GetOp8Suffix() != nullptr)
+        return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
+    else if (suffix->GetOp9Suffix() != nullptr)
+        return GenerateOp9Suffix(suffix->GetOp9Suffix(), pre_tab, content);
+    else
+    {
+        content = "";
+        return ABnfGuessError(nullptr, u8"GenerateOp12SuffixEe出现未知的表达式");
+    }
+}
+
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp12SuffixEx(std::shared_ptr<ALittleScriptOp12SuffixExElement> suffix, const std::string& pre_tab, std::string& content)
+{
+    if (suffix->GetOp12Suffix() != nullptr)
+        return GenerateOp12Suffix(suffix->GetOp12Suffix(), pre_tab, content);
+    else
+    {
+        content = "";
+        return ABnfGuessError(nullptr, u8"GenerateOp12SuffixEx出现未知的表达式");
+    }
+}
+
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp12Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp12StatElement> op_12_stat, const std::string& pre_tab, std::string& content)
+{
+    content = "";
+    std::string value_functor_result;
+    auto error = GenerateValueFactorStat(value_factor_stat, pre_tab, value_functor_result);
+    if (error) return error;
+
+    auto suffix = op_12_stat->GetOp12Suffix();
+    std::string suffix_result;
+    error = GenerateOp12Suffix(suffix, pre_tab, suffix_result);
+    if (error) return error;
+
+    std::vector<std::string> suffix_content_list;
+    const auto& suffix_ex_list = op_12_stat->GetOp12SuffixExList();
+    for (auto& suffix_ex : suffix_ex_list)
+    {
+        std::string sub_content;
+        error = GenerateOp12SuffixEx(suffix_ex, pre_tab, sub_content);
+        if (error) return error;
+        suffix_content_list.push_back(sub_content);
+    }
+    content = value_functor_result + " " + suffix_result;
+    if (suffix_content_list.size() > 0) content += " " + ABnfFactory::Join(suffix_content_list, " ");
+    return nullptr;
+}
+
+// 生成11级运算符
+
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp11Suffix(std::shared_ptr<ALittleScriptOp11SuffixElement> suffix, const std::string& pre_tab, std::string& content)
+{
+    content = "";
+    std::string op_string = suffix->GetOp11()->GetElementText();
+
+    std::string value_functor_result;
+    if (suffix->GetValueFactorStat() != nullptr)
+    {
+        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), pre_tab, value_functor_result);
+        if (error) return error;
+    }
+    else if (suffix->GetOp2Value() != nullptr)
+    {
+        auto error = GenerateOp2Value(suffix->GetOp2Value(), pre_tab, value_functor_result);
+        if (error) return error;
+    }
+
+    std::vector<std::string> suffix_content_list;
+    const auto& suffix_ee_list = suffix->GetOp11SuffixEeList();
+    for (auto& suffix_ee : suffix_ee_list)
+    {
+        std::string sub_content;
+        auto error = GenerateOp11SuffixEe(suffix_ee, pre_tab, sub_content);
+        if (error) return error;
+        suffix_content_list.push_back(sub_content);
+    }
+    content = op_string + " " + value_functor_result;
+    if (suffix_content_list.size() > 0) content += " " + ABnfFactory::Join(suffix_content_list, " ");
+    return nullptr;
+}
+
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp11SuffixEe(std::shared_ptr<ALittleScriptOp11SuffixEeElement> suffix, const std::string& pre_tab, std::string& content)
+{
+    if (suffix->GetOp3Suffix() != nullptr)
+        return GenerateOp3Suffix(suffix->GetOp3Suffix(), pre_tab, content);
+    else if (suffix->GetOp4Suffix() != nullptr)
+        return GenerateOp4Suffix(suffix->GetOp4Suffix(), pre_tab, content);
+    else if (suffix->GetOp5Suffix() != nullptr)
+        return GenerateOp5Suffix(suffix->GetOp5Suffix(), pre_tab, content);
+    else if (suffix->GetOp6Suffix() != nullptr)
+        return GenerateOp6Suffix(suffix->GetOp6Suffix(), pre_tab, content);
+    else if (suffix->GetOp7Suffix() != nullptr)
+        return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
+    else if (suffix->GetOp8Suffix() != nullptr)
+        return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
+    else if (suffix->GetOp9Suffix() != nullptr)
+        return GenerateOp9Suffix(suffix->GetOp9Suffix(), pre_tab, content);
+    else
+    {
+        content = "";
+        return ABnfGuessError(nullptr, u8"GenerateOp11SuffixEe出现未知的表达式");
+    }
+}
+
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp11SuffixEx(std::shared_ptr<ALittleScriptOp11SuffixExElement> suffix, const std::string& pre_tab, std::string& content)
+{
+    if (suffix->GetOp11Suffix() != nullptr)
+        return GenerateOp11Suffix(suffix->GetOp11Suffix(), pre_tab, content);
+    else if (suffix->GetOp12Suffix() != nullptr)
+        return GenerateOp12Suffix(suffix->GetOp12Suffix(), pre_tab, content);
+    else
+    {
+        content = "";
+        return ABnfGuessError(nullptr, u8"GenerateOp11SuffixEx出现未知的表达式");
+    }
+}
+
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp11Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp11StatElement> op_11_stat, const std::string& pre_tab, std::string& content)
+{
+    content = "";
+    std::string value_functor_result;
+    auto error = GenerateValueFactorStat(value_factor_stat, pre_tab, value_functor_result);
+    if (error) return error;
+
+    auto suffix = op_11_stat->GetOp11Suffix();
+    std::string suffix_result;
+    error = GenerateOp11Suffix(suffix, pre_tab, suffix_result);
+    if (error) return error;
+
+    std::vector<std::string> suffix_content_list;
+    const auto& suffix_ex_list = op_11_stat->GetOp11SuffixExList();
+    for (auto& suffix_ex : suffix_ex_list)
+    {
+        std::string sub_content;
+        error = GenerateOp11SuffixEx(suffix_ex, pre_tab, sub_content);
+        if (error) return error;
+        suffix_content_list.push_back(sub_content);
+    }
+    content = value_functor_result + " " + suffix_result;
+    if (suffix_content_list.size() > 0) content += " " + ABnfFactory::Join(suffix_content_list, " ");
+    return nullptr;
+}
+
+// 生成10级运算符
+
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp10Suffix(std::shared_ptr<ALittleScriptOp10SuffixElement> suffix, const std::string& pre_tab, std::string& content)
+{
+    content = "";
+    std::string op_string = suffix->GetOp10()->GetElementText();
+    if (op_string == "!=")
+        op_string = "!==";
+    else if (op_string == "==")
+        op_string = "===";
+
+    std::string value_functor_result;
+    if (suffix->GetValueFactorStat() != nullptr)
+    {
+        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), pre_tab, value_functor_result);
+        if (error) return error;
+    }
+    else if (suffix->GetOp2Value() != nullptr)
+    {
+        auto error = GenerateOp2Value(suffix->GetOp2Value(), pre_tab, value_functor_result);
+        if (error) return error;
+    }
+
+    std::vector<std::string> suffix_content_list;
+    const auto& suffix_ee_list = suffix->GetOp10SuffixEeList();
+    for (auto& suffix_ee : suffix_ee_list)
+    {
+        std::string sub_content;
+        auto error = GenerateOp10SuffixEe(suffix_ee, pre_tab, sub_content);
+        if (error) return error;
+        suffix_content_list.push_back(sub_content);
+    }
+    content = op_string + " " + value_functor_result;
+    if (suffix_content_list.size() > 0) content += " " + ABnfFactory::Join(suffix_content_list, " ");
+    return nullptr;
+}
+
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp10SuffixEe(std::shared_ptr<ALittleScriptOp10SuffixEeElement> suffix, const std::string& pre_tab, std::string& content)
+{
+    if (suffix->GetOp3Suffix() != nullptr)
+        return GenerateOp3Suffix(suffix->GetOp3Suffix(), pre_tab, content);
+    else if (suffix->GetOp4Suffix() != nullptr)
+        return GenerateOp4Suffix(suffix->GetOp4Suffix(), pre_tab, content);
+    else if (suffix->GetOp5Suffix() != nullptr)
+        return GenerateOp5Suffix(suffix->GetOp5Suffix(), pre_tab, content);
+    else if (suffix->GetOp6Suffix() != nullptr)
+        return GenerateOp6Suffix(suffix->GetOp6Suffix(), pre_tab, content);
+    else if (suffix->GetOp7Suffix() != nullptr)
+        return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
+    else if (suffix->GetOp8Suffix() != nullptr)
+        return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
+    else if (suffix->GetOp9Suffix() != nullptr)
+        return GenerateOp9Suffix(suffix->GetOp9Suffix(), pre_tab, content);
+    else
+    {
+        content = "";
+        return ABnfGuessError(nullptr, u8"GenerateOp10SuffixEe出现未知的表达式");
+    }
+}
+
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp10SuffixEx(std::shared_ptr<ALittleScriptOp10SuffixExElement> suffix, const std::string& pre_tab, std::string& content)
+{
+    if (suffix->GetOp10Suffix() != nullptr)
+        return GenerateOp10Suffix(suffix->GetOp10Suffix(), pre_tab, content);
+    else if (suffix->GetOp11Suffix() != nullptr)
+        return GenerateOp11Suffix(suffix->GetOp11Suffix(), pre_tab, content);
+    else if (suffix->GetOp12Suffix() != nullptr)
+        return GenerateOp12Suffix(suffix->GetOp12Suffix(), pre_tab, content);
+    else
+    {
+        content = "";
+        return ABnfGuessError(nullptr, u8"GenerateOp10SuffixEx出现未知的表达式");
+    }
+}
+
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp10Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp10StatElement> op_10_stat, const std::string& pre_tab, std::string& content)
+{
+    content = "";
+    std::string value_functor_result;
+    auto error = GenerateValueFactorStat(value_factor_stat, pre_tab, value_functor_result);
+    if (error) return error;
+
+    auto suffix = op_10_stat->GetOp10Suffix();
+    std::string suffix_result;
+    error = GenerateOp10Suffix(suffix, pre_tab, suffix_result);
+    if (error) return error;
+
+    std::vector<std::string> suffix_content_list;
+    const auto& suffix_ex_list = op_10_stat->GetOp10SuffixExList();
+    for (auto& suffix_ex : suffix_ex_list)
+    {
+        std::string sub_content;
+        error = GenerateOp10SuffixEx(suffix_ex, pre_tab, sub_content);
+        if (error) return error;
+        suffix_content_list.push_back(sub_content);
+    }
+    content = value_functor_result + " " + suffix_result;
+    if (suffix_content_list.size() > 0) content += " " + ABnfFactory::Join(suffix_content_list, " ");
+    return nullptr;
+}
+
+// 生成9级运算符
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp9Suffix(std::shared_ptr<ALittleScriptOp9SuffixElement> suffix, const std::string& pre_tab, std::string& content)
+{
+    content = "";
+    std::string op_string = suffix->GetOp9()->GetElementText();
+
+    std::string value_functor_result;
+    if (suffix->GetValueFactorStat() != nullptr)
+    {
+        auto error = GenerateValueFactorStat(suffix->GetValueFactorStat(), pre_tab, value_functor_result);
+        if (error) return error;
+    }
+    else if (suffix->GetOp2Value() != nullptr)
+    {
+        auto error = GenerateOp2Value(suffix->GetOp2Value(), pre_tab, value_functor_result);
+        if (error) return error;
+    }
+
+    std::vector<std::string> suffix_content_list;
+    const auto& suffix_ee_list = suffix->GetOp9SuffixEeList();
+    for (auto& suffix_ee : suffix_ee_list)
+    {
+        std::string sub_content;
+        auto error = GenerateOp9SuffixEe(suffix_ee, pre_tab, sub_content);
+        if (error) return error;
+        suffix_content_list.push_back(sub_content);
+    }
+
+    if (suffix_content_list.size() > 0)
+        value_functor_result += " " + ABnfFactory::Join(suffix_content_list, " ");
+
+    content = op_string + " " + value_functor_result;
+    return nullptr;
+}
+
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp9SuffixEe(std::shared_ptr<ALittleScriptOp9SuffixEeElement> suffix, const std::string& pre_tab, std::string& content)
+{
+    if (suffix->GetOp3Suffix() != nullptr)
+        return GenerateOp3Suffix(suffix->GetOp3Suffix(), pre_tab, content);
+    else if (suffix->GetOp4Suffix() != nullptr)
+        return GenerateOp4Suffix(suffix->GetOp4Suffix(), pre_tab, content);
+    else if (suffix->GetOp5Suffix() != nullptr)
+        return GenerateOp5Suffix(suffix->GetOp5Suffix(), pre_tab, content);
+    else if (suffix->GetOp6Suffix() != nullptr)
+        return GenerateOp6Suffix(suffix->GetOp6Suffix(), pre_tab, content);
+    else if (suffix->GetOp7Suffix() != nullptr)
+        return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
+    else if (suffix->GetOp8Suffix() != nullptr)
+        return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
+    else
+    {
+        content = "";
+        return ABnfGuessError(nullptr, u8"GenerateOp9SuffixEe出现未知的表达式");
+    }
+}
+
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp9SuffixEx(std::shared_ptr<ALittleScriptOp9SuffixExElement> suffix, const std::string& pre_tab, std::string& content)
+{
+    if (suffix->GetOp9Suffix() != nullptr)
+        return GenerateOp9Suffix(suffix->GetOp9Suffix(), pre_tab, content);
+    else if (suffix->GetOp10Suffix() != nullptr)
+        return GenerateOp10Suffix(suffix->GetOp10Suffix(), pre_tab, content);
+    else if (suffix->GetOp11Suffix() != nullptr)
+        return GenerateOp11Suffix(suffix->GetOp11Suffix(), pre_tab, content);
+    else if (suffix->GetOp12Suffix() != nullptr)
+        return GenerateOp12Suffix(suffix->GetOp12Suffix(), pre_tab, content);
+    else
+    {
+        content = "";
+        return ABnfGuessError(nullptr, u8"GenerateOp9SuffixEx出现未知的表达式");
+    }
+}
+
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp9Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp9StatElement> op_9_stat, const std::string& pre_tab, std::string& content)
+{
+    content = "";
+    std::string value_functor_result;
+    auto error = GenerateValueFactorStat(value_factor_stat, pre_tab, value_functor_result);
+    if (error) return error;
+
+    auto suffix = op_9_stat->GetOp9Suffix();
+    std::string suffix_result;
+    error = GenerateOp9Suffix(suffix, pre_tab, suffix_result);
+    if (error) return error;
+
+    std::vector<std::string> suffix_content_list;
+    const auto& suffix_ex_list = op_9_stat->GetOp9SuffixExList();
+    for (auto& suffix_ex : suffix_ex_list)
+    {
+        std::string sub_content;
+        error = GenerateOp9SuffixEx(suffix_ex, pre_tab, sub_content);
+        if (error) return error;
+        suffix_content_list.push_back(sub_content);
+    }
+    content = value_functor_result + " " + suffix_result;
+    if (suffix_content_list.size() > 0) content += " " + ABnfFactory::Join(suffix_content_list, " ");
+    return nullptr;
+}
+
+// 生成8级运算符
 ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp8Suffix(std::shared_ptr<ALittleScriptOp8SuffixElement> suffix, const std::string& pre_tab, std::string& content)
 {
     content = "";
@@ -843,13 +1230,16 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp8Suffix(std::shared
     const auto& suffix_ee_list = suffix->GetOp8SuffixEeList();
     for (auto& suffix_ee : suffix_ee_list)
     {
-        std::string suffix_ee_result;
-        auto error = GenerateOp8SuffixEe(suffix_ee, pre_tab, suffix_ee_result);
+        std::string sub_content;
+        auto error = GenerateOp8SuffixEe(suffix_ee, pre_tab, sub_content);
         if (error) return error;
-        suffix_content_list.push_back(suffix_ee_result);
+        suffix_content_list.push_back(sub_content);
     }
+
+    if (suffix_content_list.size() > 0)
+        value_functor_result += " " + ABnfFactory::Join(suffix_content_list, " ");
+
     content = op_string + " " + value_functor_result;
-    if (suffix_content_list.size() > 0) content += " " + ABnfFactory::Join(suffix_content_list, " ");
     return nullptr;
 }
 
@@ -876,6 +1266,14 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp8SuffixEx(std::shar
 {
     if (suffix->GetOp8Suffix() != nullptr)
         return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
+    else if (suffix->GetOp9Suffix() != nullptr)
+        return GenerateOp9Suffix(suffix->GetOp9Suffix(), pre_tab, content);
+    else if (suffix->GetOp10Suffix() != nullptr)
+        return GenerateOp10Suffix(suffix->GetOp10Suffix(), pre_tab, content);
+    else if (suffix->GetOp11Suffix() != nullptr)
+        return GenerateOp11Suffix(suffix->GetOp11Suffix(), pre_tab, content);
+    else if (suffix->GetOp12Suffix() != nullptr)
+        return GenerateOp12Suffix(suffix->GetOp12Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -910,7 +1308,6 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp8Stat(std::shared_p
 }
 
 // 生成7级运算符
-
 ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp7Suffix(std::shared_ptr<ALittleScriptOp7SuffixElement> suffix, const std::string& pre_tab, std::string& content)
 {
     content = "";
@@ -937,8 +1334,11 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp7Suffix(std::shared
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
+
+    if (suffix_content_list.size() > 0)
+        value_functor_result += " " + ABnfFactory::Join(suffix_content_list, " ");
+
     content = op_string + " " + value_functor_result;
-    if (suffix_content_list.size() > 0) content += " " + ABnfFactory::Join(suffix_content_list, " ");
     return nullptr;
 }
 
@@ -965,6 +1365,14 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp7SuffixEx(std::shar
         return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
     else if (suffix->GetOp8Suffix() != nullptr)
         return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
+    else if (suffix->GetOp9Suffix() != nullptr)
+        return GenerateOp9Suffix(suffix->GetOp9Suffix(), pre_tab, content);
+    else if (suffix->GetOp10Suffix() != nullptr)
+        return GenerateOp10Suffix(suffix->GetOp10Suffix(), pre_tab, content);
+    else if (suffix->GetOp11Suffix() != nullptr)
+        return GenerateOp11Suffix(suffix->GetOp11Suffix(), pre_tab, content);
+    else if (suffix->GetOp12Suffix() != nullptr)
+        return GenerateOp12Suffix(suffix->GetOp12Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -999,15 +1407,14 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp7Stat(std::shared_p
 }
 
 // 生成6级运算符
-
 ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp6Suffix(std::shared_ptr<ALittleScriptOp6SuffixElement> suffix, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string op_string = suffix->GetOp6()->GetElementText();
-    if (op_string == "!=")
-        op_string = "!==";
-    else if (op_string == "==")
-        op_string = "===";
+    if (op_string == "->")
+        op_string = ">>";
+    else if (op_string == "<-")
+        op_string = "<<";
 
     std::string value_functor_result;
     if (suffix->GetValueFactorStat() != nullptr)
@@ -1030,8 +1437,11 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp6Suffix(std::shared
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
+
+    if (suffix_content_list.size() > 0)
+        value_functor_result += " " + ABnfFactory::Join(suffix_content_list, " ");
+
     content = op_string + " " + value_functor_result;
-    if (suffix_content_list.size() > 0) content += " " + ABnfFactory::Join(suffix_content_list, " ");
     return nullptr;
 }
 
@@ -1058,6 +1468,14 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp6SuffixEx(std::shar
         return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
     else if (suffix->GetOp8Suffix() != nullptr)
         return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
+    else if (suffix->GetOp9Suffix() != nullptr)
+        return GenerateOp9Suffix(suffix->GetOp9Suffix(), pre_tab, content);
+    else if (suffix->GetOp10Suffix() != nullptr)
+        return GenerateOp10Suffix(suffix->GetOp10Suffix(), pre_tab, content);
+    else if (suffix->GetOp11Suffix() != nullptr)
+        return GenerateOp11Suffix(suffix->GetOp11Suffix(), pre_tab, content);
+    else if (suffix->GetOp12Suffix() != nullptr)
+        return GenerateOp12Suffix(suffix->GetOp12Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -1065,20 +1483,20 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp6SuffixEx(std::shar
     }
 }
 
-ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp6Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp6StatElement> op_6_tat, const std::string& pre_tab, std::string& content)
+ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp6Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp6StatElement> op_6_stat, const std::string& pre_tab, std::string& content)
 {
     content = "";
     std::string value_functor_result;
     auto error = GenerateValueFactorStat(value_factor_stat, pre_tab, value_functor_result);
     if (error) return error;
 
-    auto suffix = op_6_tat->GetOp6Suffix();
+    auto suffix = op_6_stat->GetOp6Suffix();
     std::string suffix_result;
     error = GenerateOp6Suffix(suffix, pre_tab, suffix_result);
     if (error) return error;
 
     std::vector<std::string> suffix_content_list;
-    const auto& suffix_ex_list = op_6_tat->GetOp6SuffixExList();
+    const auto& suffix_ex_list = op_6_stat->GetOp6SuffixExList();
     for (auto& suffix_ex : suffix_ex_list)
     {
         std::string sub_content;
@@ -1091,6 +1509,8 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp6Stat(std::shared_p
     return nullptr;
 }
 
+
+// 生成5级运算符
 ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp5Suffix(std::shared_ptr<ALittleScriptOp5SuffixElement> suffix, const std::string& pre_tab, std::string& content)
 {
     content = "";
@@ -1154,6 +1574,14 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp5SuffixEx(std::shar
         return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
     else if (suffix->GetOp8Suffix() != nullptr)
         return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
+    else if (suffix->GetOp9Suffix() != nullptr)
+        return GenerateOp9Suffix(suffix->GetOp9Suffix(), pre_tab, content);
+    else if (suffix->GetOp10Suffix() != nullptr)
+        return GenerateOp10Suffix(suffix->GetOp10Suffix(), pre_tab, content);
+    else if (suffix->GetOp11Suffix() != nullptr)
+        return GenerateOp11Suffix(suffix->GetOp11Suffix(), pre_tab, content);
+    else if (suffix->GetOp12Suffix() != nullptr)
+        return GenerateOp12Suffix(suffix->GetOp12Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -1243,6 +1671,14 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp4SuffixEx(std::shar
         return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
     else if (suffix->GetOp8Suffix() != nullptr)
         return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
+    else if (suffix->GetOp9Suffix() != nullptr)
+        return GenerateOp9Suffix(suffix->GetOp9Suffix(), pre_tab, content);
+    else if (suffix->GetOp10Suffix() != nullptr)
+        return GenerateOp10Suffix(suffix->GetOp10Suffix(), pre_tab, content);
+    else if (suffix->GetOp11Suffix() != nullptr)
+        return GenerateOp11Suffix(suffix->GetOp11Suffix(), pre_tab, content);
+    else if (suffix->GetOp12Suffix() != nullptr)
+        return GenerateOp12Suffix(suffix->GetOp12Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -1317,6 +1753,14 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp3SuffixEx(std::shar
         return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
     else if (suffix->GetOp8Suffix() != nullptr)
         return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
+    else if (suffix->GetOp9Suffix() != nullptr)
+        return GenerateOp9Suffix(suffix->GetOp9Suffix(), pre_tab, content);
+    else if (suffix->GetOp10Suffix() != nullptr)
+        return GenerateOp10Suffix(suffix->GetOp10Suffix(), pre_tab, content);
+    else if (suffix->GetOp11Suffix() != nullptr)
+        return GenerateOp11Suffix(suffix->GetOp11Suffix(), pre_tab, content);
+    else if (suffix->GetOp12Suffix() != nullptr)
+        return GenerateOp12Suffix(suffix->GetOp12Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -1348,6 +1792,18 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateValueOpStat(std::shar
 
     if (value_op_stat->GetOp8Stat() != nullptr)
         return GenerateOp8Stat(value_factor_stat, value_op_stat->GetOp8Stat(), pre_tab, content);
+
+    if (value_op_stat->GetOp9Stat() != nullptr)
+        return GenerateOp9Stat(value_factor_stat, value_op_stat->GetOp9Stat(), pre_tab, content);
+
+    if (value_op_stat->GetOp10Stat() != nullptr)
+        return GenerateOp10Stat(value_factor_stat, value_op_stat->GetOp10Stat(), pre_tab, content);
+
+    if (value_op_stat->GetOp11Stat() != nullptr)
+        return GenerateOp11Stat(value_factor_stat, value_op_stat->GetOp11Stat(), pre_tab, content);
+
+    if (value_op_stat->GetOp12Stat() != nullptr)
+        return GenerateOp12Stat(value_factor_stat, value_op_stat->GetOp12Stat(), pre_tab, content);
 
     return GenerateValueFactorStat(value_factor_stat, pre_tab, content);
 }
@@ -1394,6 +1850,14 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp2SuffixEx(std::shar
         return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
     else if (suffix->GetOp8Suffix() != nullptr)
         return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
+    else if (suffix->GetOp9Suffix() != nullptr)
+        return GenerateOp9Suffix(suffix->GetOp9Suffix(), pre_tab, content);
+    else if (suffix->GetOp10Suffix() != nullptr)
+        return GenerateOp10Suffix(suffix->GetOp10Suffix(), pre_tab, content);
+    else if (suffix->GetOp11Suffix() != nullptr)
+        return GenerateOp11Suffix(suffix->GetOp11Suffix(), pre_tab, content);
+    else if (suffix->GetOp12Suffix() != nullptr)
+        return GenerateOp12Suffix(suffix->GetOp12Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -1417,6 +1881,8 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp2Value(std::shared_
         content += "!" + value_stat_result;
     else if (op_string == "-")
         content += "-" + value_stat_result;
+    else if (op_string == "~")
+        content += "~" + value_stat_result;
     else
         return ABnfGuessError(nullptr, u8"GenerateOp2Stat出现未知类型");
 

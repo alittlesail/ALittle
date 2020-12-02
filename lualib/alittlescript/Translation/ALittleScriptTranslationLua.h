@@ -167,6 +167,26 @@ class ALittleScriptPropertyValueSuffixElement;
 class ALittleScriptPropertyValueDotIdNameElement;
 class ALittleScriptPropertyValueBracketValueElement;
 class ALittleScriptPropertyValueMethodTemplateElement;
+class ALittleScriptOp12Element;
+class ALittleScriptOp12StatElement;
+class ALittleScriptOp12SuffixElement;
+class ALittleScriptOp12SuffixEeElement;
+class ALittleScriptOp12SuffixExElement;
+class ALittleScriptOp11Element;
+class ALittleScriptOp11StatElement;
+class ALittleScriptOp11SuffixElement;
+class ALittleScriptOp11SuffixEeElement;
+class ALittleScriptOp11SuffixExElement;
+class ALittleScriptOp10Element;
+class ALittleScriptOp10StatElement;
+class ALittleScriptOp10SuffixElement;
+class ALittleScriptOp10SuffixEeElement;
+class ALittleScriptOp10SuffixExElement;
+class ALittleScriptOp9Element;
+class ALittleScriptOp9StatElement;
+class ALittleScriptOp9SuffixElement;
+class ALittleScriptOp9SuffixEeElement;
+class ALittleScriptOp9SuffixExElement;
 class ALittleScriptOp8Element;
 class ALittleScriptOp8StatElement;
 class ALittleScriptOp8SuffixElement;
@@ -231,6 +251,42 @@ private:
 
     // 生成custom_type
     ABnfGuessError GenerateCustomType(std::shared_ptr<ALittleScriptCustomTypeElement> custom_type, const std::string& pre_tab, std::string& content);
+
+	// 生成12级运算符
+    ABnfGuessError GenerateOp12Suffix(std::shared_ptr<ALittleScriptOp12SuffixElement> suffix, const std::string& pre_tab, std::string& content);
+
+    ABnfGuessError GenerateOp12SuffixEe(std::shared_ptr<ALittleScriptOp12SuffixEeElement> suffix, const std::string& pre_tab, std::string& content);
+
+    ABnfGuessError GenerateOp12SuffixEx(std::shared_ptr<ALittleScriptOp12SuffixExElement> suffix, const std::string& pre_tab, std::string& content);
+
+    ABnfGuessError GenerateOp12Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp12StatElement> op_12_stat, const std::string& pre_tab, std::string& content);
+
+    // 生成11级运算符
+    ABnfGuessError GenerateOp11Suffix(std::shared_ptr<ALittleScriptOp11SuffixElement> suffix, const std::string& pre_tab, std::string& content);
+
+    ABnfGuessError GenerateOp11SuffixEe(std::shared_ptr<ALittleScriptOp11SuffixEeElement> suffix, const std::string& pre_tab, std::string& content);
+
+    ABnfGuessError GenerateOp11SuffixEx(std::shared_ptr<ALittleScriptOp11SuffixExElement> suffix, const std::string& pre_tab, std::string& content);
+
+    ABnfGuessError GenerateOp11Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp11StatElement> op_11_stat, const std::string& pre_tab, std::string& content);
+
+    // 生成10级运算符
+    ABnfGuessError GenerateOp10Suffix(std::shared_ptr<ALittleScriptOp10SuffixElement> suffix, const std::string& pre_tab, std::string& content);
+
+    ABnfGuessError GenerateOp10SuffixEe(std::shared_ptr<ALittleScriptOp10SuffixEeElement> suffix, const std::string& pre_tab, std::string& content);
+
+    ABnfGuessError GenerateOp10SuffixEx(std::shared_ptr<ALittleScriptOp10SuffixExElement> suffix, const std::string& pre_tab, std::string& content);
+
+    ABnfGuessError GenerateOp10Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp10StatElement> op_10_stat, const std::string& pre_tab, std::string& content);
+
+    // 生成9级运算符
+    ABnfGuessError GenerateOp9Suffix(std::shared_ptr<ALittleScriptOp9SuffixElement> suffix, const std::string& pre_tab, std::string& content);
+
+    ABnfGuessError GenerateOp9SuffixEe(std::shared_ptr<ALittleScriptOp9SuffixEeElement> suffix, const std::string& pre_tab, std::string& content);
+
+    ABnfGuessError GenerateOp9SuffixEx(std::shared_ptr<ALittleScriptOp9SuffixExElement> suffix, const std::string& pre_tab, std::string& content);
+
+    ABnfGuessError GenerateOp9Stat(std::shared_ptr<ALittleScriptValueFactorStatElement> value_factor_stat, std::shared_ptr<ALittleScriptOp9StatElement> op_9_stat, const std::string& pre_tab, std::string& content);
 
     // 生成8级运算符
     ABnfGuessError GenerateOp8Suffix(std::shared_ptr<ALittleScriptOp8SuffixElement> suffix, const std::string& pre_tab, std::string& content);

@@ -13,6 +13,10 @@ class ALittleScriptOp4StatElement;
 class ALittleScriptOp6StatElement;
 class ALittleScriptOp7StatElement;
 class ALittleScriptOp8StatElement;
+class ALittleScriptOp9StatElement;
+class ALittleScriptOp12StatElement;
+class ALittleScriptOp10StatElement;
+class ALittleScriptOp11StatElement;
 
 class ALittleScriptValueOpStatElement : public ABnfNodeElement
 {
@@ -56,6 +60,26 @@ private:
     std::shared_ptr<ALittleScriptOp8StatElement> m_cache_Op8Stat;
 public:
     std::shared_ptr<ALittleScriptOp8StatElement> GetOp8Stat();
+private:
+    bool m_flag_Op9Stat = false;
+    std::shared_ptr<ALittleScriptOp9StatElement> m_cache_Op9Stat;
+public:
+    std::shared_ptr<ALittleScriptOp9StatElement> GetOp9Stat();
+private:
+    bool m_flag_Op12Stat = false;
+    std::shared_ptr<ALittleScriptOp12StatElement> m_cache_Op12Stat;
+public:
+    std::shared_ptr<ALittleScriptOp12StatElement> GetOp12Stat();
+private:
+    bool m_flag_Op10Stat = false;
+    std::shared_ptr<ALittleScriptOp10StatElement> m_cache_Op10Stat;
+public:
+    std::shared_ptr<ALittleScriptOp10StatElement> GetOp10Stat();
+private:
+    bool m_flag_Op11Stat = false;
+    std::shared_ptr<ALittleScriptOp11StatElement> m_cache_Op11Stat;
+public:
+    std::shared_ptr<ALittleScriptOp11StatElement> GetOp11Stat();
 };
 
 #endif // _ALITTLE_ALittleScriptValueOpStatElement_H_

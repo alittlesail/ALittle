@@ -7,6 +7,10 @@
 #include "ALittleScriptOp6StatElement.h"
 #include "ALittleScriptOp7StatElement.h"
 #include "ALittleScriptOp8StatElement.h"
+#include "ALittleScriptOp9StatElement.h"
+#include "ALittleScriptOp12StatElement.h"
+#include "ALittleScriptOp10StatElement.h"
+#include "ALittleScriptOp11StatElement.h"
 
 std::shared_ptr<ALittleScriptValueFactorStatElement> ALittleScriptValueOpStatElement::GetValueFactorStat()
 {
@@ -112,5 +116,65 @@ std::shared_ptr<ALittleScriptOp8StatElement> ALittleScriptValueOpStatElement::Ge
         }
     }
     return m_cache_Op8Stat;
+}
+std::shared_ptr<ALittleScriptOp9StatElement> ALittleScriptValueOpStatElement::GetOp9Stat()
+{
+    if (m_flag_Op9Stat) return m_cache_Op9Stat;
+    m_flag_Op9Stat = true;
+    for (auto& child : m_childs)
+    {
+        auto node = std::dynamic_pointer_cast<ALittleScriptOp9StatElement>(child);
+        if (node != nullptr)
+        {
+            m_cache_Op9Stat = node;
+            break;
+        }
+    }
+    return m_cache_Op9Stat;
+}
+std::shared_ptr<ALittleScriptOp12StatElement> ALittleScriptValueOpStatElement::GetOp12Stat()
+{
+    if (m_flag_Op12Stat) return m_cache_Op12Stat;
+    m_flag_Op12Stat = true;
+    for (auto& child : m_childs)
+    {
+        auto node = std::dynamic_pointer_cast<ALittleScriptOp12StatElement>(child);
+        if (node != nullptr)
+        {
+            m_cache_Op12Stat = node;
+            break;
+        }
+    }
+    return m_cache_Op12Stat;
+}
+std::shared_ptr<ALittleScriptOp10StatElement> ALittleScriptValueOpStatElement::GetOp10Stat()
+{
+    if (m_flag_Op10Stat) return m_cache_Op10Stat;
+    m_flag_Op10Stat = true;
+    for (auto& child : m_childs)
+    {
+        auto node = std::dynamic_pointer_cast<ALittleScriptOp10StatElement>(child);
+        if (node != nullptr)
+        {
+            m_cache_Op10Stat = node;
+            break;
+        }
+    }
+    return m_cache_Op10Stat;
+}
+std::shared_ptr<ALittleScriptOp11StatElement> ALittleScriptValueOpStatElement::GetOp11Stat()
+{
+    if (m_flag_Op11Stat) return m_cache_Op11Stat;
+    m_flag_Op11Stat = true;
+    for (auto& child : m_childs)
+    {
+        auto node = std::dynamic_pointer_cast<ALittleScriptOp11StatElement>(child);
+        if (node != nullptr)
+        {
+            m_cache_Op11Stat = node;
+            break;
+        }
+    }
+    return m_cache_Op11Stat;
 }
 

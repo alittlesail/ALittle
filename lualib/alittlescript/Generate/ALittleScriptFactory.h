@@ -5,76 +5,69 @@
 #include "ALittleScriptKeyElement.h"
 #include "ALittleScriptStringElement.h"
 #include "ALittleScriptRegexElement.h"
-#include "ALittleScriptConstModifierElement.h"
 #include "ALittleScriptOp8SuffixEeElement.h"
 #include "ALittleScriptRootElement.h"
-#include "ALittleScriptElseIfConditionElement.h"
-#include "ALittleScriptNumberElement.h"
-#include "ALittleScriptProtocolModifierElement.h"
 #include "ALittleScriptLineCommentElement.h"
-#include "ALittleScriptMethodReturnTailDecElement.h"
-#include "ALittleScriptIdElement.h"
-#include "ALittleScriptBlockCommentElement.h"
 #include "ALittleScriptStructOptionDecElement.h"
+#include "ALittleScriptBlockCommentElement.h"
 #include "ALittleScriptTextElement.h"
+#include "ALittleScriptIdElement.h"
+#include "ALittleScriptElseIfConditionElement.h"
+#include "ALittleScriptProtocolModifierElement.h"
+#include "ALittleScriptNumberElement.h"
 #include "ALittleScriptRegisterModifierElement.h"
 #include "ALittleScriptAccessModifierElement.h"
-#include "ALittleScriptMethodSetterParamDecElement.h"
-#include "ALittleScriptTemplateExtendsClassDecElement.h"
-#include "ALittleScriptOp7SuffixEeElement.h"
-#include "ALittleScriptNamespaceElementDecElement.h"
-#include "ALittleScriptModifierElement.h"
 #include "ALittleScriptCoroutineModifierElement.h"
-#include "ALittleScriptMethodReturnDecElement.h"
 #include "ALittleScriptCommandBodyDecElement.h"
-#include "ALittleScriptTemplateExtendsStructDecElement.h"
 #include "ALittleScriptAllTypeConstElement.h"
 #include "ALittleScriptCommandModifierElement.h"
 #include "ALittleScriptOp5Element.h"
-#include "ALittleScriptNullableModifierElement.h"
 #include "ALittleScriptMethodParamTailDecElement.h"
-#include "ALittleScriptForInConditionElement.h"
-#include "ALittleScriptStructDecElement.h"
-#include "ALittleScriptOpAssignExprElement.h"
-#include "ALittleScriptNamespaceDecElement.h"
+#include "ALittleScriptNullableModifierElement.h"
 #include "ALittleScriptLanguageNameDecElement.h"
-#include "ALittleScriptStructNameDecElement.h"
-#include "ALittleScriptPropertyValueElement.h"
-#include "ALittleScriptNamespaceNameDecElement.h"
 #include "ALittleScriptLanguageBodyDecElement.h"
-#include "ALittleScriptEnumVarNameDecElement.h"
 #include "ALittleScriptLanguageModifierElement.h"
-#include "ALittleScriptStructVarDecElement.h"
+#include "ALittleScriptConstModifierElement.h"
 #include "ALittleScriptNativeModifierElement.h"
 #include "ALittleScriptAttributeModifierElement.h"
-#include "ALittleScriptMethodParamOneDecElement.h"
+#include "ALittleScriptModifierElement.h"
+#include "ALittleScriptOpAssignExprElement.h"
+#include "ALittleScriptNamespaceDecElement.h"
+#include "ALittleScriptOp7SuffixEeElement.h"
+#include "ALittleScriptNamespaceElementDecElement.h"
+#include "ALittleScriptPropertyValueElement.h"
+#include "ALittleScriptNamespaceNameDecElement.h"
 #include "ALittleScriptTemplateDecElement.h"
 #include "ALittleScriptOp4SuffixEeElement.h"
 #include "ALittleScriptTemplatePairDecElement.h"
 #include "ALittleScriptOp6SuffixExElement.h"
 #include "ALittleScriptTemplateNameDecElement.h"
 #include "ALittleScriptTemplateExtendsDecElement.h"
-#include "ALittleScriptClassVarNameDecElement.h"
+#include "ALittleScriptTemplateExtendsClassDecElement.h"
+#include "ALittleScriptTemplateExtendsStructDecElement.h"
 #include "ALittleScriptClassDecElement.h"
-#include "ALittleScriptMethodBodyDecElement.h"
 #include "ALittleScriptForBodyElement.h"
 #include "ALittleScriptClassNameDecElement.h"
 #include "ALittleScriptClassExtendsDecElement.h"
 #include "ALittleScriptElseExprElement.h"
-#include "ALittleScriptClassElementDecElement.h"
 #include "ALittleScriptMethodParamDecElement.h"
+#include "ALittleScriptClassElementDecElement.h"
 #include "ALittleScriptOp6SuffixElement.h"
 #include "ALittleScriptPropertyValueThisTypeElement.h"
 #include "ALittleScriptClassBodyDecElement.h"
 #include "ALittleScriptClassVarValueDecElement.h"
-#include "ALittleScriptUsingNameDecElement.h"
 #include "ALittleScriptClassVarDecElement.h"
+#include "ALittleScriptClassVarNameDecElement.h"
+#include "ALittleScriptForInConditionElement.h"
+#include "ALittleScriptStructDecElement.h"
+#include "ALittleScriptStructNameDecElement.h"
 #include "ALittleScriptStructExtendsDecElement.h"
 #include "ALittleScriptPropertyValueMethodCallElement.h"
 #include "ALittleScriptAllTypeElement.h"
 #include "ALittleScriptReturnYieldElement.h"
-#include "ALittleScriptStructBodyDecElement.h"
 #include "ALittleScriptMethodGetterParamDecElement.h"
+#include "ALittleScriptStructBodyDecElement.h"
+#include "ALittleScriptStructVarDecElement.h"
 #include "ALittleScriptGenericTypeElement.h"
 #include "ALittleScriptStructVarNameDecElement.h"
 #include "ALittleScriptOp7SuffixElement.h"
@@ -84,15 +77,24 @@
 #include "ALittleScriptEnumNameDecElement.h"
 #include "ALittleScriptEnumBodyDecElement.h"
 #include "ALittleScriptEnumVarDecElement.h"
+#include "ALittleScriptEnumVarNameDecElement.h"
 #include "ALittleScriptInstanceDecElement.h"
 #include "ALittleScriptUsingDecElement.h"
+#include "ALittleScriptUsingNameDecElement.h"
+#include "ALittleScriptMethodParamOneDecElement.h"
 #include "ALittleScriptMethodParamNameDecElement.h"
+#include "ALittleScriptOp11Element.h"
+#include "ALittleScriptMethodSetterParamDecElement.h"
+#include "ALittleScriptMethodBodyDecElement.h"
 #include "ALittleScriptPropertyValueDotIdElement.h"
 #include "ALittleScriptMethodNameDecElement.h"
+#include "ALittleScriptMethodReturnTailDecElement.h"
 #include "ALittleScriptMethodReturnOneDecElement.h"
+#include "ALittleScriptMethodReturnDecElement.h"
 #include "ALittleScriptOp3Element.h"
 #include "ALittleScriptClassCtorDecElement.h"
 #include "ALittleScriptClassGetterDecElement.h"
+#include "ALittleScriptOp12SuffixElement.h"
 #include "ALittleScriptClassSetterDecElement.h"
 #include "ALittleScriptOpNewListStatElement.h"
 #include "ALittleScriptClassMethodDecElement.h"
@@ -162,9 +164,27 @@
 #include "ALittleScriptPropertyValueCastTypeElement.h"
 #include "ALittleScriptPropertyValueCustomTypeElement.h"
 #include "ALittleScriptPropertyValueSuffixElement.h"
+#include "ALittleScriptOp11StatElement.h"
 #include "ALittleScriptPropertyValueDotIdNameElement.h"
 #include "ALittleScriptPropertyValueBracketValueElement.h"
 #include "ALittleScriptPropertyValueMethodTemplateElement.h"
+#include "ALittleScriptOp12Element.h"
+#include "ALittleScriptOp12StatElement.h"
+#include "ALittleScriptOp12SuffixEeElement.h"
+#include "ALittleScriptOp12SuffixExElement.h"
+#include "ALittleScriptOp11SuffixElement.h"
+#include "ALittleScriptOp11SuffixEeElement.h"
+#include "ALittleScriptOp11SuffixExElement.h"
+#include "ALittleScriptOp10Element.h"
+#include "ALittleScriptOp10StatElement.h"
+#include "ALittleScriptOp10SuffixElement.h"
+#include "ALittleScriptOp10SuffixEeElement.h"
+#include "ALittleScriptOp10SuffixExElement.h"
+#include "ALittleScriptOp9Element.h"
+#include "ALittleScriptOp9StatElement.h"
+#include "ALittleScriptOp9SuffixElement.h"
+#include "ALittleScriptOp9SuffixEeElement.h"
+#include "ALittleScriptOp9SuffixExElement.h"
 #include "ALittleScriptOp8Element.h"
 #include "ALittleScriptOp8StatElement.h"
 #include "ALittleScriptOp8SuffixElement.h"
@@ -200,184 +220,99 @@ class ALittleScriptFactory : public ABnfFactory
 public:
     ALittleScriptFactory()
     {
-        m_create_map["ConstModifier"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptConstModifierElement>(factory, file, line, col, offset, type); };
         m_create_map["Op8SuffixEe"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp8SuffixEeElement>(factory, file, line, col, offset, type); };
         m_create_map["Root"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptRootElement>(factory, file, line, col, offset, type); };
+        m_create_map["LineComment"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptLineCommentElement>(factory, file, line, col, offset, type); };
+        m_create_map["StructOptionDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptStructOptionDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["BlockComment"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptBlockCommentElement>(factory, file, line, col, offset, type); };
+        m_create_map["Text"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptTextElement>(factory, file, line, col, offset, type); };
+        m_create_map["Id"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptIdElement>(factory, file, line, col, offset, type); };
         m_create_map["ElseIfCondition"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptElseIfConditionElement>(factory, file, line, col, offset, type); };
-        m_create_map["Number"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptNumberElement>(factory, file, line, col, offset, type); };
-        m_create_map["ProtocolModifier"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptProtocolModifierElement>(factory, file, line, col, offset, type); };
-        m_create_map["LineComment"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptLineCommentElement>(factory, file, line, col, offset, type); };
-        m_create_map["MethodReturnTailDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptMethodReturnTailDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["Id"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptIdElement>(factory, file, line, col, offset, type); };
-        m_create_map["BlockComment"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptBlockCommentElement>(factory, file, line, col, offset, type); };
-        m_create_map["StructOptionDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptStructOptionDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["Text"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptTextElement>(factory, file, line, col, offset, type); };
-        m_create_map["RegisterModifier"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptRegisterModifierElement>(factory, file, line, col, offset, type); };
-        m_create_map["AccessModifier"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptAccessModifierElement>(factory, file, line, col, offset, type); };
-        m_create_map["MethodSetterParamDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptMethodSetterParamDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["TemplateExtendsClassDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptTemplateExtendsClassDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["Op7SuffixEe"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptOp7SuffixEeElement>(factory, file, line, col, offset, type); };
-        m_create_map["NamespaceElementDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptNamespaceElementDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["Modifier"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptModifierElement>(factory, file, line, col, offset, type); };
-        m_create_map["CoroutineModifier"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptCoroutineModifierElement>(factory, file, line, col, offset, type); };
-        m_create_map["MethodReturnDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptMethodReturnDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["CommandBodyDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptCommandBodyDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["TemplateExtendsStructDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptTemplateExtendsStructDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["AllTypeConst"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptAllTypeConstElement>(factory, file, line, col, offset, type); };
-        m_create_map["CommandModifier"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptCommandModifierElement>(factory, file, line, col, offset, type); };
-        m_create_map["Op5"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptOp5Element>(factory, file, line, col, offset, type); };
-        m_create_map["NullableModifier"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptNullableModifierElement>(factory, file, line, col, offset, type); };
-        m_create_map["MethodParamTailDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptMethodParamTailDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["ForInCondition"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptForInConditionElement>(factory, file, line, col, offset, type); };
-        m_create_map["StructDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptStructDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["OpAssignExpr"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptOpAssignExprElement>(factory, file, line, col, offset, type); };
-        m_create_map["NamespaceDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptNamespaceDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["LanguageNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptLanguageNameDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["StructNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptStructNameDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["PropertyValue"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptPropertyValueElement>(factory, file, line, col, offset, type); };
-        m_create_map["NamespaceNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptNamespaceNameDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["LanguageBodyDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptLanguageBodyDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["EnumVarNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptEnumVarNameDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["LanguageModifier"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptLanguageModifierElement>(factory, file, line, col, offset, type); };
-        m_create_map["StructVarDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptStructVarDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["NativeModifier"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptNativeModifierElement>(factory, file, line, col, offset, type); };
-        m_create_map["AttributeModifier"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptAttributeModifierElement>(factory, file, line, col, offset, type); };
-        m_create_map["MethodParamOneDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptMethodParamOneDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["TemplateDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptTemplateDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["Op4SuffixEe"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptOp4SuffixEeElement>(factory, file, line, col, offset, type); };
-        m_create_map["TemplatePairDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptTemplatePairDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["Op6SuffixEx"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptOp6SuffixExElement>(factory, file, line, col, offset, type); };
-        m_create_map["TemplateNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptTemplateNameDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["TemplateExtendsDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptTemplateExtendsDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["ClassVarNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptClassVarNameDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["ClassDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptClassDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["MethodBodyDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptMethodBodyDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["ForBody"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptForBodyElement>(factory, file, line, col, offset, type); };
-        m_create_map["ClassNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptClassNameDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["ClassExtendsDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptClassExtendsDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["ElseExpr"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptElseExprElement>(factory, file, line, col, offset, type); };
-        m_create_map["ClassElementDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptClassElementDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["MethodParamDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptMethodParamDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["Op6Suffix"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptOp6SuffixElement>(factory, file, line, col, offset, type); };
-        m_create_map["PropertyValueThisType"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptPropertyValueThisTypeElement>(factory, file, line, col, offset, type); };
-        m_create_map["ClassBodyDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptClassBodyDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["ClassVarValueDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptClassVarValueDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["UsingNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptUsingNameDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["ClassVarDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptClassVarDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["StructExtendsDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptStructExtendsDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["PropertyValueMethodCall"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptPropertyValueMethodCallElement>(factory, file, line, col, offset, type); };
-        m_create_map["AllType"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptAllTypeElement>(factory, file, line, col, offset, type); };
-        m_create_map["ReturnYield"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptReturnYieldElement>(factory, file, line, col, offset, type); };
-        m_create_map["StructBodyDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptStructBodyDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["MethodGetterParamDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptMethodGetterParamDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["GenericType"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptGenericTypeElement>(factory, file, line, col, offset, type); };
-        m_create_map["StructVarNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptStructVarNameDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["Op7Suffix"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptOp7SuffixElement>(factory, file, line, col, offset, type); };
-        m_create_map["GenericFunctorParamType"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptGenericFunctorParamTypeElement>(factory, file, line, col, offset, type); };
-        m_create_map["StructOptionNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptStructOptionNameDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["EnumDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptEnumDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["EnumNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptEnumNameDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["EnumBodyDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptEnumBodyDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["EnumVarDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptEnumVarDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["InstanceDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptInstanceDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["UsingDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptUsingDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["MethodParamNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptMethodParamNameDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["PropertyValueDotId"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptPropertyValueDotIdElement>(factory, file, line, col, offset, type); };
-        m_create_map["MethodNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptMethodNameDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["MethodReturnOneDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptMethodReturnOneDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["Op3"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptOp3Element>(factory, file, line, col, offset, type); };
-        m_create_map["ClassCtorDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptClassCtorDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["ClassGetterDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptClassGetterDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["ClassSetterDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptClassSetterDecElement>(factory, file, line, col, offset, type); };
-        m_create_map["OpNewListStat"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptOpNewListStatElement>(factory, file, line, col, offset, type); };
-        m_create_map["ClassMethodDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return
-	        std::make_shared<ALittleScriptClassMethodDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["ProtocolModifier"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptProtocolModifierElement>(factory, file, line, col, offset, type); };
+        m_create_map["Number"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptNumberElement>(factory, file, line, col, offset, type); };
+        m_create_map["RegisterModifier"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptRegisterModifierElement>(factory, file, line, col, offset, type); };
+        m_create_map["AccessModifier"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptAccessModifierElement>(factory, file, line, col, offset, type); };
+        m_create_map["CoroutineModifier"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptCoroutineModifierElement>(factory, file, line, col, offset, type); };
+        m_create_map["CommandBodyDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptCommandBodyDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["AllTypeConst"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptAllTypeConstElement>(factory, file, line, col, offset, type); };
+        m_create_map["CommandModifier"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptCommandModifierElement>(factory, file, line, col, offset, type); };
+        m_create_map["Op5"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp5Element>(factory, file, line, col, offset, type); };
+        m_create_map["MethodParamTailDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptMethodParamTailDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["NullableModifier"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptNullableModifierElement>(factory, file, line, col, offset, type); };
+        m_create_map["LanguageNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptLanguageNameDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["LanguageBodyDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptLanguageBodyDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["LanguageModifier"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptLanguageModifierElement>(factory, file, line, col, offset, type); };
+        m_create_map["ConstModifier"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptConstModifierElement>(factory, file, line, col, offset, type); };
+        m_create_map["NativeModifier"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptNativeModifierElement>(factory, file, line, col, offset, type); };
+        m_create_map["AttributeModifier"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptAttributeModifierElement>(factory, file, line, col, offset, type); };
+        m_create_map["Modifier"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptModifierElement>(factory, file, line, col, offset, type); };
+        m_create_map["OpAssignExpr"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOpAssignExprElement>(factory, file, line, col, offset, type); };
+        m_create_map["NamespaceDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptNamespaceDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["Op7SuffixEe"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp7SuffixEeElement>(factory, file, line, col, offset, type); };
+        m_create_map["NamespaceElementDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptNamespaceElementDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["PropertyValue"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptPropertyValueElement>(factory, file, line, col, offset, type); };
+        m_create_map["NamespaceNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptNamespaceNameDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["TemplateDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptTemplateDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["Op4SuffixEe"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp4SuffixEeElement>(factory, file, line, col, offset, type); };
+        m_create_map["TemplatePairDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptTemplatePairDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["Op6SuffixEx"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp6SuffixExElement>(factory, file, line, col, offset, type); };
+        m_create_map["TemplateNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptTemplateNameDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["TemplateExtendsDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptTemplateExtendsDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["TemplateExtendsClassDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptTemplateExtendsClassDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["TemplateExtendsStructDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptTemplateExtendsStructDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["ClassDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptClassDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["ForBody"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptForBodyElement>(factory, file, line, col, offset, type); };
+        m_create_map["ClassNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptClassNameDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["ClassExtendsDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptClassExtendsDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["ElseExpr"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptElseExprElement>(factory, file, line, col, offset, type); };
+        m_create_map["MethodParamDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptMethodParamDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["ClassElementDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptClassElementDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["Op6Suffix"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp6SuffixElement>(factory, file, line, col, offset, type); };
+        m_create_map["PropertyValueThisType"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptPropertyValueThisTypeElement>(factory, file, line, col, offset, type); };
+        m_create_map["ClassBodyDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptClassBodyDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["ClassVarValueDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptClassVarValueDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["ClassVarDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptClassVarDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["ClassVarNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptClassVarNameDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["ForInCondition"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptForInConditionElement>(factory, file, line, col, offset, type); };
+        m_create_map["StructDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptStructDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["StructNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptStructNameDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["StructExtendsDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptStructExtendsDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["PropertyValueMethodCall"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptPropertyValueMethodCallElement>(factory, file, line, col, offset, type); };
+        m_create_map["AllType"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptAllTypeElement>(factory, file, line, col, offset, type); };
+        m_create_map["ReturnYield"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptReturnYieldElement>(factory, file, line, col, offset, type); };
+        m_create_map["MethodGetterParamDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptMethodGetterParamDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["StructBodyDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptStructBodyDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["StructVarDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptStructVarDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["GenericType"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptGenericTypeElement>(factory, file, line, col, offset, type); };
+        m_create_map["StructVarNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptStructVarNameDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["Op7Suffix"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp7SuffixElement>(factory, file, line, col, offset, type); };
+        m_create_map["GenericFunctorParamType"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptGenericFunctorParamTypeElement>(factory, file, line, col, offset, type); };
+        m_create_map["StructOptionNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptStructOptionNameDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["EnumDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptEnumDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["EnumNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptEnumNameDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["EnumBodyDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptEnumBodyDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["EnumVarDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptEnumVarDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["EnumVarNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptEnumVarNameDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["InstanceDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptInstanceDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["UsingDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptUsingDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["UsingNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptUsingNameDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["MethodParamOneDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptMethodParamOneDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["MethodParamNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptMethodParamNameDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["Op11"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp11Element>(factory, file, line, col, offset, type); };
+        m_create_map["MethodSetterParamDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptMethodSetterParamDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["MethodBodyDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptMethodBodyDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["PropertyValueDotId"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptPropertyValueDotIdElement>(factory, file, line, col, offset, type); };
+        m_create_map["MethodNameDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptMethodNameDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["MethodReturnTailDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptMethodReturnTailDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["MethodReturnOneDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptMethodReturnOneDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["MethodReturnDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptMethodReturnDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["Op3"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp3Element>(factory, file, line, col, offset, type); };
+        m_create_map["ClassCtorDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptClassCtorDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["ClassGetterDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptClassGetterDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["Op12Suffix"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp12SuffixElement>(factory, file, line, col, offset, type); };
+        m_create_map["ClassSetterDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptClassSetterDecElement>(factory, file, line, col, offset, type); };
+        m_create_map["OpNewListStat"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOpNewListStatElement>(factory, file, line, col, offset, type); };
+        m_create_map["ClassMethodDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptClassMethodDecElement>(factory, file, line, col, offset, type); };
         m_create_map["ClassStaticDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptClassStaticDecElement>(factory, file, line, col, offset, type); };
         m_create_map["GlobalMethodDec"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptGlobalMethodDecElement>(factory, file, line, col, offset, type); };
         m_create_map["AllExpr"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptAllExprElement>(factory, file, line, col, offset, type); };
@@ -444,9 +379,27 @@ public:
         m_create_map["PropertyValueCastType"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptPropertyValueCastTypeElement>(factory, file, line, col, offset, type); };
         m_create_map["PropertyValueCustomType"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptPropertyValueCustomTypeElement>(factory, file, line, col, offset, type); };
         m_create_map["PropertyValueSuffix"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptPropertyValueSuffixElement>(factory, file, line, col, offset, type); };
+        m_create_map["Op11Stat"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp11StatElement>(factory, file, line, col, offset, type); };
         m_create_map["PropertyValueDotIdName"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptPropertyValueDotIdNameElement>(factory, file, line, col, offset, type); };
         m_create_map["PropertyValueBracketValue"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptPropertyValueBracketValueElement>(factory, file, line, col, offset, type); };
         m_create_map["PropertyValueMethodTemplate"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptPropertyValueMethodTemplateElement>(factory, file, line, col, offset, type); };
+        m_create_map["Op12"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp12Element>(factory, file, line, col, offset, type); };
+        m_create_map["Op12Stat"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp12StatElement>(factory, file, line, col, offset, type); };
+        m_create_map["Op12SuffixEe"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp12SuffixEeElement>(factory, file, line, col, offset, type); };
+        m_create_map["Op12SuffixEx"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp12SuffixExElement>(factory, file, line, col, offset, type); };
+        m_create_map["Op11Suffix"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp11SuffixElement>(factory, file, line, col, offset, type); };
+        m_create_map["Op11SuffixEe"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp11SuffixEeElement>(factory, file, line, col, offset, type); };
+        m_create_map["Op11SuffixEx"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp11SuffixExElement>(factory, file, line, col, offset, type); };
+        m_create_map["Op10"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp10Element>(factory, file, line, col, offset, type); };
+        m_create_map["Op10Stat"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp10StatElement>(factory, file, line, col, offset, type); };
+        m_create_map["Op10Suffix"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp10SuffixElement>(factory, file, line, col, offset, type); };
+        m_create_map["Op10SuffixEe"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp10SuffixEeElement>(factory, file, line, col, offset, type); };
+        m_create_map["Op10SuffixEx"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp10SuffixExElement>(factory, file, line, col, offset, type); };
+        m_create_map["Op9"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp9Element>(factory, file, line, col, offset, type); };
+        m_create_map["Op9Stat"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp9StatElement>(factory, file, line, col, offset, type); };
+        m_create_map["Op9Suffix"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp9SuffixElement>(factory, file, line, col, offset, type); };
+        m_create_map["Op9SuffixEe"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp9SuffixEeElement>(factory, file, line, col, offset, type); };
+        m_create_map["Op9SuffixEx"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp9SuffixExElement>(factory, file, line, col, offset, type); };
         m_create_map["Op8"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp8Element>(factory, file, line, col, offset, type); };
         m_create_map["Op8Stat"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp8StatElement>(factory, file, line, col, offset, type); };
         m_create_map["Op8Suffix"] = [](ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type) -> std::shared_ptr<ABnfNodeElement> { return std::make_shared<ALittleScriptOp8SuffixElement>(factory, file, line, col, offset, type); };
@@ -475,7 +428,7 @@ public:
     }
     std::shared_ptr<ABnfNodeElement> CreateNodeElement(ABnfFile* file, int line, int col, int offset, const std::string& type) override
     {
-        const auto it = m_create_map.find(type);
+        auto it = m_create_map.find(type);
         if (it == m_create_map.end()) return nullptr;
         return it->second(this, file, line, col, offset, type);
     }

@@ -6,8 +6,8 @@
 #include <string>
 #include "../../alanguage/Model/ABnfNodeElement.h"
 
-class ALittleScriptAllTypeConstElement;
 class ALittleScriptGenericFunctorReturnTypeElement;
+class ALittleScriptAllTypeConstElement;
 class ALittleScriptCoroutineModifierElement;
 class ALittleScriptGenericFunctorParamTypeElement;
 class ALittleScriptKeyElement;
@@ -21,15 +21,15 @@ public:
     virtual ~ALittleScriptGenericFunctorTypeElement() { }
 
 private:
-    bool m_flag_AllTypeConst = false;
-    std::shared_ptr<ALittleScriptAllTypeConstElement> m_cache_AllTypeConst;
-public:
-    std::shared_ptr<ALittleScriptAllTypeConstElement> GetAllTypeConst();
-private:
     bool m_flag_GenericFunctorReturnType = false;
     std::shared_ptr<ALittleScriptGenericFunctorReturnTypeElement> m_cache_GenericFunctorReturnType;
 public:
     std::shared_ptr<ALittleScriptGenericFunctorReturnTypeElement> GetGenericFunctorReturnType();
+private:
+    bool m_flag_AllTypeConst = false;
+    std::shared_ptr<ALittleScriptAllTypeConstElement> m_cache_AllTypeConst;
+public:
+    std::shared_ptr<ALittleScriptAllTypeConstElement> GetAllTypeConst();
 private:
     bool m_flag_CoroutineModifier = false;
     std::shared_ptr<ALittleScriptCoroutineModifierElement> m_cache_CoroutineModifier;

@@ -307,7 +307,7 @@ PrimitiveType = <bool> | <double> | <int> | <long> | <any> | <string>;
 //复合值///////////////////////////////////////////////////////////////////
 ValueStat = OpNewStat | OpNewListStat | BindStat | TcallStat | Op2Stat | ValueOpStat;
 ValueFactorStat = WrapValueStat | ConstValue | ReflectValue | PathsValue | PropertyValue | MethodParamTailDec | CoroutineStat;
-ValueOpStat = ValueFactorStat (Op3Stat | Op4Stat | Op5Stat | Op6Stat | Op7Stat | Op8Stat)?;
+ValueOpStat = ValueFactorStat (Op3Stat | Op4Stat | Op5Stat | Op6Stat | Op7Stat | Op8Stat | Op9Stat | Op10Stat | Op11Stat | Op12Stat)?;
 
 // new
 OpNewStat = <new>@ (CustomType | GenericType) '(' (ValueStat (','@ ValueStat)*)? ')';
@@ -351,46 +351,70 @@ PropertyValueMethodTemplate = '{'@ (AllType (','@ AllType)*)? '}';
 // Op 类型的运算，编号越大，优先级越低///////////////////////////////////////////////////
 
 // 双目运算
-Op8 = '||';
+Op12 = '||';
+Op12Stat = Op12Suffix Op12SuffixEx*;
+Op12Suffix = Op12@ (ValueFactorStat | Op2Value) Op12SuffixEe*;
+Op12SuffixEe = Op3Suffix | Op4Suffix | Op5Suffix | Op6Suffix | Op7Suffix | Op8Suffix | Op9Suffix | Op10Suffix | Op11Suffix;
+Op12SuffixEx = Op12Suffix;
+
+Op11 = '&&';
+Op11Stat = Op11Suffix Op11SuffixEx*;
+Op11Suffix = Op11@ (ValueFactorStat | Op2Value) Op11SuffixEe*;
+Op11SuffixEe = Op3Suffix | Op4Suffix | Op5Suffix | Op6Suffix | Op7Suffix | Op8Suffix | Op9Suffix | Op10Suffix;
+Op11SuffixEx = Op11Suffix | Op12Suffix;
+
+Op10 = '<=' | '<' | '>=' | '>' | '==' | '!=';
+Op10Stat = Op10Suffix Op10SuffixEx*;
+Op10Suffix = Op10@ (ValueFactorStat | Op2Value) Op10SuffixEe*;
+Op10SuffixEe = Op3Suffix | Op4Suffix | Op5Suffix | Op6Suffix | Op7Suffix | Op8Suffix | Op9Suffix;
+Op10SuffixEx = Op10Suffix | Op11Suffix | Op12Suffix;
+
+Op9 = '|';
+Op9Stat = Op9Suffix Op9SuffixEx*;
+Op9Suffix = Op9@ (ValueFactorStat | Op2Value) Op9SuffixEe*;
+Op9SuffixEe = Op3Suffix | Op4Suffix | Op5Suffix | Op6Suffix | Op7Suffix | Op8Suffix;
+Op9SuffixEx = Op9Suffix | Op10Suffix | Op11Suffix | Op12Suffix;
+
+Op8 = '^';
 Op8Stat = Op8Suffix Op8SuffixEx*;
 Op8Suffix = Op8@ (ValueFactorStat | Op2Value) Op8SuffixEe*;
 Op8SuffixEe = Op3Suffix | Op4Suffix | Op5Suffix | Op6Suffix | Op7Suffix;
-Op8SuffixEx = Op8Suffix;
+Op8SuffixEx = Op8Suffix | Op9Suffix | Op10Suffix | Op11Suffix | Op12Suffix;
 
-Op7 = '&&';
+Op7 = '&';
 Op7Stat = Op7Suffix Op7SuffixEx*;
 Op7Suffix = Op7@ (ValueFactorStat | Op2Value) Op7SuffixEe*;
 Op7SuffixEe = Op3Suffix | Op4Suffix | Op5Suffix | Op6Suffix;
-Op7SuffixEx = Op7Suffix | Op8Suffix;
+Op7SuffixEx = Op7Suffix | Op8Suffix | Op9Suffix | Op10Suffix | Op11Suffix | Op12Suffix;
 
-Op6 =  '<=' | '<' | '>=' | '>' | '==' | '!=';
+Op6 =  '<-' | '->';
 Op6Stat = Op6Suffix Op6SuffixEx*;
 Op6Suffix = Op6@ (ValueFactorStat | Op2Value) Op6SuffixEe*;
 Op6SuffixEe = Op3Suffix | Op4Suffix | Op5Suffix;
-Op6SuffixEx = Op6Suffix | Op7Suffix | Op8Suffix;
+Op6SuffixEx = Op6Suffix | Op7Suffix | Op8Suffix | Op9Suffix | Op10Suffix | Op11Suffix | Op12Suffix;
 
 Op5 = '..';
 Op5Stat = Op5Suffix Op5SuffixEx*;
 Op5Suffix = Op5@ (ValueFactorStat | Op2Value) Op5SuffixEe*;
 Op5SuffixEe = Op3Suffix | Op4Suffix;
-Op5SuffixEx = Op5Suffix | Op6Suffix | Op7Suffix | Op8Suffix;
+Op5SuffixEx = Op5Suffix | Op6Suffix | Op7Suffix | Op8Suffix | Op9Suffix | Op10Suffix | Op11Suffix | Op12Suffix;
 
 Op4 = '+' | '-';
 Op4Stat = Op4Suffix Op4SuffixEx*;
 Op4Suffix = Op4@ (ValueFactorStat | Op2Value) Op4SuffixEe*;
 Op4SuffixEe = Op3Suffix;
-Op4SuffixEx = Op4Suffix | Op5Suffix | Op6Suffix | Op7Suffix | Op8Suffix;
+Op4SuffixEx = Op4Suffix | Op5Suffix | Op6Suffix | Op7Suffix | Op8Suffix | Op9Suffix | Op10Suffix | Op11Suffix | Op12Suffix;
 
 Op3 = '*' | '/' | '%';
 Op3Stat = Op3Suffix Op3SuffixEx*;
 Op3Suffix = Op3@ (ValueFactorStat | Op2Value);
-Op3SuffixEx = Op3Suffix | Op4Suffix | Op5Suffix | Op6Suffix | Op7Suffix | Op8Suffix;
+Op3SuffixEx = Op3Suffix | Op4Suffix | Op5Suffix | Op6Suffix | Op7Suffix | Op8Suffix | Op9Suffix | Op10Suffix | Op11Suffix | Op12Suffix;
 
 // 单目运算
-Op2 = '!' | '-';
+Op2 = '!' | '-' | '~';
 Op2Stat = Op2Value Op2SuffixEx*;
 Op2Value = Op2@ ValueFactorStat;
-Op2SuffixEx = Op3Suffix | Op4Suffix | Op5Suffix | Op6Suffix | Op7Suffix | Op8Suffix;
+Op2SuffixEx = Op3Suffix | Op4Suffix | Op5Suffix | Op6Suffix | Op7Suffix | Op8Suffix | Op9Suffix | Op10Suffix | Op11Suffix | Op12Suffix;
 
 // 优先级1 前缀自加，前缀自减 从右到左
 Op1 = '++' | '--';

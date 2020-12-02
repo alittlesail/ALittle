@@ -1,27 +1,12 @@
 #include "ALittleScriptGenericFunctorTypeElement.h"
 
-#include "ALittleScriptAllTypeConstElement.h"
 #include "ALittleScriptGenericFunctorReturnTypeElement.h"
+#include "ALittleScriptAllTypeConstElement.h"
 #include "ALittleScriptCoroutineModifierElement.h"
 #include "ALittleScriptGenericFunctorParamTypeElement.h"
 #include "ALittleScriptKeyElement.h"
 #include "ALittleScriptStringElement.h"
 
-std::shared_ptr<ALittleScriptAllTypeConstElement> ALittleScriptGenericFunctorTypeElement::GetAllTypeConst()
-{
-    if (m_flag_AllTypeConst) return m_cache_AllTypeConst;
-    m_flag_AllTypeConst = true;
-    for (auto& child : m_childs)
-    {
-        auto node = std::dynamic_pointer_cast<ALittleScriptAllTypeConstElement>(child);
-        if (node != nullptr)
-        {
-            m_cache_AllTypeConst = node;
-            break;
-        }
-    }
-    return m_cache_AllTypeConst;
-}
 std::shared_ptr<ALittleScriptGenericFunctorReturnTypeElement> ALittleScriptGenericFunctorTypeElement::GetGenericFunctorReturnType()
 {
     if (m_flag_GenericFunctorReturnType) return m_cache_GenericFunctorReturnType;
@@ -36,6 +21,21 @@ std::shared_ptr<ALittleScriptGenericFunctorReturnTypeElement> ALittleScriptGener
         }
     }
     return m_cache_GenericFunctorReturnType;
+}
+std::shared_ptr<ALittleScriptAllTypeConstElement> ALittleScriptGenericFunctorTypeElement::GetAllTypeConst()
+{
+    if (m_flag_AllTypeConst) return m_cache_AllTypeConst;
+    m_flag_AllTypeConst = true;
+    for (auto& child : m_childs)
+    {
+        auto node = std::dynamic_pointer_cast<ALittleScriptAllTypeConstElement>(child);
+        if (node != nullptr)
+        {
+            m_cache_AllTypeConst = node;
+            break;
+        }
+    }
+    return m_cache_AllTypeConst;
 }
 std::shared_ptr<ALittleScriptCoroutineModifierElement> ALittleScriptGenericFunctorTypeElement::GetCoroutineModifier()
 {

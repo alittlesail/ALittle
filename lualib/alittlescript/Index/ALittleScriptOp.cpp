@@ -1,23 +1,39 @@
 #include "ALittleScriptOp.h"
 
+#include "../Generate/ALittleScriptOp12SuffixElement.h"
+#include "../Generate/ALittleScriptOp11SuffixElement.h"
+#include "../Generate/ALittleScriptOp10SuffixElement.h"
+#include "../Generate/ALittleScriptOp9SuffixElement.h"
 #include "../Generate/ALittleScriptOp8SuffixElement.h"
 #include "../Generate/ALittleScriptOp7SuffixElement.h"
 #include "../Generate/ALittleScriptOp6SuffixElement.h"
 #include "../Generate/ALittleScriptOp5SuffixElement.h"
 #include "../Generate/ALittleScriptOp4SuffixElement.h"
 #include "../Generate/ALittleScriptOp3SuffixElement.h"
+#include "../Generate/ALittleScriptOp12Element.h"
+#include "../Generate/ALittleScriptOp11Element.h"
+#include "../Generate/ALittleScriptOp10Element.h"
+#include "../Generate/ALittleScriptOp9Element.h"
 #include "../Generate/ALittleScriptOp8Element.h"
 #include "../Generate/ALittleScriptOp7Element.h"
 #include "../Generate/ALittleScriptOp6Element.h"
 #include "../Generate/ALittleScriptOp5Element.h"
 #include "../Generate/ALittleScriptOp4Element.h"
 #include "../Generate/ALittleScriptOp3Element.h"
+#include "../Generate/ALittleScriptOp12SuffixEeElement.h"
+#include "../Generate/ALittleScriptOp11SuffixEeElement.h"
+#include "../Generate/ALittleScriptOp10SuffixEeElement.h"
+#include "../Generate/ALittleScriptOp9SuffixEeElement.h"
 #include "../Generate/ALittleScriptOp8SuffixEeElement.h"
 #include "../Generate/ALittleScriptOp7SuffixEeElement.h"
 #include "../Generate/ALittleScriptOp6SuffixEeElement.h"
 #include "../Generate/ALittleScriptOp5SuffixEeElement.h"
 #include "../Generate/ALittleScriptOp4SuffixEeElement.h"
 
+#include "../Generate/ALittleScriptOp12SuffixExElement.h"
+#include "../Generate/ALittleScriptOp11SuffixExElement.h"
+#include "../Generate/ALittleScriptOp10SuffixExElement.h"
+#include "../Generate/ALittleScriptOp9SuffixExElement.h"
 #include "../Generate/ALittleScriptOp8SuffixExElement.h"
 #include "../Generate/ALittleScriptOp7SuffixExElement.h"
 #include "../Generate/ALittleScriptOp6SuffixExElement.h"
@@ -26,6 +42,10 @@
 #include "../Generate/ALittleScriptOp3SuffixExElement.h"
 #include "../Generate/ALittleScriptOp2SuffixExElement.h"
 
+#include "../Generate/ALittleScriptOp12StatElement.h"
+#include "../Generate/ALittleScriptOp11StatElement.h"
+#include "../Generate/ALittleScriptOp10StatElement.h"
+#include "../Generate/ALittleScriptOp9StatElement.h"
 #include "../Generate/ALittleScriptOp8StatElement.h"
 #include "../Generate/ALittleScriptOp7StatElement.h"
 #include "../Generate/ALittleScriptOp6StatElement.h"
@@ -51,9 +71,9 @@
 #include "../Index/ALittleScriptIndex.h"
 #include "../Index/ALittleScriptUtility.h"
 
-ABnfGuessError ALittleScriptOp::GuessTypeForOp8Impl(const std::string& op_string, const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
+ABnfGuessError ALittleScriptOp::GuessTypeForOp12Impl(const std::string& op_string, const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
     , const ABnfElementPtr& right_src, const ABnfGuessPtr& right_guess_type
-    , const std::shared_ptr<ALittleScriptOp8SuffixElement>& op_8_suffix, ABnfGuessPtr& guess)
+    , const std::shared_ptr<ALittleScriptOp12SuffixElement>& op_12_suffix, ABnfGuessPtr& guess)
 {
     if (!std::dynamic_pointer_cast<ALittleScriptGuessBool>(left_guess_type))
         return ABnfGuessError(left_src, op_string + u8"运算符左边必须是bool类型.不能是:" + left_guess_type->GetValue());
@@ -65,16 +85,16 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp8Impl(const std::string& op_string
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptOp::GuessTypeForOp8(const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
-    , const std::shared_ptr<ALittleScriptOp8SuffixElement>& op_8_suffix, ABnfGuessPtr& guess)
+ABnfGuessError ALittleScriptOp::GuessTypeForOp12(const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
+    , const std::shared_ptr<ALittleScriptOp12SuffixElement>& op_12_suffix, ABnfGuessPtr& guess)
 {
-    const auto& op_string = op_8_suffix->GetOp8()->GetElementText();
+    const auto& op_string = op_12_suffix->GetOp12()->GetElementText();
 
     ABnfGuessPtr suffix_guess_type;
     ABnfElementPtr last_src;
 
-    auto value_factor_stat = op_8_suffix->GetValueFactorStat();
-    auto op_2_value = op_8_suffix->GetOp2Value();
+    auto value_factor_stat = op_12_suffix->GetValueFactorStat();
+    auto op_2_value = op_12_suffix->GetOp2Value();
     if (value_factor_stat != nullptr)
     {
         auto error = value_factor_stat->GuessType(suffix_guess_type);
@@ -89,10 +109,10 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp8(const ABnfElementPtr& left_src, 
     }
     else
     {
-        return ABnfGuessError(op_8_suffix, u8"未知的表达式");
+        return ABnfGuessError(op_12_suffix, u8"未知的表达式");
     }
 
-    const auto& suffix_ee_list = op_8_suffix->GetOp8SuffixEeList();
+    const auto& suffix_ee_list = op_12_suffix->GetOp12SuffixEeList();
     for (const auto& suffix_ee : suffix_ee_list)
     {
         if (suffix_ee->GetOp3Suffix() != nullptr)
@@ -125,25 +145,63 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp8(const ABnfElementPtr& left_src, 
             if (error) return error;
             last_src = suffix_ee->GetOp7Suffix();
         }
+        else if (suffix_ee->GetOp8Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp8(last_src, suffix_guess_type, suffix_ee->GetOp8Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp8Suffix();
+        }
+        else if (suffix_ee->GetOp9Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp9(last_src, suffix_guess_type, suffix_ee->GetOp9Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp9Suffix();
+        }
+        else if (suffix_ee->GetOp10Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp10(last_src, suffix_guess_type, suffix_ee->GetOp10Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp10Suffix();
+        }
+        else if (suffix_ee->GetOp11Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp11(last_src, suffix_guess_type, suffix_ee->GetOp11Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp11Suffix();
+        }
         else
         {
             return ABnfGuessError(suffix_ee, u8"未知的表达式");
         }
     }
 
-    return GuessTypeForOp8Impl(op_string, left_src, left_guess_type, last_src, suffix_guess_type, op_8_suffix, guess);
+    return GuessTypeForOp12Impl(op_string, left_src, left_guess_type, last_src, suffix_guess_type, op_12_suffix, guess);
 }
 
-ABnfGuessError ALittleScriptOp::GuessTypeForOp7(const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
-    , const std::shared_ptr<ALittleScriptOp7SuffixElement>& op_7_suffix, ABnfGuessPtr& guess)
+ABnfGuessError ALittleScriptOp::GuessTypeForOp11Impl(const std::string& op_string, const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
+    , const ABnfElementPtr& right_src, const ABnfGuessPtr& right_guess_type
+    , const std::shared_ptr<ALittleScriptOp11SuffixElement>& op_11_suffix, ABnfGuessPtr& guess)
 {
-    const auto& op_string = op_7_suffix->GetOp7()->GetElementText();
+    if (!(std::dynamic_pointer_cast<ALittleScriptGuessBool>(left_guess_type)))
+        return ABnfGuessError(left_src, op_string + u8"运算符左边必须是bool类型.不能是:" + left_guess_type->GetValue());
+
+    if (!(std::dynamic_pointer_cast<ALittleScriptGuessBool>(right_guess_type)))
+        return ABnfGuessError(right_src, op_string + u8"运算符右边边必须是bool类型.不能是:" + right_guess_type->GetValue());
+
+    guess = ALittleScriptStatic::Inst().sBoolGuess;
+    return nullptr;
+}
+
+ABnfGuessError ALittleScriptOp::GuessTypeForOp11(const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
+    , const std::shared_ptr<ALittleScriptOp11SuffixElement>& op_11_suffix, ABnfGuessPtr& guess)
+{
+    const auto& op_string = op_11_suffix->GetOp11()->GetElementText();
 
     ABnfGuessPtr suffix_guess_type;
     ABnfElementPtr last_src;
 
-    auto value_factor_stat = op_7_suffix->GetValueFactorStat();
-    auto op_2_value = op_7_suffix->GetOp2Value();
+    auto value_factor_stat = op_11_suffix->GetValueFactorStat();
+    auto op_2_value = op_11_suffix->GetOp2Value();
     if (value_factor_stat != nullptr)
     {
         auto error = value_factor_stat->GuessType(suffix_guess_type);
@@ -158,10 +216,10 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp7(const ABnfElementPtr& left_src, 
     }
     else
     {
-        return ABnfGuessError(op_7_suffix, u8"未知的表达式");
+        return ABnfGuessError(op_11_suffix, u8"未知的表达式");
     }
 
-    const auto& suffix_ee_list = op_7_suffix->GetOp7SuffixEeList();
+    const auto& suffix_ee_list = op_11_suffix->GetOp11SuffixEeList();
     for (const auto& suffix_ee : suffix_ee_list)
     {
         if (suffix_ee->GetOp3Suffix() != nullptr)
@@ -188,17 +246,41 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp7(const ABnfElementPtr& left_src, 
             if (error) return error;
             last_src = suffix_ee->GetOp6Suffix();
         }
+        else if (suffix_ee->GetOp7Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp7(last_src, suffix_guess_type, suffix_ee->GetOp7Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp7Suffix();
+        }
+        else if (suffix_ee->GetOp8Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp8(last_src, suffix_guess_type, suffix_ee->GetOp8Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp8Suffix();
+        }
+        else if (suffix_ee->GetOp9Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp9(last_src, suffix_guess_type, suffix_ee->GetOp9Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp9Suffix();
+        }
+        else if (suffix_ee->GetOp10Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp10(last_src, suffix_guess_type, suffix_ee->GetOp10Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp10Suffix();
+        }
         else
         {
             return ABnfGuessError(suffix_ee, u8"未知的表达式");
         }
     }
 
-    return GuessTypeForOp7Impl(op_string, left_src, left_guess_type, last_src, suffix_guess_type, op_7_suffix, guess);
+    return GuessTypeForOp11Impl(op_string, left_src, left_guess_type, last_src, suffix_guess_type, op_11_suffix, guess);
 }
 
-ABnfGuessError ALittleScriptOp::GuessTypeForOp6Impl(const std::string& op_string, const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
-    , const ABnfElementPtr& right_src, const ABnfGuessPtr& right_guess_type, const std::shared_ptr<ALittleScriptOp6SuffixElement>& op_6_suffix, ABnfGuessPtr& guess)
+ABnfGuessError ALittleScriptOp::GuessTypeForOp10Impl(const std::string& op_string, const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
+    , const ABnfElementPtr& right_src, const ABnfGuessPtr& right_guess_type, const std::shared_ptr<ALittleScriptOp10SuffixElement>& op_10_suffix, ABnfGuessPtr& guess)
 {
     if (op_string == "==" || op_string == "!=")
     {
@@ -260,6 +342,353 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp6Impl(const std::string& op_string
     }
 }
 
+ABnfGuessError ALittleScriptOp::GuessTypeForOp10(const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
+    , const std::shared_ptr<ALittleScriptOp10SuffixElement>& op_10_suffix, ABnfGuessPtr& guess)
+{
+    const auto& op_string = op_10_suffix->GetOp10()->GetElementText();
+
+    ABnfGuessPtr suffix_guess_type;
+    ABnfElementPtr last_src;
+
+    auto value_factor_stat = op_10_suffix->GetValueFactorStat();
+    const auto op_2_value = op_10_suffix->GetOp2Value();
+    if (value_factor_stat != nullptr)
+    {
+        auto error = value_factor_stat->GuessType(suffix_guess_type);
+        if (error) return error;
+        last_src = value_factor_stat;
+    }
+    else if (op_2_value != nullptr)
+    {
+        auto error = GuessType(op_2_value, suffix_guess_type);
+        if (error) return error;
+        last_src = op_2_value;
+    }
+    else
+    {
+        return ABnfGuessError(op_10_suffix, u8"未知的表达式");
+    }
+
+    const auto& suffix_ee_list = op_10_suffix->GetOp10SuffixEeList();
+    for (const auto& suffix_ee : suffix_ee_list)
+    {
+        if (suffix_ee->GetOp3Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp3(last_src, suffix_guess_type, suffix_ee->GetOp3Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp3Suffix();
+        }
+        else if (suffix_ee->GetOp4Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp4(last_src, suffix_guess_type, suffix_ee->GetOp4Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp4Suffix();
+        }
+        else if (suffix_ee->GetOp5Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp5(last_src, suffix_guess_type, suffix_ee->GetOp5Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp5Suffix();
+        }
+        else if (suffix_ee->GetOp6Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp6(last_src, suffix_guess_type, suffix_ee->GetOp6Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp6Suffix();
+        }
+        else if (suffix_ee->GetOp7Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp7(last_src, suffix_guess_type, suffix_ee->GetOp7Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp7Suffix();
+        }
+        else if (suffix_ee->GetOp8Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp8(last_src, suffix_guess_type, suffix_ee->GetOp8Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp8Suffix();
+        }
+        else if (suffix_ee->GetOp9Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp9(last_src, suffix_guess_type, suffix_ee->GetOp9Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp9Suffix();
+        }
+        else
+        {
+            return ABnfGuessError(suffix_ee, u8"未知的表达式");
+        }
+    }
+    return GuessTypeForOp10Impl(op_string, left_src, left_guess_type, last_src, suffix_guess_type, op_10_suffix, guess);
+}
+
+ABnfGuessError ALittleScriptOp::GuessTypeForOp9Impl(const std::string& op_string, const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
+    , const ABnfElementPtr& right_src, const ABnfGuessPtr& right_guess_type, const std::shared_ptr<ALittleScriptOp9SuffixElement>& op_9_suffix, ABnfGuessPtr& guess)
+{
+    const bool left_check = std::dynamic_pointer_cast<ALittleScriptGuessInt>(left_guess_type) || std::dynamic_pointer_cast<ALittleScriptGuessLong>(left_guess_type);
+    if (!left_check)
+        return ABnfGuessError(left_src, op_string + u8"运算符左边必须是int,long类型.不能是:" + left_guess_type->GetValue());
+
+    const bool right_check = std::dynamic_pointer_cast<ALittleScriptGuessInt>(right_guess_type) || std::dynamic_pointer_cast<ALittleScriptGuessLong>(right_guess_type);
+    if (!right_check)
+        return ABnfGuessError(right_src, op_string + u8"运算符右边必须是int,long类型.不能是:" + right_guess_type->GetValue());
+
+    guess = left_guess_type;
+    return nullptr;
+}
+
+ABnfGuessError ALittleScriptOp::GuessTypeForOp9(const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
+    , const std::shared_ptr<ALittleScriptOp9SuffixElement>& op_9_suffix, ABnfGuessPtr& guess)
+{
+    const auto& op_string = op_9_suffix->GetOp9()->GetElementText();
+
+    ABnfGuessPtr suffix_guess_type;
+    ABnfElementPtr last_src;
+
+    auto value_factor_stat = op_9_suffix->GetValueFactorStat();
+    const auto op_2_value = op_9_suffix->GetOp2Value();
+    if (value_factor_stat != nullptr)
+    {
+        auto error = value_factor_stat->GuessType(suffix_guess_type);
+        if (error) return error;
+        last_src = value_factor_stat;
+    }
+    else if (op_2_value != nullptr)
+    {
+        auto error = GuessType(op_2_value, suffix_guess_type);
+        if (error) return error;
+        last_src = op_2_value;
+    }
+    else
+    {
+        return ABnfGuessError(op_9_suffix, u8"未知的表达式");
+    }
+
+    const auto& suffix_ee_list = op_9_suffix->GetOp9SuffixEeList();
+    for (const auto& suffix_ee : suffix_ee_list)
+    {
+        if (suffix_ee->GetOp3Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp3(last_src, suffix_guess_type, suffix_ee->GetOp3Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp3Suffix();
+        }
+        else if (suffix_ee->GetOp4Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp4(last_src, suffix_guess_type, suffix_ee->GetOp4Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp4Suffix();
+        }
+        else if (suffix_ee->GetOp5Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp5(last_src, suffix_guess_type, suffix_ee->GetOp5Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp5Suffix();
+        }
+        else if (suffix_ee->GetOp6Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp6(last_src, suffix_guess_type, suffix_ee->GetOp6Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp6Suffix();
+        }
+        else if (suffix_ee->GetOp7Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp7(last_src, suffix_guess_type, suffix_ee->GetOp7Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp7Suffix();
+        }
+        else if (suffix_ee->GetOp8Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp8(last_src, suffix_guess_type, suffix_ee->GetOp8Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp8Suffix();
+        }
+        else
+        {
+            return ABnfGuessError(suffix_ee, u8"未知的表达式");
+        }
+    }
+
+    return GuessTypeForOp9Impl(op_string, left_src, left_guess_type, last_src, suffix_guess_type, op_9_suffix, guess);
+}
+
+ABnfGuessError ALittleScriptOp::GuessTypeForOp8Impl(const std::string& op_string, const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
+    , const ABnfElementPtr& right_src, const ABnfGuessPtr& right_guess_type, const std::shared_ptr<ALittleScriptOp8SuffixElement>& op_8_suffix, ABnfGuessPtr& guess)
+{
+    const bool left_check = std::dynamic_pointer_cast<ALittleScriptGuessInt>(left_guess_type) || std::dynamic_pointer_cast<ALittleScriptGuessLong>(left_guess_type);
+    if (!left_check)
+        return ABnfGuessError(left_src, op_string + u8"运算符左边必须是int,long类型.不能是:" + left_guess_type->GetValue());
+
+    const bool right_check = std::dynamic_pointer_cast<ALittleScriptGuessInt>(right_guess_type) || std::dynamic_pointer_cast<ALittleScriptGuessLong>(right_guess_type);
+    if (!right_check)
+        return ABnfGuessError(right_src, op_string + u8"运算符右边必须是int,long类型.不能是:" + right_guess_type->GetValue());
+
+    guess = left_guess_type;
+    return nullptr;
+}
+
+ABnfGuessError ALittleScriptOp::GuessTypeForOp8(const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
+    , const std::shared_ptr<ALittleScriptOp8SuffixElement>& op_8_suffix, ABnfGuessPtr& guess)
+{
+    const auto& op_string = op_8_suffix->GetOp8()->GetElementText();
+
+    ABnfGuessPtr suffix_guess_type;
+    ABnfElementPtr last_src;
+
+    auto value_factor_stat = op_8_suffix->GetValueFactorStat();
+    const auto op_2_value = op_8_suffix->GetOp2Value();
+    if (value_factor_stat != nullptr)
+    {
+        auto error = value_factor_stat->GuessType(suffix_guess_type);
+        if (error) return error;
+        last_src = value_factor_stat;
+    }
+    else if (op_2_value != nullptr)
+    {
+        auto error = GuessType(op_2_value, suffix_guess_type);
+        if (error) return error;
+        last_src = op_2_value;
+    }
+    else
+    {
+        return ABnfGuessError(op_8_suffix, u8"未知的表达式");
+    }
+
+    const auto& suffix_ee_list = op_8_suffix->GetOp8SuffixEeList();
+    for (const auto& suffix_ee : suffix_ee_list)
+    {
+        if (suffix_ee->GetOp3Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp3(last_src, suffix_guess_type, suffix_ee->GetOp3Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp3Suffix();
+        }
+        else if (suffix_ee->GetOp4Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp4(last_src, suffix_guess_type, suffix_ee->GetOp4Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp4Suffix();
+        }
+        else if (suffix_ee->GetOp5Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp5(last_src, suffix_guess_type, suffix_ee->GetOp5Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp5Suffix();
+        }
+        else if (suffix_ee->GetOp6Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp6(last_src, suffix_guess_type, suffix_ee->GetOp6Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp6Suffix();
+        }
+        else if (suffix_ee->GetOp7Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp7(last_src, suffix_guess_type, suffix_ee->GetOp7Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp7Suffix();
+        }
+        else
+        {
+            return ABnfGuessError(suffix_ee, u8"未知的表达式");
+        }
+    }
+
+    return GuessTypeForOp8Impl(op_string, left_src, left_guess_type, last_src, suffix_guess_type, op_8_suffix, guess);
+}
+
+ABnfGuessError ALittleScriptOp::GuessTypeForOp7Impl(const std::string& op_string, const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
+    , const ABnfElementPtr& right_src, const ABnfGuessPtr& right_guess_type, const std::shared_ptr<ALittleScriptOp7SuffixElement>& op_7_suffix, ABnfGuessPtr& guess)
+{
+    const bool left_check = std::dynamic_pointer_cast<ALittleScriptGuessInt>(left_guess_type) || std::dynamic_pointer_cast<ALittleScriptGuessLong>(left_guess_type);
+    if (!left_check)
+        return ABnfGuessError(left_src, op_string + u8"运算符左边必须是int,long类型.不能是:" + left_guess_type->GetValue());
+
+    const bool right_check = std::dynamic_pointer_cast<ALittleScriptGuessInt>(right_guess_type) || std::dynamic_pointer_cast<ALittleScriptGuessLong>(right_guess_type);
+    if (!right_check)
+        return ABnfGuessError(right_src, op_string + u8"运算符右边必须是int,long类型.不能是:" + right_guess_type->GetValue());
+
+    guess = left_guess_type;
+    return nullptr;
+}
+
+ABnfGuessError ALittleScriptOp::GuessTypeForOp7(const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
+    , const std::shared_ptr<ALittleScriptOp7SuffixElement>& op_7_suffix, ABnfGuessPtr& guess)
+{
+    const auto& op_string = op_7_suffix->GetOp7()->GetElementText();
+
+    ABnfGuessPtr suffix_guess_type;
+    ABnfElementPtr last_src;
+
+    auto value_factor_stat = op_7_suffix->GetValueFactorStat();
+    const auto op_2_value = op_7_suffix->GetOp2Value();
+    if (value_factor_stat != nullptr)
+    {
+        auto error = value_factor_stat->GuessType(suffix_guess_type);
+        if (error) return error;
+        last_src = value_factor_stat;
+    }
+    else if (op_2_value != nullptr)
+    {
+        auto error = GuessType(op_2_value, suffix_guess_type);
+        if (error) return error;
+        last_src = op_2_value;
+    }
+    else
+    {
+        return ABnfGuessError(op_7_suffix, u8"未知的表达式");
+    }
+
+    const auto& suffix_ee_list = op_7_suffix->GetOp7SuffixEeList();
+    for (const auto& suffix_ee : suffix_ee_list)
+    {
+        if (suffix_ee->GetOp3Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp3(last_src, suffix_guess_type, suffix_ee->GetOp3Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp3Suffix();
+        }
+        else if (suffix_ee->GetOp4Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp4(last_src, suffix_guess_type, suffix_ee->GetOp4Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp4Suffix();
+        }
+        else if (suffix_ee->GetOp5Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp5(last_src, suffix_guess_type, suffix_ee->GetOp5Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp5Suffix();
+        }
+        else if (suffix_ee->GetOp6Suffix() != nullptr)
+        {
+            auto error = GuessTypeForOp6(last_src, suffix_guess_type, suffix_ee->GetOp6Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ee->GetOp6Suffix();
+        }
+        else
+        {
+            return ABnfGuessError(suffix_ee, u8"未知的表达式");
+        }
+    }
+
+    return GuessTypeForOp7Impl(op_string, left_src, left_guess_type, last_src, suffix_guess_type, op_7_suffix, guess);
+}
+
+ABnfGuessError ALittleScriptOp::GuessTypeForOp6Impl(const std::string& op_string, const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
+    , const ABnfElementPtr& right_src, const ABnfGuessPtr& right_guess_type, const std::shared_ptr<ALittleScriptOp6SuffixElement>& op_6_suffix, ABnfGuessPtr& guess)
+{
+    const bool left_check = std::dynamic_pointer_cast<ALittleScriptGuessInt>(left_guess_type) || std::dynamic_pointer_cast<ALittleScriptGuessLong>(left_guess_type);
+    if (!left_check)
+        return ABnfGuessError(left_src, op_string + u8"运算符左边必须是int,long类型.不能是:" + left_guess_type->GetValue());
+
+    const bool right_check = std::dynamic_pointer_cast<ALittleScriptGuessInt>(right_guess_type) || std::dynamic_pointer_cast<ALittleScriptGuessLong>(right_guess_type);
+    if (!right_check)
+        return ABnfGuessError(right_src, op_string + u8"运算符右边必须是int,long类型.不能是:" + right_guess_type->GetValue());
+
+    guess = left_guess_type;
+    return nullptr;
+}
+
 ABnfGuessError ALittleScriptOp::GuessTypeForOp6(const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
     , const std::shared_ptr<ALittleScriptOp6SuffixElement>& op_6_suffix, ABnfGuessPtr& guess)
 {
@@ -313,6 +742,7 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp6(const ABnfElementPtr& left_src, 
             return ABnfGuessError(suffix_ee, u8"未知的表达式");
         }
     }
+
     return GuessTypeForOp6Impl(op_string, left_src, left_guess_type, last_src, suffix_guess_type, op_6_suffix, guess);
 }
 
@@ -574,183 +1004,40 @@ ABnfGuessError ALittleScriptOp::GuessTypeForOp3(const ABnfElementPtr& left_src, 
     return ABnfGuessError(left_src, op_string + u8"运算符左边必须是int,long,double类型.不能是:" + left_guess_type->GetValue());
 }
 
-ABnfGuessError ALittleScriptOp::GuessType(const std::shared_ptr<ALittleScriptValueFactorStatElement>& value_factor_stat
-    , const std::shared_ptr<ALittleScriptOp3StatElement>& op_3_stat, ABnfGuessPtr& guess)
+ABnfGuessError ALittleScriptOp::GuessType(const std::shared_ptr<ALittleScriptOp2ValueElement>& op_2_value, ABnfGuessPtr& guess)
 {
-    ABnfGuessPtr factor_guess_type;
-    auto error = value_factor_stat->GuessType(factor_guess_type);
+    auto value_factor_stat = op_2_value->GetValueFactorStat();
+    if (value_factor_stat == nullptr)
+        return ABnfGuessError(value_factor_stat, u8"单目运算没有目标表达式");
+
+    ABnfGuessPtr guess_info;
+    auto error = value_factor_stat->GuessType(guess_info);
     if (error) return error;
 
-    ABnfGuessPtr suffix_guess_type;
-    error = GuessTypeForOp3(value_factor_stat, factor_guess_type, op_3_stat->GetOp3Suffix(), suffix_guess_type);
-    if (error) return error;
-
-    ABnfElementPtr last_src = op_3_stat->GetOp3Suffix();
-    const auto& suffix_ex_list = op_3_stat->GetOp3SuffixExList();
-    for (const auto& suffix_ex : suffix_ex_list)
+    const auto& op_2 = op_2_value->GetOp2()->GetElementText();
+    // guess_type必须是逻辑运算符
+    if (op_2 == "!")
     {
-        if (suffix_ex->GetOp3Suffix() != nullptr)
-        {
-            error = GuessTypeForOp3(last_src, suffix_guess_type, suffix_ex->GetOp3Suffix(), suffix_guess_type);
-            if (error) return error;
-            last_src = suffix_ex->GetOp3Suffix();
-        }
-        else if (suffix_ex->GetOp4Suffix() != nullptr)
-        {
-            error = GuessTypeForOp4(last_src, suffix_guess_type, suffix_ex->GetOp4Suffix(), suffix_guess_type);
-            if (error) return error;
-            last_src = suffix_ex->GetOp4Suffix();
-        }
-        else if (suffix_ex->GetOp5Suffix() != nullptr)
-        {
-            error = GuessTypeForOp5(last_src, suffix_guess_type, suffix_ex->GetOp5Suffix(), suffix_guess_type);
-            if (error) return error;
-            last_src = suffix_ex->GetOp5Suffix();
-        }
-        else if (suffix_ex->GetOp6Suffix() != nullptr)
-        {
-            error = GuessTypeForOp6(last_src, suffix_guess_type, suffix_ex->GetOp6Suffix(), suffix_guess_type);
-            if (error) return error;
-            last_src = suffix_ex->GetOp6Suffix();
-        }
-        else if (suffix_ex->GetOp7Suffix() != nullptr)
-        {
-            error = GuessTypeForOp7(last_src, suffix_guess_type, suffix_ex->GetOp7Suffix(), suffix_guess_type);
-            if (error) return error;
-            last_src = suffix_ex->GetOp7Suffix();
-        }
-        else if (suffix_ex->GetOp8Suffix() != nullptr)
-        {
-            error = GuessTypeForOp8(last_src, suffix_guess_type, suffix_ex->GetOp8Suffix(), suffix_guess_type);
-            if (error) return error;
-            last_src = suffix_ex->GetOp8Suffix();
-        }
-        else
-        {
-            return ABnfGuessError(suffix_ex, u8"未知的表达式");
-        }
+        if (!std::dynamic_pointer_cast<ALittleScriptGuessBool>(guess_info))
+            return ABnfGuessError(value_factor_stat, u8"!运算符右边必须是bool类型.不能是:" + guess_info->GetValue());
+        // guess_type必须是数字
+    }
+    else if (op_2 == "-")
+    {
+        if (!std::dynamic_pointer_cast<ALittleScriptGuessInt>(guess_info) && !std::dynamic_pointer_cast<ALittleScriptGuessLong>(guess_info) && !std::dynamic_pointer_cast<ALittleScriptGuessDouble>(guess_info))
+            return ABnfGuessError(value_factor_stat, u8"-运算符右边必须是int,long,double类型.不能是:" + guess_info->GetValue());
+    }
+    else if (op_2 == "~")
+    {
+        if (!std::dynamic_pointer_cast<ALittleScriptGuessInt>(guess_info) && !std::dynamic_pointer_cast<ALittleScriptGuessLong>(guess_info))
+            return ABnfGuessError(value_factor_stat, u8"~运算符右边必须是int,long类型.不能是:" + guess_info->GetValue());
+    }
+    else
+    {
+        return ABnfGuessError(op_2_value->GetOp2(), u8"未知的运算符:" + op_2);
     }
 
-    guess = suffix_guess_type;
-    return nullptr;
-}
-
-ABnfGuessError ALittleScriptOp::GuessTypes(const std::shared_ptr<ALittleScriptValueOpStatElement>& value_op_stat, std::vector<ABnfGuessPtr>& guess_list)
-{
-    guess_list.resize(0);
-    auto value_factor_stat = value_op_stat->GetValueFactorStat();
-
-    if (value_op_stat->GetOp3Stat() != nullptr)
-    {
-        guess_list.resize(0);
-        ABnfGuessPtr guess;
-        auto error = GuessType(value_factor_stat, value_op_stat->GetOp3Stat(), guess);
-        if (error) return error;
-        guess_list.push_back(guess);
-        return nullptr;
-    }
-    else if (value_op_stat->GetOp4Stat() != nullptr)
-    {
-        guess_list.resize(0);
-        ABnfGuessPtr guess;
-        auto error = GuessType(value_factor_stat, value_op_stat->GetOp4Stat(), guess);
-        if (error) return error;
-        guess_list.push_back(guess);
-        return nullptr;
-    }
-    else if (value_op_stat->GetOp5Stat() != nullptr)
-    {
-        guess_list.resize(0);
-        ABnfGuessPtr guess;
-        auto error = GuessType(value_factor_stat, value_op_stat->GetOp5Stat(), guess);
-        if (error) return error;
-        guess_list.push_back(guess);
-        return nullptr;
-    }
-    else if (value_op_stat->GetOp6Stat() != nullptr)
-    {
-        guess_list.resize(0);
-        ABnfGuessPtr guess;
-        auto error = GuessType(value_factor_stat, value_op_stat->GetOp6Stat(), guess);
-        if (error) return error;
-        guess_list.push_back(guess);
-        return nullptr;
-    }
-    else if (value_op_stat->GetOp7Stat() != nullptr)
-    {
-        guess_list.resize(0);
-        ABnfGuessPtr guess;
-        auto error = GuessType(value_factor_stat, value_op_stat->GetOp7Stat(), guess);
-        if (error) return error;
-        guess_list.push_back(guess);
-        return nullptr;
-    }
-    else if (value_op_stat->GetOp8Stat() != nullptr)
-    {
-        guess_list.resize(0);
-        ABnfGuessPtr guess;
-        auto error = GuessType(value_factor_stat, value_op_stat->GetOp8Stat(), guess);
-        if (error) return error;
-        guess_list.push_back(guess);
-        return nullptr;
-    }
-    return value_factor_stat->GuessTypes(guess_list);
-}
-
-ABnfGuessError ALittleScriptOp::GuessType(const std::shared_ptr<ALittleScriptOp2StatElement>& op_2_stat, ABnfGuessPtr& guess)
-{
-    const auto op_2_value = op_2_stat->GetOp2Value();
-    ABnfGuessPtr suffix_guess_type;
-    auto error = GuessType(op_2_value, suffix_guess_type);
-    if (error) return error;
-
-    ABnfElementPtr last_src = op_2_value;
-    const auto& suffix_ex_list = op_2_stat->GetOp2SuffixExList();
-    for (const auto& suffix_ex : suffix_ex_list)
-    {
-        if (suffix_ex->GetOp3Suffix() != nullptr)
-        {
-            error = GuessTypeForOp3(last_src, suffix_guess_type, suffix_ex->GetOp3Suffix(), suffix_guess_type);
-            if (error) return error;
-            last_src = suffix_ex->GetOp3Suffix();
-        }
-        else if (suffix_ex->GetOp4Suffix() != nullptr)
-        {
-            error = GuessTypeForOp4(last_src, suffix_guess_type, suffix_ex->GetOp4Suffix(), suffix_guess_type);
-            if (error) return error;
-            last_src = suffix_ex->GetOp4Suffix();
-        }
-        else if (suffix_ex->GetOp5Suffix() != nullptr)
-        {
-            error = GuessTypeForOp5(last_src, suffix_guess_type, suffix_ex->GetOp5Suffix(), suffix_guess_type);
-            if (error) return error;
-            last_src = suffix_ex->GetOp5Suffix();
-        }
-        else if (suffix_ex->GetOp6Suffix() != nullptr)
-        {
-            error = GuessTypeForOp6(last_src, suffix_guess_type, suffix_ex->GetOp6Suffix(), suffix_guess_type);
-            if (error) return error;
-            last_src = suffix_ex->GetOp6Suffix();
-        }
-        else if (suffix_ex->GetOp7Suffix() != nullptr)
-        {
-            error = GuessTypeForOp7(last_src, suffix_guess_type, suffix_ex->GetOp7Suffix(), suffix_guess_type);
-            if (error) return error;
-            last_src = suffix_ex->GetOp7Suffix();
-        }
-        else if (suffix_ex->GetOp8Suffix() != nullptr)
-        {
-            error = GuessTypeForOp8(last_src, suffix_guess_type, suffix_ex->GetOp8Suffix(), suffix_guess_type);
-            if (error) return error;
-            last_src = suffix_ex->GetOp8Suffix();
-        }
-        else
-        {
-            return ABnfGuessError(suffix_ex, u8"未知的表达式");
-        }
-    }
-
-    guess = suffix_guess_type;
+    guess = guess_info;
     return nullptr;
 }
 
@@ -992,35 +1279,268 @@ ABnfGuessError ALittleScriptOp::GuessTypeEqual(const ABnfGuessPtr& left_guess, c
     return ABnfGuessError(right_src, u8"要求是" + left_guess->GetValue() + u8",不能是:" + right_guess->GetValue());
 }
 
-ABnfGuessError ALittleScriptOp::GuessType(const std::shared_ptr<ALittleScriptOp2ValueElement>& op_2_value, ABnfGuessPtr& guess)
+ABnfGuessError ALittleScriptOp::GuessTypes(const std::shared_ptr<ALittleScriptValueOpStatElement>& value_op_stat, std::vector<ABnfGuessPtr>& guess_list)
 {
-    auto value_factor_stat = op_2_value->GetValueFactorStat();
-    if (value_factor_stat == nullptr)
-        return ABnfGuessError(value_factor_stat, u8"单目运算没有目标表达式");
+    guess_list.resize(0);
+    auto value_factor_stat = value_op_stat->GetValueFactorStat();
 
-    ABnfGuessPtr guess_info;
-    auto error = value_factor_stat->GuessType(guess_info);
+    if (value_op_stat->GetOp3Stat() != nullptr)
+    {
+        guess_list.resize(0);
+        ABnfGuessPtr guess;
+        auto error = GuessType(value_factor_stat, value_op_stat->GetOp3Stat(), guess);
+        if (error) return error;
+        guess_list.push_back(guess);
+        return nullptr;
+    }
+    else if (value_op_stat->GetOp4Stat() != nullptr)
+    {
+        guess_list.resize(0);
+        ABnfGuessPtr guess;
+        auto error = GuessType(value_factor_stat, value_op_stat->GetOp4Stat(), guess);
+        if (error) return error;
+        guess_list.push_back(guess);
+        return nullptr;
+    }
+    else if (value_op_stat->GetOp5Stat() != nullptr)
+    {
+        guess_list.resize(0);
+        ABnfGuessPtr guess;
+        auto error = GuessType(value_factor_stat, value_op_stat->GetOp5Stat(), guess);
+        if (error) return error;
+        guess_list.push_back(guess);
+        return nullptr;
+    }
+    else if (value_op_stat->GetOp6Stat() != nullptr)
+    {
+        guess_list.resize(0);
+        ABnfGuessPtr guess;
+        auto error = GuessType(value_factor_stat, value_op_stat->GetOp6Stat(), guess);
+        if (error) return error;
+        guess_list.push_back(guess);
+        return nullptr;
+    }
+    else if (value_op_stat->GetOp7Stat() != nullptr)
+    {
+        guess_list.resize(0);
+        ABnfGuessPtr guess;
+        auto error = GuessType(value_factor_stat, value_op_stat->GetOp7Stat(), guess);
+        if (error) return error;
+        guess_list.push_back(guess);
+        return nullptr;
+    }
+    else if (value_op_stat->GetOp8Stat() != nullptr)
+    {
+        guess_list.resize(0);
+        ABnfGuessPtr guess;
+        auto error = GuessType(value_factor_stat, value_op_stat->GetOp8Stat(), guess);
+        if (error) return error;
+        guess_list.push_back(guess);
+        return nullptr;
+    }
+    else if (value_op_stat->GetOp9Stat() != nullptr)
+    {
+        guess_list.resize(0);
+        ABnfGuessPtr guess;
+        auto error = GuessType(value_factor_stat, value_op_stat->GetOp9Stat(), guess);
+        if (error) return error;
+        guess_list.push_back(guess);
+        return nullptr;
+    }
+    else if (value_op_stat->GetOp10Stat() != nullptr)
+    {
+        guess_list.resize(0);
+        ABnfGuessPtr guess;
+        auto error = GuessType(value_factor_stat, value_op_stat->GetOp10Stat(), guess);
+        if (error) return error;
+        guess_list.push_back(guess);
+        return nullptr;
+    }
+    else if (value_op_stat->GetOp11Stat() != nullptr)
+    {
+        guess_list.resize(0);
+        ABnfGuessPtr guess;
+        auto error = GuessType(value_factor_stat, value_op_stat->GetOp11Stat(), guess);
+        if (error) return error;
+        guess_list.push_back(guess);
+        return nullptr;
+    }
+    else if (value_op_stat->GetOp12Stat() != nullptr)
+    {
+        guess_list.resize(0);
+        ABnfGuessPtr guess;
+        auto error = GuessType(value_factor_stat, value_op_stat->GetOp12Stat(), guess);
+        if (error) return error;
+        guess_list.push_back(guess);
+        return nullptr;
+    }
+	
+    return value_factor_stat->GuessTypes(guess_list);
+}
+
+ABnfGuessError ALittleScriptOp::GuessType(const std::shared_ptr<ALittleScriptOp2StatElement>& op_2_stat, ABnfGuessPtr& guess)
+{
+    const auto op_2_value = op_2_stat->GetOp2Value();
+    ABnfGuessPtr suffix_guess_type;
+    auto error = GuessType(op_2_value, suffix_guess_type);
     if (error) return error;
 
-    const auto& op_2 = op_2_value->GetOp2()->GetElementText();
-    // guess_type必须是逻辑运算符
-    if (op_2 == "!")
+    ABnfElementPtr last_src = op_2_value;
+    const auto& suffix_ex_list = op_2_stat->GetOp2SuffixExList();
+    for (const auto& suffix_ex : suffix_ex_list)
     {
-        if (!std::dynamic_pointer_cast<ALittleScriptGuessBool>(guess_info))
-            return ABnfGuessError(value_factor_stat, u8"!运算符右边必须是bool类型.不能是:" + guess_info->GetValue());
-        // guess_type必须是数字
-    }
-    else if (op_2 == "-")
-    {
-        if (!std::dynamic_pointer_cast<ALittleScriptGuessInt>(guess_info) && !std::dynamic_pointer_cast<ALittleScriptGuessLong>(guess_info) && !std::dynamic_pointer_cast<ALittleScriptGuessDouble>(guess_info))
-            return ABnfGuessError(value_factor_stat, u8"-运算符右边必须是int,double类型.不能是:" + guess_info->GetValue());
-    }
-    else
-    {
-        return ABnfGuessError(op_2_value->GetOp2(), u8"未知的运算符:" + op_2);
+        if (suffix_ex->GetOp3Suffix() != nullptr)
+        {
+            error = GuessTypeForOp3(last_src, suffix_guess_type, suffix_ex->GetOp3Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp3Suffix();
+        }
+        else if (suffix_ex->GetOp4Suffix() != nullptr)
+        {
+            error = GuessTypeForOp4(last_src, suffix_guess_type, suffix_ex->GetOp4Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp4Suffix();
+        }
+        else if (suffix_ex->GetOp5Suffix() != nullptr)
+        {
+            error = GuessTypeForOp5(last_src, suffix_guess_type, suffix_ex->GetOp5Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp5Suffix();
+        }
+        else if (suffix_ex->GetOp6Suffix() != nullptr)
+        {
+            error = GuessTypeForOp6(last_src, suffix_guess_type, suffix_ex->GetOp6Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp6Suffix();
+        }
+        else if (suffix_ex->GetOp7Suffix() != nullptr)
+        {
+            error = GuessTypeForOp7(last_src, suffix_guess_type, suffix_ex->GetOp7Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp7Suffix();
+        }
+        else if (suffix_ex->GetOp8Suffix() != nullptr)
+        {
+            error = GuessTypeForOp8(last_src, suffix_guess_type, suffix_ex->GetOp8Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp8Suffix();
+        }
+        else if (suffix_ex->GetOp9Suffix() != nullptr)
+        {
+            error = GuessTypeForOp9(last_src, suffix_guess_type, suffix_ex->GetOp9Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp9Suffix();
+        }
+        else if (suffix_ex->GetOp10Suffix() != nullptr)
+        {
+            error = GuessTypeForOp10(last_src, suffix_guess_type, suffix_ex->GetOp10Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp10Suffix();
+        }
+        else if (suffix_ex->GetOp11Suffix() != nullptr)
+        {
+            error = GuessTypeForOp11(last_src, suffix_guess_type, suffix_ex->GetOp11Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp11Suffix();
+        }
+        else if (suffix_ex->GetOp12Suffix() != nullptr)
+        {
+            error = GuessTypeForOp12(last_src, suffix_guess_type, suffix_ex->GetOp12Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp12Suffix();
+        }
+        else
+        {
+            return ABnfGuessError(suffix_ex, u8"未知的表达式");
+        }
     }
 
-    guess = guess_info;
+    guess = suffix_guess_type;
+    return nullptr;
+}
+
+ABnfGuessError ALittleScriptOp::GuessType(const std::shared_ptr<ALittleScriptValueFactorStatElement>& value_factor_stat
+    , const std::shared_ptr<ALittleScriptOp3StatElement>& op_3_stat, ABnfGuessPtr& guess)
+{
+    ABnfGuessPtr factor_guess_type;
+    auto error = value_factor_stat->GuessType(factor_guess_type);
+    if (error) return error;
+
+    ABnfGuessPtr suffix_guess_type;
+    error = GuessTypeForOp3(value_factor_stat, factor_guess_type, op_3_stat->GetOp3Suffix(), suffix_guess_type);
+    if (error) return error;
+
+    ABnfElementPtr last_src = op_3_stat->GetOp3Suffix();
+    const auto& suffix_ex_list = op_3_stat->GetOp3SuffixExList();
+    for (const auto& suffix_ex : suffix_ex_list)
+    {
+        if (suffix_ex->GetOp3Suffix() != nullptr)
+        {
+            error = GuessTypeForOp3(last_src, suffix_guess_type, suffix_ex->GetOp3Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp3Suffix();
+        }
+        else if (suffix_ex->GetOp4Suffix() != nullptr)
+        {
+            error = GuessTypeForOp4(last_src, suffix_guess_type, suffix_ex->GetOp4Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp4Suffix();
+        }
+        else if (suffix_ex->GetOp5Suffix() != nullptr)
+        {
+            error = GuessTypeForOp5(last_src, suffix_guess_type, suffix_ex->GetOp5Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp5Suffix();
+        }
+        else if (suffix_ex->GetOp6Suffix() != nullptr)
+        {
+            error = GuessTypeForOp6(last_src, suffix_guess_type, suffix_ex->GetOp6Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp6Suffix();
+        }
+        else if (suffix_ex->GetOp7Suffix() != nullptr)
+        {
+            error = GuessTypeForOp7(last_src, suffix_guess_type, suffix_ex->GetOp7Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp7Suffix();
+        }
+        else if (suffix_ex->GetOp8Suffix() != nullptr)
+        {
+            error = GuessTypeForOp8(last_src, suffix_guess_type, suffix_ex->GetOp8Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp8Suffix();
+        }
+        else if (suffix_ex->GetOp9Suffix() != nullptr)
+        {
+            error = GuessTypeForOp9(last_src, suffix_guess_type, suffix_ex->GetOp9Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp9Suffix();
+        }
+        else if (suffix_ex->GetOp10Suffix() != nullptr)
+        {
+            error = GuessTypeForOp10(last_src, suffix_guess_type, suffix_ex->GetOp10Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp10Suffix();
+        }
+        else if (suffix_ex->GetOp11Suffix() != nullptr)
+        {
+            error = GuessTypeForOp11(last_src, suffix_guess_type, suffix_ex->GetOp11Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp11Suffix();
+        }
+        else if (suffix_ex->GetOp12Suffix() != nullptr)
+        {
+            error = GuessTypeForOp12(last_src, suffix_guess_type, suffix_ex->GetOp12Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp12Suffix();
+        }
+        else
+        {
+            return ABnfGuessError(suffix_ex, u8"未知的表达式");
+        }
+    }
+
+    guess = suffix_guess_type;
     return nullptr;
 }
 
@@ -1068,6 +1588,30 @@ ABnfGuessError ALittleScriptOp::GuessType(const std::shared_ptr<ALittleScriptVal
             error = GuessTypeForOp8(last_src, suffix_guess_type, suffix_ex->GetOp8Suffix(), suffix_guess_type);
             if (error) return error;
             last_src = suffix_ex->GetOp8Suffix();
+        }
+        else if (suffix_ex->GetOp9Suffix() != nullptr)
+        {
+            error = GuessTypeForOp9(last_src, suffix_guess_type, suffix_ex->GetOp9Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp9Suffix();
+        }
+        else if (suffix_ex->GetOp10Suffix() != nullptr)
+        {
+            error = GuessTypeForOp10(last_src, suffix_guess_type, suffix_ex->GetOp10Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp10Suffix();
+        }
+        else if (suffix_ex->GetOp11Suffix() != nullptr)
+        {
+            error = GuessTypeForOp11(last_src, suffix_guess_type, suffix_ex->GetOp11Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp11Suffix();
+        }
+        else if (suffix_ex->GetOp12Suffix() != nullptr)
+        {
+            error = GuessTypeForOp12(last_src, suffix_guess_type, suffix_ex->GetOp12Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp12Suffix();
         }
         else
         {
@@ -1118,6 +1662,30 @@ ABnfGuessError ALittleScriptOp::GuessType(const std::shared_ptr<ALittleScriptVal
             if (error) return error;
             last_src = suffix_ex->GetOp8Suffix();
         }
+        else if (suffix_ex->GetOp9Suffix() != nullptr)
+        {
+            error = GuessTypeForOp9(last_src, suffix_guess_type, suffix_ex->GetOp9Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp9Suffix();
+        }
+        else if (suffix_ex->GetOp10Suffix() != nullptr)
+        {
+            error = GuessTypeForOp10(last_src, suffix_guess_type, suffix_ex->GetOp10Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp10Suffix();
+        }
+        else if (suffix_ex->GetOp11Suffix() != nullptr)
+        {
+            error = GuessTypeForOp11(last_src, suffix_guess_type, suffix_ex->GetOp11Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp11Suffix();
+        }
+        else if (suffix_ex->GetOp12Suffix() != nullptr)
+        {
+            error = GuessTypeForOp12(last_src, suffix_guess_type, suffix_ex->GetOp12Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp12Suffix();
+        }
         else
         {
             return ABnfGuessError(suffix_ex, u8"未知的表达式");
@@ -1161,6 +1729,30 @@ ABnfGuessError ALittleScriptOp::GuessType(const std::shared_ptr<ALittleScriptVal
             if (error) return error;
             last_src = suffix_ex->GetOp8Suffix();
         }
+        else if (suffix_ex->GetOp9Suffix() != nullptr)
+        {
+            error = GuessTypeForOp9(last_src, suffix_guess_type, suffix_ex->GetOp9Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp9Suffix();
+        }
+        else if (suffix_ex->GetOp10Suffix() != nullptr)
+        {
+            error = GuessTypeForOp10(last_src, suffix_guess_type, suffix_ex->GetOp10Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp10Suffix();
+        }
+        else if (suffix_ex->GetOp11Suffix() != nullptr)
+        {
+            error = GuessTypeForOp11(last_src, suffix_guess_type, suffix_ex->GetOp11Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp11Suffix();
+        }
+        else if (suffix_ex->GetOp12Suffix() != nullptr)
+        {
+            error = GuessTypeForOp12(last_src, suffix_guess_type, suffix_ex->GetOp12Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp12Suffix();
+        }
         else
         {
             return ABnfGuessError(suffix_ex, u8"未知的表达式");
@@ -1198,6 +1790,30 @@ ABnfGuessError ALittleScriptOp::GuessType(const std::shared_ptr<ALittleScriptVal
             if (error) return error;
             last_src = suffix_ex->GetOp8Suffix();
         }
+        else if (suffix_ex->GetOp9Suffix() != nullptr)
+        {
+            error = GuessTypeForOp9(last_src, suffix_guess_type, suffix_ex->GetOp9Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp9Suffix();
+        }
+        else if (suffix_ex->GetOp10Suffix() != nullptr)
+        {
+            error = GuessTypeForOp10(last_src, suffix_guess_type, suffix_ex->GetOp10Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp10Suffix();
+        }
+        else if (suffix_ex->GetOp11Suffix() != nullptr)
+        {
+            error = GuessTypeForOp11(last_src, suffix_guess_type, suffix_ex->GetOp11Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp11Suffix();
+        }
+        else if (suffix_ex->GetOp12Suffix() != nullptr)
+        {
+            error = GuessTypeForOp12(last_src, suffix_guess_type, suffix_ex->GetOp12Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp12Suffix();
+        }
         else
         {
             return ABnfGuessError(suffix_ex, u8"未知的表达式");
@@ -1229,6 +1845,30 @@ ABnfGuessError ALittleScriptOp::GuessType(const std::shared_ptr<ALittleScriptVal
             if (error) return error;
             last_src = suffix_ex->GetOp8Suffix();
         }
+        else if (suffix_ex->GetOp9Suffix() != nullptr)
+        {
+            error = GuessTypeForOp9(last_src, suffix_guess_type, suffix_ex->GetOp9Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp9Suffix();
+        }
+        else if (suffix_ex->GetOp10Suffix() != nullptr)
+        {
+            error = GuessTypeForOp10(last_src, suffix_guess_type, suffix_ex->GetOp10Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp10Suffix();
+        }
+        else if (suffix_ex->GetOp11Suffix() != nullptr)
+        {
+            error = GuessTypeForOp11(last_src, suffix_guess_type, suffix_ex->GetOp11Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp11Suffix();
+        }
+        else if (suffix_ex->GetOp12Suffix() != nullptr)
+        {
+            error = GuessTypeForOp12(last_src, suffix_guess_type, suffix_ex->GetOp12Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp12Suffix();
+        }
         else
         {
             return ABnfGuessError(suffix_ex, u8"未知的表达式");
@@ -1239,16 +1879,166 @@ ABnfGuessError ALittleScriptOp::GuessType(const std::shared_ptr<ALittleScriptVal
     return nullptr;
 }
 
-ABnfGuessError ALittleScriptOp::GuessTypeForOp7Impl(const std::string& op_string, const ABnfElementPtr& left_src, const ABnfGuessPtr& left_guess_type
-    , const ABnfElementPtr& right_src, const ABnfGuessPtr& right_guess_type
-    , const std::shared_ptr<ALittleScriptOp7SuffixElement>& op_7_suffix, ABnfGuessPtr& guess)
+
+ABnfGuessError ALittleScriptOp::GuessType(const std::shared_ptr<ALittleScriptValueFactorStatElement>& value_factor_stat
+    , const std::shared_ptr<ALittleScriptOp9StatElement>& op_9_stat, ABnfGuessPtr& guess)
 {
-    if (!(std::dynamic_pointer_cast<ALittleScriptGuessBool>(left_guess_type)))
-        return ABnfGuessError(left_src, op_string + u8"运算符左边必须是bool类型.不能是:" + left_guess_type->GetValue());
+    ABnfGuessPtr factor_guess_type;
+    auto error = value_factor_stat->GuessType(factor_guess_type);
+    if (error) return error;
 
-    if (!(std::dynamic_pointer_cast<ALittleScriptGuessBool>(right_guess_type)))
-        return ABnfGuessError(right_src, op_string + u8"运算符右边边必须是bool类型.不能是:" + right_guess_type->GetValue());
+    ABnfGuessPtr suffix_guess_type;
+    error = GuessTypeForOp9(value_factor_stat, factor_guess_type, op_9_stat->GetOp9Suffix(), suffix_guess_type);
+    if (error) return error;
 
-    guess = ALittleScriptStatic::Inst().sBoolGuess;
+    ABnfElementPtr last_src = op_9_stat->GetOp9Suffix();
+    const auto& suffix_ex_list = op_9_stat->GetOp9SuffixExList();
+    for (const auto& suffix_ex : suffix_ex_list)
+    {
+        if (suffix_ex->GetOp9Suffix() != nullptr)
+        {
+            error = GuessTypeForOp9(last_src, suffix_guess_type, suffix_ex->GetOp9Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp9Suffix();
+        }
+        else if (suffix_ex->GetOp10Suffix() != nullptr)
+        {
+            error = GuessTypeForOp10(last_src, suffix_guess_type, suffix_ex->GetOp10Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp10Suffix();
+        }
+        else if (suffix_ex->GetOp11Suffix() != nullptr)
+        {
+            error = GuessTypeForOp11(last_src, suffix_guess_type, suffix_ex->GetOp11Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp11Suffix();
+        }
+        else if (suffix_ex->GetOp12Suffix() != nullptr)
+        {
+            error = GuessTypeForOp12(last_src, suffix_guess_type, suffix_ex->GetOp12Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp12Suffix();
+        }
+        else
+        {
+            return ABnfGuessError(suffix_ex, u8"未知的表达式");
+        }
+    }
+
+    guess = suffix_guess_type;
+    return nullptr;
+}
+
+
+ABnfGuessError ALittleScriptOp::GuessType(const std::shared_ptr<ALittleScriptValueFactorStatElement>& value_factor_stat
+    , const std::shared_ptr<ALittleScriptOp10StatElement>& op_10_stat, ABnfGuessPtr& guess)
+{
+    ABnfGuessPtr factor_guess_type;
+    auto error = value_factor_stat->GuessType(factor_guess_type);
+    if (error) return error;
+
+    ABnfGuessPtr suffix_guess_type;
+    error = GuessTypeForOp10(value_factor_stat, factor_guess_type, op_10_stat->GetOp10Suffix(), suffix_guess_type);
+    if (error) return error;
+
+    ABnfElementPtr last_src = op_10_stat->GetOp10Suffix();
+    const auto& suffix_ex_list = op_10_stat->GetOp10SuffixExList();
+    for (const auto& suffix_ex : suffix_ex_list)
+    {
+        if (suffix_ex->GetOp10Suffix() != nullptr)
+        {
+            error = GuessTypeForOp10(last_src, suffix_guess_type, suffix_ex->GetOp10Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp10Suffix();
+        }
+        else if (suffix_ex->GetOp11Suffix() != nullptr)
+        {
+            error = GuessTypeForOp11(last_src, suffix_guess_type, suffix_ex->GetOp11Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp11Suffix();
+        }
+        else if (suffix_ex->GetOp12Suffix() != nullptr)
+        {
+            error = GuessTypeForOp12(last_src, suffix_guess_type, suffix_ex->GetOp12Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp12Suffix();
+        }
+        else
+        {
+            return ABnfGuessError(suffix_ex, u8"未知的表达式");
+        }
+    }
+
+    guess = suffix_guess_type;
+    return nullptr;
+}
+
+
+ABnfGuessError ALittleScriptOp::GuessType(const std::shared_ptr<ALittleScriptValueFactorStatElement>& value_factor_stat
+    , const std::shared_ptr<ALittleScriptOp11StatElement>& op_11_stat, ABnfGuessPtr& guess)
+{
+    ABnfGuessPtr factor_guess_type;
+    auto error = value_factor_stat->GuessType(factor_guess_type);
+    if (error) return error;
+
+    ABnfGuessPtr suffix_guess_type;
+    error = GuessTypeForOp11(value_factor_stat, factor_guess_type, op_11_stat->GetOp11Suffix(), suffix_guess_type);
+    if (error) return error;
+
+    ABnfElementPtr last_src = op_11_stat->GetOp11Suffix();
+    const auto& suffix_ex_list = op_11_stat->GetOp11SuffixExList();
+    for (const auto& suffix_ex : suffix_ex_list)
+    {
+        if (suffix_ex->GetOp11Suffix() != nullptr)
+        {
+            error = GuessTypeForOp11(last_src, suffix_guess_type, suffix_ex->GetOp11Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp11Suffix();
+        }
+        else if (suffix_ex->GetOp12Suffix() != nullptr)
+        {
+            error = GuessTypeForOp12(last_src, suffix_guess_type, suffix_ex->GetOp12Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp12Suffix();
+        }
+        else
+        {
+            return ABnfGuessError(suffix_ex, u8"未知的表达式");
+        }
+    }
+
+    guess = suffix_guess_type;
+    return nullptr;
+}
+
+
+ABnfGuessError ALittleScriptOp::GuessType(const std::shared_ptr<ALittleScriptValueFactorStatElement>& value_factor_stat
+    , const std::shared_ptr<ALittleScriptOp12StatElement>& op_12_stat, ABnfGuessPtr& guess)
+{
+    ABnfGuessPtr factor_guess_type;
+    auto error = value_factor_stat->GuessType(factor_guess_type);
+    if (error) return error;
+
+    ABnfGuessPtr suffix_guess_type;
+    error = GuessTypeForOp12(value_factor_stat, factor_guess_type, op_12_stat->GetOp12Suffix(), suffix_guess_type);
+    if (error) return error;
+
+    ABnfElementPtr last_src = op_12_stat->GetOp12Suffix();
+    const auto& suffix_ex_list = op_12_stat->GetOp12SuffixExList();
+    for (const auto& suffix_ex : suffix_ex_list)
+    {
+        if (suffix_ex->GetOp12Suffix() != nullptr)
+        {
+            error = GuessTypeForOp12(last_src, suffix_guess_type, suffix_ex->GetOp12Suffix(), suffix_guess_type);
+            if (error) return error;
+            last_src = suffix_ex->GetOp12Suffix();
+        }
+        else
+        {
+            return ABnfGuessError(suffix_ex, u8"未知的表达式");
+        }
+    }
+
+    guess = suffix_guess_type;
     return nullptr;
 }

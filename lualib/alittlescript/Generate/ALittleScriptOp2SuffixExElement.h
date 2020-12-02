@@ -6,12 +6,16 @@
 #include <string>
 #include "../../alanguage/Model/ABnfNodeElement.h"
 
+class ALittleScriptOp10SuffixElement;
 class ALittleScriptOp3SuffixElement;
 class ALittleScriptOp4SuffixElement;
 class ALittleScriptOp5SuffixElement;
 class ALittleScriptOp6SuffixElement;
 class ALittleScriptOp7SuffixElement;
 class ALittleScriptOp8SuffixElement;
+class ALittleScriptOp12SuffixElement;
+class ALittleScriptOp9SuffixElement;
+class ALittleScriptOp11SuffixElement;
 
 class ALittleScriptOp2SuffixExElement : public ABnfNodeElement
 {
@@ -20,6 +24,11 @@ public:
         : ABnfNodeElement(factory, file, line, col, offset, type) { }
     virtual ~ALittleScriptOp2SuffixExElement() { }
 
+private:
+    bool m_flag_Op10Suffix = false;
+    std::shared_ptr<ALittleScriptOp10SuffixElement> m_cache_Op10Suffix;
+public:
+    std::shared_ptr<ALittleScriptOp10SuffixElement> GetOp10Suffix();
 private:
     bool m_flag_Op3Suffix = false;
     std::shared_ptr<ALittleScriptOp3SuffixElement> m_cache_Op3Suffix;
@@ -50,6 +59,21 @@ private:
     std::shared_ptr<ALittleScriptOp8SuffixElement> m_cache_Op8Suffix;
 public:
     std::shared_ptr<ALittleScriptOp8SuffixElement> GetOp8Suffix();
+private:
+    bool m_flag_Op12Suffix = false;
+    std::shared_ptr<ALittleScriptOp12SuffixElement> m_cache_Op12Suffix;
+public:
+    std::shared_ptr<ALittleScriptOp12SuffixElement> GetOp12Suffix();
+private:
+    bool m_flag_Op9Suffix = false;
+    std::shared_ptr<ALittleScriptOp9SuffixElement> m_cache_Op9Suffix;
+public:
+    std::shared_ptr<ALittleScriptOp9SuffixElement> GetOp9Suffix();
+private:
+    bool m_flag_Op11Suffix = false;
+    std::shared_ptr<ALittleScriptOp11SuffixElement> m_cache_Op11Suffix;
+public:
+    std::shared_ptr<ALittleScriptOp11SuffixElement> GetOp11Suffix();
 };
 
 #endif // _ALITTLE_ALittleScriptOp2SuffixExElement_H_

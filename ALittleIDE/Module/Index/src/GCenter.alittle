@@ -119,7 +119,7 @@ class GCenter
 
         var fixed_host = "139.159.176.119";
 
-        var base_url = "http://"..fixed_host.."/ALittle/";
+        var base_url = "http://"..fixed_host.."/";
         [Language(JavaScript)]
         var host = location.host;
         [Language(JavaScript)]

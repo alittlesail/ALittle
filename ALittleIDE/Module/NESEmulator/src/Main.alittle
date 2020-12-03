@@ -41,6 +41,7 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 	g_ModuleBasePath = module_base_path;
 	
 	alittle.Require(script_base_path, "GCenter");
+    alittle.RequireFromPaths(script_base_path, "Core/", paths("src/Core"));
 	g_GCenter.Setup();
 }
 

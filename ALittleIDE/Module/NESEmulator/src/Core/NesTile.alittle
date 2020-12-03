@@ -1,0 +1,185 @@
+
+namespace NESEmulator;
+
+protected class NesTile
+{
+    // 像素
+    private Map<int, int> _pix = new Map<int, int>();
+
+    private int _w = 0;
+    private int _h = 0;
+
+    private int _inc_x = 0;
+    private int _inc_y = 0;
+
+    private int _pal_index = 0;
+    private int _tpri = 0;
+    private int _c = 0;
+    private bool _init = false;
+    private Map<int, bool> _opauqe;
+
+    public fun SetBuffer(Map<int, int> scanline)
+    {
+        for (var y = 0; y < 8; 1)
+            this.SetScanline(y, scanline[y], scanline[y + 8]);
+    }
+
+    public fun SetScanline(int sline, int b1, int b2)
+    {
+        this._init = true;
+        var t_index = sline <<- 3;
+        for (var x = 0; x < 8; 1)
+        {
+            this._pix[t_index + x] = ((b1 ->> (7 - x)) & 1) + (((b2 ->> (7 - x)) & 1) <<- 1);
+            if (this._pix[t_index + x] == 0) this._opauqe[sline] = false;
+        }
+    }
+
+    public fun Render(Map<int, int> buffer,
+                     int src_x1,
+                     int src_y1,
+                     int src_x2,
+                     int src_y2,
+                     int dx,
+                     int dy,
+                     int pal_add,
+                     Map<int, int> palette,
+                     bool flip_horizontal,
+                     bool flip_vertical,
+                     int pri,
+                     Map<int, int> pri_table)
+    {
+        if (dx < -7 || dx >= 256 || dy < -7 || dy >= 240) {
+            return;
+        }
+
+        this._w = src_x2 - src_x1;
+        this._h = src_y2 - src_y1;
+
+        if (dx < 0) {
+            src_x1 -= dx;
+        }
+        if (dx + src_x2 >= 256) {
+            src_x2 = 256 - dx;
+        }
+
+        if (dy < 0) {
+            src_y1 -= dy;
+        }
+        if (dy + src_y2 >= 240) {
+            src_y2 = 240 - dy;
+        }
+
+        if (!flip_horizontal && !flip_vertical)
+        {
+            var fb_index = (dy <<- 8) + dx;
+            var t_index = 0;
+            for (var y = 0; y < 8; 1)
+            {
+                for (var x = 0; x < 8; 1)
+                {
+                    if (x >= src_x1 && x < src_x2 && y >= src_y1 && y < src_y2)
+                    {
+                        var pal_index = this._pix[t_index];
+                        var tpri = pri_table[fb_index];
+                        if (pal_index != 0 && pri <= (tpri & 0xff))
+                        {
+                            buffer[fb_index] = palette[pal_index + pal_add];
+                            tpri = (tpri & 0xf00) | pri;
+                            pri_table[fb_index] = tpri;
+                    	}
+                    }
+                    ++fb_index;
+                    ++t_index;
+                }
+                fb_index -= 8;
+                fb_index += 256;
+            }
+        }
+        elseif (flip_horizontal && !flip_vertical)
+        {
+            var fb_index = (dy <<- 8) + dx;
+            var t_index = 7;
+            for (var y = 0; y < 8; 1)
+            {
+                for (var x = 0; x < 8; 1)
+                {
+                    if (x >= src_x1 && x < src_x2 && y >= src_y1 && y < src_y2)
+                    {
+                        var pal_index = this._pix[t_index];
+                        var tpri = pri_table[fb_index];
+                        if (pal_index != 0 && pri <= (tpri & 0xff))
+                        {
+                            buffer[fb_index] = palette[pal_index + pal_add];
+                            tpri = (tpri & 0xf00) | pri;
+                            pri_table[fb_index] = tpri;
+                    	}
+                    }
+                    ++fb_index;
+                    --t_index;
+                }
+                fb_index -= 8;
+                fb_index += 256;
+                t_index += 16;
+            }
+        }
+        elseif (!flip_horizontal && flip_vertical)
+        {
+            var fb_index = (dy <<- 8) + dx;
+            var t_index = 56;
+            for (var y = 0; y < 8; 1)
+            {
+                for (var x = 0; x < 8; 1)
+                {
+                    if (x >= src_x1 && x < src_x2 && y >= src_y1 && y < src_y2)
+                    {
+                        var pal_index = this._pix[t_index];
+                        var tpri = pri_table[fb_index];
+                        if (pal_index != 0 && pri <= (tpri & 0xff))
+                        {
+                            buffer[fb_index] = palette[pal_index + pal_add];
+                            tpri = (tpri & 0xf00) | pri;
+                            pri_table[fb_index] = tpri;
+                    	}
+                    }
+                    ++fb_index;
+                    ++t_index;
+                }
+                fb_index -= 8;
+                fb_index += 256;
+                t_index -= 16;
+            }
+        }
+        else
+        {
+            var fb_index = (dy <<- 8) + dx;
+            var t_index = 63;
+            for (var y = 0; y < 8; 1)
+            {
+                for (var x = 0; x < 8; 1)
+                {
+                    if (x >= src_x1 && x < src_x2 && y >= src_y1 && y < src_y2)
+                    {
+                        var pal_index = this._pix[t_index];
+                        var tpri = pri_table[fb_index];
+                        if (pal_index != 0 && pri <= (tpri & 0xff))
+                        {
+                            buffer[fb_index] = palette[pal_index + pal_add];
+                            tpri = (tpri & 0xf00) | pri;
+                            pri_table[fb_index] = tpri;
+                    	}
+                    }
+                    ++fb_index;
+                    --t_index;
+                }
+                fb_index -= 8;
+                fb_index += 256;
+            }
+        }
+    }
+
+    public fun IsTransparent(int x, int y) : bool
+    {
+        return this._pix[(y <<- 3) + x] == 0;
+    }
+}

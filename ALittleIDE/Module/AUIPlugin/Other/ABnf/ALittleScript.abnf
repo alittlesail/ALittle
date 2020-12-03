@@ -387,7 +387,7 @@ Op7Suffix = Op7@ (ValueFactorStat | Op2Value) Op7SuffixEe*;
 Op7SuffixEe = Op3Suffix | Op4Suffix | Op5Suffix | Op6Suffix;
 Op7SuffixEx = Op7Suffix | Op8Suffix | Op9Suffix | Op10Suffix | Op11Suffix | Op12Suffix;
 
-Op6 =  '<-' | '->';
+Op6 =  '<<-' | '->>';
 Op6Stat = Op6Suffix Op6SuffixEx*;
 Op6Suffix = Op6@ (ValueFactorStat | Op2Value) Op6SuffixEe*;
 Op6SuffixEe = Op3Suffix | Op4Suffix | Op5Suffix;

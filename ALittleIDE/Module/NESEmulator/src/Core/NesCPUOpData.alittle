@@ -111,11 +111,7 @@ protected enum NesCPUAddrType
 
 protected class NesCPUOpData
 {
-    [Native]
-    private List<int> _op_data = new List<int>();
-
-    [Native]
-    private List<string> _inst_name = new List<string>();
+    public Map<int, int> _op_data = new Map<int, int>();
 
     public ctor()
     {
@@ -506,8 +502,8 @@ protected class NesCPUOpData
     {
         this._op_data[op] =
                 (inst & 0xff) |
-                ((addr & 0xff) <- 8) |
-                ((size & 0xff) <- 16) |
-                ((cycles & 0xff) <- 24);
+                ((addr & 0xff) <<- 8) |
+                ((size & 0xff) <<- 16) |
+                ((cycles & 0xff) <<- 24);
     }
 }

@@ -94,10 +94,9 @@ NESEmulator.NesCPUAddrType = {
 
 NESEmulator.NesCPUOpData = JavaScript.Class(undefined, {
 	Ctor : function() {
-		this._op_data = [];
-		this._inst_name = [];
+		this._op_data = new Map();
 		for (let i = 0; i < 256; i += 1) {
-			this._op_data[i /*因为使用了Native修饰，下标从0开始，不做减1处理*/] = 0xff;
+			this._op_data.set(i, 0xff);
 		}
 		this.SetOp(NESEmulator.NesCPUInsType.INS_ADC, 0x69, NESEmulator.NesCPUAddrType.ADDR_IMM, 2, 2);
 		this.SetOp(NESEmulator.NesCPUInsType.INS_ADC, 0x65, NESEmulator.NesCPUAddrType.ADDR_ZP, 2, 3);
@@ -336,7 +335,7 @@ NESEmulator.NesCPUOpData = JavaScript.Class(undefined, {
 		this.SetOp(NESEmulator.NesCPUInsType.INS_IGN, 0xf4, NESEmulator.NesCPUAddrType.ADDR_ZPX, 2, 4);
 	},
 	SetOp : function(inst, op, addr, size, cycles) {
-		this._op_data[op /*因为使用了Native修饰，下标从0开始，不做减1处理*/] = (inst & 0xff) | ((addr & 0xff) << 8) | ((size & 0xff) << 16) | ((cycles & 0xff) << 24);
+		this._op_data.set(op, (inst & 0xff) | ((addr & 0xff) << 8) | ((size & 0xff) << 16) | ((cycles & 0xff) << 24));
 	},
 }, "NESEmulator.NesCPUOpData");
 

@@ -1,0 +1,14 @@
+
+namespace NESEmulator;
+
+protected class NesMapper
+{
+    public fun Reset() {}
+    public fun Load(int address) : int { return 0; }
+    public fun Write(int address, int value) {}
+}
+
+public static CreateNesMapper(int type) : NesMapper
+{
+    return null;
+}

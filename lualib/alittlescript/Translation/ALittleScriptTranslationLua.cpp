@@ -1261,9 +1261,9 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp6Suffix(std::shared_ptr<AL
 {
     content = "";
     std::string op_string = suffix->GetOp6()->GetElementText();
-    if (op_string == "->")
+    if (op_string == "->>")
         op_string = ">>";
-    else if (op_string == "<-")
+    else if (op_string == "<<-")
         op_string = "<<";
 
     std::string value_functor_result;

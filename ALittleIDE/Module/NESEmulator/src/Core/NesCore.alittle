@@ -32,10 +32,28 @@ protected class NesCore
     // 帧计数
     private int _frame_count = 0;
 
+    // CPU
+    private NesCPU _cpu;
+    // mapper
+    public NesMapper _mmap;
+
     public ctor()
     {
         this._frame_time = 1000 / this._frame_rate;
     }
 
+    // 重置
+    public fun Reset()
+    {
+        if (this._mmap != null)
+        {
+            this._mmap.Reset();
+        }
+    }
 
+    // 停止
+    public fun Stop()
+    {
+
+    }
 }

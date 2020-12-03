@@ -1,0 +1,261 @@
+
+namespace NESEmulator;
+
+protected class NesChannelSquare
+{
+    private NesPAPU _papu;
+
+    public int _prog_timer_count;
+    public int _prog_timer_max;
+    private int _length_counter;
+    public int _square_counter;
+    private int _sweep_counter;
+    private int _sweep_counter_max;
+    private int _sweep_mode;
+    private int _sweep_shift_amount;
+    private int _env_decay_rate;
+    private int _env_decay_counter;
+    private int _env_volume;
+    private int _master_volume;
+    private int _duty_mode;
+    private int _vol;
+
+    public bool _is_enabled;
+    private bool _length_counter_enable;
+    private bool _sweep_active;
+    private bool _sweep_carry;
+    private bool _env_decay_disable;
+    private bool _env_decay_loop_enable;
+
+    public int _sample_value;
+
+    private bool _env_reset;
+    private bool _update_sweep_period;
+    private bool _sqr1;
+    private int _sweep_result;
+
+    private Map<int, int> _duty_lookup;
+    private Map<int, int> _imp_lookup;
+
+    public ctor(NesPAPU papu, bool square1)
+    {
+        this._papu = papu;
+        // prettier-ignore
+        var values = [
+                    0, 1, 0, 0, 0, 0, 0, 0,
+                    0, 1, 1, 0, 0, 0, 0, 0,
+                    0, 1, 1, 1, 1, 0, 0, 0,
+                    1, 0, 0, 1, 1, 1, 1, 1
+                    ];
+        for (var index, value in values)
+            this._duty_lookup[index - 1] = value;
+        // prettier-ignore
+        values = [
+                   1,-1, 0, 0, 0, 0, 0, 0,
+                   1, 0,-1, 0, 0, 0, 0, 0,
+                   1, 0, 0, 0,-1, 0, 0, 0,
+                       -1, 0, 1, 0, 0, 0, 0, 0
+                   ];
+        for (var index, value in values)
+            this._imp_lookup[index - 1] = value;
+
+        this._sqr1 = square1;
+        this._is_enabled = null;
+        this._length_counter_enable = null;
+        this._sweep_active = null;
+        this._env_decay_disable = null;
+        this._env_decay_loop_enable = null;
+        this._env_reset = null;
+        this._sweep_carry = null;
+        this._update_sweep_period = null;
+
+        this._prog_timer_count = null;
+        this._prog_timer_max = null;
+        this._length_counter = null;
+        this._square_counter = null;
+        this._sweep_counter = null;
+        this._sweep_counter_max = null;
+        this._sweep_mode = null;
+        this._sweep_shift_amount = null;
+        this._env_decay_rate = null;
+        this._env_decay_counter = null;
+        this._env_volume = null;
+        this._master_volume = null;
+        this._duty_mode = null;
+        this._sweep_result = null;
+        this._sample_value = null;
+        this._vol = null;
+
+        this.Reset();
+    }
+
+    public fun Reset()
+    {
+        this._prog_timer_count = 0;
+        this._prog_timer_max = 0;
+        this._length_counter = 0;
+        this._square_counter = 0;
+        this._sweep_counter = 0;
+        this._sweep_counter_max = 0;
+        this._sweep_mode = 0;
+        this._sweep_shift_amount = 0;
+        this._env_decay_rate = 0;
+        this._env_decay_counter = 0;
+        this._env_volume = 0;
+        this._master_volume = 0;
+        this._duty_mode = 0;
+        this._vol = 0;
+
+        this._is_enabled = false;
+        this._length_counter_enable = false;
+        this._sweep_active = false;
+        this._sweep_carry = false;
+        this._env_decay_disable = false;
+        this._env_decay_loop_enable = false;
+    }
+
+    public fun ClockLengthCounter()
+    {
+        if (this._length_counter_enable && this._length_counter > 0) {
+            --this._length_counter;
+            if (this._length_counter == 0) {
+                this.UpdateSampleValue();
+            }
+        }
+    }
+
+    public fun ClockEnvDecay()
+    {
+        if (this._env_reset) {
+            // Reset envelope:
+            this._env_reset = false;
+            this._env_decay_counter = this._env_decay_rate + 1;
+            this._env_volume = 0xf;
+        }
+        else
+        {
+            --this._env_decay_counter;
+            if (this._env_decay_counter <= 0) {
+                // Normal handling:
+                this._env_decay_counter = this._env_decay_rate + 1;
+                if (this._env_volume > 0) {
+                    --this._env_volume;
+                } else {
+                    this._env_volume = 0;
+                    if (this._env_decay_loop_enable) this._env_volume = 0xf;
+                }
+            }
+        } 
+
+        if (this._env_decay_disable) {
+            this._master_volume = this._env_decay_rate;
+        } else {
+            this._master_volume = this._env_volume;
+        }
+        this.UpdateSampleValue();
+    }
+
+    public fun ClockSweep()
+    {
+        --this._sweep_counter;
+        if (this._sweep_counter <= 0) {
+            this._sweep_counter = this._sweep_counter_max + 1;
+            if (this._sweep_active && this._sweep_shift_amount > 0 && this._prog_timer_max > 7) {
+                // Calculate result from shifter:
+                this._sweep_carry = false;
+                if (this._sweep_mode == 0)
+                {
+                    this._prog_timer_max += this._prog_timer_max ->> this._sweep_shift_amount;
+                    if (this._prog_timer_max > 4095)
+                    {
+                        this._prog_timer_max = 4095;
+                        this._sweep_carry = true;
+                    }
+                } else {
+                    var sqr1 = 0;
+                    if (this._sqr1) sqr1 = 1;
+                    this._prog_timer_max = this._prog_timer_max - ((this._prog_timer_max ->> this._sweep_shift_amount) - sqr1);
+                }
+            }
+        }
+
+        if (this._update_sweep_period) {
+            this._update_sweep_period = false;
+            this._sweep_counter = this._sweep_counter_max + 1;
+        }
+    }
+
+    public fun UpdateSampleValue()
+    {
+        if (this._is_enabled && this._length_counter > 0 && this._prog_timer_max > 7) {
+            if (
+            this._sweep_mode == 0 &&
+            this._prog_timer_max + (this._prog_timer_max ->> this._sweep_shift_amount) > 4095
+            ) {
+                //if (this._sweep_carry) {
+                this._sample_value = 0;
+            } else {
+                this._sample_value = this._master_volume * this._duty_lookup[(this._duty_mode <<- 3) + this._square_counter];
+            }
+        } else {
+            this._sample_value = 0;
+        }
+    }
+
+    public fun WriteReg(int address, int value)
+    {
+        var addrAdd = 4;
+        if (this._sqr1) addrAdd = 0;
+
+        if (address == 0x4000 + addrAdd) {
+            // Volume/Envelope decay:
+            this._env_decay_disable = (value & 0x10) != 0;
+            this._env_decay_rate = value & 0xf;
+            this._env_decay_loop_enable = (value & 0x20) != 0;
+            this._duty_mode = (value ->> 6) & 0x3;
+            this._length_counter_enable = (value & 0x20) == 0;
+            if (this._env_decay_disable) {
+                this._master_volume = this._env_decay_rate;
+            } else {
+                this._master_volume = this._env_volume;
+            }
+            this.UpdateSampleValue();
+        } else if (address == 0x4001 + addrAdd) {
+            // Sweep:
+            this._sweep_active = (value & 0x80) != 0;
+            this._sweep_counter_max = (value ->> 4) & 7;
+            this._sweep_mode = (value ->> 3) & 1;
+            this._sweep_shift_amount = value & 7;
+            this._update_sweep_period = true;
+        } else if (address == 0x4002 + addrAdd) {
+            // Programmable timer:
+            this._prog_timer_max = this._prog_timer_max & 0x700;
+            this._prog_timer_max = this._prog_timer_max | value;
+        } else if (address == 0x4003 + addrAdd) {
+            // Programmable timer, length counter
+            this._prog_timer_max = this._prog_timer_max & 0xff;
+            this._prog_timer_max = this._prog_timer_max | ((value & 0x7) <<- 8);
+
+            if (this._is_enabled) {
+                this._length_counter = this._papu.GetLengthMax(value & 0xf8);
+            }
+
+            this._env_reset = true;
+        }
+    }
+
+    public fun SetEnabled(bool value)
+    {
+        this._is_enabled = value;
+        if (!value) {
+            this._length_counter = 0;
+        }
+        this.UpdateSampleValue();
+    }
+
+    public fun GetLengthStatus() : int
+    {
+        if (this._length_counter == 0 || !this._is_enabled) return 0;
+        return 1;
+    }
+}

@@ -9,13 +9,13 @@ protected class NesCore
     private int _frame_rate = 60;
 
     // 图像输出，提供外部继承
-    public fun OnFrame(List<int> frame_buffer)
+    public fun OnFrame(Map<int, int> frame_buffer)
     {
 
     }
 
     // 声音输出，提供外部继承
-    public fun OnAudioSample(int left, int right)
+    public fun OnAudioSample(double left, double right)
     {
 
     }
@@ -26,20 +26,32 @@ protected class NesCore
 
     }
 
+    public fun OnBatteryRamWrite(int address, int value)
+    {
+
+    }
+
     // 每帧的间隔时间，单位毫秒
     private double _frame_time;
 
     // 帧计数
     private int _frame_count = 0;
+    // 采样率
+    public int _sample_rate = 8000;
+    public double _preferred_frame_rate = 0;
 
-    // CPU
-    private NesCPU _cpu;
-    // mapper
+    public NesCPU _cpu;
+    public NesPPU _ppu;
+    public NesPAPU _papu;
     public NesMapper _mmap;
+    public Map<int, NesController> _controllers = new Map<int, NesController>();
 
     public ctor()
     {
         this._frame_time = 1000 / this._frame_rate;
+
+        this._controllers[1] = new NesController();
+        this._controllers[2] = new NesController();
     }
 
     // 重置

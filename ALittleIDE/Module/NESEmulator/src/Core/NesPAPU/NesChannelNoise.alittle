@@ -1,0 +1,168 @@
+
+namespace NESEmulator;
+
+protected class NesChannelNoise
+{
+    private NesPAPU _papu;
+
+    public int _prog_timer_count;
+    public int _prog_timer_max;
+    public bool _is_enabled;
+    public int _length_counter;
+    private bool _length_counter_enable;
+    private bool _env_decay_disable;
+    private bool _env_decay_loop_enable;
+    private bool _shift_now;
+    private int _env_decay_rate;
+    private int _env_decay_counter;
+    private int _env_volume;
+    public int _master_volume;
+    public int _shift_reg;
+    public int _random_bit;
+    public int _random_mode;
+    public int _sample_value;
+    public int _tmp;
+
+    public int _acc_value;
+    public int _acc_count;
+    private bool _env_reset;
+
+    public ctor(NesPAPU papu)
+    {
+        this._papu = papu;
+
+        this._is_enabled = null;
+        this._env_decay_disable = null;
+        this._env_decay_loop_enable = null;
+        this._length_counter_enable = null;
+        this._env_reset = null;
+        this._shift_now = null;
+
+        this._length_counter = null;
+        this._prog_timer_count = null;
+        this._prog_timer_max = null;
+        this._env_decay_rate = null;
+        this._env_decay_counter = null;
+        this._env_volume = null;
+        this._master_volume = null;
+        this._shift_reg = 1 <<- 14;
+        this._random_bit = null;
+        this._random_mode = null;
+        this._sample_value = null;
+        this._acc_value = 0;
+        this._acc_count = 1;
+        this._tmp = null;
+
+        this.Reset();
+    }
+
+    public fun Reset()
+    {
+        this._prog_timer_count = 0;
+        this._prog_timer_max = 0;
+        this._is_enabled = false;
+        this._length_counter = 0;
+        this._length_counter_enable = false;
+        this._env_decay_disable = false;
+        this._env_decay_loop_enable = false;
+        this._shift_now = false;
+        this._env_decay_rate = 0;
+        this._env_decay_counter = 0;
+        this._env_volume = 0;
+        this._master_volume = 0;
+        this._shift_reg = 1;
+        this._random_bit = 0;
+        this._random_mode = 0;
+        this._sample_value = 0;
+        this._tmp = 0;
+    }
+
+    public fun ClockLengthCounter()
+    {
+        if (this._length_counter_enable && this._length_counter > 0) {
+            --this._length_counter;
+            if (this._length_counter == 0) {
+                this.UpdateSampleValue();
+            }
+        }
+    }
+    
+    public fun ClockEnvDecay()
+    {
+        if (this._env_reset) {
+            // Reset envelope:
+            this._env_reset = false;
+            this._env_decay_counter = this._env_decay_rate + 1;
+            this._env_volume = 0xf;
+        }
+        else
+        {
+            --this._env_decay_counter;
+            if (this._env_decay_counter <= 0) {
+                // Normal handling:
+                this._env_decay_counter = this._env_decay_rate + 1;
+                if (this._env_volume > 0) {
+                    --this._env_volume;
+                } else {
+                    var env_decay_loop_enable = 0;
+                    if (this._env_decay_loop_enable) env_decay_loop_enable = 0xf;
+                    this._env_volume = env_decay_loop_enable;
+                }
+            }
+        } 
+        if (this._env_decay_disable) {
+            this._master_volume = this._env_decay_rate;
+        } else {
+            this._master_volume = this._env_volume;
+        }
+        this.UpdateSampleValue();
+    }
+
+    public fun UpdateSampleValue()
+    {
+        if (this._is_enabled && this._length_counter > 0) {
+            this._sample_value = this._random_bit * this._master_volume;
+        }
+    }
+
+    public fun WriteReg(int address, int value)
+    {
+        if (address == 0x400c) {
+            // Volume/Envelope decay:
+            this._env_decay_disable = (value & 0x10) != 0;
+            this._env_decay_rate = value & 0xf;
+            this._env_decay_loop_enable = (value & 0x20) != 0;
+            this._length_counter_enable = (value & 0x20) == 0;
+            if (this._env_decay_disable) {
+                this._master_volume = this._env_decay_rate;
+            } else {
+                this._master_volume = this._env_volume;
+            }
+        } else if (address == 0x400e) {
+            // Programmable timer:
+            this._prog_timer_max = this._papu.GetNoiseWaveLength(value & 0xf);
+            this._random_mode = value ->> 7;
+        } else if (address == 0x400f) {
+            // Length counter
+            this._length_counter = this._papu.GetLengthMax(value & 248);
+            this._env_reset = true;
+        }
+        // Update:
+        //updateSampleValue();
+    }
+
+    public fun SetEnabled(bool value)
+    {
+        this._is_enabled = value;
+        if (!value) {
+            this._length_counter = 0;
+        }
+        this.UpdateSampleValue();
+    }
+
+    public fun GetLengthStatus() : int
+    {
+        if (this._length_counter == 0 || !this._is_enabled) return 0;
+        return 1;
+    }
+}

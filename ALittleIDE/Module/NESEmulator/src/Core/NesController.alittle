@@ -13,7 +13,7 @@ public enum NesControlType
     BUTTON_RIGHT = 7;
 }
 
-protected class NesControl
+protected class NesController
 {
     private Map<int, int> _state = new Map<int, int>();
 

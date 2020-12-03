@@ -13,7 +13,7 @@ protected class NesCPU
     private NesCore _nes;
 
     // 内存
-    private Map<int, int> _mem;
+    public Map<int, int> _mem;
     private int _mem_len = 0x10000;
 
     // 寄存器

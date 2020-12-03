@@ -1,0 +1,162 @@
+
+namespace NESEmulator;
+
+protected class NesChannelTriangle
+{
+    private NesPAPU _papu;
+
+    public int _prog_timer_count;
+    public int _prog_timer_max;
+    public int _triangle_counter;
+    public bool _is_enabled;
+    public bool _sample_condition;
+    public int _length_counter;
+    private bool _length_counter_enable;
+    public int _linear_counter;
+    private int _lc_load_value;
+    private bool _lc_halt;
+    private bool _lc_control;
+    private int _tmp;
+    public int _sample_value;
+
+    public ctor(NesPAPU papu)
+    {
+        this._papu = papu;
+
+        this._is_enabled = null;
+        this._sample_condition = null;
+        this._length_counter_enable = null;
+        this._lc_halt = null;
+        this._lc_control = null;
+
+        this._prog_timer_count = null;
+        this._prog_timer_max = null;
+        this._triangle_counter = null;
+        this._length_counter = null;
+        this._linear_counter = null;
+        this._lc_load_value = null;
+        this._sample_value = null;
+        this._tmp = null;
+
+        this.Reset();
+    }
+
+    public fun Reset()
+    {
+        this._prog_timer_count = 0;
+        this._prog_timer_max = 0;
+        this._triangle_counter = 0;
+        this._is_enabled = false;
+        this._sample_condition = false;
+        this._length_counter = 0;
+        this._length_counter_enable = false;
+        this._linear_counter = 0;
+        this._lc_load_value = 0;
+        this._lc_halt = true;
+        this._lc_control = false;
+        this._tmp = 0;
+        this._sample_value = 0xf;
+    }
+
+    public fun ClockLengthCounter()
+    {
+        if (this._length_counter_enable && this._length_counter > 0) {
+            --this._length_counter;
+            if (this._length_counter == 0) {
+                this.UpdateSampleCondition();
+            }
+        }
+    }
+
+    public fun ClockLinearCounter()
+    {
+        if (this._lc_halt) {
+            // Load:
+            this._linear_counter = this._lc_load_value;
+            this.UpdateSampleCondition();
+        } else if (this._linear_counter > 0) {
+                // Decrement:
+                --this._linear_counter;
+                this.UpdateSampleCondition();
+            }
+        if (!this._lc_control) {
+            // Clear halt flag:
+            this._lc_halt = false;
+        }
+    }
+
+    public fun GetLengthStatus() : int
+    {
+        if (this._length_counter == 0 || !this._is_enabled) return 0;
+        return 1;
+    }
+    
+    // eslint-disable-next-line no-unused-vars
+    public fun ReadReg(int address) : int
+    {
+        return 0;
+    }
+
+    public fun WriteReg(int address, int value)
+    {
+        if (address == 0x4008) {
+            // New values for linear counter:
+            this._lc_control = (value & 0x80) != 0;
+            this._lc_load_value = value & 0x7f;
+
+            // Length counter enable:
+            this._length_counter_enable = !this._lc_control;
+        } else if (address == 0x400a) {
+            // Programmable timer:
+            this._prog_timer_max = this._prog_timer_max & 0x700;
+            this._prog_timer_max = this._prog_timer_max | value;
+        } else if (address == 0x400b) {
+            // Programmable timer, length counter
+            this._prog_timer_max = this._prog_timer_max & 0xff;
+            this._prog_timer_max = this._prog_timer_max | ((value & 0x07) <<- 8);
+            this._length_counter = this._papu.GetLengthMax(value & 0xf8);
+            this._lc_halt = true;
+        }
+
+        this.UpdateSampleCondition();
+    }
+
+    public fun ClockProgrammableTimer(int cycles)
+    {
+        if (this._prog_timer_max > 0)
+        {
+            this._prog_timer_count += cycles;
+            while (this._prog_timer_max > 0 && this._prog_timer_count >= this._prog_timer_max)
+            {
+                this._prog_timer_count -= this._prog_timer_max;
+                if (this._is_enabled && this._length_counter > 0 && this._linear_counter > 0 ) {
+                    this.ClockTriangleGenerator();
+                }
+            }
+        }
+    }
+
+    public fun ClockTriangleGenerator()
+    {
+        ++this._triangle_counter;
+        this._triangle_counter = this._triangle_counter & 0x1f;
+    }
+
+    public fun SetEnabled(bool value)
+    {
+        this._is_enabled = value;
+        if (!value) {
+            this._length_counter = 0;
+        }
+        this.UpdateSampleCondition();
+    }
+
+    public fun UpdateSampleCondition()
+    {
+        this._sample_condition =
+        this._is_enabled &&
+        this._prog_timer_max > 7 &&
+        this._linear_counter > 0 &&
+        this._length_counter > 0;
+    }
+}

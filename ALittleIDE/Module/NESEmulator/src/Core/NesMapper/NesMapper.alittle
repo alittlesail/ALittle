@@ -1,0 +1,28 @@
+
+namespace NESEmulator;
+
+protected class NesMapper
+{
+    private NesCore _nes;
+    public ctor(NesCore nes)
+    {
+        this._nes = nes;
+    }
+
+    public fun Reset() {}
+    public fun Load(int address) : int { return 0; }
+    public fun Write(int address, int value) {}
+    public fun ClockIrqCounter() {}
+    public fun LatchAccess(int address) {}
+}
+
+protected static CreateNesMapper(NesCore nes, int type) : NesMapper
+{
+    if (type == 0) return new NesMapper0(nes);
+    return null;
+}
+
+protected static CopyArrayElements (Map<int, int> src, int srcPos, Map<int, int> dest, int destPos, int length)
+{
+	for (var i = 0; i < length; 1) dest[destPos + i] = src[srcPos + i];
+}

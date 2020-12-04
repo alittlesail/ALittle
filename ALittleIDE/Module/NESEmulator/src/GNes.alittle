@@ -1,0 +1,61 @@
+
+namespace NESEmulator;
+
+protected class GNes : NesCore
+{
+    private ALittle.DynamicImage _image;
+    private ALittle.LoopFrame _loop_frame;
+
+    public fun Setup(ALittle.DynamicImage image)
+    {
+        this._image = image;
+        this.Reset();
+
+        if (this._loop_frame != null)
+        	this._loop_frame.Stop();
+
+        var nes_rom = new ALittle.LocalFile();
+        if (nes_rom.Load(g_ModuleBasePath.."Other/Battle City (J).nes"))
+        {
+            var error = this.ReloadROM(nes_rom);
+            ALittle.Log("ReloadROM", error);
+
+            this._loop_frame = new ALittle.LoopFrame(bind(this.UpdateFrame, this));
+            this._loop_frame.Start();
+        }
+    }
+
+    // 图像输出，提供外部继承
+    public fun OnFrame(Map<int, int> frame_buffer)
+    {
+        var surface = this._image.GetSurface(true);
+        for (var x = 0; x < SCREEN_WIDTH; 1)
+        {
+            for (var y = 0; y < SCREEN_HEIGHT; 1)
+            {
+                var index = y * SCREEN_WIDTH + x;
+                var color = frame_buffer[index] | 0xFF000000;
+                carp.SetCarpSurfacePixel(surface, x, y, color);
+            }
+        }
+    }
+
+    public fun UpdateFrame(int frame_time)
+    {
+        var error = this.Frame();
+        if (error != null)
+        {
+            ALittle.Log(error);
+            if (this._loop_frame != null)
+            	this._loop_frame.Stop();
+        }
+    }
+
+    public fun Shutdown()
+    {
+        if (this._loop_frame != null)
+        	this._loop_frame.Stop();
+    }
+}
+
+public var g_GNes = new GNes();

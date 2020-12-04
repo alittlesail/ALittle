@@ -31,11 +31,18 @@ class GCenter
         this._dialog_layer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
         g_LayerGroup.AddChild(this._dialog_layer, null);
 
+        var screen = new ALittle.DynamicImage(g_Control);
+        screen.width = SCREEN_WIDTH;
+        screen.height = SCREEN_HEIGHT;
+        screen.SetSurfaceSize(SCREEN_WIDTH, SCREEN_HEIGHT, 0);
+        this._main_layer.AddChild(screen);
 
+        g_GNes.Setup(screen);
     }
 
     public fun Shutdown()
     {
+        g_GNes.Shutdown();
     }
 }
 

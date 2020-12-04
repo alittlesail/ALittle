@@ -6,7 +6,7 @@ protected class NesTile
     // 像素
     public Map<int, int> _pix = new Map<int, int>();
 
-    public Map<int, bool> _opaque;
+    public Map<int, bool> _opaque = new Map<int, bool>();
 
     private bool _init = false;
     

@@ -11,10 +11,12 @@ NESEmulator.NesChannelSquare = Lua.Class(nil, "NESEmulator.NesChannelSquare")
 function NESEmulator.NesChannelSquare:Ctor(papu, square1)
 	___rawset(self, "_papu", papu)
 	local values = {0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1}
+	___rawset(self, "_duty_lookup", {})
 	for index, value in ___ipairs(values) do
 		self._duty_lookup[index - 1] = value
 	end
 	values = {1, -1, 0, 0, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0, 0}
+	___rawset(self, "_imp_lookup", {})
 	for index, value in ___ipairs(values) do
 		self._imp_lookup[index - 1] = value
 	end

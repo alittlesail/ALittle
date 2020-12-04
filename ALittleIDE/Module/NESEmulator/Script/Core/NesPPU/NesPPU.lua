@@ -84,12 +84,54 @@ function NESEmulator.NesPPU:Reset()
 	self._last_rendered_scanline = -1
 	self._cur_x = 0
 	self._spr_x = {}
+	local i = 0
+	while true do
+		if not(i < 64) then break end
+		self._spr_x[i] = 0
+		i = i+(1)
+	end
 	self._spr_y = {}
+	local i = 0
+	while true do
+		if not(i < 64) then break end
+		self._spr_y[i] = 0
+		i = i+(1)
+	end
 	self._spr_tile = {}
+	local i = 0
+	while true do
+		if not(i < 64) then break end
+		self._spr_tile[i] = 0
+		i = i+(1)
+	end
 	self._spr_col = {}
+	local i = 0
+	while true do
+		if not(i < 64) then break end
+		self._spr_col[i] = 0
+		i = i+(1)
+	end
 	self._vert_flip = {}
+	local i = 0
+	while true do
+		if not(i < 64) then break end
+		self._vert_flip[i] = false
+		i = i+(1)
+	end
 	self._hori_flip = {}
+	local i = 0
+	while true do
+		if not(i < 64) then break end
+		self._hori_flip[i] = false
+		i = i+(1)
+	end
 	self._bg_priority = {}
+	local i = 0
+	while true do
+		if not(i < 64) then break end
+		self._bg_priority[i] = false
+		i = i+(1)
+	end
 	self._spr_0_hit_x = 0
 	self._spr_0_hit_y = 0
 	self._hit_spr_0 = false

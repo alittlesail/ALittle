@@ -33,6 +33,7 @@ function NESEmulator.__Module_Setup(layer_group, control, module_base_path, scri
 		, "NesPAPU/NesChannelSquare.alittle", "NesPAPU/NesChannelNoise.alittle", "NesPAPU/NesChannelDM.alittle"
 		, "NesPPU/NesPaletteTable.alittle", "NesPPU/NesPPU.alittle", "NesPPU/NesNameTable.alittle"
 		, "NesRom/NesTile.alittle", "NesRom/NesRom.alittle"})
+	Require(script_base_path, "GNes")
 	g_GCenter:Setup()
 end
 NESEmulator.__Module_Setup = Lua.CoWrap(NESEmulator.__Module_Setup)

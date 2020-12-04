@@ -161,8 +161,11 @@ function NESEmulator.NesCore:ReloadROM(data)
 	self._rom = rom
 	self._rom_data = data
 	self:Reset()
+	error = mapper:LoadROM()
+	if error ~= nil then
+		return error
+	end
 	self._mmap = mapper
-	self._mmap:LoadROM()
 	self._ppu:SetMirroring(self._rom:GetMirroringType())
 	return nil
 end

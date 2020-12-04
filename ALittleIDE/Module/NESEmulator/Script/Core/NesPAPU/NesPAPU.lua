@@ -26,6 +26,8 @@ function NESEmulator.NesPAPU:Ctor(nes)
 	___rawset(self, "_noise_wavelength_lookup", nil)
 	___rawset(self, "_square_table", nil)
 	___rawset(self, "_tnd_table", nil)
+	___rawset(self, "_square_table_len", 32 * 16)
+	___rawset(self, "_tnd_table_len", 204 * 16)
 	___rawset(self, "_frame_irq_enabled", false)
 	___rawset(self, "_frame_irq_active", nil)
 	___rawset(self, "_frame_clock_now", nil)
@@ -62,7 +64,7 @@ function NESEmulator.NesPAPU:Ctor(nes)
 	___rawset(self, "_stereo_pos_r_triangle", nil)
 	___rawset(self, "_stereo_pos_r_noise", nil)
 	___rawset(self, "_stereo_pos_r_dmc", nil)
-	___rawset(self, "_extra_cycles", nil)
+	___rawset(self, "_extra_cycles", 0)
 	___rawset(self, "_max_sample", nil)
 	___rawset(self, "_min_sample", nil)
 	local values = {80, 170, 100, 150, 128}
@@ -85,8 +87,6 @@ function NESEmulator.NesPAPU:Ctor(nes)
 		end
 		i = i+(1)
 	end
-	___rawset(self, "_square_table_len", 32 * 16)
-	___rawset(self, "_tnd_table_len", 204 * 16)
 	self:Reset()
 end
 

@@ -45,6 +45,7 @@ protected class NesChannelSquare
                       0, 1, 1, 1, 1, 0, 0, 0,
                       1, 0, 0, 1, 1, 1, 1, 1
                       ];
+        this._duty_lookup = new Map<int, int>();
         for (var index, value in values)
             this._duty_lookup[index - 1] = value;
 
@@ -54,6 +55,7 @@ protected class NesChannelSquare
                   1, 0, 0, 0,-1, 0, 0, 0,
                   -1, 0, 1, 0, 0, 0, 0, 0
                   ];
+        this._imp_lookup = new Map<int, int>();
         for (var index, value in values)
             this._imp_lookup[index - 1] = value;
 

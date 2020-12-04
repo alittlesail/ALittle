@@ -23,9 +23,16 @@ function NESEmulator.GCenter:Setup()
 	self._dialog_layer.width_type = 4
 	self._dialog_layer.height_type = 4
 	NESEmulator.g_LayerGroup:AddChild(self._dialog_layer, nil)
+	local screen = ALittle.DynamicImage(NESEmulator.g_Control)
+	screen.width = NESEmulator.SCREEN_WIDTH
+	screen.height = NESEmulator.SCREEN_HEIGHT
+	screen:SetSurfaceSize(NESEmulator.SCREEN_WIDTH, NESEmulator.SCREEN_HEIGHT, 0)
+	self._main_layer:AddChild(screen)
+	g_GNes:Setup(screen)
 end
 
 function NESEmulator.GCenter:Shutdown()
+	g_GNes:Shutdown()
 end
 
 _G.g_GCenter = NESEmulator.GCenter()

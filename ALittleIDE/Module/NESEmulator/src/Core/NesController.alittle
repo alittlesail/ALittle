@@ -17,6 +17,12 @@ protected class NesController
 {
     public Map<int, int> _state = new Map<int, int>();
 
+    public ctor()
+    {
+        for (var i = 0; i < 8; 1)
+            this._state[i] = 0x40;
+    }
+
     public fun ButtonDown(int key)
     {
         this._state[key] = 0x41;

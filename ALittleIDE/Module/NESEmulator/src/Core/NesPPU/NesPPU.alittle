@@ -203,12 +203,19 @@ protected class NesPPU
 
         // Sprite data:
         this._spr_x = new Map<int, int>(); // X coordinate
+        for (var i = 0; i < 64; 1) this._spr_x[i] = 0;
         this._spr_y = new Map<int, int>(); // Y coordinate
+        for (var i = 0; i < 64; 1) this._spr_y[i] = 0;
         this._spr_tile = new Map<int, int>(); // Tile Index (into pattern table)
+        for (var i = 0; i < 64; 1) this._spr_tile[i] = 0;
         this._spr_col = new Map<int, int>(); // Upper two bits of color
+        for (var i = 0; i < 64; 1) this._spr_col[i] = 0;
         this._vert_flip = new Map<int, bool>(); // Vertical Flip
+        for (var i = 0; i < 64; 1) this._vert_flip[i] = false;
         this._hori_flip = new Map<int, bool>(); // Horizontal Flip
+        for (var i = 0; i < 64; 1) this._hori_flip[i] = false;
         this._bg_priority = new Map<int, bool>(); // Background priority
+        for (var i = 0; i < 64; 1) this._bg_priority[i] = false;
         this._spr_0_hit_x = 0; // Sprite #0 hit X coordinate
         this._spr_0_hit_y = 0; // Sprite #0 hit Y coordinate
         this._hit_spr_0 = false;

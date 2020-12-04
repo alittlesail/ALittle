@@ -10,6 +10,7 @@ NESEmulator.NesTile = Lua.Class(nil, "NESEmulator.NesTile")
 
 function NESEmulator.NesTile:Ctor()
 	___rawset(self, "_pix", {})
+	___rawset(self, "_opaque", {})
 	___rawset(self, "_init", false)
 end
 

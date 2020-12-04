@@ -227,9 +227,10 @@ protected class NesCore
 
         // 重置系统
         this.Reset();
+        error = mapper.LoadROM();
+        if (error != null) return error;
         // 加载rom
         this._mmap = mapper;
-        this._mmap.LoadROM();
         // 设置镜像类型
         this._ppu.SetMirroring(this._rom.GetMirroringType());
         // 返回成功

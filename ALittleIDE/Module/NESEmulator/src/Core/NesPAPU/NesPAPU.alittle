@@ -104,6 +104,8 @@ protected class NesPAPU
         this._noise_wavelength_lookup = null;
         this._square_table = null;
         this._tnd_table = null;
+        this._square_table_len = 32 * 16;
+        this._tnd_table_len = 204 * 16;
 
         this._frame_irq_enabled = false;
         this._frame_irq_active = null;
@@ -152,7 +154,7 @@ protected class NesPAPU
         this._stereo_pos_r_noise = null;
         this._stereo_pos_r_dmc = null;
 
-        this._extra_cycles = null;
+        this._extra_cycles = 0;
 
         this._max_sample = null;
         this._min_sample = null;
@@ -178,9 +180,6 @@ protected class NesPAPU
                 this.WriteReg(0x4000 + i, 0);
             }
         }
-
-        this._square_table_len = 32 * 16;
-        this._tnd_table_len = 204 * 16;
 
         this.Reset();
     }

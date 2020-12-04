@@ -21,6 +21,12 @@ NESEmulator.NesController = Lua.Class(nil, "NESEmulator.NesController")
 
 function NESEmulator.NesController:Ctor()
 	___rawset(self, "_state", {})
+	local i = 0
+	while true do
+		if not(i < 8) then break end
+		self._state[i] = 0x40
+		i = i+(1)
+	end
 end
 
 function NESEmulator.NesController:ButtonDown(key)

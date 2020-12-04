@@ -869,6 +869,10 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp12SuffixEe(std::sha
         return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
     else if (suffix->GetOp9Suffix() != nullptr)
         return GenerateOp9Suffix(suffix->GetOp9Suffix(), pre_tab, content);
+    else if (suffix->GetOp10Suffix() != nullptr)
+        return GenerateOp10Suffix(suffix->GetOp10Suffix(), pre_tab, content);
+    else if (suffix->GetOp11Suffix() != nullptr)
+        return GenerateOp11Suffix(suffix->GetOp11Suffix(), pre_tab, content);
     else
     {
         content = "";
@@ -962,6 +966,8 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp11SuffixEe(std::sha
         return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
     else if (suffix->GetOp9Suffix() != nullptr)
         return GenerateOp9Suffix(suffix->GetOp9Suffix(), pre_tab, content);
+    else if (suffix->GetOp10Suffix() != nullptr)
+        return GenerateOp10Suffix(suffix->GetOp10Suffix(), pre_tab, content);
     else
     {
         content = "";

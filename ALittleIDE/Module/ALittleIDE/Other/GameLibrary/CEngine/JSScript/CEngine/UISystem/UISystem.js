@@ -43,6 +43,7 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 		this._ime_editing_callback = undefined;
 		this._sym_map = new Map();
 		this._keydown_callback = undefined;
+		this._keyup_callback = undefined;
 		this._view_resize_callback = undefined;
 		this._long_press = undefined;
 		this._finger_info = {};
@@ -58,6 +59,12 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 	},
 	get keydown_callback() {
 		return this._keydown_callback;
+	},
+	set keyup_callback(value) {
+		this._keyup_callback = value;
+	},
+	get keyup_callback() {
+		return this._keyup_callback;
 	},
 	set quit_callback(value) {
 		this._quit_callback = value;
@@ -427,6 +434,9 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 		event.scancode = scancode;
 		if (this._sfc !== undefined && this._ime_editing === false) {
 			this._sfc.DispatchEvent(___all_struct.get(1213009422), event);
+		}
+		if (this._ime_editing === false && this._keyup_callback !== undefined) {
+			this._keyup_callback(mod, sym, scancode);
 		}
 	},
 	HandleMouseWheel : function(x, y) {

@@ -23,8 +23,13 @@ NESEmulator.__Module_Setup = async function(layer_group, control, module_base_pa
 	NESEmulator.g_LayerGroup = layer_group;
 	NESEmulator.g_ModuleBasePath = module_base_path;
 	await Require(script_base_path, "GCenter");
-	await RequireFromPaths(script_base_path, "Core/", ["NesTile.alittle", "NesRom.alittle", "NesCore.alittle"
-		, "NesControl.alittle", "NesCPUOpData.alittle", "NesCPU.alittle"]);
+	await RequireFromPaths(script_base_path, "Core/", ["NesUtility.alittle", "NesCore.alittle", "NesController.alittle"
+		, "NesCPU/NesCPUOpData.alittle", "NesCPU/NesCPU.alittle", "NesMapper/NesMapper.alittle"
+		, "NesMapper/NesMapper0.alittle", "NesPAPU/NesPAPU.alittle", "NesPAPU/NesChannelTriangle.alittle"
+		, "NesPAPU/NesChannelSquare.alittle", "NesPAPU/NesChannelNoise.alittle", "NesPAPU/NesChannelDM.alittle"
+		, "NesPPU/NesPaletteTable.alittle", "NesPPU/NesPPU.alittle", "NesPPU/NesNameTable.alittle"
+		, "NesRom/NesTile.alittle", "NesRom/NesRom.alittle"]);
+	await Require(script_base_path, "GNes");
 	g_GCenter.Setup();
 }
 

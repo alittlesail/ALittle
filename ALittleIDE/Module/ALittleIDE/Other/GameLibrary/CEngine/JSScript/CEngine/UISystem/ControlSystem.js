@@ -103,6 +103,20 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 			___COROUTINE();
 		}).bind(this));
 	},
+	HttpDownload : function(path) {
+		return new Promise((async function(___COROUTINE, ___) {
+			let [content, buffer] = JavaScript.File_LoadFile(path);
+			if (buffer !== undefined || content !== undefined) {
+				___COROUTINE(undefined); return;
+			}
+			ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path));
+			let error = await ALittle.HttpDownloadRequest(this._host, this._port, path, this._base_url + path, undefined, true);
+			if (error !== undefined) {
+				___COROUTINE(error); return;
+			}
+			___COROUTINE(undefined); return;
+		}).bind(this));
+	},
 	LoadMessageFromFile : function(T, path) {
 		return new Promise((async function(___COROUTINE, ___) {
 			let module_path = "Module/" + this._module_name + "/" + path;

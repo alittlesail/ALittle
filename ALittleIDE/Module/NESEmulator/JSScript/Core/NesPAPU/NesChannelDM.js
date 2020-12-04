@@ -70,4 +70,94 @@ NESEmulator.NesChannelDM = JavaScript.Class(undefined, {
 		}
 	},
 	EndOfSample : function() {
+		if (this._play_length_counter === 0 && this._play_mode === this.MODE_LOOP) {
+			this._play_address = this._play_start_address;
+			this._play_length_counter = this._play_length;
+		}
+		if (this._play_length_counter > 0) {
+			this.NextSample();
+			if (this._play_length_counter === 0) {
+				if (this._play_mode === this.MODE_IRQ) {
+					this._irq_generated = true;
+				}
+			}
+		}
+	},
+	NextSample : function() {
+		this._data = this._papu._nes._mmap.Load(this._play_address);
+		this._papu._nes._cpu.HaltCycles(4);
+		-- this._play_length_counter;
+		++ this._play_address;
+		if (this._play_address > 0xffff) {
+			this._play_address = 0x8000;
+		}
+		this._has_sample = true;
+	},
+	WriteReg : function(address, value) {
+		if (address === 0x4010) {
+			if (value >> 6 === 0) {
+				this._play_mode = this.MODE_NORMAL;
+			} else {
+				if (((value >> 6) & 1) === 1) {
+					this._play_mode = this.MODE_LOOP;
+				} else {
+					if (value >> 6 === 2) {
+						this._play_mode = this.MODE_IRQ;
+					}
+				}
+			}
+			if ((value & 0x80) === 0) {
+				this._irq_generated = false;
+			}
+			this._dma_frequency = this._papu.GetDmcFrequency(value & 0xf);
+		} else {
+			if (address === 0x4011) {
+				this._delta_counter = (value >> 1) & 63;
+				this._dac_lsb = value & 1;
+				this._sample = (this._delta_counter << 1) + this._dac_lsb;
+			} else {
+				if (address === 0x4012) {
+					this._play_start_address = (value << 6) | 0x0c000;
+					this._play_address = this._play_start_address;
+					this._reg4012 = value;
+				} else {
+					if (address === 0x4013) {
+						this._play_length = (value << 4) + 1;
+						this._play_length_counter = this._play_length;
+						this._reg4013 = value;
+					} else {
+						if (address === 0x4015) {
+							if (((value >> 4) & 1) === 0) {
+								this._play_length_counter = 0;
+							} else {
+								this._play_address = this._play_start_address;
+								this._play_length_counter = this._play_length;
+							}
+							this._irq_generated = false;
+						}
+					}
+				}
+			}
+		}
+	},
+	SetEnabled : function(value) {
+		if (!this._is_enabled && value) {
+			this._play_length_counter = this._play_length;
+		}
+		this._is_enabled = value;
+	},
+	GetLengthStatus : function() {
+		if (this._play_length_counter === 0 || !this._is_enabled) {
+			return 0;
+		}
+		return 1;
+	},
+	GetIrqStatus : function() {
+		if (this._irq_generated) {
+			return 1;
+		}
+		return 0;
+	},
+}, "NESEmulator.NesChannelDM");
+
 }

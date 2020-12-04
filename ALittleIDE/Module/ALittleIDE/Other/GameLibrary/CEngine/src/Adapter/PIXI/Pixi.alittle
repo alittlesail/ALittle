@@ -235,10 +235,65 @@ public class TextMetrics
     public get lineWidths() : List<double> {}
 }
 
+public enum FORMATS
+{
+    RGBA = 6408;
+	RGB = 6407;
+	ALPHA = 6406;
+	LUMINANCE = 6409;
+	LUMINANCE_ALPHA = 6410;
+	DEPTH_COMPONENT = 6402;
+	DEPTH_STENCIL = 34041;
+}
+
+public enum TYPES
+{
+    UNSIGNED_BYTE = 5121;
+    UNSIGNED_SHORT = 5123;
+    UNSIGNED_SHORT_5_6_5 = 33635;
+    UNSIGNED_SHORT_4_4_4_4 = 32819;
+    UNSIGNED_SHORT_5_5_5_1 = 32820;
+    FLOAT = 5126;
+    HALF_FLOAT = 36193;
+}
+
+public enum SCALE_MODES
+{
+    NEAREST = 0;
+	LINEAR = 1;
+}
+
+public struct ISize
+{
+    int width;
+    int height;
+}
+
+[Native]
+public class Resource
+{
+
+}
+
+[Native]
+public class BufferResource : Resource
+{
+    public ctor(javascript.Uint8Array resource, ISize options)
+}
+
+public struct IBaseTextureOptions
+{
+    int width;
+    int height;
+    int type;
+}
+
 [Native]
 public class BaseTexture
 {
-    
+    public ctor(Resource resource, IBaseTextureOptions options) {}
+    public fun setResource(Resource resource) {}
+    public fun update() {}
 }
 
 [Native]

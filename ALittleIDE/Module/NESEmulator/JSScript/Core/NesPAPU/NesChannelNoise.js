@@ -47,4 +47,77 @@ NESEmulator.NesChannelNoise = JavaScript.Class(undefined, {
 		this._tmp = 0;
 	},
 	ClockLengthCounter : function() {
+		if (this._length_counter_enable && this._length_counter > 0) {
+			-- this._length_counter;
+			if (this._length_counter === 0) {
+				this.UpdateSampleValue();
+			}
+		}
+	},
+	ClockEnvDecay : function() {
+		if (this._env_reset) {
+			this._env_reset = false;
+			this._env_decay_counter = this._env_decay_rate + 1;
+			this._env_volume = 0xf;
+		} else {
+			-- this._env_decay_counter;
+			if (this._env_decay_counter <= 0) {
+				this._env_decay_counter = this._env_decay_rate + 1;
+				if (this._env_volume > 0) {
+					-- this._env_volume;
+				} else {
+					this._env_volume = NESEmulator.ConditionExpr(this._env_decay_loop_enable, 0xf, 0);
+				}
+			}
+		}
+		if (this._env_decay_disable) {
+			this._master_volume = this._env_decay_rate;
+		} else {
+			this._master_volume = this._env_volume;
+		}
+		this.UpdateSampleValue();
+	},
+	UpdateSampleValue : function() {
+		if (this._is_enabled && this._length_counter > 0) {
+			this._sample_value = this._random_bit * this._master_volume;
+		}
+	},
+	WriteReg : function(address, value) {
+		if (address === 0x400c) {
+			this._env_decay_disable = (value & 0x10) !== 0;
+			this._env_decay_rate = value & 0xf;
+			this._env_decay_loop_enable = (value & 0x20) !== 0;
+			this._length_counter_enable = (value & 0x20) === 0;
+			if (this._env_decay_disable) {
+				this._master_volume = this._env_decay_rate;
+			} else {
+				this._master_volume = this._env_volume;
+			}
+		} else {
+			if (address === 0x400e) {
+				this._prog_timer_max = this._papu.GetNoiseWaveLength(value & 0xf);
+				this._random_mode = value >> 7;
+			} else {
+				if (address === 0x400f) {
+					this._length_counter = this._papu.GetLengthMax(value & 248);
+					this._env_reset = true;
+				}
+			}
+		}
+	},
+	SetEnabled : function(value) {
+		this._is_enabled = value;
+		if (!value) {
+			this._length_counter = 0;
+		}
+		this.UpdateSampleValue();
+	},
+	GetLengthStatus : function() {
+		if (this._length_counter === 0 || !this._is_enabled) {
+			return 0;
+		}
+		return 1;
+	},
+}, "NESEmulator.NesChannelNoise");
+
 }

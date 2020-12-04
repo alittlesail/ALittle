@@ -66,6 +66,9 @@ ALittle.System_GetPlatform = function() {
 	}
 }
 
+ALittle.System_SetFPS = function(fps) {
+}
+
 ALittle.System_GetCurMSTime = function() {
 	return Date.now();
 }

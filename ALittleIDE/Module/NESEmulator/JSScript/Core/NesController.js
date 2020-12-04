@@ -16,6 +16,9 @@ NESEmulator.NesControlType = {
 NESEmulator.NesController = JavaScript.Class(undefined, {
 	Ctor : function() {
 		this._state = new Map();
+		for (let i = 0; i < 8; i += 1) {
+			this._state.set(i, 0x40);
+		}
 	},
 	ButtonDown : function(key) {
 		this._state.set(key, 0x41);

@@ -7778,15 +7778,47 @@ if (typeof ALittle === "undefined") window.ALittle = {};
 if (ALittle.DisplayObject === undefined) throw new Error(" extends class:ALittle.DisplayObject is undefined");
 ALittle.DynamicImage = JavaScript.Class(ALittle.DisplayObject, {
 	Ctor : function(ctrl_sys) {
-		this._show = ALittle.NewObject(lua.__CPPAPIImage);
-		this._texture = ALittle.NewObject(lua.__CPPAPIDynamicTexture);
-		this._show.SetTexture(this._texture);
+		this._show = ALittle.NewObject(JavaScript.JImage);
 	},
 	GetSurface : function(redraw) {
 		return this._texture.GetSurface(redraw);
 	},
+	SetRangeColor : function(buffer, width, height) {
+		if (this._base_texture !== undefined) {
+			for (let x = 0; x < width; x += 1) {
+				for (let y = 0; y < height; y += 1) {
+					let index = y * width + x;
+					this._data[index - 1] = buffer.get(index);
+				}
+			}
+			this._base_texture.update();
+		}
+	},
 	SetSurfaceSize : function(width, height, color) {
-		this._texture.SetSurfaceSize(width, height, color);
+		{
+			if (this._texture !== undefined && (this._texture.GetWidth() !== width || this._texture.GetHeight() !== height)) {
+				this._show.ClearTexture();
+				this._texture = undefined;
+			}
+			let len = width * height;
+			let buffer = new ArrayBuffer(len * 4);
+			let array = new Uint32Array(buffer);
+			this._data = array;
+			for (let i = 0; i < len; i += 1) {
+				this._data[i - 1] = color;
+			}
+			let res_options = {};
+			res_options.width = width;
+			res_options.height = height;
+			let resource = new PIXI.BufferResource(new Uint8Array(buffer), res_options);
+			let tex_options = {};
+			tex_options.width = width;
+			tex_options.height = height;
+			this._base_texture = new PIXI.BaseTexture(resource, tex_options);
+			let texture = new PIXI.Texture(this._base_texture);
+			this._texture = ALittle.NewObject(JavaScript.JTexture, texture, width, height);
+			this._show.SetTexture(this._texture);
+		}
 	},
 	SetRenderMode : function(mode) {
 		this._texture.SetRenderMode(mode);
@@ -7885,6 +7917,7 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 		this._ime_editing_callback = undefined;
 		this._sym_map = new Map();
 		this._keydown_callback = undefined;
+		this._keyup_callback = undefined;
 		this._view_resize_callback = undefined;
 		this._long_press = undefined;
 		this._finger_info = {};
@@ -7900,6 +7933,12 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 	},
 	get keydown_callback() {
 		return this._keydown_callback;
+	},
+	set keyup_callback(value) {
+		this._keyup_callback = value;
+	},
+	get keyup_callback() {
+		return this._keyup_callback;
 	},
 	set quit_callback(value) {
 		this._quit_callback = value;
@@ -8269,6 +8308,9 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 		event.scancode = scancode;
 		if (this._sfc !== undefined && this._ime_editing === false) {
 			this._sfc.DispatchEvent(___all_struct.get(1213009422), event);
+		}
+		if (this._ime_editing === false && this._keyup_callback !== undefined) {
+			this._keyup_callback(mod, sym, scancode);
 		}
 	},
 	HandleMouseWheel : function(x, y) {
@@ -9372,6 +9414,20 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 				this.RegisterInfo(name, value);
 			}
 			___COROUTINE();
+		}).bind(this));
+	},
+	HttpDownload : function(path) {
+		return new Promise((async function(___COROUTINE, ___) {
+			let [content, buffer] = JavaScript.File_LoadFile(path);
+			if (buffer !== undefined || content !== undefined) {
+				___COROUTINE(undefined); return;
+			}
+			ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path));
+			let error = await ALittle.HttpDownloadRequest(this._host, this._port, path, this._base_url + path, undefined, true);
+			if (error !== undefined) {
+				___COROUTINE(error); return;
+			}
+			___COROUTINE(undefined); return;
 		}).bind(this));
 	},
 	LoadMessageFromFile : function(T, path) {

@@ -87,13 +87,12 @@ NESEmulator.NesRom = JavaScript.Class(undefined, {
 		++ offset;
 		this._vrom_count = data.ReadUChar(offset) * 2;
 		++ offset;
-		let flag = data.ReadUChar(offset);
+		let flag1 = data.ReadUChar(offset);
 		++ offset;
-		this._mirroring = 0;
-		if (flag & 1 !== 0) {
-			this._mirroring = 1;
-		}
-		let has_battery_ram = flag & 2 !== 0;
+		let flag2 = data.ReadUChar(offset);
+		++ offset;
+		this._mirroring = NESEmulator.ConditionExpr((flag1 & 1) !== 0, 1, 0);
+		let has_battery_ram = flag1 & 2 !== 0;
 		if (has_battery_ram) {
 			this._battery_ram = new Map();
 			this._battery_ram_len = 0x2000;
@@ -110,9 +109,9 @@ NESEmulator.NesRom = JavaScript.Class(undefined, {
 			this._battery_ram = undefined;
 			this._battery_ram_len = 0;
 		}
-		this._trainer = flag & 4 !== 0;
-		this._four_screen = flag & 8 !== 0;
-		this._mapper_type = (flag & 6) >> 4 | (flag & 7) & 0xf0;
+		this._trainer = flag1 & 4 !== 0;
+		this._four_screen = flag1 & 8 !== 0;
+		this._mapper_type = flag1 >> 4 | flag2 & 0xf0;
 		let found_error = false;
 		for (let i = 8; i < 16; i += 1) {
 			if (data.ReadUChar(i) !== 0) {

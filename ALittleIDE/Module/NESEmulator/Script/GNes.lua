@@ -20,8 +20,13 @@ function NESEmulator.GNes:LoadROM(file_name)
 		self._loop_frame:Stop()
 		self._loop_frame = nil
 	end
+	if self._loop_func ~= nil then
+		self._loop_func:Stop()
+		self._loop_func = nil
+	end
+	local path = NESEmulator.g_ModuleBasePath .. "Other/" .. file_name
 	local nes_rom = ALittle.LocalFile()
-	if not nes_rom:Load(NESEmulator.g_ModuleBasePath .. "Other/" .. file_name) then
+	if not nes_rom:Load(path) then
 		return
 	end
 	local error = self:ReloadROM(nes_rom)
@@ -31,7 +36,10 @@ function NESEmulator.GNes:LoadROM(file_name)
 	end
 	self._loop_frame = ALittle.LoopFrame(Lua.Bind(self.UpdateFrame, self))
 	self._loop_frame:Start()
+	self._loop_func = ALittle.LoopFunction(Lua.Bind(self.ShowInfo, self), -1, 1000, 1000)
+	self._loop_func:Start()
 end
+NESEmulator.GNes.LoadROM = Lua.CoWrap(NESEmulator.GNes.LoadROM)
 
 function NESEmulator.GNes:HandleKey(down, mod, sym, scancode)
 	if sym == 97 then
@@ -86,7 +94,6 @@ function NESEmulator.GNes:HandleKey(down, mod, sym, scancode)
 end
 
 function NESEmulator.GNes:OnFrame(frame_buffer)
-	local surface = self._image:GetSurface(true)
 	local x = 0
 	while true do
 		if not(x < NESEmulator.SCREEN_WIDTH) then break end
@@ -94,12 +101,15 @@ function NESEmulator.GNes:OnFrame(frame_buffer)
 		while true do
 			if not(y < NESEmulator.SCREEN_HEIGHT) then break end
 			local index = y * NESEmulator.SCREEN_WIDTH + x
-			local color = frame_buffer[index] | 0xFF000000
-			carp.SetCarpSurfacePixel(surface, x, y, color)
+			frame_buffer[index] = frame_buffer[index] | 0xFF000000
 			y = y+(1)
 		end
 		x = x+(1)
 	end
+	self._image:SetRangeColor(frame_buffer, NESEmulator.SCREEN_WIDTH, NESEmulator.SCREEN_HEIGHT)
+end
+
+function NESEmulator.GNes:ShowInfo()
 end
 
 function NESEmulator.GNes:UpdateFrame(frame_time)
@@ -109,6 +119,9 @@ function NESEmulator.GNes:UpdateFrame(frame_time)
 		if self._loop_frame ~= nil then
 			self._loop_frame:Stop()
 		end
+		if self._loop_func ~= nil then
+			self._loop_func:Stop()
+		end
 	end
 end
 
@@ -117,6 +130,10 @@ function NESEmulator.GNes:Shutdown()
 		self._loop_frame:Stop()
 	end
 	self._loop_frame = nil
+	if self._loop_func ~= nil then
+		self._loop_func:Stop()
+	end
+	self._loop_func = nil
 end
 
 _G.g_GNes = NESEmulator.GNes()

@@ -67,16 +67,17 @@ function ALittle.ControlSystem:RegisterInfoByHttp()
 	local ___COROUTINE = coroutine.running()
 	local path = self._ui_path .. "../JSUI/ui_all_in_one.json"
 	ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(path))
-	local error = ALittle.HttpDownloadRequest(self._host, self._port, path, path)
+	local error = ALittle.HttpDownloadRequest(self._host, self._port, path, path, nil, true)
 	if error ~= nil then
 		ALittle.Error("ui load failed:" .. error)
 		return
 	end
-	local content = JavaScript.File_LoadFile(path)
-	if content == nil then
+	local content, buffer = JavaScript.File_LoadFile(path)
+	if buffer == nil then
 		ALittle.Error("ui load failed:" .. error)
 		return
 	end
+	content = javascript.UTF8ArrayToString(javascript.Uint8Array(buffer))
 	JavaScript.File_DeleteFile(path)
 	local jerror, json = Lua.TCall(ALittle.String_JsonDecode, content)
 	if jerror ~= nil then

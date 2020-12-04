@@ -2048,6 +2048,60 @@ ALittle.String_DecryptPassword = function(account_name, pwd) {
 if (typeof ALittle === "undefined") window.ALittle = {};
 
 
+ALittle.LocalFile = JavaScript.Class(undefined, {
+	Clear : function() {
+		this._js_file = undefined;
+	},
+	Load : function(path) {
+		this.Clear();
+		{
+			let [content, buffer] = JavaScript.File_LoadFile(path);
+			if (content === undefined && buffer === undefined) {
+				return false;
+			}
+			if (buffer === undefined) {
+				buffer = StringToUTF8Array(content).buffer;
+			}
+			if (buffer === undefined) {
+				return false;
+			}
+			this._js_file = new DataView(buffer);
+		}
+		return true;
+	},
+	GetSize : function() {
+		if (this._js_file === undefined) {
+			return 0;
+		} else {
+			return this._js_file.byteLength;
+		}
+	},
+	ReadChar : function(offset) {
+		return this._js_file.getInt8(offset);
+	},
+	ReadUChar : function(offset) {
+		return this._js_file.getUint8(offset);
+	},
+	ReadShort : function(offset) {
+		return this._js_file.getInt16(offset, true);
+	},
+	ReadUShort : function(offset) {
+		return this._js_file.getUint16(offset, true);
+	},
+	ReadInt : function(offset) {
+		return this._js_file.getInt32(offset, true);
+	},
+	ReadUInt : function(offset) {
+		return this._js_file.getUint32(offset, true);
+	},
+	ReadFloat : function(offset) {
+		return this._js_file.getFloat32(offset, true);
+	},
+	ReadDouble : function(offset) {
+		return this._js_file.getFloat64(offset, true);
+	},
+}, "ALittle.LocalFile");
+
 ALittle.File_BaseFilePath = function() {
 	return "";
 }
@@ -2173,6 +2227,9 @@ ALittle.System_GetPlatform = function() {
 	} else {
 		return "Web";
 	}
+}
+
+ALittle.System_SetFPS = function(fps) {
 }
 
 ALittle.System_GetCurMSTime = function() {

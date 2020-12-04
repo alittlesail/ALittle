@@ -116,7 +116,7 @@ public class ControlSystem
         this._child_plugin_map[module_name] = null;
         plugin._parent_plugin_map[this._module_name] = null;
     }
-    
+
     public await fun RegisterInfoByHttp()
     {
         var path = this._ui_path.."../JSUI/ui_all_in_one.json";
@@ -145,6 +145,20 @@ public class ControlSystem
         {
             this.RegisterInfo(name, value);
         }
+    }
+
+    // 下载模块内的文件
+    [Language(JavaScript)]
+    public await fun HttpDownload(string path) : string
+    {
+        var content, buffer = JavaScript.File_LoadFile(path);
+        if (buffer != null || content != null) return null;
+
+        File_MakeDeepDir(ALittle.File_GetFilePathByPath(path));
+        var error = HttpDownloadRequest(this._host, this._port, path, this._base_url..path, null, true);
+        if (error != null) return error;
+
+        return null;
     }
 
     public await fun LoadMessageFromFile<T:struct>(string path) : T

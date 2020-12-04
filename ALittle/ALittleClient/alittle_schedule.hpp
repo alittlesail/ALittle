@@ -98,6 +98,7 @@ private:
 			.addFunction("Exit", &ALittleSchedule::Exit)
 			.addFunction("ForceExit", &ALittleSchedule::ForceExit)
 			.addFunction("Restart", &ALittleSchedule::Restart)
+			.addFunction("SetFPS", &ALittleSchedule::SetFPS)
 			.endClass();
 
 		luabridge::setGlobal(l_state, this, "__CPPAPI_ScheduleSystem");

@@ -29,6 +29,7 @@ function NESEmulator.GCenter:Setup()
 	screen:SetSurfaceSize(NESEmulator.SCREEN_WIDTH, NESEmulator.SCREEN_HEIGHT, 0)
 	self._main_layer:AddChild(screen)
 	g_GNes:Setup(screen)
+	g_GNes:LoadROM("Battle City (J).nes")
 end
 
 function NESEmulator.GCenter:Shutdown()

@@ -55,6 +55,7 @@ class UISystem
 
     private Map<int, bool>              _sym_map;
     private Functor<(int, int, int)>    _keydown_callback;
+    private Functor<(int, int, int)>    _keyup_callback;
     private Functor<(int, int)>         _view_resize_callback;
     private LoopFunction                _long_press;
     private Map<string, FingerInfo>     _finger_info;
@@ -103,6 +104,7 @@ class UISystem
         this._sym_map = new Map<int, bool>();
         // 无条件侦听回调
         this._keydown_callback = null;
+        this._keyup_callback = null;
         // 当总窗口发生过变化后调用的回调
         this._view_resize_callback = null;
         // 长按动画
@@ -123,7 +125,7 @@ class UISystem
         return this._view_resize_callback;
     }
 
-    // 注册输入法回调函数，参数为mod, sym, scancode
+    // 注册键盘回调函数，参数为mod, sym, scancode
     public set keydown_callback(Functor<(int, int, int)> value)
     {
         this._keydown_callback = value;
@@ -131,6 +133,14 @@ class UISystem
     public get keydown_callback() : Functor<(int, int, int)>
     {
         return this._keydown_callback;
+    }
+    public set keyup_callback(Functor<(int, int, int)> value)
+    {
+        this._keyup_callback = value;
+    }
+    public get keyup_callback() : Functor<(int, int, int)>
+    {
+        return this._keyup_callback;
     }
 
     // 退出通知回调
@@ -645,7 +655,7 @@ class UISystem
         if (this._sfc != null && this._ime_editing == false)
             this._sfc.DispatchEvent(event);
 
-        // 执行快捷键
+        // 执行按键按下
         if (!event.handled && this._ime_editing == false && this._keydown_callback != null)
             this._keydown_callback(mod, sym, scancode);
     }
@@ -663,6 +673,10 @@ class UISystem
         event.scancode = scancode;
         if (this._sfc != null && this._ime_editing == false)
             this._sfc.DispatchEvent(event);
+
+        // 执行按键弹起
+        if (this._ime_editing == false && this._keyup_callback != null)
+            this._keyup_callback(mod, sym, scancode);
     }
     
     // 处理鼠标滚轮事件

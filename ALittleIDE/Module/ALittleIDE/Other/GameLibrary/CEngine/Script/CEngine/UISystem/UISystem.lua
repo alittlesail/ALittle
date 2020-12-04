@@ -48,6 +48,7 @@ function ALittle.UISystem:Ctor()
 	___rawset(self, "_ime_editing_callback", nil)
 	___rawset(self, "_sym_map", {})
 	___rawset(self, "_keydown_callback", nil)
+	___rawset(self, "_keyup_callback", nil)
 	___rawset(self, "_view_resize_callback", nil)
 	___rawset(self, "_long_press", nil)
 	___rawset(self, "_finger_info", {})
@@ -67,6 +68,14 @@ end
 
 function ALittle.UISystem.__getter:keydown_callback()
 	return self._keydown_callback
+end
+
+function ALittle.UISystem.__setter:keyup_callback(value)
+	self._keyup_callback = value
+end
+
+function ALittle.UISystem.__getter:keyup_callback()
+	return self._keyup_callback
 end
 
 function ALittle.UISystem.__setter:quit_callback(value)
@@ -460,6 +469,9 @@ function ALittle.UISystem:HandleKeyUp(mod, sym, scancode)
 	event.scancode = scancode
 	if self._sfc ~= nil and self._ime_editing == false then
 		self._sfc:DispatchEvent(___all_struct[1213009422], event)
+	end
+	if self._ime_editing == false and self._keyup_callback ~= nil then
+		self._keyup_callback(mod, sym, scancode)
 	end
 end
 

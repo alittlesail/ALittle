@@ -38,6 +38,7 @@ class GCenter
         this._main_layer.AddChild(screen);
 
         g_GNes.Setup(screen);
+        g_GNes.LoadROM("Battle City (J).nes");
     }
 
     public fun Shutdown()

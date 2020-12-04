@@ -65,6 +65,10 @@ function ALittle.System_GetPlatform()
 	return __CPPAPI_System:GetPlatform()
 end
 
+function ALittle.System_SetFPS(fps)
+	__CPPAPI_ScheduleSystem:SetFPS(fps)
+end
+
 function ALittle.System_GetCurMSTime()
 	return __CPPAPI_System:GetCurMSTime()
 end

@@ -107,6 +107,13 @@ public static System_GetPlatform() : string
         return "Web";
 }
 
+// 设置帧率
+public static System_SetFPS(int fps)
+{
+    [Language(Lua)]
+    __CPPAPI_ScheduleSystem.SetFPS(fps);
+}
+
 // 获取当前毫秒
 public static System_GetCurMSTime() : int
 {

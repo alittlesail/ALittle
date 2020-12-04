@@ -494,7 +494,6 @@ protected class NesCPUOpData
         this.SetOp(NesCPUInsType.INS_IGN, 0x74, NesCPUAddrType.ADDR_ZPX, 2, 4);
         this.SetOp(NesCPUInsType.INS_IGN, 0xd4, NesCPUAddrType.ADDR_ZPX, 2, 4);
         this.SetOp(NesCPUInsType.INS_IGN, 0xf4, NesCPUAddrType.ADDR_ZPX, 2, 4);
-
     }
 
 

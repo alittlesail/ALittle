@@ -6,18 +6,10 @@ protected class NesTile
     // 像素
     public Map<int, int> _pix = new Map<int, int>();
 
-    private int _w = 0;
-    private int _h = 0;
-
-    private int _inc_x = 0;
-    private int _inc_y = 0;
-
-    private int _pal_index = 0;
-    private int _tpri = 0;
-    private int _c = 0;
-    private bool _init = false;
     public Map<int, bool> _opaque;
 
+    private bool _init = false;
+    
     public fun SetBuffer(Map<int, int> scanline)
     {
         for (var y = 0; y < 8; 1)
@@ -53,8 +45,8 @@ protected class NesTile
             return;
         }
 
-        this._w = src_x2 - src_x1;
-        this._h = src_y2 - src_y1;
+        var w = src_x2 - src_x1;
+        var h = src_y2 - src_y1;
 
         if (dx < 0) {
             src_x1 -= dx;

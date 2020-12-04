@@ -10,7 +10,9 @@ protected class NesChannelDM
 	private int MODE_IRQ = 2;
 
     public bool _is_enabled;
+    private bool _has_sample;
     public bool _irq_generated;
+
     private int _play_mode;
     public int _dma_frequency;
     private int _dma_counter;
@@ -19,18 +21,37 @@ protected class NesChannelDM
     private int _play_address;
     private int _play_length;
     private int _play_length_counter;
-    public int _sample;
-    private int _dac_lsb;
     public int _shift_counter;
     private int _reg4012;
     private int _reg4013;
+    public int _sample;
+    private int _dac_lsb;
     private int _data;
-
-    private bool _has_sample;
 
     public ctor(NesPAPU papu)
     {
         this._papu = papu;
+
+        this._is_enabled = null;
+        this._has_sample = null;
+        this._irq_generated = false;
+
+        this._play_mode = null;
+        this._dma_frequency = null;
+        this._dma_counter = null;
+        this._delta_counter = null;
+        this._play_start_address = null;
+        this._play_address = null;
+        this._play_length = null;
+        this._play_length_counter = null;
+        this._shift_counter = null;
+        this._reg4012 = null;
+        this._reg4013 = null;
+        this._sample = null;
+        this._dac_lsb = null;
+        this._data = null;
+
+        this.Reset();
     }
 
     public fun Reset()
@@ -70,8 +91,7 @@ protected class NesChannelDM
             }
 
             // Update sample value:
-            this._sample = 0;
-            if (this._is_enabled) this._sample = (this._delta_counter <<- 1) + this._dac_lsb;
+            this._sample = ConditionExpr(this._is_enabled, (this._delta_counter <<- 1) + this._dac_lsb, 0);
 
             // Update shift register:
             this._data = this._data ->> 1;

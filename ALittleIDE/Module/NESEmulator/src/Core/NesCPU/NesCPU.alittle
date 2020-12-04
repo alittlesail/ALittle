@@ -1,6 +1,9 @@
 
 namespace NESEmulator;
 
+// CPU内存寻址长度
+protected var CPU_MEM_LEN = 0x10000;
+
 protected enum NesCPUIRQ
 {
     IRQ_NORMAL = 0;
@@ -12,20 +15,29 @@ protected class NesCPU
 {
     private NesCore _nes;
 
-    // 内存
+    // 总内存，长度为CPU_MEM_LEN
     public Map<int, int> _mem;
-    private int _mem_len = 0x10000;
 
     // 寄存器
-    private int _reg_acc;
-    private int _reg_x;
-    private int _reg_y;
-    private int _reg_sp;	// 栈寄存器
-    private int _reg_pc;
+    private int _reg_acc;	// 累加器
+    private int _reg_x;	// 循环计数器
+    private int _reg_y;	// 循环计数器
+    private int _reg_sp;	// 堆栈寄存器，其值为 0x00 ~ 0xFF，对应着 CPU 总线上的 0x100 ~ 0x1FF
+    private int _reg_pc;	// 程序计数器，记录下一条指令地址
     private int _reg_pc_new;
-    private int _reg_status;
 
-    // 状态标志
+    // 标志寄存器，它实际上只有 6bit，但是我们可以看成 8bit
+    // BIT	名称	含义
+    // 0	C	进位标志，如果计算结果产生进位，则置 1
+    // 1	Z	零标志，如果结算结果为 0，则置 1
+    // 2	I	中断去使能标志，置 1 则可屏蔽掉 IRQ 中断
+    // 3	D	十进制模式，未使用
+    // 4	B	BRK，后面解释
+    // 5	U	未使用，后面解释
+    // 6	V	溢出标志，如果结算结果产生了溢出，则置 1
+    // 7	N	负标志，如果计算结果为负，则置 1
+    private int _reg_status;	
+
     private int _f_carry;
     private int _f_zero;
     private int _f_interrupt;
@@ -41,13 +53,13 @@ protected class NesCPU
     // 指令集
     private NesCPUOpData _op_data;
 
-    // 指令周期
-    private int _cycles_to_halt = 0;
+    // 指令周期数
+    public int _cycles_to_halt = 0;
 
     // 崩溃标记
     private bool _crash = false;
 
-    // 中断通知
+    // 请求中断
     private bool _irq_requested = false;
     // 中断类型
     private int _irq_type;
@@ -55,16 +67,19 @@ protected class NesCPU
     public ctor(NesCore nes)
     {
         this._nes = nes;
+
+        this.Reset();
     }
 
     public fun Reset()
     {
-        // 内存
+        // 初始化总内存
         this._mem = new Map<int, int>();
-
-        for (var i = 0; i < this._mem_len; 1)
+        for (var i = 0; i < CPU_MEM_LEN; 1)
             this._mem[i] = 0;
 
+        // 主机内存，[0x0000, 0x2000)
+        // 实际可用只有最低的0x800，剩下部分都是这块的镜像
         for (var i = 0; i < 0x2000; 1)
             this._mem[i] = 0xff;
 
@@ -76,10 +91,9 @@ protected class NesCPU
             this._mem[j + 0x00a] = 0xdf;
             this._mem[j + 0x00f] = 0xbf;
         }
-
-        for (var k = 0x2001; k < this._mem_len; 1) {
+        // 初始化剩余内存
+        for (var k = 0x2001; k < CPU_MEM_LEN; 1)
             this._mem[k] = 0;
-        }
 
         // 寄存器
         this._reg_acc = 0;
@@ -89,11 +103,11 @@ protected class NesCPU
         this._reg_sp = 0x01ff;
         // 指令寄存器
         this._reg_pc = 0x8000 - 1;
-        this._reg_pc_new = 0x8000 - 1;
+        this._reg_pc_new = this._reg_pc;
         // 状态寄存器
         this._reg_status = 0x28;
 
-        this.SetStatus(0x28);
+        this.SetStatus(this._reg_status);
 
         // 设置标记
         this._f_carry = 0;
@@ -111,12 +125,12 @@ protected class NesCPU
 
         // 创建指令集
         this._op_data = new NesCPUOpData();
-        // 指令周期
+        // 指令周期数
         this._cycles_to_halt = 0;
         // 重置崩溃标记
         this._crash = false;
 
-        // 中断通知
+        // 重置中断
         this._irq_requested = false;
         this._irq_type = null;
     }
@@ -130,11 +144,8 @@ protected class NesCPU
         // 检查中断
         if (this._irq_requested)
         {
-            var f_zero = 0;
-            if (this._f_zero == 0) f_zero = 1;
-
             temp = this._f_carry |
-                    (f_zero <<- 1) |
+            		(ConditionExpr(this._f_zero == 0, 1, 0) <<- 1) |
                     (this._f_interrupt <<- 2) |
                     (this._f_decimal <<- 3) |
                     (this._f_brk <<- 4) |
@@ -168,24 +179,26 @@ protected class NesCPU
             this._irq_requested = false;
         }
 
-        // 指令地址
-        var op_inf = this._op_data._op_data[this._nes._mmap.Load(this._reg_pc + 1)];
+        // 获取下一条指令
+        var op = this._nes._mmap.Load(this._reg_pc + 1);
+        // 指令信息
+        var op_info = this._op_data._op_data[op];
         // 指令的周期数
-        var cycle_count = op_inf ->> 24;
+        var cycle_count = op_info ->> 24;
         // 指令而外的周期数
         var cycle_add = 0;
+        // 指令地址模式
+        var addr_mode = (op_info ->> 8) & 0xff;
 
-        // 查找地址模式
-        var addr_mode = (op_inf ->> 8) & 0xff;
-
-        // 让pc寄存器指向下一个地址
+        // 保存当前指令地址
         var op_addr = this._reg_pc;
-        this._reg_pc += op_inf ->> 16 & 0xff;
+        // 设置下一条指令地址
+        this._reg_pc += (op_info ->> 16) & 0xff;
 
         var addr = 0;
 
-        // Zero Page mode
-        // 使用地址所指向的指令的低2个字节
+        // Zero Page mode. Use the address given after the opcode,
+        // but without high byte.
         if (addr_mode == 0)
         {
             addr = this.Load(op_addr + 2);
@@ -199,43 +212,44 @@ protected class NesCPU
             else
                 addr += this._reg_pc - 256;
         }
-        // 忽略
+        // Ignore. Address is implied in instruction.
         elseif (addr_mode == 2)
         {
 
         }
-        // Absolute mode
-        // 使用指令后的两个字节
+        // Absolute mode. Use the two bytes following the opcode as
+        // an address.
         elseif (addr_mode == 3)
         {
             addr = this.Load16bit(op_addr + 2);
         }
-        // Accumulator mode
-        // 使用ACC寄存器所指向的地址
+        // Accumulator mode. The address is in the accumulator
+        // register.
         elseif (addr_mode == 4)
         {
             addr = this._reg_acc;
         }
-        // Immediate mode
-        // 使用下个指令的地址
+        // Immediate mode. The value is given after the opcode.
         elseif (addr_mode == 5)
         {
             addr = this._reg_pc;
         }
-        // Zero Page Indexed mode
-        // 以下个指令作为基地址，把X寄存器作为索引。然后获得地址
+        // Zero Page Indexed mode, X as index. Use the address given
+        // after the opcode, then add the
+        // X register to it to get the final address.
         elseif (addr_mode == 6)
         {
             addr = (this.Load(op_addr + 2) + this._reg_x) & 0xff;
         }
-        // Zero Page Indexed mode
-        // 以下个指令作为基地址，把Y寄存器作为索引。然后获得地址
+        // Zero Page Indexed mode, Y as index. Use the address given
+        // after the opcode, then add the
+        // Y register to it to get the final address.
         elseif (addr_mode == 7)
         {
             addr = (this.Load(op_addr + 2) + this._reg_y) & 0xff;
         }
         // Absolute Indexed Mode, X as index. Same as zero page
-        // indexed, but with the high byte
+        // indexed, but with the high byte.
         elseif (addr_mode == 8)
         {
             addr = this.Load16bit(op_addr + 2);
@@ -292,7 +306,7 @@ protected class NesCPU
         addr = addr & 0xFFFF;
 
         // 解析并执行指令
-        var op_type = op_inf & 0xFF;
+        var op_type = op_info & 0xFF;
         if (op_type == 0) {
             // *******
             // * ADC *
@@ -301,16 +315,12 @@ protected class NesCPU
             // Add with carry.
             temp = this._reg_acc + this.Load(addr) + this._f_carry;
 
-            if (
-            ((this._reg_acc ^ this.Load(addr)) & 0x80) == 0 &&
-            ((this._reg_acc ^ temp) & 0x80) != 0
-            ) {
+            if (((this._reg_acc ^ this.Load(addr)) & 0x80) == 0 && ((this._reg_acc ^ temp) & 0x80) != 0)
                 this._f_overflow = 1;
-            } else {
+            else
                 this._f_overflow = 0;
-            }
-            this._f_carry = 0;
-            if (temp > 255) this._f_carry = 1;
+
+            this._f_carry = ConditionExpr(temp > 255, 1, 0);
             this._f_sign = (temp ->> 7) & 1;
             this._f_zero = temp & 0xff;
             this._reg_acc = temp & 255;
@@ -356,11 +366,8 @@ protected class NesCPU
 
             // Branch on carry clear
             if (this._f_carry == 0) {
-                if ((op_addr & 0xff00) != (addr & 0xff00))
-                	cycle_count += 2;
-                else
-                	cycle_count += 1;
-            this._reg_pc = addr;
+                cycle_count += ConditionExpr((op_addr & 0xff00) != (addr & 0xff00), 2, 1);
+            	this._reg_pc = addr;
             }
         }
         elseif (op_type == 4) {
@@ -370,10 +377,7 @@ protected class NesCPU
 
             // Branch on carry set
             if (this._f_carry == 1) {
-                if ((op_addr & 0xff00) != (addr & 0xff00))
-                    cycle_count += 2;
-                else
-                    cycle_count += 1;
+                cycle_count += ConditionExpr((op_addr & 0xff00) != (addr & 0xff00), 2, 1);
                 this._reg_pc = addr;
             }
         }
@@ -384,10 +388,7 @@ protected class NesCPU
 
             // Branch on zero
             if (this._f_zero == 0) {
-                if ((op_addr & 0xff00) != (addr & 0xff00))
-                    cycle_count += 2;
-                else
-                    cycle_count += 1;
+                cycle_count += ConditionExpr((op_addr & 0xff00) != (addr & 0xff00), 2, 1);
                 this._reg_pc = addr;
             }
         }
@@ -420,10 +421,7 @@ protected class NesCPU
 
             // Branch on not zero
             if (this._f_zero != 0) {
-                if ((op_addr & 0xff00) != (addr & 0xff00))
-                    cycle_count += 2;
-                else
-                    cycle_count += 1;
+                cycle_count += ConditionExpr((op_addr & 0xff00) != (addr & 0xff00), 2, 1);
                 this._reg_pc = addr;
             }
         }
@@ -434,10 +432,7 @@ protected class NesCPU
 
             // Branch on positive result
             if (this._f_sign == 0) {
-                if ((op_addr & 0xff00) != (addr & 0xff00))
-                    cycle_count += 2;
-                else
-                    cycle_count += 1;
+                cycle_count += ConditionExpr((op_addr & 0xff00) != (addr & 0xff00), 2, 1);
                 this._reg_pc = addr;
             }
         }
@@ -451,12 +446,9 @@ protected class NesCPU
             this.Push(this._reg_pc & 255);
             this._f_brk = 1;
 
-            var f_zero = 0;
-            if (this._f_zero == 0) f_zero = 1;
-
             this.Push(
                  this._f_carry |
-                 (f_zero <<- 1) |
+                 (ConditionExpr(this._f_zero == 0, 1, 0) <<- 1) |
                  (this._f_interrupt <<- 2) |
                  (this._f_decimal <<- 3) |
                  (this._f_brk <<- 4) |
@@ -477,10 +469,7 @@ protected class NesCPU
 
             // Branch on overflow clear
             if (this._f_overflow == 0) {
-                if ((op_addr & 0xff00) != (addr & 0xff00))
-                    cycle_count += 2;
-                else
-                    cycle_count += 1;
+                cycle_count += ConditionExpr((op_addr & 0xff00) != (addr & 0xff00), 2, 1);
                 this._reg_pc = addr;
             }
         }
@@ -491,10 +480,7 @@ protected class NesCPU
 
             // Branch on overflow set
             if (this._f_overflow == 1) {
-                if ((op_addr & 0xff00) != (addr & 0xff00))
-                    cycle_count += 2;
-                else
-                    cycle_count += 1;
+                cycle_count += ConditionExpr((op_addr & 0xff00) != (addr & 0xff00), 2, 1);
                 this._reg_pc = addr;
             }
         }
@@ -537,9 +523,7 @@ protected class NesCPU
 
             // Compare memory and accumulator:
             temp = this._reg_acc - this.Load(addr);
-            if (temp >= 0)
-                this._f_carry = 1;
-            else this._f_carry = 0;
+            this._f_carry = ConditionExpr(temp >= 0, 1, 0);
             this._f_sign = (temp ->> 7) & 1;
             this._f_zero = temp & 0xff;
             cycle_count += cycle_add;
@@ -551,10 +535,7 @@ protected class NesCPU
 
             // Compare memory and index X:
             temp = this._reg_x - this.Load(addr);
-            if (temp >= 0)
-                this._f_carry = 1;
-            else
-                this._f_carry = 0;
+            this._f_carry = ConditionExpr(temp >= 0, 1, 0);
             this._f_sign = (temp ->> 7) & 1;
             this._f_zero = temp & 0xff;
         }
@@ -565,10 +546,7 @@ protected class NesCPU
 
             // Compare memory and index Y:
             temp = this._reg_y - this.Load(addr);
-            if (temp >= 0)
-                this._f_carry = 1;
-            else
-                this._f_carry = 0;
+            this._f_carry = ConditionExpr(temp >= 0, 1, 0);
             this._f_sign = (temp ->> 7) & 1;
             this._f_zero = temp & 0xff;
         }
@@ -754,13 +732,10 @@ protected class NesCPU
             // *******
 
             // Push processor status on stack
-            var f_zero = 0;
-            if (this._f_zero == 0) f_zero = 1;
-
             this._f_brk = 1;
             this.Push(
                  this._f_carry |
-                 (f_zero <<- 1) |
+                 (ConditionExpr(this._f_zero == 0, 1, 0) <<- 1) |
                  (this._f_interrupt <<- 2) |
                  (this._f_decimal <<- 3) |
                  (this._f_brk <<- 4) |
@@ -787,10 +762,7 @@ protected class NesCPU
             // Pull processor status from stack
             temp = this.Pull();
             this._f_carry = temp & 1;
-            if (((temp ->> 1) & 1) == 1)
-                this._f_zero = 0;
-            else
-                this._f_zero = 1;
+            this._f_zero = ConditionExpr(((temp ->> 1) & 1) == 1, 0, 1);
             this._f_interrupt = (temp ->> 2) & 1;
             this._f_decimal = (temp ->> 3) & 1;
             this._f_brk = (temp ->> 4) & 1;
@@ -856,10 +828,7 @@ protected class NesCPU
 
             temp = this.Pull();
             this._f_carry = temp & 1;
-            if (((temp ->> 1) & 1) == 0)
-                this._f_zero = 1;
-            else
-                this._f_zero = 0;
+            this._f_zero = ConditionExpr(((temp ->> 1) & 1) == 0, 1, 0);
             this._f_interrupt = (temp ->> 2) & 1;
             this._f_decimal = (temp ->> 3) & 1;
             this._f_brk = (temp ->> 4) & 1;
@@ -897,10 +866,7 @@ protected class NesCPU
             temp = this._reg_acc - this.Load(addr) - (1 - this._f_carry);
             this._f_sign = (temp ->> 7) & 1;
             this._f_zero = temp & 0xff;
-            if (
-            ((this._reg_acc ^ temp) & 0x80) != 0 &&
-            ((this._reg_acc ^ this.Load(addr)) & 0x80) != 0
-            ) {
+            if (((this._reg_acc ^ temp) & 0x80) != 0 && ((this._reg_acc ^ this.Load(addr)) & 0x80) != 0) {
                 this._f_overflow = 1;
             } else {
                 this._f_overflow = 0;
@@ -1109,10 +1075,7 @@ protected class NesCPU
 
             // Then compare with the accumulator:
             temp = this._reg_acc - temp;
-            if (temp >= 0)
-                this._f_carry = 1;
-            else
-                this._f_carry = 0;
+            this._f_carry = ConditionExpr(temp >= 0, 1, 0);
             this._f_sign = (temp ->> 7) & 1;
             this._f_zero = temp & 0xff;
             if (addr_mode != 11) cycle_count += cycle_add; // PostIdxInd = 11
@@ -1130,18 +1093,12 @@ protected class NesCPU
             temp = this._reg_acc - temp - (1 - this._f_carry);
             this._f_sign = (temp ->> 7) & 1;
             this._f_zero = temp & 0xff;
-            if (
-            ((this._reg_acc ^ temp) & 0x80) != 0 &&
-            ((this._reg_acc ^ this.Load(addr)) & 0x80) != 0
-            ) {
+            if (((this._reg_acc ^ temp) & 0x80) != 0 && ((this._reg_acc ^ this.Load(addr)) & 0x80) != 0) {
                 this._f_overflow = 1;
             } else {
                 this._f_overflow = 0;
             }
-            if (temp < 0)
-                this._f_carry = 0;
-            else
-                this._f_carry = 1;
+            this._f_carry = ConditionExpr(temp < 0, 0, 1);
             this._reg_acc = temp & 0xff;
             if (addr_mode != 11) cycle_count += cycle_add; // PostIdxInd = 11
         }
@@ -1186,10 +1143,7 @@ protected class NesCPU
             } else {
                 this._f_overflow = 0;
             }
-            if (temp > 255)
-                this._f_carry = 1;
-            else
-                this._f_carry = 0;
+            this._f_carry = ConditionExpr(temp > 255, 1, 0);
             this._f_sign = (temp ->> 7) & 1;
             this._f_zero = temp & 0xff;
             this._reg_acc = temp & 255;
@@ -1251,13 +1205,13 @@ protected class NesCPU
             // * ??? *
             // *******
 
-            this._nes.Stop();
-            ALittle.Error("Game crashed, invalid opcode at address $"..op_addr);
+            this._nes.Stop("Game crashed, invalid opcode at address $"..op_addr);
         }
         
         return cycle_count;
     }
 
+    // 读取一个字节
     public fun Load(int addr) : int
     {
         if (addr < 0x2000)
@@ -1266,6 +1220,7 @@ protected class NesCPU
         	return this._nes._mmap.Load(addr);
     }
 
+    // 读取两个字节
     public fun Load16bit(int addr) : int
     {
         if (addr < 0x1fff)
@@ -1274,6 +1229,7 @@ protected class NesCPU
             return this._nes._mmap.Load(addr) | (this._nes._mmap.Load(addr + 1) <<- 8);
     }
 
+    // 写入一个字节
     public fun Write(int addr, int value)
     {
         if (addr < 0x2000)
@@ -1282,17 +1238,19 @@ protected class NesCPU
             this._nes._mmap.Write(addr, value);
     }
 
+    // 请求中断
     public fun RequestIrq(int type)
     {
-        if (this._irq_requested) {
-            if (type == NesCPUIRQ.IRQ_NORMAL) {
+        if (this._irq_requested)
+        {
+            if (type == NesCPUIRQ.IRQ_NORMAL)
                 return;
-            }
         }
         this._irq_requested = true;
         this._irq_type = type;
     }
 
+    // 数据压栈
     public fun Push(int value)
     {
         this._nes._mmap.Write(this._reg_sp, value);
@@ -1300,11 +1258,13 @@ protected class NesCPU
         this._reg_sp = 0x0100 | (this._reg_sp & 0xff);
     }
 
+    // 修正reg_sp数值范围
     public fun StackWrap()
     {
         this._reg_sp = 0x0100 | (this._reg_sp & 0xff);
     }
 
+    // 数据出栈
     public fun Pull() : int
     {
         ++this._reg_sp;
@@ -1312,22 +1272,24 @@ protected class NesCPU
         return this._nes._mmap.Load(this._reg_sp);
     }
 
+    // 内存地址是否跨页
     public fun PageCrossed(int addr1, int addr2) : bool
     {
         return (addr1 & 0xff00) != (addr2 & 0xff00);
     }
 
+    // 累加指令周期
     public fun HaltCycles(int cycles)
     {
         this._cycles_to_halt += cycles;
     }
 
+    // 执行NMI中断
     public fun DoNonMaskableInterrupt(int status)
     {
+        // Check whether VBlank Interrupts are enabled
         if ((this._nes._mmap.Load(0x2000) & 128) != 0)
         {
-            // Check whether VBlank Interrupts are enabled
-
             ++this._reg_pc_new;
             this.Push((this._reg_pc_new ->> 8) & 0xff);
             this.Push(this._reg_pc_new & 0xff);
@@ -1339,12 +1301,14 @@ protected class NesCPU
         }
     }
 
+    // 执行RESET中断
     public fun DoResetInterrupt()
     {
         this._reg_pc_new = this._nes._mmap.Load(0xfffc) | (this._nes._mmap.Load(0xfffd) <<- 8);
         --this._reg_pc_new;
     }
 
+    // 执行普通中断
     public fun DoIrq(int status)
     {
         ++this._reg_pc_new;
@@ -1358,6 +1322,7 @@ protected class NesCPU
         --this._reg_pc_new;
     }
 
+    // 获取状态寄存器值
     public fun GetStatus() : int
     {
         return this._f_carry |
@@ -1370,6 +1335,7 @@ protected class NesCPU
                 (this._f_sign <<- 7);
     }
 
+    // 设置状态寄存器的值
     public fun SetStatus(int st)
     {
         this._f_carry = st & 1;

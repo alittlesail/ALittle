@@ -18,9 +18,9 @@ protected class NesPPU
     private NesCore _nes;
 
     // 背景图片内存
-    private Map<int, int> _vram_mem;
+    public Map<int, int> _vram_mem;
     // 精灵图片内存
-    private Map<int, int> _sprite_mem;
+    public Map<int, int> _sprite_mem;
 
     // VRAM I/O:
     private int _vram_address;
@@ -31,11 +31,11 @@ protected class NesPPU
     // SPR-RAM I/O:
     private int _sram_address;
     private int _current_mirroring;
-    private bool _request_end_frame;
+    public bool _request_end_frame;
     private bool _nmi_ok;
     private bool _dummy_cycle_toggle;
     private bool _valid_tile_data;
-    private int _nmi_counter;
+    public int _nmi_counter;
     private bool _scanline_already_rendered;
 
     // Control Flags Register 1:
@@ -48,7 +48,7 @@ protected class NesPPU
 
     // Control Flags Register 2:
     private int _f_color;
-    private int _f_sp_visibility;
+    public int _f_sp_visibility;
     private int _f_bg_visibility;
     private int _f_sp_clipping;
     private int _f_bg_clipping;
@@ -61,6 +61,8 @@ protected class NesPPU
     private int _cnt_vt;
     private int _cnt_ht;
 
+    private int _cur_nt;
+
     // Registers:
     private int _reg_fv;
     private int _reg_v;
@@ -70,8 +72,6 @@ protected class NesPPU
     private int _reg_fh;
     private int _reg_s;
 
-    private int _cur_nt;
-
     // Variables used when rendering:
     private Map<int, int> _attrib;
     private Map<int, int> _buffer;
@@ -80,9 +80,9 @@ protected class NesPPU
     private Map<int, NesTile> _scantile;
 
     // Initialize misc vars:
-    private int _scanline;
+    public int _scanline;
     private int _last_rendered_scanline;
-    private int _cur_x;
+    public int _cur_x;
 
     // Sprite data:
     private Map<int, int> _spr_x;
@@ -92,8 +92,8 @@ protected class NesPPU
     private Map<int, bool> _vert_flip;
     private Map<int, bool> _hori_flip;
     private Map<int, bool> _bg_priority;
-    private int _spr_0_hit_x;
-    private int _spr_0_hit_y;
+    public int _spr_0_hit_x;
+    public int _spr_0_hit_y;
     private bool _hit_spr_0;
     private bool _show_spr_0_hit;
     private bool _clip_to_tv_size;
@@ -103,7 +103,7 @@ protected class NesPPU
     private Map<int, int> _img_palette;
 
     // Create pattern table tile buffers:
-    private Map<int, NesTile> _pt_tile;
+    public Map<int, NesTile> _pt_tile;
 
     // Create nametable buffers:
     // Name table data:
@@ -124,10 +124,10 @@ protected class NesPPU
     {
         // Memory
         this._vram_mem = new Map<int, int>();
-        this._sprite_mem = new Map<int, int>();
         for (var i = 0; i < 0x8000; 1) {
             this._vram_mem[i] = 0;
         }
+        this._sprite_mem = new Map<int, int>();
         for (var i = 0; i < 0x100; 1) {
             this._sprite_mem[i] = 0;
         }
@@ -427,13 +427,10 @@ protected class NesPPU
                     // Check for sprite 0 (next scanline):
                     if (!this._hit_spr_0 && this._f_sp_visibility == 1)
                     {
-                        var f_sprite_size = 16;
-                        if (this._f_sprite_size == 0) f_sprite_size = 8;
                         if (this._spr_x[0] >= -7 &&
                             this._spr_x[0] < 256 &&
                             this._spr_y[0] + 1 <= this._scanline - 20 &&
-                            this._spr_y[0] + 1 + f_sprite_size >=
-                            this._scanline - 20)
+                        	this._spr_y[0] + 1 + ConditionExpr(this._f_sprite_size == 0, 8, 16) >= this._scanline - 20)
                         {
                             if (this.CheckSprite0(this._scanline - 20))
                                 this._hit_spr_0 = true;
@@ -599,9 +596,7 @@ protected class NesPPU
     public fun SetStatusFlag(int flag, bool value)
     {
         var n = 1 <<- flag;
-        var v = 0;
-        if (value) v = n;
-        this._nes._cpu._mem[0x2002] = (this._nes._cpu._mem[0x2002] & (255 - n)) | v;
+        this._nes._cpu._mem[0x2002] = (this._nes._cpu._mem[0x2002] & (255 - n)) | ConditionExpr(value, n, 0);
     }
 
     // CPU Register $2002:
@@ -730,10 +725,7 @@ protected class NesPPU
             }
 
             // Increment by either 1 or 32, depending on d2 of Control Register 1:
-            if (this._f_addr_inc == 1)
-            	this._vram_address += 32;
-            else
-                this._vram_address += 1;
+            this._vram_address += ConditionExpr(this._f_addr_inc == 1, 32, 1);
 
             this.CntsFromAddress();
             this.RegsFromAddress();
@@ -741,14 +733,11 @@ protected class NesPPU
             return tmp; // Return the previous buffered value.
         }
 
-            // No buffering in this mem range. Read normally.
+        // No buffering in this mem range. Read normally.
         tmp = this.MirroredLoad(this._vram_address);
 
         // Increment by either 1 or 32, depending on d2 of Control Register 1:
-        if (this._f_addr_inc == 1)
-        	this._vram_address += 32;
-        else
-            this._vram_address += 1;
+        this._vram_address += ConditionExpr(this._f_addr_inc == 1, 32, 1);
 
         this.CntsFromAddress();
         this.RegsFromAddress();
@@ -957,8 +946,7 @@ protected class NesPPU
 
     public fun RenderBgScanline(bool bgbuffer, int scan)
     {
-        var baseTile = 256;
-        if (this._reg_s == 0) baseTile = 0;
+        var baseTile = ConditionExpr(this._reg_s == 0, 0, 256);
         var destIndex = (scan <<- 8) - this._reg_fh;
 
         this._cur_nt = this._ntable_1[this._cnt_v + this._cnt_v + this._cnt_h];
@@ -1146,9 +1134,7 @@ protected class NesPPU
                             srcy2 = startscan + scancount - this._spr_y[i];
                         }
 
-                        var index = top;
-                        if (this._vert_flip[i]) top += 1;
-                        this._pt_tile[index].Render(
+                        this._pt_tile[top + ConditionExpr(this._vert_flip[i], 1, 0)].Render(
                                             this._buffer,
                                             0,
                                             srcy1,
@@ -1175,9 +1161,7 @@ protected class NesPPU
                         	srcy2 = startscan + scancount - (this._spr_y[i] + 8);
                         }
 
-                        index = top + 1;
-                        if (this._vert_flip[i]) index -= 1;
-                        this._pt_tile[index].Render(
+                        this._pt_tile[top + ConditionExpr(this._vert_flip[i], 0, 1)].Render(
                                             this._buffer,
                                             0,
                                             srcy1,
@@ -1204,8 +1188,7 @@ protected class NesPPU
         this._spr_0_hit_y = -1;
 
         var toffset = 0;
-        var tIndexAdd = 256;
-        if(this._f_sp_pattern_table == 0) tIndexAdd = 0;
+        var tIndexAdd = ConditionExpr(this._f_sp_pattern_table == 0, 0, 256);
         var bufferIndex = 0;
 
         var x = this._spr_x[0];
@@ -1247,11 +1230,7 @@ protected class NesPPU
                 } else {
                     for (var i = 0; i < 8; 1) {
                         if (x >= 0 && x < 256) {
-                            if (
-                            bufferIndex >= 0 &&
-                            bufferIndex < 61440 &&
-                            this._pixrendered[bufferIndex] != 0
-                            ) {
+                            if (bufferIndex >= 0 && bufferIndex < 61440 && this._pixrendered[bufferIndex] != 0) {
                                 if (t._pix[toffset + i] != 0) {
                                     this._spr_0_hit_x = bufferIndex % 256;
                                     this._spr_0_hit_y = scan;
@@ -1281,18 +1260,10 @@ protected class NesPPU
 
                 if (toffset < 8) {
                     // first half of sprite.
-                    var vert_flip = 0;
-                    if (this._vert_flip[0]) vert_flip = 1;
-                    var spr_tile = 0;
-                    if ((this._spr_tile[0] & 1) != 0) spr_tile = 255;
-                    t = this._pt_tile[this._spr_tile[0] + vert_flip + spr_tile];
+                    t = this._pt_tile[this._spr_tile[0] + ConditionExpr(this._vert_flip[0], 1, 0) + ConditionExpr((this._spr_tile[0] & 1) != 0, 255, 0)];
                 } else {
                     // second half of sprite.
-                    var vert_flip = 1;
-                    if (this._vert_flip[0]) vert_flip = 0;
-                    var spr_tile = 0;
-                    if ((this._spr_tile[0] & 1) != 0) spr_tile = 255;
-                    t = this._pt_tile[this._spr_tile[0] + vert_flip + spr_tile];
+                    t = this._pt_tile[this._spr_tile[0] + ConditionExpr(this._vert_flip[0], 0, 1) + ConditionExpr((this._spr_tile[0] & 1) != 0, 255, 0)];
                     if (this._vert_flip[0]) {
                     	toffset = 15 - toffset;
                     } else {

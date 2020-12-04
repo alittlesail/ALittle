@@ -5,14 +5,16 @@ protected class NesChannelNoise
 {
     private NesPAPU _papu;
 
-    public int _prog_timer_count;
-    public int _prog_timer_max;
     public bool _is_enabled;
-    public int _length_counter;
-    private bool _length_counter_enable;
     private bool _env_decay_disable;
     private bool _env_decay_loop_enable;
+    private bool _length_counter_enable;
+    private bool _env_reset;
     private bool _shift_now;
+
+    public int _length_counter;
+    public int _prog_timer_count;
+    public int _prog_timer_max;
     private int _env_decay_rate;
     private int _env_decay_counter;
     private int _env_volume;
@@ -21,11 +23,9 @@ protected class NesChannelNoise
     public int _random_bit;
     public int _random_mode;
     public int _sample_value;
-    public int _tmp;
-
     public int _acc_value;
     public int _acc_count;
-    private bool _env_reset;
+    public int _tmp;
 
     public ctor(NesPAPU papu)
     {
@@ -89,7 +89,8 @@ protected class NesChannelNoise
     
     public fun ClockEnvDecay()
     {
-        if (this._env_reset) {
+        if (this._env_reset)
+        {
             // Reset envelope:
             this._env_reset = false;
             this._env_decay_counter = this._env_decay_rate + 1;
@@ -104,9 +105,7 @@ protected class NesChannelNoise
                 if (this._env_volume > 0) {
                     --this._env_volume;
                 } else {
-                    var env_decay_loop_enable = 0;
-                    if (this._env_decay_loop_enable) env_decay_loop_enable = 0xf;
-                    this._env_volume = env_decay_loop_enable;
+                    this._env_volume = ConditionExpr(this._env_decay_loop_enable, 0xf, 0);
                 }
             }
         } 

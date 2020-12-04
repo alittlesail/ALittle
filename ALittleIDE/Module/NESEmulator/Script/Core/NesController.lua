@@ -17,17 +17,17 @@ NESEmulator.NesControlType = {
 	BUTTON_RIGHT = 7,
 }
 
-NESEmulator.NesControl = Lua.Class(nil, "NESEmulator.NesControl")
+NESEmulator.NesController = Lua.Class(nil, "NESEmulator.NesController")
 
-function NESEmulator.NesControl:Ctor()
+function NESEmulator.NesController:Ctor()
 	___rawset(self, "_state", {})
 end
 
-function NESEmulator.NesControl:ButtonDown(key)
+function NESEmulator.NesController:ButtonDown(key)
 	self._state[key] = 0x41
 end
 
-function NESEmulator.NesControl:ButtonUp(key)
+function NESEmulator.NesController:ButtonUp(key)
 	self._state[key] = 0x40
 end
 

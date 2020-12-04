@@ -22,6 +22,7 @@ Bool [53,155,185] = <true> | <false>;
 LOCAL [86,156,214] = <local>;
 BREAK [216,160,223] = <break>;
 RETURN [216,160,223] = <return>;
+GOTO [216,160,223] = <goto>;
 FOR [216,160,223] = <for>;
 IN [216,160,223] = <in>;
 WHILE [216,160,223] = <while>;
@@ -69,6 +70,8 @@ AllExpr = IfExpr |
             EmptyExpr |
             VarAssignExpr |
             OpAssignExpr |
+    		GotoExpr |
+    		LabelExpr |
     		GlobalMethodDec;
 
 // 空语句
@@ -107,6 +110,12 @@ ReturnExpr = RETURN@ ((ValueStat (','@ ValueStat)*))?;
 
 // break
 FlowExpr = BREAK@;
+
+// goto
+GotoExpr = GOTO@ Id;
+
+// label
+LabelExpr = '::'@ Id '::';
 
 // 定义语句
 VarAssignExpr = LOCAL VarAssignDec (','@ VarAssignDec)* ('='@ ValueStat (','@ ValueStat)*)?;

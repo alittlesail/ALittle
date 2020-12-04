@@ -5,6 +5,19 @@ protected class NesChannelSquare
 {
     private NesPAPU _papu;
 
+    private Map<int, int> _duty_lookup;
+    private Map<int, int> _imp_lookup;
+
+    private bool _sqr1;
+    public bool _is_enabled;
+    private bool _length_counter_enable;
+    private bool _sweep_active;
+    private bool _env_decay_disable;
+    private bool _env_decay_loop_enable;
+    private bool _env_reset;
+    private bool _sweep_carry;
+    private bool _update_sweep_period;
+
     public int _prog_timer_count;
     public int _prog_timer_max;
     private int _length_counter;
@@ -18,44 +31,29 @@ protected class NesChannelSquare
     private int _env_volume;
     private int _master_volume;
     private int _duty_mode;
-    private int _vol;
-
-    public bool _is_enabled;
-    private bool _length_counter_enable;
-    private bool _sweep_active;
-    private bool _sweep_carry;
-    private bool _env_decay_disable;
-    private bool _env_decay_loop_enable;
-
-    public int _sample_value;
-
-    private bool _env_reset;
-    private bool _update_sweep_period;
-    private bool _sqr1;
     private int _sweep_result;
-
-    private Map<int, int> _duty_lookup;
-    private Map<int, int> _imp_lookup;
+    public int _sample_value;
+    private int _vol;
 
     public ctor(NesPAPU papu, bool square1)
     {
         this._papu = papu;
+        
         // prettier-ignore
-        var values = [
-                    0, 1, 0, 0, 0, 0, 0, 0,
-                    0, 1, 1, 0, 0, 0, 0, 0,
-                    0, 1, 1, 1, 1, 0, 0, 0,
-                    1, 0, 0, 1, 1, 1, 1, 1
-                    ];
+        var values = [0, 1, 0, 0, 0, 0, 0, 0,
+                      0, 1, 1, 0, 0, 0, 0, 0,
+                      0, 1, 1, 1, 1, 0, 0, 0,
+                      1, 0, 0, 1, 1, 1, 1, 1
+                      ];
         for (var index, value in values)
             this._duty_lookup[index - 1] = value;
+
         // prettier-ignore
-        values = [
-                   1,-1, 0, 0, 0, 0, 0, 0,
-                   1, 0,-1, 0, 0, 0, 0, 0,
-                   1, 0, 0, 0,-1, 0, 0, 0,
-                       -1, 0, 1, 0, 0, 0, 0, 0
-                   ];
+        values = [1,-1, 0, 0, 0, 0, 0, 0,
+                  1, 0,-1, 0, 0, 0, 0, 0,
+                  1, 0, 0, 0,-1, 0, 0, 0,
+                  -1, 0, 1, 0, 0, 0, 0, 0
+                  ];
         for (var index, value in values)
             this._imp_lookup[index - 1] = value;
 
@@ -141,8 +139,7 @@ protected class NesChannelSquare
                 if (this._env_volume > 0) {
                     --this._env_volume;
                 } else {
-                    this._env_volume = 0;
-                    if (this._env_decay_loop_enable) this._env_volume = 0xf;
+                    this._env_volume = ConditionExpr(this._env_decay_loop_enable, 0xf, 0);
                 }
             }
         } 
@@ -172,9 +169,7 @@ protected class NesChannelSquare
                         this._sweep_carry = true;
                     }
                 } else {
-                    var sqr1 = 0;
-                    if (this._sqr1) sqr1 = 1;
-                    this._prog_timer_max = this._prog_timer_max - ((this._prog_timer_max ->> this._sweep_shift_amount) - sqr1);
+                    this._prog_timer_max = this._prog_timer_max - ((this._prog_timer_max ->> this._sweep_shift_amount) - ConditionExpr(this._sqr1, 1, 0));
                 }
             }
         }
@@ -188,10 +183,7 @@ protected class NesChannelSquare
     public fun UpdateSampleValue()
     {
         if (this._is_enabled && this._length_counter > 0 && this._prog_timer_max > 7) {
-            if (
-            this._sweep_mode == 0 &&
-            this._prog_timer_max + (this._prog_timer_max ->> this._sweep_shift_amount) > 4095
-            ) {
+            if (this._sweep_mode == 0 && this._prog_timer_max + (this._prog_timer_max ->> this._sweep_shift_amount) > 4095) {
                 //if (this._sweep_carry) {
                 this._sample_value = 0;
             } else {

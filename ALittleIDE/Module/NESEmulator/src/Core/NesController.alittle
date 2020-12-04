@@ -15,7 +15,7 @@ public enum NesControlType
 
 protected class NesController
 {
-    private Map<int, int> _state = new Map<int, int>();
+    public Map<int, int> _state = new Map<int, int>();
 
     public fun ButtonDown(int key)
     {

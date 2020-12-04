@@ -5,19 +5,20 @@ protected class NesChannelTriangle
 {
     private NesPAPU _papu;
 
+    public bool _is_enabled;
+    public bool _sample_condition;
+    private bool _length_counter_enable;
+    private bool _lc_halt;
+    private bool _lc_control;
+
     public int _prog_timer_count;
     public int _prog_timer_max;
     public int _triangle_counter;
-    public bool _is_enabled;
-    public bool _sample_condition;
     public int _length_counter;
-    private bool _length_counter_enable;
     public int _linear_counter;
     private int _lc_load_value;
-    private bool _lc_halt;
-    private bool _lc_control;
-    private int _tmp;
     public int _sample_value;
+    private int _tmp;
 
     public ctor(NesPAPU papu)
     {
@@ -129,7 +130,7 @@ protected class NesChannelTriangle
             while (this._prog_timer_max > 0 && this._prog_timer_count >= this._prog_timer_max)
             {
                 this._prog_timer_count -= this._prog_timer_max;
-                if (this._is_enabled && this._length_counter > 0 && this._linear_counter > 0 ) {
+                if (this._is_enabled && this._length_counter > 0 && this._linear_counter > 0) {
                     this.ClockTriangleGenerator();
                 }
             }
@@ -153,10 +154,6 @@ protected class NesChannelTriangle
 
     public fun UpdateSampleCondition()
     {
-        this._sample_condition =
-        this._is_enabled &&
-        this._prog_timer_max > 7 &&
-        this._linear_counter > 0 &&
-        this._length_counter > 0;
+        this._sample_condition = this._is_enabled && this._prog_timer_max > 7 && this._linear_counter > 0 && this._length_counter > 0;
     }
 }

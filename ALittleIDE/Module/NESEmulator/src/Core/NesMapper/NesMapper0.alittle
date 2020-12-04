@@ -7,10 +7,6 @@ protected class NesMapper0 : NesMapper
     private int _joy2_strobe_state;
     private int _joypad_strobe_state;
 
-    private bool _zapper_fired;
-    private int _zapper_x;
-    private int _zapper_y;
-
     public fun Reset()
     {
         this._joy1_strobe_state = 0;
@@ -24,32 +20,56 @@ protected class NesMapper0 : NesMapper
 
     public fun Write(int address, int value)
     {
-        if (address < 0x2000) {
+        // RAM
+        if (address < 0x2000)
+        {
             // Mirroring of RAM:
             this._nes._cpu._mem[address & 0x7ff] = value;
-        } else if (address > 0x4017) {
+        }
+        // Expansion ROM，SRAM，PRG-ROM
+        else if (address > 0x4017)
+        {
             this._nes._cpu._mem[address] = value;
-            if (address >= 0x6000 && address < 0x8000) {
+            // Expansion ROM
+            if (address >= 0x6000 && address < 0x8000)
+            {
                 // Write to persistent RAM
                 this._nes.OnBatteryRamWrite(address, value);
             }
-        } else if (address > 0x2007 && address < 0x4000) {
+        }
+        // I/O Registers中的Mirrors
+        else if (address > 0x2007 && address < 0x4000)
+        {
             this.RegWrite(0x2000 + (address & 0x7), value);
-        } else {
+        }
+        // I/O Registers除了Mirrors
+        else
+        {
             this.RegWrite(address, value);
         }
     }
 
     public fun Writelow(int address, int value)
     {
-        if (address < 0x2000) {
+        // RAM
+        if (address < 0x2000)
+        {
             // Mirroring of RAM:
             this._nes._cpu._mem[address & 0x7ff] = value;
-        } else if (address > 0x4017) {
+        }
+        // Expansion ROM，SRAM，PRG-ROM
+        else if (address > 0x4017)
+        {
             this._nes._cpu._mem[address] = value;
-        } else if (address > 0x2007 && address < 0x4000) {
+        }
+        // I/O Registers中的Mirrors
+        else if (address > 0x2007 && address < 0x4000)
+        {
             this.RegWrite(0x2000 + (address & 0x7), value);
-        } else {
+        }
+        // I/O Registers除了Mirrors
+        else
+        {
             this.RegWrite(address, value);
         }
     }
@@ -74,8 +94,14 @@ protected class NesMapper0 : NesMapper
 
     public fun RegLoad(int address) : int
     {
+        // use fourth nibble (0xF000)
         var type = address ->> 12;
-        if (type == 2 || type == 3)
+        if (type == 0 || type == 1)
+        {
+
+        }
+        // PPU Registers
+        elseif (type == 2 || type == 3)
         {
             var reg = address & 0x7;
             if (reg == 0x0)
@@ -106,7 +132,7 @@ protected class NesMapper0 : NesMapper
                 // main memory in addition
                 // to as flags in the PPU.
                 // (not in the real NES)
-                return this.nes.ppu.readStatusRegister();
+                return this._nes._ppu.ReadStatusRegister();
             }
             elseif (reg == 0x3)
             {
@@ -133,6 +159,7 @@ protected class NesMapper0 : NesMapper
                 return this._nes._ppu.VramLoad();
             }
         }
+        // Sound+Joypad registers
         elseif (type == 4)
         {
             var reg = address - 0x4015;
@@ -218,7 +245,7 @@ protected class NesMapper0 : NesMapper
         elseif (address == 0x4015)
         {
             // Sound Channel Switch, DMC Status
-            this.nes.papu.WriteReg(address, value);
+            this._nes._papu.WriteReg(address, value);
         }
         elseif (address == 0x4016)
         {
@@ -249,7 +276,7 @@ protected class NesMapper0 : NesMapper
         var ret = 0;
 
         if (this._joy1_strobe_state >= 0 && this._joy1_strobe_state <= 7)
-        	ret = this._nes._controllers[1].state[this._joy1_strobe_state];
+        	ret = this._nes._controllers[1]._state[this._joy1_strobe_state];
         elseif (this._joy1_strobe_state >= 8 && this._joy1_strobe_state <= 18)
         	ret = 0;
         elseif (this._joy1_strobe_state == 19)
@@ -270,7 +297,7 @@ protected class NesMapper0 : NesMapper
         var ret = 0;
 
         if (this._joy2_strobe_state >= 0 && this._joy2_strobe_state <= 7) 
-        	ret = this._nes._controllers[2].state[this._joy2_strobe_state];
+        	ret = this._nes._controllers[2]._state[this._joy2_strobe_state];
         elseif (this._joy2_strobe_state >= 8 && this._joy2_strobe_state <= 18)
         	ret = 0;
         elseif (this._joy2_strobe_state == 19)
@@ -286,11 +313,10 @@ protected class NesMapper0 : NesMapper
 		return ret;
     }
 
-    public fun LoadROM()
+    public fun LoadROM() : string
     {
         if (!this._nes._rom._valid || this._nes._rom._rom_count < 1) {
-            ALittle.Log("NoMapper: Invalid ROM! Unable to load.");
-            return;
+            return "NoMapper: Invalid ROM! Unable to load.";
         }
 
         // Load ROM into memory:
@@ -303,8 +329,9 @@ protected class NesMapper0 : NesMapper
         this.LoadBatteryRam();
 
         // Reset IRQ:
-        //nes.getCpu().doResetInterrupt();
         this._nes._cpu.RequestIrq(NesCPUIRQ.IRQ_RESET);
+
+        return null;
     }
 
     public fun LoadPRGROM()
@@ -338,9 +365,9 @@ protected class NesMapper0 : NesMapper
 
     public fun LoadBatteryRam()
     {
-        if (this._nes._rom._battery_ram) {
+        if (this._nes._rom._battery_ram != null) {
             var ram = this._nes._rom._battery_ram;
-            if (ram != null && ram.length == 0x2000) {
+            if (ram != null && this._nes._rom._battery_ram_len == 0x2000) {
                 // Load Battery RAM into memory:
                 CopyArrayElements(ram, 0, this._nes._cpu._mem, 0x6000, 0x2000);
             }
@@ -369,22 +396,20 @@ protected class NesMapper0 : NesMapper
         }
         this._nes._ppu.TriggerRendering();
 
-        CopyArrayElements(
-                       this._nes._rom._vrom[bank % this._nes._rom._vrom_count],
+        CopyArrayElements(this._nes._rom._vrom[bank % this._nes._rom._vrom_count],
                        0,
                        this._nes._ppu._vram_mem,
                        address,
                        4096
                        );
 
-        var vromTile = this._nes._rom._vrom_tile[bank % this._nes._rom._vrom_count];
-        CopyArrayElements(
-                           vrom_tile,
-                           0,
-                           this._nes._ppu._pt_tile,
-                           address >> 4,
-                           256
-                           );
+        var vrom_tile = this._nes._rom._vrom_tile[bank % this._nes._rom._vrom_count];
+        CopyArrayElements(vrom_tile,
+                       0,
+                       this._nes._ppu._pt_tile,
+                       address ->> 4,
+                       256
+                       );
     }
 
     public fun Load32kRomBank(int bank, int address)
@@ -395,16 +420,13 @@ protected class NesMapper0 : NesMapper
 
     public fun Load8kVromBank(int bank4kStart, int address)
     {
-        if (this._nes._rom.vromCount == 0) {
+        if (this._nes._rom._vrom_count == 0) {
             return;
         }
         this._nes._ppu.TriggerRendering();
 
         this.LoadVromBank(bank4kStart % this._nes._rom._vrom_count, address);
-        this.LoadVromBank(
-                         (bank4kStart + 1) % this._nes._rom._vrom_count,
-                     address + 4096
-                     );
+        this.LoadVromBank((bank4kStart + 1) % this._nes._rom._vrom_count, address + 4096);
     }
 
     public fun Load1kVromBank(int bank1k, int address)
@@ -416,13 +438,12 @@ protected class NesMapper0 : NesMapper
 
         var bank4k = ALittle.Math_Floor(bank1k / 4) % this._nes._rom._vrom_count;
         var bankoffset = (bank1k % 4) * 1024;
-        CopyArrayElements(
-                           this._nes._rom._vrom[bank4k],
-                           bankoffset,
-                           this._nes._ppu._vram_mem,
-                           address,
-                           1024
-                           );
+        CopyArrayElements(this._nes._rom._vrom[bank4k],
+                       bankoffset,
+                       this._nes._ppu._vram_mem,
+                       address,
+                       1024
+                       );
 
         // Update tiles:
         var vromTile = this._nes._rom._vrom_tile[bank4k];
@@ -434,15 +455,14 @@ protected class NesMapper0 : NesMapper
 
     public fun Load2kVromBank(int bank2k, int address)
     {
-        if (this._nes._rom.vromCount == 0) {
+        if (this._nes._rom._vrom_count == 0) {
             return;
         }
         this._nes._ppu.TriggerRendering();
 
         var bank4k = ALittle.Math_Floor(bank2k / 2) % this._nes._rom._vrom_count;
         var bankoffset = (bank2k % 2) * 2048;
-        CopyArrayElements(
-                           this._nes._rom._vrom[bank4k],
+        CopyArrayElements(this._nes._rom._vrom[bank4k],
                            bankoffset,
                            this._nes._ppu._vram_mem,
                            address,
@@ -463,8 +483,7 @@ protected class NesMapper0 : NesMapper
         var offset = (bank8k % 2) * 8192;
 
         //this._nes._cpu._mem.write(address,this._nes._rom.rom[bank16k],offset,8192);
-        CopyArrayElements(
-                           this._nes._rom._rom[bank16k],
+        CopyArrayElements(this._nes._rom._rom[bank16k],
                            offset,
                            this._nes._cpu._mem,
                            address,

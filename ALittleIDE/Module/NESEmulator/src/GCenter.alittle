@@ -30,6 +30,8 @@ class GCenter
         this._dialog_layer.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
         this._dialog_layer.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
         g_LayerGroup.AddChild(this._dialog_layer, null);
+
+
     }
 
     public fun Shutdown()

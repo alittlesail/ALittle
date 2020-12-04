@@ -14,42 +14,56 @@ protected class NesPAPU
     private NesChannelDM _dmc;
 
     private int _frame_irq_counter;
+    private int _frame_irq_counter_max;
+    private int _init_counter;
+    private int _channel_enable_value;
 
     private int _sample_rate;
-    private int _sample_timer_max;
-    private int _frame_time;
-    private int _sample_timer;
+
+    private Map<int, int> _length_lookup;
+    private Map<int, int> _dmc_freq_lookup;
+    private Map<int, int> _noise_wavelength_lookup;
+    private Map<int, int> _square_table;
+    private int _square_table_len;
+    private Map<int, int> _tnd_table;
+    private int _tnd_table_len;
+
+    private bool _frame_irq_enabled;
+    private bool _frame_irq_active;
+    private int _frame_clock_now;
+    private bool _started_playing;
+    private bool _record_output;
+    private bool _initing_hardware;
+
     private int _master_frame_counter;
     private int _derived_frame_counter;
     private int _count_sequence;
+    private int _sample_timer;
+    private int _frame_time;
+    private int _sample_timer_max;
     private int _sample_count;
-    private int _init_counter;
-    private bool _frame_irq_enabled;
-    private int _frame_irq_counter_max;
-    private bool _initing_hardware;
+    private int _tri_value;
 
-    private int _acc_count;
     private int _smp_square1;
     private int _smp_square2;
     private int _smp_triangle;
     private int _smp_dmc;
+    private int _acc_count;
 
-    private int _channel_enable_value;
-    private bool _started_playing;
-
+    // DC removal vars:
     private int _prev_sample_l;
     private int _prev_sample_r;
     private int _smp_accum_l;
     private int _smp_accum_r;
 
-    private int _max_sample;
-    private int _min_sample;
-
+    // DAC range:
     private int _dac_range;
     private int _dac_value;
 
+    // Master volume:
     private int _master_volume;
 
+    // Stereo positioning:
     private int _stereo_pos_l_square1;
     private int _stereo_pos_l_square2;
     private int _stereo_pos_l_triangle;
@@ -61,24 +75,12 @@ protected class NesPAPU
     private int _stereo_pos_r_noise;
     private int _stereo_pos_r_dmc;
 
-    private Map<int, int> _panning;
-
     private int _extra_cycles;
 
-    private Map<int, int> _length_lookup;
-    private Map<int, int> _dmc_freq_lookup;
-    private Map<int, int> _noise_wavelength_lookup;
-    private Map<int, int> _square_table;
-    private int _square_table_len;
-    private Map<int, int> _tnd_table;
-    private int _tnd_table_len;
+    private int _max_sample;
+    private int _min_sample;
 
-    private bool _frame_irq_active;
-    private int _frame_clock_now;
-
-    private bool _record_output;
-
-    private int _tri_value;
+    private Map<int, int> _panning;
 
     public ctor(NesCore nes)
     {
@@ -186,14 +188,8 @@ protected class NesPAPU
     public fun Reset()
     {
         this._sample_rate = this._nes._sample_rate;
-        this._sample_timer_max = ALittle.Math_Floor(
-                                       (1024.0 * CPU_FREQ_NTSC * this._nes._preferred_frame_rate) /
-                                       (this._sample_rate * 60.0)
-                                       );
-
-        this._frame_time = ALittle.Math_Floor(
-                                             (14915.0 * this._nes._preferred_frame_rate) / 60.0
-                                 );
+        this._sample_timer_max = ALittle.Math_Floor((1024.0 * CPU_FREQ_NTSC * this._nes._preferred_frame_rate) / (this._sample_rate * 60.0));
+        this._frame_time = ALittle.Math_Floor((14915.0 * this._nes._preferred_frame_rate) / 60.0);
 
         this._sample_timer = 0;
 
@@ -244,10 +240,7 @@ protected class NesPAPU
         tmp = tmp | (this._triangle.GetLengthStatus() <<- 2);
         tmp = tmp | (this._noise.GetLengthStatus() <<- 3);
         tmp = tmp | (this._dmc.GetLengthStatus() <<- 4);
-
-        var frame_irq_enabled = 0;
-        if (this._frame_irq_active && this._frame_irq_enabled) frame_irq_enabled = 1;
-        tmp = tmp | (frame_irq_enabled <<- 6);
+        tmp = tmp | (ConditionExpr(this._frame_irq_active && this._frame_irq_enabled, 1, 0)) <<- 6;
         tmp = tmp | (this._dmc.GetIrqStatus() <<- 7);
 
         this._frame_irq_active = false;
@@ -442,9 +435,7 @@ protected class NesPAPU
                 if (noise._prog_timer_count <= 0 && noise._prog_timer_max > 0) {
                     // Update noise shift register:
                     noise._shift_reg = noise._shift_reg <<- 1;
-                    var random_mode = 6;
-                    if (noise._random_mode == 0) random_mode = 1;
-                    noise._tmp = ((noise._shift_reg <<- random_mode) ^ noise._shift_reg) & 0x8000;
+                    noise._tmp = ((noise._shift_reg <<- ConditionExpr(noise._random_mode == 0, 1, 6)) ^ noise._shift_reg) & 0x8000;
                     if (noise._tmp != 0) {
                         // Sample value must be 0.
                         noise._shift_reg = noise._shift_reg | 0x01;
@@ -473,7 +464,7 @@ protected class NesPAPU
             this._nes._cpu.RequestIrq(NesCPUIRQ.IRQ_NORMAL);
         }
 
-            // Clock frame counter at double CPU speed:
+        // Clock frame counter at double CPU speed:
         this._master_frame_counter += cycles <<- 1;
         if (this._master_frame_counter >= this._frame_time) {
             // 240Hz tick:
@@ -481,7 +472,7 @@ protected class NesPAPU
             this.FrameCounterTick();
         }
 
-            // Accumulate sample value:
+        // Accumulate sample value:
         this.AccSample(cycles);
 
         // Clock sample timer:
@@ -497,9 +488,7 @@ protected class NesPAPU
     {
         // Special treatment for triangle channel - need to interpolate.
         if (this._triangle._sample_condition) {
-            this._tri_value = ALittle.Math_Floor(
-                                  (this._triangle._prog_timer_count <<- 4) / (this._triangle._prog_timer_max + 1)
-                                  );
+            this._tri_value = ALittle.Math_Floor((this._triangle._prog_timer_count <<- 4) / (this._triangle._prog_timer_max + 1));
             if (this._tri_value > 16) {
                 this._tri_value = 16;
             }
@@ -507,11 +496,11 @@ protected class NesPAPU
                 this._tri_value = 16 - this._tri_value;
             }
 
-                // Add non-interpolated sample value:
+            // Add non-interpolated sample value:
             this._tri_value += this._triangle._sample_value;
         }
 
-            // Now sample normally:
+        // Now sample normally:
         if (cycles == 2) {
             this._smp_triangle += this._tri_value <<- 1;
             this._smp_dmc += this._dmc._sample <<- 1;
@@ -639,7 +628,7 @@ protected class NesPAPU
 
         this._nes.OnAudioSample(sampleValueL / 32768, sampleValueR / 32768);
 
-            // Reset sampled values:
+        // Reset sampled values:
         this._smp_square1 = 0;
         this._smp_square2 = 0;
         this._smp_triangle = 0;
@@ -705,24 +694,23 @@ protected class NesPAPU
     public fun InitLengthLookup()
     {
         // prettier-ignore
-        var values = [
-                          0x0A, 0xFE,
-                          0x14, 0x02,
-                          0x28, 0x04,
-                          0x50, 0x06,
-                          0xA0, 0x08,
-                          0x3C, 0x0A,
-                          0x0E, 0x0C,
-                          0x1A, 0x0E,
-                          0x0C, 0x10,
-                          0x18, 0x12,
-                          0x30, 0x14,
-                          0x60, 0x16,
-                          0xC0, 0x18,
-                          0x48, 0x1A,
-                          0x10, 0x1C,
-                          0x20, 0x1E
-                          ];
+        var values = [0x0A, 0xFE,
+                      0x14, 0x02,
+                      0x28, 0x04,
+                      0x50, 0x06,
+                      0xA0, 0x08,
+                      0x3C, 0x0A,
+                      0x0E, 0x0C,
+                      0x1A, 0x0E,
+                      0x0C, 0x10,
+                      0x18, 0x12,
+                      0x30, 0x14,
+                      0x60, 0x16,
+                      0xC0, 0x18,
+                      0x48, 0x1A,
+                      0x10, 0x1C,
+                      0x20, 0x1E
+                      ];
 
         this._length_lookup = new Map<int, int>();
         for (var index, value in values)
@@ -780,9 +768,7 @@ protected class NesPAPU
         var max_tnd = 0;
 
         this._square_table = new Map<int, int>();
-        this._tnd_table = new Map<int, int>();
-
-        for (var i = 0; i < 32 * 16; 1) {
+        for (var i = 0; i < this._square_table_len; 1) {
             var value = 95.52 / (8128.0 / (i / 16.0) + 100.0);
             value *= 0.98411;
             value *= 50000.0;
@@ -794,7 +780,8 @@ protected class NesPAPU
             }
         }
 
-        for (var i = 0; i < 204 * 16; 1) {
+        this._tnd_table = new Map<int, int>();
+        for (var i = 0; i < this._tnd_table_len; 1) {
             var value = 163.67 / (24329.0 / (i / 16.0) + 100.0);
             value *= 0.98411;
             value *= 50000.0;

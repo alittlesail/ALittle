@@ -8,6 +8,24 @@ NESEmulator.NesChannelDM = JavaScript.Class(undefined, {
 		this.MODE_LOOP = 1;
 		this.MODE_IRQ = 2;
 		this._papu = papu;
+		this._is_enabled = undefined;
+		this._has_sample = undefined;
+		this._irq_generated = false;
+		this._play_mode = undefined;
+		this._dma_frequency = undefined;
+		this._dma_counter = undefined;
+		this._delta_counter = undefined;
+		this._play_start_address = undefined;
+		this._play_address = undefined;
+		this._play_length = undefined;
+		this._play_length_counter = undefined;
+		this._shift_counter = undefined;
+		this._reg4012 = undefined;
+		this._reg4013 = undefined;
+		this._sample = undefined;
+		this._dac_lsb = undefined;
+		this._data = undefined;
+		this.Reset();
 	},
 	Reset : function() {
 		this._is_enabled = false;
@@ -38,10 +56,7 @@ NESEmulator.NesChannelDM = JavaScript.Class(undefined, {
 					++ this._delta_counter;
 				}
 			}
-			this._sample = 0;
-			if (this._is_enabled) {
-				this._sample = (this._delta_counter << 1) + this._dac_lsb;
-			}
+			this._sample = NESEmulator.ConditionExpr(this._is_enabled, (this._delta_counter << 1) + this._dac_lsb, 0);
 			this._data = this._data >> 1;
 		}
 		-- this._dma_counter;

@@ -126,11 +126,7 @@ NESEmulator.NesPAPU = JavaScript.Class(undefined, {
 		tmp = tmp | (this._triangle.GetLengthStatus() << 2);
 		tmp = tmp | (this._noise.GetLengthStatus() << 3);
 		tmp = tmp | (this._dmc.GetLengthStatus() << 4);
-		let frame_irq_enabled = 0;
-		if (this._frame_irq_active && this._frame_irq_enabled) {
-			frame_irq_enabled = 1;
-		}
-		tmp = tmp | (frame_irq_enabled << 6);
+		tmp = tmp | (NESEmulator.ConditionExpr(this._frame_irq_active && this._frame_irq_enabled, 1, 0)) << 6;
 		tmp = tmp | (this._dmc.GetIrqStatus() << 7);
 		this._frame_irq_active = false;
 		this._dmc._irq_generated = false;

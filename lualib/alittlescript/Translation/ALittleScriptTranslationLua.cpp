@@ -2765,8 +2765,6 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOpAssignExpr(std::shared_ptr
 
 ABnfGuessError ALittleScriptTranslationLua::GenerateElseExpr(std::shared_ptr<ALittleScriptElseExprElement> root, int continue_num, bool& has_continue, const std::string& pre_tab, std::string& content)
 {
-    has_continue = false;
-
     content = pre_tab;
     content += "else\n";
     std::vector<std::shared_ptr<ALittleScriptAllExprElement>> all_expr_list;
@@ -2799,7 +2797,6 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateElseExpr(std::shared_ptr<ALi
 
 ABnfGuessError ALittleScriptTranslationLua::GenerateElseIfExpr(std::shared_ptr<ALittleScriptElseIfExprElement> root, int continue_num, bool& has_continue, const std::string& pre_tab, std::string& content)
 {
-    has_continue = false;
     content = "";
     auto condition = root->GetElseIfCondition();
     if (condition == nullptr || condition->GetValueStat() == nullptr)
@@ -2842,7 +2839,6 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateElseIfExpr(std::shared_ptr<A
 
 ABnfGuessError ALittleScriptTranslationLua::GenerateIfExpr(std::shared_ptr<ALittleScriptIfExprElement> root, int continue_num, bool& has_continue, const std::string& pre_tab, std::string& content)
 {
-    has_continue = false;
     content = "";
 
     auto condition = root->GetIfCondition();
@@ -3185,8 +3181,6 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateReturnExpr(std::shared_ptr<A
 
 ABnfGuessError ALittleScriptTranslationLua::GenerateFlowExpr(std::shared_ptr<ALittleScriptFlowExprElement> root, int continue_num, bool& has_continue, const std::string& pre_tab, std::string& content)
 {
-    has_continue = false;
-
     content = root->GetElementText();
     if (content.find("break") == 0)
     {
@@ -3207,8 +3201,6 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateFlowExpr(std::shared_ptr<ALi
 
 ABnfGuessError ALittleScriptTranslationLua::GenerateAllExpr(std::shared_ptr<ALittleScriptAllExprElement> root, int continue_num, bool& has_continue, const std::string& pre_tab, std::string& content)
 {
-    has_continue = false;
-
     content = "";
     std::vector<std::string> expr_list;
     for (auto& child : root->GetChilds())

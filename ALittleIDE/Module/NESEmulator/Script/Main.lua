@@ -29,10 +29,14 @@ function NESEmulator.__Module_Setup(layer_group, control, module_base_path, scri
 	Require(script_base_path, "GCenter")
 	RequireFromPaths(script_base_path, "Core/", {"NesUtility.alittle", "NesCore.alittle", "NesController.alittle"
 		, "NesCPU/NesCPUOpData.alittle", "NesCPU/NesCPU.alittle", "NesMapper/NesMapper.alittle"
-		, "NesMapper/NesMapper0.alittle", "NesPAPU/NesPAPU.alittle", "NesPAPU/NesChannelTriangle.alittle"
-		, "NesPAPU/NesChannelSquare.alittle", "NesPAPU/NesChannelNoise.alittle", "NesPAPU/NesChannelDM.alittle"
-		, "NesPPU/NesPaletteTable.alittle", "NesPPU/NesPPU.alittle", "NesPPU/NesNameTable.alittle"
-		, "NesRom/NesTile.alittle", "NesRom/NesRom.alittle"})
+		, "NesMapper/NesMapper0.alittle", "NesMapper/NesMapper94.alittle", "NesMapper/NesMapper7.alittle"
+		, "NesMapper/NesMapper66.alittle", "NesMapper/NesMapper5.alittle", "NesMapper/NesMapper4.alittle"
+		, "NesMapper/NesMapper38.alittle", "NesMapper/NesMapper34.alittle", "NesMapper/NesMapper3.alittle"
+		, "NesMapper/NesMapper2.alittle", "NesMapper/NesMapper180.alittle", "NesMapper/NesMapper140.alittle"
+		, "NesMapper/NesMapper11.alittle", "NesMapper/NesMapper1.alittle", "NesPAPU/NesPAPU.alittle"
+		, "NesPAPU/NesChannelTriangle.alittle", "NesPAPU/NesChannelSquare.alittle", "NesPAPU/NesChannelNoise.alittle"
+		, "NesPAPU/NesChannelDM.alittle", "NesPPU/NesPaletteTable.alittle", "NesPPU/NesPPU.alittle"
+		, "NesPPU/NesNameTable.alittle", "NesRom/NesTile.alittle", "NesRom/NesRom.alittle"})
 	Require(script_base_path, "GNes")
 	g_GCenter:Setup()
 end

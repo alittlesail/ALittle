@@ -13,9 +13,7 @@ protected class NesMapper0 : NesMapper
         this._joy2_strobe_state = 0;
         this._joypad_strobe_state = 0;
 
-        this._zapper_fired = false;
-        this._zapper_x = null;
-        this._zapper_y = null;
+        NesMapper.Reset(this);
     }
 
     public fun Write(int address, int value)

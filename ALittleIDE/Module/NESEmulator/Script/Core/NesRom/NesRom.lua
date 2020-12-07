@@ -140,6 +140,7 @@ function NESEmulator.NesRom:Load(data, battery_ram)
 	if found_error then
 		self._mapper_type = self._mapper_type & 0xf
 	end
+	ALittle.Log("mapper_type:", self._mapper_type)
 	offset = 16
 	self._rom = {}
 	local i = 0

@@ -96,14 +96,14 @@ protected class GNes : NesCore
             else
             	this.ButtonUp(1, NesControlType.BUTTON_START);
         }
-        elseif (sym == ALittle.UIEnumTypes.KEY_J)
+        elseif (sym == ALittle.UIEnumTypes.KEY_K)
         {
             if (down)
             	this.ButtonDown(1, NesControlType.BUTTON_A);
             else
             	this.ButtonUp(1, NesControlType.BUTTON_A);
         }
-        elseif (sym == ALittle.UIEnumTypes.KEY_K)
+        elseif (sym == ALittle.UIEnumTypes.KEY_J)
         {
             if (down)
             	this.ButtonDown(1, NesControlType.BUTTON_B);

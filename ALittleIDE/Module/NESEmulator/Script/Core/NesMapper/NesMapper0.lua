@@ -12,9 +12,7 @@ function NESEmulator.NesMapper0:Reset()
 	self._joy1_strobe_state = 0
 	self._joy2_strobe_state = 0
 	self._joypad_strobe_state = 0
-	self._zapper_fired = false
-	self._zapper_x = nil
-	self._zapper_y = nil
+	NESEmulator.NesMapper.Reset(self)
 end
 
 function NESEmulator.NesMapper0:Write(address, value)

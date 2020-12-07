@@ -1250,6 +1250,13 @@ protected class NesCPU
         this._irq_type = type;
     }
 
+    // 清理中断
+    public fun ClearIrq()
+    {
+        this._irq_requested = false;
+        this._irq_type = null;
+    }
+
     // 数据压栈
     public fun Push(int value)
     {

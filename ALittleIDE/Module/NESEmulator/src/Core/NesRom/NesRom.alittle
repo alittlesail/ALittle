@@ -34,7 +34,7 @@ protected class NesRom
     // 4-Screen 模式
     private bool _four_screen = false;
     // 卡带类型
-    private int _mapper_type = 0;
+    public int _mapper_type = 0;
 
     // PRG-ROM 内容
     public Map<int, Map<int, int>> _rom;
@@ -145,7 +145,7 @@ protected class NesRom
         this._four_screen = flag1 & 8 != 0;
         // 卡带类型
         this._mapper_type = flag1 ->> 4 | flag2 & 0xf0;
-
+        
         // 这里不对battery_ram进行而外处理
 
         // 检查8-15是否是0
@@ -160,6 +160,8 @@ protected class NesRom
         }
         // 如果发现错误，那么就忽略第7个字节
         if (found_error) this._mapper_type = this._mapper_type & 0xf;
+
+        ALittle.Log("mapper_type:", this._mapper_type);
 
         // 加载 PRG-ROM
         offset = 16;

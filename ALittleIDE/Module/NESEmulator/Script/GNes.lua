@@ -78,13 +78,13 @@ function NESEmulator.GNes:HandleKey(down, mod, sym, scancode)
 		else
 			self:ButtonUp(1, NESEmulator.NesControlType.BUTTON_START)
 		end
-	elseif sym == 106 then
+	elseif sym == 107 then
 		if down then
 			self:ButtonDown(1, NESEmulator.NesControlType.BUTTON_A)
 		else
 			self:ButtonUp(1, NESEmulator.NesControlType.BUTTON_A)
 		end
-	elseif sym == 107 then
+	elseif sym == 106 then
 		if down then
 			self:ButtonDown(1, NESEmulator.NesControlType.BUTTON_B)
 		else

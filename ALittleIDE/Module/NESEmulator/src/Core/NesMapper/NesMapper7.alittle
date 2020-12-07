@@ -1,0 +1,38 @@
+
+namespace NESEmulator;
+
+protected class NesMapper7 : NesMapper0
+{
+    public fun Write(int address, int value)
+    {
+        // Writes to addresses other than MMC registers are handled by NoMapper.
+        if (address < 0x8000) {
+            NesMapper0.Write(this, address, value);
+        } else {
+            this.Load32kRomBank(value & 0x7, 0x8000);
+            if (value & 0x10 != 0) {
+                this._nes._ppu.SetMirroring(NESMirroringType.SINGLESCREEN_MIRRORING2);
+            } else {
+                this._nes._ppu.SetMirroring(NESMirroringType.SINGLESCREEN_MIRRORING);
+            }
+        }
+    }
+
+    public fun LoadROM() : string
+    {
+        if (!this._nes._rom._valid) {
+            return "AOROM: Invalid ROM! Unable to load.";
+        }
+
+        // Load PRG-ROM:
+        this.LoadPRGROM();
+
+        // Load CHR-ROM:
+        this.LoadCHRROM();
+
+        // Do Reset-Interrupt:
+        this._nes._cpu.RequestIrq(NesCPUIRQ.IRQ_RESET);
+
+        return null;
+    }
+}

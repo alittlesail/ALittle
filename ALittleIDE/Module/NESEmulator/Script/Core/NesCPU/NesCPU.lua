@@ -645,6 +645,11 @@ function NESEmulator.NesCPU:RequestIrq(type)
 	self._irq_type = type
 end
 
+function NESEmulator.NesCPU:ClearIrq()
+	self._irq_requested = false
+	self._irq_type = nil
+end
+
 function NESEmulator.NesCPU:Push(value)
 	self._nes._mmap:Write(self._reg_sp, value)
 	self._reg_sp = self._reg_sp - 1

@@ -219,7 +219,7 @@ protected class NesCore
 
         // 创建Mapper
         var mapper = rom.CreateMapper();
-        if (mapper == null) return "not support mapper type";
+        if (mapper == null) return "not support mapper type:"..rom._mapper_type;
 
         // 保存卡带信息
         this._rom = rom;

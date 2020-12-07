@@ -38,7 +38,7 @@ class GCenter
         this._main_layer.AddChild(screen);
 
         g_GNes.Setup(screen);
-        g_GNes.LoadROM("Battle City (J).nes");
+        g_GNes.LoadROM("MetalMax.nes");
     }
 
     public fun Shutdown()

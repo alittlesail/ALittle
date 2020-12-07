@@ -1,0 +1,27 @@
+
+namespace NESEmulator;
+
+protected class NesMapper11 : NesMapper0
+{
+    public fun Write(int address, int value)
+    {
+        if (address < 0x8000) {
+            NesMapper0.Write(this, address, value);
+            return;
+        } else {
+            // Swap in the given PRG-ROM bank:
+            var prgbank1 = ((value & 0xf) * 2) % this._nes._rom._rom_count;
+            var prgbank2 = ((value & 0xf) * 2 + 1) % this._nes._rom._rom_count;
+
+            this.LoadRomBank(prgbank1, 0x8000);
+            this.LoadRomBank(prgbank2, 0xc000);
+
+            if (this._nes._rom._vrom_count > 0) {
+                // Swap in the given VROM bank at 0x0000:
+                var bank = ((value ->> 4) * 2) % this._nes._rom._vrom_count;
+                this.LoadVromBank(bank, 0x0000);
+                this.LoadVromBank(bank + 1, 0x1000);
+            }
+        }
+    }
+}

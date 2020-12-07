@@ -156,7 +156,7 @@ function NESEmulator.NesCore:ReloadROM(data)
 	end
 	local mapper = rom:CreateMapper()
 	if mapper == nil then
-		return "not support mapper type"
+		return "not support mapper type:" .. rom._mapper_type
 	end
 	self._rom = rom
 	self._rom_data = data

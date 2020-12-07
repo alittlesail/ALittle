@@ -24,7 +24,7 @@ NESEmulator.GCenter = JavaScript.Class(undefined, {
 		screen.SetSurfaceSize(NESEmulator.SCREEN_WIDTH, NESEmulator.SCREEN_HEIGHT, 0);
 		this._main_layer.AddChild(screen);
 		g_GNes.Setup(screen);
-		g_GNes.LoadROM("Battle City (J).nes");
+		g_GNes.LoadROM("maxmetal_doubledr.nes");
 	},
 	Shutdown : function() {
 		g_GNes.Shutdown();

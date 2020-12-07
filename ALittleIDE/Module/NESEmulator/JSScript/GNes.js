@@ -72,13 +72,13 @@ NESEmulator.GNes = JavaScript.Class(NESEmulator.NesCore, {
 			} else {
 				this.ButtonUp(1, NESEmulator.NesControlType.BUTTON_START);
 			}
-		} else if (sym === 106) {
+		} else if (sym === 107) {
 			if (down) {
 				this.ButtonDown(1, NESEmulator.NesControlType.BUTTON_A);
 			} else {
 				this.ButtonUp(1, NESEmulator.NesControlType.BUTTON_A);
 			}
-		} else if (sym === 107) {
+		} else if (sym === 106) {
 			if (down) {
 				this.ButtonDown(1, NESEmulator.NesControlType.BUTTON_B);
 			} else {

@@ -89,7 +89,9 @@ NESEmulator.NesCPU = JavaScript.Class(undefined, {
 		let op_addr = this._reg_pc;
 		this._reg_pc = this._reg_pc + ((op_info >> 16) & 0xff);
 		let addr = 0;
-		if (addr_mode === 0) {
+		if (addr_mode === 3) {
+			addr = this.Load16bit(op_addr + 2);
+		} else if (addr_mode === 0) {
 			addr = this.Load(op_addr + 2);
 		} else if (addr_mode === 1) {
 			addr = this.Load(op_addr + 2);
@@ -99,8 +101,6 @@ NESEmulator.NesCPU = JavaScript.Class(undefined, {
 				addr = addr + (this._reg_pc - 256);
 			}
 		} else if (addr_mode === 2) {
-		} else if (addr_mode === 3) {
-			addr = this.Load16bit(op_addr + 2);
 		} else if (addr_mode === 4) {
 			addr = this._reg_acc;
 		} else if (addr_mode === 5) {
@@ -157,6 +157,8 @@ NESEmulator.NesCPU = JavaScript.Class(undefined, {
 			this._f_zero = temp & 0xff;
 			this._reg_acc = temp & 255;
 			cycle_count = cycle_count + (cycle_add);
+		} else if (op_type === 27) {
+			this._reg_pc = addr - 1;
 		} else if (op_type === 1) {
 			this._reg_acc = this._reg_acc & this.Load(addr);
 			this._f_sign = (this._reg_acc >> 7) & 1;
@@ -289,8 +291,6 @@ NESEmulator.NesCPU = JavaScript.Class(undefined, {
 			this._reg_y = this._reg_y & 0xff;
 			this._f_sign = (this._reg_y >> 7) & 1;
 			this._f_zero = this._reg_y;
-		} else if (op_type === 27) {
-			this._reg_pc = addr - 1;
 		} else if (op_type === 28) {
 			this.Push((this._reg_pc >> 8) & 255);
 			this.Push(this._reg_pc & 255);
@@ -620,6 +620,10 @@ NESEmulator.NesCPU = JavaScript.Class(undefined, {
 		}
 		this._irq_requested = true;
 		this._irq_type = type;
+	},
+	ClearIrq : function() {
+		this._irq_requested = false;
+		this._irq_type = undefined;
 	},
 	Push : function(value) {
 		this._nes._mmap.Write(this._reg_sp, value);

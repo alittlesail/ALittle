@@ -276,11 +276,9 @@ NESEmulator.NesPPU = JavaScript.Class(undefined, {
 			}
 		}
 		let buffer = this._buffer;
-		for (let i = 0; i < 256 * 240; i += 1) {
-			buffer.set(i, bgColor);
-		}
 		let pixrendered = this._pixrendered;
 		for (let i = 0; i < NESEmulator.PIXEL_COUNT; i += 1) {
+			buffer.set(i, bgColor);
 			pixrendered.set(i, 65);
 		}
 	},

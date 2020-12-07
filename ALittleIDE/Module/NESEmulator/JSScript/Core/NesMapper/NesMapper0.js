@@ -8,9 +8,7 @@ NESEmulator.NesMapper0 = JavaScript.Class(NESEmulator.NesMapper, {
 		this._joy1_strobe_state = 0;
 		this._joy2_strobe_state = 0;
 		this._joypad_strobe_state = 0;
-		this._zapper_fired = false;
-		this._zapper_x = undefined;
-		this._zapper_y = undefined;
+		NESEmulator.NesMapper.Reset.call(this);
 	},
 	Write : function(address, value) {
 		if (address < 0x2000) {

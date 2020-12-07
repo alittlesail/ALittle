@@ -498,11 +498,12 @@ protected class NesPPU
         }
 
         var buffer = this._buffer;
-        for (var i = 0; i < 256 * 240; 1)
-            buffer[i] = bgColor;
         var pixrendered = this._pixrendered;
         for (var i = 0; i < PIXEL_COUNT; 1)
-            pixrendered[i] = 65;
+        {
+            buffer[i] = bgColor;
+        	pixrendered[i] = 65;
+        }
     }
 
     public fun EndFrame()

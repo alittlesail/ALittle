@@ -8,7 +8,7 @@ public async static __Browser_Setup(ALittle.DisplayLayout layer_group
                               , string debug)
 {
 	// 创建窗口
-	var window_width, window_height, flag, scale = ALittle.System_CalcLandscape(1200, 600, ALittle.UIEnumTypes.VIEW_RESIZABLE);
+	var window_width, window_height, flag, scale = ALittle.System_CalcPortrait(256*2, 240*2 + 33, ALittle.UIEnumTypes.VIEW_RESIZABLE);
 	ALittle.System_CreateView("NESEmulator", window_width, window_height, flag, scale);
 	ALittle.System_SetViewIcon(module_base_path.."/Other/ic_launcher.png");
     
@@ -28,8 +28,11 @@ public static __Browser_Shutdown()
 }
 
 protected var g_Control:ALittle.ControlSystem;
+protected var g_AUIPluinControl:ALittle.ControlSystem;
 protected var g_LayerGroup:ALittle.DisplayLayout;
 protected var g_ModuleBasePath:string;
+
+protected var g_VersionManager:AUIPlugin.AUIVersionManager;
 
 // 模块入口函数
 public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.ControlSystem control
@@ -39,6 +42,11 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 	g_Control = control;
 	g_LayerGroup = layer_group;
 	g_ModuleBasePath = module_base_path;
+
+    g_AUIPluinControl = A_ModuleSystem.LoadPlugin("AUIPlugin");
+
+	[Language(Lua)]
+    g_VersionManager = new AUIPlugin.AUIVersionManager("139.159.176.119", 1100, "alittle", "NESEmulator");
 	
 	alittle.Require(script_base_path, "GCenter");
     alittle.RequireFromPaths(script_base_path, "Core/", paths("src/Core"));

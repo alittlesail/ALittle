@@ -197,9 +197,15 @@ protected class NesCPU
 
         var addr = 0;
 
+        // Absolute mode. Use the two bytes following the opcode as
+        // an address.
+        if (addr_mode == 3)
+    	{
+    		addr = this.Load16bit(op_addr + 2);
+    	}
         // Zero Page mode. Use the address given after the opcode,
         // but without high byte.
-        if (addr_mode == 0)
+        elseif (addr_mode == 0)
         {
             addr = this.Load(op_addr + 2);
         }
@@ -216,12 +222,6 @@ protected class NesCPU
         elseif (addr_mode == 2)
         {
 
-        }
-        // Absolute mode. Use the two bytes following the opcode as
-        // an address.
-        elseif (addr_mode == 3)
-        {
-            addr = this.Load16bit(op_addr + 2);
         }
         // Accumulator mode. The address is in the accumulator
         // register.
@@ -326,6 +326,14 @@ protected class NesCPU
             this._reg_acc = temp & 255;
             cycle_count += cycle_add;
         }
+        elseif (op_type == 27) {
+            // *******
+            // * JMP *
+            // *******
+
+            // Jump to new location:
+            this._reg_pc = addr - 1;
+        }
         elseif (op_type == 1) {
             // *******
             // * AND *
@@ -345,7 +353,6 @@ protected class NesCPU
             // Shift left one bit
             if (addr_mode == 4) {
                 // ADDR_ACC = 4
-
                 this._f_carry = (this._reg_acc ->> 7) & 1;
                 this._reg_acc = (this._reg_acc <<- 1) & 255;
                 this._f_sign = (this._reg_acc ->> 7) & 1;
@@ -623,14 +630,6 @@ protected class NesCPU
             this._reg_y = this._reg_y & 0xff;
             this._f_sign = (this._reg_y ->> 7) & 1;
             this._f_zero = this._reg_y;
-        }
-        elseif (op_type == 27) {
-            // *******
-            // * JMP *
-            // *******
-
-            // Jump to new location:
-            this._reg_pc = addr - 1;
         }
         elseif (op_type == 28) {
             // *******

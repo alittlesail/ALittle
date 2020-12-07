@@ -286,6 +286,7 @@ public struct IBaseTextureOptions
     int width;
     int height;
     int type;
+    int scaleMode;
 }
 
 [Native]

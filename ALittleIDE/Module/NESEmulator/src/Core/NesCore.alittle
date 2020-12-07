@@ -8,7 +8,7 @@ protected class NesCore
     // 视频的帧率
     public int _preferred_frame_rate = 60;
     // 是否模拟声音
-    private bool _emulate_sound = true;
+    private bool _emulate_sound = false;
 
     // 图像输出，提供外部继承
     public fun OnFrame(Map<int, int> frame_buffer)

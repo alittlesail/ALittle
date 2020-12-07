@@ -329,16 +329,11 @@ function NESEmulator.NesPPU:StartFrame()
 		end
 	end
 	local buffer = self._buffer
-	local i = 0
-	while true do
-		if not(i < 256 * 240) then break end
-		buffer[i] = bgColor
-		i = i+(1)
-	end
 	local pixrendered = self._pixrendered
 	local i = 0
 	while true do
 		if not(i < NESEmulator.PIXEL_COUNT) then break end
+		buffer[i] = bgColor
 		pixrendered[i] = 65
 		i = i+(1)
 	end

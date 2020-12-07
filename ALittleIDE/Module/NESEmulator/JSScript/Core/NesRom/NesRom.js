@@ -122,6 +122,7 @@ NESEmulator.NesRom = JavaScript.Class(undefined, {
 		if (found_error) {
 			this._mapper_type = this._mapper_type & 0xf;
 		}
+		ALittle.Log("mapper_type:", this._mapper_type);
 		offset = 16;
 		this._rom = new Map();
 		for (let i = 0; i < this._rom_count; i += 1) {

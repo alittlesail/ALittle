@@ -6,7 +6,7 @@ local ___ipairs = ipairs
 
 
 function NESEmulator.__Browser_Setup(layer_group, control, module_base_path, script_base_path, debug)
-	local window_width, window_height, flag, scale = ALittle.System_CalcLandscape(1200, 600, 0x00000020)
+	local window_width, window_height, flag, scale = ALittle.System_CalcLandscape(256 * 2, 240 * 2 + 33, 0)
 	ALittle.System_CreateView("NESEmulator", window_width, window_height, flag, scale)
 	ALittle.System_SetViewIcon(module_base_path .. "/Other/ic_launcher.png")
 	A_ModuleSystem:LoadModule(module_base_path, "NESEmulator")
@@ -20,12 +20,16 @@ function NESEmulator.__Browser_Shutdown()
 end
 
 NESEmulator.g_Control = nil
+NESEmulator.g_AUIPluinControl = nil
 NESEmulator.g_LayerGroup = nil
 NESEmulator.g_ModuleBasePath = nil
+NESEmulator.g_VersionManager = nil
 function NESEmulator.__Module_Setup(layer_group, control, module_base_path, script_base_path, debug)
 	NESEmulator.g_Control = control
 	NESEmulator.g_LayerGroup = layer_group
 	NESEmulator.g_ModuleBasePath = module_base_path
+	NESEmulator.g_AUIPluinControl = A_ModuleSystem:LoadPlugin("AUIPlugin")
+	NESEmulator.g_VersionManager = AUIPlugin.AUIVersionManager("139.159.176.119", 1100, "alittle", "NESEmulator")
 	Require(script_base_path, "GCenter")
 	RequireFromPaths(script_base_path, "Core/", {"NesUtility.alittle", "NesCore.alittle", "NesController.alittle"
 		, "NesCPU/NesCPUOpData.alittle", "NesCPU/NesCPU.alittle", "NesMapper/NesMapper.alittle"

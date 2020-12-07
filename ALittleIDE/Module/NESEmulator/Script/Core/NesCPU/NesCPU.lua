@@ -108,7 +108,9 @@ function NESEmulator.NesCPU:Emulate()
 	local op_addr = self._reg_pc
 	self._reg_pc = self._reg_pc + ((op_info >> 16) & 0xff)
 	local addr = 0
-	if addr_mode == 0 then
+	if addr_mode == 3 then
+		addr = self:Load16bit(op_addr + 2)
+	elseif addr_mode == 0 then
 		addr = self:Load(op_addr + 2)
 	elseif addr_mode == 1 then
 		addr = self:Load(op_addr + 2)
@@ -118,8 +120,6 @@ function NESEmulator.NesCPU:Emulate()
 			addr = addr + (self._reg_pc - 256)
 		end
 	elseif addr_mode == 2 then
-	elseif addr_mode == 3 then
-		addr = self:Load16bit(op_addr + 2)
 	elseif addr_mode == 4 then
 		addr = self._reg_acc
 	elseif addr_mode == 5 then
@@ -176,6 +176,8 @@ function NESEmulator.NesCPU:Emulate()
 		self._f_zero = temp & 0xff
 		self._reg_acc = temp & 255
 		cycle_count = cycle_count + (cycle_add)
+	elseif op_type == 27 then
+		self._reg_pc = addr - 1
 	elseif op_type == 1 then
 		self._reg_acc = self._reg_acc & self:Load(addr)
 		self._f_sign = (self._reg_acc >> 7) & 1
@@ -308,8 +310,6 @@ function NESEmulator.NesCPU:Emulate()
 		self._reg_y = self._reg_y & 0xff
 		self._f_sign = (self._reg_y >> 7) & 1
 		self._f_zero = self._reg_y
-	elseif op_type == 27 then
-		self._reg_pc = addr - 1
 	elseif op_type == 28 then
 		self:Push((self._reg_pc >> 8) & 255)
 		self:Push(self._reg_pc & 255)

@@ -23,7 +23,7 @@ end
 function NESEmulator.NesCore:Ctor()
 	___rawset(self, "_sample_rate", 48000)
 	___rawset(self, "_preferred_frame_rate", 60)
-	___rawset(self, "_emulate_sound", true)
+	___rawset(self, "_emulate_sound", false)
 	___rawset(self, "_fps_frame_count", 0)
 	___rawset(self, "_last_fps_time", 0)
 	___rawset(self, "_controllers", {})

@@ -14,7 +14,7 @@ NESEmulator.NesCore = JavaScript.Class(undefined, {
 	Ctor : function() {
 		this._sample_rate = 48000;
 		this._preferred_frame_rate = 60;
-		this._emulate_sound = true;
+		this._emulate_sound = false;
 		this._fps_frame_count = 0;
 		this._last_fps_time = 0;
 		this._controllers = new Map();
@@ -138,7 +138,7 @@ NESEmulator.NesCore = JavaScript.Class(undefined, {
 		}
 		let mapper = rom.CreateMapper();
 		if (mapper === undefined) {
-			return "not support mapper type";
+			return "not support mapper type:" + rom._mapper_type;
 		}
 		this._rom = rom;
 		this._rom_data = data;

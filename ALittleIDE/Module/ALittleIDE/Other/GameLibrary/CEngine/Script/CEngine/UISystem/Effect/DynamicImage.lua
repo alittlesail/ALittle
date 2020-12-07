@@ -14,6 +14,7 @@ function ALittle.DynamicImage:Ctor(ctrl_sys)
 	___rawset(self, "_real_height", 0)
 	___rawset(self, "_show", __CPPAPIImage())
 	___rawset(self, "_texture", __CPPAPIDynamicTexture())
+	self._texture:SetRenderMode(0)
 	self._show:SetTexture(self._texture)
 end
 

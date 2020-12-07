@@ -7,14 +7,17 @@ protected class GNes : NesCore
     private ALittle.LoopFrame _loop_frame;
     private ALittle.LoopFunction _loop_func;
 
+    private Map<int, int> _frame_buffer = new Map<int, int>();
+
     public fun Setup(ALittle.DynamicImage image)
     {
         this._image = image;
         A_UISystem.keydown_callback = bind(this.HandleKey, this, true);
         A_UISystem.keyup_callback = bind(this.HandleKey, this, false);
+        ALittle.System_SetFPS(1000);
     }
 
-    public async fun LoadROM(string file_name)
+    public await fun LoadROMFromOther(string file_name) : string
     {
         this.Reset();
 
@@ -36,20 +39,50 @@ protected class GNes : NesCore
         g_Control.HttpDownload(path);
 
         var nes_rom = new ALittle.LocalFile();
-        if (!nes_rom.Load(path)) return;
+        if (!nes_rom.Load(path)) return "can't find rom:"..file_name;
 
         var error = this.ReloadROM(nes_rom);
-        if (error != null)
-        {
-            ALittle.Log("ReloadROM", error);
-            return;
-        }
+        if (error != null) return error;
 
         this._loop_frame = new ALittle.LoopFrame(bind(this.UpdateFrame, this));
         this._loop_frame.Start();
         this._loop_func = new ALittle.LoopFunction(bind(this.ShowInfo, this), -1, 1000, 1000);
         this._loop_func.Start();
+
+        return null;
     }
+
+
+    public await fun LoadROMFromPath(string path) : string
+    {
+        this.Reset();
+
+        if (this._loop_frame != null)
+        {
+        	this._loop_frame.Stop();
+            this._loop_frame = null;
+        }
+
+        if (this._loop_func != null)
+        {
+            this._loop_func.Stop();
+            this._loop_func = null;
+        }
+
+        var nes_rom = new ALittle.LocalFile();
+        if (!nes_rom.Load(path)) return "can't find rom:"..path;
+
+        var error = this.ReloadROM(nes_rom);
+        if (error != null) return error;
+
+        this._loop_frame = new ALittle.LoopFrame(bind(this.UpdateFrame, this));
+        this._loop_frame.Start();
+        this._loop_func = new ALittle.LoopFunction(bind(this.ShowInfo, this), -1, 1000, 1000);
+        this._loop_func.Start();
+
+        return null;
+    }
+
 
     // 处理按键
     public fun HandleKey(bool down, int mod, int sym, int scancode)
@@ -117,8 +150,8 @@ protected class GNes : NesCore
     {
         var len = SCREEN_WIDTH * SCREEN_HEIGHT;
         for (var i = 0; i < len; 1)
-        	frame_buffer[i] = frame_buffer[i] | 0xFF000000;
-        this._image.SetRangeColor(frame_buffer);
+        	this._frame_buffer[i] = frame_buffer[i] | 0xFF000000;
+        this._image.SetRangeColor(this._frame_buffer);
     }
 
     public fun ShowInfo()
@@ -128,7 +161,7 @@ protected class GNes : NesCore
 
     public fun UpdateFrame(int frame_time)
     {
-        var time1  = ALittle.System_GetCurMSTime();
+        // var time1  = ALittle.System_GetCurMSTime();
         var error = this.Frame();
         if (error != null)
         {
@@ -138,8 +171,8 @@ protected class GNes : NesCore
             if (this._loop_func != null)
             	this._loop_func.Stop();
         }
-        var time2  = ALittle.System_GetCurMSTime();
-        ALittle.Log("UpdateFrame", time2 - time1);
+            // var time2  = ALittle.System_GetCurMSTime();
+            // ALittle.Log("UpdateFrame", time2 - time1);
     }
 
     public fun Shutdown()

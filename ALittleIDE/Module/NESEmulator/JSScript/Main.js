@@ -37,6 +37,7 @@ NESEmulator.__Module_Setup = async function(layer_group, control, module_base_pa
 		, "NesPAPU/NesChannelDM.alittle", "NesPPU/NesPaletteTable.alittle", "NesPPU/NesPPU.alittle"
 		, "NesPPU/NesNameTable.alittle", "NesRom/NesTile.alittle", "NesRom/NesRom.alittle"]);
 	await Require(script_base_path, "GNes");
+	await Require(script_base_path, "GController");
 	g_GCenter.Setup();
 }
 

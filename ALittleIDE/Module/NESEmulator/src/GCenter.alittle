@@ -9,6 +9,7 @@ class GCenter
 
     private ALittle.DisplayLayout _canvas;
     private ALittle.DynamicImage _screen;
+    private GController _controller;
 
     private ALittle.TextRadioButton _file_menu;
     private ALittle.TextRadioButton _rom_menu;

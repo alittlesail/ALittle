@@ -36,18 +36,36 @@ function NESEmulator.GCenter:Setup()
 	self._dialog_layer.width_type = 4
 	self._dialog_layer.height_type = 4
 	NESEmulator.g_LayerGroup:AddChild(self._dialog_layer, nil)
+	A_UISystem.view_resize_callback = Lua.Bind(self.HandleViewResize, self)
 	local main_scene = NESEmulator.g_Control:CreateControl("main_scene", self, self._main_layer)
 	local group = {}
 	self._file_menu.group = group
 	self._rom_menu.group = group
 	self._help_menu.group = group
-	self._file_menu:AddEventListener(___all_struct[124598654], 1, self.HandleSelectFile)
-	local screen = ALittle.DynamicImage(NESEmulator.g_Control)
-	screen.width_type = 4
-	screen.height_type = 4
-	screen:SetSurfaceSize(NESEmulator.SCREEN_WIDTH, NESEmulator.SCREEN_HEIGHT, 0)
-	self._canvas:AddChild(screen)
-	g_GNes:Setup(screen)
+	self._file_menu:AddEventListener(___all_struct[124598654], self, self.HandleSelectFile)
+	self._screen = ALittle.DynamicImage(NESEmulator.g_Control)
+	self:UpdateScreenWH()
+	self._screen:SetSurfaceSize(NESEmulator.SCREEN_WIDTH, NESEmulator.SCREEN_HEIGHT, 0)
+	self._canvas:AddChild(self._screen)
+	g_GNes:Setup(self._screen)
+end
+
+function NESEmulator.GCenter:HandleViewResize(width, height)
+	self:UpdateScreenWH()
+end
+
+function NESEmulator.GCenter:UpdateScreenWH()
+	if self._screen == nil then
+		return
+	end
+	if self._canvas.width > self._canvas.height then
+		self._screen.height = self._canvas.height
+		self._screen.width = self._canvas.height * NESEmulator.SCREEN_WIDTH / NESEmulator.SCREEN_HEIGHT
+	else
+		self._screen.width = self._canvas.width
+		self._screen.height = self._canvas.width * NESEmulator.SCREEN_HEIGHT / NESEmulator.SCREEN_WIDTH
+	end
+	self._screen.x = (self._canvas.width - self._screen.width) / 2
 end
 
 function NESEmulator.GCenter:HandleFileClick(event)

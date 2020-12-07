@@ -6,7 +6,7 @@ local ___ipairs = ipairs
 
 
 function NESEmulator.__Browser_Setup(layer_group, control, module_base_path, script_base_path, debug)
-	local window_width, window_height, flag, scale = ALittle.System_CalcLandscape(256 * 2, 240 * 2 + 33, 0)
+	local window_width, window_height, flag, scale = ALittle.System_CalcPortrait(256 * 2, 240 * 2 + 33, 0x00000020)
 	ALittle.System_CreateView("NESEmulator", window_width, window_height, flag, scale)
 	ALittle.System_SetViewIcon(module_base_path .. "/Other/ic_launcher.png")
 	A_ModuleSystem:LoadModule(module_base_path, "NESEmulator")
@@ -42,6 +42,7 @@ function NESEmulator.__Module_Setup(layer_group, control, module_base_path, scri
 		, "NesPAPU/NesChannelDM.alittle", "NesPPU/NesPaletteTable.alittle", "NesPPU/NesPPU.alittle"
 		, "NesPPU/NesNameTable.alittle", "NesRom/NesTile.alittle", "NesRom/NesRom.alittle"})
 	Require(script_base_path, "GNes")
+	Require(script_base_path, "GController")
 	g_GCenter:Setup()
 end
 NESEmulator.__Module_Setup = Lua.CoWrap(NESEmulator.__Module_Setup)

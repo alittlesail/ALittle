@@ -4,6 +4,8 @@ namespace ALittle;
 public class DynamicImage : DisplayObject
 {
     private ALittle.ITexture _texture;
+    private int _real_width = 0;
+    private int _real_height = 0;
 
     [Language(JavaScript)]
     [Native]
@@ -30,24 +32,20 @@ public class DynamicImage : DisplayObject
         return cast<lua.__CPPAPIDynamicTexture>(this._texture).GetSurface(redraw);
     }
 
-    public fun SetRangeColor(Map<int, int> buffer, int width, int height)
+    public fun SetRangeColor(Map<int, int> buffer)
     {
         [Language(Lua)]
         {
             var surface = this.GetSurface(true);
-            for (var x = 0; x < width; 1)
-            {
-                for (var y = 0; y < height; 1)
-                {
-                    var index = y * width + x;
-                    carp.SetCarpSurfacePixel(surface, x, y, buffer[index]);
-                }
-            }
+            carp.SetCarpSurfacePixelRect(surface, buffer);
         }
 
         [Language(JavaScript)]
         if (this._base_texture != null)
         {
+            var width = this._real_width;
+            var height = this._real_height;
+
             for (var x = 0; x < width; 1)
             {
                 for (var y = 0; y < height; 1)
@@ -62,6 +60,9 @@ public class DynamicImage : DisplayObject
 
     public fun SetSurfaceSize(int width, int height, int color)
     {
+        this._real_width = width;
+        this._real_height = height;
+
         [Language(Lua)]
         cast<lua.__CPPAPIDynamicTexture>(this._texture).SetSurfaceSize(width, height, color);
 

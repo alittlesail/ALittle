@@ -94,25 +94,21 @@ function NESEmulator.GNes:HandleKey(down, mod, sym, scancode)
 end
 
 function NESEmulator.GNes:OnFrame(frame_buffer)
-	local x = 0
+	local len = NESEmulator.SCREEN_WIDTH * NESEmulator.SCREEN_HEIGHT
+	local i = 0
 	while true do
-		if not(x < NESEmulator.SCREEN_WIDTH) then break end
-		local y = 0
-		while true do
-			if not(y < NESEmulator.SCREEN_HEIGHT) then break end
-			local index = y * NESEmulator.SCREEN_WIDTH + x
-			frame_buffer[index] = frame_buffer[index] | 0xFF000000
-			y = y+(1)
-		end
-		x = x+(1)
+		if not(i < len) then break end
+		frame_buffer[i] = frame_buffer[i] | 0xFF000000
+		i = i+(1)
 	end
-	self._image:SetRangeColor(frame_buffer, NESEmulator.SCREEN_WIDTH, NESEmulator.SCREEN_HEIGHT)
+	self._image:SetRangeColor(frame_buffer)
 end
 
 function NESEmulator.GNes:ShowInfo()
 end
 
 function NESEmulator.GNes:UpdateFrame(frame_time)
+	local time1 = ALittle.System_GetCurMSTime()
 	local error = self:Frame()
 	if error ~= nil then
 		ALittle.Log(error)
@@ -123,6 +119,8 @@ function NESEmulator.GNes:UpdateFrame(frame_time)
 			self._loop_func:Stop()
 		end
 	end
+	local time2 = ALittle.System_GetCurMSTime()
+	ALittle.Log("UpdateFrame", time2 - time1)
 end
 
 function NESEmulator.GNes:Shutdown()

@@ -16,6 +16,7 @@ public static GetCarpSurfaceWidth(CarpSurface surface) : int {}
 public static GetCarpSurfaceHeight(CarpSurface surface) : int {}
 public static CutBlitCarpSurface(CarpSurface src, CarpSurface dst, string from, string to) : bool {}
 public static SetCarpSurfacePixel(CarpSurface surface, int x, int y, int color) : bool {}
+public static SetCarpSurfacePixelRect(CarpSurface surface, Map<int, int> buffer) {}
 public static GetCarpSurfacePixel(CarpSurface surface, int x, int y) : int {}
 public static GetPixelAlpha(int color) : int {}
 public static SetPixelAlpha(int color, int alpha) : int {}

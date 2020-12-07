@@ -115,15 +115,10 @@ protected class GNes : NesCore
     // 图像输出，提供外部继承
     public fun OnFrame(Map<int, int> frame_buffer)
     {
-        for (var x = 0; x < SCREEN_WIDTH; 1)
-        {
-            for (var y = 0; y < SCREEN_HEIGHT; 1)
-            {
-                var index = y * SCREEN_WIDTH + x;
-                frame_buffer[index] = frame_buffer[index] | 0xFF000000;
-            }
-        }
-        this._image.SetRangeColor(frame_buffer, SCREEN_WIDTH, SCREEN_HEIGHT);
+        var len = SCREEN_WIDTH * SCREEN_HEIGHT;
+        for (var i = 0; i < len; 1)
+        	frame_buffer[i] = frame_buffer[i] | 0xFF000000;
+        this._image.SetRangeColor(frame_buffer);
     }
 
     public fun ShowInfo()
@@ -133,6 +128,7 @@ protected class GNes : NesCore
 
     public fun UpdateFrame(int frame_time)
     {
+        var time1  = ALittle.System_GetCurMSTime();
         var error = this.Frame();
         if (error != null)
         {
@@ -142,6 +138,8 @@ protected class GNes : NesCore
             if (this._loop_func != null)
             	this._loop_func.Stop();
         }
+        var time2  = ALittle.System_GetCurMSTime();
+        ALittle.Log("UpdateFrame", time2 - time1);
     }
 
     public fun Shutdown()

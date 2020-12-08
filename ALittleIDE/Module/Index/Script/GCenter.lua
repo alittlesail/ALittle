@@ -77,6 +77,11 @@ function Index.GCenter:Setup()
 		data.texture_name = "FlappyBird.png"
 		data.path = "FlappyBird.html"
 		ALittle.List_Push(data_list, data)
+		data = {}
+		data.title = "NES Emulator"
+		data.texture_name = "NESEmulator.png"
+		data.path = "NESEmulator.html"
+		ALittle.List_Push(data_list, data)
 	end
 	self._item_width = 0
 	for index, data in ___ipairs(data_list) do

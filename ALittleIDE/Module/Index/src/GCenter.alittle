@@ -83,6 +83,12 @@ class GCenter
             data.texture_name = "FlappyBird.png";
             data.path = "FlappyBird.html";
             ALittle.List_Push(data_list, data);
+
+            data = new ItemData();
+            data.title = "NES Emulator";
+            data.texture_name = "NESEmulator.png";
+            data.path = "NESEmulator.html";
+            ALittle.List_Push(data_list, data);
         }
 
         this._item_width = 0;

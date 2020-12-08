@@ -72,6 +72,11 @@ Index.GCenter = JavaScript.Class(undefined, {
 			data.texture_name = "FlappyBird.png";
 			data.path = "FlappyBird.html";
 			ALittle.List_Push(data_list, data);
+			data = {};
+			data.title = "NES Emulator";
+			data.texture_name = "NESEmulator.png";
+			data.path = "NESEmulator.html";
+			ALittle.List_Push(data_list, data);
 		}
 		this._item_width = 0;
 		let ___OBJECT_1 = data_list;

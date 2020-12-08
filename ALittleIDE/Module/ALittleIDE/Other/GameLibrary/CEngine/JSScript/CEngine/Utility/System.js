@@ -144,43 +144,55 @@ ALittle.System_GetCursorY = function() {
 }
 
 ALittle.System_SetEditCursor = function() {
-	A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "text";
-	A_PixiApp.renderer.plugins.interaction.setCursorMode("text");
 }
 
 ALittle.System_SetNormalCursor = function() {
-	A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "auto";
-	A_PixiApp.renderer.plugins.interaction.setCursorMode("auto");
+	if (!ALittle.System_IsPhone()) {
+		A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "auto";
+		A_PixiApp.renderer.plugins.interaction.setCursorMode("auto");
+	}
 }
 
 ALittle.System_SetHandCursor = function() {
-	A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "pointer";
-	A_PixiApp.renderer.plugins.interaction.setCursorMode("pointer");
+	if (!ALittle.System_IsPhone()) {
+		A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "pointer";
+		A_PixiApp.renderer.plugins.interaction.setCursorMode("pointer");
+	}
 }
 
 ALittle.System_SetHDragCursor = function() {
-	A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "e-resize";
-	A_PixiApp.renderer.plugins.interaction.setCursorMode("e-resize");
+	if (!ALittle.System_IsPhone()) {
+		A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "e-resize";
+		A_PixiApp.renderer.plugins.interaction.setCursorMode("e-resize");
+	}
 }
 
 ALittle.System_SetVDragCursor = function() {
-	A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "n-resize";
-	A_PixiApp.renderer.plugins.interaction.setCursorMode("n-resize");
+	if (!ALittle.System_IsPhone()) {
+		A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "n-resize";
+		A_PixiApp.renderer.plugins.interaction.setCursorMode("n-resize");
+	}
 }
 
 ALittle.System_SetHVDragCursor = function() {
-	A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "nw-resize";
-	A_PixiApp.renderer.plugins.interaction.setCursorMode("nw-resize");
+	if (!ALittle.System_IsPhone()) {
+		A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "nw-resize";
+		A_PixiApp.renderer.plugins.interaction.setCursorMode("nw-resize");
+	}
 }
 
 ALittle.System_SetHV2DragCursor = function() {
-	A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "ne-resize";
-	A_PixiApp.renderer.plugins.interaction.setCursorMode("ne-resize");
+	if (!ALittle.System_IsPhone()) {
+		A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "ne-resize";
+		A_PixiApp.renderer.plugins.interaction.setCursorMode("ne-resize");
+	}
 }
 
 ALittle.System_SetCrossDragCursor = function() {
-	A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "move";
-	A_PixiApp.renderer.plugins.interaction.setCursorMode("move");
+	if (!ALittle.System_IsPhone()) {
+		A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "move";
+		A_PixiApp.renderer.plugins.interaction.setCursorMode("move");
+	}
 }
 
 ALittle.System_CreateView = function(title, width, height, flag, scale) {

@@ -461,9 +461,9 @@ class UISystem
                 // 向选中焦点控件发送获得焦点事件
                 this._sfc.DispatchEvent(new UIFocusInEvent());
             }
-            return true;
-            // 如果没有移动焦点控件，说明现在的鼠标什么都没点到
+            return true;    
         }
+        // 如果没有移动焦点控件，说明现在的鼠标什么都没点到
         else
         {
             // 如果当前有选中焦点控件
@@ -721,7 +721,7 @@ class UISystem
         // 移动焦点对话框
         var mfd:DisplayLayout;
         mfc, mfd, this._mfc_rel_x, this._mfc_rel_y = A_LayerManager.PickUp(x, y);
-        
+
         // 保存移动焦点对话框
         this._mfd = mfd;
         // 如果计算得到的移动焦点控件就是当前的移动焦点控件
@@ -744,7 +744,7 @@ class UISystem
         // 发送鼠标移出事件
         if (this._mfc != null)
             this._mfc.DispatchEvent(new UIMoveOutEvent());
-        
+    
         // 发送鼠标移入事件
         if (mfc != null)
             mfc.DispatchEvent(new UIMoveInEvent());
@@ -864,9 +864,7 @@ class UISystem
     // 处理多点触控弹起
     public fun HandleFingerUp(double x, double y, int finger_id, int touch_id) : bool
     {
-        if (this._lbutton_down
-                && this._lbutton_finger_id == finger_id
-                && this._lbutton_touch_id == touch_id)
+        if (this._lbutton_down && this._lbutton_finger_id == finger_id && this._lbutton_touch_id == touch_id)
         {
             this._lbutton_down = false;
             return this.HandleButtonUp{UILButtonUpEvent}(x, y);
@@ -922,10 +920,9 @@ class UISystem
     // 处理多点触控移动
     public fun HandleFingerMoved(double x, double y, int finger_id, int touch_id) : bool
     {
-        if (this._lbutton_down
-                && this._lbutton_finger_id == finger_id
-                && this._lbutton_touch_id == touch_id)
+        if (this._lbutton_down && this._lbutton_finger_id == finger_id && this._lbutton_touch_id == touch_id)
             return this.HandleMouseMoved(x, y);
+
         // 计算key
         var key = finger_id .. "_" .. touch_id;
         // 获取信息

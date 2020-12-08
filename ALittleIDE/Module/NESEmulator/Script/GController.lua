@@ -82,14 +82,27 @@ function NESEmulator.GController:HandleLButtonUp(event)
 	self:StopDir()
 end
 
-function NESEmulator.GController:HandleDragBegin(event)
-end
-
-function NESEmulator.GController:HandleDrag(event)
+function NESEmulator.GController:HandleFingerDown(event)
 	self:UpdateDir(event.target, event.rel_x, event.rel_y)
 end
 
-function NESEmulator.GController:HandleDragEnd(event)
+function NESEmulator.GController:HandleFingerUp(event)
+	self:StopDir()
+end
+
+function NESEmulator.GController:HandleButtonDrag(event)
+	self:UpdateDir(event.target, event.rel_x, event.rel_y)
+end
+
+function NESEmulator.GController:HandleButtonDragEnd(event)
+	self:StopDir()
+end
+
+function NESEmulator.GController:HandleFingerDrag(event)
+	self:UpdateDir(event.target, event.rel_x, event.rel_y)
+end
+
+function NESEmulator.GController:HandleFingerDragEnd(event)
 	self:StopDir()
 end
 
@@ -101,11 +114,27 @@ function NESEmulator.GController:HandleSelectUp(event)
 	g_GNes:ButtonUp(1, NESEmulator.NesControlType.BUTTON_SELECT)
 end
 
+function NESEmulator.GController:HandleFSelectDown(event)
+	g_GNes:ButtonDown(1, NESEmulator.NesControlType.BUTTON_SELECT)
+end
+
+function NESEmulator.GController:HandleFSelectUp(event)
+	g_GNes:ButtonUp(1, NESEmulator.NesControlType.BUTTON_SELECT)
+end
+
 function NESEmulator.GController:HandleStartDown(event)
 	g_GNes:ButtonDown(1, NESEmulator.NesControlType.BUTTON_START)
 end
 
 function NESEmulator.GController:HandleStartUp(event)
+	g_GNes:ButtonUp(1, NESEmulator.NesControlType.BUTTON_START)
+end
+
+function NESEmulator.GController:HandleFStartDown(event)
+	g_GNes:ButtonDown(1, NESEmulator.NesControlType.BUTTON_START)
+end
+
+function NESEmulator.GController:HandleFStartUp(event)
 	g_GNes:ButtonUp(1, NESEmulator.NesControlType.BUTTON_START)
 end
 
@@ -117,11 +146,27 @@ function NESEmulator.GController:HandleBUp(event)
 	g_GNes:ButtonUp(1, NESEmulator.NesControlType.BUTTON_B)
 end
 
+function NESEmulator.GController:HandleFBDown(event)
+	g_GNes:ButtonDown(1, NESEmulator.NesControlType.BUTTON_B)
+end
+
+function NESEmulator.GController:HandleFBUp(event)
+	g_GNes:ButtonUp(1, NESEmulator.NesControlType.BUTTON_B)
+end
+
 function NESEmulator.GController:HandleADown(event)
 	g_GNes:ButtonDown(1, NESEmulator.NesControlType.BUTTON_A)
 end
 
 function NESEmulator.GController:HandleAUp(event)
+	g_GNes:ButtonUp(1, NESEmulator.NesControlType.BUTTON_A)
+end
+
+function NESEmulator.GController:HandleFADown(event)
+	g_GNes:ButtonDown(1, NESEmulator.NesControlType.BUTTON_A)
+end
+
+function NESEmulator.GController:HandleFAUp(event)
 	g_GNes:ButtonUp(1, NESEmulator.NesControlType.BUTTON_A)
 end
 

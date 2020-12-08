@@ -103,7 +103,7 @@ function ALittle.TextButton:HandleMButtonUp(event)
 		local e = {}
 		e.is_drag = event.is_drag
 		self:DispatchEvent(___all_struct[-1330840], e)
-		if ALittle.System_IsPhone == false then
+		if ALittle.System_IsPhone() == false then
 			self:ShowOver()
 		else
 			self:ShowUp(nil)

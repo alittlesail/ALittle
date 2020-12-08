@@ -58,7 +58,7 @@ ALittle.SpringCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 			let e = {};
 			e.is_drag = event.is_drag;
 			this.DispatchEvent(___all_struct.get(-1330840), e);
-			if (ALittle.System_IsPhone === false) {
+			if (ALittle.System_IsPhone() === false) {
 				this.ShowOver();
 			} else {
 				this.ShowUp();

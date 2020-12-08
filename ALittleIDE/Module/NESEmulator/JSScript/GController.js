@@ -71,12 +71,22 @@ NESEmulator.GController = JavaScript.Class(ALittle.DisplayLayout, {
 	HandleLButtonUp : function(event) {
 		this.StopDir();
 	},
-	HandleDragBegin : function(event) {
-	},
-	HandleDrag : function(event) {
+	HandleFingerDown : function(event) {
 		this.UpdateDir(event.target, event.rel_x, event.rel_y);
 	},
-	HandleDragEnd : function(event) {
+	HandleFingerUp : function(event) {
+		this.StopDir();
+	},
+	HandleButtonDrag : function(event) {
+		this.UpdateDir(event.target, event.rel_x, event.rel_y);
+	},
+	HandleButtonDragEnd : function(event) {
+		this.StopDir();
+	},
+	HandleFingerDrag : function(event) {
+		this.UpdateDir(event.target, event.rel_x, event.rel_y);
+	},
+	HandleFingerDragEnd : function(event) {
 		this.StopDir();
 	},
 	HandleSelectDown : function(event) {
@@ -85,10 +95,22 @@ NESEmulator.GController = JavaScript.Class(ALittle.DisplayLayout, {
 	HandleSelectUp : function(event) {
 		g_GNes.ButtonUp(1, NESEmulator.NesControlType.BUTTON_SELECT);
 	},
+	HandleFSelectDown : function(event) {
+		g_GNes.ButtonDown(1, NESEmulator.NesControlType.BUTTON_SELECT);
+	},
+	HandleFSelectUp : function(event) {
+		g_GNes.ButtonUp(1, NESEmulator.NesControlType.BUTTON_SELECT);
+	},
 	HandleStartDown : function(event) {
 		g_GNes.ButtonDown(1, NESEmulator.NesControlType.BUTTON_START);
 	},
 	HandleStartUp : function(event) {
+		g_GNes.ButtonUp(1, NESEmulator.NesControlType.BUTTON_START);
+	},
+	HandleFStartDown : function(event) {
+		g_GNes.ButtonDown(1, NESEmulator.NesControlType.BUTTON_START);
+	},
+	HandleFStartUp : function(event) {
 		g_GNes.ButtonUp(1, NESEmulator.NesControlType.BUTTON_START);
 	},
 	HandleBDown : function(event) {
@@ -97,10 +119,22 @@ NESEmulator.GController = JavaScript.Class(ALittle.DisplayLayout, {
 	HandleBUp : function(event) {
 		g_GNes.ButtonUp(1, NESEmulator.NesControlType.BUTTON_B);
 	},
+	HandleFBDown : function(event) {
+		g_GNes.ButtonDown(1, NESEmulator.NesControlType.BUTTON_B);
+	},
+	HandleFBUp : function(event) {
+		g_GNes.ButtonUp(1, NESEmulator.NesControlType.BUTTON_B);
+	},
 	HandleADown : function(event) {
 		g_GNes.ButtonDown(1, NESEmulator.NesControlType.BUTTON_A);
 	},
 	HandleAUp : function(event) {
+		g_GNes.ButtonUp(1, NESEmulator.NesControlType.BUTTON_A);
+	},
+	HandleFADown : function(event) {
+		g_GNes.ButtonDown(1, NESEmulator.NesControlType.BUTTON_A);
+	},
+	HandleFAUp : function(event) {
 		g_GNes.ButtonUp(1, NESEmulator.NesControlType.BUTTON_A);
 	},
 }, "NESEmulator.GController");

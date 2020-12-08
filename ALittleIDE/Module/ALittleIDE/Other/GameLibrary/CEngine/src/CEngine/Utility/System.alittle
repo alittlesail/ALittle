@@ -282,80 +282,101 @@ public static System_SetEditCursor()
 {
     [Language(Lua)]
     __CPPAPI_InputSystem.SetEditCursor();
-    [Language(JavaScript)]
-    A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "text";
-    [Language(JavaScript)]
-    A_PixiApp.renderer.plugins.interaction.setCursorMode("text");
+    // [Language(JavaScript)]
+    // A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "text";
+    // [Language(JavaScript)]
+    // A_PixiApp.renderer.plugins.interaction.setCursorMode("text");
 }
 // 普通光标
 public static System_SetNormalCursor()
 {
     [Language(Lua)]
     __CPPAPI_InputSystem.SetNormalCursor();
+
     [Language(JavaScript)]
-    A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "auto";
-    [Language(JavaScript)]
-    A_PixiApp.renderer.plugins.interaction.setCursorMode("auto");
+    if (!System_IsPhone())
+    {
+    	A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "auto";
+    	A_PixiApp.renderer.plugins.interaction.setCursorMode("auto");
+    }
 }
 // 手势光标
 public static System_SetHandCursor()
 {
     [Language(Lua)]
     __CPPAPI_InputSystem.SetHandCursor();
+
     [Language(JavaScript)]
-    A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "pointer";
-    [Language(JavaScript)]
-    A_PixiApp.renderer.plugins.interaction.setCursorMode("pointer");
+    if (!System_IsPhone())
+    {
+    	A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "pointer";
+    	A_PixiApp.renderer.plugins.interaction.setCursorMode("pointer");
+    }
 }
 // 水平光标
 public static System_SetHDragCursor()
 {
     [Language(Lua)]
     __CPPAPI_InputSystem.SetHDragCursor();
+
     [Language(JavaScript)]
-    A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "e-resize";
-    [Language(JavaScript)]
-    A_PixiApp.renderer.plugins.interaction.setCursorMode("e-resize");
+    if (!System_IsPhone())
+    {
+    	A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "e-resize";
+    	A_PixiApp.renderer.plugins.interaction.setCursorMode("e-resize");
+    }
 }
 // 垂直光标
 public static System_SetVDragCursor()
 {
     [Language(Lua)]
     __CPPAPI_InputSystem.SetVDragCursor();
+
     [Language(JavaScript)]
-    A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "n-resize";
-    [Language(JavaScript)]
-    A_PixiApp.renderer.plugins.interaction.setCursorMode("n-resize");
+    if (!System_IsPhone())
+    {
+    	A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "n-resize";
+    	A_PixiApp.renderer.plugins.interaction.setCursorMode("n-resize");
+    }
 }
 // 反斜杠光标
 public static System_SetHVDragCursor()
 {
     [Language(Lua)]
     __CPPAPI_InputSystem.SetHVDragCursor();
+
     [Language(JavaScript)]
-    A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "nw-resize";
-    [Language(JavaScript)]
-    A_PixiApp.renderer.plugins.interaction.setCursorMode("nw-resize");
+    if (!System_IsPhone())
+    {
+    	A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "nw-resize";
+    	A_PixiApp.renderer.plugins.interaction.setCursorMode("nw-resize");
+    }
 }
 // 正斜杠光标
 public static System_SetHV2DragCursor()
 {
     [Language(Lua)]
     __CPPAPI_InputSystem.SetHV2DragCursor();
-    [Language(JavaScript)]
-    A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "ne-resize";
-    [Language(JavaScript)]
-    A_PixiApp.renderer.plugins.interaction.setCursorMode("ne-resize");
+    if (!System_IsPhone())
+    {
+    	[Language(JavaScript)]
+    	A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "ne-resize";
+    	[Language(JavaScript)]
+    	A_PixiApp.renderer.plugins.interaction.setCursorMode("ne-resize");
+    }
 }
 // 十字光标
 public static System_SetCrossDragCursor()
 {
     [Language(Lua)]
     __CPPAPI_InputSystem.SetCrossDragCursor();
-    [Language(JavaScript)]
-    A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "move";
-    [Language(JavaScript)]
-    A_PixiApp.renderer.plugins.interaction.setCursorMode("move");
+    if (!System_IsPhone())
+    {
+        [Language(JavaScript)]
+        A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "move";
+        [Language(JavaScript)]
+        A_PixiApp.renderer.plugins.interaction.setCursorMode("move");
+    }
 }
 
 ////窗口部分////////////////////////////////////////////////////////////////////-

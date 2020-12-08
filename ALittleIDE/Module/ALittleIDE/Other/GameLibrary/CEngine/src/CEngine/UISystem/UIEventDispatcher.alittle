@@ -359,7 +359,6 @@ public class UIEventDispatcher
                 [Language(JavaScript)]
                 cast<javascript.Function>(func).call(object, event);
             }
-                
         }
     }
 }

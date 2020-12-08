@@ -634,11 +634,12 @@ let JSystem_FingerDown = function(event) {
 		offsetLeft = event.srcElement.offsetLeft;
 		offsetTop = event.srcElement.offsetTop;
 	}
-	func((event.pageX - offsetLeft) / A_PixiApp.stage.scale.x * __pixel_ratio, (event.pageY - offsetTop) / A_PixiApp.stage.scale.y * __pixel_ratio, 1, 1);
-}
-
-let JSystem_WXFingerDown = function(event) {
-	JSystem_FingerDown(event.touches[1 - 1]);
+	let ___OBJECT_1 = event.changedTouches;
+	for (let index = 1; index <= ___OBJECT_1.length; ++index) {
+		let touch = ___OBJECT_1[index - 1];
+		if (touch === undefined) break;
+		func((touch.pageX - offsetLeft) / A_PixiApp.stage.scale.x * __pixel_ratio, (touch.pageY - offsetTop) / A_PixiApp.stage.scale.y * __pixel_ratio, touch.identifier, 1);
+	}
 }
 
 let JSystem_FingerUp = function(event) {
@@ -652,11 +653,12 @@ let JSystem_FingerUp = function(event) {
 		offsetLeft = event.srcElement.offsetLeft;
 		offsetTop = event.srcElement.offsetTop;
 	}
-	func((event.pageX - offsetLeft) / A_PixiApp.stage.scale.x * __pixel_ratio, (event.pageY - offsetTop) / A_PixiApp.stage.scale.y * __pixel_ratio, 1, 1);
-}
-
-let JSystem_WXFingerUp = function(event) {
-	JSystem_FingerUp(event.changedTouches[1 - 1]);
+	let ___OBJECT_2 = event.changedTouches;
+	for (let index = 1; index <= ___OBJECT_2.length; ++index) {
+		let touch = ___OBJECT_2[index - 1];
+		if (touch === undefined) break;
+		func((touch.pageX - offsetLeft) / A_PixiApp.stage.scale.x * __pixel_ratio, (touch.pageY - offsetTop) / A_PixiApp.stage.scale.y * __pixel_ratio, touch.identifier, 1);
+	}
 }
 
 let JSystem_FingerMoved = function(event) {
@@ -670,11 +672,12 @@ let JSystem_FingerMoved = function(event) {
 		offsetLeft = event.srcElement.offsetLeft;
 		offsetTop = event.srcElement.offsetTop;
 	}
-	func((event.pageX - offsetLeft) / A_PixiApp.stage.scale.x * __pixel_ratio, (event.pageY - offsetTop) / A_PixiApp.stage.scale.y * __pixel_ratio, 1, 1);
-}
-
-let JSystem_WXFingerMoved = function(event) {
-	JSystem_FingerMoved(event.touches[1 - 1]);
+	let ___OBJECT_3 = event.changedTouches;
+	for (let index = 1; index <= ___OBJECT_3.length; ++index) {
+		let touch = ___OBJECT_3[index - 1];
+		if (touch === undefined) break;
+		func((touch.pageX - offsetLeft) / A_PixiApp.stage.scale.x * __pixel_ratio, (touch.pageY - offsetTop) / A_PixiApp.stage.scale.y * __pixel_ratio, touch.identifier, 1);
+	}
 }
 
 let JSystem_MouseMoved = function(event) {
@@ -816,13 +819,15 @@ JavaScript.JSystem_CreateView = function(title, width, height, flag, scale) {
 	A_PixiApp.stage.scale.x = scale;
 	A_PixiApp.stage.scale.y = scale;
 	if (window.wx !== undefined) {
-		window.wx.onTouchStart(JSystem_WXFingerDown);
-		window.wx.onTouchMove(JSystem_WXFingerMoved);
-		window.wx.onTouchEnd(JSystem_WXFingerUp);
+		window.wx.onTouchStart(JSystem_FingerDown);
+		window.wx.onTouchMove(JSystem_FingerMoved);
+		window.wx.onTouchEnd(JSystem_FingerUp);
+		window.wx.onTouchCancel(JSystem_FingerUp);
 	} else if (ALittle.System_IsPhone()) {
 		A_PixiApp.view.ontouchstart = JSystem_FingerDown;
 		A_PixiApp.view.ontouchmove = JSystem_FingerMoved;
 		A_PixiApp.view.ontouchend = JSystem_FingerUp;
+		A_PixiApp.view.ontouchcancel = JSystem_FingerUp;
 	} else {
 		A_PixiApp.view.onmousedown = JSystem_MouseDown;
 		A_PixiApp.view.onmousemove = JSystem_MouseMoved;
@@ -2307,43 +2312,55 @@ ALittle.System_GetCursorY = function() {
 }
 
 ALittle.System_SetEditCursor = function() {
-	A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "text";
-	A_PixiApp.renderer.plugins.interaction.setCursorMode("text");
 }
 
 ALittle.System_SetNormalCursor = function() {
-	A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "auto";
-	A_PixiApp.renderer.plugins.interaction.setCursorMode("auto");
+	if (!ALittle.System_IsPhone()) {
+		A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "auto";
+		A_PixiApp.renderer.plugins.interaction.setCursorMode("auto");
+	}
 }
 
 ALittle.System_SetHandCursor = function() {
-	A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "pointer";
-	A_PixiApp.renderer.plugins.interaction.setCursorMode("pointer");
+	if (!ALittle.System_IsPhone()) {
+		A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "pointer";
+		A_PixiApp.renderer.plugins.interaction.setCursorMode("pointer");
+	}
 }
 
 ALittle.System_SetHDragCursor = function() {
-	A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "e-resize";
-	A_PixiApp.renderer.plugins.interaction.setCursorMode("e-resize");
+	if (!ALittle.System_IsPhone()) {
+		A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "e-resize";
+		A_PixiApp.renderer.plugins.interaction.setCursorMode("e-resize");
+	}
 }
 
 ALittle.System_SetVDragCursor = function() {
-	A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "n-resize";
-	A_PixiApp.renderer.plugins.interaction.setCursorMode("n-resize");
+	if (!ALittle.System_IsPhone()) {
+		A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "n-resize";
+		A_PixiApp.renderer.plugins.interaction.setCursorMode("n-resize");
+	}
 }
 
 ALittle.System_SetHVDragCursor = function() {
-	A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "nw-resize";
-	A_PixiApp.renderer.plugins.interaction.setCursorMode("nw-resize");
+	if (!ALittle.System_IsPhone()) {
+		A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "nw-resize";
+		A_PixiApp.renderer.plugins.interaction.setCursorMode("nw-resize");
+	}
 }
 
 ALittle.System_SetHV2DragCursor = function() {
-	A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "ne-resize";
-	A_PixiApp.renderer.plugins.interaction.setCursorMode("ne-resize");
+	if (!ALittle.System_IsPhone()) {
+		A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "ne-resize";
+		A_PixiApp.renderer.plugins.interaction.setCursorMode("ne-resize");
+	}
 }
 
 ALittle.System_SetCrossDragCursor = function() {
-	A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "move";
-	A_PixiApp.renderer.plugins.interaction.setCursorMode("move");
+	if (!ALittle.System_IsPhone()) {
+		A_PixiApp.renderer.plugins.interaction.cursorStyles.default = "move";
+		A_PixiApp.renderer.plugins.interaction.setCursorMode("move");
+	}
 }
 
 ALittle.System_CreateView = function(title, width, height, flag, scale) {
@@ -7917,7 +7934,7 @@ ALittle.TextButton = JavaScript.Class(ALittle.DisplayLayout, {
 			let e = {};
 			e.is_drag = event.is_drag;
 			this.DispatchEvent(___all_struct.get(-1330840), e);
-			if (ALittle.System_IsPhone === false) {
+			if (ALittle.System_IsPhone() === false) {
 				this.ShowOver();
 			} else {
 				this.ShowUp(undefined);
@@ -8370,7 +8387,7 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 			let e = {};
 			e.is_drag = event.is_drag;
 			this.DispatchEvent(___all_struct.get(-1330840), e);
-			if (ALittle.System_IsPhone === false) {
+			if (ALittle.System_IsPhone() === false) {
 				this.ShowOver();
 			} else {
 				this.ShowUp();

@@ -83,68 +83,33 @@ protected class GController : ALittle.DisplayLayout
         this._key_type = null;
     }
 
-    private fun HandleLButtonDown(ALittle.UILButtonDownEvent event)
-    {
-        this.UpdateDir(event.target, event.rel_x, event.rel_y);
-    }
+    private fun HandleLButtonDown(ALittle.UILButtonDownEvent event) { this.UpdateDir(event.target, event.rel_x, event.rel_y); }
+    private fun HandleLButtonUp(ALittle.UILButtonUpEvent event) { this.StopDir(); }
+    private fun HandleFingerDown(ALittle.UIFingerDownEvent event) { this.UpdateDir(event.target, event.rel_x, event.rel_y); }
+    private fun HandleFingerUp(ALittle.UIFingerUpEvent event) { this.StopDir(); }
 
-    private fun HandleLButtonUp(ALittle.UILButtonUpEvent event)
-    {
-        this.StopDir();
-    }
+    private fun HandleButtonDrag(ALittle.UIButtonDragEvent event) { this.UpdateDir(event.target, event.rel_x, event.rel_y); }
+    private fun HandleButtonDragEnd(ALittle.UIButtonDragEvent event) { this.StopDir(); }
+    private fun HandleFingerDrag(ALittle.UIButtonDragEvent event) { this.UpdateDir(event.target, event.rel_x, event.rel_y); }
+    private fun HandleFingerDragEnd(ALittle.UIButtonDragEvent event) { this.StopDir(); }
 
-    private fun HandleDragBegin(ALittle.UIButtonDragBeginEvent event)
-    {
+    private fun HandleSelectDown(ALittle.UILButtonDownEvent event) { g_GNes.ButtonDown(1, NesControlType.BUTTON_SELECT); }
+    private fun HandleSelectUp(ALittle.UILButtonDownEvent event) { g_GNes.ButtonUp(1, NesControlType.BUTTON_SELECT); }
+    private fun HandleFSelectDown(ALittle.UIFingerDownEvent event) { g_GNes.ButtonDown(1, NesControlType.BUTTON_SELECT); }
+    private fun HandleFSelectUp(ALittle.UIFingerDownEvent event) { g_GNes.ButtonUp(1, NesControlType.BUTTON_SELECT); }
 
-    }
+    private fun HandleStartDown(ALittle.UILButtonDownEvent event) { g_GNes.ButtonDown(1, NesControlType.BUTTON_START); }
+    private fun HandleStartUp(ALittle.UILButtonDownEvent event) { g_GNes.ButtonUp(1, NesControlType.BUTTON_START); }
+    private fun HandleFStartDown(ALittle.UIFingerDownEvent event) { g_GNes.ButtonDown(1, NesControlType.BUTTON_START); }
+    private fun HandleFStartUp(ALittle.UIFingerDownEvent event) { g_GNes.ButtonUp(1, NesControlType.BUTTON_START); }
 
-    private fun HandleDrag(ALittle.UIButtonDragEvent event)
-    {
-        this.UpdateDir(event.target, event.rel_x, event.rel_y);
-    }
+    private fun HandleBDown(ALittle.UILButtonDownEvent event) { g_GNes.ButtonDown(1, NesControlType.BUTTON_B); }
+    private fun HandleBUp(ALittle.UILButtonDownEvent event) { g_GNes.ButtonUp(1, NesControlType.BUTTON_B); }
+    private fun HandleFBDown(ALittle.UIFingerDownEvent event) { g_GNes.ButtonDown(1, NesControlType.BUTTON_B); }
+    private fun HandleFBUp(ALittle.UIFingerDownEvent event) { g_GNes.ButtonUp(1, NesControlType.BUTTON_B); }
 
-    private fun HandleDragEnd(ALittle.UIButtonDragEvent event)
-    {
-        this.StopDir();
-    }
-
-    private fun HandleSelectDown(ALittle.UILButtonDownEvent event)
-    {
-        g_GNes.ButtonDown(1, NesControlType.BUTTON_SELECT);
-    }
-
-    private fun HandleSelectUp(ALittle.UILButtonDownEvent event)
-    {
-        g_GNes.ButtonUp(1, NesControlType.BUTTON_SELECT);
-    }
-
-    private fun HandleStartDown(ALittle.UILButtonDownEvent event)
-    {
-        g_GNes.ButtonDown(1, NesControlType.BUTTON_START);
-    }
-
-    private fun HandleStartUp(ALittle.UILButtonDownEvent event)
-    {
-        g_GNes.ButtonUp(1, NesControlType.BUTTON_START);
-    }
-
-    private fun HandleBDown(ALittle.UILButtonDownEvent event)
-    {
-        g_GNes.ButtonDown(1, NesControlType.BUTTON_B);
-    }
-
-    private fun HandleBUp(ALittle.UILButtonDownEvent event)
-    {
-        g_GNes.ButtonUp(1, NesControlType.BUTTON_B);
-    }
-
-    private fun HandleADown(ALittle.UILButtonDownEvent event)
-    {
-        g_GNes.ButtonDown(1, NesControlType.BUTTON_A);
-    }
-
-    private fun HandleAUp(ALittle.UILButtonDownEvent event)
-    {
-        g_GNes.ButtonUp(1, NesControlType.BUTTON_A);
-    }
+    private fun HandleADown(ALittle.UILButtonDownEvent event) { g_GNes.ButtonDown(1, NesControlType.BUTTON_A); }
+    private fun HandleAUp(ALittle.UILButtonDownEvent event) { g_GNes.ButtonUp(1, NesControlType.BUTTON_A); }
+    private fun HandleFADown(ALittle.UIFingerDownEvent event) { g_GNes.ButtonDown(1, NesControlType.BUTTON_A); }
+    private fun HandleFAUp(ALittle.UIFingerDownEvent event) { g_GNes.ButtonUp(1, NesControlType.BUTTON_A); }
 }

@@ -168,10 +168,14 @@ end
 
 function ALittle.System_SetHV2DragCursor()
 	__CPPAPI_InputSystem:SetHV2DragCursor()
+	if not ALittle.System_IsPhone() then
+	end
 end
 
 function ALittle.System_SetCrossDragCursor()
 	__CPPAPI_InputSystem:SetCrossDragCursor()
+	if not ALittle.System_IsPhone() then
+	end
 end
 
 function ALittle.System_CreateView(title, width, height, flag, scale)

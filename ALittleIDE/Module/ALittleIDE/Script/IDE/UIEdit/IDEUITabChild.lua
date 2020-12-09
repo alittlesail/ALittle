@@ -182,6 +182,7 @@ function ALittleIDE.IDEUITabChild:OnShow()
 	self._attr_screen.visible = true
 	self._anti_panel.visible = true
 	ALittleIDE.g_IDECenter.center.tool_ui.visible = true
+	ALittleIDE.g_IDECenter.center.detail_tree_tab.tab = ALittleIDE.g_IDECenter.center.control_tree
 	local panel_childs = self._attr_screen.childs
 	if panel_childs[1] ~= nil then
 		ALittleIDE.g_IDEAttrControlDialog:SetTitle(panel_childs[1]._user_data.title)

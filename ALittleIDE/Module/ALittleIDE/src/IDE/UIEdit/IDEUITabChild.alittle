@@ -166,6 +166,8 @@ public class IDEUITabChild : IDETabChild
 		this._attr_screen.visible = true;
 		this._anti_panel.visible = true;
         g_IDECenter.center.tool_ui.visible = true;
+
+        g_IDECenter.center.detail_tree_tab.tab = g_IDECenter.center.control_tree;
 	
 		var panel_childs = this._attr_screen.childs;
 		if (panel_childs[1] != null)

@@ -71,6 +71,9 @@ public class IDETileTabChild : IDETabChild
     private ALittle.Linear _linear_1;
     private ALittle.Linear _linear_2;
 
+    // 笔刷编辑区
+    private IDEUITileLayerEdit _layer_edit;
+
 	public ctor(ALittle.ControlSystem ctrl_sys, string module, string name, bool save, IDETileTreeUserInfo user_info)
 	{
         this._user_info = user_info;
@@ -86,6 +89,8 @@ public class IDETileTabChild : IDETabChild
         this._linear_2 = new ALittle.Linear(g_Control);
         this._linear_2.type = ALittle.UIEnumTypes.TYPE_V;
         this._tab_screen.AddChild(this._linear_2);
+
+        this._layer_edit = g_Control.CreateControl{IDEUITileLayerEdit}("ide_tile_layer_detail_layout");
     }
 
     private fun OnUndo() { }
@@ -93,20 +98,26 @@ public class IDETileTabChild : IDETabChild
     private fun OnHide()
     {
         g_IDECenter.center.tool_tile.visible = false;
+        this._layer_edit.visible = false;
     }
     private fun OnShow()
     {
         g_IDECenter.center.tool_tile.visible = true;
+        this._layer_edit.visible = true;
+        g_IDECenter.center.detail_tree_tab.tab = g_IDECenter.center.tile_brush_edit;
+        g_IDECenter.center.project_edit_tab.tab = g_IDECenter.center.tile_brush_list;
     }
 
     private fun OnClose()
     {
-
+		g_IDECenter.center.tile_brush_edit.layer_container.RemoveChild(this._layer_edit);
     }
 
     private fun OnOpen()
     {
         this._revoke_list = new ALittle.RevokeList();
+
+		g_IDECenter.center.tile_brush_edit.layer_container.AddChild(this._layer_edit);
     }
 
     private fun OnTabRightMenu(AUIPlugin.AUIRightMenu menu)

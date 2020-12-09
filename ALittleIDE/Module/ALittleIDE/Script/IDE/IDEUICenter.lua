@@ -99,6 +99,10 @@ function ALittleIDE.IDEUICenter.__getter:control_tree()
 	return self._control_tree
 end
 
+function ALittleIDE.IDEUICenter.__getter:tile_brush_edit()
+	return self._tile_brush_edit
+end
+
 function ALittleIDE.IDEUICenter.__getter:tile_brush_list()
 	return self._tile_brush_list
 end

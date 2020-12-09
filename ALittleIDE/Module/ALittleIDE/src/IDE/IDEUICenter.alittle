@@ -130,6 +130,7 @@ protected class IDEUICenter : ALittle.DisplayLayout
     public get detail_tree_tab() : ALittle.Tab { return this._detail_tree_tab; }
 
 	public get control_tree() : IDEUIControlTree { return this._control_tree; }
+    public get tile_brush_edit() : IDEUITileBrushEdit { return this._tile_brush_edit; }
 
     public get tile_brush_list() : IDEUITileBrushList { return this._tile_brush_list; }
 	public get control_list() : IDEUIControlList { return this._control_list; }

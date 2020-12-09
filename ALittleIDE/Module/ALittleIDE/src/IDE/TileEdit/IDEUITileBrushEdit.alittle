@@ -3,4 +3,24 @@ namespace ALittleIDE;
 
 protected class IDEUITileBrushEdit : ALittle.DisplayLayout
 {
+	private ALittle.ScrollList _brush_list;
+	private ALittle.DisplayLayout _layer_container;
+
+    public get layer_container() : ALittle.DisplayLayout { return this._layer_container; }
+
+    private fun HandleClearBrushClick(ALittle.UIClickEvent event)
+    {
+
+    }
+}
+
+
+protected class IDEUITileLayerEdit : ALittle.DisplayLayout
+{
+    private ALittle.ScrollList _layer_list;
+
+    private fun HandleAddLayerClick(ALittle.UIClickEvent event)
+    {
+
+    }
 }

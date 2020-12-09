@@ -65,6 +65,7 @@ function ALittleIDE.IDETileTabChild:Ctor(ctrl_sys, module, name, save, user_info
 	___rawset(self, "_linear_2", ALittle.Linear(ALittleIDE.g_Control))
 	self._linear_2.type = 2
 	self._tab_screen:AddChild(self._linear_2)
+	___rawset(self, "_layer_edit", ALittleIDE.g_Control:CreateControl("ide_tile_layer_detail_layout"))
 end
 
 function ALittleIDE.IDETileTabChild:OnUndo()
@@ -75,17 +76,23 @@ end
 
 function ALittleIDE.IDETileTabChild:OnHide()
 	ALittleIDE.g_IDECenter.center.tool_tile.visible = false
+	self._layer_edit.visible = false
 end
 
 function ALittleIDE.IDETileTabChild:OnShow()
 	ALittleIDE.g_IDECenter.center.tool_tile.visible = true
+	self._layer_edit.visible = true
+	ALittleIDE.g_IDECenter.center.detail_tree_tab.tab = ALittleIDE.g_IDECenter.center.tile_brush_edit
+	ALittleIDE.g_IDECenter.center.project_edit_tab.tab = ALittleIDE.g_IDECenter.center.tile_brush_list
 end
 
 function ALittleIDE.IDETileTabChild:OnClose()
+	ALittleIDE.g_IDECenter.center.tile_brush_edit.layer_container:RemoveChild(self._layer_edit)
 end
 
 function ALittleIDE.IDETileTabChild:OnOpen()
 	self._revoke_list = ALittle.RevokeList()
+	ALittleIDE.g_IDECenter.center.tile_brush_edit.layer_container:AddChild(self._layer_edit)
 end
 
 function ALittleIDE.IDETileTabChild:OnTabRightMenu(menu)

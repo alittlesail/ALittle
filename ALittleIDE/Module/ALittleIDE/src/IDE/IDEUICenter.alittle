@@ -26,6 +26,22 @@ public struct IDEUICenterPreSeeOpChangedEvent : ALittle.UIEvent
     bool value;
 }
 
+public struct IDEUICenterTileBrushOpChangedEvent : ALittle.UIEvent
+{
+    bool value;
+}
+
+public struct IDEUICenterTileHandDragOpChangedEvent : ALittle.UIEvent
+{
+    bool value;
+}
+
+public struct IDEUICenterTileEraseOpChangedEvent : ALittle.UIEvent
+{
+    bool value;
+}
+
+
 protected class IDEUICenter : ALittle.DisplayLayout
 {
 	private ALittle.Tab _main_tab;				// 编辑区标签容器
@@ -41,6 +57,7 @@ protected class IDEUICenter : ALittle.DisplayLayout
 
     private ALittle.DisplayLayout _tool_ui_container;    	// UI工具容器
     private ALittle.DisplayLayout _tool_code_container;		// 代码工具容器
+    private ALittle.DisplayLayout _tool_tile_container;		// 地图工具容器
 
 	private ALittle.DisplayObject _tool_h_align_left;		// 水平对齐
 	private ALittle.DisplayObject _tool_h_align_center;
@@ -67,8 +84,14 @@ protected class IDEUICenter : ALittle.DisplayLayout
     private ALittle.DisplayObject _tool_jumpprecode;
     private ALittle.DisplayObject _tool_jumpnextcode;
 
+	private ALittle.TextRadioButton _tool_tile_brush;			// 笔刷模式
+	private ALittle.TextRadioButton _tool_tile_handdrag;				// 拖拽模式
+	private ALittle.TextRadioButton _tool_tile_erase;				// 笔擦模式
+
 	private IDEUIControlTree _control_tree;	// 控件树
-    private IDEUITileBrush _tile_brush;		// 地图笔刷
+    private IDEUITileBrushEdit _tile_brush_edit; // 笔刷编辑区
+
+    private IDEUITileBrushList _tile_brush_list;		// 地图笔刷
 	private IDEUIControlList _control_list;	// 控件库
 	private IDEUICodeList    _code_list;	// 代码库
     private IDEUITileList _tile_list;	// 地图列表
@@ -91,11 +114,14 @@ protected class IDEUICenter : ALittle.DisplayLayout
         // 工具容器
         this._tool_ui_container.visible = false;
         this._tool_code_container.visible = false;
+        this._tool_tile_container.visible = false;
 
 		this._quick_edit_grid3_down_size = this._quick_edit_grid3.down_size;
 		this._quick_edit_grid3.down_size = this._project_quick_tab.up_size;
 		this._quick_fold_updown.selected = false;
 		ALittle.TextRadioButton.SetGroup([this._tool_singleselect, this._tool_handdrag, this._tool_scale, this._tool_presee]);
+
+        ALittle.TextRadioButton.SetGroup([this._tool_tile_brush, this._tool_tile_handdrag, this._tool_tile_erase]);
 
         g_IDEProject.AddEventListener(this, this.HandleProjectOpen);
 	}
@@ -104,7 +130,8 @@ protected class IDEUICenter : ALittle.DisplayLayout
     public get detail_tree_tab() : ALittle.Tab { return this._detail_tree_tab; }
 
 	public get control_tree() : IDEUIControlTree { return this._control_tree; }
-    public get tile_brush() : IDEUITileBrush { return this._tile_brush; }
+
+    public get tile_brush_list() : IDEUITileBrushList { return this._tile_brush_list; }
 	public get control_list() : IDEUIControlList { return this._control_list; }
 	public get code_list() : IDEUICodeList { return this._code_list; }
 	public get tile_list() : IDEUITileList { return this._tile_list; }
@@ -113,6 +140,7 @@ protected class IDEUICenter : ALittle.DisplayLayout
 	public get content_edit() : IDEContentEdit { return this._content_edit; }
     public get tool_ui() : ALittle.DisplayLayout { return this._tool_ui_container; }
     public get tool_code() : ALittle.DisplayLayout { return this._tool_code_container; }
+    public get tool_tile() : ALittle.DisplayLayout { return this._tool_tile_container; }
 
 	////////////////////////////////////////////////////////////////////////////////////////
 
@@ -261,7 +289,7 @@ protected class IDEUICenter : ALittle.DisplayLayout
 		this._tool_v_align_center_icon.visible = object.selected;
 		this._tool_v_align_bottom_icon.visible = object.selected;
 	}
-	public fun HandleToolHandDrag(ALittle.UIButtonDragEvent event)
+	public fun HandleToolHandDrag(ALittle.UIEvent event)
 	{
 		var op_event = new IDEUICenterHandDragOpChangedEvent();
 		op_event.value = event.target.selected;
@@ -386,6 +414,43 @@ protected class IDEUICenter : ALittle.DisplayLayout
         if (info == null) return;
 		g_IDECenter.center.code_list.OpenByFullPath(info.file_path, info.it_line, info.it_char, null, null);
     }
+
+    public fun HandleToolTileBrushSelect(ALittle.UIEvent event)
+	{
+		var object = event.target;
+
+		var op_event = new IDEUICenterTileBrushOpChangedEvent();
+		op_event.value = object.selected;
+		g_IDECenter.center.DispatchEvent(op_event);
+	}
+	public fun HandleToolTileHandDrag(ALittle.UIEvent event)
+	{
+		var op_event = new IDEUICenterTileHandDragOpChangedEvent();
+		op_event.value = event.target.selected;
+		g_IDECenter.center.DispatchEvent(op_event);
+	}
+	public fun HandleToolTileErase(ALittle.UIEvent event)
+	{
+		var op_event = new IDEUICenterTileEraseOpChangedEvent();
+		op_event.value = event.target.selected;
+		g_IDECenter.center.DispatchEvent(op_event);
+	}
+
+	public get tile_brush() : bool
+	{
+		return this._tool_tile_brush.selected;
+	}
+
+    public get tile_handdrag() : bool
+    {
+        return this._tool_tile_handdrag.selected;
+    }
+
+    public get tile_erase() : bool
+    {
+        return this._tool_tile_erase.selected;
+    }
+
     private fun HandleFindFileClick(ALittle.UIClickEvent event)
     {
         g_IDEProjectFindFileDialog.ShowFindFile();
@@ -395,6 +460,7 @@ protected class IDEUICenter : ALittle.DisplayLayout
     {
         this._tool_ui_container.visible = false;
         this._tool_code_container.visible = false;
+        this._tool_tile_container.visible = false;
         this._tool_language.text = g_IDEProject.project.config.GetConfig("target_language", "Lua");
     }
 }

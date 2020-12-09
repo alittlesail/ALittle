@@ -74,9 +74,11 @@ function ALittleIDE.IDETileTabChild:OnRedo()
 end
 
 function ALittleIDE.IDETileTabChild:OnHide()
+	ALittleIDE.g_IDECenter.center.tool_tile.visible = false
 end
 
 function ALittleIDE.IDETileTabChild:OnShow()
+	ALittleIDE.g_IDECenter.center.tool_tile.visible = true
 end
 
 function ALittleIDE.IDETileTabChild:OnClose()

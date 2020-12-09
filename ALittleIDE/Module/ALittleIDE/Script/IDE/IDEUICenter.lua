@@ -17,6 +17,12 @@ name_list = {"target"},
 type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
+ALittle.RegStruct(-1614198151, "ALittleIDE.IDEUICenterTileEraseOpChangedEvent", {
+name = "ALittleIDE.IDEUICenterTileEraseOpChangedEvent", ns_name = "ALittleIDE", rl_name = "IDEUICenterTileEraseOpChangedEvent", hash_code = -1614198151,
+name_list = {"target","value"},
+type_list = {"ALittle.DisplayObject","bool"},
+option_map = {}
+})
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
 name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
 name_list = {"target"},
@@ -31,6 +37,18 @@ option_map = {}
 })
 ALittle.RegStruct(1299500288, "ALittleIDE.IDEUICenterHandDragOpChangedEvent", {
 name = "ALittleIDE.IDEUICenterHandDragOpChangedEvent", ns_name = "ALittleIDE", rl_name = "IDEUICenterHandDragOpChangedEvent", hash_code = 1299500288,
+name_list = {"target","value"},
+type_list = {"ALittle.DisplayObject","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-1173423947, "ALittleIDE.IDEUICenterTileBrushOpChangedEvent", {
+name = "ALittleIDE.IDEUICenterTileBrushOpChangedEvent", ns_name = "ALittleIDE", rl_name = "IDEUICenterTileBrushOpChangedEvent", hash_code = -1173423947,
+name_list = {"target","value"},
+type_list = {"ALittle.DisplayObject","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-751714957, "ALittleIDE.IDEUICenterTileHandDragOpChangedEvent", {
+name = "ALittleIDE.IDEUICenterTileHandDragOpChangedEvent", ns_name = "ALittleIDE", rl_name = "IDEUICenterTileHandDragOpChangedEvent", hash_code = -751714957,
 name_list = {"target","value"},
 type_list = {"ALittle.DisplayObject","bool"},
 option_map = {}
@@ -60,10 +78,12 @@ function ALittleIDE.IDEUICenter:TCtor()
 	self._project_quick_tab.tab_index = 1
 	self._tool_ui_container.visible = false
 	self._tool_code_container.visible = false
+	self._tool_tile_container.visible = false
 	self._quick_edit_grid3_down_size = self._quick_edit_grid3.down_size
 	self._quick_edit_grid3.down_size = self._project_quick_tab.up_size
 	self._quick_fold_updown.selected = false
 	ALittle.TextRadioButton.SetGroup({self._tool_singleselect, self._tool_handdrag, self._tool_scale, self._tool_presee})
+	ALittle.TextRadioButton.SetGroup({self._tool_tile_brush, self._tool_tile_handdrag, self._tool_tile_erase})
 	ALittleIDE.g_IDEProject:AddEventListener(___all_struct[-975432877], self, self.HandleProjectOpen)
 end
 
@@ -79,8 +99,8 @@ function ALittleIDE.IDEUICenter.__getter:control_tree()
 	return self._control_tree
 end
 
-function ALittleIDE.IDEUICenter.__getter:tile_brush()
-	return self._tile_brush
+function ALittleIDE.IDEUICenter.__getter:tile_brush_list()
+	return self._tile_brush_list
 end
 
 function ALittleIDE.IDEUICenter.__getter:control_list()
@@ -113,6 +133,10 @@ end
 
 function ALittleIDE.IDEUICenter.__getter:tool_code()
 	return self._tool_code_container
+end
+
+function ALittleIDE.IDEUICenter.__getter:tool_tile()
+	return self._tool_tile_container
 end
 
 function ALittleIDE.IDEUICenter:System_SetVDragCursor(event)
@@ -401,6 +425,37 @@ function ALittleIDE.IDEUICenter:HandleJumpPreCodeClick(event)
 	ALittleIDE.g_IDECenter.center.code_list:OpenByFullPath(info.file_path, info.it_line, info.it_char, nil, nil)
 end
 
+function ALittleIDE.IDEUICenter:HandleToolTileBrushSelect(event)
+	local object = event.target
+	local op_event = {}
+	op_event.value = object.selected
+	ALittleIDE.g_IDECenter.center:DispatchEvent(___all_struct[-1173423947], op_event)
+end
+
+function ALittleIDE.IDEUICenter:HandleToolTileHandDrag(event)
+	local op_event = {}
+	op_event.value = event.target.selected
+	ALittleIDE.g_IDECenter.center:DispatchEvent(___all_struct[-751714957], op_event)
+end
+
+function ALittleIDE.IDEUICenter:HandleToolTileErase(event)
+	local op_event = {}
+	op_event.value = event.target.selected
+	ALittleIDE.g_IDECenter.center:DispatchEvent(___all_struct[-1614198151], op_event)
+end
+
+function ALittleIDE.IDEUICenter.__getter:tile_brush()
+	return self._tool_tile_brush.selected
+end
+
+function ALittleIDE.IDEUICenter.__getter:tile_handdrag()
+	return self._tool_tile_handdrag.selected
+end
+
+function ALittleIDE.IDEUICenter.__getter:tile_erase()
+	return self._tool_tile_erase.selected
+end
+
 function ALittleIDE.IDEUICenter:HandleFindFileClick(event)
 	ALittleIDE.g_IDEProjectFindFileDialog:ShowFindFile()
 end
@@ -408,6 +463,7 @@ end
 function ALittleIDE.IDEUICenter:HandleProjectOpen(event)
 	self._tool_ui_container.visible = false
 	self._tool_code_container.visible = false
+	self._tool_tile_container.visible = false
 	self._tool_language.text = ALittleIDE.g_IDEProject.project.config:GetConfig("target_language", "Lua")
 end
 

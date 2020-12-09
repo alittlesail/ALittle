@@ -92,11 +92,17 @@ public class IDETileTabChild : IDETabChild
     private fun OnRedo() { }
     private fun OnHide()
     {
+        g_IDECenter.center.tool_tile.visible = false;
     }
     private fun OnShow()
     {
+        g_IDECenter.center.tool_tile.visible = true;
     }
-    private fun OnClose() { }
+
+    private fun OnClose()
+    {
+
+    }
 
     private fun OnOpen()
     {

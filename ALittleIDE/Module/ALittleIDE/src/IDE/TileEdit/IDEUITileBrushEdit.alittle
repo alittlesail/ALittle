@@ -1,0 +1,6 @@
+
+namespace ALittleIDE;
+
+protected class IDEUITileBrushEdit : ALittle.DisplayLayout
+{
+}

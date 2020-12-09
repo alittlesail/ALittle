@@ -1,7 +1,7 @@
 
 namespace ALittleIDE;
 
-public class IDEUITileBrush : ALittle.DisplayLayout
+public class IDEUITileBrushList : ALittle.DisplayLayout
 {
     private AUIPlugin.AUIFileSelectLayout _file_select;
 

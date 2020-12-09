@@ -13,22 +13,22 @@ option_map = {}
 })
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-ALittleIDE.IDEUITileBrush = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUITileBrush")
+ALittleIDE.IDEUITileBrushList = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUITileBrushList")
 
-function ALittleIDE.IDEUITileBrush:TCtor()
+function ALittleIDE.IDEUITileBrushList:TCtor()
 	ALittleIDE.g_IDEProject:AddEventListener(___all_struct[-975432877], self, self.HandleProjectOpen)
 	ALittleIDE.g_IDEProject:AddEventListener(___all_struct[-332308624], self, self.HandleProjectClose)
 	self._file_select:Init({"png", "jpg"})
 end
 
-function ALittleIDE.IDEUITileBrush:HandleProjectClose(event)
+function ALittleIDE.IDEUITileBrushList:HandleProjectClose(event)
 	self._file_select:SetBasePath(nil)
 end
 
-function ALittleIDE.IDEUITileBrush:HandleProjectOpen(event)
+function ALittleIDE.IDEUITileBrushList:HandleProjectOpen(event)
 	local module_path = ALittle.File_BaseFilePath() .. "Module/" .. event.name .. "/Texture"
 	self._file_select:SetBasePath(module_path)
 end
-ALittleIDE.IDEUITileBrush.HandleProjectOpen = Lua.CoWrap(ALittleIDE.IDEUITileBrush.HandleProjectOpen)
+ALittleIDE.IDEUITileBrushList.HandleProjectOpen = Lua.CoWrap(ALittleIDE.IDEUITileBrushList.HandleProjectOpen)
 
 end

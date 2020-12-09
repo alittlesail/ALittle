@@ -6,7 +6,7 @@ local ___ipairs = ipairs
 
 ALittle.RegStruct(-1281734132, "ALittle.TileMap", {
 name = "ALittle.TileMap", ns_name = "ALittle", rl_name = "TileMap", hash_code = -1281734132,
-name_list = {"tile_type","side_len","width","height","tex_map","layer_list"},
+name_list = {"tile_type","side_len","col_count","row_count","tex_map","layer_list"},
 type_list = {"int","int","int","int","Map<int,string>","List<ALittle.TileLayer>"},
 option_map = {}
 })

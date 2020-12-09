@@ -6,6 +6,51 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
+assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
+ALittleIDE.IDETileContainer = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDETileContainer")
+
+function ALittleIDE.IDETileContainer:ClipRect(x, y, width, height, h_move, v_move)
+	for index, child in ___ipairs(self.childs) do
+		child:ClipRect(x - self._x, y - self._y, width - self._x, height - self._y, h_move, v_move)
+	end
+end
+
+assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
+ALittleIDE.IDETileCell = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDETileCell")
+
+function ALittleIDE.IDETileCell:Init(user_info)
+	self._user_info = user_info
+	self.width = ALittleIDE.IDETileTabChild.CalcCellWidth(self._user_info)
+	self._grid = self:CreateGrid()
+	self:AddChild(self._grid)
+	self._cells = ALittle.DisplayLayout(ALittleIDE.g_Control)
+	self:AddChild(self._cells)
+end
+
+function ALittleIDE.IDETileCell:CreateGrid()
+	local tile_type = self._user_info.tile_map.tile_type
+	local side_len = self._user_info.tile_map.side_len
+	if tile_type == 1 then
+		local grid = ALittleIDE.g_Control:CreateControl("ide_tile_square_grid")
+		grid.width = side_len
+		grid.height = side_len
+		return grid
+	end
+	if tile_type == 2 then
+		local grid = ALittleIDE.g_Control:CreateControl("ide_tile_hex_v_grid")
+		grid.width = side_len * 1.732
+		grid.height = side_len * 2
+		return grid
+	end
+	if tile_type == 3 then
+		local grid = ALittleIDE.g_Control:CreateControl("ide_tile_hex_h_grid")
+		grid.width = side_len * 2
+		grid.height = side_len * 1.732
+		return grid
+	end
+	return nil
+end
+
 assert(ALittleIDE.IDETabChild, " extends class:ALittleIDE.IDETabChild is nil")
 ALittleIDE.IDETileTabChild = Lua.Class(ALittleIDE.IDETabChild, "ALittleIDE.IDETileTabChild")
 
@@ -13,6 +58,13 @@ function ALittleIDE.IDETileTabChild:Ctor(ctrl_sys, module, name, save, user_info
 	___rawset(self, "_user_info", user_info)
 	___rawset(self, "_tab_screen", ALittleIDE.g_Control:CreateControl("ide_tile_tab_screen", self))
 	self._tab_screen._user_data = self
+	self._tab_screen.container = ALittleIDE.IDETileContainer(ALittleIDE.g_Control)
+	___rawset(self, "_linear_1", ALittle.Linear(ALittleIDE.g_Control))
+	self._linear_1.type = 2
+	self._tab_screen:AddChild(self._linear_1)
+	___rawset(self, "_linear_2", ALittle.Linear(ALittleIDE.g_Control))
+	self._linear_2.type = 2
+	self._tab_screen:AddChild(self._linear_2)
 end
 
 function ALittleIDE.IDETileTabChild:OnUndo()
@@ -91,59 +143,131 @@ end
 
 function ALittleIDE.IDETileTabChild:CreateBySelect(info)
 	self._user_info = info
-	local width = 10
-	if width < info.tile_map.width then
-		width = info.tile_map.width
+	local col_count = info.tile_map.col_count + 10
+	local row_count = info.tile_map.row_count + 10
+	local grid_map_width = ALittleIDE.IDETileTabChild.CalcCellWidth(self._user_info) * col_count
+	self._linear_1.width = grid_map_width
+	self._linear_2.width = grid_map_width
+	self._linear_2.x = self:CalcLinear2OffsetX()
+	self._linear_2.y = self:CalcLinear2OffsetY()
+	self:ResizeGridMap(row_count, col_count)
+end
+
+function ALittleIDE.IDETileTabChild:ResizeGridMap(row_count, col_count)
+	if row_count < 10 then
+		row_count = 10
 	end
-	local height = 10
-	if height < info.tile_map.height then
-		height = info.tile_map.height
+	if col_count < 10 then
+		col_count = 10
 	end
-	local row = 1
+	if row_count <= self._linear_1.child_count + self._linear_2.child_count and self._linear_1.childs[0].child_count <= col_count then
+		return
+	end
+	local linear_height = ALittleIDE.IDETileTabChild.CalcCellHeight(self._user_info)
+	for index, child in ___ipairs(self._linear_1.childs) do
+		local col = child.child_count + 1
+		while true do
+			if not(col <= col_count) then break end
+			local cell = ALittleIDE.IDETileCell(ALittleIDE.g_Control)
+			cell:Init(self._user_info)
+			child:AddChild(cell)
+			col = col+(1)
+		end
+	end
+	for index, child in ___ipairs(self._linear_2.childs) do
+		local col = child.child_count + 1
+		while true do
+			if not(col <= col_count) then break end
+			local cell = ALittleIDE.IDETileCell(ALittleIDE.g_Control)
+			cell:Init(self._user_info)
+			child:AddChild(cell)
+			col = col+(1)
+		end
+	end
+	local row = self._linear_1.child_count + self._linear_2.child_count
 	while true do
-		if not(row <= height) then break end
+		if not(row < row_count) then break end
+		local linear = ALittle.Linear(ALittleIDE.g_Control)
+		linear.type = 1
+		linear.height = linear_height
 		local col = 1
 		while true do
-			if not(col <= width) then break end
-			local grid = self:CreateGrid()
-			local x, y = self:CalcPosByRC(row, col)
-			grid.x = x
-			grid.y = y
-			self._tab_grid_container:AddChild(grid)
+			if not(col <= col_count) then break end
+			local cell = ALittleIDE.IDETileCell(ALittleIDE.g_Control)
+			cell:Init(self._user_info)
+			linear:AddChild(cell)
 			col = col+(1)
+		end
+		if row % 2 == 1 then
+			self._linear_1:AddChild(linear)
+		else
+			self._linear_2:AddChild(linear)
 		end
 		row = row+(1)
 	end
+	self._tab_screen.container.width = self._linear_2.x + self._linear_2.width
+	self._tab_screen.container.height = self._linear_2.y + self._linear_2.height
+	self._tab_screen:AdjustScrollBar()
 end
 
-function ALittleIDE.IDETileTabChild:CreateGrid()
+function ALittleIDE.IDETileTabChild:CalcLinear2OffsetX()
 	local tile_type = self._user_info.tile_map.tile_type
 	local side_len = self._user_info.tile_map.side_len
 	if tile_type == 1 then
-		local grid = ALittleIDE.g_Control:CreateControl("ide_tile_square_grid")
-		grid.width = side_len
-		grid.height = side_len
-		grid.center_x = side_len / 2
-		grid.center_y = side_len / 2
-		return grid
+		return 0
 	end
 	if tile_type == 2 then
-		local grid = ALittleIDE.g_Control:CreateControl("ide_tile_hex_v_grid")
-		grid.width = side_len * 1.732
-		grid.height = side_len * 2
-		grid.center_x = side_len / 2
-		grid.center_y = side_len / 2
-		return grid
+		return side_len * 1.732 / 2
 	end
 	if tile_type == 3 then
-		local grid = ALittleIDE.g_Control:CreateControl("ide_tile_hex_h_grid")
-		grid.width = side_len * 2
-		grid.height = side_len * 1.732
-		grid.center_x = side_len / 2
-		grid.center_y = side_len / 2
-		return grid
+		return side_len * 3 / 2
 	end
-	return nil
+	return 0
+end
+
+function ALittleIDE.IDETileTabChild:CalcLinear2OffsetY()
+	local tile_type = self._user_info.tile_map.tile_type
+	local side_len = self._user_info.tile_map.side_len
+	if tile_type == 1 then
+		return 0
+	end
+	if tile_type == 2 then
+		return side_len * 3 / 2
+	end
+	if tile_type == 3 then
+		return side_len * 1.732 / 2
+	end
+	return 0
+end
+
+function ALittleIDE.IDETileTabChild.CalcCellHeight(user_info)
+	local tile_type = user_info.tile_map.tile_type
+	local side_len = user_info.tile_map.side_len
+	if tile_type == 1 then
+		return side_len
+	end
+	if tile_type == 2 then
+		return side_len * 3
+	end
+	if tile_type == 3 then
+		return side_len * 1.732
+	end
+	return 0
+end
+
+function ALittleIDE.IDETileTabChild.CalcCellWidth(user_info)
+	local tile_type = user_info.tile_map.tile_type
+	local side_len = user_info.tile_map.side_len
+	if tile_type == 1 then
+		return side_len
+	end
+	if tile_type == 2 then
+		return side_len * 1.732
+	end
+	if tile_type == 3 then
+		return side_len * 3
+	end
+	return 0
 end
 
 function ALittleIDE.IDETileTabChild:CalcPosByRC(row, col)

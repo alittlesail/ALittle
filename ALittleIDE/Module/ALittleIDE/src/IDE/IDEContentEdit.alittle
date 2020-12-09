@@ -176,6 +176,12 @@ public class IDEContentEdit : ALittle.DisplayLayout
 		this.ChangeTabEdit(null, this._main_tab.tab);
 	}
 
+    // 关闭某个标签页
+    public fun CloseTabChild(IDETabChild tab_child)
+    {
+        this.CloseTab(tab_child.tab_body);
+    }
+
 	public fun CloseTabByName<T:IDETabChild>(string name)
 	{
 		for (var index, child in this._main_tab.childs)

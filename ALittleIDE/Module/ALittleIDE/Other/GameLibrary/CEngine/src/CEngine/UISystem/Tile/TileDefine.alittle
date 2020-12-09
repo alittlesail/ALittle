@@ -24,8 +24,8 @@ public struct TileMap
     int tile_type;	// TileType 单位格子的类型
     int side_len;	// 边长
 
-    int width;	// 横向格子数量
-    int height;	// 纵向格子数量
+    int col_count;	// 横向格子数量
+    int row_count;	// 纵向格子数量
 
     Map<int, string> tex_map;	// 纹理ID映射的纹理路径
     List<TileLayer> layer_list;	// 层

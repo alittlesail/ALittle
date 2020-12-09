@@ -19,8 +19,8 @@ option_map = {}
 })
 ALittle.RegStruct(1826926916, "ALittleIDE.IDETileTreeUserInfo", {
 name = "ALittleIDE.IDETileTreeUserInfo", ns_name = "ALittleIDE", rl_name = "IDETileTreeUserInfo", hash_code = 1826926916,
-name_list = {"info","module_name"},
-type_list = {"AUIPlugin.AUIFileTreeUserInfo","string"},
+name_list = {"info","module_name","tile_map"},
+type_list = {"AUIPlugin.AUIFileTreeUserInfo","string","ALittle.TileMap"},
 option_map = {}
 })
 ALittle.RegStruct(-1718818319, "AUIPlugin.AUIFileDeleteDirEvent", {
@@ -41,6 +41,12 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
+ALittle.RegStruct(-1281734132, "ALittle.TileMap", {
+name = "ALittle.TileMap", ns_name = "ALittle", rl_name = "TileMap", hash_code = -1281734132,
+name_list = {"tile_type","side_len","width","height","tex_map","layer_list"},
+type_list = {"int","int","int","int","Map<int,string>","List<ALittle.TileLayer>"},
+option_map = {}
+})
 ALittle.RegStruct(-686652419, "AUIPlugin.AUIFileTreeUserInfo", {
 name = "AUIPlugin.AUIFileTreeUserInfo", ns_name = "AUIPlugin", rl_name = "AUIFileTreeUserInfo", hash_code = -686652419,
 name_list = {"path","name","root","group","on_right_menu","on_select_file","on_delete_file","on_create_file","on_delete_dir"},
@@ -51,6 +57,18 @@ ALittle.RegStruct(-545221029, "AUIPlugin.AUIFileDeleteFileEvent", {
 name = "AUIPlugin.AUIFileDeleteFileEvent", ns_name = "AUIPlugin", rl_name = "AUIFileDeleteFileEvent", hash_code = -545221029,
 name_list = {"target","path"},
 type_list = {"ALittle.DisplayObject","string"},
+option_map = {}
+})
+ALittle.RegStruct(-343663763, "ALittle.TileLayer", {
+name = "ALittle.TileLayer", ns_name = "ALittle", rl_name = "TileLayer", hash_code = -343663763,
+name_list = {"cell_map"},
+type_list = {"Map<int,Map<int,ALittle.TileCell>>"},
+option_map = {}
+})
+ALittle.RegStruct(7944876, "ALittle.TileCell", {
+name = "ALittle.TileCell", ns_name = "ALittle", rl_name = "TileCell", hash_code = 7944876,
+name_list = {"tex_id"},
+type_list = {"int"},
 option_map = {}
 })
 
@@ -67,22 +85,55 @@ function ALittleIDE.IDEUITileList:TCtor()
 end
 
 function ALittleIDE.IDEUITileList:HandleSelectFileEvent(event)
+	local ui = ALittleIDE.g_IDEProject.project.ui[ALittleIDE.g_IDEProject.project.name]
+	if ui == nil then
+		g_AUITool:ShowNotice("提示", "ui不存在")
+		return
+	end
+	local tile_map = ui.control:LoadMessageFromFile(___all_struct[-1281734132], event.info.path)
+	if tile_map == nil then
+		g_AUITool:ShowNotice("提示", "地图文件读取失败")
+		return
+	end
+	if tile_map.tile_type == 0 or tile_map.side_len <= 0 then
+		ALittleIDE.g_IDETileSettingDialog:ShowDialog(tile_map)
+		if tile_map.tile_type == 0 or tile_map.side_len <= 0 then
+			g_AUITool:ShowNotice("提示", "请设置有效的格子类型和格子边长不能小于或等于0")
+			return
+		end
+		ui.control:WriteMessageToFile(___all_struct[-1281734132], tile_map, event.info.path)
+	end
 	local info = {}
 	info.info = event.info
 	info.module_name = ALittleIDE.g_IDEProject.project.name
+	info.tile_map = tile_map
 	ALittleIDE.g_IDECenter.center.content_edit:StartEditTileBySelect(info.info.name, info)
 end
+ALittleIDE.IDEUITileList.HandleSelectFileEvent = Lua.CoWrap(ALittleIDE.IDEUITileList.HandleSelectFileEvent)
 
 function ALittleIDE.IDEUITileList:HandleDeleteFileEvent(event)
+	local tab_child = ALittleIDE.g_IDECenter.center.content_edit:GetTabChildById(ALittleIDE.IDETileTabChild, event.path)
+	if tab_child ~= nil then
+		return
+	end
+	ALittleIDE.g_IDECenter.center.content_edit:CloseTab(tab_child.tab_body)
 end
+ALittleIDE.IDEUITileList.HandleDeleteFileEvent = Lua.CoWrap(ALittleIDE.IDEUITileList.HandleDeleteFileEvent)
 
 function ALittleIDE.IDEUITileList:HandleCreateFileEvent(event)
 end
 
 function ALittleIDE.IDEUITileList:HandleDeleteDirEvent(event)
+	local map = ALittleIDE.g_IDECenter.center.content_edit:GetTabIdMap(ALittleIDE.IDETileTabChild)
+	for id, tab_child in ___pairs(map) do
+		if ALittle.String_Find(id, event.path) == 1 then
+			ALittleIDE.g_IDECenter.center.content_edit:CloseTab(tab_child.tab_body)
+		end
+	end
 end
 
 function ALittleIDE.IDEUITileList:OnRightMenu(user_info, menu)
+	menu:AddItem("设置", Lua.Bind(self.ShowSetting, self, user_info))
 end
 
 function ALittleIDE.IDEUITileList:HandleProjectClose(event)
@@ -94,5 +145,33 @@ function ALittleIDE.IDEUITileList:HandleProjectOpen(event)
 	self:SetRoot(module_path, Lua.Bind(self.OnRightMenu, self))
 end
 ALittleIDE.IDEUITileList.HandleProjectOpen = Lua.CoWrap(ALittleIDE.IDEUITileList.HandleProjectOpen)
+
+function ALittleIDE.IDEUITileList:ShowSetting(user_info)
+	local tab_child = ALittleIDE.g_IDECenter.center.content_edit:GetTabChildById(ALittleIDE.IDETileTabChild, user_info.path)
+	if tab_child ~= nil then
+		g_AUITool:ShowNotice("提示", "请先关闭编辑页面再设置")
+		return
+	end
+	local ui = ALittleIDE.g_IDEProject.project.ui[ALittleIDE.g_IDEProject.project.name]
+	if ui == nil then
+		g_AUITool:ShowNotice("提示", "ui不存在")
+		return
+	end
+	local tile_map = ui.control:LoadMessageFromFile(___all_struct[-1281734132], user_info.path)
+	if tile_map == nil then
+		g_AUITool:ShowNotice("提示", "地图文件读取失败")
+		return
+	end
+	if not ALittleIDE.g_IDETileSettingDialog:ShowDialog(tile_map) then
+		return
+	end
+	ALittle.Log(user_info.path)
+	local error = ui.control:WriteMessageToFile(___all_struct[-1281734132], tile_map, user_info.path)
+	if error ~= nil then
+		g_AUITool:ShowNotice("提示", "保存失败:" .. error)
+		return
+	end
+end
+ALittleIDE.IDEUITileList.ShowSetting = Lua.CoWrap(ALittleIDE.IDEUITileList.ShowSetting)
 
 end

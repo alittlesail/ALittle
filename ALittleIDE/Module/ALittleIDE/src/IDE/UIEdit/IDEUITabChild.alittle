@@ -192,7 +192,6 @@ public class IDEUITabChild : IDETabChild
 		g_IDECenter.center.control_tree.AddChild(this._tree_screen);
 		g_IDEAttrControlDialog.attr_container.AddChild(this._attr_screen);
 		g_IDECenter.center.control_anti.AddChild(this._anti_panel);
-        // this.ShowInCenter();
     }
 
     // 调整到中心位置

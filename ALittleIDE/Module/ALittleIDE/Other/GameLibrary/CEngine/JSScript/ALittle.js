@@ -63,6 +63,7 @@ window.RequireCEngine = function(base_path) {
 		await Require(base_path, "CEngine/UISystem/Complex/ScrollList");
 		await Require(base_path, "CEngine/UISystem/Complex/ScrollButton");
 		await Require(base_path, "CEngine/UISystem/Special/SpringTextButton");
+		await Require(base_path, "CEngine/UISystem/Tile/TileDefine");
 		await Require(base_path, "CEngine/UISystem/Plugin/SpringButton");
 		await Require(base_path, "CEngine/UISystem/Plugin/SpringCheckButton");
 		await Require(base_path, "CEngine/UISystem/Plugin/SpringRadioButton");

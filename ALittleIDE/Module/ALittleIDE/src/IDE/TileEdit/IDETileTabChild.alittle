@@ -4,8 +4,8 @@ namespace ALittleIDE;
 public class IDETileTabChild : IDETabChild
 {
     private IDETileTreeUserInfo _user_info;
-
 	private ALittle.ScrollScreen _tab_screen;        // 标签页
+    private ALittle.DisplayLayout _tab_grid_container;
 
 	public ctor(ALittle.ControlSystem ctrl_sys, string module, string name, bool save, IDETileTreeUserInfo user_info)
 	{
@@ -13,6 +13,8 @@ public class IDETileTabChild : IDETabChild
 
 		this._tab_screen = g_Control.CreateControl{ALittle.ScrollScreen}("ide_tile_tab_screen", this);
 		this._tab_screen._user_data = this;
+
+        // 创建一定数量
     }
 
     private fun OnUndo() { }
@@ -87,5 +89,87 @@ public class IDETileTabChild : IDETabChild
     public fun CreateBySelect(IDETileTreeUserInfo info)
     {
         this._user_info = info;
+
+        var width = 10;
+        if (width < info.tile_map.width) width = info.tile_map.width;
+        var height = 10;
+        if (height < info.tile_map.height) height = info.tile_map.height;
+
+        for (var row = 1; row <= height; 1)
+        {
+            for (var col = 1; col <= width; 1)
+            {
+                var grid = this.CreateGrid();
+                var x, y = this.CalcPosByRC(row, col);
+                grid.x = x;
+                grid.y = y;
+                this._tab_grid_container.AddChild(grid);
+            }
+        }
+    }
+
+    private fun CreateGrid() : ALittle.DisplayObject
+    {
+        var tile_type = this._user_info.tile_map.tile_type;
+    	var side_len = this._user_info.tile_map.side_len;
+
+        if (tile_type == ALittle.TileType.SQUARE)
+        {
+            var grid = g_Control.CreateControl{ALittle.DisplayObject}("ide_tile_square_grid");
+            grid.width = side_len;
+            grid.height = side_len;
+            grid.center_x = side_len / 2;
+            grid.center_y = side_len / 2;
+            return grid;
+        }
+
+        if (tile_type == ALittle.TileType.HEX_V)
+        {
+            var grid = g_Control.CreateControl{ALittle.DisplayObject}("ide_tile_hex_v_grid");
+            grid.width = side_len * 1.732;
+            grid.height = side_len * 2;
+            grid.center_x = side_len / 2;
+            grid.center_y = side_len / 2;
+            return grid;
+        }
+
+        if (tile_type == ALittle.TileType.HEX_H)
+        {
+            var grid = g_Control.CreateControl{ALittle.DisplayObject}("ide_tile_hex_h_grid");
+            grid.width = side_len * 2;
+            grid.height = side_len * 1.732;
+            grid.center_x = side_len / 2;
+            grid.center_y = side_len / 2;
+            return grid;
+        }
+
+        return null;
+    }
+
+    private fun CalcPosByRC(int row, int col) : double, double
+    {
+        var tile_type = this._user_info.tile_map.tile_type;
+    	var side_len = this._user_info.tile_map.side_len;
+
+        if (tile_type == ALittle.TileType.SQUARE)
+            return (row - 1) * side_len + side_len / 2, (col - 1) * side_len + side_len / 2;
+
+        if (tile_type == ALittle.TileType.HEX_V)
+        {
+            var x = (col - 1) * (side_len * 1.732) + (side_len * 1.732) / 2;
+            var y = (row - 1) * (side_len * 3 / 2) + side_len;
+            if (row % 2 == 1) x += (side_len * 1.732) / 2;
+            return x, y;
+        }
+
+        if (tile_type == ALittle.TileType.HEX_H)
+        {
+            var x = (col - 1) * (side_len * 3 / 2) + side_len;
+            var y = (row - 1) * (side_len * 1.732) + (side_len * 1.732) / 2;
+            if (col % 2 == 1) y += (side_len * 1.732) / 2;
+            return x, y;
+        }
+
+        return 0, 0;
     }
 }

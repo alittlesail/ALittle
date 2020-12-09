@@ -91,6 +91,84 @@ end
 
 function ALittleIDE.IDETileTabChild:CreateBySelect(info)
 	self._user_info = info
+	local width = 10
+	if width < info.tile_map.width then
+		width = info.tile_map.width
+	end
+	local height = 10
+	if height < info.tile_map.height then
+		height = info.tile_map.height
+	end
+	local row = 1
+	while true do
+		if not(row <= height) then break end
+		local col = 1
+		while true do
+			if not(col <= width) then break end
+			local grid = self:CreateGrid()
+			local x, y = self:CalcPosByRC(row, col)
+			grid.x = x
+			grid.y = y
+			self._tab_grid_container:AddChild(grid)
+			col = col+(1)
+		end
+		row = row+(1)
+	end
+end
+
+function ALittleIDE.IDETileTabChild:CreateGrid()
+	local tile_type = self._user_info.tile_map.tile_type
+	local side_len = self._user_info.tile_map.side_len
+	if tile_type == 1 then
+		local grid = ALittleIDE.g_Control:CreateControl("ide_tile_square_grid")
+		grid.width = side_len
+		grid.height = side_len
+		grid.center_x = side_len / 2
+		grid.center_y = side_len / 2
+		return grid
+	end
+	if tile_type == 2 then
+		local grid = ALittleIDE.g_Control:CreateControl("ide_tile_hex_v_grid")
+		grid.width = side_len * 1.732
+		grid.height = side_len * 2
+		grid.center_x = side_len / 2
+		grid.center_y = side_len / 2
+		return grid
+	end
+	if tile_type == 3 then
+		local grid = ALittleIDE.g_Control:CreateControl("ide_tile_hex_h_grid")
+		grid.width = side_len * 2
+		grid.height = side_len * 1.732
+		grid.center_x = side_len / 2
+		grid.center_y = side_len / 2
+		return grid
+	end
+	return nil
+end
+
+function ALittleIDE.IDETileTabChild:CalcPosByRC(row, col)
+	local tile_type = self._user_info.tile_map.tile_type
+	local side_len = self._user_info.tile_map.side_len
+	if tile_type == 1 then
+		return (row - 1) * side_len + side_len / 2, (col - 1) * side_len + side_len / 2
+	end
+	if tile_type == 2 then
+		local x = (col - 1) * (side_len * 1.732) + (side_len * 1.732) / 2
+		local y = (row - 1) * (side_len * 3 / 2) + side_len
+		if row % 2 == 1 then
+			x = x + ((side_len * 1.732) / 2)
+		end
+		return x, y
+	end
+	if tile_type == 3 then
+		local x = (col - 1) * (side_len * 3 / 2) + side_len
+		local y = (row - 1) * (side_len * 1.732) + (side_len * 1.732) / 2
+		if col % 2 == 1 then
+			y = y + ((side_len * 1.732) / 2)
+		end
+		return x, y
+	end
+	return 0, 0
 end
 
 end

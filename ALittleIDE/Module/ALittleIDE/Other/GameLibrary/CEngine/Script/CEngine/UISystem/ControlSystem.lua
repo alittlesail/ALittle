@@ -91,7 +91,13 @@ end
 
 function ALittle.ControlSystem:LoadMessageFromFile(T, path)
 	local ___COROUTINE = coroutine.running()
-	local module_path = "Module/" .. self._module_name .. "/" .. path
+	local path_prefix = "Module/" .. self._module_name .. "/"
+	local module_path = path
+	if ALittle.String_Find(module_path, path_prefix) == 1 then
+		path = ALittle.String_Sub(path, ALittle.String_Len(path_prefix) + 1)
+	else
+		module_path = path_prefix .. path
+	end
 	local factory = nil
 	do
 		local lua_factory = carp.CarpMessageReadFactory()
@@ -112,6 +118,32 @@ function ALittle.ControlSystem:LoadMessageFromFile(T, path)
 		return nil
 	end
 	return data
+end
+
+function ALittle.ControlSystem:WriteMessageToFile(T, msg, path)
+	local path_prefix = "Module/" .. self._module_name .. "/"
+	local module_path = path
+	if ALittle.String_Find(module_path, path_prefix) == 1 then
+		path = ALittle.String_Sub(path, ALittle.String_Len(path_prefix) + 1)
+	else
+		module_path = path_prefix .. path
+	end
+	local factory
+	factory = carp.CarpMessageWriteFactory()
+	if factory == nil then
+		return "factory create failed"
+	end
+	local rflct = T
+	local invoke_info = ALittle.CreateMessageInfo(rflct.name)
+	if invoke_info == nil then
+		return "create message info failed:" .. rflct.name
+	end
+	ALittle.PS_WriteMessage(factory, invoke_info, nil, msg)
+	local result = factory:WriteToStdFile(ALittle.File_BaseFilePath() .. module_path)
+	if not result then
+		return "WriteToStdFile failed"
+	end
+	return nil
 end
 
 function ALittle.ControlSystem:RegisterInfo(name, info)

@@ -161,9 +161,17 @@ public class ControlSystem
         return null;
     }
 
+    // path 可以是带模块路径前缀，也可以不带
     public await fun LoadMessageFromFile<T:struct>(string path) : T
     {
-        var module_path = "Module/"..this._module_name.."/"..path;
+        var path_prefix = "Module/"..this._module_name.."/";
+
+        var module_path = path;
+        if (String_Find(module_path, path_prefix) == 1)
+            path = String_Sub(path, ALittle.String_Len(path_prefix) + 1);
+        else
+            module_path = path_prefix..path;
+        	
         var factory:IMessageReadFactory = null;
 
         [Language(JavaScript)]
@@ -214,6 +222,40 @@ public class ControlSystem
             return null;
         }
         return data;
+    }
+
+    public fun WriteMessageToFile<T:struct>(T msg, string path) : string
+    {
+        var path_prefix = "Module/"..this._module_name.."/";
+
+        var module_path = path;
+        if (String_Find(module_path, path_prefix) == 1)
+            path = String_Sub(path, ALittle.String_Len(path_prefix) + 1);
+        else
+            module_path = path_prefix..path;
+
+        // 打开文件
+        var factory:ALittle.IMessageWriteFactory;
+        [Language(Lua)]
+        factory = new carp.CarpMessageWriteFactory();
+        [Language(JavaScript)]
+        factory = new JavaScript.JMessageWriteFactory(1024);
+        if (factory == null) return "factory create failed";
+
+        var rflct = reflect<T>;
+        
+        // 获取反射信息
+        var invoke_info = ALittle.CreateMessageInfo(rflct.name);
+        if (invoke_info == null)
+            return "create message info failed:"..rflct.name;
+
+        // 反序列化
+        ALittle.PS_WriteMessage(factory, invoke_info, null, msg);
+
+        // 保存到文件
+        var result = factory.WriteToStdFile(ALittle.File_BaseFilePath()..module_path);
+        if (!result) return "WriteToStdFile failed";
+        return null;
     }
 
     public fun RegisterInfo(string name, DisplayInfo info)

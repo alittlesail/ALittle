@@ -235,6 +235,7 @@ public class AUIFileTree : AUIFileTreeLogic
                 info.on_create_file = this._user_info.on_create_file;
                 info.on_delete_file = this._user_info.on_delete_file;
                 info.on_delete_dir = this._user_info.on_delete_dir;
+                info.on_right_menu = this._user_info.on_right_menu;
                 this.AddChild(new AUIFileTree(this._ctrl_sys, info));
             }
         }
@@ -254,6 +255,7 @@ public class AUIFileTree : AUIFileTreeLogic
                 info.on_create_file = this._user_info.on_create_file;
                 info.on_delete_file = this._user_info.on_delete_file;
                 info.on_delete_dir = this._user_info.on_delete_dir;
+                info.on_right_menu = this._user_info.on_right_menu;
                 this.AddChild(new AUIFileTreeItem(this._ctrl_sys, info));
             }
         }

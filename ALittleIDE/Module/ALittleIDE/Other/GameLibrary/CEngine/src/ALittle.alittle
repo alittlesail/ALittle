@@ -83,6 +83,8 @@ public await static RequireCEngine(string base_path)
 
     Require(base_path, "CEngine/UISystem/Special/SpringTextButton");
 
+    Require(base_path, "CEngine/UISystem/Tile/TileDefine");
+
     Require(base_path, "CEngine/UISystem/Plugin/SpringButton");
     Require(base_path, "CEngine/UISystem/Plugin/SpringCheckButton");
     Require(base_path, "CEngine/UISystem/Plugin/SpringRadioButton");

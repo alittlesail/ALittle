@@ -275,6 +275,7 @@ function AUIPlugin.AUIFileTree:Refresh()
 			info.on_create_file = self._user_info.on_create_file
 			info.on_delete_file = self._user_info.on_delete_file
 			info.on_delete_dir = self._user_info.on_delete_dir
+			info.on_right_menu = self._user_info.on_right_menu
 			self:AddChild(AUIPlugin.AUIFileTree(self._ctrl_sys, info))
 		end
 	end
@@ -291,6 +292,7 @@ function AUIPlugin.AUIFileTree:Refresh()
 			info.on_create_file = self._user_info.on_create_file
 			info.on_delete_file = self._user_info.on_delete_file
 			info.on_delete_dir = self._user_info.on_delete_dir
+			info.on_right_menu = self._user_info.on_right_menu
 			self:AddChild(AUIPlugin.AUIFileTreeItem(self._ctrl_sys, info))
 		end
 	end

@@ -11,6 +11,7 @@ public class IDEUITileBrushList : ALittle.DisplayLayout
         g_IDEProject.AddEventListener(this, this.HandleProjectClose);
 
         this._file_select.Init(["png","jpg"]);
+        this._file_select.AddEventListener(this, this.HandleImageSelect);
     }
 
 	private fun HandleProjectClose(IDEProjectCloseEvent event)
@@ -22,5 +23,10 @@ public class IDEUITileBrushList : ALittle.DisplayLayout
 	{
 		var module_path = ALittle.File_BaseFilePath().."Module/"..event.name.."/Texture";
         this._file_select.SetBasePath(module_path);
+    }
+
+    private fun HandleImageSelect(AUIPlugin.AUIFileSelectClickUIEvent event)
+    {
+        g_IDECenter.center.tile_brush_edit.AddBrush(this._file_select.base_path, event.path, event.ctrl);
     }
 }

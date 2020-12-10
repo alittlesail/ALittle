@@ -49,8 +49,8 @@ option_map = {}
 })
 ALittle.RegStruct(653852482, "AUIPlugin.AUIFileSelectClickUIEvent", {
 name = "AUIPlugin.AUIFileSelectClickUIEvent", ns_name = "AUIPlugin", rl_name = "AUIFileSelectClickUIEvent", hash_code = 653852482,
-name_list = {"target","path"},
-type_list = {"ALittle.DisplayObject","string"},
+name_list = {"target","path","ctrl"},
+type_list = {"ALittle.DisplayObject","string","bool"},
 option_map = {}
 })
 ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
@@ -443,6 +443,7 @@ function AUIPlugin.AUIFileSelectLayout:HandleItemClick(event)
 		end
 		local e = {}
 		e.path = user_data.path
+		e.ctrl = A_UISystem.sym_map[1073742048] ~= nil
 		self:DispatchEvent(___all_struct[653852482], e)
 	end
 end

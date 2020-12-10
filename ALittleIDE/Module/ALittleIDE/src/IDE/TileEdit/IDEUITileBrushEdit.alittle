@@ -1,26 +1,141 @@
 
 namespace ALittleIDE;
 
+protected struct IDEUITileBrushInfo
+{
+    ALittle.Image _image;
+    ALittle.DisplayLayout _item;
+    string tex_path;
+}
+
+protected struct IDEUITileLayerInfo
+{
+    ALittle.TextRadioButton _button;
+    ALittle.DisplayLayout _item;
+    ALittle.Image _see_image;
+}
+
 protected class IDEUITileBrushEdit : ALittle.DisplayLayout
 {
 	private ALittle.ScrollList _brush_list;
 	private ALittle.DisplayLayout _layer_container;
 
+    public fun TCtor()
+    {
+        g_IDEProject.AddEventListener(this, this.HandleProjectOpen);
+        g_IDEProject.AddEventListener(this, this.HandleProjectClose);
+    }
+
     public get layer_container() : ALittle.DisplayLayout { return this._layer_container; }
 
     private fun HandleClearBrushClick(ALittle.UIClickEvent event)
     {
+        this._brush_list.RemoveAllChild();
+    }
 
+    private fun HandleProjectOpen(IDEProjectOpenEvent event)
+    {
+        this._brush_list.RemoveAllChild();
+    }
+
+    public fun HandleProjectClose(IDEProjectCloseEvent event)
+    {
+        this._brush_list.RemoveAllChild();
+    }
+
+    public fun AddBrush(string base_path, string tex_path, bool ctrl)
+    {
+        if (!ctrl) this._brush_list.RemoveAllChild();
+
+        var info = new IDEUITileBrushInfo();
+        info._item = g_Control.CreateControl{ALittle.DisplayLayout}("ide_tile_brush_item", info);
+        info._image.SetTextureCut(base_path.."/"..tex_path, 0, 0, true);
+        info.tex_path = tex_path;
+        info._item._user_data = info;
+        this._brush_list.AddChild(info._item);
     }
 }
-
 
 protected class IDEUITileLayerEdit : ALittle.DisplayLayout
 {
     private ALittle.ScrollList _layer_list;
+    private ALittle.TextRadioButtonGroup _group = new ALittle.TextRadioButtonGroup();
 
-    private fun HandleAddLayerClick(ALittle.UIClickEvent event)
+    private async fun HandleAddLayerClick(ALittle.UIClickEvent event)
     {
+        var x, y = event.target.LocalToGlobal();
+        var name = g_AUITool.ShowRename("", x, y + event.target.height, 200);
+        if (name == null || name == "") return;
 
+        var info = new IDEUITileLayerInfo();
+        info._item = g_Control.CreateControl{ALittle.DisplayLayout}("ide_tile_layer_item", info);
+        info._button.text = name;
+        info._button.group = this._group;
+        info._button._user_data = info;
+        info._button.AddEventListener(this, this.HandleRButtonDown);
+        info._button.AddEventListener(this, this.HandleChanged);
+        this._layer_list.AddChild(info._item);
+    }
+
+    private fun HandleRButtonDown(ALittle.UIRButtonDownEvent event)
+    {
+        var info = cast<IDEUITileLayerInfo>(event.target._user_data);
+
+        var menu = new AUIPlugin.AUIRightMenu();
+        menu.AddItem("重命名", bind(this.HandleRenameLayer, this, info));
+        menu.AddItem("删除", bind(this.HandleDeleteLayer, this, info));
+        menu.AddItem("上移", bind(this.HandleUpLayer, this, info));
+        menu.AddItem("下移", bind(this.HandleDownLayer, this, info));
+        if (info._see_image.visible)
+            menu.AddItem("隐藏", bind(this.HandleHideLayer, this, info));
+        else
+            menu.AddItem("显示", bind(this.HandleShowLayer, this, info));
+        menu.Show();
+    }
+
+    private async fun HandleRenameLayer(IDEUITileLayerInfo info)
+    {
+        var x, y = info._button.LocalToGlobal();
+        var name = g_AUITool.ShowRename(info._button.text, x, y + info._button.height, 200);
+        if (name == null || name == "") return;
+
+        info._button.text = name;
+    }
+
+    private async fun HandleDeleteLayer(IDEUITileLayerInfo info)
+    {
+        if (g_AUITool.DeleteNotice("删除", "确定要删除改图层吗?") != AUIPlugin.AUIToolOption.YES) return;
+        this._layer_list.RemoveChild(info._item);
+    }
+
+    private fun HandleUpLayer(IDEUITileLayerInfo info)
+    {
+        var index = this._layer_list.GetChildIndex(info._item);
+        if (index == null || index == 1) return;
+        this._layer_list.SetChildIndex(info._item, index - 1);
+    }
+
+    private fun HandleDownLayer(IDEUITileLayerInfo info)
+    {
+        var index = this._layer_list.GetChildIndex(info._item);
+        if (index == null) return;
+        this._layer_list.SetChildIndex(info._item, index + 1);
+    }
+
+    private fun HandleChanged(ALittle.UIChangedEvent event)
+    {
+        var info = cast<IDEUITileLayerInfo>(event.target._user_data);
+
+        var index = this._layer_list.GetChildIndex(info._item);
+    }
+
+    private fun HandleHideLayer(IDEUITileLayerInfo info)
+    {
+        info._see_image.visible = false;
+    }
+
+    private fun HandleShowLayer(IDEUITileLayerInfo info)
+    {
+        info._see_image.visible = true;
     }
 }

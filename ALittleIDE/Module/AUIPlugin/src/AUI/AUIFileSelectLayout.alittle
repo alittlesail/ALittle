@@ -10,6 +10,7 @@ public struct AUIFileSelectRightButtonDownUIEvent : ALittle.UIEvent
 public struct AUIFileSelectClickUIEvent : ALittle.UIEvent
 {
     string path;
+    bool ctrl;
 }
 
 struct AUIFileSelectItemInfo
@@ -490,6 +491,7 @@ public class AUIFileSelectLayout : ALittle.DisplayLayout
 
             var e = new AUIFileSelectClickUIEvent();
             e.path = user_data.path;
+            e.ctrl = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_CTRL] != null;
             this.DispatchEvent(e);
 		}
 	}

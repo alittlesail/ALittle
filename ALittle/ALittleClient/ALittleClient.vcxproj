@@ -41,6 +41,7 @@
     <ClInclude Include="..\..\Carp\carp_log_bind.hpp" />
     <ClInclude Include="..\..\Carp\carp_lua.hpp" />
     <ClInclude Include="..\..\Carp\carp_lua_debug.hpp" />
+    <ClInclude Include="..\..\Carp\carp_lua_profiler.hpp" />
     <ClInclude Include="..\..\Carp\carp_math_2d.hpp" />
     <ClInclude Include="..\..\Carp\carp_message.hpp" />
     <ClInclude Include="..\..\Carp\carp_message_bind.hpp" />

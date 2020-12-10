@@ -65,3 +65,5 @@ int main(int argc, char* argv[])
 
 #include "Carp/carp_lua_debug.hpp"
 CarpLuaDebugServer s_alittle_lua_debug_server;
+#include "Carp/carp_lua_profiler.hpp"
+CarpLuaProfiler s_alittle_lua_profiler;

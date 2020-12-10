@@ -37,8 +37,16 @@ public class CarpLuaDebugClient
 
 public class CarpLuaDebugServer
 {
-    public fun Start(CarpScript script, string yun_ip, string ip, int port) {}
+    public fun Start(CarpScript script, string yun_ip, string ip, int port) : bool {}
     public fun Stop() {}
 }
 
 public var carp_CarpLuaDebugServer:CarpLuaDebugServer;
+
+public class CarpLuaProfiler
+{
+    public fun Start(CarpScript script, string file_path) : bool {}
+    public fun Stop() {}
+}
+
+public var carp_CarpLuaProfiler:CarpLuaProfiler;

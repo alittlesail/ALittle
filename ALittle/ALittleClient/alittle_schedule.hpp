@@ -25,12 +25,14 @@
 #include "Carp/carp_log.hpp"
 #include "Carp/carp_task_consumer.hpp"
 #include "Carp/carp_lua_debug.hpp"
+#include "Carp/carp_lua_profiler.hpp"
 
 #ifdef __EMSCRIPTEN__
 #include "emscripten.h"
 #endif
 
 extern CarpLuaDebugServer s_alittle_lua_debug_server;
+extern CarpLuaProfiler s_alittle_lua_profiler;
 class Application;
 
 #define DEFAULT_FPS 60
@@ -77,6 +79,7 @@ private:
 		ALittleNet::Bind(s_alittle_script.GetLuaState());
 		s_alittle_lua_debug_server.Bind(s_alittle_script.GetLuaState());
 		CarpLuaDebugClient::Bind(s_alittle_script.GetLuaState());
+		s_alittle_lua_profiler.Bind(s_alittle_script.GetLuaState());
 		
 		// load engine
 		CARP_INFO("==>ScheduleSystem Lua Init Begin<==");
@@ -404,6 +407,7 @@ public:
 			
 			// close all system
 			s_alittle_lua_debug_server.Stop();
+			s_alittle_lua_profiler.Stop();
 			s_alittle_script.Shutdown();
 
 			// handle last event

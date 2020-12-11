@@ -43,16 +43,20 @@ protected class IDEUITileBrushEdit : ALittle.DisplayLayout
         this._brush_list.RemoveAllChild();
     }
 
-    public fun AddBrush(string base_path, string tex_path, bool ctrl)
+    public fun AddBrushList(List<string> module_path_list, List<string> tex_path_list, bool ctrl)
     {
         if (!ctrl) this._brush_list.RemoveAllChild();
 
-        var info = new IDEUITileBrushInfo();
-        info._item = g_Control.CreateControl{ALittle.DisplayLayout}("ide_tile_brush_item", info);
-        info._image.SetTextureCut(base_path.."/"..tex_path, 0, 0, true);
-        info.tex_path = tex_path;
-        info._item._user_data = info;
-        this._brush_list.AddChild(info._item);
+        for (var index, module_path in module_path_list)
+        {
+            var tex_path = tex_path_list[index];
+            var info = new IDEUITileBrushInfo();
+            info._item = g_Control.CreateControl{ALittle.DisplayLayout}("ide_tile_brush_item", info);
+            info._image.SetTextureCut(module_path, 0, 0, true);
+            info.tex_path = tex_path;
+            info._item._user_data = info;
+            this._brush_list.AddChild(info._item);
+        }
     }
 }
 

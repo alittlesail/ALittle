@@ -73,16 +73,19 @@ function ALittleIDE.IDEUITileBrushEdit:HandleProjectClose(event)
 	self._brush_list:RemoveAllChild()
 end
 
-function ALittleIDE.IDEUITileBrushEdit:AddBrush(base_path, tex_path, ctrl)
+function ALittleIDE.IDEUITileBrushEdit:AddBrushList(module_path_list, tex_path_list, ctrl)
 	if not ctrl then
 		self._brush_list:RemoveAllChild()
 	end
-	local info = {}
-	info._item = ALittleIDE.g_Control:CreateControl("ide_tile_brush_item", info)
-	info._image:SetTextureCut(base_path .. "/" .. tex_path, 0, 0, true)
-	info.tex_path = tex_path
-	info._item._user_data = info
-	self._brush_list:AddChild(info._item)
+	for index, module_path in ___ipairs(module_path_list) do
+		local tex_path = tex_path_list[index]
+		local info = {}
+		info._item = ALittleIDE.g_Control:CreateControl("ide_tile_brush_item", info)
+		info._image:SetTextureCut(module_path, 0, 0, true)
+		info.tex_path = tex_path
+		info._item._user_data = info
+		self._brush_list:AddChild(info._item)
+	end
 end
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")

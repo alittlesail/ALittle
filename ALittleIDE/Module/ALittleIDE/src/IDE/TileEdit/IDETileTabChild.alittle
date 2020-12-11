@@ -82,7 +82,8 @@ public class IDETileTabChild : IDETabChild
                 return;
             }
 
-            
+            var row, col = this.CalcRowColByPos(event.rel_x, event.rel_y);
+            ALittle.Log(row, col);
         }
         elseif (g_IDECenter.center.tile_erase)
         {
@@ -467,13 +468,55 @@ public class IDETileTabChild : IDETabChild
 
         if (tile_type == ALittle.TileType.SQUARE)
         {
-            var row = ALittle.Math_Floor(x / side_len) + 1;
-            var col = ALittle.Math_Floor(y / side_len) + 1;
-            return row, col;
+            var row = ALittle.Math_Floor(x / side_len);
+            var col = ALittle.Math_Floor(y / side_len);
+            return row + 1, col + 1;
         }
         elseif (tile_type == ALittle.TileType.HEX_V)
         {
+            var split_x = ALittle.Math_Floor(x / (side_len * 1.732 / 2));
+            var offset_x = x - split_x * (side_len * 1.732 / 2);
+            if (split_x % 2 == 0)
+            {
+                var split_y = ALittle.Math_Floor(y / (side_len * 3));
+                var offset_y = y - split_y * (side_len * 3);
+                // 把纵向以如下单位进行切割
+                // 1 | / |
+                // 2 ||  |
+                // 3 | \ |
+                // 4 | | |
 
+                // 第一段
+                if (offset_y < side_len / 2)
+                {
+                    var row = split_y * 2;
+                    var col = split_x / 2;
+                    if (-(1 / 1.732) * offset_x + (side_len / 2) < offset_y)
+                    {
+                        row -= 1;
+                        col -= 1;
+                    }
+                    return row + 1, cast<int>(col) + 1;
+                }
+                elseif (offset_y < side_len * 3 / 2)
+                {
+
+                }
+                elseif (offset_y < side_len * 2)
+                {
+
+                }
+                else
+                {
+                    var row = split_y + 1;
+                    var col = split_x / 2 + 1;
+                    return row, cast<int>(col);
+                }
+            }
+            else
+            {
+
+            }
         }
         elseif (tile_type == ALittle.TileType.HEX_H)
         {

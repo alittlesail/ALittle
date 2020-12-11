@@ -1,0 +1,57 @@
+
+namespace ALittleIDE;
+
+public class IDETileAddLayerRevoke : ALittle.RevokeObject
+{
+	private IDETileTabChild _tab_child;
+    private IDEUITileLayerInfo _layer_info;
+
+	public ctor(IDETileTabChild tab_child, IDEUITileLayerInfo layer_info)
+	{
+		this._tab_child = tab_child;
+        this._layer_info = layer_info;
+	}
+
+	public fun Forward()
+	{
+        this._tab_child.layer_edit.AddChild(this._layer_info._item);
+        ALittle.List_Push(this._layer_info._user_info.tile_map.layer_list, this._layer_info._layer);
+	}
+
+	public fun Back()
+	{
+        this._tab_child.layer_edit.RemoveChild(this._layer_info._item);
+        var index = ALittle.List_IndexOf(this._layer_info._user_info.tile_map.layer_list, this._layer_info._layer);
+        ALittle.List_Remove(this._layer_info._user_info.tile_map.layer_list, index);
+	}
+}
+
+public class IDETileRenameLayerRevoke : ALittle.RevokeObject
+{
+	private IDETileTabChild _tab_child;
+    private IDEUITileLayerInfo _layer_info;
+
+    private string _old_name;
+    private string _new_name;
+
+	public ctor(IDETileTabChild tab_child, IDEUITileLayerInfo layer_info, string old_name, string new_name)
+	{
+		this._tab_child = tab_child;
+        this._layer_info = layer_info;
+
+        this._old_name = old_name;
+        this._new_name = new_name;
+	}
+
+	public fun Forward()
+	{
+        this._layer_info._button.text = this._new_name;
+        this._layer_info._layer.name = this._new_name;
+	}
+
+	public fun Back()
+	{
+        this._layer_info._button.text = this._old_name;
+        this._layer_info._layer.name = this._old_name;
+	}
+}

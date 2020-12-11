@@ -61,8 +61,8 @@ option_map = {}
 })
 ALittle.RegStruct(-343663763, "ALittle.TileLayer", {
 name = "ALittle.TileLayer", ns_name = "ALittle", rl_name = "TileLayer", hash_code = -343663763,
-name_list = {"cell_map"},
-type_list = {"Map<int,Map<int,ALittle.TileCell>>"},
+name_list = {"name","cell_map"},
+type_list = {"string","Map<int,Map<int,ALittle.TileCell>>"},
 option_map = {}
 })
 ALittle.RegStruct(7944876, "ALittle.TileCell", {

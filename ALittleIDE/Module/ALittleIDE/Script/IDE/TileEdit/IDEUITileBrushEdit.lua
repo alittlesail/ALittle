@@ -30,10 +30,22 @@ name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
 })
+ALittle.RegStruct(-1281734132, "ALittle.TileMap", {
+name = "ALittle.TileMap", ns_name = "ALittle", rl_name = "TileMap", hash_code = -1281734132,
+name_list = {"tile_type","side_len","col_count","row_count","tex_map","layer_list"},
+type_list = {"int","int","int","int","Map<int,string>","List<ALittle.TileLayer>"},
+option_map = {}
+})
 ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
 name = "ALittle.UIChangedEvent", ns_name = "ALittle", rl_name = "UIChangedEvent", hash_code = 958494922,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(-686652419, "AUIPlugin.AUIFileTreeUserInfo", {
+name = "AUIPlugin.AUIFileTreeUserInfo", ns_name = "AUIPlugin", rl_name = "AUIFileTreeUserInfo", hash_code = -686652419,
+name_list = {"path","name","root","group","on_right_menu","on_select_file","on_delete_file","on_create_file","on_delete_dir"},
+type_list = {"string","string","bool","Map<ALittle.TextRadioButton,bool>","Functor<(AUIPlugin.AUIFileTreeUserInfo,AUIPlugin.AUIRightMenu)>","Functor<(AUIPlugin.AUIFileTreeUserInfo)>","Functor<(string)>","Functor<(string)>","Functor<(string)>"},
 option_map = {}
 })
 ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
@@ -42,10 +54,22 @@ name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
 })
+ALittle.RegStruct(-343663763, "ALittle.TileLayer", {
+name = "ALittle.TileLayer", ns_name = "ALittle", rl_name = "TileLayer", hash_code = -343663763,
+name_list = {"name","cell_map"},
+type_list = {"string","Map<int,Map<int,ALittle.TileCell>>"},
+option_map = {}
+})
 ALittle.RegStruct(274315553, "ALittleIDE.IDEUITileLayerInfo", {
 name = "ALittleIDE.IDEUITileLayerInfo", ns_name = "ALittleIDE", rl_name = "IDEUITileLayerInfo", hash_code = 274315553,
-name_list = {"_button","_item","_see_image"},
-type_list = {"ALittle.TextRadioButton","ALittle.DisplayLayout","ALittle.Image"},
+name_list = {"_button","_item","_see_image","_layer","_user_info"},
+type_list = {"ALittle.TextRadioButton","ALittle.DisplayLayout","ALittle.Image","ALittle.TileLayer","ALittleIDE.IDETileTreeUserInfo"},
+option_map = {}
+})
+ALittle.RegStruct(7944876, "ALittle.TileCell", {
+name = "ALittle.TileCell", ns_name = "ALittle", rl_name = "TileCell", hash_code = 7944876,
+name_list = {"tex_id"},
+type_list = {"int"},
 option_map = {}
 })
 
@@ -95,6 +119,11 @@ function ALittleIDE.IDEUITileLayerEdit:Ctor()
 	___rawset(self, "_group", {})
 end
 
+function ALittleIDE.IDEUITileLayerEdit:Init(tab_child, user_info)
+	self._tab_child = tab_child
+	self._user_info = user_info
+end
+
 function ALittleIDE.IDEUITileLayerEdit:HandleAddLayerClick(event)
 	local x, y = event.target:LocalToGlobal()
 	local name = g_AUITool:ShowRename("", x, y + event.target.height, 200)
@@ -102,6 +131,7 @@ function ALittleIDE.IDEUITileLayerEdit:HandleAddLayerClick(event)
 		return
 	end
 	local info = {}
+	info._user_info = self._user_info
 	info._item = ALittleIDE.g_Control:CreateControl("ide_tile_layer_item", info)
 	info._button.text = name
 	info._button.group = self._group
@@ -109,6 +139,11 @@ function ALittleIDE.IDEUITileLayerEdit:HandleAddLayerClick(event)
 	info._button:AddEventListener(___all_struct[-641444818], self, self.HandleRButtonDown)
 	info._button:AddEventListener(___all_struct[958494922], self, self.HandleChanged)
 	self._layer_list:AddChild(info._item)
+	info._layer = {}
+	info._layer.name = name
+	ALittle.List_Push(self._user_info.tile_map.layer_list, info._layer)
+	local revoke = ALittleIDE.IDETileAddLayerRevoke(self._tab_child, info)
+	self._tab_child.revoke_list:PushRevoke(revoke)
 end
 ALittleIDE.IDEUITileLayerEdit.HandleAddLayerClick = Lua.CoWrap(ALittleIDE.IDEUITileLayerEdit.HandleAddLayerClick)
 
@@ -134,6 +169,9 @@ function ALittleIDE.IDEUITileLayerEdit:HandleRenameLayer(info)
 		return
 	end
 	info._button.text = name
+	info._layer.name = name
+	local revoke = ALittleIDE.IDETileAddLayerRevoke(self._tab_child, info)
+	self._tab_child.revoke_list:PushRevoke(revoke)
 end
 ALittleIDE.IDEUITileLayerEdit.HandleRenameLayer = Lua.CoWrap(ALittleIDE.IDEUITileLayerEdit.HandleRenameLayer)
 

@@ -16,6 +16,7 @@ public struct TileCell
 
 public struct TileLayer
 {
+    string name;	// 层名称
     Map<int, Map<int, TileCell>> cell_map;	// 格子
 }
 

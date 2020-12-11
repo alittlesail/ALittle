@@ -82,6 +82,7 @@ public class SpringTextButton : DisplayLayout
         {
             var e = new UIClickEvent();
             e.is_drag = event.is_drag;
+            e.count = event.count;
             this.DispatchEvent(e);
             if (this._file_select)
                 A_OtherSystem.SystemSelectFile(this);

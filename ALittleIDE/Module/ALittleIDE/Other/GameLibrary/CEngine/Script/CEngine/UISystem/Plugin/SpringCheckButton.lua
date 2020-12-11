@@ -49,6 +49,7 @@ function ALittle.SpringCheckButton:HandleLButtonUp(event)
 		self._selected = (self._selected == false)
 		local e = {}
 		e.is_drag = event.is_drag
+		e.count = event.count
 		self:DispatchEvent(___all_struct[-449066808], e)
 		self:DispatchEvent(___all_struct[958494922], {})
 		if ALittle.System_IsPhone() == false then

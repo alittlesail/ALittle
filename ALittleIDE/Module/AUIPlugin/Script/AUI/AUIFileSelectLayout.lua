@@ -1,6 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.AUIPlugin == nil then _G.AUIPlugin = {} end
+local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
@@ -14,7 +15,7 @@ option_map = {}
 ALittle.RegStruct(1686540930, "AUIPlugin.AUIFileSelectItemInfo", {
 name = "AUIPlugin.AUIFileSelectItemInfo", ns_name = "AUIPlugin", rl_name = "AUIFileSelectItemInfo", hash_code = 1686540930,
 name_list = {"name","frame","image","file","dir","button"},
-type_list = {"ALittle.DisplayObject","ALittle.DisplayObject","ALittle.Image","ALittle.Image","ALittle.Image","ALittle.DisplayObject"},
+type_list = {"ALittle.DisplayObject","ALittle.DisplayObject","ALittle.Image","ALittle.Image","ALittle.Image","ALittle.TextRadioButton"},
 option_map = {}
 })
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -35,6 +36,12 @@ name_list = {"target","path","directory"},
 type_list = {"ALittle.DisplayObject","string","bool"},
 option_map = {}
 })
+ALittle.RegStruct(1206110359, "AUIPlugin.AUIFileSelectFileClickUIEvent", {
+name = "AUIPlugin.AUIFileSelectFileClickUIEvent", ns_name = "AUIPlugin", rl_name = "AUIFileSelectFileClickUIEvent", hash_code = 1206110359,
+name_list = {"target","path","ctrl"},
+type_list = {"ALittle.DisplayObject","string","bool"},
+option_map = {}
+})
 ALittle.RegStruct(-1202439334, "ALittle.UIMoveOutEvent", {
 name = "ALittle.UIMoveOutEvent", ns_name = "ALittle", rl_name = "UIMoveOutEvent", hash_code = -1202439334,
 name_list = {"target"},
@@ -47,8 +54,8 @@ name_list = {"target","abs_x","abs_y","rel_x","rel_y"},
 type_list = {"ALittle.DisplayObject","double","double","double","double"},
 option_map = {}
 })
-ALittle.RegStruct(653852482, "AUIPlugin.AUIFileSelectClickUIEvent", {
-name = "AUIPlugin.AUIFileSelectClickUIEvent", ns_name = "AUIPlugin", rl_name = "AUIFileSelectClickUIEvent", hash_code = 653852482,
+ALittle.RegStruct(-989784577, "AUIPlugin.AUIFileSelectDirClickUIEvent", {
+name = "AUIPlugin.AUIFileSelectDirClickUIEvent", ns_name = "AUIPlugin", rl_name = "AUIFileSelectDirClickUIEvent", hash_code = -989784577,
 name_list = {"target","path","ctrl"},
 type_list = {"ALittle.DisplayObject","string","bool"},
 option_map = {}
@@ -73,8 +80,8 @@ option_map = {}
 })
 ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
 name = "ALittle.UIClickEvent", ns_name = "ALittle", rl_name = "UIClickEvent", hash_code = -449066808,
-name_list = {"target","is_drag"},
-type_list = {"ALittle.DisplayObject","bool"},
+name_list = {"target","is_drag","count"},
+type_list = {"ALittle.DisplayObject","bool","int"},
 option_map = {}
 })
 ALittle.RegStruct(-338112738, "ALittle.UIDropFileEvent", {
@@ -86,6 +93,10 @@ option_map = {}
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 AUIPlugin.AUIFileSelectLayout = Lua.Class(ALittle.DisplayLayout, "AUIPlugin.AUIFileSelectLayout")
+
+function AUIPlugin.AUIFileSelectLayout:Ctor()
+	___rawset(self, "_group", {})
+end
 
 function AUIPlugin.AUIFileSelectLayout:Init(ext_list)
 	self._real_size = 100
@@ -185,6 +196,7 @@ function AUIPlugin.AUIFileSelectLayout:CreateFileItem(file_name, rel_path, abs_p
 	info.button:AddEventListener(___all_struct[-1202439334], self, self.HandleItemMoveOut)
 	info.button:AddEventListener(___all_struct[-1001723540], self, self.HandleItemMouseMove)
 	info.button:AddEventListener(___all_struct[-338112738], self, self.HandleItemDropFile)
+	info.button.group = self._group
 	local user_data = {}
 	user_data.path = rel_path
 	user_data.directory = false
@@ -204,6 +216,7 @@ function AUIPlugin.AUIFileSelectLayout:CreateDirItem(file_name, rel_path, abs_pa
 	info.button:AddEventListener(___all_struct[-449066808], self, self.HandleItemClick)
 	info.button:AddEventListener(___all_struct[-641444818], self, self.HandleItemRButtonDown)
 	info.button:AddEventListener(___all_struct[-338112738], self, self.HandleItemDropFile)
+	info.button.group = self._group
 	local user_data = {}
 	user_data.path = rel_path
 	user_data.directory = true
@@ -433,18 +446,27 @@ AUIPlugin.AUIFileSelectLayout.HandleNewDirectoryClick = Lua.CoWrap(AUIPlugin.AUI
 
 function AUIPlugin.AUIFileSelectLayout:HandleItemClick(event)
 	local user_data = event.target._user_data
-	if user_data.directory then
-		self._real_path = self._base_path .. "/" .. user_data.path
-		self:Refresh()
-	else
-		if self._thread ~= nil then
-			ALittle.Coroutine.Resume(self._thread, user_data.path)
-			self._thread = nil
+	if event.count <= 1 then
+		if user_data.directory then
+			local e = {}
+			e.path = user_data.path
+			e.ctrl = A_UISystem.sym_map[1073742048] ~= nil
+			self:DispatchEvent(___all_struct[-989784577], e)
+		else
+			if self._thread ~= nil then
+				ALittle.Coroutine.Resume(self._thread, user_data.path)
+				self._thread = nil
+			end
+			local e = {}
+			e.path = user_data.path
+			e.ctrl = A_UISystem.sym_map[1073742048] ~= nil
+			self:DispatchEvent(___all_struct[1206110359], e)
 		end
-		local e = {}
-		e.path = user_data.path
-		e.ctrl = A_UISystem.sym_map[1073742048] ~= nil
-		self:DispatchEvent(___all_struct[653852482], e)
+	elseif event.count <= 2 then
+		if user_data.directory then
+			self._real_path = self._base_path .. "/" .. user_data.path
+			self:Refresh()
+		end
 	end
 end
 

@@ -146,6 +146,7 @@ public class TextCheckButton : DisplayLayout
             this._selected = (this._selected == false);
             var e = new UIClickEvent();
             e.is_drag = event.is_drag;
+            e.count = event.count;
             this.DispatchEvent(e);
             this.DispatchEvent(new UIChangedEvent());
             if (System_IsPhone() == false)

@@ -140,6 +140,7 @@ public struct UIFingerUpEvent : UIFingerEvent {}
 public struct UIClickEvent : UIEvent
 {
     bool is_drag;
+    int count;
 }
 public struct UIMClickEvent : UIClickEvent {}
 public struct UIFClickEvent : UIClickEvent {}

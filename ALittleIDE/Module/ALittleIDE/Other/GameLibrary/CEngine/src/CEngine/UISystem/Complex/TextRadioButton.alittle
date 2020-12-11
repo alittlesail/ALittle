@@ -63,6 +63,7 @@ public class TextRadioButton : TextCheckButton
             }
             var e = new UIClickEvent();
             e.is_drag = event.is_drag;
+            e.count = event.count;
             this.DispatchEvent(e);
             if (System_IsPhone() == false)
                 this.ShowOver();

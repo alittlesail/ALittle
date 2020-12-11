@@ -29,6 +29,7 @@ function ALittle.Image:HandleLButtonUp(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		local c_event = {}
 		c_event.is_drag = event.is_drag
+		c_event.count = event.count
 		self:DispatchEvent(___all_struct[-449066808], c_event)
 	end
 end

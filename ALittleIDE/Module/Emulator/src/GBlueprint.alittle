@@ -927,16 +927,16 @@ protected class GBlueprint : ALittle.DisplayLayout
     // 选中文件
     public fun HandleFileTreeSelectFile(AUIPlugin.AUIFileSelectFileEvent event)
     {
-        if (event.path == this._file_path) return;
+        if (event.info.path == this._file_path) return;
         this.visible = true;
         this.Save(true);
 
-        this._file_path = event.path;
+        this._file_path = event.info.path;
         this._save = true;
         this._file_title.text = this._file_path;
 
         var step_file = new RobotStepFile();
-        var content = ALittle.File_ReadTextFromFile(event.path);
+        var content = ALittle.File_ReadTextFromFile(event.info.path);
         if (content != "")
         {
             var error, json = tcall(lua.ajson.decode, content);

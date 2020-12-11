@@ -97,7 +97,9 @@ end
 function AUIPlugin.AUIFileSelectDialog:ShowSelect()
 	local ___COROUTINE = coroutine.running()
 	self:ShowDialog()
-	return self._layout:ShowSelect()
+	local result = self._layout:ShowSelect()
+	self._dialog.visible = false
+	return result
 end
 
 function AUIPlugin.AUIFileSelectDialog:HandleDialogClose()

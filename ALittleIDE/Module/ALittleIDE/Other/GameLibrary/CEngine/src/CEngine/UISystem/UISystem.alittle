@@ -27,6 +27,7 @@ class UISystem
     private double      _last_mouse_x;
     private double      _last_mouse_y;
     private bool        _lbutton_down;
+    private int 		_lbutton_count;
     private int         _lbutton_finger_id;
     private int         _lbutton_touch_id;
 
@@ -73,6 +74,7 @@ class UISystem
         this._last_mouse_y = 0;
     
         this._lbutton_down = false;
+        this._lbutton_count = 0;
         this._lbutton_finger_id = null;
         this._lbutton_touch_id = null;
     
@@ -358,6 +360,7 @@ class UISystem
     public fun HandleLButtonDown(double x, double y, int count) : bool
     {
         this._lbutton_down = true;
+        this._lbutton_count = count;
         this._lbutton_finger_id = null;
         this._lbutton_touch_id = null;
         return this.HandleButtonDown{UILButtonDownEvent}(x, y, count);
@@ -367,7 +370,7 @@ class UISystem
     public fun HandleLButtonUp(double x, double y) : bool
     {
         this._lbutton_down = false;
-        return this.HandleButtonUp{UILButtonUpEvent}(x, y);
+        return this.HandleButtonUp{UILButtonUpEvent}(x, y, this._lbutton_count);
     }
     
     public fun HandleMButtonDown(double x, double y, int count) : bool
@@ -377,7 +380,7 @@ class UISystem
     
     public fun HandleMButtonUp(double x, double y) : bool
     {
-        return this.HandleButtonUp{UIMButtonUpEvent}(x, y);
+        return this.HandleButtonUp{UIMButtonUpEvent}(x, y, 1);
     }
 
     public fun HandleButtonDown<T:UIButtonEvent>(double x, double y, int count) : bool
@@ -488,7 +491,7 @@ class UISystem
         mfc.DispatchEvent(event);
     }
 
-    public fun HandleButtonUp<T:UIButtonEvent>(double x, double y) : bool
+    public fun HandleButtonUp<T:UIButtonEvent>(double x, double y, int count) : bool
     {
         // 如果当前没有锁定选中焦点控件（说明现在鼠标什么都没点到），则直接返回
         if (this._sl == false)
@@ -533,6 +536,7 @@ class UISystem
             event.rel_x = rel_x;
             event.rel_y = rel_y;
             event.is_drag = save_dl;
+            event.count = count;
             this._sfc.DispatchEvent(event);
         }
         // 更新移动焦点控件
@@ -809,6 +813,7 @@ class UISystem
         if (this._lbutton_down == false)
         {
             this._lbutton_down = true;
+            this._lbutton_count = 1;
             this._lbutton_finger_id = finger_id;
             this._lbutton_touch_id = touch_id;
             this._mouse_x = x;
@@ -867,7 +872,7 @@ class UISystem
         if (this._lbutton_down && this._lbutton_finger_id == finger_id && this._lbutton_touch_id == touch_id)
         {
             this._lbutton_down = false;
-            return this.HandleButtonUp{UILButtonUpEvent}(x, y);
+            return this.HandleButtonUp{UILButtonUpEvent}(x, y, this._lbutton_count);
         }
         // 计算key
         var key = finger_id .. "_" .. touch_id;

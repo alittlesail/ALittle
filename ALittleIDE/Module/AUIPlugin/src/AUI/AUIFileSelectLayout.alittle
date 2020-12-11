@@ -7,7 +7,13 @@ public struct AUIFileSelectRightButtonDownUIEvent : ALittle.UIEvent
 	bool directory;
 }
 
-public struct AUIFileSelectClickUIEvent : ALittle.UIEvent
+public struct AUIFileSelectFileClickUIEvent : ALittle.UIEvent
+{
+    string path;
+    bool ctrl;
+}
+
+public struct AUIFileSelectDirClickUIEvent : ALittle.UIEvent
 {
     string path;
     bool ctrl;
@@ -20,7 +26,7 @@ struct AUIFileSelectItemInfo
 	ALittle.Image image;
 	ALittle.Image file;
 	ALittle.Image dir;
-	ALittle.DisplayObject button;
+	ALittle.TextRadioButton button;
 }
 
 struct AUIFileSelectItemUserData
@@ -43,6 +49,7 @@ public class AUIFileSelectLayout : ALittle.DisplayLayout
 	private string _real_path;
     
 	private ALittle.ScrollList _scroll_list;
+    private ALittle.TextRadioButtonGroup _group = new ALittle.TextRadioButtonGroup();
 
 	private ALittle.DisplayObject _path_input;
 	private ALittle.DisplayObject _search_input;
@@ -161,6 +168,7 @@ public class AUIFileSelectLayout : ALittle.DisplayLayout
 		info.button.AddEventListener(this, this.HandleItemMoveOut);
 		info.button.AddEventListener(this, this.HandleItemMouseMove);
 		info.button.AddEventListener(this, this.HandleItemDropFile);
+        info.button.group = this._group;
 	
 		var user_data = new AUIFileSelectItemUserData();
 		user_data.path = rel_path;
@@ -184,6 +192,7 @@ public class AUIFileSelectLayout : ALittle.DisplayLayout
 		info.button.AddEventListener(this, this.HandleItemClick);
 		info.button.AddEventListener(this, this.HandleItemRButtonDown);
 		info.button.AddEventListener(this, this.HandleItemDropFile);
+        info.button.group = this._group;
 	
 		var user_data = new AUIFileSelectItemUserData();
 		user_data.path = rel_path;
@@ -474,26 +483,38 @@ public class AUIFileSelectLayout : ALittle.DisplayLayout
 	public fun HandleItemClick(ALittle.UIClickEvent event)
 	{
 		var user_data:AUIFileSelectItemUserData = event.target._user_data;
-	
-		if (user_data.directory)
-		{
-			// 刷新界面
-			this._real_path = this._base_path.."/"..user_data.path;
-			this.Refresh();
-		}
-		else
-		{
-			if (this._thread != null)
-			{
-                ALittle.Coroutine.Resume(this._thread, user_data.path);
-				this._thread = null;
+        if (event.count <= 1)
+        {
+            if (user_data.directory)
+            {
+                var e = new AUIFileSelectDirClickUIEvent();
+                e.path = user_data.path;
+                e.ctrl = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_CTRL] != null;
+                this.DispatchEvent(e);
             }
+            else
+            {
+                if (this._thread != null)
+                {
+                    ALittle.Coroutine.Resume(this._thread, user_data.path);
+                    this._thread = null;
+                }
 
-            var e = new AUIFileSelectClickUIEvent();
-            e.path = user_data.path;
-            e.ctrl = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_CTRL] != null;
-            this.DispatchEvent(e);
-		}
+                var e = new AUIFileSelectFileClickUIEvent();
+                e.path = user_data.path;
+                e.ctrl = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_CTRL] != null;
+                this.DispatchEvent(e);
+            }
+        }
+        elseif (event.count <= 2)
+        {
+            if (user_data.directory)
+            {
+                // 刷新界面
+                this._real_path = this._base_path.."/"..user_data.path;
+                this.Refresh();
+            }
+        }
 	}
 
 	public fun HandleItemMoveIn(ALittle.UIMoveInEvent event)

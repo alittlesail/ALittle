@@ -7,8 +7,8 @@ local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(2117383637, "AUIPlugin.AUIFileSelectFileEvent", {
 name = "AUIPlugin.AUIFileSelectFileEvent", ns_name = "AUIPlugin", rl_name = "AUIFileSelectFileEvent", hash_code = 2117383637,
-name_list = {"target","path"},
-type_list = {"ALittle.DisplayObject","string"},
+name_list = {"target","info"},
+type_list = {"ALittle.DisplayObject","AUIPlugin.AUIFileTreeUserInfo"},
 option_map = {}
 })
 ALittle.RegStruct(-1718818319, "AUIPlugin.AUIFileDeleteDirEvent", {
@@ -27,6 +27,12 @@ ALittle.RegStruct(-1010534958, "Emulator.PlayerInfo", {
 name = "Emulator.PlayerInfo", ns_name = "Emulator", rl_name = "PlayerInfo", hash_code = -1010534958,
 name_list = {"client","robot"},
 type_list = {"Lua.ISocket","Emulator.RobotStepManager"},
+option_map = {}
+})
+ALittle.RegStruct(-686652419, "AUIPlugin.AUIFileTreeUserInfo", {
+name = "AUIPlugin.AUIFileTreeUserInfo", ns_name = "AUIPlugin", rl_name = "AUIFileTreeUserInfo", hash_code = -686652419,
+name_list = {"path","name","root","group","on_right_menu","on_select_file","on_delete_file","on_create_file","on_delete_dir"},
+type_list = {"string","string","bool","Map<ALittle.TextRadioButton,bool>","Functor<(AUIPlugin.AUIFileTreeUserInfo,AUIPlugin.AUIRightMenu)>","Functor<(AUIPlugin.AUIFileTreeUserInfo)>","Functor<(string)>","Functor<(string)>","Functor<(string)>"},
 option_map = {}
 })
 ALittle.RegStruct(-545221029, "AUIPlugin.AUIFileDeleteFileEvent", {

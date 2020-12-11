@@ -78,6 +78,7 @@ public class SpringRadioButton : SpringCheckButton
             }
             var e = new UIClickEvent();
             e.is_drag = event.is_drag;
+            e.count = event.count;
             this.DispatchEvent(e);
 
             if (System_IsPhone() == false)

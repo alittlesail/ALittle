@@ -22,6 +22,7 @@ public class Quad : DisplayObject
         {
             var c_event = new UIClickEvent();
             c_event.is_drag = event.is_drag;
+            c_event.count = event.count;
             this.DispatchEvent(c_event);
         }
     }

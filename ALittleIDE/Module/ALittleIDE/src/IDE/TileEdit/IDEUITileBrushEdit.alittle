@@ -104,7 +104,7 @@ protected class IDEUITileLayerEdit : ALittle.DisplayLayout
 
     private async fun HandleDeleteLayer(IDEUITileLayerInfo info)
     {
-        if (g_AUITool.DeleteNotice("删除", "确定要删除改图层吗?") != AUIPlugin.AUIToolOption.YES) return;
+        if (g_AUITool.DeleteNotice("删除", "确定要删除该图层吗?") != AUIPlugin.AUIToolOption.YES) return;
         this._layer_list.RemoveChild(info._item);
     }
 

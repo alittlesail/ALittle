@@ -70,6 +70,7 @@ function ALittle.SpringRadioButton:HandleLButtonUp(event)
 		end
 		local e = {}
 		e.is_drag = event.is_drag
+		e.count = event.count
 		self:DispatchEvent(___all_struct[-449066808], e)
 		if ALittle.System_IsPhone() == false then
 			self:ShowOver()

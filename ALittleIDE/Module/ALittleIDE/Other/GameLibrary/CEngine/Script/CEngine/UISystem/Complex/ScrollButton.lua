@@ -180,6 +180,7 @@ function ALittle.ScrollButton:HandleLButtonUpFunc(event)
 	if event.rel_x >= 0 and event.rel_y >= 0 and event.rel_x < event.target._width and event.rel_y < event.target._height then
 		local e = {}
 		e.is_drag = event.is_drag
+		e.count = event.count
 		self:DispatchEvent(___all_struct[-449066808], e)
 		if ALittle.System_IsPhone() == false then
 			self:ShowOver()

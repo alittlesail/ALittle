@@ -135,7 +135,7 @@ end
 ALittleIDE.IDEUITileLayerEdit.HandleRenameLayer = Lua.CoWrap(ALittleIDE.IDEUITileLayerEdit.HandleRenameLayer)
 
 function ALittleIDE.IDEUITileLayerEdit:HandleDeleteLayer(info)
-	if g_AUITool:DeleteNotice("删除", "确定要删除改图层吗?") ~= "YES" then
+	if g_AUITool:DeleteNotice("删除", "确定要删除该图层吗?") ~= "YES" then
 		return
 	end
 	self._layer_list:RemoveChild(info._item)

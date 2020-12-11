@@ -24,6 +24,7 @@ function ALittle.UISystem:Ctor()
 	___rawset(self, "_last_mouse_x", 0)
 	___rawset(self, "_last_mouse_y", 0)
 	___rawset(self, "_lbutton_down", false)
+	___rawset(self, "_lbutton_count", 0)
 	___rawset(self, "_lbutton_finger_id", nil)
 	___rawset(self, "_lbutton_touch_id", nil)
 	___rawset(self, "_mfc", nil)
@@ -234,6 +235,7 @@ end
 
 function ALittle.UISystem:HandleLButtonDown(x, y, count)
 	self._lbutton_down = true
+	self._lbutton_count = count
 	self._lbutton_finger_id = nil
 	self._lbutton_touch_id = nil
 	return self:HandleButtonDown(___all_struct[1883782801], x, y, count)
@@ -241,7 +243,7 @@ end
 
 function ALittle.UISystem:HandleLButtonUp(x, y)
 	self._lbutton_down = false
-	return self:HandleButtonUp(___all_struct[40651933], x, y)
+	return self:HandleButtonUp(___all_struct[40651933], x, y, self._lbutton_count)
 end
 
 function ALittle.UISystem:HandleMButtonDown(x, y, count)
@@ -249,7 +251,7 @@ function ALittle.UISystem:HandleMButtonDown(x, y, count)
 end
 
 function ALittle.UISystem:HandleMButtonUp(x, y)
-	return self:HandleButtonUp(___all_struct[683647260], x, y)
+	return self:HandleButtonUp(___all_struct[683647260], x, y, 1)
 end
 
 function ALittle.UISystem:HandleButtonDown(T, x, y, count)
@@ -324,7 +326,7 @@ function ALittle.UISystem.DispatchLongButtonEvent(mfc, event)
 	mfc:DispatchEvent(___all_struct[-439548260], event)
 end
 
-function ALittle.UISystem:HandleButtonUp(T, x, y)
+function ALittle.UISystem:HandleButtonUp(T, x, y, count)
 	if self._sl == false then
 		return false
 	end
@@ -357,6 +359,7 @@ function ALittle.UISystem:HandleButtonUp(T, x, y)
 		event.rel_x = rel_x
 		event.rel_y = rel_y
 		event.is_drag = save_dl
+		event.count = count
 		self._sfc:DispatchEvent(T, event)
 	end
 	self:UpdateMoveFocus(x, y)
@@ -570,6 +573,7 @@ end
 function ALittle.UISystem:HandleFingerDown(x, y, finger_id, touch_id)
 	if self._lbutton_down == false then
 		self._lbutton_down = true
+		self._lbutton_count = 1
 		self._lbutton_finger_id = finger_id
 		self._lbutton_touch_id = touch_id
 		self._mouse_x = x
@@ -611,7 +615,7 @@ end
 function ALittle.UISystem:HandleFingerUp(x, y, finger_id, touch_id)
 	if self._lbutton_down and self._lbutton_finger_id == finger_id and self._lbutton_touch_id == touch_id then
 		self._lbutton_down = false
-		return self:HandleButtonUp(___all_struct[40651933], x, y)
+		return self:HandleButtonUp(___all_struct[40651933], x, y, self._lbutton_count)
 	end
 	local key = finger_id .. "_" .. touch_id
 	local info = self._finger_info[key]

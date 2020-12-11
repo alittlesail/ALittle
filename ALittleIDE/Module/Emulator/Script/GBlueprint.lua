@@ -97,8 +97,8 @@ option_map = {}
 })
 ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
 name = "ALittle.UIClickEvent", ns_name = "ALittle", rl_name = "UIClickEvent", hash_code = -449066808,
-name_list = {"target","is_drag"},
-type_list = {"ALittle.DisplayObject","bool"},
+name_list = {"target","is_drag","count"},
+type_list = {"ALittle.DisplayObject","bool","int"},
 option_map = {}
 })
 ALittle.RegStruct(-431205740, "ALittle.UIResizeEvent", {
@@ -850,16 +850,16 @@ function Emulator.GBlueprint:HandleFileTreeDeleteFile(event)
 end
 
 function Emulator.GBlueprint:HandleFileTreeSelectFile(event)
-	if event.path == self._file_path then
+	if event.info.path == self._file_path then
 		return
 	end
 	self.visible = true
 	self:Save(true)
-	self._file_path = event.path
+	self._file_path = event.info.path
 	self._save = true
 	self._file_title.text = self._file_path
 	local step_file = {}
-	local content = ALittle.File_ReadTextFromFile(event.path)
+	local content = ALittle.File_ReadTextFromFile(event.info.path)
 	if content ~= "" then
 		local error, json = Lua.TCall(ajson.decode, content)
 		if error ~= nil then

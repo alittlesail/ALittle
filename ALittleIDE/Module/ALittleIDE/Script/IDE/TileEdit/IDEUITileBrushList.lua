@@ -17,8 +17,8 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(653852482, "AUIPlugin.AUIFileSelectClickUIEvent", {
-name = "AUIPlugin.AUIFileSelectClickUIEvent", ns_name = "AUIPlugin", rl_name = "AUIFileSelectClickUIEvent", hash_code = 653852482,
+ALittle.RegStruct(1206110359, "AUIPlugin.AUIFileSelectFileClickUIEvent", {
+name = "AUIPlugin.AUIFileSelectFileClickUIEvent", ns_name = "AUIPlugin", rl_name = "AUIFileSelectFileClickUIEvent", hash_code = 1206110359,
 name_list = {"target","path","ctrl"},
 type_list = {"ALittle.DisplayObject","string","bool"},
 option_map = {}
@@ -31,7 +31,7 @@ function ALittleIDE.IDEUITileBrushList:TCtor()
 	ALittleIDE.g_IDEProject:AddEventListener(___all_struct[-975432877], self, self.HandleProjectOpen)
 	ALittleIDE.g_IDEProject:AddEventListener(___all_struct[-332308624], self, self.HandleProjectClose)
 	self._file_select:Init({"png", "jpg"})
-	self._file_select:AddEventListener(___all_struct[653852482], self, self.HandleImageSelect)
+	self._file_select:AddEventListener(___all_struct[1206110359], self, self.HandleImageSelect)
 end
 
 function ALittleIDE.IDEUITileBrushList:HandleProjectClose(event)

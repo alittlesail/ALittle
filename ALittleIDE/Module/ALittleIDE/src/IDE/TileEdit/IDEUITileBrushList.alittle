@@ -25,7 +25,7 @@ public class IDEUITileBrushList : ALittle.DisplayLayout
         this._file_select.SetBasePath(module_path);
     }
 
-    private fun HandleImageSelect(AUIPlugin.AUIFileSelectClickUIEvent event)
+    private fun HandleImageSelect(AUIPlugin.AUIFileSelectFileClickUIEvent event)
     {
         g_IDECenter.center.tile_brush_edit.AddBrush(this._file_select.base_path, event.path, event.ctrl);
     }

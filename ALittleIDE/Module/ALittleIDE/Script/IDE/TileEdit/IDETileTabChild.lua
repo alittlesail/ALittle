@@ -34,7 +34,6 @@ function ALittleIDE.IDETileTabChild:Ctor(ctrl_sys, module, name, save, user_info
 	___rawset(self, "_linear_tile_2", ALittle.DisplayGroup(ALittleIDE.g_Control))
 	self._tab_screen:AddChild(self._linear_tile_2)
 	___rawset(self, "_layer_edit", ALittleIDE.g_Control:CreateControl("ide_tile_layer_detail_layout"))
-	self._layer_edit:Init(self, user_info)
 end
 
 function ALittleIDE.IDETileTabChild.__getter:layer_edit()
@@ -79,6 +78,39 @@ function ALittleIDE.IDETileTabChild:ShowTileFocus()
 	end
 	ALittleIDE.g_IDECenter.center.project_edit_tab.tab = ALittleIDE.g_IDECenter.center.tile_list
 	ALittleIDE.g_IDECenter.center.tile_list:ShowTreeItemFocus(tree)
+end
+
+function ALittleIDE.IDETileTabChild:CreateLayer()
+	local linear_1 = ALittle.Linear(ALittleIDE.g_Control)
+	linear_1.type = 2
+	self._linear_tile_1:AddChild(linear_1)
+	local linear_2 = ALittle.Linear(ALittleIDE.g_Control)
+	linear_2.type = 2
+	linear_2.x = self:CalcLinear2OffsetX()
+	linear_2.y = self:CalcLinear2OffsetY()
+	self._linear_tile_2:AddChild(linear_2)
+	return linear_1, linear_2
+end
+
+function ALittleIDE.IDETileTabChild:GetLayer(index)
+	local linear_1 = self._linear_tile_1:GetChildByIndex(index)
+	local linear_2 = self._linear_tile_2:GetChildByIndex(index)
+	return linear_1, linear_2
+end
+
+function ALittleIDE.IDETileTabChild:AddLayer(linear_1, linear_2, index)
+	self._linear_tile_1:AddChild(linear_1, index)
+	self._linear_tile_2:AddChild(linear_2, index)
+end
+
+function ALittleIDE.IDETileTabChild:RemoveLayer(linear_1, linear_2)
+	self._linear_tile_1:RemoveChild(linear_1)
+	self._linear_tile_2:RemoveChild(linear_2)
+end
+
+function ALittleIDE.IDETileTabChild:SetLayerIndex(linear_1, linear_2, index)
+	self._linear_tile_1:SetChildIndex(linear_1, index)
+	self._linear_tile_2:SetChildIndex(linear_2, index)
 end
 
 function ALittleIDE.IDETileTabChild.__getter:tab_body()
@@ -133,6 +165,7 @@ function ALittleIDE.IDETileTabChild:CreateBySelect(info)
 	self._linear_grid_2.x = self:CalcLinear2OffsetX()
 	self._linear_grid_2.y = self:CalcLinear2OffsetY()
 	self:ResizeGridMap(row_count, col_count)
+	self._layer_edit:Init(self, self._user_info)
 end
 
 function ALittleIDE.IDETileTabChild:ResizeLinear(linear_1, linear_2, row_count, col_count, layer)

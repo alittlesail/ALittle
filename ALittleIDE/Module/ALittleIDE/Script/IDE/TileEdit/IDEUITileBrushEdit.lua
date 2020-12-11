@@ -62,8 +62,8 @@ option_map = {}
 })
 ALittle.RegStruct(274315553, "ALittleIDE.IDEUITileLayerInfo", {
 name = "ALittleIDE.IDEUITileLayerInfo", ns_name = "ALittleIDE", rl_name = "IDEUITileLayerInfo", hash_code = 274315553,
-name_list = {"_button","_item","_see_image","_layer","_user_info"},
-type_list = {"ALittle.TextRadioButton","ALittle.DisplayLayout","ALittle.Image","ALittle.TileLayer","ALittleIDE.IDETileTreeUserInfo"},
+name_list = {"_button","_item","_see_image","_layer","_user_info","_linear_1","_linear_2"},
+type_list = {"ALittle.TextRadioButton","ALittle.DisplayLayout","ALittle.Image","ALittle.TileLayer","ALittleIDE.IDETileTreeUserInfo","ALittle.Linear","ALittle.Linear"},
 option_map = {}
 })
 ALittle.RegStruct(7944876, "ALittle.TileCell", {
@@ -122,6 +122,23 @@ end
 function ALittleIDE.IDEUITileLayerEdit:Init(tab_child, user_info)
 	self._tab_child = tab_child
 	self._user_info = user_info
+	for index, layer in ___ipairs(user_info.tile_map.layer_list) do
+		local info = {}
+		info._user_info = self._user_info
+		info._item = ALittleIDE.g_Control:CreateControl("ide_tile_layer_item", info)
+		info._button.text = layer.name
+		info._button.group = self._group
+		info._button._user_data = info
+		info._button:AddEventListener(___all_struct[-641444818], self, self.HandleRButtonDown)
+		info._button:AddEventListener(___all_struct[958494922], self, self.HandleChanged)
+		self._layer_list:AddChild(info._item)
+		info._layer = layer
+		info._linear_1, info._linear_2 = self._tab_child:GetLayer(index)
+	end
+end
+
+function ALittleIDE.IDEUITileLayerEdit.__getter:layer_list()
+	return self._layer_list
 end
 
 function ALittleIDE.IDEUITileLayerEdit:HandleAddLayerClick(event)
@@ -142,8 +159,10 @@ function ALittleIDE.IDEUITileLayerEdit:HandleAddLayerClick(event)
 	info._layer = {}
 	info._layer.name = name
 	ALittle.List_Push(self._user_info.tile_map.layer_list, info._layer)
+	info._linear_1, info._linear_2 = self._tab_child:CreateLayer()
 	local revoke = ALittleIDE.IDETileAddLayerRevoke(self._tab_child, info)
 	self._tab_child.revoke_list:PushRevoke(revoke)
+	self._tab_child.save = false
 end
 ALittleIDE.IDEUITileLayerEdit.HandleAddLayerClick = Lua.CoWrap(ALittleIDE.IDEUITileLayerEdit.HandleAddLayerClick)
 
@@ -168,10 +187,12 @@ function ALittleIDE.IDEUITileLayerEdit:HandleRenameLayer(info)
 	if name == nil or name == "" then
 		return
 	end
+	local old_name = info._layer.name
 	info._button.text = name
 	info._layer.name = name
-	local revoke = ALittleIDE.IDETileAddLayerRevoke(self._tab_child, info)
+	local revoke = ALittleIDE.IDETileRenameLayerRevoke(self._tab_child, info, old_name, name)
 	self._tab_child.revoke_list:PushRevoke(revoke)
+	self._tab_child.save = false
 end
 ALittleIDE.IDEUITileLayerEdit.HandleRenameLayer = Lua.CoWrap(ALittleIDE.IDEUITileLayerEdit.HandleRenameLayer)
 
@@ -179,7 +200,13 @@ function ALittleIDE.IDEUITileLayerEdit:HandleDeleteLayer(info)
 	if g_AUITool:DeleteNotice("删除", "确定要删除该图层吗?") ~= "YES" then
 		return
 	end
+	local index = self._layer_list:GetChildIndex(info._item)
 	self._layer_list:RemoveChild(info._item)
+	ALittle.List_Remove(info._user_info.tile_map.layer_list, index)
+	self._tab_child:RemoveLayer(info._linear_1, info._linear_2)
+	local revoke = ALittleIDE.IDETileDeleteLayerRevoke(self._tab_child, info, index)
+	self._tab_child.revoke_list:PushRevoke(revoke)
+	self._tab_child.save = false
 end
 ALittleIDE.IDEUITileLayerEdit.HandleDeleteLayer = Lua.CoWrap(ALittleIDE.IDEUITileLayerEdit.HandleDeleteLayer)
 
@@ -189,14 +216,26 @@ function ALittleIDE.IDEUITileLayerEdit:HandleUpLayer(info)
 		return
 	end
 	self._layer_list:SetChildIndex(info._item, index - 1)
+	ALittle.List_Remove(info._user_info.tile_map.layer_list, index)
+	ALittle.List_Insert(info._user_info.tile_map.layer_list, index - 1, info._layer)
+	self._tab_child:SetLayerIndex(info._linear_1, info._linear_2, index)
+	local revoke = ALittleIDE.IDETileSetLayerIndexRevoke(self._tab_child, info, index, index - 1)
+	self._tab_child.revoke_list:PushRevoke(revoke)
+	self._tab_child.save = false
 end
 
 function ALittleIDE.IDEUITileLayerEdit:HandleDownLayer(info)
 	local index = self._layer_list:GetChildIndex(info._item)
-	if index == nil then
+	if index == nil or index == self._layer_list.child_count then
 		return
 	end
 	self._layer_list:SetChildIndex(info._item, index + 1)
+	ALittle.List_Remove(info._user_info.tile_map.layer_list, index)
+	ALittle.List_Insert(info._user_info.tile_map.layer_list, index + 1, info._layer)
+	self._tab_child:SetLayerIndex(info._linear_1, info._linear_2, index + 1)
+	local revoke = ALittleIDE.IDETileSetLayerIndexRevoke(self._tab_child, info, index, index + 1)
+	self._tab_child.revoke_list:PushRevoke(revoke)
+	self._tab_child.save = false
 end
 
 function ALittleIDE.IDEUITileLayerEdit:HandleChanged(event)
@@ -206,10 +245,14 @@ end
 
 function ALittleIDE.IDEUITileLayerEdit:HandleHideLayer(info)
 	info._see_image.visible = false
+	info._linear_1.visible = false
+	info._linear_2.visible = false
 end
 
 function ALittleIDE.IDEUITileLayerEdit:HandleShowLayer(info)
 	info._see_image.visible = true
+	info._linear_1.visible = true
+	info._linear_2.visible = true
 end
 
 end

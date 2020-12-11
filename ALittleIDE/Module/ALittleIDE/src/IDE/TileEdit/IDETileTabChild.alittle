@@ -48,7 +48,6 @@ public class IDETileTabChild : IDETabChild
         this._tab_screen.AddChild(this._linear_tile_2);
 
         this._layer_edit = g_Control.CreateControl{IDEUITileLayerEdit}("ide_tile_layer_detail_layout");
-        this._layer_edit.Init(this, user_info);
     }
 
     public get layer_edit() : IDEUITileLayerEdit { return this._layer_edit; }
@@ -92,6 +91,47 @@ public class IDETileTabChild : IDETabChild
 
         g_IDECenter.center.project_edit_tab.tab = g_IDECenter.center.tile_list;
         g_IDECenter.center.tile_list.ShowTreeItemFocus(tree);
+    }
+
+    public fun CreateLayer() : ALittle.Linear, ALittle.Linear
+    {
+        var linear_1 = new ALittle.Linear(g_Control);
+        linear_1.type = ALittle.UIEnumTypes.TYPE_V;
+        this._linear_tile_1.AddChild(linear_1);
+
+        var linear_2 = new ALittle.Linear(g_Control);
+        linear_2.type = ALittle.UIEnumTypes.TYPE_V;
+        linear_2.x = this.CalcLinear2OffsetX();
+        linear_2.y = this.CalcLinear2OffsetY();
+
+        this._linear_tile_2.AddChild(linear_2);
+
+        return linear_1, linear_2;
+    }
+
+    public fun GetLayer(int index) : ALittle.Linear, ALittle.Linear
+    {
+        var linear_1 = cast<ALittle.Linear>(this._linear_tile_1.GetChildByIndex(index));
+        var linear_2 = cast<ALittle.Linear>(this._linear_tile_2.GetChildByIndex(index));
+        return linear_1, linear_2;
+    }
+
+    public fun AddLayer(ALittle.Linear linear_1, ALittle.Linear linear_2, int index)
+    {
+        this._linear_tile_1.AddChild(linear_1, index);
+        this._linear_tile_2.AddChild(linear_2, index);
+    }
+
+    public fun RemoveLayer(ALittle.Linear linear_1, ALittle.Linear linear_2)
+    {
+        this._linear_tile_1.RemoveChild(linear_1);
+        this._linear_tile_2.RemoveChild(linear_2);
+    }
+
+    public fun SetLayerIndex(ALittle.Linear linear_1, ALittle.Linear linear_2, int index)
+    {
+        this._linear_tile_1.SetChildIndex(linear_1, index);
+        this._linear_tile_2.SetChildIndex(linear_2, index);
     }
 
     public get tab_body() : ALittle.DisplayObject { return this._tab_screen; }
@@ -149,6 +189,8 @@ public class IDETileTabChild : IDETabChild
         this._linear_grid_2.y = this.CalcLinear2OffsetY();
 
         this.ResizeGridMap(row_count, col_count);
+
+        this._layer_edit.Init(this, this._user_info);
     }
 
     private fun ResizeLinear(ALittle.Linear linear_1, ALittle.Linear linear_2, int row_count, int col_count, int layer)

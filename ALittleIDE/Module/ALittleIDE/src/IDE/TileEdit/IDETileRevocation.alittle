@@ -14,15 +14,80 @@ public class IDETileAddLayerRevoke : ALittle.RevokeObject
 
 	public fun Forward()
 	{
-        this._tab_child.layer_edit.AddChild(this._layer_info._item);
+        this._tab_child.layer_edit.layer_list.AddChild(this._layer_info._item);
         ALittle.List_Push(this._layer_info._user_info.tile_map.layer_list, this._layer_info._layer);
 	}
 
 	public fun Back()
 	{
-        this._tab_child.layer_edit.RemoveChild(this._layer_info._item);
+        this._tab_child.layer_edit.layer_list.RemoveChild(this._layer_info._item);
         var index = ALittle.List_IndexOf(this._layer_info._user_info.tile_map.layer_list, this._layer_info._layer);
         ALittle.List_Remove(this._layer_info._user_info.tile_map.layer_list, index);
+	}
+}
+
+public class IDETileDeleteLayerRevoke : ALittle.RevokeObject
+{
+	private IDETileTabChild _tab_child;
+    private IDEUITileLayerInfo _layer_info;
+
+    private int _index;
+
+	public ctor(IDETileTabChild tab_child, IDEUITileLayerInfo layer_info, int index)
+	{
+		this._tab_child = tab_child;
+        this._layer_info = layer_info;
+        this._index = index;
+	}
+
+	public fun Forward()
+	{
+        this._tab_child.layer_edit.layer_list.RemoveChild(this._layer_info._item);
+        var index = ALittle.List_IndexOf(this._layer_info._user_info.tile_map.layer_list, this._layer_info._layer);
+        ALittle.List_Remove(this._layer_info._user_info.tile_map.layer_list, index);
+        this._tab_child.RemoveLayer(this._layer_info._linear_1, this._layer_info._linear_2);
+	}
+
+	public fun Back()
+	{
+        this._tab_child.layer_edit.layer_list.AddChild(this._layer_info._item, this._index);
+        ALittle.List_Insert(this._layer_info._user_info.tile_map.layer_list, this._index, this._layer_info._layer);
+        this._tab_child.AddLayer(this._layer_info._linear_1, this._layer_info._linear_2, this._index);
+	}
+}
+
+public class IDETileSetLayerIndexRevoke : ALittle.RevokeObject
+{
+	private IDETileTabChild _tab_child;
+    private IDEUITileLayerInfo _layer_info;
+
+    private int _old_index;
+    private int _new_index;
+
+	public ctor(IDETileTabChild tab_child, IDEUITileLayerInfo layer_info, int old_index, int new_index)
+	{
+		this._tab_child = tab_child;
+        this._layer_info = layer_info;
+        this._old_index = old_index;
+        this._new_index = new_index;
+	}
+
+	public fun Forward()
+	{
+        this._tab_child.layer_edit.layer_list.SetChildIndex(this._layer_info._item, this._new_index);
+
+        ALittle.List_Remove(this._layer_info._user_info.tile_map.layer_list, this._old_index);
+        ALittle.List_Insert(this._layer_info._user_info.tile_map.layer_list, this._new_index, this._layer_info._layer);
+        this._tab_child.SetLayerIndex(this._layer_info._linear_1, this._layer_info._linear_2, this._new_index);
+	}
+
+	public fun Back()
+	{
+        this._tab_child.layer_edit.layer_list.SetChildIndex(this._layer_info._item, this._old_index);
+
+        ALittle.List_Remove(this._layer_info._user_info.tile_map.layer_list, this._new_index);
+        ALittle.List_Insert(this._layer_info._user_info.tile_map.layer_list, this._old_index, this._layer_info._layer);
+        this._tab_child.SetLayerIndex(this._layer_info._linear_1, this._layer_info._linear_2, this._old_index);
 	}
 }
 

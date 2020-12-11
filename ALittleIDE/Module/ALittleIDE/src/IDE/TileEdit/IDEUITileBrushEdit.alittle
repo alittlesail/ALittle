@@ -14,7 +14,10 @@ protected struct IDEUITileLayerInfo
     ALittle.DisplayLayout _item;
     ALittle.Image _see_image;
     ALittle.TileLayer _layer;
+
     IDETileTreeUserInfo _user_info;
+    ALittle.Linear _linear_1;
+    ALittle.Linear _linear_2;
 }
 
 protected class IDEUITileBrushEdit : ALittle.DisplayLayout
@@ -74,7 +77,26 @@ protected class IDEUITileLayerEdit : ALittle.DisplayLayout
     {
         this._tab_child = tab_child;
         this._user_info = user_info;
+
+        for (var index, layer in user_info.tile_map.layer_list)
+        {
+            var info = new IDEUITileLayerInfo();
+            info._user_info = this._user_info;
+
+            info._item = g_Control.CreateControl{ALittle.DisplayLayout}("ide_tile_layer_item", info);
+            info._button.text = layer.name;
+            info._button.group = this._group;
+            info._button._user_data = info;
+            info._button.AddEventListener(this, this.HandleRButtonDown);
+            info._button.AddEventListener(this, this.HandleChanged);
+            this._layer_list.AddChild(info._item);
+
+            info._layer = layer;
+            info._linear_1, info._linear_2 = this._tab_child.GetLayer(index);
+        }
     }
+
+    public get layer_list() : ALittle.ScrollList { return this._layer_list; }
 
     private async fun HandleAddLayerClick(ALittle.UIClickEvent event)
     {
@@ -97,8 +119,11 @@ protected class IDEUITileLayerEdit : ALittle.DisplayLayout
         info._layer.name = name;
         ALittle.List_Push(this._user_info.tile_map.layer_list, info._layer);
 
+        info._linear_1, info._linear_2 = this._tab_child.CreateLayer();
+
         var revoke = new IDETileAddLayerRevoke(this._tab_child, info);
         this._tab_child.revoke_list.PushRevoke(revoke);
+        this._tab_child.save = false;
     }
 
     private fun HandleRButtonDown(ALittle.UIRButtonDownEvent event)
@@ -123,31 +148,60 @@ protected class IDEUITileLayerEdit : ALittle.DisplayLayout
         var name = g_AUITool.ShowRename(info._button.text, x, y + info._button.height, 200);
         if (name == null || name == "") return;
 
+        var old_name = info._layer.name;
         info._button.text = name;
         info._layer.name = name;
 
-        var revoke = new IDETileAddLayerRevoke(this._tab_child, info);
+        var revoke = new IDETileRenameLayerRevoke(this._tab_child, info, old_name, name);
         this._tab_child.revoke_list.PushRevoke(revoke);
+        this._tab_child.save = false;
     }
 
     private async fun HandleDeleteLayer(IDEUITileLayerInfo info)
     {
         if (g_AUITool.DeleteNotice("删除", "确定要删除该图层吗?") != AUIPlugin.AUIToolOption.YES) return;
+
+        var index = this._layer_list.GetChildIndex(info._item);
         this._layer_list.RemoveChild(info._item);
+
+        ALittle.List_Remove(info._user_info.tile_map.layer_list, index);
+        this._tab_child.RemoveLayer(info._linear_1, info._linear_2);
+
+        var revoke = new IDETileDeleteLayerRevoke(this._tab_child, info, index);
+        this._tab_child.revoke_list.PushRevoke(revoke);
+        this._tab_child.save = false;
     }
 
     private fun HandleUpLayer(IDEUITileLayerInfo info)
     {
         var index = this._layer_list.GetChildIndex(info._item);
         if (index == null || index == 1) return;
+
         this._layer_list.SetChildIndex(info._item, index - 1);
+
+        ALittle.List_Remove(info._user_info.tile_map.layer_list, index);
+        ALittle.List_Insert(info._user_info.tile_map.layer_list, index - 1, info._layer);
+        this._tab_child.SetLayerIndex(info._linear_1, info._linear_2, index);
+
+        var revoke = new IDETileSetLayerIndexRevoke(this._tab_child, info, index, index - 1);
+        this._tab_child.revoke_list.PushRevoke(revoke);
+        this._tab_child.save = false;
     }
 
     private fun HandleDownLayer(IDEUITileLayerInfo info)
     {
         var index = this._layer_list.GetChildIndex(info._item);
-        if (index == null) return;
+        if (index == null || index == this._layer_list.child_count) return;
+
         this._layer_list.SetChildIndex(info._item, index + 1);
+
+        ALittle.List_Remove(info._user_info.tile_map.layer_list, index);
+        ALittle.List_Insert(info._user_info.tile_map.layer_list, index + 1, info._layer);
+        this._tab_child.SetLayerIndex(info._linear_1, info._linear_2, index + 1);
+
+        var revoke = new IDETileSetLayerIndexRevoke(this._tab_child, info, index, index + 1);
+        this._tab_child.revoke_list.PushRevoke(revoke);
+        this._tab_child.save = false;
     }
 
     private fun HandleChanged(ALittle.UIChangedEvent event)
@@ -160,10 +214,14 @@ protected class IDEUITileLayerEdit : ALittle.DisplayLayout
     private fun HandleHideLayer(IDEUITileLayerInfo info)
     {
         info._see_image.visible = false;
+        info._linear_1.visible = false;
+        info._linear_2.visible = false;
     }
 
     private fun HandleShowLayer(IDEUITileLayerInfo info)
     {
         info._see_image.visible = true;
+        info._linear_1.visible = true;
+        info._linear_2.visible = true;
     }
 }

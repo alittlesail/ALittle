@@ -4,7 +4,62 @@ if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
+local ___all_struct = ALittle.GetAllStruct()
 
+ALittle.RegStruct(1883782801, "ALittle.UILButtonDownEvent", {
+name = "ALittle.UILButtonDownEvent", ns_name = "ALittle", rl_name = "UILButtonDownEvent", hash_code = 1883782801,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
+name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
+name = "ALittle.UIButtonEvent", ns_name = "ALittle", rl_name = "UIButtonEvent", hash_code = -1347278145,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(1337289812, "ALittle.UIButtonDragEvent", {
+name = "ALittle.UIButtonDragEvent", ns_name = "ALittle", rl_name = "UIButtonDragEvent", hash_code = 1337289812,
+name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
+option_map = {}
+})
+ALittle.RegStruct(1301789264, "ALittle.UIButtonDragBeginEvent", {
+name = "ALittle.UIButtonDragBeginEvent", ns_name = "ALittle", rl_name = "UIButtonDragBeginEvent", hash_code = 1301789264,
+name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
+option_map = {}
+})
+ALittle.RegStruct(-1281734132, "ALittle.TileMap", {
+name = "ALittle.TileMap", ns_name = "ALittle", rl_name = "TileMap", hash_code = -1281734132,
+name_list = {"tile_type","side_len","col_count","row_count","tex_map","layer_list"},
+type_list = {"int","int","int","int","Map<int,string>","List<ALittle.TileLayer>"},
+option_map = {}
+})
+ALittle.RegStruct(-343663763, "ALittle.TileLayer", {
+name = "ALittle.TileLayer", ns_name = "ALittle", rl_name = "TileLayer", hash_code = -343663763,
+name_list = {"name","cell_map"},
+type_list = {"string","Map<int,Map<int,ALittle.TileCell>>"},
+option_map = {}
+})
+ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
+name = "ALittle.UIButtonDragEndEvent", ns_name = "ALittle", rl_name = "UIButtonDragEndEvent", hash_code = 150587926,
+name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
+option_map = {}
+})
+ALittle.RegStruct(7944876, "ALittle.TileCell", {
+name = "ALittle.TileCell", ns_name = "ALittle", rl_name = "TileCell", hash_code = 7944876,
+name_list = {"tex_id"},
+type_list = {"int"},
+option_map = {}
+})
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 ALittleIDE.IDETileContainer = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDETileContainer")
@@ -22,7 +77,7 @@ function ALittleIDE.IDETileTabChild:Ctor(ctrl_sys, module, name, save, user_info
 	___rawset(self, "_user_info", user_info)
 	___rawset(self, "_tab_screen", ALittleIDE.g_Control:CreateControl("ide_tile_tab_screen", self))
 	self._tab_screen._user_data = self
-	self._tab_screen.container = ALittleIDE.IDETileContainer(ALittleIDE.g_Control)
+	self._tab_screen.container = ALittle.DisplayLayout(ALittleIDE.g_Control)
 	___rawset(self, "_linear_grid_1", ALittle.Linear(ALittleIDE.g_Control))
 	self._linear_grid_1.type = 2
 	self._tab_screen:AddChild(self._linear_grid_1)
@@ -34,6 +89,73 @@ function ALittleIDE.IDETileTabChild:Ctor(ctrl_sys, module, name, save, user_info
 	___rawset(self, "_linear_tile_2", ALittle.DisplayGroup(ALittleIDE.g_Control))
 	self._tab_screen:AddChild(self._linear_tile_2)
 	___rawset(self, "_layer_edit", ALittleIDE.g_Control:CreateControl("ide_tile_layer_detail_layout"))
+	ALittleIDE.g_IDECenter.center:AddEventListener(___all_struct[-751714957], self, self.HandleHandDrag)
+	self._tab_rb_quad:AddEventListener(___all_struct[1883782801], self, self.HandleQuadLButtonDown)
+	self._tab_rb_quad:AddEventListener(___all_struct[1301789264], self, self.HandleQuadDragBegin)
+	self._tab_rb_quad:AddEventListener(___all_struct[1337289812], self, self.HandleQuadDrag)
+	self._tab_rb_quad:AddEventListener(___all_struct[150587926], self, self.HandleQuadDragEnd)
+end
+
+function ALittleIDE.IDETileTabChild:HandleHandDrag(event)
+	self._tab_rb_quad.hand_cursor = event.value
+end
+
+function ALittleIDE.IDETileTabChild:HandleQuadLButtonDown(event)
+	if ALittleIDE.g_IDECenter.center.tile_brush then
+		local brush_info = ALittleIDE.g_IDECenter.center.tile_brush_edit:GetBrush()
+		if brush_info == nil then
+			g_AUITool:ShowNotice("提示", "请先从地块库选择地块")
+			return
+		end
+		local layer_info = self._layer_edit:GetCurLayerInfo()
+		if layer_info == nil then
+			g_AUITool:ShowNotice("提示", "请先选择图层")
+			return
+		end
+	elseif ALittleIDE.g_IDECenter.center.tile_erase then
+		local layer_info = self._layer_edit:GetCurLayerInfo()
+		if layer_info == nil then
+			g_AUITool:ShowNotice("提示", "请先选择图层")
+			return
+		end
+	end
+end
+
+function ALittleIDE.IDETileTabChild:HandleQuadDragBegin(event)
+	if ALittleIDE.g_IDECenter.center.tile_handdrag then
+		event.target = self._tab_screen
+		self._tab_screen:DispatchEvent(___all_struct[1301789264], event)
+	end
+end
+
+function ALittleIDE.IDETileTabChild:HandleQuadDrag(event)
+	if ALittleIDE.g_IDECenter.center.tile_brush then
+		local brush_info = ALittleIDE.g_IDECenter.center.tile_brush_edit:GetBrush()
+		if brush_info == nil then
+			return
+		end
+		local layer_info = self._layer_edit:GetCurLayerInfo()
+		if layer_info == nil then
+			return
+		end
+	elseif ALittleIDE.g_IDECenter.center.tile_handdrag then
+		event.target = self._tab_screen
+		self._tab_screen:DispatchEvent(___all_struct[1337289812], event)
+	elseif ALittleIDE.g_IDECenter.center.tile_erase then
+		local layer_info = self._layer_edit:GetCurLayerInfo()
+		if layer_info == nil then
+			return
+		end
+	end
+end
+
+function ALittleIDE.IDETileTabChild:HandleQuadDragEnd(event)
+	if ALittleIDE.g_IDECenter.center.tile_brush then
+	elseif ALittleIDE.g_IDECenter.center.tile_handdrag then
+		event.target = self._tab_screen
+		self._tab_screen:DispatchEvent(___all_struct[150587926], event)
+	elseif ALittleIDE.g_IDECenter.center.tile_erase then
+	end
 end
 
 function ALittleIDE.IDETileTabChild.__getter:layer_edit()
@@ -126,6 +248,12 @@ function ALittleIDE.IDETileTabChild.__setter:save(value)
 		self:UpdateTitle()
 		return
 	end
+	local ui = ALittleIDE.g_IDEProject.project.ui[ALittleIDE.g_IDEProject.project.name]
+	if ui == nil then
+		g_AUITool:ShowNotice("提示", "ui不存在")
+		return
+	end
+	ui.control:WriteMessageToFile(___all_struct[-1281734132], self._user_info.tile_map, self._user_info.info.path)
 	self._save = value
 	self:UpdateTitle()
 end
@@ -316,6 +444,19 @@ function ALittleIDE.IDETileTabChild:CalcPosByRC(row, col)
 			y = y + ((side_len * 1.732) / 2)
 		end
 		return x, y
+	end
+	return 0, 0
+end
+
+function ALittleIDE.IDETileTabChild:CalcRowColByPos(x, y)
+	local tile_type = self._user_info.tile_map.tile_type
+	local side_len = self._user_info.tile_map.side_len
+	if tile_type == 1 then
+		local row = ALittle.Math_Floor(x / side_len) + 1
+		local col = ALittle.Math_Floor(y / side_len) + 1
+		return row, col
+	elseif tile_type == 2 then
+	elseif tile_type == 3 then
 	end
 	return 0, 0
 end

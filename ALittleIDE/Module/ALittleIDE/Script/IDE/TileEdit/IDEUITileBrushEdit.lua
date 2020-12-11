@@ -112,6 +112,18 @@ function ALittleIDE.IDEUITileBrushEdit:AddBrushList(module_path_list, tex_path_l
 	end
 end
 
+function ALittleIDE.IDEUITileBrushEdit:GetBrush()
+	local child_count = self._brush_list.child_count
+	if child_count == 0 then
+		return nil
+	end
+	if child_count == 1 then
+		return self._brush_list.childs[1]._user_data
+	end
+	local index = ALittle.Math_RandomInt(1, child_count)
+	return self._brush_list.childs[index]._user_data
+end
+
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 ALittleIDE.IDEUITileLayerEdit = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUITileLayerEdit")
 
@@ -131,14 +143,29 @@ function ALittleIDE.IDEUITileLayerEdit:Init(tab_child, user_info)
 		info._button._user_data = info
 		info._button:AddEventListener(___all_struct[-641444818], self, self.HandleRButtonDown)
 		info._button:AddEventListener(___all_struct[958494922], self, self.HandleChanged)
+		info._item._user_data = info
 		self._layer_list:AddChild(info._item)
 		info._layer = layer
 		info._linear_1, info._linear_2 = self._tab_child:GetLayer(index)
+	end
+	if self._layer_list.child_count > 0 then
+		local info = self._layer_list.childs[self._layer_list.child_count]._user_data
+		info._button.selected = true
 	end
 end
 
 function ALittleIDE.IDEUITileLayerEdit.__getter:layer_list()
 	return self._layer_list
+end
+
+function ALittleIDE.IDEUITileLayerEdit:GetCurLayerInfo()
+	for index, child in ___ipairs(self._layer_list.childs) do
+		local info = child._user_data
+		if info._button.selected then
+			return info
+		end
+	end
+	return nil
 end
 
 function ALittleIDE.IDEUITileLayerEdit:HandleAddLayerClick(event)

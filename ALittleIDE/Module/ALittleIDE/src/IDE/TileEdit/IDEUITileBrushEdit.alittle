@@ -63,6 +63,16 @@ protected class IDEUITileBrushEdit : ALittle.DisplayLayout
             this._brush_list.AddChild(info._item);
         }
     }
+
+    public fun GetBrush() : IDEUITileBrushInfo
+    {
+        var child_count = this._brush_list.child_count;
+        if (child_count == 0) return null;
+        if (child_count == 1) return this._brush_list.childs[1]._user_data;
+
+        var index = ALittle.Math_RandomInt(1, child_count);
+        return this._brush_list.childs[index]._user_data;
+    }
 }
 
 protected class IDEUITileLayerEdit : ALittle.DisplayLayout
@@ -89,14 +99,31 @@ protected class IDEUITileLayerEdit : ALittle.DisplayLayout
             info._button._user_data = info;
             info._button.AddEventListener(this, this.HandleRButtonDown);
             info._button.AddEventListener(this, this.HandleChanged);
+            info._item._user_data = info;
             this._layer_list.AddChild(info._item);
 
             info._layer = layer;
             info._linear_1, info._linear_2 = this._tab_child.GetLayer(index);
         }
+
+        if (this._layer_list.child_count > 0)
+        {
+            var info = cast<IDEUITileLayerInfo>(this._layer_list.childs[this._layer_list.child_count]._user_data);
+            info._button.selected = true;
+        }
     }
 
     public get layer_list() : ALittle.ScrollList { return this._layer_list; }
+
+    public fun GetCurLayerInfo() : IDEUITileLayerInfo
+    {
+        for (var index, child in this._layer_list.childs)
+        {
+            var info = cast<IDEUITileLayerInfo>(child._user_data);
+            if (info._button.selected) return info;
+        }
+        return null;
+    }
 
     private async fun HandleAddLayerClick(ALittle.UIClickEvent event)
     {

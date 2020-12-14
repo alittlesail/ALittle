@@ -1,13 +1,31 @@
 
 namespace ALittleIDE;
 
-
 public class IDETileContainer : ALittle.DisplayLayout
 {
     protected fun ClipRect(double x, double y, double width, double height, double h_move, double v_move)
     {
         for (var index, child in this.childs)
-            child.ClipRect(x - this._x, y - this._y, width - this._x, height - this._y, h_move, v_move);
+    		child.ClipRect(x - this._x, y - this._y, width - this._x, height - this._y, h_move, v_move);
+    }
+}
+
+public class IDETileLinearContainer : ALittle.DisplayLayout
+{
+    public ALittle.Linear _linear_grid_1;
+    public ALittle.Linear _linear_grid_2;
+
+    public ALittle.DisplayGroup _linear_tile_1;
+    public ALittle.DisplayGroup _linear_tile_2;
+
+    protected fun ClipRect(double x, double y, double width, double height, double h_move, double v_move)
+    {
+        this._linear_grid_1.ClipRect(x - this._x, y - this._y, width - this._x, height - this._y, h_move, v_move);
+        this._linear_grid_2.ClipRect(x - this._x, y - this._y, width - this._x, height - this._y, h_move, v_move);
+        for (var index, child in this._linear_tile_1.childs)
+    		child.ClipRect(x - this._x, y - this._y, width - this._x, height - this._y, h_move, v_move);
+        for (var index, child in this._linear_tile_2.childs)
+    		child.ClipRect(x - this._x, y - this._y, width - this._x, height - this._y, h_move, v_move);
     }
 }
 
@@ -15,7 +33,7 @@ public class IDETileTabChild : IDETabChild
 {
     private IDETileTreeUserInfo _user_info;
 	private ALittle.ScrollScreen _tab_screen;        // 标签页
-    private ALittle.DisplayLayout _tile_container;
+    private IDETileLinearContainer _tile_container;
     private ALittle.DisplayLayout _tab_rb_quad;
 
     // 格子
@@ -28,26 +46,33 @@ public class IDETileTabChild : IDETabChild
     // 笔刷编辑区
     private IDEUITileLayerEdit _layer_edit;
 
+    private int _drag_cell_row;
+    private int _drag_cell_col;
+
 	public ctor(ALittle.ControlSystem ctrl_sys, string module, string name, bool save, IDETileTreeUserInfo user_info)
 	{
         this._user_info = user_info;
 
 		this._tab_screen = g_Control.CreateControl{ALittle.ScrollScreen}("ide_tile_tab_screen", this);
         this._tab_screen._user_data = this;
-        this._tab_screen.container = new ALittle.DisplayLayout(g_Control);
+        this._tab_screen.container = new IDETileContainer(g_Control);
 
         this._linear_grid_1 = new ALittle.Linear(g_Control);
         this._linear_grid_1.type = ALittle.UIEnumTypes.TYPE_V;
-        this._tab_screen.AddChild(this._linear_grid_1);
+        this._tile_container._linear_grid_1 = this._linear_grid_1;
+        this._tile_container.AddChild(this._linear_grid_1);
 
         this._linear_grid_2 = new ALittle.Linear(g_Control);
         this._linear_grid_2.type = ALittle.UIEnumTypes.TYPE_V;
-        this._tab_screen.AddChild(this._linear_grid_2);
+        this._tile_container._linear_grid_2 = this._linear_grid_2;
+        this._tile_container.AddChild(this._linear_grid_2);
 
         this._linear_tile_1 = new ALittle.DisplayGroup(g_Control);
-        this._tab_screen.AddChild(this._linear_tile_1);
         this._linear_tile_2 = new ALittle.DisplayGroup(g_Control);
-        this._tab_screen.AddChild(this._linear_tile_2);
+        this._tile_container._linear_tile_1 = this._linear_tile_1;
+        this._tile_container._linear_tile_2 = this._linear_tile_2;
+        this._tile_container.AddChild(this._linear_tile_1);
+        this._tile_container.AddChild(this._linear_tile_2);
 
         this._layer_edit = g_Control.CreateControl{IDEUITileLayerEdit}("ide_tile_layer_detail_layout");
 
@@ -75,7 +100,7 @@ public class IDETileTabChild : IDETabChild
                 return;
             }
 
-            var layer_info = this._layer_edit.GetCurLayerInfo();
+            var layer_info, layer_index = this._layer_edit.GetCurLayerInfo();
             if (layer_info == null)
             {
                 g_AUITool.ShowNotice("提示", "请先选择图层");
@@ -83,19 +108,68 @@ public class IDETileTabChild : IDETabChild
             }
 
             var row, col = this.CalcRowColByPos(event.rel_x, event.rel_y);
-            if (row % 2 == 0)
-            {
+            this._drag_cell_row = row;
+            this._drag_cell_col = col;
 
+            var col_map = layer_info._layer.cell_map[row];
+            if (col_map == null)
+            {
+                col_map = new Map<int, ALittle.TileCell>();
+                layer_info._layer.cell_map[row] = col_map;
             }
+            var cell = col_map[col];
+            if (cell == null)
+            {
+                cell = new ALittle.TileCell();
+                col_map[col] = cell;
+            }
+            var old_tex_path:string;
+            if (cell.tex_id != null) old_tex_path = layer_info._user_info.tile_map.tex_map[cell.tex_id];
+            var tex_id = layer_info._user_info.tex_id_map[brush_info.tex_path];
+            if (tex_id == null)
+            {
+                tex_id = layer_info._user_info.tex_id_max + 1;
+                layer_info._user_info.tex_id_max = tex_id;
+                layer_info._user_info.tex_id_map[brush_info.tex_path] = tex_id;
+            }
+            cell.tex_id = tex_id;
+
+            var image = this.GetImage(layer_index, row, col);
+            image.SetTextureCut(brush_info.module_path, 0, 0, true);
+
+            var revoke = new IDETileBrushCellRevoke(this, layer_info, cell, image, old_tex_path, brush_info.tex_path);
+            this._revoke_list.PushRevoke(revoke);
+
+            this.save = false;
         }
         elseif (g_IDECenter.center.tile_erase)
         {
-            var layer_info = this._layer_edit.GetCurLayerInfo();
+            var layer_info, layer_index = this._layer_edit.GetCurLayerInfo();
             if (layer_info == null)
             {
                 g_AUITool.ShowNotice("提示", "请先选择图层");
                 return;
             }
+
+            var row, col = this.CalcRowColByPos(event.rel_x, event.rel_y);
+            this._drag_cell_row = row;
+            this._drag_cell_col = col;
+
+            var col_map = layer_info._layer.cell_map[row];
+            if (col_map == null) return;
+            var cell = col_map[col];
+            if (cell == null) return;
+            if (cell.tex_id == null) return;
+            var old_tex_path = layer_info._user_info.tile_map.tex_map[cell.tex_id];
+            cell.tex_id = null;
+
+            var image = this.GetImage(layer_index, row, col);
+            image.SetTextureCut(null, 0, 0, true);
+
+            var revoke = new IDETileBrushCellRevoke(this, layer_info, cell, image, old_tex_path, null);
+            this._revoke_list.PushRevoke(revoke);
+
+            this.save = false;
         }
     }
 
@@ -115,9 +189,44 @@ public class IDETileTabChild : IDETabChild
             var brush_info = g_IDECenter.center.tile_brush_edit.GetBrush();
             if (brush_info == null) return;
 
-            var layer_info = this._layer_edit.GetCurLayerInfo();
+            var layer_info, layer_index = this._layer_edit.GetCurLayerInfo();
             if (layer_info == null) return;
 
+            var row, col = this.CalcRowColByPos(event.rel_x, event.rel_y);
+            if (this._drag_cell_row == row && this._drag_cell_col == col) return;
+            this._drag_cell_row = row;
+            this._drag_cell_col = col;
+            
+            var col_map = layer_info._layer.cell_map[row];
+            if (col_map == null)
+            {
+                col_map = new Map<int, ALittle.TileCell>();
+                layer_info._layer.cell_map[row] = col_map;
+            }
+            var cell = col_map[col];
+            if (cell == null)
+            {
+                cell = new ALittle.TileCell();
+                col_map[col] = cell;
+            }
+            var old_tex_path:string;
+            if (cell.tex_id != null) old_tex_path = layer_info._user_info.tile_map.tex_map[cell.tex_id];
+            var tex_id = layer_info._user_info.tex_id_map[brush_info.tex_path];
+            if (tex_id == null)
+            {
+                tex_id = layer_info._user_info.tex_id_max + 1;
+                layer_info._user_info.tex_id_max = tex_id;
+                layer_info._user_info.tex_id_map[brush_info.tex_path] = tex_id;
+            }
+            cell.tex_id = tex_id;
+
+            var image = this.GetImage(layer_index, row, col);
+            image.SetTextureCut(brush_info.module_path, 0, 0, true);
+
+            var revoke = new IDETileBrushCellRevoke(this, layer_info, cell, image, old_tex_path, brush_info.tex_path);
+            this._revoke_list.PushRevoke(revoke);
+
+            this.save = false;
         }
         elseif (g_IDECenter.center.tile_handdrag)
         {
@@ -126,9 +235,29 @@ public class IDETileTabChild : IDETabChild
         }
         elseif (g_IDECenter.center.tile_erase)
         {
-            var layer_info = this._layer_edit.GetCurLayerInfo();
+            var layer_info, layer_index = this._layer_edit.GetCurLayerInfo();
             if (layer_info == null) return;
 
+            var row, col = this.CalcRowColByPos(event.rel_x, event.rel_y);
+            if (this._drag_cell_row == row && this._drag_cell_col == col) return;
+            this._drag_cell_row = row;
+            this._drag_cell_col = col;
+
+            var col_map = layer_info._layer.cell_map[row];
+            if (col_map == null) return;
+            var cell = col_map[col];
+            if (cell == null) return;
+            if (cell.tex_id == null) return;
+            var old_tex_path = layer_info._user_info.tile_map.tex_map[cell.tex_id];
+            cell.tex_id = null;
+
+            var image = this.GetImage(layer_index, row, col);
+            image.SetTextureCut(null, 0, 0, true);
+
+            var revoke = new IDETileBrushCellRevoke(this, layer_info, cell, image, old_tex_path, null);
+            this._revoke_list.PushRevoke(revoke);
+
+            this.save = false;
         }
     }
 
@@ -136,7 +265,6 @@ public class IDETileTabChild : IDETabChild
     {
         if (g_IDECenter.center.tile_brush)
         {
-
         }
         elseif (g_IDECenter.center.tile_handdrag)
         {
@@ -147,6 +275,9 @@ public class IDETileTabChild : IDETabChild
         {
 
         }
+
+        this._drag_cell_row = null;
+        this._drag_cell_col = null;
     }
 
     public get layer_edit() : IDEUITileLayerEdit { return this._layer_edit; }
@@ -192,6 +323,11 @@ public class IDETileTabChild : IDETabChild
         g_IDECenter.center.tile_list.ShowTreeItemFocus(tree);
     }
 
+    public fun SetTileImage(int layer, int row, int col, string tex_path)
+    {
+
+    }
+
     public fun CreateLayer() : ALittle.Linear, ALittle.Linear
     {
         var linear_1 = new ALittle.Linear(g_Control);
@@ -213,6 +349,17 @@ public class IDETileTabChild : IDETabChild
         var linear_1 = cast<ALittle.Linear>(this._linear_tile_1.GetChildByIndex(index));
         var linear_2 = cast<ALittle.Linear>(this._linear_tile_2.GetChildByIndex(index));
         return linear_1, linear_2;
+    }
+
+    public fun GetImage(int layer, int row, int col) : ALittle.Image
+    {
+        var linear_1, linear_2 = this.GetLayer(layer);
+        if (linear_1 == null) return null;
+
+        if (row % 2 == 1)
+        	return linear_1.childs[ALittle.Math_Floor(row / 2) + 1].childs[col]._user_data;
+
+        return linear_2.childs[ALittle.Math_Floor(row / 2)].childs[col]._user_data;
     }
 
     public fun AddLayer(ALittle.Linear linear_1, ALittle.Linear linear_2, int index)
@@ -287,19 +434,65 @@ public class IDETileTabChild : IDETabChild
     {
         this._user_info = info;
 
+        info.tex_id_map = new Map<string, int>();
+        info.tex_id_max = 0;
+        for (var tex_id, tex_path in info.tile_map.tex_map)
+        {
+        	info.tex_id_map[tex_path] = tex_id;
+            if (info.tex_id_max < tex_id) info.tex_id_max = tex_id;
+        }
+
         var col_count = info.tile_map.col_count + 10;
         var row_count = info.tile_map.row_count + 10;
 
         var grid_map_width = this.CalcCellWidth() * col_count;
 
+        // 初始化格子linear
         this._linear_grid_1.width = grid_map_width;
         this._linear_grid_2.width = grid_map_width;
         this._linear_grid_2.x = this.CalcLinear2OffsetX();
         this._linear_grid_2.y = this.CalcLinear2OffsetY();
 
+        // 创建层
+        for (var index, layer in info.tile_map.layer_list)
+        {
+            var linear = new ALittle.Linear(g_Control);
+            linear.type = ALittle.UIEnumTypes.TYPE_V;
+            linear.width = grid_map_width;
+            this._linear_tile_1.AddChild(linear);
+
+            linear = new ALittle.Linear(g_Control);
+            linear.type = ALittle.UIEnumTypes.TYPE_V;
+            linear.width = grid_map_width;
+
+            linear.x = this.CalcLinear2OffsetX();
+            linear.y = this.CalcLinear2OffsetY();
+            this._linear_tile_2.AddChild(linear);
+        }
+        
+        // 重新设置格子地图的大小
         this.ResizeGridMap(row_count, col_count);
 
+        // 设置图片
+        for (var index, layer in this._user_info.tile_map.layer_list)
+        {
+            for (var row, col_map in layer.cell_map)
+            {
+                for (var col, cell in col_map)
+                {
+                    if (cell.tex_id != null)
+                    {
+                        var image = this.GetImage(index, row, col);
+                        var texture_name = this._user_info.tile_map.tex_map[cell.tex_id];
+                    	image.SetTextureCut("Module/"..g_IDEProject.project.name.."/Texture/"..texture_name, 0, 0, true);
+                    }
+                }
+            }
+        }
+
         this._layer_edit.Init(this, this._user_info);
+
+        this._tab_screen.RefreshClipDisLine();
     }
 
     private fun ResizeLinear(ALittle.Linear linear_1, ALittle.Linear linear_2, int row_count, int col_count, int layer)
@@ -307,19 +500,18 @@ public class IDETileTabChild : IDETabChild
         if (row_count < 10) row_count = 10;
         if (col_count < 10) col_count = 10;
 
-        if (row_count <= linear_1.child_count + linear_2.child_count && linear_1.childs[0].child_count <= col_count) return;
+        if (row_count <= linear_1.child_count + linear_2.child_count && col_count <= linear_1.childs[0].child_count) return;
 
         var linear_height = IDETileTabChild.CalcCellHeight(this._user_info);
 
-        for (var index, child in linear_1.childs)
+        for (var index, child:ALittle.Linear in linear_1.childs)
         {
             for (var col = child.child_count + 1; col <= col_count; 1)
             {
                 if (layer == 0)
-                {
-                    var grid = this.CreateGrid();
-                    child.AddChild(grid);
-                }
+                    child.AddChild(this.CreateGrid());
+                else
+                    child.AddChild(this.CreateImage());
             }
         }
 
@@ -328,14 +520,13 @@ public class IDETileTabChild : IDETabChild
             for (var col = child.child_count + 1; col <= col_count; 1)
             {
                 if (layer == 0)
-                {
-                    var grid = this.CreateGrid();
-                    child.AddChild(grid);
-                }
+                    child.AddChild(this.CreateGrid());
+                else
+                    child.AddChild(this.CreateImage());
             }
         }
 
-        for (var row = linear_1.child_count + linear_2.child_count; row < row_count; 1)
+        for (var row = linear_1.child_count + linear_2.child_count + 1; row <= row_count; 1)
         {
             var linear = new ALittle.Linear(g_Control);
             linear.type = ALittle.UIEnumTypes.TYPE_H;
@@ -343,10 +534,9 @@ public class IDETileTabChild : IDETabChild
             for (var col = 1; col <= col_count; 1)
             {
                 if (layer == 0)
-                {
-                    var grid = this.CreateGrid();
-                    linear.AddChild(grid);
-                }
+                    linear.AddChild(this.CreateGrid());
+                else
+                    linear.AddChild(this.CreateImage());
             }
 
             if (row % 2 == 1)
@@ -354,14 +544,14 @@ public class IDETileTabChild : IDETabChild
             else
                 linear_2.AddChild(linear);
         }
-
     }
 
     private fun ResizeGridMap(int row_count, int col_count)
     {
         this.ResizeLinear(this._linear_grid_1, this._linear_grid_2, row_count, col_count, 0);
+
         for (var index, linear:ALittle.Linear in this._linear_tile_1.childs)
-            this.ResizeLinear(linear, cast<ALittle.Linear>(this._linear_tile_2.childs[index]), row_count, col_count, index);
+        	this.ResizeLinear(linear, cast<ALittle.Linear>(this._linear_tile_2.childs[index]), row_count, col_count, index);
 
         this._tab_screen.container.width = this._linear_grid_2.x + this._linear_grid_2.width;
         this._tab_screen.container.height = this._linear_grid_2.y + this._linear_grid_2.height;
@@ -641,6 +831,50 @@ public class IDETileTabChild : IDETabChild
             var cell = new ALittle.DisplayLayout(g_Control);
             cell.width = this.CalcCellWidth();
             var grid = g_Control.CreateControl{ALittle.DisplayObject}("ide_tile_hex_h_grid");
+            grid.width = side_len * 2;
+            grid.height = side_len * 1.732;
+            cell.AddChild(grid);
+            return cell;
+        }
+
+        return null;
+    }
+
+    private fun CreateImage() : ALittle.DisplayObject
+    {
+        var tile_type = this._user_info.tile_map.tile_type;
+    	var side_len = this._user_info.tile_map.side_len;
+
+        if (tile_type == ALittle.TileType.SQUARE)
+        {
+            var cell = new ALittle.DisplayLayout(g_Control);
+            cell.width = this.CalcCellWidth();
+            var grid = new ALittle.Image(g_Control);
+            cell._user_data = grid;
+            grid.width = side_len;
+            grid.height = side_len;
+            cell.AddChild(grid);
+            return cell;
+        }
+
+        if (tile_type == ALittle.TileType.HEX_V)
+        {
+            var cell = new ALittle.DisplayLayout(g_Control);
+            cell.width = this.CalcCellWidth();
+            var grid = new ALittle.Image(g_Control);
+            cell._user_data = grid;
+            grid.width = side_len * 1.732;
+            grid.height = side_len * 2;
+            cell.AddChild(grid);
+            return cell;
+        }
+
+        if (tile_type == ALittle.TileType.HEX_H)
+        {
+            var cell = new ALittle.DisplayLayout(g_Control);
+            cell.width = this.CalcCellWidth();
+            var grid = new ALittle.Image(g_Control);
+            cell._user_data = grid;
             grid.width = side_len * 2;
             grid.height = side_len * 1.732;
             cell.AddChild(grid);

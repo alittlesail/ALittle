@@ -6,6 +6,8 @@ protected struct IDETileTreeUserInfo
     AUIPlugin.AUIFileTreeUserInfo info;	// 文件树中的信息
     string module_name;	// 所属模块名
     ALittle.TileMap tile_map;	// 格子表
+    Map<string, int> tex_id_map;
+    int tex_id_max;
 }
 
 protected class IDEUITileList : AUIPlugin.AUIFileTreeLayout
@@ -122,7 +124,6 @@ protected class IDEUITileList : AUIPlugin.AUIFileTreeLayout
 
         if (!g_IDETileSettingDialog.ShowDialog(tile_map)) return;
         
-        ALittle.Log(user_info.path);
         var error = ui.control.WriteMessageToFile(tile_map, user_info.path);
         if (error != null)
         {

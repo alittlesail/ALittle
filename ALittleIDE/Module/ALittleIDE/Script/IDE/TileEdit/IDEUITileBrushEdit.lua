@@ -14,8 +14,8 @@ option_map = {}
 })
 ALittle.RegStruct(1575666720, "ALittleIDE.IDEUITileBrushInfo", {
 name = "ALittleIDE.IDEUITileBrushInfo", ns_name = "ALittleIDE", rl_name = "IDEUITileBrushInfo", hash_code = 1575666720,
-name_list = {"_image","_item","tex_path"},
-type_list = {"ALittle.Image","ALittle.DisplayLayout","string"},
+name_list = {"_image","_item","tex_path","module_path"},
+type_list = {"ALittle.Image","ALittle.DisplayLayout","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -107,6 +107,7 @@ function ALittleIDE.IDEUITileBrushEdit:AddBrushList(module_path_list, tex_path_l
 		info._item = ALittleIDE.g_Control:CreateControl("ide_tile_brush_item", info)
 		info._image:SetTextureCut(module_path, 0, 0, true)
 		info.tex_path = tex_path
+		info.module_path = module_path
 		info._item._user_data = info
 		self._brush_list:AddChild(info._item)
 	end
@@ -162,10 +163,10 @@ function ALittleIDE.IDEUITileLayerEdit:GetCurLayerInfo()
 	for index, child in ___ipairs(self._layer_list.childs) do
 		local info = child._user_data
 		if info._button.selected then
-			return info
+			return info, index
 		end
 	end
-	return nil
+	return nil, nil
 end
 
 function ALittleIDE.IDEUITileLayerEdit:HandleAddLayerClick(event)

@@ -19,8 +19,8 @@ option_map = {}
 })
 ALittle.RegStruct(1826926916, "ALittleIDE.IDETileTreeUserInfo", {
 name = "ALittleIDE.IDETileTreeUserInfo", ns_name = "ALittleIDE", rl_name = "IDETileTreeUserInfo", hash_code = 1826926916,
-name_list = {"info","module_name","tile_map"},
-type_list = {"AUIPlugin.AUIFileTreeUserInfo","string","ALittle.TileMap"},
+name_list = {"info","module_name","tile_map","tex_id_map","tex_id_max"},
+type_list = {"AUIPlugin.AUIFileTreeUserInfo","string","ALittle.TileMap","Map<string,int>","int"},
 option_map = {}
 })
 ALittle.RegStruct(-1718818319, "AUIPlugin.AUIFileDeleteDirEvent", {
@@ -165,7 +165,6 @@ function ALittleIDE.IDEUITileList:ShowSetting(user_info)
 	if not ALittleIDE.g_IDETileSettingDialog:ShowDialog(tile_map) then
 		return
 	end
-	ALittle.Log(user_info.path)
 	local error = ui.control:WriteMessageToFile(___all_struct[-1281734132], tile_map, user_info.path)
 	if error ~= nil then
 		g_AUITool:ShowNotice("提示", "保存失败:" .. error)

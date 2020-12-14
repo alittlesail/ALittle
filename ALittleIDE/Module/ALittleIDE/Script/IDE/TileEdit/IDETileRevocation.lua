@@ -91,4 +91,48 @@ function ALittleIDE.IDETileRenameLayerRevoke:Back()
 	self._layer_info._layer.name = self._old_name
 end
 
+assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
+ALittleIDE.IDETileBrushCellRevoke = Lua.Class(ALittle.RevokeObject, "ALittleIDE.IDETileBrushCellRevoke")
+
+function ALittleIDE.IDETileBrushCellRevoke:Ctor(tab_child, layer_info, cell, image, old_tex_path, new_tex_path)
+	___rawset(self, "_tab_child", tab_child)
+	___rawset(self, "_layer_info", layer_info)
+	___rawset(self, "_cell", cell)
+	___rawset(self, "_image", image)
+	___rawset(self, "_old_tex_path", old_tex_path)
+	___rawset(self, "_new_tex_path", new_tex_path)
+end
+
+function ALittleIDE.IDETileBrushCellRevoke:Forward()
+	if self._new_tex_path ~= nil then
+		local tex_id = self._layer_info._user_info.tex_id_map[self._new_tex_path]
+		if tex_id == nil then
+			tex_id = self._layer_info._user_info.tex_id_max + 1
+			self._layer_info._user_info.tex_id_max = tex_id
+			self._layer_info._user_info.tex_id_map[self._new_tex_path] = tex_id
+		end
+		self._cell.tex_id = tex_id
+		self._image:SetTextureCut("Module/" .. ALittleIDE.g_IDEProject.project.name .. "/Texture/" .. self._new_tex_path, 0, 0, true)
+	else
+		self._cell.tex_id = nil
+		self._image:SetTextureCut(nil, 0, 0, true)
+	end
+end
+
+function ALittleIDE.IDETileBrushCellRevoke:Back()
+	if self._old_tex_path ~= nil then
+		local tex_id = self._layer_info._user_info.tex_id_map[self._old_tex_path]
+		if tex_id == nil then
+			tex_id = self._layer_info._user_info.tex_id_max + 1
+			self._layer_info._user_info.tex_id_max = tex_id
+			self._layer_info._user_info.tex_id_map[self._old_tex_path] = tex_id
+		end
+		self._cell.tex_id = tex_id
+		self._image:SetTextureCut("Module/" .. ALittleIDE.g_IDEProject.project.name .. "/Texture/" .. self._old_tex_path, 0, 0, true)
+	else
+		self._cell.tex_id = nil
+		self._image:SetTextureCut(nil, 0, 0, true)
+	end
+end
+
 end

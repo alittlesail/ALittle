@@ -70,6 +70,20 @@ function ALittleIDE.IDETileContainer:ClipRect(x, y, width, height, h_move, v_mov
 	end
 end
 
+assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
+ALittleIDE.IDETileLinearContainer = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDETileLinearContainer")
+
+function ALittleIDE.IDETileLinearContainer:ClipRect(x, y, width, height, h_move, v_move)
+	self._linear_grid_1:ClipRect(x - self._x, y - self._y, width - self._x, height - self._y, h_move, v_move)
+	self._linear_grid_2:ClipRect(x - self._x, y - self._y, width - self._x, height - self._y, h_move, v_move)
+	for index, child in ___ipairs(self._linear_tile_1.childs) do
+		child:ClipRect(x - self._x, y - self._y, width - self._x, height - self._y, h_move, v_move)
+	end
+	for index, child in ___ipairs(self._linear_tile_2.childs) do
+		child:ClipRect(x - self._x, y - self._y, width - self._x, height - self._y, h_move, v_move)
+	end
+end
+
 assert(ALittleIDE.IDETabChild, " extends class:ALittleIDE.IDETabChild is nil")
 ALittleIDE.IDETileTabChild = Lua.Class(ALittleIDE.IDETabChild, "ALittleIDE.IDETileTabChild")
 
@@ -77,17 +91,21 @@ function ALittleIDE.IDETileTabChild:Ctor(ctrl_sys, module, name, save, user_info
 	___rawset(self, "_user_info", user_info)
 	___rawset(self, "_tab_screen", ALittleIDE.g_Control:CreateControl("ide_tile_tab_screen", self))
 	self._tab_screen._user_data = self
-	self._tab_screen.container = ALittle.DisplayLayout(ALittleIDE.g_Control)
+	self._tab_screen.container = ALittleIDE.IDETileContainer(ALittleIDE.g_Control)
 	___rawset(self, "_linear_grid_1", ALittle.Linear(ALittleIDE.g_Control))
 	self._linear_grid_1.type = 2
-	self._tab_screen:AddChild(self._linear_grid_1)
+	self._tile_container._linear_grid_1 = self._linear_grid_1
+	self._tile_container:AddChild(self._linear_grid_1)
 	___rawset(self, "_linear_grid_2", ALittle.Linear(ALittleIDE.g_Control))
 	self._linear_grid_2.type = 2
-	self._tab_screen:AddChild(self._linear_grid_2)
+	self._tile_container._linear_grid_2 = self._linear_grid_2
+	self._tile_container:AddChild(self._linear_grid_2)
 	___rawset(self, "_linear_tile_1", ALittle.DisplayGroup(ALittleIDE.g_Control))
-	self._tab_screen:AddChild(self._linear_tile_1)
 	___rawset(self, "_linear_tile_2", ALittle.DisplayGroup(ALittleIDE.g_Control))
-	self._tab_screen:AddChild(self._linear_tile_2)
+	self._tile_container._linear_tile_1 = self._linear_tile_1
+	self._tile_container._linear_tile_2 = self._linear_tile_2
+	self._tile_container:AddChild(self._linear_tile_1)
+	self._tile_container:AddChild(self._linear_tile_2)
 	___rawset(self, "_layer_edit", ALittleIDE.g_Control:CreateControl("ide_tile_layer_detail_layout"))
 	ALittleIDE.g_IDECenter.center:AddEventListener(___all_struct[-751714957], self, self.HandleHandDrag)
 	self._tab_rb_quad:AddEventListener(___all_struct[1883782801], self, self.HandleQuadLButtonDown)
@@ -107,20 +125,67 @@ function ALittleIDE.IDETileTabChild:HandleQuadLButtonDown(event)
 			g_AUITool:ShowNotice("提示", "请先从地块库选择地块")
 			return
 		end
-		local layer_info = self._layer_edit:GetCurLayerInfo()
+		local layer_info, layer_index = self._layer_edit:GetCurLayerInfo()
 		if layer_info == nil then
 			g_AUITool:ShowNotice("提示", "请先选择图层")
 			return
 		end
 		local row, col = self:CalcRowColByPos(event.rel_x, event.rel_y)
-		if row % 2 == 0 then
+		self._drag_cell_row = row
+		self._drag_cell_col = col
+		local col_map = layer_info._layer.cell_map[row]
+		if col_map == nil then
+			col_map = {}
+			layer_info._layer.cell_map[row] = col_map
 		end
+		local cell = col_map[col]
+		if cell == nil then
+			cell = {}
+			col_map[col] = cell
+		end
+		local old_tex_path
+		if cell.tex_id ~= nil then
+			old_tex_path = layer_info._user_info.tile_map.tex_map[cell.tex_id]
+		end
+		local tex_id = layer_info._user_info.tex_id_map[brush_info.tex_path]
+		if tex_id == nil then
+			tex_id = layer_info._user_info.tex_id_max + 1
+			layer_info._user_info.tex_id_max = tex_id
+			layer_info._user_info.tex_id_map[brush_info.tex_path] = tex_id
+		end
+		cell.tex_id = tex_id
+		local image = self:GetImage(layer_index, row, col)
+		image:SetTextureCut(brush_info.module_path, 0, 0, true)
+		local revoke = ALittleIDE.IDETileBrushCellRevoke(self, layer_info, cell, image, old_tex_path, brush_info.tex_path)
+		self._revoke_list:PushRevoke(revoke)
+		self.save = false
 	elseif ALittleIDE.g_IDECenter.center.tile_erase then
-		local layer_info = self._layer_edit:GetCurLayerInfo()
+		local layer_info, layer_index = self._layer_edit:GetCurLayerInfo()
 		if layer_info == nil then
 			g_AUITool:ShowNotice("提示", "请先选择图层")
 			return
 		end
+		local row, col = self:CalcRowColByPos(event.rel_x, event.rel_y)
+		self._drag_cell_row = row
+		self._drag_cell_col = col
+		local col_map = layer_info._layer.cell_map[row]
+		if col_map == nil then
+			return
+		end
+		local cell = col_map[col]
+		if cell == nil then
+			return
+		end
+		if cell.tex_id == nil then
+			return
+		end
+		local old_tex_path = layer_info._user_info.tile_map.tex_map[cell.tex_id]
+		cell.tex_id = nil
+		local image = self:GetImage(layer_index, row, col)
+		image:SetTextureCut(nil, 0, 0, true)
+		local revoke = ALittleIDE.IDETileBrushCellRevoke(self, layer_info, cell, image, old_tex_path, nil)
+		self._revoke_list:PushRevoke(revoke)
+		self.save = false
 	end
 end
 
@@ -137,18 +202,74 @@ function ALittleIDE.IDETileTabChild:HandleQuadDrag(event)
 		if brush_info == nil then
 			return
 		end
-		local layer_info = self._layer_edit:GetCurLayerInfo()
+		local layer_info, layer_index = self._layer_edit:GetCurLayerInfo()
 		if layer_info == nil then
 			return
 		end
+		local row, col = self:CalcRowColByPos(event.rel_x, event.rel_y)
+		if self._drag_cell_row == row and self._drag_cell_col == col then
+			return
+		end
+		self._drag_cell_row = row
+		self._drag_cell_col = col
+		local col_map = layer_info._layer.cell_map[row]
+		if col_map == nil then
+			col_map = {}
+			layer_info._layer.cell_map[row] = col_map
+		end
+		local cell = col_map[col]
+		if cell == nil then
+			cell = {}
+			col_map[col] = cell
+		end
+		local old_tex_path
+		if cell.tex_id ~= nil then
+			old_tex_path = layer_info._user_info.tile_map.tex_map[cell.tex_id]
+		end
+		local tex_id = layer_info._user_info.tex_id_map[brush_info.tex_path]
+		if tex_id == nil then
+			tex_id = layer_info._user_info.tex_id_max + 1
+			layer_info._user_info.tex_id_max = tex_id
+			layer_info._user_info.tex_id_map[brush_info.tex_path] = tex_id
+		end
+		cell.tex_id = tex_id
+		local image = self:GetImage(layer_index, row, col)
+		image:SetTextureCut(brush_info.module_path, 0, 0, true)
+		local revoke = ALittleIDE.IDETileBrushCellRevoke(self, layer_info, cell, image, old_tex_path, brush_info.tex_path)
+		self._revoke_list:PushRevoke(revoke)
+		self.save = false
 	elseif ALittleIDE.g_IDECenter.center.tile_handdrag then
 		event.target = self._tab_screen
 		self._tab_screen:DispatchEvent(___all_struct[1337289812], event)
 	elseif ALittleIDE.g_IDECenter.center.tile_erase then
-		local layer_info = self._layer_edit:GetCurLayerInfo()
+		local layer_info, layer_index = self._layer_edit:GetCurLayerInfo()
 		if layer_info == nil then
 			return
 		end
+		local row, col = self:CalcRowColByPos(event.rel_x, event.rel_y)
+		if self._drag_cell_row == row and self._drag_cell_col == col then
+			return
+		end
+		self._drag_cell_row = row
+		self._drag_cell_col = col
+		local col_map = layer_info._layer.cell_map[row]
+		if col_map == nil then
+			return
+		end
+		local cell = col_map[col]
+		if cell == nil then
+			return
+		end
+		if cell.tex_id == nil then
+			return
+		end
+		local old_tex_path = layer_info._user_info.tile_map.tex_map[cell.tex_id]
+		cell.tex_id = nil
+		local image = self:GetImage(layer_index, row, col)
+		image:SetTextureCut(nil, 0, 0, true)
+		local revoke = ALittleIDE.IDETileBrushCellRevoke(self, layer_info, cell, image, old_tex_path, nil)
+		self._revoke_list:PushRevoke(revoke)
+		self.save = false
 	end
 end
 
@@ -159,6 +280,8 @@ function ALittleIDE.IDETileTabChild:HandleQuadDragEnd(event)
 		self._tab_screen:DispatchEvent(___all_struct[150587926], event)
 	elseif ALittleIDE.g_IDECenter.center.tile_erase then
 	end
+	self._drag_cell_row = nil
+	self._drag_cell_col = nil
 end
 
 function ALittleIDE.IDETileTabChild.__getter:layer_edit()
@@ -205,6 +328,9 @@ function ALittleIDE.IDETileTabChild:ShowTileFocus()
 	ALittleIDE.g_IDECenter.center.tile_list:ShowTreeItemFocus(tree)
 end
 
+function ALittleIDE.IDETileTabChild:SetTileImage(layer, row, col, tex_path)
+end
+
 function ALittleIDE.IDETileTabChild:CreateLayer()
 	local linear_1 = ALittle.Linear(ALittleIDE.g_Control)
 	linear_1.type = 2
@@ -221,6 +347,17 @@ function ALittleIDE.IDETileTabChild:GetLayer(index)
 	local linear_1 = self._linear_tile_1:GetChildByIndex(index)
 	local linear_2 = self._linear_tile_2:GetChildByIndex(index)
 	return linear_1, linear_2
+end
+
+function ALittleIDE.IDETileTabChild:GetImage(layer, row, col)
+	local linear_1, linear_2 = self:GetLayer(layer)
+	if linear_1 == nil then
+		return nil
+	end
+	if row % 2 == 1 then
+		return linear_1.childs[ALittle.Math_Floor(row / 2) + 1].childs[col]._user_data
+	end
+	return linear_2.childs[ALittle.Math_Floor(row / 2)].childs[col]._user_data
 end
 
 function ALittleIDE.IDETileTabChild:AddLayer(linear_1, linear_2, index)
@@ -288,6 +425,14 @@ end
 
 function ALittleIDE.IDETileTabChild:CreateBySelect(info)
 	self._user_info = info
+	info.tex_id_map = {}
+	info.tex_id_max = 0
+	for tex_id, tex_path in ___pairs(info.tile_map.tex_map) do
+		info.tex_id_map[tex_path] = tex_id
+		if info.tex_id_max < tex_id then
+			info.tex_id_max = tex_id
+		end
+	end
 	local col_count = info.tile_map.col_count + 10
 	local row_count = info.tile_map.row_count + 10
 	local grid_map_width = self:CalcCellWidth() * col_count
@@ -295,8 +440,32 @@ function ALittleIDE.IDETileTabChild:CreateBySelect(info)
 	self._linear_grid_2.width = grid_map_width
 	self._linear_grid_2.x = self:CalcLinear2OffsetX()
 	self._linear_grid_2.y = self:CalcLinear2OffsetY()
+	for index, layer in ___ipairs(info.tile_map.layer_list) do
+		local linear = ALittle.Linear(ALittleIDE.g_Control)
+		linear.type = 2
+		linear.width = grid_map_width
+		self._linear_tile_1:AddChild(linear)
+		linear = ALittle.Linear(ALittleIDE.g_Control)
+		linear.type = 2
+		linear.width = grid_map_width
+		linear.x = self:CalcLinear2OffsetX()
+		linear.y = self:CalcLinear2OffsetY()
+		self._linear_tile_2:AddChild(linear)
+	end
 	self:ResizeGridMap(row_count, col_count)
+	for index, layer in ___ipairs(self._user_info.tile_map.layer_list) do
+		for row, col_map in ___pairs(layer.cell_map) do
+			for col, cell in ___pairs(col_map) do
+				if cell.tex_id ~= nil then
+					local image = self:GetImage(index, row, col)
+					local texture_name = self._user_info.tile_map.tex_map[cell.tex_id]
+					image:SetTextureCut("Module/" .. ALittleIDE.g_IDEProject.project.name .. "/Texture/" .. texture_name, 0, 0, true)
+				end
+			end
+		end
+	end
 	self._layer_edit:Init(self, self._user_info)
+	self._tab_screen:RefreshClipDisLine()
 end
 
 function ALittleIDE.IDETileTabChild:ResizeLinear(linear_1, linear_2, row_count, col_count, layer)
@@ -306,7 +475,7 @@ function ALittleIDE.IDETileTabChild:ResizeLinear(linear_1, linear_2, row_count, 
 	if col_count < 10 then
 		col_count = 10
 	end
-	if row_count <= linear_1.child_count + linear_2.child_count and linear_1.childs[0].child_count <= col_count then
+	if row_count <= linear_1.child_count + linear_2.child_count and col_count <= linear_1.childs[0].child_count then
 		return
 	end
 	local linear_height = ALittleIDE.IDETileTabChild.CalcCellHeight(self._user_info)
@@ -315,8 +484,9 @@ function ALittleIDE.IDETileTabChild:ResizeLinear(linear_1, linear_2, row_count, 
 		while true do
 			if not(col <= col_count) then break end
 			if layer == 0 then
-				local grid = self:CreateGrid()
-				child:AddChild(grid)
+				child:AddChild(self:CreateGrid())
+			else
+				child:AddChild(self:CreateImage())
 			end
 			col = col+(1)
 		end
@@ -326,15 +496,16 @@ function ALittleIDE.IDETileTabChild:ResizeLinear(linear_1, linear_2, row_count, 
 		while true do
 			if not(col <= col_count) then break end
 			if layer == 0 then
-				local grid = self:CreateGrid()
-				child:AddChild(grid)
+				child:AddChild(self:CreateGrid())
+			else
+				child:AddChild(self:CreateImage())
 			end
 			col = col+(1)
 		end
 	end
-	local row = linear_1.child_count + linear_2.child_count
+	local row = linear_1.child_count + linear_2.child_count + 1
 	while true do
-		if not(row < row_count) then break end
+		if not(row <= row_count) then break end
 		local linear = ALittle.Linear(ALittleIDE.g_Control)
 		linear.type = 1
 		linear.height = linear_height
@@ -342,8 +513,9 @@ function ALittleIDE.IDETileTabChild:ResizeLinear(linear_1, linear_2, row_count, 
 		while true do
 			if not(col <= col_count) then break end
 			if layer == 0 then
-				local grid = self:CreateGrid()
-				linear:AddChild(grid)
+				linear:AddChild(self:CreateGrid())
+			else
+				linear:AddChild(self:CreateImage())
 			end
 			col = col+(1)
 		end
@@ -563,6 +735,42 @@ function ALittleIDE.IDETileTabChild:CreateGrid()
 		local cell = ALittle.DisplayLayout(ALittleIDE.g_Control)
 		cell.width = self:CalcCellWidth()
 		local grid = ALittleIDE.g_Control:CreateControl("ide_tile_hex_h_grid")
+		grid.width = side_len * 2
+		grid.height = side_len * 1.732
+		cell:AddChild(grid)
+		return cell
+	end
+	return nil
+end
+
+function ALittleIDE.IDETileTabChild:CreateImage()
+	local tile_type = self._user_info.tile_map.tile_type
+	local side_len = self._user_info.tile_map.side_len
+	if tile_type == 1 then
+		local cell = ALittle.DisplayLayout(ALittleIDE.g_Control)
+		cell.width = self:CalcCellWidth()
+		local grid = ALittle.Image(ALittleIDE.g_Control)
+		cell._user_data = grid
+		grid.width = side_len
+		grid.height = side_len
+		cell:AddChild(grid)
+		return cell
+	end
+	if tile_type == 2 then
+		local cell = ALittle.DisplayLayout(ALittleIDE.g_Control)
+		cell.width = self:CalcCellWidth()
+		local grid = ALittle.Image(ALittleIDE.g_Control)
+		cell._user_data = grid
+		grid.width = side_len * 1.732
+		grid.height = side_len * 2
+		cell:AddChild(grid)
+		return cell
+	end
+	if tile_type == 3 then
+		local cell = ALittle.DisplayLayout(ALittleIDE.g_Control)
+		cell.width = self:CalcCellWidth()
+		local grid = ALittle.Image(ALittleIDE.g_Control)
+		cell._user_data = grid
 		grid.width = side_len * 2
 		grid.height = side_len * 1.732
 		cell:AddChild(grid)

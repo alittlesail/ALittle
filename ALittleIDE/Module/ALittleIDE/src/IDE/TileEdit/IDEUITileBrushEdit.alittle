@@ -5,7 +5,8 @@ protected struct IDEUITileBrushInfo
 {
     ALittle.Image _image;
     ALittle.DisplayLayout _item;
-    string tex_path;
+    string tex_path;		// 模块下Texture下的路径
+    string module_path;	// 模块的相对路径
 }
 
 protected struct IDEUITileLayerInfo
@@ -59,6 +60,7 @@ protected class IDEUITileBrushEdit : ALittle.DisplayLayout
             info._item = g_Control.CreateControl{ALittle.DisplayLayout}("ide_tile_brush_item", info);
             info._image.SetTextureCut(module_path, 0, 0, true);
             info.tex_path = tex_path;
+            info.module_path = module_path;
             info._item._user_data = info;
             this._brush_list.AddChild(info._item);
         }
@@ -115,14 +117,14 @@ protected class IDEUITileLayerEdit : ALittle.DisplayLayout
 
     public get layer_list() : ALittle.ScrollList { return this._layer_list; }
 
-    public fun GetCurLayerInfo() : IDEUITileLayerInfo
+    public fun GetCurLayerInfo() : IDEUITileLayerInfo, int
     {
         for (var index, child in this._layer_list.childs)
         {
             var info = cast<IDEUITileLayerInfo>(child._user_data);
-            if (info._button.selected) return info;
+            if (info._button.selected) return info, index;
         }
-        return null;
+        return null, null;
     }
 
     private async fun HandleAddLayerClick(ALittle.UIClickEvent event)

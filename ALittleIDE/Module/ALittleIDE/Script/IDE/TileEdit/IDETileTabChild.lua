@@ -152,6 +152,7 @@ function ALittleIDE.IDETileTabChild:HandleQuadLButtonDown(event)
 			tex_id = layer_info._user_info.tex_id_max + 1
 			layer_info._user_info.tex_id_max = tex_id
 			layer_info._user_info.tex_id_map[brush_info.tex_path] = tex_id
+			layer_info._user_info.tile_map.tex_map[tex_id] = brush_info.tex_path
 		end
 		cell.tex_id = tex_id
 		local image = self:GetImage(layer_index, row, col)
@@ -231,6 +232,7 @@ function ALittleIDE.IDETileTabChild:HandleQuadDrag(event)
 			tex_id = layer_info._user_info.tex_id_max + 1
 			layer_info._user_info.tex_id_max = tex_id
 			layer_info._user_info.tex_id_map[brush_info.tex_path] = tex_id
+			layer_info._user_info.tile_map.tex_map[tex_id] = brush_info.tex_path
 		end
 		cell.tex_id = tex_id
 		local image = self:GetImage(layer_index, row, col)
@@ -328,9 +330,6 @@ function ALittleIDE.IDETileTabChild:ShowTileFocus()
 	ALittleIDE.g_IDECenter.center.tile_list:ShowTreeItemFocus(tree)
 end
 
-function ALittleIDE.IDETileTabChild:SetTileImage(layer, row, col, tex_path)
-end
-
 function ALittleIDE.IDETileTabChild:CreateLayer()
 	local linear_1 = ALittle.Linear(ALittleIDE.g_Control)
 	linear_1.type = 2
@@ -340,6 +339,9 @@ function ALittleIDE.IDETileTabChild:CreateLayer()
 	linear_2.x = self:CalcLinear2OffsetX()
 	linear_2.y = self:CalcLinear2OffsetY()
 	self._linear_tile_2:AddChild(linear_2)
+	local row_count = self._linear_grid_1.child_count
+	local col_count = self._linear_grid_1.childs[1].child_count
+	self:ResizeLinear(linear_1, linear_2, row_count, col_count, self._linear_tile_1.child_count)
 	return linear_1, linear_2
 end
 

@@ -36,12 +36,6 @@ name_list = {"tile_type","side_len","col_count","row_count","tex_map","layer_lis
 type_list = {"int","int","int","int","Map<int,string>","List<ALittle.TileLayer>"},
 option_map = {}
 })
-ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
-name = "ALittle.UIChangedEvent", ns_name = "ALittle", rl_name = "UIChangedEvent", hash_code = 958494922,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
 ALittle.RegStruct(-686652419, "AUIPlugin.AUIFileTreeUserInfo", {
 name = "AUIPlugin.AUIFileTreeUserInfo", ns_name = "AUIPlugin", rl_name = "AUIFileTreeUserInfo", hash_code = -686652419,
 name_list = {"path","name","root","group","on_right_menu","on_select_file","on_delete_file","on_create_file","on_delete_dir"},
@@ -143,7 +137,6 @@ function ALittleIDE.IDEUITileLayerEdit:Init(tab_child, user_info)
 		info._button.group = self._group
 		info._button._user_data = info
 		info._button:AddEventListener(___all_struct[-641444818], self, self.HandleRButtonDown)
-		info._button:AddEventListener(___all_struct[958494922], self, self.HandleChanged)
 		info._item._user_data = info
 		self._layer_list:AddChild(info._item)
 		info._layer = layer
@@ -182,10 +175,11 @@ function ALittleIDE.IDEUITileLayerEdit:HandleAddLayerClick(event)
 	info._button.group = self._group
 	info._button._user_data = info
 	info._button:AddEventListener(___all_struct[-641444818], self, self.HandleRButtonDown)
-	info._button:AddEventListener(___all_struct[958494922], self, self.HandleChanged)
+	info._item._user_data = info
 	self._layer_list:AddChild(info._item)
 	info._layer = {}
 	info._layer.name = name
+	info._layer.cell_map = {}
 	ALittle.List_Push(self._user_info.tile_map.layer_list, info._layer)
 	info._linear_1, info._linear_2 = self._tab_child:CreateLayer()
 	local revoke = ALittleIDE.IDETileAddLayerRevoke(self._tab_child, info)
@@ -264,11 +258,6 @@ function ALittleIDE.IDEUITileLayerEdit:HandleDownLayer(info)
 	local revoke = ALittleIDE.IDETileSetLayerIndexRevoke(self._tab_child, info, index, index + 1)
 	self._tab_child.revoke_list:PushRevoke(revoke)
 	self._tab_child.save = false
-end
-
-function ALittleIDE.IDEUITileLayerEdit:HandleChanged(event)
-	local info = event.target._user_data
-	local index = self._layer_list:GetChildIndex(info._item)
 end
 
 function ALittleIDE.IDEUITileLayerEdit:HandleHideLayer(info)

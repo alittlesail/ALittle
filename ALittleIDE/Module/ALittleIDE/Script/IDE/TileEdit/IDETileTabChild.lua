@@ -113,7 +113,8 @@ function ALittleIDE.IDETileTabChild:HandleQuadLButtonDown(event)
 			return
 		end
 		local row, col = self:CalcRowColByPos(event.rel_x, event.rel_y)
-		ALittle.Log(row, col)
+		if row % 2 == 0 then
+		end
 	elseif ALittleIDE.g_IDECenter.center.tile_erase then
 		local layer_info = self._layer_edit:GetCurLayerInfo()
 		if layer_info == nil then
@@ -457,30 +458,82 @@ function ALittleIDE.IDETileTabChild:CalcRowColByPos(x, y)
 		local row = ALittle.Math_Floor(x / side_len)
 		local col = ALittle.Math_Floor(y / side_len)
 		return row + 1, col + 1
-	elseif tile_type == 2 then
-		local split_x = ALittle.Math_Floor(x / (side_len * 1.732 / 2))
-		local offset_x = x - split_x * (side_len * 1.732 / 2)
+	end
+	if tile_type == 3 then
+		tile_type = 2
+		local tmp = y
+		y = x
+		x = tmp
+	end
+	if tile_type == 2 then
+		local half_width = side_len * 1.732 / 2
+		local split_x = ALittle.Math_Floor(x / half_width)
+		local offset_x = x - split_x * half_width
 		if split_x % 2 == 0 then
 			local split_y = ALittle.Math_Floor(y / (side_len * 3))
 			local offset_y = y - split_y * (side_len * 3)
 			if offset_y < side_len / 2 then
 				local row = split_y * 2
-				local col = split_x / 2
-				if -(1 / 1.732) * offset_x + (side_len / 2) < offset_y then
+				local col = ALittle.Math_Floor(split_x / 2)
+				local test_y = -1 / 1.732 * offset_x + side_len / 2
+				if offset_y < test_y then
 					row = row - (1)
 					col = col - (1)
 				end
 				return row + 1, col + 1
-			elseif offset_y < side_len * 3 / 2 then
-			elseif offset_y < side_len * 2 then
-			else
-				local row = split_y + 1
-				local col = split_x / 2 + 1
-				return row, col
+			end
+			if offset_y < side_len * 3 / 2 then
+				local row = split_y * 2
+				local col = ALittle.Math_Floor(split_x / 2)
+				return row + 1, col + 1
+			end
+			if offset_y < side_len * 2 then
+				local row = split_y * 2
+				local col = ALittle.Math_Floor(split_x / 2)
+				local test_y = 1 / 1.732 * offset_x
+				if offset_y - side_len * 3 / 2 > test_y then
+					row = row + (1)
+					col = col - (1)
+				end
+				return row + 1, col + 1
+			end
+			do
+				local row = split_y * 2 + 1
+				local col = ALittle.Math_Floor(split_x / 2) - 1
+				return row + 1, col + 1
 			end
 		else
+			local split_y = ALittle.Math_Floor(y / (side_len * 3))
+			local offset_y = y - split_y * (side_len * 3)
+			if offset_y < side_len / 2 then
+				local row = split_y * 2
+				local col = ALittle.Math_Floor(split_x / 2)
+				local test_y = 1 / 1.732 * offset_x
+				if offset_y < test_y then
+					row = row - (1)
+				end
+				return row + 1, col + 1
+			end
+			if offset_y < side_len * 3 / 2 then
+				local row = split_y * 2
+				local col = ALittle.Math_Floor(split_x / 2)
+				return row + 1, col + 1
+			end
+			if offset_y < side_len * 2 then
+				local row = split_y * 2
+				local col = ALittle.Math_Floor(split_x / 2)
+				local test_y = -1 / 1.732 * offset_x + side_len / 2
+				if offset_y - side_len * 3 / 2 > test_y then
+					row = row + (1)
+				end
+				return row + 1, col + 1
+			end
+			do
+				local row = split_y * 2 + 1
+				local col = ALittle.Math_Floor(split_x / 2)
+				return row + 1, col + 1
+			end
 		end
-	elseif tile_type == 3 then
 	end
 	return 0, 0
 end

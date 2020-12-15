@@ -1,1 +1,0 @@
-{"ide_image_select_item":{"__childs":[{"__class":"TextButton","alpha":0,"width_type":4,"__link":"button","height_type":4},{"y_type":3,"height_value":64,"width_value":64,"__class":"Image","x_type":3,"__link":"image","texture_name":"file_icon_64.png"}],"__class":"DisplayLayout","height_value":93,"width_value":92}}

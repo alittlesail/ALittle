@@ -696,6 +696,128 @@ public class IDETileTabChild : IDETabChild
         return 0, 0;
     }
 
+    private fun CalcRowColByPosInHexV(double x, double y) : int, int
+    {
+        var tile_type = this._user_info.tile_map.tile_type;
+    	var side_len = this._user_info.tile_map.side_len;
+
+        var half_width = side_len * 1.732 / 2;
+        var split_x = ALittle.Math_Floor(x / half_width);
+        var offset_x = x - split_x * half_width;
+
+        if (split_x % 2 == 0)
+        {
+            var split_y = ALittle.Math_Floor(y / (side_len * 3));
+            var offset_y = y - split_y * (side_len * 3);
+            // 把纵向以如下单位进行切割
+            // 1 | / |
+            // 2 ||  |
+            // 3 | \ |
+            // 4 | | |
+
+            // 第一段，直线方程： y = -1 / 1.732*x + side_len / 2
+            if (offset_y < side_len / 2)
+            {
+                var row = split_y * 2;
+                var col = ALittle.Math_Floor(split_x / 2);
+
+                var test_y = -1 / 1.732 * offset_x + side_len / 2;
+                if (offset_y < test_y)
+                {
+                    row -= 1;
+                    col -= 1;
+                }
+
+                return row + 1, col + 1;
+            }
+
+            // 第二段，长方形
+            if (offset_y < side_len * 3 / 2)
+            {
+                var row = split_y * 2;
+                var col = ALittle.Math_Floor(split_x / 2);
+
+                return row + 1, col + 1;
+            }
+
+            // 第三段，直线方程： y = 1 / 1.732*x
+            if (offset_y < side_len * 2)
+            {
+                var row = split_y * 2;
+                var col = ALittle.Math_Floor(split_x / 2);
+
+                var test_y = 1 / 1.732 * offset_x;
+                if (offset_y - side_len * 3 / 2 > test_y)
+                {
+                    row += 1;
+                    col -= 1;
+                }
+                return row + 1, col + 1;
+            }
+
+            // 第四段，长方形
+            {
+                var row = split_y * 2 + 1;
+                var col = ALittle.Math_Floor(split_x / 2) - 1;
+                return row + 1, col + 1;
+            }
+        }
+        else
+        {
+            var split_y = ALittle.Math_Floor(y / (side_len * 3));
+            var offset_y = y - split_y * (side_len * 3);
+            // 把纵向以如下单位进行切割
+            // 1 | \ |
+            // 2 |  ||
+            // 3 | / |
+            // 4 ||  |
+
+            // 第一段，直线方程： y = 1 / 1.732*x
+            if (offset_y < side_len / 2)
+            {
+                var row = split_y * 2;
+                var col = ALittle.Math_Floor(split_x / 2);
+
+                var test_y = 1 / 1.732 * offset_x;
+                if (offset_y < test_y )
+                {
+                    row -= 1;
+                }
+                return row + 1, col + 1;
+            }
+
+                // 第二段，长方形
+            if (offset_y < side_len * 3 / 2)
+            {
+                var row = split_y * 2;
+                var col = ALittle.Math_Floor(split_x / 2);
+
+                return row + 1, col + 1;
+            }
+
+                // 第三段，直线方程： y = -1 / 1.732*x + side_len / 2
+            if (offset_y < side_len * 2)
+            {
+                var row = split_y * 2;
+                var col = ALittle.Math_Floor(split_x / 2);
+
+                var test_y = -1 / 1.732 * offset_x + side_len / 2;
+                if (offset_y - side_len * 3 / 2 > test_y)
+                {
+                    row += 1;
+                }
+                return row + 1, col + 1;
+            }
+
+                // 第四段，长方形
+            {
+                var row = split_y * 2 + 1;
+                var col = ALittle.Math_Floor(split_x / 2);
+                return row + 1, col + 1;
+            }
+        }
+    }
+
     private fun CalcRowColByPos(double x, double y) : int, int
     {
         var tile_type = this._user_info.tile_map.tile_type;
@@ -712,130 +834,14 @@ public class IDETileTabChild : IDETabChild
         // 如果是水平正六边形，那么就转为垂直正六边形
         if (tile_type == ALittle.TileType.HEX_H)
         {
-            tile_type = ALittle.TileType.HEX_V;
-            var tmp = y;
-            y = x;
-            x = tmp;
+            var col, row = this.CalcRowColByPosInHexV(y, x);
+            return row, col;
         }
-        
+
         // 处理垂直正六边形
         if (tile_type == ALittle.TileType.HEX_V)
         {
-            var half_width = side_len * 1.732 / 2;
-            var split_x = ALittle.Math_Floor(x / half_width);
-            var offset_x = x - split_x * half_width;
-
-            if (split_x % 2 == 0)
-            {
-                var split_y = ALittle.Math_Floor(y / (side_len * 3));
-                var offset_y = y - split_y * (side_len * 3);
-                // 把纵向以如下单位进行切割
-                // 1 | / |
-                // 2 ||  |
-                // 3 | \ |
-                // 4 | | |
-
-                // 第一段，直线方程： y = -1 / 1.732*x + side_len / 2
-                if (offset_y < side_len / 2)
-                {
-                    var row = split_y * 2;
-                    var col = ALittle.Math_Floor(split_x / 2);
-
-                    var test_y = -1 / 1.732 * offset_x + side_len / 2;
-                    if (offset_y < test_y)
-                    {
-                        row -= 1;
-                        col -= 1;
-                    }
-
-                    return row + 1, col + 1;
-                }
-
-                // 第二段，长方形
-                if (offset_y < side_len * 3 / 2)
-                {
-                    var row = split_y * 2;
-                    var col = ALittle.Math_Floor(split_x / 2);
-
-                    return row + 1, col + 1;
-                }
-
-                // 第三段，直线方程： y = 1 / 1.732*x
-                if (offset_y < side_len * 2)
-                {
-                    var row = split_y * 2;
-                    var col = ALittle.Math_Floor(split_x / 2);
-
-                    var test_y = 1 / 1.732 * offset_x;
-                    if (offset_y - side_len * 3 / 2 > test_y)
-                    {
-                        row += 1;
-                        col -= 1;
-                    }
-                    return row + 1, col + 1;
-                }
-
-                // 第四段，长方形
-                {
-                    var row = split_y * 2 + 1;
-                    var col = ALittle.Math_Floor(split_x / 2) - 1;
-                    return row + 1, col + 1;
-                }
-            }
-            else
-            {
-                var split_y = ALittle.Math_Floor(y / (side_len * 3));
-                var offset_y = y - split_y * (side_len * 3);
-                // 把纵向以如下单位进行切割
-                // 1 | \ |
-                // 2 |  ||
-                // 3 | / |
-                // 4 ||  |
-
-                // 第一段，直线方程： y = 1 / 1.732*x
-                if (offset_y < side_len / 2)
-                {
-                    var row = split_y * 2;
-                    var col = ALittle.Math_Floor(split_x / 2);
-
-                    var test_y = 1 / 1.732 * offset_x;
-                    if (offset_y < test_y )
-                    {
-                        row -= 1;
-                    }
-                    return row + 1, col + 1;
-                }
-
-                // 第二段，长方形
-                if (offset_y < side_len * 3 / 2)
-                {
-                    var row = split_y * 2;
-                    var col = ALittle.Math_Floor(split_x / 2);
-
-                    return row + 1, col + 1;
-                }
-
-                // 第三段，直线方程： y = -1 / 1.732*x + side_len / 2
-                if (offset_y < side_len * 2)
-                {
-                    var row = split_y * 2;
-                    var col = ALittle.Math_Floor(split_x / 2);
-
-                    var test_y = -1 / 1.732 * offset_x + side_len / 2;
-                    if (offset_y - side_len * 3 / 2 > test_y)
-                    {
-                        row += 1;
-                    }
-                    return row + 1, col + 1;
-                }
-
-                // 第四段，长方形
-                {
-                    var row = split_y * 2 + 1;
-                    var col = ALittle.Math_Floor(split_x / 2);
-                    return row + 1, col + 1;
-                }
-            }
+            return this.CalcRowColByPosInHexV(x, y);
         }
 
         return 0, 0;

@@ -372,10 +372,18 @@ function ALittleIDE.IDETileTabChild:GetImage(layer, row, col)
 	if linear_1 == nil then
 		return nil
 	end
-	if row % 2 == 1 then
-		return linear_1.childs[ALittle.Math_Floor(row / 2) + 1].childs[col]._user_data
+	local tile_type = self._user_info.tile_map.tile_type
+	if tile_type == 2 then
+		if row % 2 == 1 then
+			return linear_1.childs[ALittle.Math_Floor(row / 2) + 1].childs[col]._user_data
+		end
+		return linear_2.childs[ALittle.Math_Floor(row / 2)].childs[col]._user_data
+	else
+		if col % 2 == 1 then
+			return linear_1.childs[row].childs[ALittle.Math_Floor(col / 2) + 1]._user_data
+		end
+		return linear_2.childs[row].childs[ALittle.Math_Floor(col / 2)]._user_data
 	end
-	return linear_2.childs[ALittle.Math_Floor(row / 2)].childs[col]._user_data
 end
 
 function ALittleIDE.IDETileTabChild:AddLayer(linear_1, linear_2, index)
@@ -511,66 +519,148 @@ function ALittleIDE.IDETileTabChild:CreateBySelect(info)
 end
 
 function ALittleIDE.IDETileTabChild:ResizeLinear(linear_1, linear_2, row_count, col_count, layer)
-	if row_count <= linear_1.child_count + linear_2.child_count and col_count <= linear_1.childs[1].child_count then
-		return
-	end
-	linear_1.width = self:CalcCellWidth() * col_count
-	linear_2.width = linear_1.width
-	local linear_height = ALittleIDE.IDETileTabChild.CalcCellHeight(self._user_info)
-	for index, child in ___ipairs(linear_1.childs) do
-		local col = child.child_count + 1
-		while true do
-			if not(col <= col_count) then break end
-			if layer == 0 then
-				child:AddChild(self:CreateGrid())
-			else
-				child:AddChild(self:CreateImage())
-			end
-			col = col+(1)
+	if self._user_info.tile_map.tile_type == 2 then
+		if row_count <= linear_1.child_count + linear_2.child_count and col_count <= linear_1.childs[1].child_count then
+			return
 		end
-	end
-	for index, child in ___ipairs(linear_2.childs) do
-		local col = child.child_count + 1
-		while true do
-			if not(col <= col_count) then break end
-			if layer == 0 then
-				child:AddChild(self:CreateGrid())
-			else
-				child:AddChild(self:CreateImage())
+		linear_1.width = self:CalcCellWidth() * col_count
+		linear_2.width = linear_1.width
+		local linear_height = self:CalcCellHeight()
+		for index, child in ___ipairs(linear_1.childs) do
+			local col = child.child_count + 1
+			while true do
+				if not(col <= col_count) then break end
+				if layer == 0 then
+					child:AddChild(self:CreateGrid())
+				else
+					child:AddChild(self:CreateImage())
+				end
+				col = col+(1)
 			end
-			col = col+(1)
 		end
-	end
-	local row = linear_1.child_count + linear_2.child_count + 1
-	while true do
-		if not(row <= row_count) then break end
-		local linear = ALittle.Linear(ALittleIDE.g_Control)
-		linear.type = 1
-		linear.height = linear_height
-		local col = 1
-		while true do
-			if not(col <= col_count) then break end
-			if layer == 0 then
-				linear:AddChild(self:CreateGrid())
-			else
-				linear:AddChild(self:CreateImage())
+		for index, child in ___ipairs(linear_2.childs) do
+			local col = child.child_count + 1
+			while true do
+				if not(col <= col_count) then break end
+				if layer == 0 then
+					child:AddChild(self:CreateGrid())
+				else
+					child:AddChild(self:CreateImage())
+				end
+				col = col+(1)
 			end
-			col = col+(1)
 		end
-		if row % 2 == 1 then
+		local row = linear_1.child_count + linear_2.child_count + 1
+		while true do
+			if not(row <= row_count) then break end
+			local linear = ALittle.Linear(ALittleIDE.g_Control)
+			linear.type = 1
+			linear.height = linear_height
+			local col = 1
+			while true do
+				if not(col <= col_count) then break end
+				if layer == 0 then
+					linear:AddChild(self:CreateGrid())
+				else
+					linear:AddChild(self:CreateImage())
+				end
+				col = col+(1)
+			end
+			if row % 2 == 1 then
+				linear_1:AddChild(linear)
+			else
+				linear_2:AddChild(linear)
+			end
+			row = row+(1)
+		end
+	else
+		if row_count <= linear_1.child_count and col_count <= linear_1.childs[1].child_count + linear_2.childs[1].child_count then
+			return
+		end
+		local cell_width = self:CalcCellWidth()
+		local linear_height = self:CalcCellHeight()
+		local col_count_1 = ALittle.Math_Ceil(col_count / 2)
+		linear_1.width = cell_width * col_count_1
+		for index, child in ___ipairs(linear_1.childs) do
+			local col = child.child_count + 1
+			while true do
+				if not(col <= col_count_1) then break end
+				if layer == 0 then
+					child:AddChild(self:CreateGrid())
+				else
+					child:AddChild(self:CreateImage())
+				end
+				col = col+(1)
+			end
+		end
+		local col_count_2 = ALittle.Math_Floor(col_count / 2)
+		linear_2.width = cell_width * col_count_2
+		for index, child in ___ipairs(linear_2.childs) do
+			local col = child.child_count + 1
+			while true do
+				if not(col <= col_count_2) then break end
+				if layer == 0 then
+					child:AddChild(self:CreateGrid())
+				else
+					child:AddChild(self:CreateImage())
+				end
+				col = col+(1)
+			end
+		end
+		local row = linear_1.child_count + 1
+		while true do
+			if not(row <= row_count) then break end
+			local linear = ALittle.Linear(ALittleIDE.g_Control)
+			linear.type = 1
+			linear.height = linear_height
+			local col = 1
+			while true do
+				if not(col <= col_count_1) then break end
+				if layer == 0 then
+					linear:AddChild(self:CreateGrid())
+				else
+					linear:AddChild(self:CreateImage())
+				end
+				col = col+(1)
+			end
 			linear_1:AddChild(linear)
-		else
-			linear_2:AddChild(linear)
+			row = row+(1)
 		end
-		row = row+(1)
+		local row = linear_2.child_count + 1
+		while true do
+			if not(row <= row_count) then break end
+			local linear = ALittle.Linear(ALittleIDE.g_Control)
+			linear.type = 1
+			linear.height = linear_height
+			local col = 1
+			while true do
+				if not(col <= col_count_2) then break end
+				if layer == 0 then
+					linear:AddChild(self:CreateGrid())
+				else
+					linear:AddChild(self:CreateImage())
+				end
+				col = col+(1)
+			end
+			linear_2:AddChild(linear)
+			row = row+(1)
+		end
 	end
 end
 
 function ALittleIDE.IDETileTabChild:ResizeGridMap(row_count, col_count)
-	local cur_row_count = self._linear_grid_1.child_count
+	local cur_row_count = 0
 	local cur_col_count = 0
-	if cur_row_count > 0 then
-		cur_col_count = self._linear_grid_1.childs[1].child_count
+	if self._user_info.tile_map.tile_type == 2 then
+		cur_row_count = self._linear_grid_1.child_count + self._linear_grid_2.child_count
+		if cur_row_count > 0 then
+			cur_col_count = self._linear_grid_1.childs[1].child_count
+		end
+	else
+		cur_row_count = self._linear_grid_1.child_count
+		if cur_row_count > 0 then
+			cur_col_count = self._linear_grid_1.childs[1].child_count + self._linear_grid_2.childs[1].child_count
+		end
 	end
 	if row_count < cur_row_count then
 		row_count = cur_row_count
@@ -586,8 +676,8 @@ function ALittleIDE.IDETileTabChild:ResizeGridMap(row_count, col_count)
 	local width_2 = self._linear_grid_2.x + self._linear_grid_2.width
 	local height_1 = self._linear_grid_1.y + self._linear_grid_1.height
 	local height_2 = self._linear_grid_2.y + self._linear_grid_2.height
-	self._tab_screen.container.width = ALittle.Math_Max(width_1, width_2)
-	self._tab_screen.container.height = ALittle.Math_Max(height_1, height_2)
+	self._tab_screen.container.width = ALittle.Math_Max(width_1, width_2) + 100
+	self._tab_screen.container.height = ALittle.Math_Max(height_1, height_2) + 100
 	self._tab_screen:AdjustScrollBar()
 end
 
@@ -595,7 +685,7 @@ function ALittleIDE.IDETileTabChild:CalcLinear2OffsetX()
 	local tile_type = self._user_info.tile_map.tile_type
 	local side_len = self._user_info.tile_map.side_len
 	if tile_type == 1 then
-		return 0
+		return side_len
 	end
 	if tile_type == 2 then
 		return side_len * 1.732 / 2
@@ -621,9 +711,9 @@ function ALittleIDE.IDETileTabChild:CalcLinear2OffsetY()
 	return 0
 end
 
-function ALittleIDE.IDETileTabChild.CalcCellHeight(user_info)
-	local tile_type = user_info.tile_map.tile_type
-	local side_len = user_info.tile_map.side_len
+function ALittleIDE.IDETileTabChild:CalcCellHeight()
+	local tile_type = self._user_info.tile_map.tile_type
+	local side_len = self._user_info.tile_map.side_len
 	if tile_type == 1 then
 		return side_len
 	end
@@ -640,7 +730,7 @@ function ALittleIDE.IDETileTabChild:CalcCellWidth()
 	local tile_type = self._user_info.tile_map.tile_type
 	local side_len = self._user_info.tile_map.side_len
 	if tile_type == 1 then
-		return side_len
+		return side_len * 2
 	end
 	if tile_type == 2 then
 		return side_len * 1.732
@@ -753,8 +843,8 @@ function ALittleIDE.IDETileTabChild:CalcRowColByPos(x, y)
 	local tile_type = self._user_info.tile_map.tile_type
 	local side_len = self._user_info.tile_map.side_len
 	if tile_type == 1 then
-		local row = ALittle.Math_Floor(x / side_len)
-		local col = ALittle.Math_Floor(y / side_len)
+		local row = ALittle.Math_Floor(y / side_len)
+		local col = ALittle.Math_Floor(x / side_len)
 		return row + 1, col + 1
 	end
 	if tile_type == 3 then

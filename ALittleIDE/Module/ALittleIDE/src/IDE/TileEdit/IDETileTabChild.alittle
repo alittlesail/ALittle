@@ -364,10 +364,22 @@ public class IDETileTabChild : IDETabChild
         var linear_1, linear_2 = this.GetLayer(layer);
         if (linear_1 == null) return null;
 
-        if (row % 2 == 1)
-        	return linear_1.childs[ALittle.Math_Floor(row / 2) + 1].childs[col]._user_data;
+        var tile_type = this._user_info.tile_map.tile_type;
 
-        return linear_2.childs[ALittle.Math_Floor(row / 2)].childs[col]._user_data;
+        if (tile_type == ALittle.TileType.HEX_V)
+        {
+            if (row % 2 == 1)
+                return linear_1.childs[ALittle.Math_Floor(row / 2) + 1].childs[col]._user_data;
+
+            return linear_2.childs[ALittle.Math_Floor(row / 2)].childs[col]._user_data;
+        }
+        else
+        {
+            if (col % 2 == 1)
+                return linear_1.childs[row].childs[ALittle.Math_Floor(col / 2) + 1]._user_data;
+
+            return linear_2.childs[row].childs[ALittle.Math_Floor(col / 2)]._user_data;
+        }
     }
 
     public fun AddLayer(ALittle.Linear linear_1, ALittle.Linear linear_2, int index)
@@ -527,60 +539,135 @@ public class IDETileTabChild : IDETabChild
 
     private fun ResizeLinear(ALittle.Linear linear_1, ALittle.Linear linear_2, int row_count, int col_count, int layer)
     {
-        if (row_count <= linear_1.child_count + linear_2.child_count && col_count <= linear_1.childs[1].child_count) return;
-
-        linear_1.width = this.CalcCellWidth() * col_count;
-        linear_2.width = linear_1.width;
-
-        var linear_height = IDETileTabChild.CalcCellHeight(this._user_info);
-
-        for (var index, child:ALittle.Linear in linear_1.childs)
+        if (this._user_info.tile_map.tile_type == ALittle.TileType.HEX_V)
         {
-            for (var col = child.child_count + 1; col <= col_count; 1)
+            if (row_count <= linear_1.child_count + linear_2.child_count && col_count <= linear_1.childs[1].child_count) return;
+
+            linear_1.width = this.CalcCellWidth() * col_count;
+            linear_2.width = linear_1.width;
+
+            var linear_height = this.CalcCellHeight();
+
+            for (var index, child:ALittle.Linear in linear_1.childs)
             {
-                if (layer == 0)
-                    child.AddChild(this.CreateGrid());
+                for (var col = child.child_count + 1; col <= col_count; 1)
+                {
+                    if (layer == 0)
+                        child.AddChild(this.CreateGrid());
+                    else
+                        child.AddChild(this.CreateImage());
+                }
+            }
+
+            for (var index, child in linear_2.childs)
+            {
+                for (var col = child.child_count + 1; col <= col_count; 1)
+                {
+                    if (layer == 0)
+                        child.AddChild(this.CreateGrid());
+                    else
+                        child.AddChild(this.CreateImage());
+                }
+            }
+
+            for (var row = linear_1.child_count + linear_2.child_count + 1; row <= row_count; 1)
+            {
+                var linear = new ALittle.Linear(g_Control);
+                linear.type = ALittle.UIEnumTypes.TYPE_H;
+                linear.height = linear_height;
+                for (var col = 1; col <= col_count; 1)
+                {
+                    if (layer == 0)
+                        linear.AddChild(this.CreateGrid());
+                    else
+                        linear.AddChild(this.CreateImage());
+                }
+
+                if (row % 2 == 1)
+                    linear_1.AddChild(linear);
                 else
-                    child.AddChild(this.CreateImage());
+                    linear_2.AddChild(linear);
             }
         }
-
-        for (var index, child in linear_2.childs)
+        else
         {
-            for (var col = child.child_count + 1; col <= col_count; 1)
-            {
-                if (layer == 0)
-                    child.AddChild(this.CreateGrid());
-                else
-                    child.AddChild(this.CreateImage());
-            }
-        }
+            if (row_count <= linear_1.child_count && col_count <= linear_1.childs[1].child_count + linear_2.childs[1].child_count) return;
 
-        for (var row = linear_1.child_count + linear_2.child_count + 1; row <= row_count; 1)
-        {
-            var linear = new ALittle.Linear(g_Control);
-            linear.type = ALittle.UIEnumTypes.TYPE_H;
-            linear.height = linear_height;
-            for (var col = 1; col <= col_count; 1)
+            var cell_width = this.CalcCellWidth();
+            var linear_height = this.CalcCellHeight();
+
+            var col_count_1 = ALittle.Math_Ceil(col_count / 2);
+            linear_1.width = cell_width * col_count_1;
+            for (var index, child:ALittle.Linear in linear_1.childs)
             {
-                if (layer == 0)
-                    linear.AddChild(this.CreateGrid());
-                else
-                    linear.AddChild(this.CreateImage());
+                for (var col = child.child_count + 1; col <= col_count_1; 1)
+                {
+                    if (layer == 0)
+                        child.AddChild(this.CreateGrid());
+                    else
+                        child.AddChild(this.CreateImage());
+                }
             }
 
-            if (row % 2 == 1)
-            	linear_1.AddChild(linear);
-            else
+            var col_count_2 = ALittle.Math_Floor(col_count / 2);
+            linear_2.width = cell_width * col_count_2;
+            for (var index, child in linear_2.childs)
+            {
+                for (var col = child.child_count + 1; col <= col_count_2; 1)
+                {
+                    if (layer == 0)
+                        child.AddChild(this.CreateGrid());
+                    else
+                        child.AddChild(this.CreateImage());
+                }
+            }
+
+            for (var row = linear_1.child_count + 1; row <= row_count; 1)
+            {
+                var linear = new ALittle.Linear(g_Control);
+                linear.type = ALittle.UIEnumTypes.TYPE_H;
+                linear.height = linear_height;
+                for (var col = 1; col <= col_count_1; 1)
+                {
+                    if (layer == 0)
+                        linear.AddChild(this.CreateGrid());
+                    else
+                        linear.AddChild(this.CreateImage());
+                }
+                linear_1.AddChild(linear);
+            }
+
+            for (var row = linear_2.child_count + 1; row <= row_count; 1)
+            {
+                var linear = new ALittle.Linear(g_Control);
+                linear.type = ALittle.UIEnumTypes.TYPE_H;
+                linear.height = linear_height;
+                for (var col = 1; col <= col_count_2; 1)
+                {
+                    if (layer == 0)
+                        linear.AddChild(this.CreateGrid());
+                    else
+                        linear.AddChild(this.CreateImage());
+                }
                 linear_2.AddChild(linear);
+            }
         }
     }
 
     private fun ResizeGridMap(int row_count, int col_count)
     {
-        var cur_row_count = this._linear_grid_1.child_count;
+        var cur_row_count = 0;
         var cur_col_count = 0;
-        if (cur_row_count > 0) cur_col_count = this._linear_grid_1.childs[1].child_count;
+        if (this._user_info.tile_map.tile_type == ALittle.TileType.HEX_V)
+        {
+            cur_row_count = this._linear_grid_1.child_count + this._linear_grid_2.child_count;
+            if (cur_row_count > 0) cur_col_count = this._linear_grid_1.childs[1].child_count;
+        }
+        else
+        {
+            cur_row_count = this._linear_grid_1.child_count;
+            if (cur_row_count > 0) cur_col_count = this._linear_grid_1.childs[1].child_count + this._linear_grid_2.childs[1].child_count;
+        }
 
         if (row_count < cur_row_count) row_count = cur_row_count;
         if (col_count < cur_col_count) col_count = cur_col_count;
@@ -595,8 +682,8 @@ public class IDETileTabChild : IDETabChild
         var height_1 = this._linear_grid_1.y + this._linear_grid_1.height;
         var height_2 = this._linear_grid_2.y + this._linear_grid_2.height;
 
-        this._tab_screen.container.width = ALittle.Math_Max(width_1, width_2);
-        this._tab_screen.container.height = ALittle.Math_Max(height_1, height_2);
+        this._tab_screen.container.width = ALittle.Math_Max(width_1, width_2) + 100;
+        this._tab_screen.container.height = ALittle.Math_Max(height_1, height_2) + 100;
         this._tab_screen.AdjustScrollBar();
     }
 
@@ -606,7 +693,7 @@ public class IDETileTabChild : IDETabChild
     	var side_len = this._user_info.tile_map.side_len;
 
         if (tile_type == ALittle.TileType.SQUARE)
-        	return 0;
+        	return side_len;
 
         if (tile_type == ALittle.TileType.HEX_V)
         	return side_len * 1.732 / 2;
@@ -635,10 +722,10 @@ public class IDETileTabChild : IDETabChild
     }
 
 
-    public static CalcCellHeight(IDETileTreeUserInfo user_info) : double
+    public fun CalcCellHeight() : double
     {
-        var tile_type = user_info.tile_map.tile_type;
-    	var side_len = user_info.tile_map.side_len;
+        var tile_type = this._user_info.tile_map.tile_type;
+    	var side_len = this._user_info.tile_map.side_len;
 
         if (tile_type == ALittle.TileType.SQUARE)
         	return side_len;
@@ -658,7 +745,7 @@ public class IDETileTabChild : IDETabChild
     	var side_len = this._user_info.tile_map.side_len;
 
         if (tile_type == ALittle.TileType.SQUARE)
-        	return side_len;
+        	return side_len * 2;
 
         if (tile_type == ALittle.TileType.HEX_V)
         	return side_len * 1.732;
@@ -786,7 +873,7 @@ public class IDETileTabChild : IDETabChild
                 return row + 1, col + 1;
             }
 
-                // 第二段，长方形
+            // 第二段，长方形
             if (offset_y < side_len * 3 / 2)
             {
                 var row = split_y * 2;
@@ -795,7 +882,7 @@ public class IDETileTabChild : IDETabChild
                 return row + 1, col + 1;
             }
 
-                // 第三段，直线方程： y = -1 / 1.732*x + side_len / 2
+            // 第三段，直线方程： y = -1 / 1.732*x + side_len / 2
             if (offset_y < side_len * 2)
             {
                 var row = split_y * 2;
@@ -809,7 +896,7 @@ public class IDETileTabChild : IDETabChild
                 return row + 1, col + 1;
             }
 
-                // 第四段，长方形
+            // 第四段，长方形
             {
                 var row = split_y * 2 + 1;
                 var col = ALittle.Math_Floor(split_x / 2);
@@ -826,8 +913,8 @@ public class IDETileTabChild : IDETabChild
         // 正方形
         if (tile_type == ALittle.TileType.SQUARE)
         {
-            var row = ALittle.Math_Floor(x / side_len);
-            var col = ALittle.Math_Floor(y / side_len);
+            var row = ALittle.Math_Floor(y / side_len);
+            var col = ALittle.Math_Floor(x / side_len);
             return row + 1, col + 1;
         }
 

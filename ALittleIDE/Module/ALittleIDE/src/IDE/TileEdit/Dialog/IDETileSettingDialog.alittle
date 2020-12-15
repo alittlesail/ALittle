@@ -7,6 +7,11 @@ public class IDETileSettingDialog
     private ALittle.DropDown _tile_type;
     private ALittle.TextInput _side_len;
 
+    private ALittle.TextInput _tile_width;
+    private ALittle.TextInput _tile_height;
+    private ALittle.TextInput _tile_x;
+    private ALittle.TextInput _tile_y;
+
     private ALittle.TileMap _tile_map;
     private ALittle.Thread _thread;
 
@@ -33,6 +38,10 @@ public class IDETileSettingDialog
         	this._tile_type.text = "";
 
         this._side_len.text = tile_map.side_len;
+        this._tile_width.text = tile_map.tile_width;
+        this._tile_height.text = tile_map.tile_height;
+        this._tile_x.text = tile_map.tile_x;
+        this._tile_y.text = tile_map.tile_y;
 
         this._tile_map = tile_map;
         this._thread = co;
@@ -70,6 +79,11 @@ public class IDETileSettingDialog
         	tile_map.tile_type = ALittle.TileType.HEX_V;
 
         tile_map.side_len = ALittle.Math_ToIntOrZero(this._side_len.text);
+
+        tile_map.tile_width = ALittle.Math_ToIntOrZero(this._tile_width.text);
+        tile_map.tile_height = ALittle.Math_ToIntOrZero(this._tile_height.text);
+        tile_map.tile_x = ALittle.Math_ToIntOrZero(this._tile_x.text);
+        tile_map.tile_y = ALittle.Math_ToIntOrZero(this._tile_y.text);
 
         if (thread != null) ALittle.Coroutine.Resume(thread, true);
     }

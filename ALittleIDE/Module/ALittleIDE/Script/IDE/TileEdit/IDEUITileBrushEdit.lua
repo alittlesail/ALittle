@@ -32,8 +32,8 @@ option_map = {}
 })
 ALittle.RegStruct(-1281734132, "ALittle.TileMap", {
 name = "ALittle.TileMap", ns_name = "ALittle", rl_name = "TileMap", hash_code = -1281734132,
-name_list = {"tile_type","side_len","col_count","row_count","tex_map","layer_list"},
-type_list = {"int","int","int","int","Map<int,string>","List<ALittle.TileLayer>"},
+name_list = {"tile_type","side_len","tile_width","tile_height","tile_center_x","tile_center_y","col_count","row_count","tex_map","layer_list"},
+type_list = {"int","int","int","int","int","int","int","int","Map<int,string>","List<ALittle.TileLayer>"},
 option_map = {}
 })
 ALittle.RegStruct(-686652419, "AUIPlugin.AUIFileTreeUserInfo", {
@@ -177,6 +177,9 @@ function ALittleIDE.IDEUITileLayerEdit:HandleAddLayerClick(event)
 	info._button:AddEventListener(___all_struct[-641444818], self, self.HandleRButtonDown)
 	info._item._user_data = info
 	self._layer_list:AddChild(info._item)
+	if self._layer_list.child_count == 1 then
+		info._button.selected = true
+	end
 	info._layer = {}
 	info._layer.name = name
 	info._layer.cell_map = {}
@@ -224,6 +227,9 @@ function ALittleIDE.IDEUITileLayerEdit:HandleDeleteLayer(info)
 	end
 	local index = self._layer_list:GetChildIndex(info._item)
 	self._layer_list:RemoveChild(info._item)
+	if info._button.selected and self._layer_list.child_count > 0 then
+		self._layer_list.childs[1]._user_data._button.selected = true
+	end
 	ALittle.List_Remove(info._user_info.tile_map.layer_list, index)
 	self._tab_child:RemoveLayer(info._linear_1, info._linear_2)
 	local revoke = ALittleIDE.IDETileDeleteLayerRevoke(self._tab_child, info, index)

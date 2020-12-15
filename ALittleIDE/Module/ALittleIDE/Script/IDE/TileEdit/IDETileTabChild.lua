@@ -38,8 +38,8 @@ option_map = {}
 })
 ALittle.RegStruct(-1281734132, "ALittle.TileMap", {
 name = "ALittle.TileMap", ns_name = "ALittle", rl_name = "TileMap", hash_code = -1281734132,
-name_list = {"tile_type","side_len","col_count","row_count","tex_map","layer_list"},
-type_list = {"int","int","int","int","Map<int,string>","List<ALittle.TileLayer>"},
+name_list = {"tile_type","side_len","tile_width","tile_height","tile_x","tile_y","col_count","row_count","tex_map","layer_list"},
+type_list = {"int","int","int","int","int","int","int","int","Map<int,string>","List<ALittle.TileLayer>"},
 option_map = {}
 })
 ALittle.RegStruct(-343663763, "ALittle.TileLayer", {
@@ -131,6 +131,10 @@ function ALittleIDE.IDETileTabChild:HandleQuadLButtonDown(event)
 			return
 		end
 		local row, col = self:CalcRowColByPos(event.rel_x, event.rel_y)
+		if row <= 0 or col <= 0 then
+			return
+		end
+		self:ResizeGridMap(row, col)
 		self._drag_cell_row = row
 		self._drag_cell_col = col
 		local col_map = layer_info._layer.cell_map[row]
@@ -167,6 +171,10 @@ function ALittleIDE.IDETileTabChild:HandleQuadLButtonDown(event)
 			return
 		end
 		local row, col = self:CalcRowColByPos(event.rel_x, event.rel_y)
+		if row <= 0 or col <= 0 then
+			return
+		end
+		self:ResizeGridMap(row, col)
 		self._drag_cell_row = row
 		self._drag_cell_col = col
 		local col_map = layer_info._layer.cell_map[row]
@@ -208,6 +216,10 @@ function ALittleIDE.IDETileTabChild:HandleQuadDrag(event)
 			return
 		end
 		local row, col = self:CalcRowColByPos(event.rel_x, event.rel_y)
+		if row <= 0 or col <= 0 then
+			return
+		end
+		self:ResizeGridMap(row, col)
 		if self._drag_cell_row == row and self._drag_cell_col == col then
 			return
 		end
@@ -249,6 +261,10 @@ function ALittleIDE.IDETileTabChild:HandleQuadDrag(event)
 			return
 		end
 		local row, col = self:CalcRowColByPos(event.rel_x, event.rel_y)
+		if row <= 0 or col <= 0 then
+			return
+		end
+		self:ResizeGridMap(row, col)
 		if self._drag_cell_row == row and self._drag_cell_col == col then
 			return
 		end
@@ -395,6 +411,22 @@ function ALittleIDE.IDETileTabChild.__setter:save(value)
 		g_AUITool:ShowNotice("提示", "ui不存在")
 		return
 	end
+	local row_count = 0
+	local col_count = 0
+	for index, layer in ___ipairs(self._user_info.tile_map.layer_list) do
+		for row, cell_map in ___pairs(layer.cell_map) do
+			for col, cell in ___pairs(cell_map) do
+				if col > col_count then
+					col_count = col
+				end
+			end
+			if row > row_count then
+				row_count = row
+			end
+		end
+	end
+	self._user_info.tile_map.row_count = row_count
+	self._user_info.tile_map.col_count = col_count
 	ui.control:WriteMessageToFile(___all_struct[-1281734132], self._user_info.tile_map, self._user_info.info.path)
 	self._save = value
 	self:UpdateTitle()
@@ -435,8 +467,14 @@ function ALittleIDE.IDETileTabChild:CreateBySelect(info)
 			info.tex_id_max = tex_id
 		end
 	end
-	local col_count = info.tile_map.col_count + 10
-	local row_count = info.tile_map.row_count + 10
+	local col_count = info.tile_map.col_count
+	if col_count < 10 then
+		col_count = 10
+	end
+	local row_count = info.tile_map.row_count
+	if row_count < 10 then
+		row_count = 10
+	end
 	local grid_map_width = self:CalcCellWidth() * col_count
 	self._linear_grid_1.width = grid_map_width
 	self._linear_grid_2.width = grid_map_width
@@ -459,9 +497,11 @@ function ALittleIDE.IDETileTabChild:CreateBySelect(info)
 		for row, col_map in ___pairs(layer.cell_map) do
 			for col, cell in ___pairs(col_map) do
 				if cell.tex_id ~= nil then
-					local image = self:GetImage(index, row, col)
 					local texture_name = self._user_info.tile_map.tex_map[cell.tex_id]
-					image:SetTextureCut("Module/" .. ALittleIDE.g_IDEProject.project.name .. "/Texture/" .. texture_name, 0, 0, true)
+					if texture_name ~= nil then
+						local image = self:GetImage(index, row, col)
+						image:SetTextureCut("Module/" .. ALittleIDE.g_IDEProject.project.name .. "/Texture/" .. texture_name, 0, 0, true)
+					end
 				end
 			end
 		end
@@ -471,15 +511,11 @@ function ALittleIDE.IDETileTabChild:CreateBySelect(info)
 end
 
 function ALittleIDE.IDETileTabChild:ResizeLinear(linear_1, linear_2, row_count, col_count, layer)
-	if row_count < 10 then
-		row_count = 10
-	end
-	if col_count < 10 then
-		col_count = 10
-	end
-	if row_count <= linear_1.child_count + linear_2.child_count and col_count <= linear_1.childs[0].child_count then
+	if row_count <= linear_1.child_count + linear_2.child_count and col_count <= linear_1.childs[1].child_count then
 		return
 	end
+	linear_1.width = self:CalcCellWidth() * col_count
+	linear_2.width = linear_1.width
 	local linear_height = ALittleIDE.IDETileTabChild.CalcCellHeight(self._user_info)
 	for index, child in ___ipairs(linear_1.childs) do
 		local col = child.child_count + 1
@@ -531,12 +567,27 @@ function ALittleIDE.IDETileTabChild:ResizeLinear(linear_1, linear_2, row_count, 
 end
 
 function ALittleIDE.IDETileTabChild:ResizeGridMap(row_count, col_count)
+	local cur_row_count = self._linear_grid_1.child_count
+	local cur_col_count = 0
+	if cur_row_count > 0 then
+		cur_col_count = self._linear_grid_1.childs[1].child_count
+	end
+	if row_count < cur_row_count then
+		row_count = cur_row_count
+	end
+	if col_count < cur_col_count then
+		col_count = cur_col_count
+	end
 	self:ResizeLinear(self._linear_grid_1, self._linear_grid_2, row_count, col_count, 0)
 	for index, linear in ___ipairs(self._linear_tile_1.childs) do
 		self:ResizeLinear(linear, self._linear_tile_2.childs[index], row_count, col_count, index)
 	end
-	self._tab_screen.container.width = self._linear_grid_2.x + self._linear_grid_2.width
-	self._tab_screen.container.height = self._linear_grid_2.y + self._linear_grid_2.height
+	local width_1 = self._linear_grid_1.x + self._linear_grid_1.width
+	local width_2 = self._linear_grid_2.x + self._linear_grid_2.width
+	local height_1 = self._linear_grid_1.y + self._linear_grid_1.height
+	local height_2 = self._linear_grid_2.y + self._linear_grid_2.height
+	self._tab_screen.container.width = ALittle.Math_Max(width_1, width_2)
+	self._tab_screen.container.height = ALittle.Math_Max(height_1, height_2)
 	self._tab_screen:AdjustScrollBar()
 end
 
@@ -753,8 +804,10 @@ function ALittleIDE.IDETileTabChild:CreateImage()
 		cell.width = self:CalcCellWidth()
 		local grid = ALittle.Image(ALittleIDE.g_Control)
 		cell._user_data = grid
-		grid.width = side_len
-		grid.height = side_len
+		grid.width = self._user_info.tile_map.tile_width
+		grid.height = self._user_info.tile_map.tile_height
+		grid.x = self._user_info.tile_map.tile_x
+		grid.y = self._user_info.tile_map.tile_y
 		cell:AddChild(grid)
 		return cell
 	end
@@ -763,8 +816,10 @@ function ALittleIDE.IDETileTabChild:CreateImage()
 		cell.width = self:CalcCellWidth()
 		local grid = ALittle.Image(ALittleIDE.g_Control)
 		cell._user_data = grid
-		grid.width = side_len * 1.732
-		grid.height = side_len * 2
+		grid.width = self._user_info.tile_map.tile_width
+		grid.height = self._user_info.tile_map.tile_height
+		grid.x = self._user_info.tile_map.tile_x
+		grid.y = self._user_info.tile_map.tile_y
 		cell:AddChild(grid)
 		return cell
 	end
@@ -773,8 +828,10 @@ function ALittleIDE.IDETileTabChild:CreateImage()
 		cell.width = self:CalcCellWidth()
 		local grid = ALittle.Image(ALittleIDE.g_Control)
 		cell._user_data = grid
-		grid.width = side_len * 2
-		grid.height = side_len * 1.732
+		grid.width = self._user_info.tile_map.tile_width
+		grid.height = self._user_info.tile_map.tile_height
+		grid.x = self._user_info.tile_map.tile_x
+		grid.y = self._user_info.tile_map.tile_y
 		cell:AddChild(grid)
 		return cell
 	end

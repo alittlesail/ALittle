@@ -109,6 +109,7 @@ function ALittleIDE.IDETileBrushCellRevoke:Forward()
 		if tex_id == nil then
 			tex_id = self._layer_info._user_info.tex_id_max + 1
 			self._layer_info._user_info.tex_id_max = tex_id
+			self._layer_info._user_info.tile_map.tex_map[tex_id] = self._new_tex_path
 			self._layer_info._user_info.tex_id_map[self._new_tex_path] = tex_id
 		end
 		self._cell.tex_id = tex_id
@@ -125,6 +126,7 @@ function ALittleIDE.IDETileBrushCellRevoke:Back()
 		if tex_id == nil then
 			tex_id = self._layer_info._user_info.tex_id_max + 1
 			self._layer_info._user_info.tex_id_max = tex_id
+			self._layer_info._user_info.tile_map.tex_map[tex_id] = self._old_tex_path
 			self._layer_info._user_info.tex_id_map[self._old_tex_path] = tex_id
 		end
 		self._cell.tex_id = tex_id

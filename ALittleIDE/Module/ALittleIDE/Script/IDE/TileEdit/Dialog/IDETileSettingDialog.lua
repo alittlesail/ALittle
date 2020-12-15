@@ -30,6 +30,10 @@ function ALittleIDE.IDETileSettingDialog:ShowDialog(tile_map)
 		self._tile_type.text = ""
 	end
 	self._side_len.text = tile_map.side_len
+	self._tile_width.text = tile_map.tile_width
+	self._tile_height.text = tile_map.tile_height
+	self._tile_x.text = tile_map.tile_x
+	self._tile_y.text = tile_map.tile_y
 	self._tile_map = tile_map
 	self._thread = ___COROUTINE
 	return coroutine.yield()
@@ -64,6 +68,10 @@ function ALittleIDE.IDETileSettingDialog:HandleTileSettingConfirm(event)
 		tile_map.tile_type = 2
 	end
 	tile_map.side_len = ALittle.Math_ToIntOrZero(self._side_len.text)
+	tile_map.tile_width = ALittle.Math_ToIntOrZero(self._tile_width.text)
+	tile_map.tile_height = ALittle.Math_ToIntOrZero(self._tile_height.text)
+	tile_map.tile_x = ALittle.Math_ToIntOrZero(self._tile_x.text)
+	tile_map.tile_y = ALittle.Math_ToIntOrZero(self._tile_y.text)
 	if thread ~= nil then
 		ALittle.Coroutine.Resume(thread, true)
 	end

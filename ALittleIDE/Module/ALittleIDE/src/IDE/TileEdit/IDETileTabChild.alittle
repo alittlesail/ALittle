@@ -108,6 +108,8 @@ public class IDETileTabChild : IDETabChild
             }
 
             var row, col = this.CalcRowColByPos(event.rel_x, event.rel_y);
+            if (row <= 0 || col <= 0) return;
+            this.ResizeGridMap(row, col);
             this._drag_cell_row = row;
             this._drag_cell_col = col;
 
@@ -153,6 +155,8 @@ public class IDETileTabChild : IDETabChild
             }
 
             var row, col = this.CalcRowColByPos(event.rel_x, event.rel_y);
+            if (row <= 0 || col <= 0) return;
+            this.ResizeGridMap(row, col);
             this._drag_cell_row = row;
             this._drag_cell_col = col;
 
@@ -194,6 +198,8 @@ public class IDETileTabChild : IDETabChild
             if (layer_info == null) return;
 
             var row, col = this.CalcRowColByPos(event.rel_x, event.rel_y);
+            if (row <= 0 || col <= 0) return;
+            this.ResizeGridMap(row, col);
             if (this._drag_cell_row == row && this._drag_cell_col == col) return;
             this._drag_cell_row = row;
             this._drag_cell_col = col;
@@ -241,6 +247,8 @@ public class IDETileTabChild : IDETabChild
             if (layer_info == null) return;
 
             var row, col = this.CalcRowColByPos(event.rel_x, event.rel_y);
+            if (row <= 0 || col <= 0) return;
+            this.ResizeGridMap(row, col);
             if (this._drag_cell_row == row && this._drag_cell_col == col) return;
             this._drag_cell_row = row;
             this._drag_cell_col = col;
@@ -398,6 +406,23 @@ public class IDETileTabChild : IDETabChild
             g_AUITool.ShowNotice("提示", "ui不存在");
             return;
         }
+
+        // 计算行列
+        var row_count = 0;
+        var col_count = 0;
+        for (var index, layer in this._user_info.tile_map.layer_list)
+        {
+            for (var row, cell_map in layer.cell_map)
+            {
+                for (var col, cell in cell_map)
+                {
+                    if (col > col_count) col_count = col;
+                }
+                if (row > row_count) row_count = row;
+            }
+        }
+        this._user_info.tile_map.row_count = row_count;
+        this._user_info.tile_map.col_count = col_count;
     
         ui.control.WriteMessageToFile(this._user_info.tile_map, this._user_info.info.path);
 
@@ -442,8 +467,10 @@ public class IDETileTabChild : IDETabChild
             if (info.tex_id_max < tex_id) info.tex_id_max = tex_id;
         }
 
-        var col_count = info.tile_map.col_count + 10;
-        var row_count = info.tile_map.row_count + 10;
+        var col_count = info.tile_map.col_count;
+        if (col_count < 10) col_count = 10;
+        var row_count = info.tile_map.row_count;
+        if (row_count < 10) row_count = 10;
 
         var grid_map_width = this.CalcCellWidth() * col_count;
 
@@ -482,9 +509,12 @@ public class IDETileTabChild : IDETabChild
                 {
                     if (cell.tex_id != null)
                     {
-                        var image = this.GetImage(index, row, col);
                         var texture_name = this._user_info.tile_map.tex_map[cell.tex_id];
-                    	image.SetTextureCut("Module/"..g_IDEProject.project.name.."/Texture/"..texture_name, 0, 0, true);
+                        if (texture_name != null)
+                        {
+                            var image = this.GetImage(index, row, col);
+                            image.SetTextureCut("Module/"..g_IDEProject.project.name.."/Texture/"..texture_name, 0, 0, true);
+                        }
                     }
                 }
             }
@@ -497,10 +527,10 @@ public class IDETileTabChild : IDETabChild
 
     private fun ResizeLinear(ALittle.Linear linear_1, ALittle.Linear linear_2, int row_count, int col_count, int layer)
     {
-        if (row_count < 10) row_count = 10;
-        if (col_count < 10) col_count = 10;
+        if (row_count <= linear_1.child_count + linear_2.child_count && col_count <= linear_1.childs[1].child_count) return;
 
-        if (row_count <= linear_1.child_count + linear_2.child_count && col_count <= linear_1.childs[0].child_count) return;
+        linear_1.width = this.CalcCellWidth() * col_count;
+        linear_2.width = linear_1.width;
 
         var linear_height = IDETileTabChild.CalcCellHeight(this._user_info);
 
@@ -548,13 +578,25 @@ public class IDETileTabChild : IDETabChild
 
     private fun ResizeGridMap(int row_count, int col_count)
     {
-        this.ResizeLinear(this._linear_grid_1, this._linear_grid_2, row_count, col_count, 0);
+        var cur_row_count = this._linear_grid_1.child_count;
+        var cur_col_count = 0;
+        if (cur_row_count > 0) cur_col_count = this._linear_grid_1.childs[1].child_count;
 
+        if (row_count < cur_row_count) row_count = cur_row_count;
+        if (col_count < cur_col_count) col_count = cur_col_count;
+
+        this.ResizeLinear(this._linear_grid_1, this._linear_grid_2, row_count, col_count, 0);
         for (var index, linear:ALittle.Linear in this._linear_tile_1.childs)
         	this.ResizeLinear(linear, cast<ALittle.Linear>(this._linear_tile_2.childs[index]), row_count, col_count, index);
 
-        this._tab_screen.container.width = this._linear_grid_2.x + this._linear_grid_2.width;
-        this._tab_screen.container.height = this._linear_grid_2.y + this._linear_grid_2.height;
+        var width_1 = this._linear_grid_1.x + this._linear_grid_1.width;
+        var width_2 = this._linear_grid_2.x + this._linear_grid_2.width;
+        
+        var height_1 = this._linear_grid_1.y + this._linear_grid_1.height;
+        var height_2 = this._linear_grid_2.y + this._linear_grid_2.height;
+
+        this._tab_screen.container.width = ALittle.Math_Max(width_1, width_2);
+        this._tab_screen.container.height = ALittle.Math_Max(height_1, height_2);
         this._tab_screen.AdjustScrollBar();
     }
 
@@ -851,8 +893,10 @@ public class IDETileTabChild : IDETabChild
             cell.width = this.CalcCellWidth();
             var grid = new ALittle.Image(g_Control);
             cell._user_data = grid;
-            grid.width = side_len;
-            grid.height = side_len;
+            grid.width = this._user_info.tile_map.tile_width;
+            grid.height = this._user_info.tile_map.tile_height;
+            grid.x = this._user_info.tile_map.tile_x;
+            grid.y = this._user_info.tile_map.tile_y;
             cell.AddChild(grid);
             return cell;
         }
@@ -863,8 +907,10 @@ public class IDETileTabChild : IDETabChild
             cell.width = this.CalcCellWidth();
             var grid = new ALittle.Image(g_Control);
             cell._user_data = grid;
-            grid.width = side_len * 1.732;
-            grid.height = side_len * 2;
+            grid.width = this._user_info.tile_map.tile_width;
+            grid.height = this._user_info.tile_map.tile_height;
+            grid.x = this._user_info.tile_map.tile_x;
+            grid.y = this._user_info.tile_map.tile_y;
             cell.AddChild(grid);
             return cell;
         }
@@ -875,8 +921,10 @@ public class IDETileTabChild : IDETabChild
             cell.width = this.CalcCellWidth();
             var grid = new ALittle.Image(g_Control);
             cell._user_data = grid;
-            grid.width = side_len * 2;
-            grid.height = side_len * 1.732;
+            grid.width = this._user_info.tile_map.tile_width;
+            grid.height = this._user_info.tile_map.tile_height;
+            grid.x = this._user_info.tile_map.tile_x;
+            grid.y = this._user_info.tile_map.tile_y;
             cell.AddChild(grid);
             return cell;
         }

@@ -152,6 +152,7 @@ public class IDETileBrushCellRevoke : ALittle.RevokeObject
             {
                 tex_id = this._layer_info._user_info.tex_id_max + 1;
                 this._layer_info._user_info.tex_id_max = tex_id;
+                this._layer_info._user_info.tile_map.tex_map[tex_id] = this._new_tex_path;
                 this._layer_info._user_info.tex_id_map[this._new_tex_path] = tex_id;
             }
             this._cell.tex_id = tex_id;
@@ -173,6 +174,7 @@ public class IDETileBrushCellRevoke : ALittle.RevokeObject
             {
                 tex_id = this._layer_info._user_info.tex_id_max + 1;
                 this._layer_info._user_info.tex_id_max = tex_id;
+                this._layer_info._user_info.tile_map.tex_map[tex_id] = this._old_tex_path;
                 this._layer_info._user_info.tex_id_map[this._old_tex_path] = tex_id;
             }
             this._cell.tex_id = tex_id;

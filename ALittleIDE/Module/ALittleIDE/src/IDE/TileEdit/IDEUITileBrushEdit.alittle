@@ -143,6 +143,8 @@ protected class IDEUITileLayerEdit : ALittle.DisplayLayout
         info._item._user_data = info;
         this._layer_list.AddChild(info._item);
 
+        if (this._layer_list.child_count == 1) info._button.selected = true;
+
         info._layer = new ALittle.TileLayer();
         info._layer.name = name;
         info._layer.cell_map = new Map<int, Map<int, ALittle.TileCell>>();
@@ -192,6 +194,8 @@ protected class IDEUITileLayerEdit : ALittle.DisplayLayout
 
         var index = this._layer_list.GetChildIndex(info._item);
         this._layer_list.RemoveChild(info._item);
+
+        if (info._button.selected && this._layer_list.child_count > 0) cast<IDEUITileLayerInfo>(this._layer_list.childs[1]._user_data)._button.selected = true;
 
         ALittle.List_Remove(info._user_info.tile_map.layer_list, index);
         this._tab_child.RemoveLayer(info._linear_1, info._linear_2);

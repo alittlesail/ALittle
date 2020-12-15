@@ -60,10 +60,10 @@ protected class IDEUITileList : AUIPlugin.AUIFileTreeLayout
         g_IDECenter.center.content_edit.StartEditTileBySelect(info.info.name, info);
     }
 
-    private async fun HandleDeleteFileEvent(AUIPlugin.AUIFileDeleteFileEvent event)
+    private fun HandleDeleteFileEvent(AUIPlugin.AUIFileDeleteFileEvent event)
     {
         var tab_child = g_IDECenter.center.content_edit.GetTabChildById{IDETileTabChild}(event.path);
-        if (tab_child != null) return;
+        if (tab_child == null) return;
         g_IDECenter.center.content_edit.CloseTab(tab_child.tab_body);
     }
 

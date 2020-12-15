@@ -24,6 +24,10 @@ public struct TileMap
 {
     int tile_type;	// TileType 单位格子的类型
     int side_len;	// 边长
+    int tile_width;	// 地块宽
+    int tile_height;	// 地块高
+    int tile_x;	// 地块锚点x
+    int tile_y;	// 地块锚点y
 
     int col_count;	// 横向格子数量
     int row_count;	// 纵向格子数量

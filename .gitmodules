@@ -2,10 +2,6 @@
 	path = LuaBridge
 	url = https://github.com/vinniefalco/LuaBridge.git
 	branch = master
-[submodule "lua"]
-	path = lua
-	url = https://github.com/alittlesail/lua.git
-	branch = master
 [submodule "asio"]
 	path = asio
 	url = https://github.com/chriskohlhoff/asio.git

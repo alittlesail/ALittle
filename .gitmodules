@@ -4,7 +4,7 @@
 	branch = master
 [submodule "lua"]
 	path = lua
-	url = https://github.com/lua/lua.git
+	url = https://github.com/alittlesail/lua.git
 	branch = master
 [submodule "asio"]
 	path = asio

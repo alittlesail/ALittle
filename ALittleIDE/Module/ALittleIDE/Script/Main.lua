@@ -79,6 +79,8 @@ function ALittleIDE.__Module_Setup(layer_group, control, module_base_path, scrip
 		, "UIEdit/Setting/ImageInputS.alittle", "UIEdit/Tree/IDEUITreeLogic.alittle", "UIEdit/Tree/IDEUITreeItem.alittle"
 		, "UIEdit/Tree/IDEUITree.alittle"})
 	ALittleIDE.g_IDECenter:Setup()
+	local a = carp.CarpLuaDecompile()
+	a:Decompile("D:\\test.lua", "D:\\test.txt")
 end
 ALittleIDE.__Module_Setup = Lua.CoWrap(ALittleIDE.__Module_Setup)
 

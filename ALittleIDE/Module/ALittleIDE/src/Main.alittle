@@ -83,6 +83,9 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 
     // 初始化
     g_IDECenter.Setup();
+
+    var a = new carp.CarpLuaDecompile();
+    a.Decompile("D:\\test.lua", "D:\\test.txt");
 }
 
 // 模块结束函数

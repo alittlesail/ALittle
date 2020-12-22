@@ -4,6 +4,8 @@ if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
+local ALittle = ALittle
+local ALittle = ALittle
 
 ALittle.RegStruct(-1652314301, "ALittle.ModuleShortInfo", {
 name = "ALittle.ModuleShortInfo", ns_name = "ALittle", rl_name = "ModuleShortInfo", hash_code = -1652314301,

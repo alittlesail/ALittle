@@ -3,6 +3,8 @@ do
 if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
+local ALittleIDE = ALittleIDE
+local ALittle = ALittle
 
 
 ALittleIDE.IDEProjectOpenDialog = Lua.Class(nil, "ALittleIDE.IDEProjectOpenDialog")

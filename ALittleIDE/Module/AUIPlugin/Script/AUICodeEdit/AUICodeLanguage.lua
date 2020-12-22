@@ -4,6 +4,8 @@ if _G.AUIPlugin == nil then _G.AUIPlugin = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
+local AUIPlugin = AUIPlugin
+local ALittle = ALittle
 
 ALittle.RegStruct(152169657, "AUIPlugin.ABnfColor", {
 name = "AUIPlugin.ABnfColor", ns_name = "AUIPlugin", rl_name = "ABnfColor", hash_code = 152169657,

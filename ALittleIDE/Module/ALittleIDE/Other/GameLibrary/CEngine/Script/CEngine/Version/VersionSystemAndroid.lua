@@ -4,6 +4,8 @@ if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
+local ALittle = ALittle
+local ALittle = ALittle
 
 
 assert(ALittle.VersionSystem, " extends class:ALittle.VersionSystem is nil")

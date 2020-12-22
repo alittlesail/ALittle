@@ -4,6 +4,8 @@ if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
+local ALittle = ALittle
+local ALittle = ALittle
 local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(1949279026, "ALittle.RichEditFontChangedEvent", {

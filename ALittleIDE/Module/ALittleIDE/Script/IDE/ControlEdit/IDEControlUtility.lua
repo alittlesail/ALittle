@@ -3,6 +3,8 @@ do
 if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
+local ALittleIDE = ALittleIDE
+local ALittle = ALittle
 
 ALittle.RegStruct(1959234511, "ALittleIDE.IDEControlTreeUserInfo", {
 name = "ALittleIDE.IDEControlTreeUserInfo", ns_name = "ALittleIDE", rl_name = "IDEControlTreeUserInfo", hash_code = 1959234511,

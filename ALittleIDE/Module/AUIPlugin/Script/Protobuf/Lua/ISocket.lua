@@ -4,6 +4,8 @@ if _G.Lua == nil then _G.Lua = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
+local Lua = Lua
+local ALittle = ALittle
 
 
 Lua.SocketStatus = {

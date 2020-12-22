@@ -3,6 +3,8 @@ do
 if _G.AUIPlugin == nil then _G.AUIPlugin = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
+local AUIPlugin = AUIPlugin
+local ALittle = ALittle
 
 ALittle.RegStruct(-2130019625, "AUIPlugin.AUICodeErrorInfo", {
 name = "AUIPlugin.AUICodeErrorInfo", ns_name = "AUIPlugin", rl_name = "AUICodeErrorInfo", hash_code = -2130019625,

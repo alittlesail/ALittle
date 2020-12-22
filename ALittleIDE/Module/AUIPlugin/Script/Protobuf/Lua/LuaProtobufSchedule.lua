@@ -4,6 +4,8 @@ if _G.Lua == nil then _G.Lua = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
+local Lua = Lua
+local ALittle = ALittle
 
 ALittle.RegStruct(-1908889092, "Lua.lua_socket_schedule_enum_info", {
 name = "Lua.lua_socket_schedule_enum_info", ns_name = "Lua", rl_name = "lua_socket_schedule_enum_info", hash_code = -1908889092,

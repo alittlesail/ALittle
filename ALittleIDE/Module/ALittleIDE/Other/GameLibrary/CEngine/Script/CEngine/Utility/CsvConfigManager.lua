@@ -4,6 +4,8 @@ if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
+local ALittle = ALittle
+local ALittle = ALittle
 
 ALittle.RegStruct(-1040774381, "ALittle.CsvPreloadInfo", {
 name = "ALittle.CsvPreloadInfo", ns_name = "ALittle", rl_name = "CsvPreloadInfo", hash_code = -1040774381,

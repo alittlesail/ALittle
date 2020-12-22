@@ -4106,6 +4106,8 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateRoot(const std::vector<std::
     if (m_rawset_usecount > 0) content += "local ___rawset = rawset\n";
     content += "local ___pairs = pairs\n";
     content += "local ___ipairs = ipairs\n";
+    content += "local " + m_namespace_name + " = " + m_namespace_name + "\n";
+    content += "local ALittle = ALittle\n";
 
     if (m_need_all_struct) content += "local ___all_struct = ALittle.GetAllStruct()\n";
     content += "\n";

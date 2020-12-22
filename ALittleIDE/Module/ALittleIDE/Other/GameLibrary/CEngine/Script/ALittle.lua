@@ -2,6 +2,8 @@
 do
 local ___pairs = pairs
 local ___ipairs = ipairs
+local alittle = alittle
+local ALittle = ALittle
 
 
 ALittle.SetLogFunc(carp.Log)

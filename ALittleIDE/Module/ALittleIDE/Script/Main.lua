@@ -3,6 +3,8 @@ do
 if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
+local ALittleIDE = ALittleIDE
+local ALittle = ALittle
 
 
 function ALittleIDE.__Browser_Setup(layer_group, control, module_base_path, script_base_path)

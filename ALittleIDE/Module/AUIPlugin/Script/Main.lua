@@ -3,6 +3,8 @@ do
 if _G.AUIPlugin == nil then _G.AUIPlugin = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
+local AUIPlugin = AUIPlugin
+local ALittle = ALittle
 
 
 function AUIPlugin.__Browser_Setup(layer_group, control, module_base_path, script_base_path, debug)

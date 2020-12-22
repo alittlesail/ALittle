@@ -4,6 +4,8 @@ if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
+local ALittle = ALittle
+local ALittle = ALittle
 
 ALittle.RegStruct(-1815508639, "ALittle.TextureCutInfo", {
 name = "ALittle.TextureCutInfo", ns_name = "ALittle", rl_name = "TextureCutInfo", hash_code = -1815508639,

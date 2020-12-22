@@ -4,6 +4,8 @@ if _G.ALittle == nil then _G.ALittle = {} end
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
+local ALittle = ALittle
+local ALittle = ALittle
 
 ALittle.RegStruct(2129851601, "ALittle.VersionInstallInfo", {
 name = "ALittle.VersionInstallInfo", ns_name = "ALittle", rl_name = "VersionInstallInfo", hash_code = 2129851601,

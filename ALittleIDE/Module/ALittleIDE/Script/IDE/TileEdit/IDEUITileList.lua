@@ -3,6 +3,8 @@ do
 if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
 local ___pairs = pairs
 local ___ipairs = ipairs
+local ALittleIDE = ALittleIDE
+local ALittle = ALittle
 local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(2117383637, "AUIPlugin.AUIFileSelectFileEvent", {
@@ -43,7 +45,7 @@ option_map = {}
 })
 ALittle.RegStruct(-1281734132, "ALittle.TileMap", {
 name = "ALittle.TileMap", ns_name = "ALittle", rl_name = "TileMap", hash_code = -1281734132,
-name_list = {"tile_type","side_len","tile_width","tile_height","tile_center_x","tile_center_y","col_count","row_count","tex_map","layer_list"},
+name_list = {"tile_type","side_len","tile_width","tile_height","tile_x","tile_y","col_count","row_count","tex_map","layer_list"},
 type_list = {"int","int","int","int","int","int","int","int","Map<int,string>","List<ALittle.TileLayer>"},
 option_map = {}
 })

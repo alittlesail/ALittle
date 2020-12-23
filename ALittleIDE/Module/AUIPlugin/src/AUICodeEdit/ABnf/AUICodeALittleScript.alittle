@@ -202,6 +202,7 @@ public class AUICodeALittleScriptProject : AUICodeProject
         menu.AddItem("生成目标代码", bind(this.GenerateFile, this, full_path));
         menu.AddItem("打开Lua代码", bind(this.OpenTargetLuaFile, this, full_path));
         menu.AddItem("打开JavaScript代码", bind(this.OpenTargetJavaScriptFile, this, full_path));
+        menu.AddItem("打开Lua字节码", bind(this.OpenTargetLuaByteCode, this, full_path));
     }
 
     // 生成对应的代码
@@ -268,6 +269,27 @@ public class AUICodeALittleScriptProject : AUICodeProject
         var new_path = ALittle.String_Sub(full_path, 1, index).."Script/"..ALittle.String_Sub(full_path, index + 5);
         var event = new AUICodeProjectGotoEvent();
         event.file_path = new_path;
+        this.DispatchEvent(event);
+    }
+
+    // 打开Lua字节码
+    public fun OpenTargetLuaByteCode(string full_path)
+    {
+        full_path = ALittle.File_ChangeFileExtByPath(full_path, "lua");
+        var index = ALittle.String_Find(full_path, "/src/");
+        if (index == null) return;
+
+        var new_path = ALittle.String_Sub(full_path, 1, index).."Script/"..ALittle.String_Sub(full_path, index + 5);
+        var out_path = ALittle.String_Sub(full_path, 1, index).."ByteCode/"..ALittle.String_Sub(full_path, index + 5);
+        var out_dir = ALittle.File_GetFilePathByPath(out_path);
+        ALittle.File_MakeDeepDir(out_dir);
+        out_path = ALittle.File_ChangeFileExtByPath(out_path, "txt");
+
+        var decompile = new carp.CarpLuaDecompile();
+        decompile.Decompile(new_path, out_path);
+
+        var event = new AUICodeProjectGotoEvent();
+        event.file_path = out_path;
         this.DispatchEvent(event);
     }
 

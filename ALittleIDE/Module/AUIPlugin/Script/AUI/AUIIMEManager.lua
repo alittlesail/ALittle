@@ -1,10 +1,11 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.AUIPlugin == nil then _G.AUIPlugin = {} end
+local AUIPlugin = AUIPlugin
+local Lua = Lua
+local ALittle = ALittle
 local ___pairs = pairs
 local ___ipairs = ipairs
-local AUIPlugin = AUIPlugin
-local ALittle = ALittle
 
 
 AUIPlugin.AUIIMEManager = Lua.Class(nil, "AUIPlugin.AUIIMEManager")

@@ -1,10 +1,11 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
+local ALittleIDE = ALittleIDE
+local Lua = Lua
+local ALittle = ALittle
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ALittleIDE = ALittleIDE
-local ALittle = ALittle
 
 
 function ALittleIDE.__Browser_Setup(layer_group, control, module_base_path, script_base_path)
@@ -81,8 +82,6 @@ function ALittleIDE.__Module_Setup(layer_group, control, module_base_path, scrip
 		, "UIEdit/Setting/ImageInputS.alittle", "UIEdit/Tree/IDEUITreeLogic.alittle", "UIEdit/Tree/IDEUITreeItem.alittle"
 		, "UIEdit/Tree/IDEUITree.alittle"})
 	ALittleIDE.g_IDECenter:Setup()
-	local a = carp.CarpLuaDecompile()
-	a:Decompile("D:\\test.lua", "D:\\test.txt")
 end
 ALittleIDE.__Module_Setup = Lua.CoWrap(ALittleIDE.__Module_Setup)
 

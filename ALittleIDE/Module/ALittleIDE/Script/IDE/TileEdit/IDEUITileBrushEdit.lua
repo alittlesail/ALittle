@@ -1,11 +1,12 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
+local ALittleIDE = ALittleIDE
+local Lua = Lua
+local ALittle = ALittle
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ALittleIDE = ALittleIDE
-local ALittle = ALittle
 local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(1715346212, "ALittle.Event", {

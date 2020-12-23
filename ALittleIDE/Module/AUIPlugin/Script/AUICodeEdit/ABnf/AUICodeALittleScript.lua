@@ -1,11 +1,12 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.AUIPlugin == nil then _G.AUIPlugin = {} end
+local AUIPlugin = AUIPlugin
+local Lua = Lua
+local ALittle = ALittle
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local AUIPlugin = AUIPlugin
-local ALittle = ALittle
 local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(1715346212, "ALittle.Event", {
@@ -198,6 +199,7 @@ function AUIPlugin.AUICodeALittleScriptProject:OnTreeItemMenu(full_path, menu)
 	menu:AddItem("生成目标代码", Lua.Bind(self.GenerateFile, self, full_path))
 	menu:AddItem("打开Lua代码", Lua.Bind(self.OpenTargetLuaFile, self, full_path))
 	menu:AddItem("打开JavaScript代码", Lua.Bind(self.OpenTargetJavaScriptFile, self, full_path))
+	menu:AddItem("打开Lua字节码", Lua.Bind(self.OpenTargetLuaByteCode, self, full_path))
 end
 
 function AUIPlugin.AUICodeALittleScriptProject:GenerateDir(full_path)
@@ -255,6 +257,24 @@ function AUIPlugin.AUICodeALittleScriptProject:OpenTargetLuaFile(full_path)
 	local new_path = ALittle.String_Sub(full_path, 1, index) .. "Script/" .. ALittle.String_Sub(full_path, index + 5)
 	local event = {}
 	event.file_path = new_path
+	self:DispatchEvent(___all_struct[2057209532], event)
+end
+
+function AUIPlugin.AUICodeALittleScriptProject:OpenTargetLuaByteCode(full_path)
+	full_path = ALittle.File_ChangeFileExtByPath(full_path, "lua")
+	local index = ALittle.String_Find(full_path, "/src/")
+	if index == nil then
+		return
+	end
+	local new_path = ALittle.String_Sub(full_path, 1, index) .. "Script/" .. ALittle.String_Sub(full_path, index + 5)
+	local out_path = ALittle.String_Sub(full_path, 1, index) .. "ByteCode/" .. ALittle.String_Sub(full_path, index + 5)
+	local out_dir = ALittle.File_GetFilePathByPath(out_path)
+	ALittle.File_MakeDeepDir(out_dir)
+	out_path = ALittle.File_ChangeFileExtByPath(out_path, "txt")
+	local decompile = carp.CarpLuaDecompile()
+	decompile:Decompile(new_path, out_path)
+	local event = {}
+	event.file_path = out_path
 	self:DispatchEvent(___all_struct[2057209532], event)
 end
 

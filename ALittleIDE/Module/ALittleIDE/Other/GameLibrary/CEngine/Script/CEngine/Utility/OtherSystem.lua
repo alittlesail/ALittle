@@ -1,11 +1,11 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.ALittle == nil then _G.ALittle = {} end
+local ALittle = ALittle
+local Lua = Lua
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ALittle = ALittle
-local ALittle = ALittle
 local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(1755750412, "ALittle.ALittleJsonRPCInfo", {

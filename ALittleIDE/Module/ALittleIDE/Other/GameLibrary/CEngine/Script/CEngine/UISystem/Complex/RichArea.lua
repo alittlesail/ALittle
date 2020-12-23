@@ -1,11 +1,11 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.ALittle == nil then _G.ALittle = {} end
+local ALittle = ALittle
+local Lua = Lua
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ALittle = ALittle
-local ALittle = ALittle
 
 ALittle.RegStruct(485812343, "ALittle.RichAreaLineInfo", {
 name = "ALittle.RichAreaLineInfo", ns_name = "ALittle", rl_name = "RichAreaLineInfo", hash_code = 485812343,

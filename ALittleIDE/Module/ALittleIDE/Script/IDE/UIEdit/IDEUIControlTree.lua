@@ -1,10 +1,11 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
+local ALittleIDE = ALittleIDE
+local Lua = Lua
+local ALittle = ALittle
 local ___pairs = pairs
 local ___ipairs = ipairs
-local ALittleIDE = ALittleIDE
-local ALittle = ALittle
 
 ALittle.RegStruct(-2110455927, "ALittle.EventInfo", {
 name = "ALittle.EventInfo", ns_name = "ALittle", rl_name = "EventInfo", hash_code = -2110455927,

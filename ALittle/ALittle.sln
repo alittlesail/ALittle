@@ -4,10 +4,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.29306.81
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ALittleClient", "ALittleClient\ALittleClient.vcxproj", "{46D90FFA-C806-454F-BB1D-DB4B5FA38101}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1DB2D189-2070-4410-82D0-D0330DADAF9B} = {1DB2D189-2070-4410-82D0-D0330DADAF9B}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ALittleServer", "ALittleServer\ALittleServer.vcxproj", "{99628BC2-B56F-42D5-B38A-E2A3CD20DAAC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1DB2D189-2070-4410-82D0-D0330DADAF9B} = {1DB2D189-2070-4410-82D0-D0330DADAF9B}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ALittleClientWin", "ALittleClientWin\ALittleClientWin.vcxproj", "{9FFF70D9-F561-4870-801D-746D9343762C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1DB2D189-2070-4410-82D0-D0330DADAF9B} = {1DB2D189-2070-4410-82D0-D0330DADAF9B}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lua", "lib\lua\lua.vcxproj", "{1DB2D189-2070-4410-82D0-D0330DADAF9B}"
 EndProject

@@ -73,16 +73,22 @@ function ALittleIDE.IDETileContainer:ClipRect(x, y, width, height, h_move, v_mov
 	end
 end
 
+assert(ALittle.DisplayGroup, " extends class:ALittle.DisplayGroup is nil")
+ALittleIDE.IDETileGroupContainer = Lua.Class(ALittle.DisplayGroup, "ALittleIDE.IDETileGroupContainer")
+
+function ALittleIDE.IDETileGroupContainer:ClipRect(x, y, width, height, h_move, v_move)
+	for index, child in ___ipairs(self.childs) do
+		child:ClipRect(x - self._x, y - self._y, width - self._x, height - self._y, h_move, v_move)
+	end
+end
+
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 ALittleIDE.IDETileLinearContainer = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDETileLinearContainer")
 
 function ALittleIDE.IDETileLinearContainer:ClipRect(x, y, width, height, h_move, v_move)
 	self._linear_grid_1:ClipRect(x - self._x, y - self._y, width - self._x, height - self._y, h_move, v_move)
 	self._linear_grid_2:ClipRect(x - self._x, y - self._y, width - self._x, height - self._y, h_move, v_move)
-	for index, child in ___ipairs(self._linear_tile_1.childs) do
-		child:ClipRect(x - self._x, y - self._y, width - self._x, height - self._y, h_move, v_move)
-	end
-	for index, child in ___ipairs(self._linear_tile_2.childs) do
+	for index, child in ___ipairs(self._group_tile.childs) do
 		child:ClipRect(x - self._x, y - self._y, width - self._x, height - self._y, h_move, v_move)
 	end
 end
@@ -103,12 +109,9 @@ function ALittleIDE.IDETileTabChild:Ctor(ctrl_sys, module, name, save, user_info
 	self._linear_grid_2.type = 2
 	self._tile_container._linear_grid_2 = self._linear_grid_2
 	self._tile_container:AddChild(self._linear_grid_2)
-	___rawset(self, "_linear_tile_1", ALittle.DisplayGroup(ALittleIDE.g_Control))
-	___rawset(self, "_linear_tile_2", ALittle.DisplayGroup(ALittleIDE.g_Control))
-	self._tile_container._linear_tile_1 = self._linear_tile_1
-	self._tile_container._linear_tile_2 = self._linear_tile_2
-	self._tile_container:AddChild(self._linear_tile_1)
-	self._tile_container:AddChild(self._linear_tile_2)
+	___rawset(self, "_group_tile", ALittle.DisplayGroup(ALittleIDE.g_Control))
+	self._tile_container._group_tile = self._group_tile
+	self._tile_container:AddChild(self._group_tile)
 	___rawset(self, "_layer_edit", ALittleIDE.g_Control:CreateControl("ide_tile_layer_detail_layout"))
 	ALittleIDE.g_IDECenter.center:AddEventListener(___all_struct[-751714957], self, self.HandleHandDrag)
 	self._tab_rb_quad:AddEventListener(___all_struct[1883782801], self, self.HandleQuadLButtonDown)
@@ -350,29 +353,35 @@ function ALittleIDE.IDETileTabChild:ShowTileFocus()
 end
 
 function ALittleIDE.IDETileTabChild:CreateLayer()
+	local group = ALittle.DisplayGroup(ALittleIDE.g_Control)
 	local linear_1 = ALittle.Linear(ALittleIDE.g_Control)
 	linear_1.type = 2
-	self._linear_tile_1:AddChild(linear_1)
+	group:AddChild(linear_1)
 	local linear_2 = ALittle.Linear(ALittleIDE.g_Control)
 	linear_2.type = 2
 	linear_2.x = self:CalcLinear2OffsetX()
 	linear_2.y = self:CalcLinear2OffsetY()
-	self._linear_tile_2:AddChild(linear_2)
+	group:AddChild(linear_2)
+	self._group_tile:AddChild(group)
 	local row_count = self._linear_grid_1.child_count
 	local col_count = self._linear_grid_1.childs[1].child_count
-	self:ResizeLinear(linear_1, linear_2, row_count, col_count, self._linear_tile_1.child_count)
-	return linear_1, linear_2
+	self:ResizeLinear(linear_1, linear_2, row_count, col_count, self._group_tile.child_count)
+	return group, linear_1, linear_2
 end
 
 function ALittleIDE.IDETileTabChild:GetLayer(index)
-	local linear_1 = self._linear_tile_1:GetChildByIndex(index)
-	local linear_2 = self._linear_tile_2:GetChildByIndex(index)
-	return linear_1, linear_2
+	local group = self._group_tile:GetChildByIndex(index)
+	if group == nil then
+		return nil, nil, nil
+	end
+	local linear_1 = group:GetChildByIndex(1)
+	local linear_2 = group:GetChildByIndex(2)
+	return group, linear_1, linear_2
 end
 
 function ALittleIDE.IDETileTabChild:GetImage(layer, row, col)
-	local linear_1, linear_2 = self:GetLayer(layer)
-	if linear_1 == nil then
+	local group, linear_1, linear_2 = self:GetLayer(layer)
+	if group == nil then
 		return nil
 	end
 	local tile_type = self._user_info.tile_map.tile_type
@@ -389,19 +398,16 @@ function ALittleIDE.IDETileTabChild:GetImage(layer, row, col)
 	end
 end
 
-function ALittleIDE.IDETileTabChild:AddLayer(linear_1, linear_2, index)
-	self._linear_tile_1:AddChild(linear_1, index)
-	self._linear_tile_2:AddChild(linear_2, index)
+function ALittleIDE.IDETileTabChild:AddLayer(group, index)
+	self._group_tile:AddChild(group, index)
 end
 
-function ALittleIDE.IDETileTabChild:RemoveLayer(linear_1, linear_2)
-	self._linear_tile_1:RemoveChild(linear_1)
-	self._linear_tile_2:RemoveChild(linear_2)
+function ALittleIDE.IDETileTabChild:RemoveLayer(group)
+	self._group_tile:RemoveChild(group)
 end
 
-function ALittleIDE.IDETileTabChild:SetLayerIndex(linear_1, linear_2, index)
-	self._linear_tile_1:SetChildIndex(linear_1, index)
-	self._linear_tile_2:SetChildIndex(linear_2, index)
+function ALittleIDE.IDETileTabChild:SetLayerIndex(group, index)
+	self._group_tile:SetChildIndex(group, index)
 end
 
 function ALittleIDE.IDETileTabChild.__getter:tab_body()
@@ -492,16 +498,18 @@ function ALittleIDE.IDETileTabChild:CreateBySelect(info)
 	self._linear_grid_2.x = self:CalcLinear2OffsetX()
 	self._linear_grid_2.y = self:CalcLinear2OffsetY()
 	for index, layer in ___ipairs(info.tile_map.layer_list) do
-		local linear = ALittle.Linear(ALittleIDE.g_Control)
-		linear.type = 2
-		linear.width = grid_map_width
-		self._linear_tile_1:AddChild(linear)
-		linear = ALittle.Linear(ALittleIDE.g_Control)
-		linear.type = 2
-		linear.width = grid_map_width
-		linear.x = self:CalcLinear2OffsetX()
-		linear.y = self:CalcLinear2OffsetY()
-		self._linear_tile_2:AddChild(linear)
+		local group = ALittle.DisplayGroup(ALittleIDE.g_Control)
+		local linear_1 = ALittle.Linear(ALittleIDE.g_Control)
+		linear_1.type = 2
+		linear_1.width = grid_map_width
+		group:AddChild(linear_1)
+		local linear_2 = ALittle.Linear(ALittleIDE.g_Control)
+		linear_2.type = 2
+		linear_2.width = grid_map_width
+		linear_2.x = self:CalcLinear2OffsetX()
+		linear_2.y = self:CalcLinear2OffsetY()
+		group:AddChild(linear_2)
+		self._group_tile:AddChild(group)
 	end
 	self:ResizeGridMap(row_count, col_count)
 	for index, layer in ___ipairs(self._user_info.tile_map.layer_list) do
@@ -672,8 +680,8 @@ function ALittleIDE.IDETileTabChild:ResizeGridMap(row_count, col_count)
 		col_count = cur_col_count
 	end
 	self:ResizeLinear(self._linear_grid_1, self._linear_grid_2, row_count, col_count, 0)
-	for index, linear in ___ipairs(self._linear_tile_1.childs) do
-		self:ResizeLinear(linear, self._linear_tile_2.childs[index], row_count, col_count, index)
+	for index, group in ___ipairs(self._group_tile.childs) do
+		self:ResizeLinear(group:GetChildByIndex(1), group:GetChildByIndex(2), row_count, col_count, index)
 	end
 	local width_1 = self._linear_grid_1.x + self._linear_grid_1.width
 	local width_2 = self._linear_grid_2.x + self._linear_grid_2.width

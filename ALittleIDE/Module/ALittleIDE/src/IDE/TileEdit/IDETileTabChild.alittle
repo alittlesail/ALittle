@@ -10,21 +10,27 @@ public class IDETileContainer : ALittle.DisplayLayout
     }
 }
 
+public class IDETileGroupContainer : ALittle.DisplayGroup
+{
+    protected fun ClipRect(double x, double y, double width, double height, double h_move, double v_move)
+    {
+        for (var index, child in this.childs)
+    		child.ClipRect(x - this._x, y - this._y, width - this._x, height - this._y, h_move, v_move);
+    }
+}
+
 public class IDETileLinearContainer : ALittle.DisplayLayout
 {
     public ALittle.Linear _linear_grid_1;
     public ALittle.Linear _linear_grid_2;
 
-    public ALittle.DisplayGroup _linear_tile_1;
-    public ALittle.DisplayGroup _linear_tile_2;
+    public ALittle.DisplayGroup _group_tile;
 
     protected fun ClipRect(double x, double y, double width, double height, double h_move, double v_move)
     {
         this._linear_grid_1.ClipRect(x - this._x, y - this._y, width - this._x, height - this._y, h_move, v_move);
         this._linear_grid_2.ClipRect(x - this._x, y - this._y, width - this._x, height - this._y, h_move, v_move);
-        for (var index, child in this._linear_tile_1.childs)
-    		child.ClipRect(x - this._x, y - this._y, width - this._x, height - this._y, h_move, v_move);
-        for (var index, child in this._linear_tile_2.childs)
+        for (var index, child in this._group_tile.childs)
     		child.ClipRect(x - this._x, y - this._y, width - this._x, height - this._y, h_move, v_move);
     }
 }
@@ -40,8 +46,7 @@ public class IDETileTabChild : IDETabChild
     private ALittle.Linear _linear_grid_1;
     private ALittle.Linear _linear_grid_2;
 
-    private ALittle.DisplayGroup _linear_tile_1;
-    private ALittle.DisplayGroup _linear_tile_2;
+    private ALittle.DisplayGroup _group_tile;
 
     // 笔刷编辑区
     private IDEUITileLayerEdit _layer_edit;
@@ -67,12 +72,9 @@ public class IDETileTabChild : IDETabChild
         this._tile_container._linear_grid_2 = this._linear_grid_2;
         this._tile_container.AddChild(this._linear_grid_2);
 
-        this._linear_tile_1 = new ALittle.DisplayGroup(g_Control);
-        this._linear_tile_2 = new ALittle.DisplayGroup(g_Control);
-        this._tile_container._linear_tile_1 = this._linear_tile_1;
-        this._tile_container._linear_tile_2 = this._linear_tile_2;
-        this._tile_container.AddChild(this._linear_tile_1);
-        this._tile_container.AddChild(this._linear_tile_2);
+        this._group_tile = new ALittle.DisplayGroup(g_Control);
+        this._tile_container._group_tile = this._group_tile;
+        this._tile_container.AddChild(this._group_tile);
 
         this._layer_edit = g_Control.CreateControl{IDEUITileLayerEdit}("ide_tile_layer_detail_layout");
 
@@ -333,36 +335,41 @@ public class IDETileTabChild : IDETabChild
         g_IDECenter.center.tile_list.ShowTreeItemFocus(tree);
     }
 
-    public fun CreateLayer() : ALittle.Linear, ALittle.Linear
+    public fun CreateLayer() : ALittle.DisplayGroup, ALittle.Linear, ALittle.Linear
     {
+        var group = new ALittle.DisplayGroup(g_Control);
+
         var linear_1 = new ALittle.Linear(g_Control);
         linear_1.type = ALittle.UIEnumTypes.TYPE_V;
-        this._linear_tile_1.AddChild(linear_1);
+        group.AddChild(linear_1);
 
         var linear_2 = new ALittle.Linear(g_Control);
         linear_2.type = ALittle.UIEnumTypes.TYPE_V;
         linear_2.x = this.CalcLinear2OffsetX();
         linear_2.y = this.CalcLinear2OffsetY();
+        group.AddChild(linear_2);
 
-        this._linear_tile_2.AddChild(linear_2);
+        this._group_tile.AddChild(group);
 
         var row_count = this._linear_grid_1.child_count;
         var col_count = this._linear_grid_1.childs[1].child_count;
-        this.ResizeLinear(linear_1, linear_2, row_count, col_count, this._linear_tile_1.child_count);
-        return linear_1, linear_2;
+        this.ResizeLinear(linear_1, linear_2, row_count, col_count, this._group_tile.child_count);
+        return group, linear_1, linear_2;
     }
 
-    public fun GetLayer(int index) : ALittle.Linear, ALittle.Linear
+    public fun GetLayer(int index) : ALittle.DisplayGroup, ALittle.Linear, ALittle.Linear
     {
-        var linear_1 = cast<ALittle.Linear>(this._linear_tile_1.GetChildByIndex(index));
-        var linear_2 = cast<ALittle.Linear>(this._linear_tile_2.GetChildByIndex(index));
-        return linear_1, linear_2;
+        var group = cast<ALittle.DisplayGroup>(this._group_tile.GetChildByIndex(index));
+        if (group == null) return null, null, null;
+        var linear_1 = cast<ALittle.Linear>(group.GetChildByIndex(1));
+        var linear_2 = cast<ALittle.Linear>(group.GetChildByIndex(2));
+        return group, linear_1, linear_2;
     }
 
     public fun GetImage(int layer, int row, int col) : ALittle.Image
     {
-        var linear_1, linear_2 = this.GetLayer(layer);
-        if (linear_1 == null) return null;
+        var group, linear_1, linear_2 = this.GetLayer(layer);
+        if (group == null) return null;
 
         var tile_type = this._user_info.tile_map.tile_type;
 
@@ -382,22 +389,19 @@ public class IDETileTabChild : IDETabChild
         }
     }
 
-    public fun AddLayer(ALittle.Linear linear_1, ALittle.Linear linear_2, int index)
+    public fun AddLayer(ALittle.DisplayGroup group, int index)
     {
-        this._linear_tile_1.AddChild(linear_1, index);
-        this._linear_tile_2.AddChild(linear_2, index);
+        this._group_tile.AddChild(group, index);
     }
 
-    public fun RemoveLayer(ALittle.Linear linear_1, ALittle.Linear linear_2)
+    public fun RemoveLayer(ALittle.DisplayGroup group)
     {
-        this._linear_tile_1.RemoveChild(linear_1);
-        this._linear_tile_2.RemoveChild(linear_2);
+        this._group_tile.RemoveChild(group);
     }
 
-    public fun SetLayerIndex(ALittle.Linear linear_1, ALittle.Linear linear_2, int index)
+    public fun SetLayerIndex(ALittle.DisplayGroup group, int index)
     {
-        this._linear_tile_1.SetChildIndex(linear_1, index);
-        this._linear_tile_2.SetChildIndex(linear_2, index);
+        this._group_tile.SetChildIndex(group, index);
     }
 
     public get tab_body() : ALittle.DisplayObject { return this._tab_screen; }
@@ -495,18 +499,21 @@ public class IDETileTabChild : IDETabChild
         // 创建层
         for (var index, layer in info.tile_map.layer_list)
         {
-            var linear = new ALittle.Linear(g_Control);
-            linear.type = ALittle.UIEnumTypes.TYPE_V;
-            linear.width = grid_map_width;
-            this._linear_tile_1.AddChild(linear);
+            var group = new ALittle.DisplayGroup(g_Control);
 
-            linear = new ALittle.Linear(g_Control);
-            linear.type = ALittle.UIEnumTypes.TYPE_V;
-            linear.width = grid_map_width;
+            var linear_1 = new ALittle.Linear(g_Control);
+            linear_1.type = ALittle.UIEnumTypes.TYPE_V;
+            linear_1.width = grid_map_width;
+            group.AddChild(linear_1);
 
-            linear.x = this.CalcLinear2OffsetX();
-            linear.y = this.CalcLinear2OffsetY();
-            this._linear_tile_2.AddChild(linear);
+            var linear_2 = new ALittle.Linear(g_Control);
+            linear_2.type = ALittle.UIEnumTypes.TYPE_V;
+            linear_2.width = grid_map_width;
+            linear_2.x = this.CalcLinear2OffsetX();
+            linear_2.y = this.CalcLinear2OffsetY();
+            group.AddChild(linear_2);
+
+            this._group_tile.AddChild(group);
         }
         
         // 重新设置格子地图的大小
@@ -673,8 +680,8 @@ public class IDETileTabChild : IDETabChild
         if (col_count < cur_col_count) col_count = cur_col_count;
 
         this.ResizeLinear(this._linear_grid_1, this._linear_grid_2, row_count, col_count, 0);
-        for (var index, linear:ALittle.Linear in this._linear_tile_1.childs)
-        	this.ResizeLinear(linear, cast<ALittle.Linear>(this._linear_tile_2.childs[index]), row_count, col_count, index);
+        for (var index, group:ALittle.DisplayGroup in this._group_tile.childs)
+        	this.ResizeLinear(cast<ALittle.Linear>(group.GetChildByIndex(1)), cast<ALittle.Linear>(group.GetChildByIndex(2)), row_count, col_count, index);
 
         var width_1 = this._linear_grid_1.x + this._linear_grid_1.width;
         var width_2 = this._linear_grid_2.x + this._linear_grid_2.width;

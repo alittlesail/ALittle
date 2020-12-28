@@ -59,8 +59,8 @@ option_map = {}
 })
 ALittle.RegStruct(274315553, "ALittleIDE.IDEUITileLayerInfo", {
 name = "ALittleIDE.IDEUITileLayerInfo", ns_name = "ALittleIDE", rl_name = "IDEUITileLayerInfo", hash_code = 274315553,
-name_list = {"_button","_item","_see_image","_layer","_user_info","_linear_1","_linear_2"},
-type_list = {"ALittle.TextRadioButton","ALittle.DisplayLayout","ALittle.Image","ALittle.TileLayer","ALittleIDE.IDETileTreeUserInfo","ALittle.Linear","ALittle.Linear"},
+name_list = {"_button","_item","_see_image","_layer","_user_info","_group","_linear_1","_linear_2"},
+type_list = {"ALittle.TextRadioButton","ALittle.DisplayLayout","ALittle.Image","ALittle.TileLayer","ALittleIDE.IDETileTreeUserInfo","ALittle.DisplayGroup","ALittle.Linear","ALittle.Linear"},
 option_map = {}
 })
 ALittle.RegStruct(7944876, "ALittle.TileCell", {
@@ -143,7 +143,7 @@ function ALittleIDE.IDEUITileLayerEdit:Init(tab_child, user_info)
 		info._item._user_data = info
 		self._layer_list:AddChild(info._item)
 		info._layer = layer
-		info._linear_1, info._linear_2 = self._tab_child:GetLayer(index)
+		info._group, info._linear_1, info._linear_2 = self._tab_child:GetLayer(index)
 	end
 	if self._layer_list.child_count > 0 then
 		local info = self._layer_list.childs[self._layer_list.child_count]._user_data
@@ -187,7 +187,7 @@ function ALittleIDE.IDEUITileLayerEdit:HandleAddLayerClick(event)
 	info._layer.name = name
 	info._layer.cell_map = {}
 	ALittle.List_Push(self._user_info.tile_map.layer_list, info._layer)
-	info._linear_1, info._linear_2 = self._tab_child:CreateLayer()
+	info._group, info._linear_1, info._linear_2 = self._tab_child:CreateLayer()
 	local revoke = ALittleIDE.IDETileAddLayerRevoke(self._tab_child, info)
 	self._tab_child.revoke_list:PushRevoke(revoke)
 	self._tab_child.save = false
@@ -234,7 +234,7 @@ function ALittleIDE.IDEUITileLayerEdit:HandleDeleteLayer(info)
 		self._layer_list.childs[1]._user_data._button.selected = true
 	end
 	ALittle.List_Remove(info._user_info.tile_map.layer_list, index)
-	self._tab_child:RemoveLayer(info._linear_1, info._linear_2)
+	self._tab_child:RemoveLayer(info._group)
 	local revoke = ALittleIDE.IDETileDeleteLayerRevoke(self._tab_child, info, index)
 	self._tab_child.revoke_list:PushRevoke(revoke)
 	self._tab_child.save = false
@@ -249,7 +249,7 @@ function ALittleIDE.IDEUITileLayerEdit:HandleUpLayer(info)
 	self._layer_list:SetChildIndex(info._item, index - 1)
 	ALittle.List_Remove(info._user_info.tile_map.layer_list, index)
 	ALittle.List_Insert(info._user_info.tile_map.layer_list, index - 1, info._layer)
-	self._tab_child:SetLayerIndex(info._linear_1, info._linear_2, index)
+	self._tab_child:SetLayerIndex(info._group, index)
 	local revoke = ALittleIDE.IDETileSetLayerIndexRevoke(self._tab_child, info, index, index - 1)
 	self._tab_child.revoke_list:PushRevoke(revoke)
 	self._tab_child.save = false
@@ -263,7 +263,7 @@ function ALittleIDE.IDEUITileLayerEdit:HandleDownLayer(info)
 	self._layer_list:SetChildIndex(info._item, index + 1)
 	ALittle.List_Remove(info._user_info.tile_map.layer_list, index)
 	ALittle.List_Insert(info._user_info.tile_map.layer_list, index + 1, info._layer)
-	self._tab_child:SetLayerIndex(info._linear_1, info._linear_2, index + 1)
+	self._tab_child:SetLayerIndex(info._group, index + 1)
 	local revoke = ALittleIDE.IDETileSetLayerIndexRevoke(self._tab_child, info, index, index + 1)
 	self._tab_child.revoke_list:PushRevoke(revoke)
 	self._tab_child.save = false

@@ -41,13 +41,13 @@ function ALittleIDE.IDETileDeleteLayerRevoke:Forward()
 	self._tab_child.layer_edit.layer_list:RemoveChild(self._layer_info._item)
 	local index = ALittle.List_IndexOf(self._layer_info._user_info.tile_map.layer_list, self._layer_info._layer)
 	ALittle.List_Remove(self._layer_info._user_info.tile_map.layer_list, index)
-	self._tab_child:RemoveLayer(self._layer_info._linear_1, self._layer_info._linear_2)
+	self._tab_child:RemoveLayer(self._layer_info._group)
 end
 
 function ALittleIDE.IDETileDeleteLayerRevoke:Back()
 	self._tab_child.layer_edit.layer_list:AddChild(self._layer_info._item, self._index)
 	ALittle.List_Insert(self._layer_info._user_info.tile_map.layer_list, self._index, self._layer_info._layer)
-	self._tab_child:AddLayer(self._layer_info._linear_1, self._layer_info._linear_2, self._index)
+	self._tab_child:AddLayer(self._layer_info._group, self._index)
 end
 
 assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")
@@ -64,14 +64,14 @@ function ALittleIDE.IDETileSetLayerIndexRevoke:Forward()
 	self._tab_child.layer_edit.layer_list:SetChildIndex(self._layer_info._item, self._new_index)
 	ALittle.List_Remove(self._layer_info._user_info.tile_map.layer_list, self._old_index)
 	ALittle.List_Insert(self._layer_info._user_info.tile_map.layer_list, self._new_index, self._layer_info._layer)
-	self._tab_child:SetLayerIndex(self._layer_info._linear_1, self._layer_info._linear_2, self._new_index)
+	self._tab_child:SetLayerIndex(self._layer_info._group, self._new_index)
 end
 
 function ALittleIDE.IDETileSetLayerIndexRevoke:Back()
 	self._tab_child.layer_edit.layer_list:SetChildIndex(self._layer_info._item, self._old_index)
 	ALittle.List_Remove(self._layer_info._user_info.tile_map.layer_list, self._new_index)
 	ALittle.List_Insert(self._layer_info._user_info.tile_map.layer_list, self._old_index, self._layer_info._layer)
-	self._tab_child:SetLayerIndex(self._layer_info._linear_1, self._layer_info._linear_2, self._old_index)
+	self._tab_child:SetLayerIndex(self._layer_info._group, self._old_index)
 end
 
 assert(ALittle.RevokeObject, " extends class:ALittle.RevokeObject is nil")

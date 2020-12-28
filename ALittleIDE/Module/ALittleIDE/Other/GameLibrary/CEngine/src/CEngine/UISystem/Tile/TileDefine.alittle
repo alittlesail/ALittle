@@ -39,7 +39,7 @@ public struct TileMap
 private var floor = Math_Floor;
 private var ceil = Math_Ceil;
 
-public class TileLayoutContainer : DisplayLayout
+public class TileMapContainer : DisplayLayout
 {
     private TileMap _tile_map;	// 地图数据
 
@@ -54,7 +54,21 @@ public class TileLayoutContainer : DisplayLayout
 
     private Map<int, Map<int, Map<int, Image>>> _image_cache; // image对象缓存
 
-    private TileUserContainer _user_layout;	// 提供外部使用的容器，用于存放任意内容
+    private TileLayoutContainer _tile_layout;	// 提供外部使用的容器，用于存放任意内容
+    private TileLayoutContainer _user_layout;	// 提供外部使用的容器，用于存放任意内容
+
+    public ctor(ControlSystem ctrl_sys)
+    {
+        this._tile_layout = new TileLayoutContainer(ctrl_sys);
+        this._tile_layout.width_type = UIEnumTypes.SIZE_MARGIN;
+        this._tile_layout.height_type = UIEnumTypes.SIZE_MARGIN;
+        this.AddChild(this._tile_layout);
+
+        this._user_layout = new TileLayoutContainer(ctrl_sys);
+        this._user_layout.width_type = UIEnumTypes.SIZE_MARGIN;
+        this._user_layout.height_type = UIEnumTypes.SIZE_MARGIN;
+        this.AddChild(this._user_layout);
+    }
 
     protected fun ClipRect(double x, double y, double width, double height, double h_move, double v_move)
     {
@@ -66,7 +80,7 @@ public class TileLayoutContainer : DisplayLayout
     public fun Init(TileMap tile_map, int row_count, int col_count)
     {
         // 清空控件
-        this.RemoveAllChild();
+        this._tile_layout.RemoveAllChild();
 
         // 保存数据
         this._tile_map = tile_map;
@@ -109,7 +123,7 @@ public class TileLayoutContainer : DisplayLayout
             this.ResizeLinear(linear_1, linear_2, index);
 
             // 添加到容器
-            this.AddChild(group);
+            this._tile_layout.AddChild(group);
         }
 
         var width_1 = 0.0;
@@ -122,16 +136,11 @@ public class TileLayoutContainer : DisplayLayout
         var height_2 = 0.0;
         if (linear_2 != null) height_2 = linear_2.y + linear_2.height;
 
-        this._user_layout = new TileUserContainer(this._ctrl_sys);
-        this._user_layout.width_type = UIEnumTypes.SIZE_MARGIN;
-        this._user_layout.height_type = UIEnumTypes.SIZE_MARGIN;
-        this.AddChild(this._user_layout);
-
         this.width = Math_Max(width_1, width_2);
         this.height = Math_Max(height_1, height_2);
     }
 
-    public get user_layout() : TileUserContainer { return this._user_layout; }
+    public get user_layout() : TileLayoutContainer { return this._user_layout; }
 
     public fun GetImage(int layer, int row, int col) : Image
     {
@@ -151,7 +160,7 @@ public class TileLayoutContainer : DisplayLayout
         var image = row_map[col];
         if (image != null) return image;
 
-        var group = cast<DisplayGroup>(this.GetChildByIndex(layer));
+        var group = cast<DisplayGroup>(this._tile_layout.GetChildByIndex(layer));
         if (group == null) return null;
         var linear_1 = cast<Linear>(group.GetChildByIndex(1));
         var linear_2 = cast<Linear>(group.GetChildByIndex(2));
@@ -192,7 +201,8 @@ public class TileLayoutContainer : DisplayLayout
         var row_count = this._row_count;
         var col_count = this._col_count;
 
-        for (var index, group:TileGroupContainer in this._childs)
+        var childs = this._tile_layout._childs;
+        for (var index, group:TileGroupContainer in childs)
         {
             var layer = tile_map.layer_list[index];
             for (var row = 1; row <= row_count; 1)
@@ -340,7 +350,7 @@ public class TileGroupContainer : DisplayGroup
 }
 
 // 用于外部使用
-public class TileUserContainer : DisplayLayout
+public class TileLayoutContainer : DisplayLayout
 {
     protected fun ClipRect(double x, double y, double width, double height, double h_move, double v_move)
     {

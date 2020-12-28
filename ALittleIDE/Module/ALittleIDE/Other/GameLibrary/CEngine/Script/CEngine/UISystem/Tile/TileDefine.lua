@@ -36,25 +36,33 @@ ALittle.TileType = {
 local floor = ALittle.Math_Floor
 local ceil = ALittle.Math_Ceil
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-ALittle.TileLayoutContainer = Lua.Class(ALittle.DisplayLayout, "ALittle.TileLayoutContainer")
+ALittle.TileMapContainer = Lua.Class(ALittle.DisplayLayout, "ALittle.TileMapContainer")
 
-function ALittle.TileLayoutContainer:Ctor()
+function ALittle.TileMapContainer:Ctor(ctrl_sys)
 	___rawset(self, "_row_count", 0)
 	___rawset(self, "_col_count", 0)
 	___rawset(self, "_cell_width", 0.0)
 	___rawset(self, "_cell_height", 0.0)
 	___rawset(self, "_linear_x", 0.0)
 	___rawset(self, "_linear_y", 0.0)
+	___rawset(self, "_tile_layout", ALittle.TileLayoutContainer(ctrl_sys))
+	self._tile_layout.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	self._tile_layout.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	self:AddChild(self._tile_layout)
+	___rawset(self, "_user_layout", ALittle.TileLayoutContainer(ctrl_sys))
+	self._user_layout.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	self._user_layout.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	self:AddChild(self._user_layout)
 end
 
-function ALittle.TileLayoutContainer:ClipRect(x, y, width, height, h_move, v_move)
+function ALittle.TileMapContainer:ClipRect(x, y, width, height, h_move, v_move)
 	for index, child in ___ipairs(self.childs) do
 		child:ClipRect(x - self._x, y - self._y, width - self._x, height - self._y, h_move, v_move)
 	end
 end
 
-function ALittle.TileLayoutContainer:Init(tile_map, row_count, col_count)
-	self:RemoveAllChild()
+function ALittle.TileMapContainer:Init(tile_map, row_count, col_count)
+	self._tile_layout:RemoveAllChild()
 	self._tile_map = tile_map
 	self._row_count = row_count
 	self._col_count = col_count
@@ -79,7 +87,7 @@ function ALittle.TileLayoutContainer:Init(tile_map, row_count, col_count)
 		linear_2.y = self._linear_y
 		group:AddChild(linear_2)
 		self:ResizeLinear(linear_1, linear_2, index)
-		self:AddChild(group)
+		self._tile_layout:AddChild(group)
 	end
 	local width_1 = 0.0
 	if linear_1 ~= nil then
@@ -97,19 +105,15 @@ function ALittle.TileLayoutContainer:Init(tile_map, row_count, col_count)
 	if linear_2 ~= nil then
 		height_2 = linear_2.y + linear_2.height
 	end
-	self._user_layout = ALittle.TileUserContainer(self._ctrl_sys)
-	self._user_layout.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
-	self._user_layout.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
-	self:AddChild(self._user_layout)
 	self.width = ALittle.Math_Max(width_1, width_2)
 	self.height = ALittle.Math_Max(height_1, height_2)
 end
 
-function ALittle.TileLayoutContainer.__getter:user_layout()
+function ALittle.TileMapContainer.__getter:user_layout()
 	return self._user_layout
 end
 
-function ALittle.TileLayoutContainer:GetImage(layer, row, col)
+function ALittle.TileMapContainer:GetImage(layer, row, col)
 	local layer_map = self._image_cache[layer]
 	if layer_map == nil then
 		layer_map = {}
@@ -124,7 +128,7 @@ function ALittle.TileLayoutContainer:GetImage(layer, row, col)
 	if image ~= nil then
 		return image
 	end
-	local group = self:GetChildByIndex(layer)
+	local group = self._tile_layout:GetChildByIndex(layer)
 	if group == nil then
 		return nil
 	end
@@ -152,11 +156,12 @@ function ALittle.TileLayoutContainer:GetImage(layer, row, col)
 	end
 end
 
-function ALittle.TileLayoutContainer:RefreshTexture(start_row, start_col)
+function ALittle.TileMapContainer:RefreshTexture(start_row, start_col)
 	local tile_map = self._tile_map
 	local row_count = self._row_count
 	local col_count = self._col_count
-	for index, group in ___ipairs(self._childs) do
+	local childs = self._tile_layout._childs
+	for index, group in ___ipairs(childs) do
 		local layer = tile_map.layer_list[index]
 		local row = 1
 		while true do
@@ -183,7 +188,7 @@ function ALittle.TileLayoutContainer:RefreshTexture(start_row, start_col)
 	end
 end
 
-function ALittle.TileLayoutContainer:ResizeLinear(linear_1, linear_2, layer)
+function ALittle.TileMapContainer:ResizeLinear(linear_1, linear_2, layer)
 	local tile_map = self._tile_map
 	local col_count = self._col_count
 	local row_count = self._row_count
@@ -245,7 +250,7 @@ function ALittle.TileLayoutContainer:ResizeLinear(linear_1, linear_2, layer)
 	end
 end
 
-function ALittle.TileLayoutContainer:CreateCell()
+function ALittle.TileMapContainer:CreateCell()
 	local tile_map = self._tile_map
 	local tile_type = tile_map.tile_type
 	local side_len = tile_map.side_len
@@ -298,9 +303,9 @@ function ALittle.TileGroupContainer:ClipRect(x, y, width, height, h_move, v_move
 end
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-ALittle.TileUserContainer = Lua.Class(ALittle.DisplayLayout, "ALittle.TileUserContainer")
+ALittle.TileLayoutContainer = Lua.Class(ALittle.DisplayLayout, "ALittle.TileLayoutContainer")
 
-function ALittle.TileUserContainer:ClipRect(x, y, width, height, h_move, v_move)
+function ALittle.TileLayoutContainer:ClipRect(x, y, width, height, h_move, v_move)
 	for index, child in ___ipairs(self.childs) do
 		child:ClipRect(x - self._x, y - self._y, width - self._x, height - self._y, h_move, v_move)
 	end

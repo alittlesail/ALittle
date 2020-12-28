@@ -594,7 +594,7 @@ function ALittle.ScrollScreen:HandleDrag(event)
 		end
 	end
 	self._content_height = self._scroll_content.max_bottom
-	if event.delta_x ~= 0 and self._bottom_scroll_bar ~= nil then
+	if event.delta_x ~= 0 then
 		if event.delta_x > 0 then
 			local min_x = 0.0
 			local max_x = self._scroll_view.width * self._drag_rate
@@ -649,7 +649,7 @@ function ALittle.ScrollScreen:HandleDrag(event)
 		end
 		self:RefreshClipDisLine(event.delta_x)
 	end
-	if event.delta_y ~= 0 and self._right_scroll_bar ~= nil then
+	if event.delta_y ~= 0 then
 		if event.delta_y > 0 then
 			local min_y = 0.0
 			local max_y = self._scroll_view.height * self._drag_rate

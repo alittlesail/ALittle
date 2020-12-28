@@ -547,7 +547,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 			}
 		}
 		this._content_height = this._scroll_content.max_bottom;
-		if (event.delta_x !== 0 && this._bottom_scroll_bar !== undefined) {
+		if (event.delta_x !== 0) {
 			if (event.delta_x > 0) {
 				let min_x = 0.0;
 				let max_x = this._scroll_view.width * this._drag_rate;
@@ -602,7 +602,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 			}
 			this.RefreshClipDisLine(event.delta_x);
 		}
-		if (event.delta_y !== 0 && this._right_scroll_bar !== undefined) {
+		if (event.delta_y !== 0) {
 			if (event.delta_y > 0) {
 				let min_y = 0.0;
 				let max_y = this._scroll_view.height * this._drag_rate;

@@ -52,6 +52,8 @@ public class TileLayoutContainer : DisplayLayout
     private double _linear_x = 0.0;	// 二级linear的x偏移
     private double _linear_y = 0.0;	// 二级linear的y偏移
 
+    private Map<int, Map<int, Map<int, Image>>> _image_cache; // image对象缓存
+
     protected fun ClipRect(double x, double y, double width, double height, double h_move, double v_move)
     {
         for (var index, child in this.childs)
@@ -68,6 +70,7 @@ public class TileLayoutContainer : DisplayLayout
         this._tile_map = tile_map;
         this._row_count = row_count;
         this._col_count = col_count;
+        this._image_cache = new Map<int, Map<int, Map<int, Image>>>();
 
         this._cell_width = Tile_CalcCellWidth(tile_map);
         this._cell_height = Tile_CalcCellHeight(tile_map);
@@ -123,6 +126,22 @@ public class TileLayoutContainer : DisplayLayout
 
     public fun GetImage(int layer, int row, int col) : Image
     {
+        var layer_map = this._image_cache[layer];
+        if (layer_map == null)
+        {
+            layer_map = new Map<int, Map<int, Image>>();
+            this._image_cache[layer] = layer_map;
+        }
+
+        var row_map = layer_map[row];
+        if (row_map == null)
+        {
+            row_map = new Map<int, Image>();
+            layer_map[row] = row_map;
+        }
+        var image = row_map[col];
+        if (image != null) return image;
+
         var group = cast<DisplayGroup>(this.GetChildByIndex(layer));
         if (group == null) return null;
         var linear_1 = cast<Linear>(group.GetChildByIndex(1));
@@ -132,16 +151,28 @@ public class TileLayoutContainer : DisplayLayout
         if (tile_type == TileType.HEX_V)
         {
             if (row % 2 == 1)
-                return linear_1.childs[floor(row / 2) + 1].childs[col]._user_data;
-
-            return linear_2.childs[floor(row / 2)].childs[col]._user_data;
+            {
+                image = linear_1.childs[floor(row / 2) + 1].childs[col]._user_data;
+                row_map[col] = image;
+                return image;
+            }
+                
+            image = linear_2.childs[floor(row / 2)].childs[col]._user_data;
+            row_map[col] = image;
+            return image;
         }
         else
         {
             if (col % 2 == 1)
-                return linear_1.childs[row].childs[floor(col / 2) + 1]._user_data;
-
-            return linear_2.childs[row].childs[floor(col / 2)]._user_data;
+            {
+                image = linear_1.childs[row].childs[floor(col / 2) + 1]._user_data;
+                row_map[col] = image;
+                return image;
+            }
+                
+            image = linear_2.childs[row].childs[floor(col / 2)]._user_data;
+            row_map[col] = image;
+            return image;
         }
     }
 
@@ -522,4 +553,15 @@ public static Tile_CalcCellWidth(TileMap tile_map) : double
         return side_len * 3;
 
     return 0;
+}
+
+// 根据层名称获取层下标
+public static Tile_GetLayerByName(TileMap tile_map, string name) : int
+{
+    for (var index, layer in tile_map.layer_list)
+    {
+        if (layer.name == name) return index;
+    }
+
+    return null;
 }

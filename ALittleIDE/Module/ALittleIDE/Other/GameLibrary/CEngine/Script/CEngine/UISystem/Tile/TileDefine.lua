@@ -58,6 +58,7 @@ function ALittle.TileLayoutContainer:Init(tile_map, row_count, col_count)
 	self._tile_map = tile_map
 	self._row_count = row_count
 	self._col_count = col_count
+	self._image_cache = {}
 	self._cell_width = ALittle.Tile_CalcCellWidth(tile_map)
 	self._cell_height = ALittle.Tile_CalcCellHeight(tile_map)
 	self._linear_x = ALittle.Tile_CalcLinear2OffsetX(tile_map)
@@ -101,6 +102,20 @@ function ALittle.TileLayoutContainer:Init(tile_map, row_count, col_count)
 end
 
 function ALittle.TileLayoutContainer:GetImage(layer, row, col)
+	local layer_map = self._image_cache[layer]
+	if layer_map == nil then
+		layer_map = {}
+		self._image_cache[layer] = layer_map
+	end
+	local row_map = layer_map[row]
+	if row_map == nil then
+		row_map = {}
+		layer_map[row] = row_map
+	end
+	local image = row_map[col]
+	if image ~= nil then
+		return image
+	end
 	local group = self:GetChildByIndex(layer)
 	if group == nil then
 		return nil
@@ -110,14 +125,22 @@ function ALittle.TileLayoutContainer:GetImage(layer, row, col)
 	local tile_type = self._tile_map.tile_type
 	if tile_type == ALittle.TileType.HEX_V then
 		if row % 2 == 1 then
-			return linear_1.childs[floor(row / 2) + 1].childs[col]._user_data
+			image = linear_1.childs[floor(row / 2) + 1].childs[col]._user_data
+			row_map[col] = image
+			return image
 		end
-		return linear_2.childs[floor(row / 2)].childs[col]._user_data
+		image = linear_2.childs[floor(row / 2)].childs[col]._user_data
+		row_map[col] = image
+		return image
 	else
 		if col % 2 == 1 then
-			return linear_1.childs[row].childs[floor(col / 2) + 1]._user_data
+			image = linear_1.childs[row].childs[floor(col / 2) + 1]._user_data
+			row_map[col] = image
+			return image
 		end
-		return linear_2.childs[row].childs[floor(col / 2)]._user_data
+		image = linear_2.childs[row].childs[floor(col / 2)]._user_data
+		row_map[col] = image
+		return image
 	end
 end
 
@@ -415,6 +438,15 @@ function ALittle.Tile_CalcCellWidth(tile_map)
 		return side_len * 3
 	end
 	return 0
+end
+
+function ALittle.Tile_GetLayerByName(tile_map, name)
+	for index, layer in ___ipairs(tile_map.layer_list) do
+		if layer.name == name then
+			return index
+		end
+	end
+	return nil
 end
 
 end

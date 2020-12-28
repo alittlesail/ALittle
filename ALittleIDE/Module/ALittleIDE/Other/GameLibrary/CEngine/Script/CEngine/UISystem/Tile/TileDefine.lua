@@ -97,8 +97,16 @@ function ALittle.TileLayoutContainer:Init(tile_map, row_count, col_count)
 	if linear_2 ~= nil then
 		height_2 = linear_2.y + linear_2.height
 	end
+	self._user_layout = ALittle.TileUserContainer(self._ctrl_sys)
+	self._user_layout.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	self._user_layout.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	self:AddChild(self._user_layout)
 	self.width = ALittle.Math_Max(width_1, width_2)
 	self.height = ALittle.Math_Max(height_1, height_2)
+end
+
+function ALittle.TileLayoutContainer.__getter:user_layout()
+	return self._user_layout
 end
 
 function ALittle.TileLayoutContainer:GetImage(layer, row, col)
@@ -284,6 +292,15 @@ assert(ALittle.DisplayGroup, " extends class:ALittle.DisplayGroup is nil")
 ALittle.TileGroupContainer = Lua.Class(ALittle.DisplayGroup, "ALittle.TileGroupContainer")
 
 function ALittle.TileGroupContainer:ClipRect(x, y, width, height, h_move, v_move)
+	for index, child in ___ipairs(self.childs) do
+		child:ClipRect(x - self._x, y - self._y, width - self._x, height - self._y, h_move, v_move)
+	end
+end
+
+assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
+ALittle.TileUserContainer = Lua.Class(ALittle.DisplayLayout, "ALittle.TileUserContainer")
+
+function ALittle.TileUserContainer:ClipRect(x, y, width, height, h_move, v_move)
 	for index, child in ___ipairs(self.childs) do
 		child:ClipRect(x - self._x, y - self._y, width - self._x, height - self._y, h_move, v_move)
 	end

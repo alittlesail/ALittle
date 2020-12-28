@@ -54,6 +54,8 @@ public class TileLayoutContainer : DisplayLayout
 
     private Map<int, Map<int, Map<int, Image>>> _image_cache; // image对象缓存
 
+    private TileUserContainer _user_layout;	// 提供外部使用的容器，用于存放任意内容
+
     protected fun ClipRect(double x, double y, double width, double height, double h_move, double v_move)
     {
         for (var index, child in this.childs)
@@ -120,9 +122,16 @@ public class TileLayoutContainer : DisplayLayout
         var height_2 = 0.0;
         if (linear_2 != null) height_2 = linear_2.y + linear_2.height;
 
+        this._user_layout = new TileUserContainer(this._ctrl_sys);
+        this._user_layout.width_type = UIEnumTypes.SIZE_MARGIN;
+        this._user_layout.height_type = UIEnumTypes.SIZE_MARGIN;
+        this.AddChild(this._user_layout);
+
         this.width = Math_Max(width_1, width_2);
         this.height = Math_Max(height_1, height_2);
     }
+
+    public get user_layout() : TileUserContainer { return this._user_layout; }
 
     public fun GetImage(int layer, int row, int col) : Image
     {
@@ -322,6 +331,16 @@ public class TileLayoutContainer : DisplayLayout
 
 // linear1和linear2的容器，构建出一个层显示
 public class TileGroupContainer : DisplayGroup
+{
+    protected fun ClipRect(double x, double y, double width, double height, double h_move, double v_move)
+    {
+        for (var index, child in this.childs)
+    		child.ClipRect(x - this._x, y - this._y, width - this._x, height - this._y, h_move, v_move);
+    }
+}
+
+// 用于外部使用
+public class TileUserContainer : DisplayLayout
 {
     protected fun ClipRect(double x, double y, double width, double height, double h_move, double v_move)
     {

@@ -14,14 +14,15 @@ public class RevokeList
 	private int _revoke_index;
 	private int _max_count;
     
-	public ctor()
+	public ctor([Nullable] int max_count)
 	{
 		// 当前的撤销队列
 		this._revoke_list = new List<RevokeObject>();
 		this._revoke_count = 0;
 		this._revoke_index = 0;
 	
-		this._max_count = 100;
+        if (max_count != null) max_count = 100;
+		this._max_count = max_count;
 	}
 	
 	public fun PushRevoke(RevokeObject revoke)

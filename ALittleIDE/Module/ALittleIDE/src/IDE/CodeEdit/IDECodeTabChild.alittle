@@ -37,7 +37,7 @@ public class IDECodeTabChild : IDETabChild
 
     private fun OnOpen()
     {
-        this._revoke_list = new ALittle.RevokeList();
+        this._revoke_list = new ALittle.RevokeList(10000);
         [Language(Lua)]
         if (this._language == null && this._user_info.project != null && ALittle.File_GetFileExtByPathAndUpper(this._user_info.path) == this._user_info.project.upper_ext)
             this._language = new AUIPlugin.AUICodeALittleScript(this._user_info.project, this._user_info.path, this._user_info.module_path);

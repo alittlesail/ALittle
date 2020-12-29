@@ -75,7 +75,7 @@ function ALittleIDE.IDECodeTabChild:OnClose()
 end
 
 function ALittleIDE.IDECodeTabChild:OnOpen()
-	self._revoke_list = ALittle.RevokeList()
+	self._revoke_list = ALittle.RevokeList(10000)
 	if self._language == nil and self._user_info.project ~= nil and ALittle.File_GetFileExtByPathAndUpper(self._user_info.path) == self._user_info.project.upper_ext then
 		self._language = AUIPlugin.AUICodeALittleScript(self._user_info.project, self._user_info.path, self._user_info.module_path)
 	end

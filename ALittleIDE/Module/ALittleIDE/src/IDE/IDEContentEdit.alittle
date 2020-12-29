@@ -16,7 +16,7 @@ public class IDETabChild : ALittle.UIEventDispatcher
         this._module = module;
 		this._save = save;
 		// 撤销列表
-		this._revoke_list = new ALittle.RevokeList();
+		this._revoke_list = new ALittle.RevokeList(10000);
     }
 	
 	public get id() : string { return this._name; }

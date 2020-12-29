@@ -1468,7 +1468,7 @@ function AUIPlugin.AUICodeEdit:Load(file_path, content, revoke_list, language, b
 	self._file_path = file_path
 	self._revoke_list = revoke_list
 	if self._revoke_list == nil then
-		self._revoke_list = ALittle.RevokeList()
+		self._revoke_list = ALittle.RevokeList(10000)
 	end
 	return true
 end

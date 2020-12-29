@@ -548,7 +548,7 @@ public class IDEUITabChild : IDETabChild
 		this._save = true;
         this.UpdateTitle();
 		// 清空撤销列表
-		this._revoke_list = new ALittle.RevokeList();
+		this._revoke_list = new ALittle.RevokeList(10000);
     }
 
     public fun ShowControlFocus()

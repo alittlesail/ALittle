@@ -65,7 +65,7 @@ function ALittleIDE.IDETabChild:Ctor(ctrl_sys, module, name, save)
 	___rawset(self, "_name", name)
 	___rawset(self, "_module", module)
 	___rawset(self, "_save", save)
-	___rawset(self, "_revoke_list", ALittle.RevokeList())
+	___rawset(self, "_revoke_list", ALittle.RevokeList(10000))
 end
 
 function ALittleIDE.IDETabChild.__getter:id()

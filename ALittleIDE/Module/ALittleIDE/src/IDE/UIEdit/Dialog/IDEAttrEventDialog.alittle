@@ -180,7 +180,7 @@ public class IDEAttrEventDialog
             item.Init(this, event_info.type, event_info.func);
             this._event_scroll_screen.AddChild(item);
         }
-        this._revoke_list = new ALittle.RevokeList();
+        this._revoke_list = new ALittle.RevokeList(10000);
     }
 
     public fun HandleEventKeyDown(ALittle.UIKeyDownEvent event) : bool

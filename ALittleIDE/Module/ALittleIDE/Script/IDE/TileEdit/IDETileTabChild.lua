@@ -335,7 +335,7 @@ function ALittleIDE.IDETileTabChild:OnClose()
 end
 
 function ALittleIDE.IDETileTabChild:OnOpen()
-	self._revoke_list = ALittle.RevokeList()
+	self._revoke_list = ALittle.RevokeList(10000)
 	ALittleIDE.g_IDECenter.center.tile_brush_edit.layer_container:AddChild(self._layer_edit)
 end
 

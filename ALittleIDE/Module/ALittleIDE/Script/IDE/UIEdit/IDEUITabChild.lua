@@ -523,7 +523,7 @@ function ALittleIDE.IDEUITabChild:Refresh()
 	self._tree_search_info.index = 0
 	self._save = true
 	self:UpdateTitle()
-	self._revoke_list = ALittle.RevokeList()
+	self._revoke_list = ALittle.RevokeList(10000)
 end
 
 function ALittleIDE.IDEUITabChild:ShowControlFocus()

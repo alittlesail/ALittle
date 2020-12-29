@@ -182,7 +182,7 @@ function ALittleIDE.IDEAttrEventDialog:ResetText()
 		item:Init(self, event_info.type, event_info.func)
 		self._event_scroll_screen:AddChild(item)
 	end
-	self._revoke_list = ALittle.RevokeList()
+	self._revoke_list = ALittle.RevokeList(10000)
 end
 
 function ALittleIDE.IDEAttrEventDialog:HandleEventKeyDown(event)

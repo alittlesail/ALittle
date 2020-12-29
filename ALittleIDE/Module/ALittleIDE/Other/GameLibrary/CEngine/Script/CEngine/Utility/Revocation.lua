@@ -18,11 +18,14 @@ end
 
 ALittle.RevokeList = Lua.Class(nil, "ALittle.RevokeList")
 
-function ALittle.RevokeList:Ctor()
+function ALittle.RevokeList:Ctor(max_count)
 	___rawset(self, "_revoke_list", {})
 	___rawset(self, "_revoke_count", 0)
 	___rawset(self, "_revoke_index", 0)
-	___rawset(self, "_max_count", 100)
+	if max_count ~= nil then
+		max_count = 100
+	end
+	___rawset(self, "_max_count", max_count)
 end
 
 function ALittle.RevokeList:PushRevoke(revoke)

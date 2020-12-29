@@ -1523,7 +1523,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         this.SetText(content);
         this._file_path = file_path;
         this._revoke_list = revoke_list;
-        if (this._revoke_list == null) this._revoke_list = new ALittle.RevokeList();
+        if (this._revoke_list == null) this._revoke_list = new ALittle.RevokeList(10000);
 
         return true;
     }

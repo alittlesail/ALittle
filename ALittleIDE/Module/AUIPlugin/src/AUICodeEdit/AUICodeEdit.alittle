@@ -1540,6 +1540,12 @@ public class AUICodeEdit : ALittle.DisplayLayout
         var len = ALittle.String_Len(content);
         var index = 1;
         var pre_width = 0.0;
+
+        var UTF8ByteCount = carp.UTF8ByteCount;
+        var sub = lua.String.sub;
+        var ascii_width = this._ascii_width;
+        var word_width = this._word_width;
+
         while (index <= len)
         {
             var is_asicc = true;
@@ -1547,9 +1553,9 @@ public class AUICodeEdit : ALittle.DisplayLayout
             var char_text:string = null;
             [Language(Lua)]
             {
-                byte_count = carp.UTF8ByteCount(content, index - 1, 1);
+                byte_count = UTF8ByteCount(content, index - 1, 1);
                 if (byte_count > 1) is_asicc = false;
-                char_text = lua.String.sub(content, index, index + byte_count - 1);
+                char_text = sub(content, index, index + byte_count - 1);
             }
             [Language(JavaScript)]
             {
@@ -1563,14 +1569,14 @@ public class AUICodeEdit : ALittle.DisplayLayout
             if (is_asicc)
             {
                 if (char_text == "\t")
-                    char.width = this._ascii_width * 4;
+                    char.width = ascii_width * 4;
                 elseif (char_text == "\r" || char_text == "\n")
                     char.width = 0;
                 else
-                    char.width = this._ascii_width;
+                    char.width = ascii_width;
             }   
             else
-                char.width = this._word_width;
+                char.width = word_width;
             char.red = CODE_FONT_RED;
             char.green = CODE_FONT_GREEN;
             char.blue = CODE_FONT_BLUE;

@@ -112,6 +112,8 @@ type_list = {"ALittle.DisplayObject","double","double","double","double","double
 option_map = {}
 })
 
+local List_Insert = ALittle.List_Insert
+local List_Splice = ALittle.List_Splice
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 AUIPlugin.AUICodeEdit = Lua.Class(ALittle.DisplayLayout, "AUIPlugin.AUICodeEdit")
 
@@ -1478,29 +1480,33 @@ function AUIPlugin.AUICodeEdit:CreateLines(content)
 	local len = ALittle.String_Len(content)
 	local index = 1
 	local pre_width = 0.0
+	local UTF8ByteCount = carp.UTF8ByteCount
+	local sub = string.sub
+	local ascii_width = self._ascii_width
+	local word_width = self._word_width
 	while index <= len do
 		local is_asicc = true
 		local byte_count = 1
 		local char_text = nil
 		do
-			byte_count = carp.UTF8ByteCount(content, index - 1, 1)
+			byte_count = UTF8ByteCount(content, index - 1, 1)
 			if byte_count > 1 then
 				is_asicc = false
 			end
-			char_text = string.sub(content, index, index + byte_count - 1)
+			char_text = sub(content, index, index + byte_count - 1)
 		end
 		index = index + (byte_count)
 		local char = {}
 		if is_asicc then
 			if char_text == "\t" then
-				char.width = self._ascii_width * 4
+				char.width = ascii_width * 4
 			elseif char_text == "\r" or char_text == "\n" then
 				char.width = 0
 			else
-				char.width = self._ascii_width
+				char.width = ascii_width
 			end
 		else
-			char.width = self._word_width
+			char.width = word_width
 		end
 		char.red = AUIPlugin.CODE_FONT_RED
 		char.green = AUIPlugin.CODE_FONT_GREEN
@@ -1628,7 +1634,7 @@ function AUIPlugin.AUICodeEdit:MultiTabInsert(need_revoke, revoke_bind)
 			char.pre_width = (i - 1) * self._ascii_width
 			char.char = " "
 			char.width = self._ascii_width
-			ALittle.List_Insert(line.char_list, i, char)
+			List_Insert(line.char_list, i, char)
 			i = i+(1)
 		end
 		line.char_count = line.char_count + (4)
@@ -1795,7 +1801,7 @@ function AUIPlugin.AUICodeEdit:MultiTabDelete(need_revoke, revoke_bind)
 				end
 			end
 			line.container.width = line.container.width - (self._ascii_width * 4)
-			ALittle.List_Splice(line.char_list, 1, delete_count)
+			List_Splice(line.char_list, 1, delete_count)
 			line.char_count = line.char_count - (delete_count)
 			if index == old_line_start then
 				old_char_start = old_char_start - (delete_count)
@@ -1906,24 +1912,25 @@ function AUIPlugin.AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 					i = i+(1)
 				end
 				local split_count = split_pre_line.char_count - self._cursor.char
-				ALittle.List_Splice(split_pre_line.char_list, self._cursor.char + 1, split_count)
+				List_Splice(split_pre_line.char_list, self._cursor.char + 1, split_count)
 				split_pre_line.char_count = split_pre_line.char_count - (split_count)
 			end
+			local code_linear = self._code_linear
 			local i = 2
 			while true do
 				if not(i < line_count) then break end
 				local line = line_list[i]
 				new_line_index = new_line_index + (1)
-				self._code_linear:AddChild(line.container, new_line_index)
+				code_linear:AddChild(line.container, new_line_index)
 				this_line_count = this_line_count + (1)
-				ALittle.List_Insert(this_line_list, new_line_index, line)
+				List_Insert(this_line_list, new_line_index, line)
 				line_map[new_line_index] = true
 				i = i+(1)
 			end
 			do
 				new_line_index = new_line_index + (1)
-				self._code_linear:AddChild(split_next_line.container, new_line_index)
-				ALittle.List_Insert(this_line_list, new_line_index, split_next_line)
+				code_linear:AddChild(split_next_line.container, new_line_index)
+				List_Insert(this_line_list, new_line_index, split_next_line)
 				this_line_count = this_line_count + (1)
 				it_cursor_line = new_line_index
 				it_cursor_char = 0
@@ -1963,24 +1970,25 @@ function AUIPlugin.AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 					i = i+(1)
 				end
 				local split_count = split_pre_line.char_count - self._cursor.char
-				ALittle.List_Splice(split_pre_line.char_list, self._cursor.char + 1, split_count)
+				List_Splice(split_pre_line.char_list, self._cursor.char + 1, split_count)
 				split_pre_line.char_count = split_pre_line.char_count - (split_count)
 				local result = self._code_linear:AddChild(split_pre_line.container)
 				new_line_count = new_line_count + (1)
 				new_line_list[new_line_count] = split_pre_line
 			end
+			local code_linear = self._code_linear
 			local i = 2
 			while true do
 				if not(i < line_count) then break end
 				local line = line_list[i]
-				local result = self._code_linear:AddChild(line.container)
+				local result = code_linear:AddChild(line.container)
 				new_line_count = new_line_count + (1)
 				new_line_list[new_line_count] = line
 				line_map[new_line_count] = true
 				i = i+(1)
 			end
 			do
-				local result = self._code_linear:AddChild(split_next_line.container)
+				local result = code_linear:AddChild(split_next_line.container)
 				new_line_count = new_line_count + (1)
 				new_line_list[new_line_count] = split_next_line
 				it_cursor_line = new_line_count
@@ -1991,7 +1999,7 @@ function AUIPlugin.AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 			while true do
 				if not(i <= this_line_count) then break end
 				local line = this_line_list[i]
-				self._code_linear:AddChild(line.container)
+				code_linear:AddChild(line.container)
 				new_line_count = new_line_count + (1)
 				new_line_list[new_line_count] = line
 				i = i+(1)

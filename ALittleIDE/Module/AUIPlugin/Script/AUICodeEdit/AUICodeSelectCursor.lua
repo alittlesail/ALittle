@@ -23,17 +23,21 @@ function AUIPlugin.AUICodeSelectCursor:ClearQuad()
 	self._clear_quad = true
 	if self._it_line_start ~= nil and self._it_line_end ~= nil then
 		if self._it_line_start < self._it_line_end then
+			local line_list = self._edit.line_list
+			local it_line_end = self._it_line_end
 			local i = self._it_line_start
 			while true do
-				if not(i <= self._it_line_end) then break end
-				self._edit.line_list[i].container._select.visible = false
+				if not(i <= it_line_end) then break end
+				line_list[i].container._select.visible = false
 				i = i+(1)
 			end
 		else
+			local line_list = self._edit.line_list
+			local it_line_start = self._it_line_start
 			local i = self._it_line_end
 			while true do
-				if not(i <= self._it_line_start) then break end
-				self._edit.line_list[i].container._select.visible = false
+				if not(i <= it_line_start) then break end
+				line_list[i].container._select.visible = false
 				i = i+(1)
 			end
 		end
@@ -73,10 +77,11 @@ function AUIPlugin.AUICodeSelectCursor:SetQuad()
 		line.container._select.width = line.char_list[it_char_end].pre_width + line.char_list[it_char_end].width - line.container._select.x
 		return
 	end
+	local line_list = self._edit.line_list
 	local i = it_line_start
 	while true do
 		if not(i <= it_line_end) then break end
-		local line = self._edit.line_list[i]
+		local line = line_list[i]
 		if line.char_count > 0 then
 			if i == it_line_start then
 				if it_char_start < line.char_count then
@@ -276,12 +281,13 @@ function AUIPlugin.AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 	if self._it_line_start == nil then
 		return false, nil, nil
 	end
+	local edit_line_list = self._edit.line_list
 	if self._it_line_start == self._it_line_end then
 		if self._it_char_start == self._it_char_end then
 			self:Hide()
 			return false, nil, nil
 		end
-		local line = self._edit.line_list[self._it_line_start]
+		local line = edit_line_list[self._it_line_start]
 		if line == nil then
 			return false, nil, nil
 		end
@@ -339,7 +345,7 @@ function AUIPlugin.AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 			line.container.width = 0
 		end
 		local rejust = true
-		for index, line_info in ___ipairs(self._edit.line_list) do
+		for index, line_info in ___ipairs(edit_line_list) do
 			if line_info.container.width > line.container.width then
 				rejust = false
 				break
@@ -356,7 +362,7 @@ function AUIPlugin.AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 				self._edit.revoke_list:PushRevoke(revoke)
 			end
 		end
-		self._edit:UpdateLineFind(self._it_line_start)
+		self._edit:UpdateLineFind(it_line_start)
 		return true, it_line_start, it_char_start
 	end
 	local old_it_line_start = self._it_line_start
@@ -380,7 +386,7 @@ function AUIPlugin.AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 		local delete_char_end = it_char_end - 1
 		if delete_char_end < 0 then
 			delete_line_end = delete_line_end - (1)
-			delete_char_end = self._edit.line_list[delete_line_end].char_count - 1
+			delete_char_end = edit_line_list[delete_line_end].char_count - 1
 		end
 		self._edit.language:DeleteText(it_line_start, it_char_start, delete_line_end, delete_char_end)
 	end
@@ -392,7 +398,7 @@ function AUIPlugin.AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 		local it_line = it_line_start + 1
 		while true do
 			if not(it_line < it_line_end) then break end
-			local line = self._edit.line_list[it_line]
+			local line = edit_line_list[it_line]
 			local it_char = 1
 			while true do
 				if not(it_char <= line.char_count) then break end
@@ -403,12 +409,12 @@ function AUIPlugin.AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 			it_line = it_line+(1)
 		end
 		self._edit.code_linear:SpliceChild(it_line_start + 1, line_count)
-		ALittle.List_Splice(self._edit.line_list, it_line_start + 1, line_count)
+		ALittle.List_Splice(edit_line_list, it_line_start + 1, line_count)
 		self._edit.line_count = self._edit.line_count - (line_count)
 		it_line_end = it_line_end - (line_count)
 	end
 	local revoke_start = ""
-	local start_line = self._edit.line_list[it_line_start]
+	local start_line = edit_line_list[it_line_start]
 	local it_char = it_char_start + 1
 	while true do
 		if not(it_char <= start_line.char_count) then break end
@@ -422,7 +428,7 @@ function AUIPlugin.AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 	local count = start_line.char_count - it_char_start
 	start_line.char_count = start_line.char_count - (count)
 	ALittle.List_Splice(start_line.char_list, it_char_start + 1, count)
-	local end_line = self._edit.line_list[it_line_end]
+	local end_line = edit_line_list[it_line_end]
 	local pre_width = 0.0
 	local last_char = start_line.char_list[start_line.char_count]
 	if last_char ~= nil then
@@ -452,9 +458,9 @@ function AUIPlugin.AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 	start_line.container.width = pre_width
 	self._edit.code_linear:RemoveChild(end_line.container)
 	self._edit.line_count = self._edit.line_count - (1)
-	ALittle.List_Remove(self._edit.line_list, it_line_end)
+	ALittle.List_Remove(edit_line_list, it_line_end)
 	local max_width = 0.0
-	for index, line in ___ipairs(self._edit.line_list) do
+	for index, line in ___ipairs(edit_line_list) do
 		if max_width < line.container.width then
 			max_width = line.container.width
 		end
@@ -468,7 +474,12 @@ function AUIPlugin.AUICodeSelectCursor:DeleteSelect(need_revoke, revoke_bind)
 			self._edit.revoke_list:PushRevoke(revoke)
 		end
 	end
-	self._edit:UpdateLineFind(it_line_start)
+	local i = it_line_start
+	while true do
+		if not(i <= it_line_end) then break end
+		self._edit:UpdateLineFind(i)
+		i = i+(1)
+	end
 	self._edit:UpdateLineNumber()
 	return true, it_line_start, it_char_start
 end

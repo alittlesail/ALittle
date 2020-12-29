@@ -26,13 +26,17 @@ public class AUICodeSelectCursor
         {
             if (this._it_line_start < this._it_line_end)
             {
-                for (var i = this._it_line_start; i <= this._it_line_end; 1)
-                    this._edit.line_list[i].container._select.visible = false;
+                var line_list = this._edit.line_list;
+                var it_line_end = this._it_line_end;
+                for (var i = this._it_line_start; i <= it_line_end; 1)
+                    line_list[i].container._select.visible = false;
             }
             else
             {
-                for (var i = this._it_line_end; i <= this._it_line_start; 1)
-                    this._edit.line_list[i].container._select.visible = false;
+                var line_list = this._edit.line_list;
+                var it_line_start = this._it_line_start;
+                for (var i = this._it_line_end; i <= it_line_start; 1)
+                    line_list[i].container._select.visible = false;
             }
         }
     }
@@ -71,9 +75,10 @@ public class AUICodeSelectCursor
             line.container._select.width = line.char_list[it_char_end].pre_width + line.char_list[it_char_end].width - line.container._select.x;
             return;
         }
+        var line_list = this._edit.line_list;
         for (var i = it_line_start; i <= it_line_end; 1)
         {
-            var line = this._edit.line_list[i];
+            var line = line_list[i];
             if (line.char_count > 0)
             {
                 if (i == it_line_start)
@@ -271,15 +276,21 @@ public class AUICodeSelectCursor
     {
         if (this._it_line_start == null) return false, null, null;
 
+        // 获取行列表
+        var edit_line_list = this._edit.line_list;
+
+        // 如果删除的是同一行
         if (this._it_line_start == this._it_line_end)
         {
+            // 如果删除的是同一列
             if (this._it_char_start == this._it_char_end)
             {
                 this.Hide();
                 return false, null, null;
             }
 
-            var line = this._edit.line_list[this._it_line_start];
+            // 获取当前行
+            var line = edit_line_list[this._it_line_start];
             if (line == null) return false, null, null;
 
             var old_it_line_start = this._it_line_start;
@@ -335,7 +346,7 @@ public class AUICodeSelectCursor
             else
                 line.container.width = 0;
             var rejust = true;
-            for (var index, line_info in this._edit.line_list)
+            for (var index, line_info in edit_line_list)
             {
                 if (line_info.container.width > line.container.width)
                 {
@@ -357,7 +368,7 @@ public class AUICodeSelectCursor
                     this._edit.revoke_list.PushRevoke(revoke);
             }
 
-            this._edit.UpdateLineFind(this._it_line_start);
+            this._edit.UpdateLineFind(it_line_start);
             return true, it_line_start, it_char_start;
         }
 
@@ -389,7 +400,7 @@ public class AUICodeSelectCursor
             if (delete_char_end < 0)
             {
                 delete_line_end -= 1;
-                delete_char_end = this._edit.line_list[delete_line_end].char_count - 1;
+                delete_char_end = edit_line_list[delete_line_end].char_count - 1;
             }
             this._edit.language.DeleteText(it_line_start, it_char_start, delete_line_end, delete_char_end);
         }
@@ -405,7 +416,7 @@ public class AUICodeSelectCursor
         {
             for (var it_line = it_line_start + 1; it_line < it_line_end; 1)
             {
-                var line = this._edit.line_list[it_line];
+                var line = edit_line_list[it_line];
                 for (var it_char = 1; it_char <= line.char_count; 1)
                 {
                     revoke_c_count += 1;
@@ -413,13 +424,13 @@ public class AUICodeSelectCursor
                 }
             }
             this._edit.code_linear.SpliceChild(it_line_start + 1, line_count);
-            ALittle.List_Splice(this._edit.line_list, it_line_start + 1, line_count);
+            ALittle.List_Splice(edit_line_list, it_line_start + 1, line_count);
             this._edit.line_count -= line_count;
             it_line_end -= line_count;
         }
         // 删除开始行
         var revoke_start = "";
-        var start_line = this._edit.line_list[it_line_start];
+        var start_line = edit_line_list[it_line_start];
         for (var it_char = it_char_start + 1; it_char <= start_line.char_count; 1)
         {
             var char = start_line.char_list[it_char];
@@ -431,7 +442,7 @@ public class AUICodeSelectCursor
         ALittle.List_Splice(start_line.char_list, it_char_start + 1, count);
 
         // 2. 下一行拼到当前行的尾部
-        var end_line = this._edit.line_list[it_line_end];
+        var end_line = edit_line_list[it_line_end];
         var pre_width = 0.0;
         var last_char = start_line.char_list[start_line.char_count];
         if (last_char != null)
@@ -454,11 +465,11 @@ public class AUICodeSelectCursor
         start_line.container.width = pre_width;
         this._edit.code_linear.RemoveChild(end_line.container);
         this._edit.line_count -= 1;
-        ALittle.List_Remove(this._edit.line_list, it_line_end);
+        ALittle.List_Remove(edit_line_list, it_line_end);
         
         // 从新计算宽度
         var max_width = 0.0;
-        for (var index, line in this._edit.line_list)
+        for (var index, line in edit_line_list)
         {
             if (max_width < line.container.width)
                 max_width = line.container.width;
@@ -476,7 +487,8 @@ public class AUICodeSelectCursor
                 this._edit.revoke_list.PushRevoke(revoke);
         }
 
-        this._edit.UpdateLineFind(it_line_start);
+        for (var i = it_line_start; i <= it_line_end; 1)
+        	this._edit.UpdateLineFind(i);
         this._edit.UpdateLineNumber();
         return true, it_line_start, it_char_start;
     }

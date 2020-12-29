@@ -59,7 +59,7 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
 
         if (!this._showd) return;
 
-            // 构建文本
+        // 构建文本
         if (char.text == null && char.width > 0
             && char.char != " " && char.char != "\t")
         {
@@ -75,7 +75,7 @@ protected class AUICodeLineContainer : ALittle.DisplayLayout
             this._text.AddChild(char.text);
         }
 
-            // 查询颜色
+        // 查询颜色
         var line = cast<AUICodeLineInfo>(this._user_data);
         if (this._delay_loop == null && line.edit.language != null && line.edit.language.version != this._version)
         {

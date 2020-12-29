@@ -815,43 +815,44 @@ function AUIPlugin.AUICodeEdit:UpdateLineFind(it_line)
 	if find_len == 0 then
 		return
 	end
-	if line.char_count >= find_len then
-		local char_index = 1
-		while char_index <= line.char_count do
-			local find = true
-			for i, char in ___ipairs(self._find_text) do
-				if char ~= line.char_list[char_index + i - 1].char then
-					find = false
-					break
-				end
+	if line.char_count < find_len then
+		return
+	end
+	local char_index = 1
+	while char_index <= line.char_count do
+		local find = true
+		for i, char in ___ipairs(self._find_text) do
+			if char ~= line.char_list[char_index + i - 1].char then
+				find = false
+				break
 			end
-			if find then
-				local item = ALittle.Quad(AUIPlugin.g_Control)
-				item.red = AUIPlugin.CODE_FIND_RED
-				item.green = AUIPlugin.CODE_FIND_GREEN
-				item.blue = AUIPlugin.CODE_FIND_BLUE
-				item.x = line.char_list[char_index].pre_width
-				item.width = line.char_list[char_index + find_len].pre_width - line.char_list[char_index].pre_width
-				item.height = AUIPlugin.CODE_LINE_HEIGHT
-				line.container._find:AddChild(item)
-				local info = {}
-				info._focus_quad = item
-				info.it_char_start = char_index
-				info.it_char_end = char_index + find_len - 1
-				item._user_data = info
-				local highlight_quad = ALittle.Quad(AUIPlugin.g_Control)
-				highlight_quad.width_type = 4
-				highlight_quad.height = 2
-				highlight_quad.red = AUIPlugin.CODE_FIND_RED
-				highlight_quad.green = AUIPlugin.CODE_FIND_GREEN
-				highlight_quad.blue = AUIPlugin.CODE_FIND_BLUE
-				highlight_quad.y = (it_line - 1) / self.line_count * self._find_quad_container.height
-				self._find_quad_container:AddChild(highlight_quad)
-				self._find_map[info] = highlight_quad
-				char_index = char_index + (find_len)
-			else
-				char_index = char_index + (1)
-			end
+		end
+		if find then
+			local item = ALittle.Quad(AUIPlugin.g_Control)
+			item.red = AUIPlugin.CODE_FIND_RED
+			item.green = AUIPlugin.CODE_FIND_GREEN
+			item.blue = AUIPlugin.CODE_FIND_BLUE
+			item.x = line.char_list[char_index].pre_width
+			item.width = line.char_list[char_index + find_len].pre_width - line.char_list[char_index].pre_width
+			item.height = AUIPlugin.CODE_LINE_HEIGHT
+			line.container._find:AddChild(item)
+			local info = {}
+			info._focus_quad = item
+			info.it_char_start = char_index
+			info.it_char_end = char_index + find_len - 1
+			item._user_data = info
+			local highlight_quad = ALittle.Quad(AUIPlugin.g_Control)
+			highlight_quad.width_type = 4
+			highlight_quad.height = 2
+			highlight_quad.red = AUIPlugin.CODE_FIND_RED
+			highlight_quad.green = AUIPlugin.CODE_FIND_GREEN
+			highlight_quad.blue = AUIPlugin.CODE_FIND_BLUE
+			highlight_quad.y = (it_line - 1) / self.line_count * self._find_quad_container.height
+			self._find_quad_container:AddChild(highlight_quad)
+			self._find_map[info] = highlight_quad
+			char_index = char_index + (find_len)
+		else
+			char_index = char_index + (1)
 		end
 	end
 end

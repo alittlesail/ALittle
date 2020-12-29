@@ -802,54 +802,53 @@ public class AUICodeEdit : ALittle.DisplayLayout
         var find_len = ALittle.List_MaxN(this._find_text);
         if (find_len == 0) return;
 
-        if (line.char_count >= find_len)
+        if (line.char_count < find_len) return;
+
+        var char_index = 1;
+        while (char_index <= line.char_count)
         {
-            var char_index = 1;
-            while (char_index <= line.char_count)
+            var find = true;
+            for (var i, char in this._find_text)
             {
-                var find = true;
-                for (var i, char in this._find_text)
+                if (char != line.char_list[char_index + i - 1].char)
                 {
-                    if (char != line.char_list[char_index + i - 1].char)
-                    {
-                        find = false;
-                        break;
-                    }
+                    find = false;
+                    break;
                 }
+            }
 
-                if (find)
-                {
-                    var item = new ALittle.Quad(g_Control);
-                    item.red = CODE_FIND_RED;
-                    item.green = CODE_FIND_GREEN;
-                    item.blue = CODE_FIND_BLUE;
-                    item.x = line.char_list[char_index].pre_width;
-                    item.width = line.char_list[char_index + find_len].pre_width - line.char_list[char_index].pre_width;
-                    item.height = CODE_LINE_HEIGHT;
-                    line.container._find.AddChild(item);
-                    var info = new AUICodeFindInfo();
-                    info._focus_quad = item;
-                    info.it_char_start = char_index;
-                    info.it_char_end = char_index + find_len - 1;
-                    item._user_data = info;
+            if (find)
+            {
+                var item = new ALittle.Quad(g_Control);
+                item.red = CODE_FIND_RED;
+                item.green = CODE_FIND_GREEN;
+                item.blue = CODE_FIND_BLUE;
+                item.x = line.char_list[char_index].pre_width;
+                item.width = line.char_list[char_index + find_len].pre_width - line.char_list[char_index].pre_width;
+                item.height = CODE_LINE_HEIGHT;
+                line.container._find.AddChild(item);
+                var info = new AUICodeFindInfo();
+                info._focus_quad = item;
+                info.it_char_start = char_index;
+                info.it_char_end = char_index + find_len - 1;
+                item._user_data = info;
 
-                    var highlight_quad = new ALittle.Quad(g_Control);
-                    highlight_quad.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-                    highlight_quad.height = 2;
-                    highlight_quad.red = CODE_FIND_RED;
-                    highlight_quad.green = CODE_FIND_GREEN;
-                    highlight_quad.blue = CODE_FIND_BLUE;
-                    highlight_quad.y = (it_line - 1) / this.line_count * this._find_quad_container.height;
-                    this._find_quad_container.AddChild(highlight_quad);
-                    this._find_map[info] = highlight_quad;
-                    char_index += find_len;
-                }
-                else
-                {
-                    char_index += 1;
-                }
-            }   
-        }
+                var highlight_quad = new ALittle.Quad(g_Control);
+                highlight_quad.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+                highlight_quad.height = 2;
+                highlight_quad.red = CODE_FIND_RED;
+                highlight_quad.green = CODE_FIND_GREEN;
+                highlight_quad.blue = CODE_FIND_BLUE;
+                highlight_quad.y = (it_line - 1) / this.line_count * this._find_quad_container.height;
+                this._find_quad_container.AddChild(highlight_quad);
+                this._find_map[info] = highlight_quad;
+                char_index += find_len;
+            }
+            else
+            {
+                char_index += 1;
+            }
+        }   
     }
 
     private fun HandleFindDialogClose() : bool

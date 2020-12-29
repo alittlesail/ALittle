@@ -1884,6 +1884,8 @@ function AUIPlugin.AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 	line_map[self._cursor.line] = true
 	if line_count > 1 then
 		if line_count <= 20 then
+			local this_line_list = self._line_list
+			local this_line_count = self._line_count
 			local new_line_index = self._cursor.line
 			do
 				split_next_line = {}
@@ -1913,30 +1915,33 @@ function AUIPlugin.AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 				local line = line_list[i]
 				new_line_index = new_line_index + (1)
 				self._code_linear:AddChild(line.container, new_line_index)
-				self._line_count = self._line_count + (1)
-				ALittle.List_Insert(self._line_list, new_line_index, line)
+				this_line_count = this_line_count + (1)
+				ALittle.List_Insert(this_line_list, new_line_index, line)
 				line_map[new_line_index] = true
 				i = i+(1)
 			end
 			do
 				new_line_index = new_line_index + (1)
 				self._code_linear:AddChild(split_next_line.container, new_line_index)
-				ALittle.List_Insert(self._line_list, new_line_index, split_next_line)
-				self._line_count = self._line_count + (1)
+				ALittle.List_Insert(this_line_list, new_line_index, split_next_line)
+				this_line_count = this_line_count + (1)
 				it_cursor_line = new_line_index
 				it_cursor_char = 0
 				line_map[new_line_index] = true
 			end
+			self._line_count = this_line_count
 		else
+			local this_line_list = self._line_list
+			local this_line_count = self._line_count
 			local new_line_list = {}
 			local new_line_count = 0
-			self._code_linear:SpliceChild(self._cursor.line)
+			local cursor_line = self._cursor.line
+			self._code_linear:SpliceChild(cursor_line)
 			local i = 1
 			while true do
-				if not(i < self._cursor.line) then break end
-				local line = self._line_list[i]
+				if not(i < cursor_line) then break end
 				new_line_count = new_line_count + (1)
-				new_line_list[new_line_count] = line
+				new_line_list[new_line_count] = this_line_list[i]
 				i = i+(1)
 			end
 			do
@@ -1984,8 +1989,8 @@ function AUIPlugin.AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 			end
 			local i = self._cursor.line + 1
 			while true do
-				if not(i <= self._line_count) then break end
-				local line = self._line_list[i]
+				if not(i <= this_line_count) then break end
+				local line = this_line_list[i]
 				self._code_linear:AddChild(line.container)
 				new_line_count = new_line_count + (1)
 				new_line_list[new_line_count] = line
@@ -2090,7 +2095,8 @@ function AUIPlugin.AUICodeEdit:InsertText(content, need_revoke, revoke_bind)
 		split_next_line.container.width = pre_width
 	end
 	max_width = 0.0
-	for index, line in ___ipairs(self._line_list) do
+	local this_line_list = self._line_list
+	for index, line in ___ipairs(this_line_list) do
 		if line.container.width > max_width then
 			max_width = line.container.width
 		end

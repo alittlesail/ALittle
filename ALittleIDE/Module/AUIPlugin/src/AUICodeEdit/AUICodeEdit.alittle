@@ -1,6 +1,9 @@
 
 namespace AUIPlugin;
 
+private var List_Insert = ALittle.List_Insert;
+private var List_Splice = ALittle.List_Splice;
+
 public class AUICodeEdit : ALittle.DisplayLayout
 {
     private AUICodeLanguage _language;  // 代码解析器
@@ -1704,7 +1707,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 char.pre_width = (i - 1) * this._ascii_width;
                 char.char = " ";
                 char.width = this._ascii_width;
-                ALittle.List_Insert(line.char_list, i, char);
+                List_Insert(line.char_list, i, char);
             }
         	line.char_count += 4;
         }
@@ -1886,7 +1889,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
 						char.text.x -= this._ascii_width * 4;
             	}
             	line.container.width -= this._ascii_width * 4;
-            	ALittle.List_Splice(line.char_list, 1, delete_count);
+            	List_Splice(line.char_list, 1, delete_count);
             	line.char_count -= delete_count;
 				if (index == old_line_start) old_char_start -= delete_count;
             	elseif (index == old_line_end) old_char_end -= delete_count;
@@ -1985,6 +1988,10 @@ public class AUICodeEdit : ALittle.DisplayLayout
         {
             if (line_count <= 20)
             {
+                // 先保存为局部变量，目的是为了提高执行效率
+                var this_line_list = this._line_list;
+                var this_line_count = this._line_count;
+            
                 // 保存当前行的位置
                 var new_line_index = this._cursor.line;
 
@@ -2008,42 +2015,50 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
                     // split_pre_line的后半段删除
                     var split_count = split_pre_line.char_count - this._cursor.char;
-                    ALittle.List_Splice(split_pre_line.char_list, this._cursor.char + 1, split_count);
+                    List_Splice(split_pre_line.char_list, this._cursor.char + 1, split_count);
                     split_pre_line.char_count -= split_count;
                 }
                 // 插入新的行
+                var code_linear = this._code_linear;
                 for (var i = 2; i < line_count; 1)
                 {
                     var line = line_list[i];
                     new_line_index += 1;
-                    this._code_linear.AddChild(line.container, new_line_index);
-                    this._line_count += 1;
-                    ALittle.List_Insert(this._line_list, new_line_index, line);
+                    code_linear.AddChild(line.container, new_line_index);
+                    this_line_count += 1;
+                    List_Insert(this_line_list, new_line_index, line);
                     line_map[new_line_index] = true;
                 }
                 // 插入拆分行（后半段）
                 {
                     new_line_index += 1;
-                    this._code_linear.AddChild(split_next_line.container, new_line_index);
-                    ALittle.List_Insert(this._line_list, new_line_index, split_next_line);
-                    this._line_count += 1;
+                    code_linear.AddChild(split_next_line.container, new_line_index);
+                    List_Insert(this_line_list, new_line_index, split_next_line);
+                    this_line_count += 1;
                     it_cursor_line = new_line_index;
                     it_cursor_char = 0;
                     line_map[new_line_index] = true;
                 }
+
+                // 把数量保存回去
+                this._line_count = this_line_count;
             }
             else
             {
+                // 先保存为局部变量，目的是为了提高执行效率
+                var this_line_list = this._line_list;
+                var this_line_count = this._line_count;
+            
                 var new_line_list = new List<AUICodeLineInfo>();
                 var new_line_count = 0;
 
                 // 处理开始那些行
-                this._code_linear.SpliceChild(this._cursor.line);
-                for (var i = 1; i < this._cursor.line; 1)
+                var cursor_line = this._cursor.line;
+                this._code_linear.SpliceChild(cursor_line);
+                for (var i = 1; i < cursor_line; 1)
                 {
-                    var line = this._line_list[i];
                     new_line_count += 1;
-                    new_line_list[new_line_count] = line;
+                    new_line_list[new_line_count] = this_line_list[i];
                 }
                 // 把当前行拆成两行
                 {
@@ -2065,7 +2080,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
                     // split_pre_line的后半段删除
                     var split_count = split_pre_line.char_count - this._cursor.char;
-                    ALittle.List_Splice(split_pre_line.char_list, this._cursor.char + 1, split_count);
+                    List_Splice(split_pre_line.char_list, this._cursor.char + 1, split_count);
                     split_pre_line.char_count -= split_count;
 
                     // 插入旧行（前半段）
@@ -2074,10 +2089,11 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     new_line_list[new_line_count] = split_pre_line;
                 }
                 // 插入新的行
+                var code_linear = this._code_linear;
                 for (var i = 2; i < line_count; 1)
                 {
                     var line = line_list[i];
-                    var result = this._code_linear.AddChild(line.container);
+                    var result = code_linear.AddChild(line.container);
                     new_line_count += 1;
                     new_line_list[new_line_count] = line;
 
@@ -2085,7 +2101,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
                 }
                 // 插入拆分行（后半段）
                 {
-                    var result = this._code_linear.AddChild(split_next_line.container);
+                    var result = code_linear.AddChild(split_next_line.container);
                     new_line_count += 1;
                     new_line_list[new_line_count] = split_next_line;
                     it_cursor_line = new_line_count;
@@ -2094,13 +2110,15 @@ public class AUICodeEdit : ALittle.DisplayLayout
                     line_map[new_line_count] = true;
                 }
                 // 插入剩余行
-                for (var i = this._cursor.line + 1; i <= this._line_count; 1)
+                for (var i = this._cursor.line + 1; i <= this_line_count; 1)
                 {
-                    var line = this._line_list[i];
-                    this._code_linear.AddChild(line.container);
+                    var line = this_line_list[i];
+                    code_linear.AddChild(line.container);
                     new_line_count += 1;
                     new_line_list[new_line_count] = line;
                 }
+
+                // 使用新的列表和数量
                 this._line_list = new_line_list;
                 this._line_count = new_line_count;
             }
@@ -2192,7 +2210,8 @@ public class AUICodeEdit : ALittle.DisplayLayout
         }
 
         max_width = 0.0;
-        for (var index, line in this._line_list)
+        var this_line_list = this._line_list;
+        for (var index, line in this_line_list)
             if (line.container.width > max_width) max_width = line.container.width;
         this._code_screen.container.width = max_width + CODE_LINE_NUMBER_WIDTH;
         this._code_screen.container.height = this._line_count * CODE_LINE_HEIGHT + CODE_PAD_LINES * CODE_LINE_HEIGHT;

@@ -485,7 +485,7 @@ public static System_OpenUrlBySystemBrowser(string url)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-// heartbeat 心跳间隔，用于保活
+// heartbeat 心跳间隔，用于保活，单位是秒
 // check_heartbeat 是否进行心跳检查
 // callback 断开连接的回调函数
 // rudp 是否使用UDP的可靠性传输，可提高传输效率。在rudp下check_heartbeat强制为true。不支持javascript

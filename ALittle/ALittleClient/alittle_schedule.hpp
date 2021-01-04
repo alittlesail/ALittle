@@ -20,6 +20,7 @@
 #include "alittle_textedit.hpp"
 #include "alittle_textinput.hpp"
 #include "alittle_triangle.hpp"
+#include "alittle_verteximage.hpp"
 #include "Carp/carp_console.hpp"
 #include "Carp/carp_dump.hpp"
 #include "Carp/carp_log.hpp"
@@ -66,6 +67,7 @@ private:
 		ALittleQuad::Bind(s_alittle_script.GetLuaState());
 		ALittleSprite::Bind(s_alittle_script.GetLuaState());
 		ALittleTriangle::Bind(s_alittle_script.GetLuaState());
+		ALittleVertexImage::Bind(s_alittle_script.GetLuaState());
 		ALittleGrid9Image::Bind(s_alittle_script.GetLuaState());
 		ALittleText::Bind(s_alittle_script.GetLuaState());
 		ALittleTextArea::Bind(s_alittle_script.GetLuaState());

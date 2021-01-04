@@ -579,6 +579,78 @@ public class JTriangle : JDisplayObject
     }
 }
 
+public class JVertexImage : JDisplayObject
+{
+    private PIXI.SimpleMesh _mesh;
+
+    [Native]
+    private List<double> _uv;
+    [Native]
+    private List<double> _xy;
+    [Native]
+    private List<int> _index;
+
+    public ctor()
+    {
+        this._native = new PIXI.Container();
+        this._uv = new List<double>();
+        for (var i = 0; i < 8; 1) this._uv[i] = 0;
+        this._xy = new List<double>();
+        for (var i = 0; i < 8; 1) this._xy[i] = 0;
+        this._index = new List<int>();
+        for (var i = 0; i < 4; 1) this._index[i] = i;
+    }
+
+    public fun ClearTexture()
+    {
+        if (this._mesh != null)
+            this._mesh.texture = null;
+    }
+    public fun SetTexture(ALittle.ITexture texture)
+    {
+        if (this._mesh == null)
+        {
+            this._mesh = new PIXI.SimpleMesh(cast<JTexture>(texture).native, this._xy, this._uv, this._index, PIXI.DRAW_MODES.TRIANGLE_FAN);
+            cast<PIXI.Container>(this._native).addChild(this._mesh);
+        }
+        else
+        {
+            this._mesh.texture = cast<JTexture>(texture).native;
+        }
+    }
+    public fun SetTextureCoord(double t, double b, double l, double r)
+    {
+        // 因为Web版本的图片都是散装的，所以不需要处理
+    }
+
+    public fun SetTexUV(int index, double u, double v)
+    {
+        if (this._mesh == null)
+        {
+            this._uv[index*2] = u;
+            this._uv[index*2 + 1] = v;
+        }
+        else
+        {
+            this._mesh.uvBuffer.data[index * 2 + 1] = u;
+            this._mesh.uvBuffer.data[(index + 1) * 2] = v;
+        }
+    }
+    public fun SetPosXY(int index, double x, double y)
+    {
+        if (this._mesh == null)
+        {
+            this._xy[index*2] = x;
+            this._xy[index*2 + 1] = y;
+        }
+        else
+        {
+            this._mesh.verticesBuffer.data[index * 2 + 1] = x;
+            this._mesh.verticesBuffer.data[(index + 1) * 2] = y;
+        }
+    }
+}
+
 public class JText : JDisplayObject
 {
     private PIXI.TextStyle _style;

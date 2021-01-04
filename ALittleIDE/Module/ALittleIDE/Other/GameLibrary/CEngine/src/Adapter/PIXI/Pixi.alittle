@@ -131,10 +131,21 @@ public class Sprite : Container
     public set texture(Texture texture) {}
 }
 
+public enum DRAW_MODES
+{
+    POINTS = 0;
+    LINES = 1;
+    LINE_LOOP = 2;
+    LINE_STRIP = 3;
+    TRIANGLES = 4;
+    TRIANGLE_STRIP = 5;
+    TRIANGLE_FAN = 6;
+}
+
 [Native]
 public class SimpleMesh : Mesh
 {
-    public ctor(Texture texture, List<double> vertices, List<double> uvs, List<int> indices) { }
+    public ctor(Texture texture, List<double> vertices, List<double> uvs, List<int> indices, [Nullable] int draw_mode) { }
     public get vertices() : List<double> {}
     public set vertices(List<double> v) {}
 }

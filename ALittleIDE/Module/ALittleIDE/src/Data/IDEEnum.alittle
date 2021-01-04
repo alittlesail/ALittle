@@ -247,6 +247,7 @@ class IDEEnum
 		this.text_edit_display_map["TextCheckButton"] = true;
 		this.text_edit_display_map["TextRadioButton"] = true;
 		this.text_edit_display_map["SpringTextButton"] = true;
+		this.text_edit_display_map["SpringNumber"] = true;
 
 		// 可创建的控件列表
 		this.child_type_list = [
@@ -280,10 +281,12 @@ class IDEEnum
 			"RichInput",
 			"RichEdit",
 			"ImagePlay",
-			"SpritePlay",
+            "SpritePlay",
+            "SpriteNumber",
 			"TextButton",
 			"ScrollButton",
-			"Triangle",
+            "Triangle",
+            "VertexImage",
 			"Piechart",
 			"FramePlay"
 		];

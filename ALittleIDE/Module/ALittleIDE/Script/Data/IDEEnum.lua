@@ -131,7 +131,8 @@ function ALittleIDE.IDEEnum:Ctor()
 	self.text_edit_display_map["TextCheckButton"] = true
 	self.text_edit_display_map["TextRadioButton"] = true
 	self.text_edit_display_map["SpringTextButton"] = true
-	___rawset(self, "child_type_list", {"DisplayLayout", "DisplayView", "Quad", "Image", "Grid9Image", "Sprite", "SpringTextButton", "Text", "TextArea", "TextInput", "TextEdit", "Slider", "Grid3", "Grid9", "Linear", "Tab", "DropDown", "ScrollBar", "ScrollList", "ScrollScreen", "Dialog", "TileTable", "TextCheckButton", "TextRadioButton", "ImageEdit", "ImageInput", "RichArea", "RichInput", "RichEdit", "ImagePlay", "SpritePlay", "TextButton", "ScrollButton", "Triangle", "Piechart", "FramePlay"})
+	self.text_edit_display_map["SpringNumber"] = true
+	___rawset(self, "child_type_list", {"DisplayLayout", "DisplayView", "Quad", "Image", "Grid9Image", "Sprite", "SpringTextButton", "Text", "TextArea", "TextInput", "TextEdit", "Slider", "Grid3", "Grid9", "Linear", "Tab", "DropDown", "ScrollBar", "ScrollList", "ScrollScreen", "Dialog", "TileTable", "TextCheckButton", "TextRadioButton", "ImageEdit", "ImageInput", "RichArea", "RichInput", "RichEdit", "ImagePlay", "SpritePlay", "SpriteNumber", "TextButton", "ScrollButton", "Triangle", "VertexImage", "Piechart", "FramePlay"})
 	___rawset(self, "type_default_map", {})
 	for k, v in ___ipairs(self.child_type_list) do
 		local clazz = ALittle[v]

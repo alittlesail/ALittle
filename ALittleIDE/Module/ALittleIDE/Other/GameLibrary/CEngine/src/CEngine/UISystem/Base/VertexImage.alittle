@@ -1,0 +1,242 @@
+
+namespace ALittle;
+
+public class VertexImage : DisplayObject
+{
+    // 纹理数据
+    private double _u1;
+    private double _v1;
+    private double _u2;
+    private double _v2;
+    private double _u3;
+    private double _v3;
+    private double _u4;
+    private double _v4;
+
+    // 位置数据
+    private double _x1;
+    private double _y1;
+    private double _x2;
+    private double _y2;
+    private double _x3;
+    private double _y3;
+    private double _x4;
+    private double _y4;
+
+    // 当前的纹理名称
+    private string _texture_name;
+    private TextureCutInfo _texture_cut;
+    // 当前纹理对象
+    private lua.__CPPAPITextureWrap _texture;
+    // 保存纹理的宽高
+    private int _texture_width;
+    private int _texture_height;
+    private bool _auto_rejust;
+
+    public ctor(ControlSystem ctrl_sys)
+    {
+    	// 创建image显示对象
+        [Language(Lua)]
+    	this._show = new lua.__CPPAPIVertexImage();
+        [Language(JavaScript)]
+        this._show = new JavaScript.JVertexImage();
+    
+    	// 纹理数据
+    	this._u1 = 0;
+    	this._v1 = 0;
+    	this._u2 = 0;
+    	this._v2 = 0;
+    	this._u3 = 0;
+    	this._v3 = 0;
+    	this._u4 = 0;
+    	this._v4 = 0;
+    
+    	// 位置数据
+    	this._x1 = 0;
+    	this._y1 = 0;
+    	this._x2 = 0;
+    	this._y2 = 0;
+    	this._x3 = 0;
+    	this._y3 = 0;
+    	this._x4 = 0;
+    	this._y4 = 0;
+    
+    	// 当前的纹理名称
+        // this._texture_name = null;
+        // this._texture_cut = null;
+    	// 当前纹理对象
+        // this._texture = null;
+    	// 保存纹理的宽高
+    	this._texture_width = 0;
+    	this._texture_height = 0;
+        this._auto_rejust = false;
+    
+        [Language(Lua)]
+    	A_LoadTextureManager.RegisterRedrawControl(this);
+    }
+
+    // 重新绘制
+    protected fun Redraw()
+    {
+    	this._show.ClearTexture();
+    
+    	if (this._texture != null)
+    	{
+    		this._texture.Clear();
+    		this._texture = null;
+    	}
+    
+    	if (this._texture_name == null)
+    		return;
+    
+    	if (this._texture_cut != null)
+    		A_LoadTextureManager.SetTextureCut(this, this._texture_name, this._texture_cut.max_width, this._texture_cut.max_height, this._texture_cut.cache);
+    	else
+    		this._ctrl_sys.SetTexture(this, this._texture_name);
+    }
+
+    // 这个函数逻辑模块不能调用
+    public set texture_name(string value)
+    {
+    	if (this._texture_name == value) return;
+    	if (this._texture_name != null)
+    	{
+    		this._show.ClearTexture();
+    		this._texture = null;
+    	}
+    	this._texture_name = value;
+    	if (this._texture_name != null)
+    	{
+    		this._texture_cut = null;
+    		this._ctrl_sys.SetTexture(this, value);
+    	}
+    }
+
+    // 强制设置图片路径
+    // texture_name 可以本地路径，也可以是网络图片支持HTTP协议
+    // index 如果填写表示加载ios图库的图片（注意c++下标从0开始）
+    // auto_rejust 当纹理加载完毕时，是否支持自动调整大小
+    protected fun SetTextureCut(string texture_name, bool auto_rejust, int max_width, int max_height, bool cache, int index)
+    {
+    	if (this._texture_name != null)
+    	{
+    		this._show.ClearTexture();
+    		this._texture = null;
+    	}
+    	this._texture_name = texture_name;
+    	if (this._texture_name != null)
+    	{
+    		this._texture_cut = new TextureCutInfo();
+    		this._texture_cut.max_width = max_width;
+    		this._texture_cut.max_height = max_height;
+    		this._texture_cut.cache = cache;
+    		this._auto_rejust = auto_rejust || false;
+    		A_LoadTextureManager.SetTextureCut(this, texture_name, max_width, max_height, cache);
+    	}
+    }
+
+    public set texture_cut(TextureCutInfo param)
+    {
+        this.SetTextureCut(param.texture_name, true, param.max_width, param.max_height, param.cache, null);
+    }
+
+    public get texture_cut() : TextureCutInfo
+    {
+        if (this._texture_cut == null)
+            return null;
+        var texture_cut = new TextureCutInfo();
+        texture_cut.max_width = this._texture_cut.max_width;
+        texture_cut.max_height = this._texture_cut.max_height;
+        texture_cut.texture_name = this._texture_name;
+        return texture_cut;
+    }
+
+    public get texture_name() : string
+    {
+    	return this._texture_name;
+    }
+
+    public set texture(lua.__CPPAPITextureWrap value)
+    {
+    	this._show.SetTexture(value.GetTexture());
+    	this._texture_width = value.GetWidth();
+    	this._texture_height = value.GetHeight();
+    	this._texture = value;
+    	if (this._auto_rejust)
+    	{
+    		this.width = this._texture_width;
+    		this.height = this._texture_height;
+    	}
+    }
+    public get texture() : lua.__CPPAPITextureWrap
+    {
+    	return this._texture;
+    }
+
+    public fun SetTextureCoord(double t, double b, double l, double r)
+    {
+    	this._show.SetTextureCoord(t, b, l, r);
+    }
+
+    public get texture_width() : int
+    {
+    	return this._texture_width;
+    }
+
+    public get texture_height() : int
+    {
+    	return this._texture_height;
+    }
+
+    public get u1() : double { return this._u1; }
+    public get v1() : double { return this._v1; }
+    public get u2() : double { return this._u2; }
+    public get v2() : double { return this._v2; }
+    public get u3() : double { return this._u3; }
+    public get v3() : double { return this._v3; }
+    public get u4() : double { return this._u4; }
+    public get v4() : double { return this._v4; }
+
+    public set u1(double v) { this._u1 = v; this._show.SetTexUV(0, this._u1, this._v1); }
+    public set v1(double v) { this._v1 = v; this._show.SetTexUV(0, this._u1, this._v1); }
+    public set u2(double v) { this._u2 = v; this._show.SetTexUV(1, this._u2, this._v2); }
+    public set v2(double v) { this._v2 = v; this._show.SetTexUV(1, this._u2, this._v2); }
+    public set u3(double v) { this._u3 = v; this._show.SetTexUV(2, this._u3, this._v3); }
+    public set v3(double v) { this._v3 = v; this._show.SetTexUV(2, this._u3, this._v3); }
+    public set u4(double v) { this._u4 = v; this._show.SetTexUV(3, this._u4, this._v4); }
+    public set v4(double v) { this._v4 = v; this._show.SetTexUV(3, this._u4, this._v4); }
+
+    public get x1() : double { return this._x1; }
+    public get y1() : double { return this._y1; }
+    public get x2() : double { return this._x2; }
+    public get y2() : double { return this._y2; }
+    public get x3() : double { return this._x3; }
+    public get y3() : double { return this._y3; }
+    public get x4() : double { return this._x4; }
+    public get y4() : double { return this._y4; }
+
+    public set x1(double v) { this._x1 = v; this._show.SetPosXY(0, this._x1, this._y1); }
+    public set y1(double v) { this._y1 = v; this._show.SetPosXY(0, this._x1, this._y1); }
+    public set x2(double v) { this._x2 = v; this._show.SetPosXY(1, this._x2, this._y2); }
+    public set y2(double v) { this._y2 = v; this._show.SetPosXY(1, this._x2, this._y2); }
+    public set x3(double v) { this._x3 = v; this._show.SetPosXY(2, this._x3, this._y3); }
+    public set y3(double v) { this._y3 = v; this._show.SetPosXY(2, this._x3, this._y3); }
+    public set x4(double v) { this._x4 = v; this._show.SetPosXY(3, this._x4, this._y4); }
+    public set y4(double v) { this._y4 = v; this._show.SetPosXY(3, this._x4, this._y4); }
+
+    public fun RejuseSize()
+    {
+        var max = this._x1;
+        if (max < this._x2) max = this._x2;
+        if (max < this._x3) max = this._x3;
+        if (max < this._x4) max = this._x4;
+    	this.width = max;
+    
+        max = this._y1;
+        if (max < this._y2) max = this._y2;
+        if (max < this._y3) max = this._y3;
+        if (max < this._y4) max = this._y4;
+    	this.height = max;
+    	this.UpdateLayout();
+    }
+}

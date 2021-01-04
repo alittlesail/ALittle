@@ -1,0 +1,1 @@
+{"ide_setting_sprite_number":{"width_value":250,"__class":"Linear","type":2,"__childs":[{"__extends":"ide_setting_displaylayout_base1"},{"__extends":"ide_setting_displaylayout_base2"},{"__module":"ALittleIDE","__extends":"ide_setting_sprite_number_extend"}]}}

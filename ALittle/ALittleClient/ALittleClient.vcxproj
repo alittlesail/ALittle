@@ -100,6 +100,7 @@
     <ClInclude Include="alittle_textinput.hpp" />
     <ClInclude Include="alittle_texture.hpp" />
     <ClInclude Include="alittle_triangle.hpp" />
+    <ClInclude Include="alittle_verteximage.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -1,0 +1,128 @@
+
+namespace ALittle;
+
+private var __tostring = String_ToString;
+private var __len = String_Len;
+private var __byte = String_Byte;
+
+public class SpriteNumber : Linear
+{
+    private string _texture_name;
+    private TextureCutInfo _texture_cut;
+
+    private int _col_count = 1;	// 列总数
+    private string _text = "";		// 当前文本
+    private double _cell_width = 0;	// 单位格子的宽度
+
+    private List<Sprite> _sprite_pool = new List<Sprite>();
+    private int _pool_count = 0;
+
+    public get texture_name() : string
+    {
+        return this._texture_name;
+    }
+
+    public get cell_width() : double { return this._cell_width; }
+    public set cell_width(double value)
+    {
+        this._cell_width = value;
+        for (var index, child:Sprite in this._childs)
+        	child.width = value;
+        for (var index, child in this._sprite_pool)
+        	child.width = value;
+        this.Layout(1);
+    }
+
+    // 设置文本图片
+    // 图片的文本顺序为0123456789+-.
+    public set texture_name(string value)
+    {
+        if (this._texture_name == value)
+            return;
+
+        this._texture_name = value;
+        for (var index, child:Sprite in this._childs)
+        	child.texture_name = value;
+        for (var index, child in this._sprite_pool)
+        	child.texture_name = value;
+    }
+
+    public get col_count() : int { return this._col_count; }
+
+    public set col_count(int value)
+    {
+        if (value < 1) value = 1;
+        this._col_count = value;
+
+        for (var index, child:Sprite in this._childs)
+        	child.col_count = value;
+        for (var index, child in this._sprite_pool)
+        	child.col_count = value;
+    }
+
+    public get text() : string { return this._text; }
+
+    public set text(any value)
+    {
+        if (value == null)
+            return;
+
+        value = __tostring(value);
+        // 判定如果文本与当前一致，则直接返回不做处理
+        if (this._text == value)
+            return;
+
+        this._text = value;
+        var len = __len(value);
+
+        // 子控件个数和图片个数一致
+        if (this._child_count > len)
+        {
+            for (var index = len + 1; index <= this._child_count; 1)
+            {
+                this._pool_count += 1;
+                this._sprite_pool[this._pool_count] = cast<Sprite>(this._childs[index]);
+            }
+            this.SpliceChild(len + 1);
+        }
+        elseif (this._child_count < len)
+        {
+            for (var index = this._child_count + 1; index <= len; 1)
+            {
+                var child:Sprite;
+                if (this._pool_count > 1)
+                {
+                    child = this._sprite_pool[this._pool_count];
+                    this._sprite_pool[this._pool_count] = null;
+                    this._pool_count -= 1;
+                }
+                else
+                {
+                    child = new Sprite(this._ctrl_sys);
+                    child.col_count = this._col_count;
+                    child.texture_name = this._texture_name;
+                    child.width = this._cell_width;
+                }
+                this.AddChild(child);
+            }
+        }
+
+        var byte = 0;
+        for (var index, child:Sprite in this._childs)
+        {
+            byte = __byte(value, index);
+            if (byte >= 48 && byte <= 57)
+                child.col_index = byte - 47;
+            elseif (byte == 43) // '+'
+                child.col_index = 11;
+            elseif (byte == 45) // '-'
+                child.col_index = 12;
+            elseif (byte == 46) // '.'
+            	child.col_index = 13;
+            elseif (byte == 47) // '/'
+            	child.col_index = 14;
+            else // 'other'
+            	child.col_index = 1;
+        }
+    }
+}

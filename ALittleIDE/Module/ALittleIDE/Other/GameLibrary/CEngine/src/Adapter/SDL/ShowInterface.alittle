@@ -110,6 +110,7 @@ public class __CPPAPITextArea : __CPPAPIDisplayObject {}
 public class __CPPAPITextEdit : __CPPAPIDisplayObject {}
 public class __CPPAPITextInput : __CPPAPIDisplayObject {}
 public class __CPPAPITriangle : __CPPAPIDisplayObject {}
+public class __CPPAPIVertexImage : __CPPAPIDisplayObject {}
 public class __CPPAPIGrid9Image : __CPPAPIDisplayObject {}
 
 public class __CPPAPIDisplaySystem : ALittle.IDisplaySystem

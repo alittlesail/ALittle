@@ -2184,7 +2184,7 @@ function ALittle.RichInput:HandleKeyDown(event)
 	local is_change = false
 	if event.sym == 1073741904 then
 		if self._multi_cursor == false then
-			if ALittle.BitAnd(event.mod, 0x0003) == 0 then
+			if event.mod & 0x0003 == 0 then
 				self._is_selecting = false
 				self:CursorOffsetLR(true)
 			else
@@ -2195,7 +2195,7 @@ function ALittle.RichInput:HandleKeyDown(event)
 		event.handled = true
 	elseif event.sym == 1073741903 then
 		if self._multi_cursor == false then
-			if ALittle.BitAnd(event.mod, 0x0003) == 0 then
+			if event.mod & 0x0003 == 0 then
 				self._is_selecting = false
 				self:CursorOffsetLR(false)
 			else
@@ -2246,7 +2246,7 @@ function ALittle.RichInput:HandleKeyDown(event)
 			self:DispatchEvent(___all_struct[776398171], {})
 			event.handled = true
 		end
-	elseif event.sym == 120 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+	elseif event.sym == 120 and event.mod & 0x00c0 ~= 0 then
 		if self._multi_cursor == false then
 			if (self._editable or event.custom) and not self._password_mode then
 				self._is_selecting = false
@@ -2268,7 +2268,7 @@ function ALittle.RichInput:HandleKeyDown(event)
 			end
 		end
 		event.handled = true
-	elseif event.sym == 99 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+	elseif event.sym == 99 and event.mod & 0x00c0 ~= 0 then
 		if not self._password_mode then
 			local select_text = self:GetSelectText()
 			if select_text[1] ~= nil then
@@ -2276,7 +2276,7 @@ function ALittle.RichInput:HandleKeyDown(event)
 			end
 		end
 		event.handled = true
-	elseif event.sym == 118 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+	elseif event.sym == 118 and event.mod & 0x00c0 ~= 0 then
 		if self._multi_cursor == false then
 			if self._editable or event.custom then
 				self._is_selecting = false
@@ -2312,7 +2312,7 @@ function ALittle.RichInput:HandleKeyDown(event)
 			end
 		end
 		event.handled = true
-	elseif event.sym == 97 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+	elseif event.sym == 97 and event.mod & 0x00c0 ~= 0 then
 		self._is_selecting = true
 		self:SelectAll()
 		event.handled = true

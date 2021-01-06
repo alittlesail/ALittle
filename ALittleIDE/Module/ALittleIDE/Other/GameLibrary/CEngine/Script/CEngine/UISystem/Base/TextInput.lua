@@ -343,7 +343,7 @@ end
 function ALittle.TextInput:HandleKeyDown(event)
 	local is_change = false
 	if event.sym == 1073741904 then
-		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
+		if event.mod & 0x0003 == 0 then
 			self._is_selecting = false
 			self._show:CursorOffset(true)
 		else
@@ -352,7 +352,7 @@ function ALittle.TextInput:HandleKeyDown(event)
 		end
 		event.handled = true
 	elseif event.sym == 1073741903 then
-		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
+		if event.mod & 0x0003 == 0 then
 			self._is_selecting = false
 			self._show:CursorOffset(false)
 		else
@@ -385,7 +385,7 @@ function ALittle.TextInput:HandleKeyDown(event)
 			self:DispatchEvent(___all_struct[776398171], {})
 			event.handled = true
 		end
-	elseif event.sym == 120 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+	elseif event.sym == 120 and event.mod & 0x00c0 ~= 0 then
 		if self._editable or event.custom then
 			self._is_selecting = false
 			local select_text = self._show:GetSelectText()
@@ -395,13 +395,13 @@ function ALittle.TextInput:HandleKeyDown(event)
 			end
 			event.handled = true
 		end
-	elseif event.sym == 99 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+	elseif event.sym == 99 and event.mod & 0x00c0 ~= 0 then
 		local select_text = self._show:GetSelectText()
 		if select_text ~= "" and (not self._password_mode) then
 			ALittle.System_SetClipboardText(select_text)
 		end
 		event.handled = true
-	elseif event.sym == 118 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+	elseif event.sym == 118 and event.mod & 0x00c0 ~= 0 then
 		if self._editable or event.custom then
 			self._is_selecting = false
 			if ALittle.System_HasClipboardText() then
@@ -413,7 +413,7 @@ function ALittle.TextInput:HandleKeyDown(event)
 			end
 			event.handled = true
 		end
-	elseif event.sym == 97 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+	elseif event.sym == 97 and event.mod & 0x00c0 ~= 0 then
 		self._is_selecting = true
 		self._show:SelectAll()
 		event.handled = true

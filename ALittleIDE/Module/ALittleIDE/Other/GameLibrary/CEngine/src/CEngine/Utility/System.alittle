@@ -13,12 +13,12 @@ public static System_CalcPortrait(int src_width, int src_height, int flag) : int
 		var screen_height  = System_GetScreenHeight();
 		src_height = Math_Floor(screen_height / screen_width * src_width);
         
-		flag = BitOr(flag, UIEnumTypes.VIEW_FULLSCREEN);
+		flag = flag | UIEnumTypes.VIEW_FULLSCREEN;
     }
     elseif (platform == "Web")
     {
         // 如果是有resize
-        if (BitAnd(flag, UIEnumTypes.VIEW_RESIZABLE) > 0)
+        if (flag & UIEnumTypes.VIEW_RESIZABLE > 0)
         {
             src_width = System_GetScreenWidth();
             src_height = System_GetScreenHeight();
@@ -59,12 +59,12 @@ public static System_CalcLandscape(int src_width, int src_height, int flag) : in
 		var screen_height  = System_GetScreenHeight();
 		src_width = Math_Floor(screen_width / screen_height * src_height);
         
-		flag = BitOr(flag, UIEnumTypes.VIEW_FULLSCREEN);
+		flag = flag | UIEnumTypes.VIEW_FULLSCREEN;
     }
     elseif (platform == "Web")
     {
         // 如果是有resize
-        if (BitAnd(flag, UIEnumTypes.VIEW_RESIZABLE) > 0)
+        if (flag & UIEnumTypes.VIEW_RESIZABLE > 0)
         {
             src_width = System_GetScreenWidth();
             src_height = System_GetScreenHeight();

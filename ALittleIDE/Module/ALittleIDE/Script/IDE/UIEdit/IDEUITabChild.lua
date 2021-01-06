@@ -977,7 +977,7 @@ function ALittleIDE.IDEUITabChild.ControlCopyInfoCmp(a, b)
 end
 
 function ALittleIDE.IDEUITabChild:HandleHandleQuadKeyDown(event)
-	if event.sym == 99 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+	if event.sym == 99 and event.mod & 0x00c0 ~= 0 then
 		local copy_list = {}
 		local copy_list_count = 0
 		for target, handle_info in ___pairs(self._tab_quad_map) do
@@ -996,7 +996,7 @@ function ALittleIDE.IDEUITabChild:HandleHandleQuadKeyDown(event)
 		end
 		return
 	end
-	if event.sym == 120 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+	if event.sym == 120 and event.mod & 0x00c0 ~= 0 then
 		local copy_list = {}
 		local copy_list_count = 0
 		for target, handle_info in ___pairs(self._tab_quad_map) do
@@ -1032,7 +1032,7 @@ function ALittleIDE.IDEUITabChild:HandleHandleQuadKeyDown(event)
 		end
 		return
 	end
-	if event.sym == 118 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+	if event.sym == 118 and event.mod & 0x00c0 ~= 0 then
 		local handle_info = event.target._user_data
 		local common_parent = handle_info.target.logic_parent
 		local child_index = 1

@@ -1084,13 +1084,13 @@ end
 function AUIPlugin.AUICodeEdit:HandleKeyDown(event)
 	local is_change = false
 	if event.sym == 1073741904 then
-		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
+		if event.mod & 0x0003 == 0 then
 			if self._select_cursor.line_start ~= nil then
 				local it_line, it_char = self._select_cursor:GetLineCharCloseToHome()
 				self._cursor:SetLineChar(it_line, it_char)
 				self._select_cursor:Hide()
 			else
-				self._cursor:OffsetLeft(ALittle.BitAnd(event.mod, 0x00c0) ~= 0)
+				self._cursor:OffsetLeft(event.mod & 0x00c0 ~= 0)
 			end
 			self._cursor:AdjustShowCursor()
 			self._complete_screen:TryHide()
@@ -1099,9 +1099,9 @@ function AUIPlugin.AUICodeEdit:HandleKeyDown(event)
 			if self._select_cursor.line_start == nil then
 				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
 			end
-			self._cursor:OffsetLeft(ALittle.BitAnd(event.mod, 0x00c0) ~= 0)
+			self._cursor:OffsetLeft(event.mod & 0x00c0 ~= 0)
 			if self._cursor.line == self._select_cursor.line_start and self._cursor.char == self._select_cursor.char_start then
-				self._cursor:OffsetLeft(ALittle.BitAnd(event.mod, 0x00c0) ~= 0)
+				self._cursor:OffsetLeft(event.mod & 0x00c0 ~= 0)
 			end
 			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
 			self._complete_screen:Hide()
@@ -1112,7 +1112,7 @@ function AUIPlugin.AUICodeEdit:HandleKeyDown(event)
 		if self._complete_screen:IsShow() then
 			self._complete_screen:SelectUp()
 		else
-			if ALittle.BitAnd(event.mod, 0x0003) == 0 then
+			if event.mod & 0x0003 == 0 then
 				if self._select_cursor.line_start ~= nil then
 					local it_line, it_char = self._select_cursor:GetLineCharCloseToHome()
 					self._cursor:SetLineChar(it_line, it_char)
@@ -1143,7 +1143,7 @@ function AUIPlugin.AUICodeEdit:HandleKeyDown(event)
 		if self._complete_screen:IsShow() then
 			self._complete_screen:SelectDown()
 		else
-			if ALittle.BitAnd(event.mod, 0x0003) == 0 then
+			if event.mod & 0x0003 == 0 then
 				if self._select_cursor.line_start ~= nil then
 					local it_line, it_char = self._select_cursor:GetLineCharCloseToEnd()
 					self._cursor:SetLineChar(it_line, it_char)
@@ -1171,13 +1171,13 @@ function AUIPlugin.AUICodeEdit:HandleKeyDown(event)
 		end
 		event.handled = true
 	elseif event.sym == 1073741903 then
-		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
+		if event.mod & 0x0003 == 0 then
 			if self._select_cursor.line_start ~= nil then
 				local it_line, it_char = self._select_cursor:GetLineCharCloseToEnd()
 				self._cursor:SetLineChar(it_line, it_char)
 				self._select_cursor:Hide()
 			else
-				self._cursor:OffsetRight(ALittle.BitAnd(event.mod, 0x00c0) ~= 0)
+				self._cursor:OffsetRight(event.mod & 0x00c0 ~= 0)
 			end
 			self._cursor:AdjustShowCursor()
 			self._complete_screen:TryHide()
@@ -1186,9 +1186,9 @@ function AUIPlugin.AUICodeEdit:HandleKeyDown(event)
 			if self._select_cursor.line_start == nil then
 				self._select_cursor:StartLineChar(self._cursor.line, self._cursor.char)
 			end
-			self._cursor:OffsetRight(ALittle.BitAnd(event.mod, 0x00c0) ~= 0)
+			self._cursor:OffsetRight(event.mod & 0x00c0 ~= 0)
 			if self._cursor.line == self._select_cursor.line_start and self._cursor.char == self._select_cursor.char_start then
-				self._cursor:OffsetRight(ALittle.BitAnd(event.mod, 0x00c0) ~= 0)
+				self._cursor:OffsetRight(event.mod & 0x00c0 ~= 0)
 			end
 			self._select_cursor:UpdateLineChar(self._cursor.line, self._cursor.char)
 			self._complete_screen:Hide()
@@ -1225,7 +1225,7 @@ function AUIPlugin.AUICodeEdit:HandleKeyDown(event)
 			event.handled = true
 		end
 	elseif event.sym == 1073741898 then
-		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
+		if event.mod & 0x0003 == 0 then
 			if self._select_cursor.line_start ~= nil then
 				local it_line, it_char = self._select_cursor:GetLineCharCloseToHome()
 				self._cursor:SetLineChar(it_line, it_char)
@@ -1246,7 +1246,7 @@ function AUIPlugin.AUICodeEdit:HandleKeyDown(event)
 		end
 		event.handled = true
 	elseif event.sym == 1073741901 then
-		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
+		if event.mod & 0x0003 == 0 then
 			if self._select_cursor.line_start ~= nil then
 				local it_line, it_char = self._select_cursor:GetLineCharCloseToEnd()
 				self._cursor:SetLineChar(it_line, it_char)
@@ -1297,7 +1297,7 @@ function AUIPlugin.AUICodeEdit:HandleKeyDown(event)
 	elseif event.sym == 9 then
 		if self._editable then
 			if self._select_cursor.line_start ~= self._select_cursor.line_end then
-				if ALittle.BitAnd(event.mod, 0x0003) ~= 0 then
+				if event.mod & 0x0003 ~= 0 then
 					is_change = self:MultiTabDelete(true)
 				else
 					is_change = self:MultiTabInsert(true)
@@ -1310,7 +1310,7 @@ function AUIPlugin.AUICodeEdit:HandleKeyDown(event)
 			self._param_dialog:Hide()
 			event.handled = true
 		end
-	elseif event.sym == 120 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+	elseif event.sym == 120 and event.mod & 0x00c0 ~= 0 then
 		if self._editable then
 			local select_text = self._select_cursor:GetSelectText()
 			if select_text ~= nil then
@@ -1321,13 +1321,13 @@ function AUIPlugin.AUICodeEdit:HandleKeyDown(event)
 			self._param_dialog:Hide()
 			event.handled = true
 		end
-	elseif event.sym == 99 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+	elseif event.sym == 99 and event.mod & 0x00c0 ~= 0 then
 		local select_text = self._select_cursor:GetSelectText()
 		if select_text ~= nil then
 			ALittle.System_SetClipboardText(select_text)
 		end
 		event.handled = true
-	elseif event.sym == 118 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+	elseif event.sym == 118 and event.mod & 0x00c0 ~= 0 then
 		if self._editable then
 			if ALittle.System_HasClipboardText() then
 				local old_line = self._cursor.line
@@ -1339,7 +1339,7 @@ function AUIPlugin.AUICodeEdit:HandleKeyDown(event)
 			end
 			event.handled = true
 		end
-	elseif event.sym == 97 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+	elseif event.sym == 97 and event.mod & 0x00c0 ~= 0 then
 		if self._line_count > 0 then
 			self._cursor:SetLineChar(self._line_count, self._line_list[self._line_count].char_count)
 			self._select_cursor:StartLineChar(1, 0)
@@ -1348,11 +1348,11 @@ function AUIPlugin.AUICodeEdit:HandleKeyDown(event)
 			self._param_dialog:Hide()
 		end
 		event.handled = true
-	elseif event.sym == 102 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+	elseif event.sym == 102 and event.mod & 0x00c0 ~= 0 then
 		self._find_dialog.visible = true
 		self._find_input:DelayFocus()
 		self._find_input:SelectAll()
-	elseif event.sym == 103 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+	elseif event.sym == 103 and event.mod & 0x00c0 ~= 0 then
 		self._gotoline_dialog.visible = true
 		self._gotoline_input:DelayFocus()
 		self._gotoline_input:SelectAll()

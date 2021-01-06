@@ -725,6 +725,8 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp12SuffixEe(std::shared_ptr
         return GenerateOp6Suffix(suffix->GetOp6Suffix(), pre_tab, content);
     else if (suffix->GetOp7Suffix() != nullptr)
         return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
+    else if (suffix->GetOp8Suffix() != nullptr)
+        return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
     else if (suffix->GetOp9Suffix() != nullptr)
         return GenerateOp9Suffix(suffix->GetOp9Suffix(), pre_tab, content);
     else if (suffix->GetOp10Suffix() != nullptr)
@@ -819,6 +821,10 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateOp11SuffixEe(std::shared_ptr
         return GenerateOp5Suffix(suffix->GetOp5Suffix(), pre_tab, content);
     else if (suffix->GetOp6Suffix() != nullptr)
         return GenerateOp6Suffix(suffix->GetOp6Suffix(), pre_tab, content);
+    else if (suffix->GetOp7Suffix() != nullptr)
+        return GenerateOp7Suffix(suffix->GetOp7Suffix(), pre_tab, content);
+    else if (suffix->GetOp8Suffix() != nullptr)
+        return GenerateOp8Suffix(suffix->GetOp8Suffix(), pre_tab, content);
     else if (suffix->GetOp9Suffix() != nullptr)
         return GenerateOp9Suffix(suffix->GetOp9Suffix(), pre_tab, content);
     else if (suffix->GetOp10Suffix() != nullptr)

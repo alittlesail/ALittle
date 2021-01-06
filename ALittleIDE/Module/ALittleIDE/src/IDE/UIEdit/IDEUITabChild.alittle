@@ -1078,7 +1078,7 @@ public class IDEUITabChild : IDETabChild
 	public fun HandleHandleQuadKeyDown(ALittle.UIKeyDownEvent event)
     {
 	    //处理Ctrl+C////////////////////////////////////////////////////////////////////////
-		if (event.sym == ALittle.UIEnumTypes.KEY_C && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
+		if (event.sym == ALittle.UIEnumTypes.KEY_C && event.mod & ALittle.UIEnumTypes.KMOD_CTRL != 0)
         {
             var copy_list = new List<IDEControlCopyInfo>();
             var copy_list_count = 0;
@@ -1102,7 +1102,7 @@ public class IDEUITabChild : IDETabChild
             return;
 		}
 	    //处理Ctrl+X////////////////////////////////////////////////////////////////////////
-		if (event.sym == ALittle.UIEnumTypes.KEY_X && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
+		if (event.sym == ALittle.UIEnumTypes.KEY_X && event.mod & ALittle.UIEnumTypes.KMOD_CTRL != 0)
         {
             var copy_list = new List<IDEControlCopyInfo>();
             var copy_list_count = 0;
@@ -1145,7 +1145,7 @@ public class IDEUITabChild : IDETabChild
             return;
 		}
 	    //处理Ctrl+V////////////////////////////////////////////////////////////////////////
-		if (event.sym == ALittle.UIEnumTypes.KEY_V && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
+		if (event.sym == ALittle.UIEnumTypes.KEY_V && event.mod & ALittle.UIEnumTypes.KMOD_CTRL != 0)
         {
             var handle_info:IDEUITabChildHandleInfo = event.target._user_data;
 			// 获取父控件

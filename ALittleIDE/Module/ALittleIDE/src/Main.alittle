@@ -10,7 +10,7 @@ public async static __Browser_Setup(ALittle.DisplayLayout layer_group
     
     // 创建窗口
     var window_width, window_height, flag, scale = ALittle.System_CalcLandscape(1200, 600
-        , ALittle.BitOr(ALittle.UIEnumTypes.VIEW_MAXIMIZED, ALittle.UIEnumTypes.VIEW_RESIZABLE));
+        , ALittle.UIEnumTypes.VIEW_MAXIMIZED | ALittle.UIEnumTypes.VIEW_RESIZABLE);
     ALittle.System_CreateView("ALittleIDE", window_width, window_height, flag, scale);
     ALittle.System_SetViewIcon(module_base_path.."Other/ic_launcher.png");
     

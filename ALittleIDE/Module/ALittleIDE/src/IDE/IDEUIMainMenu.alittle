@@ -189,7 +189,6 @@ protected class IDEUIMainMenu : ALittle.Linear
     		ALittle.List_Push(file_list, base_path.."Config/CsvConfig.js");
     		ALittle.List_Push(file_list, base_path.."Config/JsonConfig.js");
 
-    		ALittle.List_Push(file_list, base_path.."Bit/Bit.js");
     		ALittle.List_Push(file_list, base_path.."WeakRef/WeakRef.js");
     		ALittle.List_Push(file_list, base_path.."Loop/IHeapTimer.js");
     		ALittle.List_Push(file_list, base_path.."Schedule/ISchedule.js");
@@ -259,7 +258,6 @@ protected class IDEUIMainMenu : ALittle.Linear
             ALittle.List_Push(file_list, base_path.."Config/CsvConfig.lua");
             ALittle.List_Push(file_list, base_path.."Config/JsonConfig.lua");
 
-            ALittle.List_Push(file_list, base_path.."Bit/Bit.lua");
             ALittle.List_Push(file_list, base_path.."WeakRef/WeakRef.lua");
             ALittle.List_Push(file_list, base_path.."Loop/IHeapTimer.lua");
             ALittle.List_Push(file_list, base_path.."Schedule/ISchedule.lua");

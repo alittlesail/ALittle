@@ -4407,7 +4407,7 @@ public class RichEdit : DisplayLayout
             // 单光标模式下处理
             if (this._multi_cursor == false)
             {
-                if (BitAnd(event.mod, UIEnumTypes.KMOD_SHIFT) == 0)
+                if (event.mod & UIEnumTypes.KMOD_SHIFT == 0)
                 {
                     this._is_selecting = false;
                     this.CursorOffsetLR(true);
@@ -4427,7 +4427,7 @@ public class RichEdit : DisplayLayout
             // 单光标模式下处理
             if (this._multi_cursor == false)
             {
-                if (BitAnd(event.mod, UIEnumTypes.KMOD_SHIFT) == 0)
+                if (event.mod & UIEnumTypes.KMOD_SHIFT == 0)
                 {
                     this._is_selecting = false;
                     this.CursorOffsetLR(false);
@@ -4447,7 +4447,7 @@ public class RichEdit : DisplayLayout
             // 单光标模式下处理
             if (this._multi_cursor == false)
             {
-                if (BitAnd(event.mod, UIEnumTypes.KMOD_SHIFT) == 0)
+                if (event.mod & UIEnumTypes.KMOD_SHIFT == 0)
                 {
                     this._is_selecting = false;
                     this.CursorOffsetUD(true);
@@ -4467,7 +4467,7 @@ public class RichEdit : DisplayLayout
             // 单光标模式下处理
             if (this._multi_cursor == false)
             {
-                if (BitAnd(event.mod, UIEnumTypes.KMOD_SHIFT) == 0)
+                if (event.mod & UIEnumTypes.KMOD_SHIFT == 0)
                 {
                     this._is_selecting = false;
                     this.CursorOffsetUD(false);
@@ -4575,7 +4575,7 @@ public class RichEdit : DisplayLayout
                 }
             }
         }
-        elseif (event.sym == 120 && BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) != 0)
+        elseif (event.sym == 120 && event.mod & UIEnumTypes.KMOD_CTRL != 0)
         {
             // x键
             // 单光标模式下处理
@@ -4611,7 +4611,7 @@ public class RichEdit : DisplayLayout
                 }
             }
         }
-        elseif (event.sym == 99 && BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) != 0)
+        elseif (event.sym == 99 && event.mod & UIEnumTypes.KMOD_CTRL != 0)
         {
             // c键
             var select_text = this.GetSelectText();
@@ -4619,7 +4619,7 @@ public class RichEdit : DisplayLayout
                 System_SetClipboardText(ALittle.String_JsonEncode(select_text));
 			event.handled = true;
         }
-        elseif (event.sym == 118 && BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) != 0)
+        elseif (event.sym == 118 && event.mod & UIEnumTypes.KMOD_CTRL != 0)
         {
             // v键
             // 单光标模式下处理
@@ -4666,7 +4666,7 @@ public class RichEdit : DisplayLayout
                 }
             }
         }
-        elseif (event.sym == 97 && BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) != 0)
+        elseif (event.sym == 97 && event.mod & UIEnumTypes.KMOD_CTRL != 0)
         {
             // a键
             this._is_selecting = true;

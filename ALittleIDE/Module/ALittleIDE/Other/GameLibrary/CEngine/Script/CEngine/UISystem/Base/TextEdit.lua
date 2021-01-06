@@ -377,7 +377,7 @@ function ALittle.TextEdit:HandleKeyDown(event)
 			event.handled = true
 		end
 	elseif event.sym == 1073741904 then
-		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
+		if event.mod & 0x0003 == 0 then
 			self._is_selecting = false
 			self._show:CursorOffsetLR(true)
 		else
@@ -386,7 +386,7 @@ function ALittle.TextEdit:HandleKeyDown(event)
 		end
 		event.handled = true
 	elseif event.sym == 1073741903 then
-		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
+		if event.mod & 0x0003 == 0 then
 			self._is_selecting = false
 			self._show:CursorOffsetLR(false)
 		else
@@ -395,7 +395,7 @@ function ALittle.TextEdit:HandleKeyDown(event)
 		end
 		event.handled = true
 	elseif event.sym == 1073741906 then
-		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
+		if event.mod & 0x0003 == 0 then
 			self._is_selecting = false
 			self._show:CursorOffsetUD(true)
 		else
@@ -404,7 +404,7 @@ function ALittle.TextEdit:HandleKeyDown(event)
 		end
 		event.handled = true
 	elseif event.sym == 1073741905 then
-		if ALittle.BitAnd(event.mod, 0x0003) == 0 then
+		if event.mod & 0x0003 == 0 then
 			self._is_selecting = false
 			self._show:CursorOffsetUD(false)
 		else
@@ -444,7 +444,7 @@ function ALittle.TextEdit:HandleKeyDown(event)
 			end
 			event.handled = true
 		end
-	elseif event.sym == 120 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+	elseif event.sym == 120 and event.mod & 0x00c0 ~= 0 then
 		if self._editable or event.custom then
 			self._is_selecting = false
 			local select_text = self._show:GetSelectText()
@@ -454,13 +454,13 @@ function ALittle.TextEdit:HandleKeyDown(event)
 			end
 			event.handled = true
 		end
-	elseif event.sym == 99 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+	elseif event.sym == 99 and event.mod & 0x00c0 ~= 0 then
 		local select_text = self._show:GetSelectText()
 		if select_text ~= "" then
 			ALittle.System_SetClipboardText(select_text)
 		end
 		event.handled = true
-	elseif event.sym == 118 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+	elseif event.sym == 118 and event.mod & 0x00c0 ~= 0 then
 		if self._editable or event.custom then
 			self._is_selecting = false
 			if ALittle.System_HasClipboardText() then
@@ -472,7 +472,7 @@ function ALittle.TextEdit:HandleKeyDown(event)
 			end
 			event.handled = true
 		end
-	elseif event.sym == 97 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+	elseif event.sym == 97 and event.mod & 0x00c0 ~= 0 then
 		self._is_selecting = true
 		self._show:SelectAll()
 		event.handled = true

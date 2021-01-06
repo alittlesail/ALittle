@@ -481,7 +481,7 @@ public class TextInput : DisplayObject
         if (event.sym == 1073741904)
         {
             // 左键
-            if (BitAnd(event.mod, UIEnumTypes.KMOD_SHIFT) == 0)
+            if (event.mod & UIEnumTypes.KMOD_SHIFT == 0)
             {
                 this._is_selecting = false;
                 this._show.CursorOffset(true);
@@ -496,7 +496,7 @@ public class TextInput : DisplayObject
         elseif (event.sym == 1073741903)
         {
             // 右键
-            if (BitAnd(event.mod, UIEnumTypes.KMOD_SHIFT) == 0)
+            if (event.mod & UIEnumTypes.KMOD_SHIFT == 0)
             {
                 this._is_selecting = false;
                 this._show.CursorOffset(false);
@@ -552,7 +552,7 @@ public class TextInput : DisplayObject
 				event.handled = true;
             }
         }
-        elseif (event.sym == 120 && BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) != 0)
+        elseif (event.sym == 120 && event.mod & UIEnumTypes.KMOD_CTRL != 0)
         {
             // x键
             if (this._editable || event.custom)
@@ -568,7 +568,7 @@ public class TextInput : DisplayObject
 				event.handled = true;
             }
         }
-        elseif (event.sym == 99 && BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) != 0)
+        elseif (event.sym == 99 && event.mod & UIEnumTypes.KMOD_CTRL != 0)
         {
             // c键
             // 如果是密码模式，是不能复制的
@@ -577,7 +577,7 @@ public class TextInput : DisplayObject
                 System_SetClipboardText(select_text);
 			event.handled = true;
         }
-        elseif (event.sym == 118 && BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) != 0)
+        elseif (event.sym == 118 && event.mod & UIEnumTypes.KMOD_CTRL != 0)
         {
             // v键
             if (this._editable || event.custom)
@@ -593,7 +593,7 @@ public class TextInput : DisplayObject
 				event.handled = true;
             }
         }
-        elseif (event.sym == 97 && BitAnd(event.mod, UIEnumTypes.KMOD_CTRL) != 0)
+        elseif (event.sym == 97 && event.mod & UIEnumTypes.KMOD_CTRL != 0)
         {
             // a键
             this._is_selecting = true;

@@ -3235,7 +3235,7 @@ function ALittle.RichEdit:HandleKeyDown(event)
 		end
 	elseif event.sym == 1073741904 then
 		if self._multi_cursor == false then
-			if ALittle.BitAnd(event.mod, 0x0003) == 0 then
+			if event.mod & 0x0003 == 0 then
 				self._is_selecting = false
 				self:CursorOffsetLR(true)
 				self:UpdateFontText()
@@ -3247,7 +3247,7 @@ function ALittle.RichEdit:HandleKeyDown(event)
 		event.handled = true
 	elseif event.sym == 1073741903 then
 		if self._multi_cursor == false then
-			if ALittle.BitAnd(event.mod, 0x0003) == 0 then
+			if event.mod & 0x0003 == 0 then
 				self._is_selecting = false
 				self:CursorOffsetLR(false)
 				self:UpdateFontText()
@@ -3259,7 +3259,7 @@ function ALittle.RichEdit:HandleKeyDown(event)
 		event.handled = true
 	elseif event.sym == 1073741906 then
 		if self._multi_cursor == false then
-			if ALittle.BitAnd(event.mod, 0x0003) == 0 then
+			if event.mod & 0x0003 == 0 then
 				self._is_selecting = false
 				self:CursorOffsetUD(true)
 				self:UpdateFontText()
@@ -3271,7 +3271,7 @@ function ALittle.RichEdit:HandleKeyDown(event)
 		event.handled = true
 	elseif event.sym == 1073741905 then
 		if self._multi_cursor == false then
-			if ALittle.BitAnd(event.mod, 0x0003) == 0 then
+			if event.mod & 0x0003 == 0 then
 				self._is_selecting = false
 				self:CursorOffsetUD(false)
 				self:UpdateFontText()
@@ -3342,7 +3342,7 @@ function ALittle.RichEdit:HandleKeyDown(event)
 				self._multi_cursor = false
 			end
 		end
-	elseif event.sym == 120 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+	elseif event.sym == 120 and event.mod & 0x00c0 ~= 0 then
 		if self._multi_cursor == false then
 			if self._editable or event.custom then
 				self._is_selecting = false
@@ -3367,13 +3367,13 @@ function ALittle.RichEdit:HandleKeyDown(event)
 				self._multi_cursor = false
 			end
 		end
-	elseif event.sym == 99 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+	elseif event.sym == 99 and event.mod & 0x00c0 ~= 0 then
 		local select_text = self:GetSelectText()
 		if select_text[1] ~= nil then
 			ALittle.System_SetClipboardText(ALittle.String_JsonEncode(select_text))
 		end
 		event.handled = true
-	elseif event.sym == 118 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+	elseif event.sym == 118 and event.mod & 0x00c0 ~= 0 then
 		if self._multi_cursor == false then
 			if self._editable or event.custom then
 				self._is_selecting = false
@@ -3409,7 +3409,7 @@ function ALittle.RichEdit:HandleKeyDown(event)
 				self._multi_cursor = false
 			end
 		end
-	elseif event.sym == 97 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
+	elseif event.sym == 97 and event.mod & 0x00c0 ~= 0 then
 		self._is_selecting = true
 		self:SelectAll()
 		event.handled = true

@@ -17,8 +17,8 @@ bool ARegex::Match(const char* src, int& length)
 
 bool ARegex::MatchNode(const char* src, const ARegexNode& node, int& length)
 {
-	if (src[length] == 0) return false;
 	const char c = src[length];
+	if (c == 0) return false;
 
 	if (node.type == ARegexType::T_CHAR)
 	{
@@ -108,7 +108,7 @@ bool ARegex::MatchNode(const char* src, const ARegexNode& node, int& length)
 
 		if (node.negate == ARegexNegateType::NNT_TRUE)
 		{
-			length += 1;
+			++length;
 			return true;
 		}
 
@@ -133,14 +133,16 @@ bool ARegex::MatchNodeRepeated(const char* src, const ARegexNode& node, int& len
 	{
 		return MatchNode(src, node, length);
 	}
-	else if (node.repeat == ARegexRepeatType::NRT_ONE_OR_NOT)
+	
+	if (node.repeat == ARegexRepeatType::NRT_ONE_OR_NOT)
 	{
 		int length_temp = length;
 		if (MatchNode(src, node, length_temp))
 			length = length_temp;
 		return true;
 	}
-	else if (node.repeat == ARegexRepeatType::NRT_NOT_OR_MORE)
+	
+	if (node.repeat == ARegexRepeatType::NRT_NOT_OR_MORE)
 	{
 		while (true)
 		{
@@ -152,7 +154,8 @@ bool ARegex::MatchNodeRepeated(const char* src, const ARegexNode& node, int& len
 		}
 		return true;
 	}
-	else if (node.repeat == ARegexRepeatType::NRT_AT_LEAST_ONE)
+	
+	if (node.repeat == ARegexRepeatType::NRT_AT_LEAST_ONE)
 	{
 		if (!MatchNode(src, node, length)) return false;
 

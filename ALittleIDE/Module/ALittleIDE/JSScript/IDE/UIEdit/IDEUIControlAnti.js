@@ -16,8 +16,8 @@ option_map : {}
 })
 ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
 name : "ALittle.UIClickEvent", ns_name : "ALittle", rl_name : "UIClickEvent", hash_code : -449066808,
-name_list : ["target","is_drag"],
-type_list : ["ALittle.DisplayObject","bool"],
+name_list : ["target","is_drag","count"],
+type_list : ["ALittle.DisplayObject","bool","int"],
 option_map : {}
 })
 ALittle.RegStruct(-431205740, "ALittle.UIResizeEvent", {
@@ -338,7 +338,7 @@ ALittleIDE.IDEAntiFrameAntiItem = JavaScript.Class(ALittle.DisplayLayout, {
 		let loop_item = ALittleIDE.g_Control.CreateControl("ide_anti_screen_loop_item");
 		loop_item.Init(this, child);
 		this._container.AddChild(loop_item);
-		let revoke = ALittle.NewObject(ALittleIDE.IDEAntiInsertLoopRevoke, this, child, loop_item, ALittle.List_MaxN(this._info.childs));
+		let revoke = ALittle.NewObject(ALittleIDE.IDEAntiInsertLoopRevoke, this, child, loop_item, ALittle.List_Len(this._info.childs));
 		this._panel.tab_child.revoke_list.PushRevoke(revoke);
 		loop_item.button.selected = true;
 		this._panel.ShowAntiLoop(loop_item);

@@ -105,6 +105,8 @@ type_list : ["ALittle.DisplayObject","double","double","double","double","double
 option_map : {}
 })
 
+let List_Insert = ALittle.List_Insert;
+let List_Splice = ALittle.List_Splice;
 if (ALittle.DisplayLayout === undefined) throw new Error(" extends class:ALittle.DisplayLayout is undefined");
 AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 	Create : function() {
@@ -638,7 +640,7 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		this.ClearFindInfo();
 		let content = this._find_input.text;
 		this._find_text = ALittle.String_SplitUTF8(content);
-		let find_len = ALittle.List_MaxN(this._find_text);
+		let find_len = ALittle.List_Len(this._find_text);
 		if (find_len === 0) {
 			return;
 		}
@@ -761,50 +763,51 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			}
 		}
 		line.container._find.RemoveAllChild();
-		let find_len = ALittle.List_MaxN(this._find_text);
+		let find_len = ALittle.List_Len(this._find_text);
 		if (find_len === 0) {
 			return;
 		}
-		if (line.char_count >= find_len) {
-			let char_index = 1;
-			while (char_index <= line.char_count) {
-				let find = true;
-				let ___OBJECT_7 = this._find_text;
-				for (let i = 1; i <= ___OBJECT_7.length; ++i) {
-					let char = ___OBJECT_7[i - 1];
-					if (char === undefined) break;
-					if (char !== line.char_list[char_index + i - 1 - 1].char) {
-						find = false;
-						break;
-					}
+		if (line.char_count < find_len) {
+			return;
+		}
+		let char_index = 1;
+		while (char_index <= line.char_count) {
+			let find = true;
+			let ___OBJECT_7 = this._find_text;
+			for (let i = 1; i <= ___OBJECT_7.length; ++i) {
+				let char = ___OBJECT_7[i - 1];
+				if (char === undefined) break;
+				if (char !== line.char_list[char_index + i - 1 - 1].char) {
+					find = false;
+					break;
 				}
-				if (find) {
-					let item = ALittle.NewObject(ALittle.Quad, AUIPlugin.g_Control);
-					item.red = AUIPlugin.CODE_FIND_RED;
-					item.green = AUIPlugin.CODE_FIND_GREEN;
-					item.blue = AUIPlugin.CODE_FIND_BLUE;
-					item.x = line.char_list[char_index - 1].pre_width;
-					item.width = line.char_list[char_index + find_len - 1].pre_width - line.char_list[char_index - 1].pre_width;
-					item.height = AUIPlugin.CODE_LINE_HEIGHT;
-					line.container._find.AddChild(item);
-					let info = {};
-					info._focus_quad = item;
-					info.it_char_start = char_index;
-					info.it_char_end = char_index + find_len - 1;
-					item._user_data = info;
-					let highlight_quad = ALittle.NewObject(ALittle.Quad, AUIPlugin.g_Control);
-					highlight_quad.width_type = 4;
-					highlight_quad.height = 2;
-					highlight_quad.red = AUIPlugin.CODE_FIND_RED;
-					highlight_quad.green = AUIPlugin.CODE_FIND_GREEN;
-					highlight_quad.blue = AUIPlugin.CODE_FIND_BLUE;
-					highlight_quad.y = (it_line - 1) / this.line_count * this._find_quad_container.height;
-					this._find_quad_container.AddChild(highlight_quad);
-					this._find_map.set(info, highlight_quad);
-					char_index = char_index + (find_len);
-				} else {
-					char_index = char_index + (1);
-				}
+			}
+			if (find) {
+				let item = ALittle.NewObject(ALittle.Quad, AUIPlugin.g_Control);
+				item.red = AUIPlugin.CODE_FIND_RED;
+				item.green = AUIPlugin.CODE_FIND_GREEN;
+				item.blue = AUIPlugin.CODE_FIND_BLUE;
+				item.x = line.char_list[char_index - 1].pre_width;
+				item.width = line.char_list[char_index + find_len - 1].pre_width - line.char_list[char_index - 1].pre_width;
+				item.height = AUIPlugin.CODE_LINE_HEIGHT;
+				line.container._find.AddChild(item);
+				let info = {};
+				info._focus_quad = item;
+				info.it_char_start = char_index;
+				info.it_char_end = char_index + find_len - 1;
+				item._user_data = info;
+				let highlight_quad = ALittle.NewObject(ALittle.Quad, AUIPlugin.g_Control);
+				highlight_quad.width_type = 4;
+				highlight_quad.height = 2;
+				highlight_quad.red = AUIPlugin.CODE_FIND_RED;
+				highlight_quad.green = AUIPlugin.CODE_FIND_GREEN;
+				highlight_quad.blue = AUIPlugin.CODE_FIND_BLUE;
+				highlight_quad.y = (it_line - 1) / this.line_count * this._find_quad_container.height;
+				this._find_quad_container.AddChild(highlight_quad);
+				this._find_map.set(info, highlight_quad);
+				char_index = char_index + (find_len);
+			} else {
+				char_index = char_index + (1);
 			}
 		}
 	},
@@ -1008,13 +1011,13 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 	HandleKeyDown : function(event) {
 		let is_change = false;
 		if (event.sym === 1073741904) {
-			if (ALittle.BitAnd(event.mod, 0x0003) === 0) {
+			if (event.mod & 0x0003 === 0) {
 				if (this._select_cursor.line_start !== undefined) {
 					let [it_line, it_char] = this._select_cursor.GetLineCharCloseToHome();
 					this._cursor.SetLineChar(it_line, it_char);
 					this._select_cursor.Hide();
 				} else {
-					this._cursor.OffsetLeft(ALittle.BitAnd(event.mod, 0x00c0) !== 0);
+					this._cursor.OffsetLeft(event.mod & 0x00c0 !== 0);
 				}
 				this._cursor.AdjustShowCursor();
 				this._complete_screen.TryHide();
@@ -1023,9 +1026,9 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 				if (this._select_cursor.line_start === undefined) {
 					this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
 				}
-				this._cursor.OffsetLeft(ALittle.BitAnd(event.mod, 0x00c0) !== 0);
+				this._cursor.OffsetLeft(event.mod & 0x00c0 !== 0);
 				if (this._cursor.line === this._select_cursor.line_start && this._cursor.char === this._select_cursor.char_start) {
-					this._cursor.OffsetLeft(ALittle.BitAnd(event.mod, 0x00c0) !== 0);
+					this._cursor.OffsetLeft(event.mod & 0x00c0 !== 0);
 				}
 				this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);
 				this._complete_screen.Hide();
@@ -1036,7 +1039,7 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			if (this._complete_screen.IsShow()) {
 				this._complete_screen.SelectUp();
 			} else {
-				if (ALittle.BitAnd(event.mod, 0x0003) === 0) {
+				if (event.mod & 0x0003 === 0) {
 					if (this._select_cursor.line_start !== undefined) {
 						let [it_line, it_char] = this._select_cursor.GetLineCharCloseToHome();
 						this._cursor.SetLineChar(it_line, it_char);
@@ -1067,7 +1070,7 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			if (this._complete_screen.IsShow()) {
 				this._complete_screen.SelectDown();
 			} else {
-				if (ALittle.BitAnd(event.mod, 0x0003) === 0) {
+				if (event.mod & 0x0003 === 0) {
 					if (this._select_cursor.line_start !== undefined) {
 						let [it_line, it_char] = this._select_cursor.GetLineCharCloseToEnd();
 						this._cursor.SetLineChar(it_line, it_char);
@@ -1095,13 +1098,13 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			}
 			event.handled = true;
 		} else if (event.sym === 1073741903) {
-			if (ALittle.BitAnd(event.mod, 0x0003) === 0) {
+			if (event.mod & 0x0003 === 0) {
 				if (this._select_cursor.line_start !== undefined) {
 					let [it_line, it_char] = this._select_cursor.GetLineCharCloseToEnd();
 					this._cursor.SetLineChar(it_line, it_char);
 					this._select_cursor.Hide();
 				} else {
-					this._cursor.OffsetRight(ALittle.BitAnd(event.mod, 0x00c0) !== 0);
+					this._cursor.OffsetRight(event.mod & 0x00c0 !== 0);
 				}
 				this._cursor.AdjustShowCursor();
 				this._complete_screen.TryHide();
@@ -1110,9 +1113,9 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 				if (this._select_cursor.line_start === undefined) {
 					this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
 				}
-				this._cursor.OffsetRight(ALittle.BitAnd(event.mod, 0x00c0) !== 0);
+				this._cursor.OffsetRight(event.mod & 0x00c0 !== 0);
 				if (this._cursor.line === this._select_cursor.line_start && this._cursor.char === this._select_cursor.char_start) {
-					this._cursor.OffsetRight(ALittle.BitAnd(event.mod, 0x00c0) !== 0);
+					this._cursor.OffsetRight(event.mod & 0x00c0 !== 0);
 				}
 				this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);
 				this._complete_screen.Hide();
@@ -1149,7 +1152,7 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 				event.handled = true;
 			}
 		} else if (event.sym === 1073741898) {
-			if (ALittle.BitAnd(event.mod, 0x0003) === 0) {
+			if (event.mod & 0x0003 === 0) {
 				if (this._select_cursor.line_start !== undefined) {
 					let [it_line, it_char] = this._select_cursor.GetLineCharCloseToHome();
 					this._cursor.SetLineChar(it_line, it_char);
@@ -1170,7 +1173,7 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			}
 			event.handled = true;
 		} else if (event.sym === 1073741901) {
-			if (ALittle.BitAnd(event.mod, 0x0003) === 0) {
+			if (event.mod & 0x0003 === 0) {
 				if (this._select_cursor.line_start !== undefined) {
 					let [it_line, it_char] = this._select_cursor.GetLineCharCloseToEnd();
 					this._cursor.SetLineChar(it_line, it_char);
@@ -1221,7 +1224,7 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		} else if (event.sym === 9) {
 			if (this._editable) {
 				if (this._select_cursor.line_start !== this._select_cursor.line_end) {
-					if (ALittle.BitAnd(event.mod, 0x0003) !== 0) {
+					if (event.mod & 0x0003 !== 0) {
 						is_change = this.MultiTabDelete(true);
 					} else {
 						is_change = this.MultiTabInsert(true);
@@ -1234,7 +1237,7 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 				this._param_dialog.Hide();
 				event.handled = true;
 			}
-		} else if (event.sym === 120 && ALittle.BitAnd(event.mod, 0x00c0) !== 0) {
+		} else if (event.sym === 120 && event.mod & 0x00c0 !== 0) {
 			if (this._editable) {
 				let select_text = this._select_cursor.GetSelectText();
 				if (select_text !== undefined) {
@@ -1245,13 +1248,13 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 				this._param_dialog.Hide();
 				event.handled = true;
 			}
-		} else if (event.sym === 99 && ALittle.BitAnd(event.mod, 0x00c0) !== 0) {
+		} else if (event.sym === 99 && event.mod & 0x00c0 !== 0) {
 			let select_text = this._select_cursor.GetSelectText();
 			if (select_text !== undefined) {
 				ALittle.System_SetClipboardText(select_text);
 			}
 			event.handled = true;
-		} else if (event.sym === 118 && ALittle.BitAnd(event.mod, 0x00c0) !== 0) {
+		} else if (event.sym === 118 && event.mod & 0x00c0 !== 0) {
 			if (this._editable) {
 				if (ALittle.System_HasClipboardText()) {
 					let old_line = this._cursor.line;
@@ -1263,7 +1266,7 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 				}
 				event.handled = true;
 			}
-		} else if (event.sym === 97 && ALittle.BitAnd(event.mod, 0x00c0) !== 0) {
+		} else if (event.sym === 97 && event.mod & 0x00c0 !== 0) {
 			if (this._line_count > 0) {
 				this._cursor.SetLineChar(this._line_count, this._line_list[this._line_count - 1].char_count);
 				this._select_cursor.StartLineChar(1, 0);
@@ -1272,11 +1275,11 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 				this._param_dialog.Hide();
 			}
 			event.handled = true;
-		} else if (event.sym === 102 && ALittle.BitAnd(event.mod, 0x00c0) !== 0) {
+		} else if (event.sym === 102 && event.mod & 0x00c0 !== 0) {
 			this._find_dialog.visible = true;
 			this._find_input.DelayFocus();
 			this._find_input.SelectAll();
-		} else if (event.sym === 103 && ALittle.BitAnd(event.mod, 0x00c0) !== 0) {
+		} else if (event.sym === 103 && event.mod & 0x00c0 !== 0) {
 			this._gotoline_dialog.visible = true;
 			this._gotoline_input.DelayFocus();
 			this._gotoline_input.SelectAll();
@@ -1386,7 +1389,7 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		this._file_path = file_path;
 		this._revoke_list = revoke_list;
 		if (this._revoke_list === undefined) {
-			this._revoke_list = ALittle.NewObject(ALittle.RevokeList);
+			this._revoke_list = ALittle.NewObject(ALittle.RevokeList, 10000);
 		}
 		return true;
 	},
@@ -1398,6 +1401,10 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		let len = ALittle.String_Len(content);
 		let index = 1;
 		let pre_width = 0.0;
+		let UTF8ByteCount = carp.UTF8ByteCount;
+		let sub = lua.String.sub;
+		let ascii_width = this._ascii_width;
+		let word_width = this._word_width;
 		while (index <= len) {
 			let is_asicc = true;
 			let byte_count = 1;
@@ -1413,14 +1420,14 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			let char = {};
 			if (is_asicc) {
 				if (char_text === "\t") {
-					char.width = this._ascii_width * 4;
+					char.width = ascii_width * 4;
 				} else if (char_text === "\r" || char_text === "\n") {
 					char.width = 0;
 				} else {
-					char.width = this._ascii_width;
+					char.width = ascii_width;
 				}
 			} else {
-				char.width = this._word_width;
+				char.width = word_width;
 			}
 			char.red = AUIPlugin.CODE_FONT_RED;
 			char.green = AUIPlugin.CODE_FONT_GREEN;
@@ -1508,7 +1515,11 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 	MultiTabInsert : function(need_revoke, revoke_bind) {
 		let insert_revoke = undefined;
 		if (need_revoke) {
-			insert_revoke = ALittle.NewObject(ALittle.RevokeBind);
+			if (revoke_bind !== undefined) {
+				insert_revoke = revoke_bind;
+			} else {
+				insert_revoke = ALittle.NewObject(ALittle.RevokeBind);
+			}
 		}
 		if (this._select_cursor.line_start === undefined || this._select_cursor.line_end === undefined) {
 			return false;
@@ -1546,7 +1557,7 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 				char.pre_width = (i - 1) * this._ascii_width;
 				char.char = " ";
 				char.width = this._ascii_width;
-				ALittle.List_Insert(line.char_list, i, char);
+				List_Insert(line.char_list, i, char);
 			}
 			line.char_count = line.char_count + (4);
 		}
@@ -1572,9 +1583,7 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		if (need_revoke) {
 			let revoke = ALittle.NewObject(AUIPlugin.AUICodeMultiTabInsertRevoke, this, this._cursor, this._select_cursor, old_line_start, old_char_start, old_line_end, old_char_end, this._select_cursor.line_start, this._select_cursor.char_start, this._select_cursor.line_end, this._select_cursor.char_end, revoke_bind === undefined);
 			insert_revoke.PushRevoke(revoke);
-			if (revoke_bind !== undefined) {
-				revoke_bind.PushRevoke(insert_revoke);
-			} else {
+			if (revoke_bind === undefined) {
 				this._revoke_list.PushRevoke(insert_revoke);
 			}
 		}
@@ -1703,7 +1712,7 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 					}
 				}
 				line.container.width = line.container.width - (this._ascii_width * 4);
-				ALittle.List_Splice(line.char_list, 1, delete_count);
+				List_Splice(line.char_list, 1, delete_count);
 				line.char_count = line.char_count - (delete_count);
 				if (index === old_line_start) {
 					old_char_start = old_char_start - (delete_count);
@@ -1738,9 +1747,7 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			if (need_revoke) {
 				let revoke = ALittle.NewObject(AUIPlugin.AUICodeMultiTabDeleteRevoke, this, this._cursor, this._select_cursor, old_line_start, old_char_start, old_line_end, old_char_end, this._select_cursor.line_start, this._select_cursor.char_start, this._select_cursor.line_end, this._select_cursor.char_end, revoke_bind === undefined);
 				insert_revoke.PushRevoke(revoke);
-				if (revoke_bind !== undefined) {
-					revoke_bind.PushRevoke(insert_revoke);
-				} else {
+				if (revoke_bind === undefined) {
 					this._revoke_list.PushRevoke(insert_revoke);
 				}
 			}
@@ -1750,7 +1757,11 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 	InsertText : function(content, need_revoke, revoke_bind) {
 		let insert_revoke = undefined;
 		if (need_revoke) {
-			insert_revoke = ALittle.NewObject(ALittle.RevokeBind);
+			if (revoke_bind !== undefined) {
+				insert_revoke = revoke_bind;
+			} else {
+				insert_revoke = ALittle.NewObject(ALittle.RevokeBind);
+			}
 		}
 		let [is_changed, delete_it_line, delete_it_char] = this._select_cursor.DeleteSelect(need_revoke, insert_revoke);
 		if (is_changed) {
@@ -1788,6 +1799,8 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		line_map.set(this._cursor.line, true);
 		if (line_count > 1) {
 			if (line_count <= 20) {
+				let this_line_list = this._line_list;
+				let this_line_count = this._line_count;
 				let new_line_index = this._cursor.line;
 				{
 					split_next_line = {};
@@ -1805,34 +1818,38 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 						}
 					}
 					let split_count = split_pre_line.char_count - this._cursor.char;
-					ALittle.List_Splice(split_pre_line.char_list, this._cursor.char + 1, split_count);
+					List_Splice(split_pre_line.char_list, this._cursor.char + 1, split_count);
 					split_pre_line.char_count = split_pre_line.char_count - (split_count);
 				}
+				let code_linear = this._code_linear;
 				for (let i = 2; i < line_count; i += 1) {
 					let line = line_list[i - 1];
 					new_line_index = new_line_index + (1);
-					this._code_linear.AddChild(line.container, new_line_index);
-					this._line_count = this._line_count + (1);
-					ALittle.List_Insert(this._line_list, new_line_index, line);
+					code_linear.AddChild(line.container, new_line_index);
+					this_line_count = this_line_count + (1);
+					List_Insert(this_line_list, new_line_index, line);
 					line_map.set(new_line_index, true);
 				}
 				{
 					new_line_index = new_line_index + (1);
-					this._code_linear.AddChild(split_next_line.container, new_line_index);
-					ALittle.List_Insert(this._line_list, new_line_index, split_next_line);
-					this._line_count = this._line_count + (1);
+					code_linear.AddChild(split_next_line.container, new_line_index);
+					List_Insert(this_line_list, new_line_index, split_next_line);
+					this_line_count = this_line_count + (1);
 					it_cursor_line = new_line_index;
 					it_cursor_char = 0;
 					line_map.set(new_line_index, true);
 				}
+				this._line_count = this_line_count;
 			} else {
+				let this_line_list = this._line_list;
+				let this_line_count = this._line_count;
 				let new_line_list = [];
 				let new_line_count = 0;
-				this._code_linear.SpliceChild(this._cursor.line);
-				for (let i = 1; i < this._cursor.line; i += 1) {
-					let line = this._line_list[i - 1];
+				let cursor_line = this._cursor.line;
+				this._code_linear.SpliceChild(cursor_line);
+				for (let i = 1; i < cursor_line; i += 1) {
 					new_line_count = new_line_count + (1);
-					new_line_list[new_line_count - 1] = line;
+					new_line_list[new_line_count - 1] = this_line_list[i - 1];
 				}
 				{
 					split_next_line = {};
@@ -1850,30 +1867,31 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 						}
 					}
 					let split_count = split_pre_line.char_count - this._cursor.char;
-					ALittle.List_Splice(split_pre_line.char_list, this._cursor.char + 1, split_count);
+					List_Splice(split_pre_line.char_list, this._cursor.char + 1, split_count);
 					split_pre_line.char_count = split_pre_line.char_count - (split_count);
 					let result = this._code_linear.AddChild(split_pre_line.container);
 					new_line_count = new_line_count + (1);
 					new_line_list[new_line_count - 1] = split_pre_line;
 				}
+				let code_linear = this._code_linear;
 				for (let i = 2; i < line_count; i += 1) {
 					let line = line_list[i - 1];
-					let result = this._code_linear.AddChild(line.container);
+					let result = code_linear.AddChild(line.container);
 					new_line_count = new_line_count + (1);
 					new_line_list[new_line_count - 1] = line;
 					line_map.set(new_line_count, true);
 				}
 				{
-					let result = this._code_linear.AddChild(split_next_line.container);
+					let result = code_linear.AddChild(split_next_line.container);
 					new_line_count = new_line_count + (1);
 					new_line_list[new_line_count - 1] = split_next_line;
 					it_cursor_line = new_line_count;
 					it_cursor_char = 0;
 					line_map.set(new_line_count, true);
 				}
-				for (let i = this._cursor.line + 1; i <= this._line_count; i += 1) {
-					let line = this._line_list[i - 1];
-					this._code_linear.AddChild(line.container);
+				for (let i = this._cursor.line + 1; i <= this_line_count; i += 1) {
+					let line = this_line_list[i - 1];
+					code_linear.AddChild(line.container);
 					new_line_count = new_line_count + (1);
 					new_line_list[new_line_count - 1] = line;
 				}
@@ -1961,7 +1979,8 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			split_next_line.container.width = pre_width;
 		}
 		max_width = 0.0;
-		let ___OBJECT_16 = this._line_list;
+		let this_line_list = this._line_list;
+		let ___OBJECT_16 = this_line_list;
 		for (let index = 1; index <= ___OBJECT_16.length; ++index) {
 			let line = ___OBJECT_16[index - 1];
 			if (line === undefined) break;
@@ -1976,9 +1995,7 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		if (need_revoke) {
 			let revoke = ALittle.NewObject(AUIPlugin.AUICodeInsertTextRevoke, this, this._cursor, this._select_cursor, old_it_line, old_it_char, it_cursor_line, it_cursor_char, content, revoke_bind === undefined);
 			insert_revoke.PushRevoke(revoke);
-			if (revoke_bind !== undefined) {
-				revoke_bind.PushRevoke(insert_revoke);
-			} else {
+			if (revoke_bind === undefined) {
 				this._revoke_list.PushRevoke(insert_revoke);
 			}
 		}

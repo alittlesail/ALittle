@@ -20,10 +20,10 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 		this._clip_atonce = false;
 		this._drag_time = 0;
 		this._max_speed = 40;
-		this._type = ALittle.UIEnumTypes.TYPE_V;
+		this._type = 2;
 		this._scroll_linear = ALittle.NewObject(ALittle.Linear, this._ctrl_sys);
-		this._scroll_linear.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-		this._scroll_linear.type = ALittle.UIEnumTypes.TYPE_V;
+		this._scroll_linear.width_type = 4;
+		this._scroll_linear.type = 2;
 		ALittle.DisplayView.AddChild.call(this, this._scroll_linear);
 		this._scroll_linear.AddEventListener(___all_struct.get(-431205740), this, this.HandleLinearResize);
 		this._pickup_rect = true;
@@ -58,14 +58,14 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 			return;
 		}
 		this._type = value;
-		if (this._type === ALittle.UIEnumTypes.TYPE_H) {
-			this._scroll_linear.width_type = ALittle.UIEnumTypes.SIZE_ABS;
-			this._scroll_linear.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._scroll_linear.type = ALittle.UIEnumTypes.TYPE_H;
+		if (this._type === 1) {
+			this._scroll_linear.width_type = 1;
+			this._scroll_linear.height_type = 4;
+			this._scroll_linear.type = 1;
 		} else {
-			this._scroll_linear.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._scroll_linear.height_type = ALittle.UIEnumTypes.SIZE_ABS;
-			this._scroll_linear.type = ALittle.UIEnumTypes.TYPE_V;
+			this._scroll_linear.width_type = 4;
+			this._scroll_linear.height_type = 1;
+			this._scroll_linear.type = 2;
 		}
 		this.RefreshChild(false);
 	},
@@ -104,7 +104,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 			return false;
 		}
 		if (up) {
-			if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+			if (this._type === 1) {
 				let target_value = this._scroll_linear.x + this._scroll_linear.width;
 				if (this._scroll_linear.AddChild(child, 1) === false) {
 					return false;
@@ -127,7 +127,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 	},
 	RemoveChildEffect : function(up, loop) {
 		if (up) {
-			if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+			if (this._type === 1) {
 				let child = this._scroll_linear.GetChildByIndex(1);
 				let target_value = this._scroll_linear.x + this._scroll_linear.width;
 				if (this._scroll_linear.RemoveChild(child) === false) {
@@ -159,7 +159,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 		return this._scroll_linear.HasChild(child);
 	},
 	RemoveAllChild : function() {
-		if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+		if (this._type === 1) {
 			A_LoopSystem.RemoveUpdater(this._drag_loop_x);
 			A_LoopSystem.RemoveUpdater(this._drag_delta_loop_x);
 			this._scroll_linear.x = 0;
@@ -173,7 +173,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 		this.AdjustScrollBar();
 	},
 	RefreshChild : function(loop) {
-		if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+		if (this._type === 1) {
 			let linear_width = this._scroll_linear.width;
 			let target_x = undefined;
 			if (linear_width >= this._width) {
@@ -254,7 +254,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 		return this._clip_atonce;
 	},
 	set scroll_offset(value) {
-		if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+		if (this._type === 1) {
 			A_LoopSystem.RemoveUpdater(this._drag_loop_x);
 			A_LoopSystem.RemoveUpdater(this._drag_delta_loop_x);
 			if (value > 0) {
@@ -289,7 +289,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 		}
 	},
 	get scroll_offset() {
-		if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+		if (this._type === 1) {
 			return this._scroll_linear.x;
 		}
 		return this._scroll_linear.y;
@@ -318,7 +318,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 		return this._scroll_linear.width;
 	},
 	set width(value) {
-		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+		if (this._type === 2) {
 			ALittle.DisplayView.__setter.width.call(this, value);
 			return;
 		}
@@ -326,7 +326,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 			return;
 		}
 		this._width = value;
-		if (this._width_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._width_type === 1) {
 			this._width_value = this._width;
 		}
 		this._show.SetWidth(this._width);
@@ -351,7 +351,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 		this.RefreshClipDisLine();
 	},
 	set height(value) {
-		if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+		if (this._type === 1) {
 			ALittle.DisplayView.__setter.height.call(this, value);
 			return;
 		}
@@ -359,7 +359,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 			return;
 		}
 		this._height = value;
-		if (this._height_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._height_type === 1) {
 			this._height_value = this._height;
 		}
 		this._show.SetHeight(this._height);
@@ -392,11 +392,11 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 		}
 		this._scroll_bar = value;
 		if (this._scroll_bar !== undefined) {
-			if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+			if (this._type === 1) {
 				this._scroll_bar.alpha = 0;
 				this._scroll_bar.visible = false;
-				this._scroll_bar.type = ALittle.UIEnumTypes.TYPE_H;
-				this._scroll_bar.y_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING;
+				this._scroll_bar.type = 1;
+				this._scroll_bar.y_type = 4;
 				ALittle.DisplayView.AddChild.call(this, this._scroll_bar);
 				this._scroll_bar.AddEventListener(___all_struct.get(958494922), this, this.HandleRightScrollBarChange);
 				this._scroll_bar.AddEventListener(___all_struct.get(1309977874), this, this.HandleRightScrollBarChangeEnd);
@@ -409,8 +409,8 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 			} else {
 				this._scroll_bar.alpha = 0;
 				this._scroll_bar.visible = false;
-				this._scroll_bar.type = ALittle.UIEnumTypes.TYPE_V;
-				this._scroll_bar.x_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING;
+				this._scroll_bar.type = 2;
+				this._scroll_bar.x_type = 4;
 				ALittle.DisplayView.AddChild.call(this, this._scroll_bar);
 				this._scroll_bar.AddEventListener(___all_struct.get(958494922), this, this.HandleRightScrollBarChange);
 				this._scroll_bar.AddEventListener(___all_struct.get(1309977874), this, this.HandleRightScrollBarChangeEnd);
@@ -427,7 +427,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 		return this._scroll_bar;
 	},
 	AdjustScrollBar : function() {
-		if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+		if (this._type === 1) {
 			let linear_width = this._scroll_linear.width;
 			if (this._scroll_bar !== undefined) {
 				let rate = 0.0;
@@ -470,7 +470,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 		if (value !== undefined) {
 			this._loading_show_up = value;
 			ALittle.DisplayView.AddChild.call(this, this._loading_show_up);
-			if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+			if (this._type === 1) {
 				this._loading_show_up.x = this._scroll_linear.x - this._loading_show_up.width;
 			} else {
 				this._loading_show_up.y = this._scroll_linear.y - this._loading_show_up.height;
@@ -488,7 +488,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 		if (value !== undefined) {
 			this._loading_show_down = value;
 			ALittle.DisplayView.AddChild.call(this, this._loading_show_down);
-			if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+			if (this._type === 1) {
 				this._loading_show_down.x = this._scroll_linear.x + this._scroll_linear.width;
 			} else {
 				this._loading_show_down.y = this._scroll_linear.y + this._scroll_linear.height;
@@ -496,7 +496,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 		}
 	},
 	UpdateLoadingShow : function() {
-		if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+		if (this._type === 1) {
 			if (this._loading_show_up !== undefined) {
 				this._loading_show_up.x = this._scroll_linear.x - this._loading_show_up.width;
 			}
@@ -525,7 +525,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 		this.RefreshClipDisLine();
 	},
 	HandleRightScrollBarChange : function(event) {
-		if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+		if (this._type === 1) {
 			let rate = this._scroll_bar.offset_rate;
 			let x = 0.0;
 			let linear_width = this._scroll_linear.width;
@@ -579,7 +579,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 			this._scroll_bar.visible = true;
 			this._scroll_bar.alpha = 1;
 		}
-		if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+		if (this._type === 1) {
 			A_LoopSystem.RemoveUpdater(this._drag_loop_x);
 			A_LoopSystem.RemoveUpdater(this._drag_delta_loop_x);
 		} else {
@@ -588,7 +588,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 		}
 	},
 	HandleDrag : function(event) {
-		if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+		if (this._type === 1) {
 			if (this._drag_delta_table_count < 3) {
 				++ this._drag_delta_table_count;
 				this._drag_delta_table[this._drag_delta_table_count - 1] = event.delta_x;
@@ -709,7 +709,7 @@ ALittle.ScrollList = JavaScript.Class(ALittle.DisplayView, {
 		}
 	},
 	HandleDragEnd : function(event) {
-		if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+		if (this._type === 1) {
 			let linear_width = this._scroll_linear.width;
 			if (this._scroll_linear.x > 0) {
 				A_LoopSystem.RemoveUpdater(this._drag_loop_x);

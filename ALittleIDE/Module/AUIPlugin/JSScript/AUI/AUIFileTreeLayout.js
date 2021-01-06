@@ -76,8 +76,8 @@ option_map : {}
 })
 ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
 name : "ALittle.UIClickEvent", ns_name : "ALittle", rl_name : "UIClickEvent", hash_code : -449066808,
-name_list : ["target","is_drag"],
-type_list : ["ALittle.DisplayObject","bool"],
+name_list : ["target","is_drag","count"],
+type_list : ["ALittle.DisplayObject","bool","int"],
 option_map : {}
 })
 ALittle.RegStruct(-431205740, "ALittle.UIResizeEvent", {
@@ -189,7 +189,7 @@ AUIPlugin.AUIFileTree = JavaScript.Class(AUIPlugin.AUIFileTreeLogic, {
 	HandleDeleteDir : async function() {
 		let file_name = ALittle.File_GetFileNameByPath(this._user_info.path);
 		let result = await g_AUITool.DeleteNotice("删除", "确定要删除" + file_name + "，以及子文件和子文件夹吗?");
-		if (result !== AUIPlugin.AUIToolOption.YES) {
+		if (result !== "YES") {
 			return;
 		}
 		if (this._user_info.on_delete_dir !== undefined) {
@@ -264,6 +264,7 @@ AUIPlugin.AUIFileTree = JavaScript.Class(AUIPlugin.AUIFileTreeLogic, {
 				info.on_create_file = this._user_info.on_create_file;
 				info.on_delete_file = this._user_info.on_delete_file;
 				info.on_delete_dir = this._user_info.on_delete_dir;
+				info.on_right_menu = this._user_info.on_right_menu;
 				this.AddChild(ALittle.NewObject(AUIPlugin.AUIFileTree, this._ctrl_sys, info));
 			}
 		}
@@ -283,6 +284,7 @@ AUIPlugin.AUIFileTree = JavaScript.Class(AUIPlugin.AUIFileTreeLogic, {
 				info.on_create_file = this._user_info.on_create_file;
 				info.on_delete_file = this._user_info.on_delete_file;
 				info.on_delete_dir = this._user_info.on_delete_dir;
+				info.on_right_menu = this._user_info.on_right_menu;
 				this.AddChild(ALittle.NewObject(AUIPlugin.AUIFileTreeItem, this._ctrl_sys, info));
 			}
 		}
@@ -516,7 +518,7 @@ AUIPlugin.AUIFileTreeItem = JavaScript.Class(AUIPlugin.AUIFileTreeLogic, {
 	HandleDeleteFile : async function() {
 		let file_name = ALittle.File_GetFileNameByPath(this._user_info.path);
 		let result = await g_AUITool.DeleteNotice("删除", "确定要删除" + file_name + "吗?");
-		if (result !== AUIPlugin.AUIToolOption.YES) {
+		if (result !== "YES") {
 			return;
 		}
 		if (this._user_info.on_delete_file !== undefined) {
@@ -660,7 +662,7 @@ AUIPlugin.AUIFileTreeLayout = JavaScript.Class(ALittle.DisplayLayout, {
 				if (child === undefined) break;
 				child.SearchFile(this._search_info.name, this._search_info.list);
 			}
-			this._search_info.count = ALittle.List_MaxN(this._search_info.list);
+			this._search_info.count = ALittle.List_Len(this._search_info.list);
 		}
 		if (this._search_info.count <= 0) {
 			return;

@@ -23,8 +23,8 @@ ALittle.ImagePlay = JavaScript.Class(ALittle.DisplayLayout, {
 			let v = ___OBJECT_1[k - 1];
 			if (v === undefined) break;
 			let image = ALittle.NewObject(ALittle.Image, this._ctrl_sys);
-			image.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			image.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			image.width_type = 4;
+			image.height_type = 4;
 			image.texture_name = v;
 			image.visible = false;
 			this.AddChild(image);

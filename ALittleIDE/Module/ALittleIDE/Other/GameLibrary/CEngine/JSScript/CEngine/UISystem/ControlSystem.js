@@ -119,7 +119,13 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 	},
 	LoadMessageFromFile : function(T, path) {
 		return new Promise((async function(___COROUTINE, ___) {
-			let module_path = "Module/" + this._module_name + "/" + path;
+			let path_prefix = "Module/" + this._module_name + "/";
+			let module_path = path;
+			if (ALittle.String_Find(module_path, path_prefix) === 1) {
+				path = ALittle.String_Sub(path, ALittle.String_Len(path_prefix) + 1);
+			} else {
+				module_path = path_prefix + path;
+			}
 			let factory = undefined;
 			{
 				let [content, buffer] = JavaScript.File_LoadFile(module_path);
@@ -151,6 +157,31 @@ ALittle.ControlSystem = JavaScript.Class(undefined, {
 			}
 			___COROUTINE(data); return;
 		}).bind(this));
+	},
+	WriteMessageToFile : function(T, msg, path) {
+		let path_prefix = "Module/" + this._module_name + "/";
+		let module_path = path;
+		if (ALittle.String_Find(module_path, path_prefix) === 1) {
+			path = ALittle.String_Sub(path, ALittle.String_Len(path_prefix) + 1);
+		} else {
+			module_path = path_prefix + path;
+		}
+		let factory = undefined;
+		factory = ALittle.NewObject(JavaScript.JMessageWriteFactory, 1024);
+		if (factory === undefined) {
+			return "factory create failed";
+		}
+		let rflct = T;
+		let invoke_info = ALittle.CreateMessageInfo(rflct.name);
+		if (invoke_info === undefined) {
+			return "create message info failed:" + rflct.name;
+		}
+		ALittle.PS_WriteMessage(factory, invoke_info, undefined, msg);
+		let result = factory.WriteToStdFile(ALittle.File_BaseFilePath() + module_path);
+		if (!result) {
+			return "WriteToStdFile failed";
+		}
+		return undefined;
 	},
 	RegisterInfo : function(name, info) {
 		this._name_map_info[name] = info;

@@ -306,8 +306,8 @@ ALittleIDE.IDEUIUtility_CreateTree = function(control, module, extends_v, object
 	} else {
 		tree_logic = ALittle.NewObject(ALittleIDE.IDEUITreeItem, ALittleIDE.g_Control, user_info, tab_child);
 	}
-	if (ALittleIDE.g_IDEEnum.can_add_child_map[user_info.default.__class] && object.childs !== undefined && ALittle.List_MaxN(object.childs) > 0) {
-		if (control.__childs !== undefined && ALittle.List_MaxN(control.__childs) > 0) {
+	if (ALittleIDE.g_IDEEnum.can_add_child_map[user_info.default.__class] && object.childs !== undefined && ALittle.List_Len(object.childs) > 0) {
+		if (control.__childs !== undefined && ALittle.List_Len(control.__childs) > 0) {
 			let childs = control.__childs;
 			let ___OBJECT_11 = childs;
 			for (let k = 1; k <= ___OBJECT_11.length; ++k) {
@@ -319,7 +319,7 @@ ALittleIDE.IDEUIUtility_CreateTree = function(control, module, extends_v, object
 				}
 				tree_logic.AddChild(tree);
 			}
-		} else if (user_info.default.__childs !== undefined && ALittle.List_MaxN(user_info.default.__childs) > 0) {
+		} else if (user_info.default.__childs !== undefined && ALittle.List_Len(user_info.default.__childs) > 0) {
 			let module_name = module;
 			if (control.__module !== undefined) {
 				module_name = control.__module;

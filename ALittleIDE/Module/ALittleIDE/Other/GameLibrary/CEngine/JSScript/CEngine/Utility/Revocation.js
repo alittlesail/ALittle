@@ -10,11 +10,14 @@ ALittle.RevokeObject = JavaScript.Class(undefined, {
 }, "ALittle.RevokeObject");
 
 ALittle.RevokeList = JavaScript.Class(undefined, {
-	Ctor : function() {
+	Ctor : function(max_count) {
 		this._revoke_list = [];
 		this._revoke_count = 0;
 		this._revoke_index = 0;
-		this._max_count = 100;
+		if (max_count !== undefined) {
+			max_count = 100;
+		}
+		this._max_count = max_count;
 	},
 	PushRevoke : function(revoke) {
 		if (this._revoke_index < this._revoke_count) {

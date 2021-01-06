@@ -490,10 +490,10 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		this._char_select_it = undefined;
 		this._scroll_list = ALittle.NewObject(ALittle.ScrollList, this._ctrl_sys);
 		this._scroll_list.right_scrollbar = ALittle.NewObject(ALittle.ScrollBar, this._ctrl_sys);
-		this._scroll_list.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-		this._scroll_list.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-		this._scroll_list.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
-		this._scroll_list.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._scroll_list.width_type = 4;
+		this._scroll_list.height_type = 4;
+		this._scroll_list.x_type = 3;
+		this._scroll_list.y_type = 3;
 		this.AddChild(this._scroll_list);
 		this._current_flash_alpha = 1;
 		this._current_flash_dir = -0.05;
@@ -546,9 +546,9 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		this._is_drag_begin = false;
 		this._ims_padding = 0;
 		this._default_text_area = ALittle.NewObject(ALittle.TextArea, this._ctrl_sys);
-		this._default_text_area.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._default_text_area.width_type = 4;
 		this._default_text_area.height = 0;
-		this._default_text_area.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._default_text_area.x_type = 3;
 		this._default_text_area.y = 0;
 		this.AddChild(this._default_text_area);
 		this._link_map = ALittle.CreateValueWeakMap();
@@ -833,10 +833,10 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			return;
 		}
 		this.RemoveChild(this._start_cursor);
-		value.x_type = ALittle.UIEnumTypes.POS_ABS;
-		value.y_type = ALittle.UIEnumTypes.POS_ABS;
-		value.width_type = ALittle.UIEnumTypes.SIZE_ABS;
-		value.height_type = ALittle.UIEnumTypes.SIZE_ABS;
+		value.x_type = 1;
+		value.y_type = 1;
+		value.width_type = 1;
+		value.height_type = 1;
 		this._start_cursor = value;
 		this.AddChild(this._start_cursor);
 		this._start_cursor.visible = false;
@@ -850,10 +850,10 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			return;
 		}
 		this.RemoveChild(this._end_cursor);
-		value.x_type = ALittle.UIEnumTypes.POS_ABS;
-		value.y_type = ALittle.UIEnumTypes.POS_ABS;
-		value.width_type = ALittle.UIEnumTypes.SIZE_ABS;
-		value.height_type = ALittle.UIEnumTypes.SIZE_ABS;
+		value.x_type = 1;
+		value.y_type = 1;
+		value.width_type = 1;
+		value.height_type = 1;
 		this._end_cursor = value;
 		this.AddChild(this._end_cursor);
 		this._end_cursor.visible = false;
@@ -2250,7 +2250,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			if (displayout === undefined) {
 				displayout = ALittle.NewObject(ALittle.DisplayLayout, this._ctrl_sys);
 				line_info.container = displayout;
-				displayout.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+				displayout.width_type = 4;
 				displayout.height = line_info.acc_height - line_info.pre_height;
 				let offset_x = 0.0;
 				let ___OBJECT_17 = line_info.child_list;
@@ -3114,7 +3114,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			}
 		} else if (event.sym === 1073741904) {
 			if (this._multi_cursor === false) {
-				if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
+				if (event.mod & 0x0003 === 0) {
 					this._is_selecting = false;
 					this.CursorOffsetLR(true);
 					this.UpdateFontText();
@@ -3126,7 +3126,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			event.handled = true;
 		} else if (event.sym === 1073741903) {
 			if (this._multi_cursor === false) {
-				if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
+				if (event.mod & 0x0003 === 0) {
 					this._is_selecting = false;
 					this.CursorOffsetLR(false);
 					this.UpdateFontText();
@@ -3138,7 +3138,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			event.handled = true;
 		} else if (event.sym === 1073741906) {
 			if (this._multi_cursor === false) {
-				if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
+				if (event.mod & 0x0003 === 0) {
 					this._is_selecting = false;
 					this.CursorOffsetUD(true);
 					this.UpdateFontText();
@@ -3150,7 +3150,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			event.handled = true;
 		} else if (event.sym === 1073741905) {
 			if (this._multi_cursor === false) {
-				if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
+				if (event.mod & 0x0003 === 0) {
 					this._is_selecting = false;
 					this.CursorOffsetUD(false);
 					this.UpdateFontText();
@@ -3221,7 +3221,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 					this._multi_cursor = false;
 				}
 			}
-		} else if (event.sym === 120 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 120 && event.mod & 0x00c0 !== 0) {
 			if (this._multi_cursor === false) {
 				if (this._editable || event.custom) {
 					this._is_selecting = false;
@@ -3246,13 +3246,13 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 					this._multi_cursor = false;
 				}
 			}
-		} else if (event.sym === 99 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 99 && event.mod & 0x00c0 !== 0) {
 			let select_text = this.GetSelectText();
 			if (select_text[1 - 1] !== undefined) {
 				ALittle.System_SetClipboardText(ALittle.String_JsonEncode(select_text));
 			}
 			event.handled = true;
-		} else if (event.sym === 118 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 118 && event.mod & 0x00c0 !== 0) {
 			if (this._multi_cursor === false) {
 				if (this._editable || event.custom) {
 					this._is_selecting = false;
@@ -3288,7 +3288,7 @@ ALittle.RichEdit = JavaScript.Class(ALittle.DisplayLayout, {
 					this._multi_cursor = false;
 				}
 			}
-		} else if (event.sym === 97 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 97 && event.mod & 0x00c0 !== 0) {
 			this._is_selecting = true;
 			this.SelectAll();
 			event.handled = true;

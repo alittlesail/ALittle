@@ -19,6 +19,7 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 		this._last_mouse_x = 0;
 		this._last_mouse_y = 0;
 		this._lbutton_down = false;
+		this._lbutton_count = 0;
 		this._lbutton_finger_id = undefined;
 		this._lbutton_touch_id = undefined;
 		this._mfc = undefined;
@@ -208,19 +209,20 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 	},
 	HandleLButtonDown : function(x, y, count) {
 		this._lbutton_down = true;
+		this._lbutton_count = count;
 		this._lbutton_finger_id = undefined;
 		this._lbutton_touch_id = undefined;
 		return this.HandleButtonDown(___all_struct.get(1883782801), x, y, count);
 	},
 	HandleLButtonUp : function(x, y) {
 		this._lbutton_down = false;
-		return this.HandleButtonUp(___all_struct.get(40651933), x, y);
+		return this.HandleButtonUp(___all_struct.get(40651933), x, y, this._lbutton_count);
 	},
 	HandleMButtonDown : function(x, y, count) {
 		return this.HandleButtonDown(___all_struct.get(349963892), x, y, count);
 	},
 	HandleMButtonUp : function(x, y) {
-		return this.HandleButtonUp(___all_struct.get(683647260), x, y);
+		return this.HandleButtonUp(___all_struct.get(683647260), x, y, 1);
 	},
 	HandleButtonDown : function(T, x, y, count) {
 		let rflt = T;
@@ -292,7 +294,7 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 	DispatchLongButtonEvent : function(mfc, event) {
 		mfc.DispatchEvent(___all_struct.get(-439548260), event);
 	},
-	HandleButtonUp : function(T, x, y) {
+	HandleButtonUp : function(T, x, y, count) {
 		if (this._sl === false) {
 			return false;
 		}
@@ -325,6 +327,7 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 			event.rel_x = rel_x;
 			event.rel_y = rel_y;
 			event.is_drag = save_dl;
+			event.count = count;
 			this._sfc.DispatchEvent(T, event);
 		}
 		this.UpdateMoveFocus(x, y);
@@ -527,6 +530,7 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 	HandleFingerDown : function(x, y, finger_id, touch_id) {
 		if (this._lbutton_down === false) {
 			this._lbutton_down = true;
+			this._lbutton_count = 1;
 			this._lbutton_finger_id = finger_id;
 			this._lbutton_touch_id = touch_id;
 			this._mouse_x = x;
@@ -567,7 +571,7 @@ ALittle.UISystem = JavaScript.Class(undefined, {
 	HandleFingerUp : function(x, y, finger_id, touch_id) {
 		if (this._lbutton_down && this._lbutton_finger_id === finger_id && this._lbutton_touch_id === touch_id) {
 			this._lbutton_down = false;
-			return this.HandleButtonUp(___all_struct.get(40651933), x, y);
+			return this.HandleButtonUp(___all_struct.get(40651933), x, y, this._lbutton_count);
 		}
 		let key = finger_id + "_" + touch_id;
 		let info = this._finger_info[key];

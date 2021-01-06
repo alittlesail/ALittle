@@ -11,7 +11,7 @@ option_map : {}
 ALittle.RegStruct(1686540930, "AUIPlugin.AUIFileSelectItemInfo", {
 name : "AUIPlugin.AUIFileSelectItemInfo", ns_name : "AUIPlugin", rl_name : "AUIFileSelectItemInfo", hash_code : 1686540930,
 name_list : ["name","frame","image","file","dir","button"],
-type_list : ["ALittle.DisplayObject","ALittle.DisplayObject","ALittle.Image","ALittle.Image","ALittle.Image","ALittle.DisplayObject"],
+type_list : ["ALittle.DisplayObject","ALittle.DisplayObject","ALittle.Image","ALittle.Image","ALittle.Image","ALittle.TextRadioButton"],
 option_map : {}
 })
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -32,6 +32,12 @@ name_list : ["target","path","directory"],
 type_list : ["ALittle.DisplayObject","string","bool"],
 option_map : {}
 })
+ALittle.RegStruct(1206110359, "AUIPlugin.AUIFileSelectFileClickUIEvent", {
+name : "AUIPlugin.AUIFileSelectFileClickUIEvent", ns_name : "AUIPlugin", rl_name : "AUIFileSelectFileClickUIEvent", hash_code : 1206110359,
+name_list : ["target","path","ctrl"],
+type_list : ["ALittle.DisplayObject","string","bool"],
+option_map : {}
+})
 ALittle.RegStruct(-1202439334, "ALittle.UIMoveOutEvent", {
 name : "ALittle.UIMoveOutEvent", ns_name : "ALittle", rl_name : "UIMoveOutEvent", hash_code : -1202439334,
 name_list : ["target"],
@@ -44,10 +50,10 @@ name_list : ["target","abs_x","abs_y","rel_x","rel_y"],
 type_list : ["ALittle.DisplayObject","double","double","double","double"],
 option_map : {}
 })
-ALittle.RegStruct(653852482, "AUIPlugin.AUIFileSelectClickUIEvent", {
-name : "AUIPlugin.AUIFileSelectClickUIEvent", ns_name : "AUIPlugin", rl_name : "AUIFileSelectClickUIEvent", hash_code : 653852482,
-name_list : ["target","path"],
-type_list : ["ALittle.DisplayObject","string"],
+ALittle.RegStruct(-989784577, "AUIPlugin.AUIFileSelectDirClickUIEvent", {
+name : "AUIPlugin.AUIFileSelectDirClickUIEvent", ns_name : "AUIPlugin", rl_name : "AUIFileSelectDirClickUIEvent", hash_code : -989784577,
+name_list : ["target","path","ctrl"],
+type_list : ["ALittle.DisplayObject","string","bool"],
 option_map : {}
 })
 ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
@@ -70,8 +76,8 @@ option_map : {}
 })
 ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
 name : "ALittle.UIClickEvent", ns_name : "ALittle", rl_name : "UIClickEvent", hash_code : -449066808,
-name_list : ["target","is_drag"],
-type_list : ["ALittle.DisplayObject","bool"],
+name_list : ["target","is_drag","count"],
+type_list : ["ALittle.DisplayObject","bool","int"],
 option_map : {}
 })
 ALittle.RegStruct(-338112738, "ALittle.UIDropFileEvent", {
@@ -83,6 +89,9 @@ option_map : {}
 
 if (ALittle.DisplayLayout === undefined) throw new Error(" extends class:ALittle.DisplayLayout is undefined");
 AUIPlugin.AUIFileSelectLayout = JavaScript.Class(ALittle.DisplayLayout, {
+	Ctor : function() {
+		this._group = new Map();
+	},
 	Init : function(ext_list) {
 		this._real_size = 100;
 		this._thread = undefined;
@@ -177,6 +186,7 @@ AUIPlugin.AUIFileSelectLayout = JavaScript.Class(ALittle.DisplayLayout, {
 		info.button.AddEventListener(___all_struct.get(-1202439334), this, this.HandleItemMoveOut);
 		info.button.AddEventListener(___all_struct.get(-1001723540), this, this.HandleItemMouseMove);
 		info.button.AddEventListener(___all_struct.get(-338112738), this, this.HandleItemDropFile);
+		info.button.group = this._group;
 		let user_data = {};
 		user_data.path = rel_path;
 		user_data.directory = false;
@@ -195,6 +205,7 @@ AUIPlugin.AUIFileSelectLayout = JavaScript.Class(ALittle.DisplayLayout, {
 		info.button.AddEventListener(___all_struct.get(-449066808), this, this.HandleItemClick);
 		info.button.AddEventListener(___all_struct.get(-641444818), this, this.HandleItemRButtonDown);
 		info.button.AddEventListener(___all_struct.get(-338112738), this, this.HandleItemDropFile);
+		info.button.group = this._group;
 		let user_data = {};
 		user_data.path = rel_path;
 		user_data.directory = true;
@@ -426,17 +437,27 @@ AUIPlugin.AUIFileSelectLayout = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	HandleItemClick : function(event) {
 		let user_data = event.target._user_data;
-		if (user_data.directory) {
-			this._real_path = this._base_path + "/" + user_data.path;
-			this.Refresh();
-		} else {
-			if (this._thread !== undefined) {
-				ALittle.Coroutine.Resume(this._thread, user_data.path);
-				this._thread = undefined;
+		if (event.count <= 1) {
+			if (user_data.directory) {
+				let e = {};
+				e.path = user_data.path;
+				e.ctrl = A_UISystem.sym_map.get(1073742048) !== undefined;
+				this.DispatchEvent(___all_struct.get(-989784577), e);
+			} else {
+				if (this._thread !== undefined) {
+					ALittle.Coroutine.Resume(this._thread, user_data.path);
+					this._thread = undefined;
+				}
+				let e = {};
+				e.path = user_data.path;
+				e.ctrl = A_UISystem.sym_map.get(1073742048) !== undefined;
+				this.DispatchEvent(___all_struct.get(1206110359), e);
 			}
-			let e = {};
-			e.path = user_data.path;
-			this.DispatchEvent(___all_struct.get(653852482), e);
+		} else if (event.count <= 2) {
+			if (user_data.directory) {
+				this._real_path = this._base_path + "/" + user_data.path;
+				this.Refresh();
+			}
 		}
 	},
 	HandleItemMoveIn : function(event) {

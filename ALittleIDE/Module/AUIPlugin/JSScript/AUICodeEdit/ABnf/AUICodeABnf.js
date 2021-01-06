@@ -28,49 +28,49 @@ AUIPlugin.AUICodeABnf = JavaScript.Class(AUIPlugin.AUICodeLanguage, {
 				color.red = 255 / 255;
 				color.green = 198 / 255;
 				color.blue = 109 / 255;
-				g_ABnfColor.set(AUIPlugin.ABnfColorType.ABnfKeyWord, color);
+				g_ABnfColor.set(1, color);
 			}
 			{
 				color = {};
 				color.red = 204 / 255;
 				color.green = 120 / 255;
 				color.blue = 50 / 255;
-				g_ABnfColor.set(AUIPlugin.ABnfColorType.ABnfId, color);
+				g_ABnfColor.set(2, color);
 			}
 			{
 				color = {};
 				color.red = 128 / 255;
 				color.green = 128 / 255;
 				color.blue = 128 / 255;
-				g_ABnfColor.set(AUIPlugin.ABnfColorType.ABnfComment, color);
+				g_ABnfColor.set(3, color);
 			}
 			{
 				color = {};
 				color.red = 53 / 255;
 				color.green = 155 / 255;
 				color.blue = 185 / 255;
-				g_ABnfColor.set(AUIPlugin.ABnfColorType.ABnfKey, color);
+				g_ABnfColor.set(4, color);
 			}
 			{
 				color = {};
 				color.red = 85 / 255;
 				color.green = 134 / 255;
 				color.blue = 74 / 255;
-				g_ABnfColor.set(AUIPlugin.ABnfColorType.ABnfString, color);
+				g_ABnfColor.set(5, color);
 			}
 			{
 				color = {};
 				color.red = 152 / 255;
 				color.green = 118 / 255;
 				color.blue = 170 / 255;
-				g_ABnfColor.set(AUIPlugin.ABnfColorType.ABnfRegex, color);
+				g_ABnfColor.set(6, color);
 			}
 			{
 				color = {};
 				color.red = 152 / 255;
 				color.green = 118 / 255;
 				color.blue = 170 / 255;
-				g_ABnfColor.set(AUIPlugin.ABnfColorType.ABnfNumber, color);
+				g_ABnfColor.set(8, color);
 			}
 		}
 		this._abnf_file = lua.abnf.create_abnf_file(this._project.project, full_path, "");

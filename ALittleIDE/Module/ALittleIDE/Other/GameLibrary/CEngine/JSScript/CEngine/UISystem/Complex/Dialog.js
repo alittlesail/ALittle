@@ -29,8 +29,8 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 		this._title_text = "";
 		this._head = ALittle.NewObject(ALittle.DisplayLayout, this._ctrl_sys);
 		this._head_container = ALittle.NewObject(ALittle.DisplayLayout, this._ctrl_sys);
-		this._head_container.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-		this._head_container.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._head_container.width_type = 4;
+		this._head_container.height_type = 4;
 		this._head.AddChild(this._head_container);
 		this._head_left_margin = 0;
 		this._head_right_margin = 0;
@@ -38,11 +38,11 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 		this._head_bottom_margin = 0;
 		this._body = ALittle.NewObject(ALittle.DisplayLayout, this._ctrl_sys);
 		this._grid3 = ALittle.NewObject(ALittle.Grid3, this._ctrl_sys);
-		this._grid3.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._grid3.width_type = 4;
 		this._grid3.width_value = 0;
-		this._grid3.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._grid3.height_type = 4;
 		this._grid3.height_value = 0;
-		this._grid3.type = ALittle.UIEnumTypes.TYPE_V;
+		this._grid3.type = 2;
 		this._grid3.show_up = this._head;
 		this._grid3.show_center = this._body;
 		ALittle.DisplayLayout.AddChild.call(this, this._grid3);
@@ -98,11 +98,11 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		this._background = value;
 		if (this._background !== undefined) {
-			this._background.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._background.width_type = 4;
 			this._background.width_value = 0;
-			this._background.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._background.height_type = 4;
 			this._background.height_value = this._grid3.up_size;
-			this._background.y_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING;
+			this._background.y_type = 4;
 			ALittle.DisplayLayout.AddChild.call(this, this._background, 1);
 		}
 	},
@@ -118,9 +118,9 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		this._head_drag = value;
 		if (this._head_drag !== undefined) {
-			this._head_drag.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._head_drag.width_type = 4;
 			this._head_drag.width_value = 0;
-			this._head_drag.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._head_drag.height_type = 4;
 			this._head_drag.height_value = 0;
 			this._head.AddChild(this._head_drag, 1);
 			this._head_drag.AddEventListener(___all_struct.get(1301789264), this, this.HandleHeadDragBegin);
@@ -140,7 +140,7 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 		if (this._title !== undefined) {
 			this._title.text = this._title_text;
 			this._title.disabled = true;
-			this._title.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+			this._title.y_type = 3;
 			this._title.y_value = 0;
 			this._title.x = 0;
 			this._head_container.AddChild(this._title);
@@ -169,9 +169,9 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 		this._close_button = value;
 		if (this._close_button !== undefined) {
 			this._close_button.y_value = 0;
-			this._close_button.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+			this._close_button.y_type = 3;
 			this._head_container.AddChild(this._close_button);
-			this._close_button.x_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING;
+			this._close_button.x_type = 4;
 			this._close_button.x_value = (this._grid3.up_size - this._close_button.height) / 2;
 			this._close_button.AddEventListener(___all_struct.get(-449066808), this, this.HandleCloseButtonClicked);
 		}

@@ -5,7 +5,7 @@ if (typeof ALittle === "undefined") window.ALittle = {};
 if (ALittle.DisplayGroup === undefined) throw new Error(" extends class:ALittle.DisplayGroup is undefined");
 ALittle.Grid3 = JavaScript.Class(ALittle.DisplayGroup, {
 	Ctor : function(ctrl_sys) {
-		this._type = ALittle.UIEnumTypes.TYPE_V;
+		this._type = 2;
 		this._child_map = [];
 		this._logic_up = 0;
 		this._logic_down = 0;
@@ -55,7 +55,7 @@ ALittle.Grid3 = JavaScript.Class(ALittle.DisplayGroup, {
 		}
 		this._child_map[index - 1] = child;
 		ALittle.DisplayGroup.AddChild.call(this, child);
-		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+		if (this._type === 2) {
 			child.x = 0;
 			child.width = this._width;
 			let y = 0.0;
@@ -93,7 +93,7 @@ ALittle.Grid3 = JavaScript.Class(ALittle.DisplayGroup, {
 	},
 	get center_size() {
 		let size = 0.0;
-		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+		if (this._type === 2) {
 			size = this._height - this._real_gap * 2 - this._real_up - this._real_down;
 		} else {
 			size = this._width - this._real_gap * 2 - this._real_up - this._real_down;
@@ -138,7 +138,7 @@ ALittle.Grid3 = JavaScript.Class(ALittle.DisplayGroup, {
 			return;
 		}
 		this._width = value;
-		if (this._width_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._width_type === 1) {
 			this._width_value = this._width;
 		}
 		this.CalcRealWidthCutting();
@@ -148,13 +148,13 @@ ALittle.Grid3 = JavaScript.Class(ALittle.DisplayGroup, {
 			return;
 		}
 		this._height = value;
-		if (this._height_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._height_type === 1) {
 			this._height_value = this._height;
 		}
 		this.CalcRealHeightCutting();
 	},
 	CalcRealWidthCutting : function() {
-		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+		if (this._type === 2) {
 			for (let index = 1; index <= 3; index += 1) {
 				if (this._child_map[index - 1] !== undefined) {
 					this._child_map[index - 1].x = 0;
@@ -206,7 +206,7 @@ ALittle.Grid3 = JavaScript.Class(ALittle.DisplayGroup, {
 		}
 	},
 	CalcRealHeightCutting : function() {
-		if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+		if (this._type === 1) {
 			for (let index = 1; index <= 3; index += 1) {
 				if (this._child_map[index - 1] !== undefined) {
 					this._child_map[index - 1].y = 0;

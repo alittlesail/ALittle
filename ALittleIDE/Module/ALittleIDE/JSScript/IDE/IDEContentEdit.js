@@ -57,7 +57,7 @@ ALittleIDE.IDETabChild = JavaScript.Class(ALittle.UIEventDispatcher, {
 		this._name = name;
 		this._module = module;
 		this._save = save;
-		this._revoke_list = ALittle.NewObject(ALittle.RevokeList);
+		this._revoke_list = ALittle.NewObject(ALittle.RevokeList, 10000);
 	},
 	get id() {
 		return this._name;
@@ -211,6 +211,9 @@ ALittleIDE.IDEContentEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		tab_child.OnClose();
 		this._main_tab.RemoveChild(child);
 		this.ChangeTabEdit(undefined, this._main_tab.tab);
+	},
+	CloseTabChild : function(tab_child) {
+		this.CloseTab(tab_child.tab_body);
 	},
 	CloseTabByName : function(T, name) {
 		let ___OBJECT_5 = this._main_tab.childs;

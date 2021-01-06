@@ -325,7 +325,7 @@ ALittleIDE.IDEAntiAddAttrRevoke = JavaScript.Class(ALittle.RevokeObject, {
 		if (info === undefined) {
 			return;
 		}
-		ALittle.List_Remove(info.childs, ALittle.List_MaxN(info.childs));
+		ALittle.List_Remove(info.childs, ALittle.List_Len(info.childs));
 		if (this._target.cur_show === this._name) {
 			this._target.anti_anti_linear.RemoveChild(this._anti_item);
 			this._target.anti_link_linear.RemoveChild(this._link_item);

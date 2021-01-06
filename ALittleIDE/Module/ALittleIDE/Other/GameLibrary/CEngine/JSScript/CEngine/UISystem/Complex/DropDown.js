@@ -10,15 +10,15 @@ ALittle.DropDown = JavaScript.Class(ALittle.TextCheckButton, {
 		this._body.__right_data = this;
 		this._body.visible = false;
 		this._linear = ALittle.NewObject(ALittle.Linear, this._ctrl_sys);
-		this._linear.type = ALittle.UIEnumTypes.TYPE_V;
-		this._linear.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._linear.type = 2;
+		this._linear.width_type = 4;
 		this._linear.width_value = 0;
-		this._linear.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._linear.height_type = 4;
 		this._linear.height_value = 0;
 		this._scroll_screen = ALittle.NewObject(ALittle.ScrollScreen, this._ctrl_sys);
-		this._scroll_screen.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._scroll_screen.width_type = 4;
 		this._scroll_screen.width_value = 0;
-		this._scroll_screen.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._scroll_screen.height_type = 4;
 		this._scroll_screen.height_value = 0;
 		this._scroll_screen.container = this._linear;
 		this._body.AddChild(this._scroll_screen);
@@ -38,8 +38,8 @@ ALittle.DropDown = JavaScript.Class(ALittle.TextCheckButton, {
 		this._body.RemoveChild(this._background);
 		this._background = value;
 		if (this._background !== undefined) {
-			this._background.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._background.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._background.width_type = 4;
+			this._background.height_type = 4;
 			this._background.width_value = 0;
 			this._background.height_value = 0;
 			this._body.AddChild(this._background, 0);
@@ -145,7 +145,7 @@ ALittle.DropDown = JavaScript.Class(ALittle.TextCheckButton, {
 		this._button_style = undefined;
 		this._data_list = value;
 		this.button_style = button_style;
-		if (ALittle.List_MaxN(value) > 0) {
+		if (ALittle.List_Len(value) > 0) {
 			this.text = value[1 - 1];
 		} else {
 			this.text = "";

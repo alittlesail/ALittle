@@ -12,8 +12,8 @@ ALittle.TextArea = JavaScript.Class(ALittle.DisplayObject, {
 		this._underline = false;
 		this._deleteline = false;
 		this._flip = 0;
-		this._halign_type = ALittle.UIEnumTypes.HALIGN_LEFT;
-		this._valign_type = ALittle.UIEnumTypes.VALIGN_TOP;
+		this._halign_type = 0;
+		this._valign_type = 0;
 		this._show = ALittle.NewObject(JavaScript.JTextArea);
 	},
 	Redraw : function() {

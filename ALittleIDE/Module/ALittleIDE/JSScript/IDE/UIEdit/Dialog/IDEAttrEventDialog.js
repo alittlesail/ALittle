@@ -131,7 +131,7 @@ ALittleIDE.IDEAttrEventDialog = JavaScript.Class(undefined, {
 			}
 			let event_info = undefined;
 			let event_split = ALittle.String_Split(ALittle.String_Trim(event_string), ":");
-			let event_count = ALittle.List_MaxN(event_split);
+			let event_count = ALittle.List_Len(event_split);
 			if (event_count === 2) {
 				event_info = {};
 				event_info.type = event_split[1 - 1];
@@ -171,7 +171,7 @@ ALittleIDE.IDEAttrEventDialog = JavaScript.Class(undefined, {
 			item.Init(this, event_info.type, event_info.func);
 			this._event_scroll_screen.AddChild(item);
 		}
-		this._revoke_list = ALittle.NewObject(ALittle.RevokeList);
+		this._revoke_list = ALittle.NewObject(ALittle.RevokeList, 10000);
 	},
 	HandleEventKeyDown : function(event) {
 		let ctrl = A_UISystem.sym_map.get(1073742048);

@@ -168,7 +168,7 @@ ALittleIDE.IDEUIControlList = JavaScript.Class(ALittle.DisplayLayout, {
 				if (child === undefined) break;
 				child.SearchFile(this._search_info.name, this._search_info.list);
 			}
-			this._search_info.count = ALittle.List_MaxN(this._search_info.list);
+			this._search_info.count = ALittle.List_Len(this._search_info.list);
 		}
 		if (this._search_info.count <= 0) {
 			return;

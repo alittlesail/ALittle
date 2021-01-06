@@ -14,12 +14,16 @@ AUIPlugin.AUICodeSelectCursor = JavaScript.Class(undefined, {
 		this._clear_quad = true;
 		if (this._it_line_start !== undefined && this._it_line_end !== undefined) {
 			if (this._it_line_start < this._it_line_end) {
-				for (let i = this._it_line_start; i <= this._it_line_end; i += 1) {
-					this._edit.line_list[i - 1].container._select.visible = false;
+				let line_list = this._edit.line_list;
+				let it_line_end = this._it_line_end;
+				for (let i = this._it_line_start; i <= it_line_end; i += 1) {
+					line_list[i - 1].container._select.visible = false;
 				}
 			} else {
-				for (let i = this._it_line_end; i <= this._it_line_start; i += 1) {
-					this._edit.line_list[i - 1].container._select.visible = false;
+				let line_list = this._edit.line_list;
+				let it_line_start = this._it_line_start;
+				for (let i = this._it_line_end; i <= it_line_start; i += 1) {
+					line_list[i - 1].container._select.visible = false;
 				}
 			}
 		}
@@ -57,8 +61,9 @@ AUIPlugin.AUICodeSelectCursor = JavaScript.Class(undefined, {
 			line.container._select.width = line.char_list[it_char_end - 1].pre_width + line.char_list[it_char_end - 1].width - line.container._select.x;
 			return;
 		}
+		let line_list = this._edit.line_list;
 		for (let i = it_line_start; i <= it_line_end; i += 1) {
-			let line = this._edit.line_list[i - 1];
+			let line = line_list[i - 1];
 			if (line.char_count > 0) {
 				if (i === it_line_start) {
 					if (it_char_start < line.char_count) {
@@ -229,12 +234,13 @@ AUIPlugin.AUICodeSelectCursor = JavaScript.Class(undefined, {
 		if (this._it_line_start === undefined) {
 			return [false, undefined, undefined];
 		}
+		let edit_line_list = this._edit.line_list;
 		if (this._it_line_start === this._it_line_end) {
 			if (this._it_char_start === this._it_char_end) {
 				this.Hide();
 				return [false, undefined, undefined];
 			}
-			let line = this._edit.line_list[this._it_line_start - 1];
+			let line = edit_line_list[this._it_line_start - 1];
 			if (line === undefined) {
 				return [false, undefined, undefined];
 			}
@@ -283,7 +289,7 @@ AUIPlugin.AUICodeSelectCursor = JavaScript.Class(undefined, {
 				line.container.width = 0;
 			}
 			let rejust = true;
-			let ___OBJECT_1 = this._edit.line_list;
+			let ___OBJECT_1 = edit_line_list;
 			for (let index = 1; index <= ___OBJECT_1.length; ++index) {
 				let line_info = ___OBJECT_1[index - 1];
 				if (line_info === undefined) break;
@@ -303,7 +309,7 @@ AUIPlugin.AUICodeSelectCursor = JavaScript.Class(undefined, {
 					this._edit.revoke_list.PushRevoke(revoke);
 				}
 			}
-			this._edit.UpdateLineFind(this._it_line_start);
+			this._edit.UpdateLineFind(it_line_start);
 			return [true, it_line_start, it_char_start];
 		}
 		let old_it_line_start = this._it_line_start;
@@ -327,7 +333,7 @@ AUIPlugin.AUICodeSelectCursor = JavaScript.Class(undefined, {
 			let delete_char_end = it_char_end - 1;
 			if (delete_char_end < 0) {
 				delete_line_end = delete_line_end - (1);
-				delete_char_end = this._edit.line_list[delete_line_end - 1].char_count - 1;
+				delete_char_end = edit_line_list[delete_line_end - 1].char_count - 1;
 			}
 			this._edit.language.DeleteText(it_line_start, it_char_start, delete_line_end, delete_char_end);
 		}
@@ -337,19 +343,19 @@ AUIPlugin.AUICodeSelectCursor = JavaScript.Class(undefined, {
 		let line_count = it_line_end - it_line_start - 1;
 		if (line_count > 0) {
 			for (let it_line = it_line_start + 1; it_line < it_line_end; it_line += 1) {
-				let line = this._edit.line_list[it_line - 1];
+				let line = edit_line_list[it_line - 1];
 				for (let it_char = 1; it_char <= line.char_count; it_char += 1) {
 					revoke_c_count = revoke_c_count + (1);
 					revoke_center[revoke_c_count - 1] = line.char_list[it_char - 1].char;
 				}
 			}
 			this._edit.code_linear.SpliceChild(it_line_start + 1, line_count);
-			ALittle.List_Splice(this._edit.line_list, it_line_start + 1, line_count);
+			ALittle.List_Splice(edit_line_list, it_line_start + 1, line_count);
 			this._edit.line_count = this._edit.line_count - (line_count);
 			it_line_end = it_line_end - (line_count);
 		}
 		let revoke_start = "";
-		let start_line = this._edit.line_list[it_line_start - 1];
+		let start_line = edit_line_list[it_line_start - 1];
 		for (let it_char = it_char_start + 1; it_char <= start_line.char_count; it_char += 1) {
 			let char = start_line.char_list[it_char - 1];
 			revoke_start = revoke_start + char.char;
@@ -360,7 +366,7 @@ AUIPlugin.AUICodeSelectCursor = JavaScript.Class(undefined, {
 		let count = start_line.char_count - it_char_start;
 		start_line.char_count = start_line.char_count - (count);
 		ALittle.List_Splice(start_line.char_list, it_char_start + 1, count);
-		let end_line = this._edit.line_list[it_line_end - 1];
+		let end_line = edit_line_list[it_line_end - 1];
 		let pre_width = 0.0;
 		let last_char = start_line.char_list[start_line.char_count - 1];
 		if (last_char !== undefined) {
@@ -384,9 +390,9 @@ AUIPlugin.AUICodeSelectCursor = JavaScript.Class(undefined, {
 		start_line.container.width = pre_width;
 		this._edit.code_linear.RemoveChild(end_line.container);
 		this._edit.line_count = this._edit.line_count - (1);
-		ALittle.List_Remove(this._edit.line_list, it_line_end);
+		ALittle.List_Remove(edit_line_list, it_line_end);
 		let max_width = 0.0;
-		let ___OBJECT_2 = this._edit.line_list;
+		let ___OBJECT_2 = edit_line_list;
 		for (let index = 1; index <= ___OBJECT_2.length; ++index) {
 			let line = ___OBJECT_2[index - 1];
 			if (line === undefined) break;
@@ -403,7 +409,9 @@ AUIPlugin.AUICodeSelectCursor = JavaScript.Class(undefined, {
 				this._edit.revoke_list.PushRevoke(revoke);
 			}
 		}
-		this._edit.UpdateLineFind(it_line_start);
+		for (let i = it_line_start; i <= it_line_end; i += 1) {
+			this._edit.UpdateLineFind(i);
+		}
 		this._edit.UpdateLineNumber();
 		return [true, it_line_start, it_char_start];
 	},

@@ -107,7 +107,7 @@ ALittleIDE.IDEUIControlTree = JavaScript.Class(ALittle.DisplayLayout, {
 			this._control_add_dialog.visible = false;
 		}
 		let data_list = target.GetDataListForAdd();
-		if (ALittle.List_MaxN(data_list) === 0) {
+		if (ALittle.List_Len(data_list) === 0) {
 			g_AUITool.ShowNotice("提示", "当前控件不能添加子控件");
 			return;
 		}
@@ -132,7 +132,7 @@ ALittleIDE.IDEUIControlTree = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	ShowPasteDialog : function(target, info, child_index, revoke_bind, callback) {
 		let data_list = target.GetDataListForAdd();
-		if (ALittle.List_MaxN(data_list) === 0) {
+		if (ALittle.List_Len(data_list) === 0) {
 			g_AUITool.ShowNotice("提示", "当前控件不能添加子控件");
 			if (callback !== undefined) {
 				callback(false, undefined);

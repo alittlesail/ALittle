@@ -77,7 +77,7 @@ AUIPlugin.AUICodeParamList = JavaScript.Class(undefined, {
 			if (this._param_info === undefined) {
 				___COROUTINE(false); return;
 			}
-			this._param_count = ALittle.List_MaxN(this._param_info.param_list);
+			this._param_count = ALittle.List_Len(this._param_info.param_list);
 			if (this._param_count === 0) {
 				___COROUTINE(false); return;
 			}
@@ -94,7 +94,7 @@ AUIPlugin.AUICodeParamList = JavaScript.Class(undefined, {
 			this._item_list = [];
 			this._param_index = 0;
 			let offset = 0.0;
-			let param_len = ALittle.List_MaxN(this._param_info.param_list);
+			let param_len = ALittle.List_Len(this._param_info.param_list);
 			let ___OBJECT_3 = this._param_info.param_list;
 			for (let param_index = 1; param_index <= ___OBJECT_3.length; ++param_index) {
 				let param = ___OBJECT_3[param_index - 1];

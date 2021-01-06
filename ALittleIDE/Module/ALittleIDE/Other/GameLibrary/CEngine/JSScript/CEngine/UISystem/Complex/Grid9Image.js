@@ -26,6 +26,7 @@ ALittle.Grid9Image = JavaScript.Class(ALittle.DisplayObject, {
 		if (event.rel_x >= 0 && event.rel_y >= 0 && event.rel_x < event.target._width && event.rel_y < event.target._height) {
 			let c_event = {};
 			c_event.is_drag = event.is_drag;
+			c_event.count = event.count;
 			this.DispatchEvent(___all_struct.get(-449066808), c_event);
 		}
 	},

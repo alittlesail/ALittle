@@ -61,7 +61,7 @@ ALittleIDE.IDECodeTabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 		this._edit.OnClose();
 	},
 	OnOpen : function() {
-		this._revoke_list = ALittle.NewObject(ALittle.RevokeList);
+		this._revoke_list = ALittle.NewObject(ALittle.RevokeList, 10000);
 		this._edit.Load(this._user_info.path, undefined, this._revoke_list, this._language, ALittleIDE.g_IDEProject.GetBreakPoint(this._user_info.path));
 	},
 	OnTabRightMenu : function(menu) {

@@ -335,7 +335,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 				event.handled = true;
 			}
 		} else if (event.sym === 1073741904) {
-			if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
+			if (event.mod & 0x0003 === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffsetLR(true);
 			} else {
@@ -344,7 +344,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 			}
 			event.handled = true;
 		} else if (event.sym === 1073741903) {
-			if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
+			if (event.mod & 0x0003 === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffsetLR(false);
 			} else {
@@ -353,7 +353,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 			}
 			event.handled = true;
 		} else if (event.sym === 1073741906) {
-			if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
+			if (event.mod & 0x0003 === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffsetUD(true);
 			} else {
@@ -362,7 +362,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 			}
 			event.handled = true;
 		} else if (event.sym === 1073741905) {
-			if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
+			if (event.mod & 0x0003 === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffsetUD(false);
 			} else {
@@ -402,7 +402,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 				}
 				event.handled = true;
 			}
-		} else if (event.sym === 120 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 120 && event.mod & 0x00c0 !== 0) {
 			if (this._editable || event.custom) {
 				this._is_selecting = false;
 				let select_text = this._show.GetSelectText();
@@ -412,13 +412,13 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 				}
 				event.handled = true;
 			}
-		} else if (event.sym === 99 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 99 && event.mod & 0x00c0 !== 0) {
 			let select_text = this._show.GetSelectText();
 			if (select_text !== "") {
 				ALittle.System_SetClipboardText(select_text);
 			}
 			event.handled = true;
-		} else if (event.sym === 118 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 118 && event.mod & 0x00c0 !== 0) {
 			if (this._editable || event.custom) {
 				this._is_selecting = false;
 				if (ALittle.System_HasClipboardText()) {
@@ -430,7 +430,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 				}
 				event.handled = true;
 			}
-		} else if (event.sym === 97 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 97 && event.mod & 0x00c0 !== 0) {
 			this._is_selecting = true;
 			this._show.SelectAll();
 			event.handled = true;

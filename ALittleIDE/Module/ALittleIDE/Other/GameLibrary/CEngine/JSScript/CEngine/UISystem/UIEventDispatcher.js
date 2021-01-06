@@ -219,8 +219,8 @@ option_map : {}
 })
 ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
 name : "ALittle.UIClickEvent", ns_name : "ALittle", rl_name : "UIClickEvent", hash_code : -449066808,
-name_list : ["target","is_drag"],
-type_list : ["ALittle.DisplayObject","bool"],
+name_list : ["target","is_drag","count"],
+type_list : ["ALittle.DisplayObject","bool","int"],
 option_map : {}
 })
 ALittle.RegStruct(444989011, "ALittle.UISelectChangedEvent", {
@@ -267,8 +267,8 @@ option_map : {}
 })
 ALittle.RegStruct(286797479, "ALittle.UIFClickEvent", {
 name : "ALittle.UIFClickEvent", ns_name : "ALittle", rl_name : "UIFClickEvent", hash_code : 286797479,
-name_list : ["target","is_drag"],
-type_list : ["ALittle.DisplayObject","bool"],
+name_list : ["target","is_drag","count"],
+type_list : ["ALittle.DisplayObject","bool","int"],
 option_map : {}
 })
 ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
@@ -297,8 +297,8 @@ option_map : {}
 })
 ALittle.RegStruct(-1330840, "ALittle.UIMClickEvent", {
 name : "ALittle.UIMClickEvent", ns_name : "ALittle", rl_name : "UIMClickEvent", hash_code : -1330840,
-name_list : ["target","is_drag"],
-type_list : ["ALittle.DisplayObject","bool"],
+name_list : ["target","is_drag","count"],
+type_list : ["ALittle.DisplayObject","bool","int"],
 option_map : {}
 })
 

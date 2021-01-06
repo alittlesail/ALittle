@@ -333,7 +333,7 @@ ALittleIDE.IDEVersionList = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	CheckDateString : function(content) {
 		let list = ALittle.String_Split(content, "-");
-		if (ALittle.List_MaxN(list) !== 6) {
+		if (ALittle.List_Len(list) !== 6) {
 			return false;
 		}
 		if (ALittle.String_Len(list[1 - 1]) !== 4) {
@@ -354,7 +354,7 @@ ALittleIDE.IDEVersionList = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	CheckVersionString : function(content) {
 		let list = ALittle.String_Split(content, ".");
-		if (ALittle.List_MaxN(list) !== 3) {
+		if (ALittle.List_Len(list) !== 3) {
 			return false;
 		}
 		for (let i = 1; i <= 2; i += 1) {

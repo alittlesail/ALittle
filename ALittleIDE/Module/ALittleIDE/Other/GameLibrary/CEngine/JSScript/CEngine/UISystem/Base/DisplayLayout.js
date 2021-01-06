@@ -13,7 +13,7 @@ ALittle.DisplayLayout = JavaScript.Class(ALittle.DisplayGroup, {
 			return;
 		}
 		this._width = value;
-		if (this._width_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._width_type === 1) {
 			this._width_value = this._width;
 		}
 		let ___OBJECT_1 = this._childs;
@@ -30,7 +30,7 @@ ALittle.DisplayLayout = JavaScript.Class(ALittle.DisplayGroup, {
 			return;
 		}
 		this._height = value;
-		if (this._height_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._height_type === 1) {
 			this._height_value = this._height;
 		}
 		let ___OBJECT_2 = this._childs;
@@ -46,19 +46,19 @@ ALittle.DisplayLayout = JavaScript.Class(ALittle.DisplayGroup, {
 		if (child === undefined || child._show_parent !== this) {
 			return;
 		}
-		if (child._x_type === ALittle.UIEnumTypes.POS_ABS) {
+		if (child._x_type === 1) {
 			child.x = child._x_value;
-		} else if (child._x_type === ALittle.UIEnumTypes.POS_ALIGN_STARTING) {
+		} else if (child._x_type === 2) {
 			child.x = child._x_value;
-		} else if (child._x_type === ALittle.UIEnumTypes.POS_ALIGN_CENTER) {
+		} else if (child._x_type === 3) {
 			child.x = (this._width - child.width) / 2 + child._x_value;
-		} else if (child._x_type === ALittle.UIEnumTypes.POS_ALIGN_ENDING) {
+		} else if (child._x_type === 4) {
 			child.x = this._width - child.width - child._x_value;
-		} else if (child._x_type === ALittle.UIEnumTypes.POS_PERCENT_STARTING) {
+		} else if (child._x_type === 7) {
 			child.x = this._width * child._x_value;
-		} else if (child._x_type === ALittle.UIEnumTypes.POS_PERCENT_CENTER) {
+		} else if (child._x_type === 8) {
 			child.x = (this._width - child.width) / 2 + this._width * child._x_value;
-		} else if (child._x_type === ALittle.UIEnumTypes.POS_PERCENT_ENDING) {
+		} else if (child._x_type === 9) {
 			child.x = (this._width - child.width) * (1 - child._x_value);
 		}
 	},
@@ -66,19 +66,19 @@ ALittle.DisplayLayout = JavaScript.Class(ALittle.DisplayGroup, {
 		if (child === undefined || child._show_parent !== this) {
 			return;
 		}
-		if (child._y_type === ALittle.UIEnumTypes.POS_ABS) {
+		if (child._y_type === 1) {
 			child.y = child._y_value;
-		} else if (child._y_type === ALittle.UIEnumTypes.POS_ALIGN_STARTING) {
+		} else if (child._y_type === 2) {
 			child.y = child._y_value;
-		} else if (child._y_type === ALittle.UIEnumTypes.POS_ALIGN_CENTER) {
+		} else if (child._y_type === 3) {
 			child.y = (this._height - child.height) / 2 + child._y_value;
-		} else if (child._y_type === ALittle.UIEnumTypes.POS_ALIGN_ENDING) {
+		} else if (child._y_type === 4) {
 			child.y = this._height - child.height - child._y_value;
-		} else if (child._y_type === ALittle.UIEnumTypes.POS_PERCENT_STARTING) {
+		} else if (child._y_type === 7) {
 			child.y = this._height * child._y_value;
-		} else if (child._y_type === ALittle.UIEnumTypes.POS_PERCENT_CENTER) {
+		} else if (child._y_type === 8) {
 			child.y = (this._height - child.height) / 2 + this._height * child._y_value;
-		} else if (child._y_type === ALittle.UIEnumTypes.POS_PERCENT_ENDING) {
+		} else if (child._y_type === 9) {
 			child.y = (this._height - child.height) * (1 - child._y_value);
 		}
 	},
@@ -86,19 +86,19 @@ ALittle.DisplayLayout = JavaScript.Class(ALittle.DisplayGroup, {
 		if (child === undefined || child._show_parent !== this) {
 			return;
 		}
-		if (child._width_type === ALittle.UIEnumTypes.SIZE_PERCENT) {
+		if (child._width_type === 2) {
 			let real_width = this._width * child._width_value;
 			if (real_width < 0) {
 				real_width = 0;
 			}
 			child.width = real_width;
-		} else if (child._width_type === ALittle.UIEnumTypes.SIZE_MARGIN) {
+		} else if (child._width_type === 4) {
 			let real_width = this._width - child._width_value;
 			if (real_width < 0) {
 				real_width = 0;
 			}
 			child.width = real_width;
-		} else if (child._width_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		} else if (child._width_type === 1) {
 			let real_width = child._width_value;
 			if (real_width < 0) {
 				real_width = 0;
@@ -110,19 +110,19 @@ ALittle.DisplayLayout = JavaScript.Class(ALittle.DisplayGroup, {
 		if (child === undefined || child._show_parent !== this) {
 			return;
 		}
-		if (child._height_type === ALittle.UIEnumTypes.SIZE_PERCENT) {
+		if (child._height_type === 2) {
 			let real_height = this._height * child._height_value;
 			if (real_height < 0) {
 				real_height = 0;
 			}
 			child.height = real_height;
-		} else if (child._height_type === ALittle.UIEnumTypes.SIZE_MARGIN) {
+		} else if (child._height_type === 4) {
 			let real_height = this._height - child._height_value;
 			if (real_height < 0) {
 				real_height = 0;
 			}
 			child.height = real_height;
-		} else if (child._height_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		} else if (child._height_type === 1) {
 			let real_height = child._height_value;
 			if (real_height < 0) {
 				real_height = 0;

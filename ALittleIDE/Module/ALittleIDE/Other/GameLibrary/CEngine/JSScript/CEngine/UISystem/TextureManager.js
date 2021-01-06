@@ -361,7 +361,7 @@ ALittle.TextureManager = JavaScript.Class(undefined, {
 		if (big_list === undefined) {
 			return;
 		}
-		let big_list_count = ALittle.List_MaxN(big_list);
+		let big_list_count = ALittle.List_Len(big_list);
 		if (big_list_count < 2) {
 			return;
 		}

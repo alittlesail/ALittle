@@ -167,9 +167,9 @@ private static JSystem_KeyDown(javascript.DomElementOnKeyEvent event)
     var func = cast<Map<string, Functor<(int, int, int)>>>(window)["__ALITTLEAPI_KeyDown"];
     if (func == null) return;
     var mod = 0;
-    if (event.altKey) mod = javascript.bit.bor(ALittle.UIEnumTypes.KMOD_ALT, mod);
-    if (event.ctrlKey) mod = javascript.bit.bor(ALittle.UIEnumTypes.KMOD_CTRL, mod);
-    if (event.shiftKey) mod = javascript.bit.bor(ALittle.UIEnumTypes.KMOD_SHIFT, mod);
+    if (event.altKey) mod = ALittle.UIEnumTypes.KMOD_ALT | mod;
+    if (event.ctrlKey) mod = ALittle.UIEnumTypes.KMOD_CTRL | mod;
+    if (event.shiftKey) mod = ALittle.UIEnumTypes.KMOD_SHIFT | mod;
     var key_code = KEY_CODE_MAP[event.keyCode];
     if (key_code == null) key_code = 0;
     var scan_code = SCAN_CODE_MAP[event.keyCode];
@@ -182,9 +182,9 @@ private static JSystem_KeyUp(javascript.DomElementOnKeyEvent event)
     var func = cast<Map<string, Functor<(int, int, int)>>>(window)["__ALITTLEAPI_KeyUp"];
     if (func == null) return;
     var mod = 0;
-    if (event.altKey) mod = javascript.bit.bor(ALittle.UIEnumTypes.KMOD_ALT, mod);
-    if (event.ctrlKey) mod = javascript.bit.bor(ALittle.UIEnumTypes.KMOD_CTRL, mod);
-    if (event.shiftKey) mod = javascript.bit.bor(ALittle.UIEnumTypes.KMOD_SHIFT, mod);
+    if (event.altKey) mod = ALittle.UIEnumTypes.KMOD_ALT | mod;
+    if (event.ctrlKey) mod = ALittle.UIEnumTypes.KMOD_CTRL | mod;
+    if (event.shiftKey) mod = ALittle.UIEnumTypes.KMOD_SHIFT | mod;
     var key_code = KEY_CODE_MAP[event.keyCode];
     if (key_code == null) key_code = 0;
     var scan_code = SCAN_CODE_MAP[event.keyCode];

@@ -69,7 +69,7 @@ AUIPlugin.AUICodeLineNumber = JavaScript.Class(ALittle.DisplayLayout, {
 		break_btn.AddEventListener(___all_struct.get(958494922), this, this.HandleBreakChanged);
 		break_btn.selected = this._edit.GetBreakPoint(this._line_number);
 		let offset = 0.0;
-		let len = ALittle.List_MaxN(text_list);
+		let len = ALittle.List_Len(text_list);
 		for (let index = len; index >= 1; index += -1) {
 			let char = text_list[index - 1];
 			if (char === "\t") {

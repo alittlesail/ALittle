@@ -10,8 +10,8 @@ option_map : {}
 })
 ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
 name : "ALittle.UIClickEvent", ns_name : "ALittle", rl_name : "UIClickEvent", hash_code : -449066808,
-name_list : ["target","is_drag"],
-type_list : ["ALittle.DisplayObject","bool"],
+name_list : ["target","is_drag","count"],
+type_list : ["ALittle.DisplayObject","bool","int"],
 option_map : {}
 })
 

@@ -93,7 +93,7 @@ AUIPlugin.AUITool = JavaScript.Class(undefined, {
 			return;
 		}
 		this._save_dialog._user_data = undefined;
-		ALittle.Coroutine.Resume(thread, AUIPlugin.AUIToolOption.YES);
+		ALittle.Coroutine.Resume(thread, "YES");
 	},
 	HandleNoSaveClick : function(event) {
 		this._save_dialog.visible = false;
@@ -102,7 +102,7 @@ AUIPlugin.AUITool = JavaScript.Class(undefined, {
 			return;
 		}
 		this._save_dialog._user_data = undefined;
-		ALittle.Coroutine.Resume(thread, AUIPlugin.AUIToolOption.NO);
+		ALittle.Coroutine.Resume(thread, "NO");
 	},
 	HandleSaveCancelClick : function(event) {
 		this._save_dialog.visible = false;
@@ -111,7 +111,7 @@ AUIPlugin.AUITool = JavaScript.Class(undefined, {
 			return;
 		}
 		this._save_dialog._user_data = undefined;
-		ALittle.Coroutine.Resume(thread, AUIPlugin.AUIToolOption.CANCEL);
+		ALittle.Coroutine.Resume(thread, "CANCEL");
 	},
 	DeleteNotice : function(title, content) {
 		return new Promise((function(___COROUTINE, ___) {
@@ -136,7 +136,7 @@ AUIPlugin.AUITool = JavaScript.Class(undefined, {
 			return;
 		}
 		this._delete_dialog._user_data = undefined;
-		ALittle.Coroutine.Resume(thread, AUIPlugin.AUIToolOption.YES);
+		ALittle.Coroutine.Resume(thread, "YES");
 	},
 	HandleDeleteCancelClick : function(event) {
 		this._delete_dialog.visible = false;
@@ -145,7 +145,7 @@ AUIPlugin.AUITool = JavaScript.Class(undefined, {
 			return;
 		}
 		this._delete_dialog._user_data = undefined;
-		ALittle.Coroutine.Resume(thread, AUIPlugin.AUIToolOption.CANCEL);
+		ALittle.Coroutine.Resume(thread, "CANCEL");
 	},
 	ShowRename : function(text, x, y, width) {
 		return new Promise((function(___COROUTINE, ___) {

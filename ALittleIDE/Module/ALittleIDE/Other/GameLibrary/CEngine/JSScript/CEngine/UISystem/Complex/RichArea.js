@@ -60,8 +60,8 @@ ALittle.RichArea = JavaScript.Class(ALittle.DisplayLayout, {
 	Ctor : function(ctrl_sys) {
 		this._enter_key_height = 20;
 		this._line_spacing = 0;
-		this._halign = ALittle.UIEnumTypes.HALIGN_LEFT;
-		this._valign = ALittle.UIEnumTypes.VALIGN_TOP;
+		this._halign = 0;
+		this._valign = 0;
 		this._display_list = undefined;
 		this._line_list = [];
 		this._line_count = 0;
@@ -348,9 +348,9 @@ ALittle.RichArea = JavaScript.Class(ALittle.DisplayLayout, {
 			let line = ___OBJECT_2[k - 1];
 			if (line === undefined) break;
 			let offset_x = 0.0;
-			if (this._halign === ALittle.UIEnumTypes.HALIGN_CENTER) {
+			if (this._halign === 1) {
 				offset_x = (this.width - line.width) / 2;
-			} else if (this._halign === ALittle.UIEnumTypes.HALIGN_RIGHT) {
+			} else if (this._halign === 2) {
 				offset_x = this.width - line.width;
 			}
 			let ___OBJECT_3 = line.childs;
@@ -377,9 +377,9 @@ ALittle.RichArea = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		this._real_height = this._real_height + (line_count - 1) * this._line_spacing;
 		let offset_y = 0.0;
-		if (this._valign === ALittle.UIEnumTypes.VALIGN_CENTER) {
+		if (this._valign === 1) {
 			offset_y = (this.height - this._real_height) / 2;
-		} else if (this._valign === ALittle.UIEnumTypes.VALIGN_BOTTOM) {
+		} else if (this._valign === 2) {
 			offset_y = this.height - this._real_height;
 		}
 		let ___OBJECT_5 = this._line_list;

@@ -37,6 +37,7 @@ window.RequireCEngine = function(base_path) {
 		await Require(base_path, "CEngine/UISystem/Base/TextEdit");
 		await Require(base_path, "CEngine/UISystem/Base/TextInput");
 		await Require(base_path, "CEngine/UISystem/Base/Triangle");
+		await Require(base_path, "CEngine/UISystem/Base/VertexImage");
 		await Require(base_path, "CEngine/UISystem/Complex/Grid9Image");
 		await Require(base_path, "CEngine/UISystem/Complex/TextButton");
 		await Require(base_path, "CEngine/UISystem/Complex/TextCheckButton");
@@ -53,6 +54,7 @@ window.RequireCEngine = function(base_path) {
 		await Require(base_path, "CEngine/UISystem/Complex/TileTable");
 		await Require(base_path, "CEngine/UISystem/Complex/ImagePlay");
 		await Require(base_path, "CEngine/UISystem/Complex/SpritePlay");
+		await Require(base_path, "CEngine/UISystem/Complex/SpriteNumber");
 		await Require(base_path, "CEngine/UISystem/Complex/FramePlay");
 		await Require(base_path, "CEngine/UISystem/Complex/Piechart");
 		await Require(base_path, "CEngine/UISystem/Complex/ImageInput");
@@ -63,6 +65,7 @@ window.RequireCEngine = function(base_path) {
 		await Require(base_path, "CEngine/UISystem/Complex/ScrollList");
 		await Require(base_path, "CEngine/UISystem/Complex/ScrollButton");
 		await Require(base_path, "CEngine/UISystem/Special/SpringTextButton");
+		await Require(base_path, "CEngine/UISystem/Tile/TileDefine");
 		await Require(base_path, "CEngine/UISystem/Plugin/SpringButton");
 		await Require(base_path, "CEngine/UISystem/Plugin/SpringCheckButton");
 		await Require(base_path, "CEngine/UISystem/Plugin/SpringRadioButton");
@@ -752,13 +755,13 @@ let JSystem_KeyDown = function(event) {
 	}
 	let mod = 0;
 	if (event.altKey) {
-		mod = bit.bor(ALittle.UIEnumTypes.KMOD_ALT, mod);
+		mod = 0x0300 | mod;
 	}
 	if (event.ctrlKey) {
-		mod = bit.bor(ALittle.UIEnumTypes.KMOD_CTRL, mod);
+		mod = 0x00c0 | mod;
 	}
 	if (event.shiftKey) {
-		mod = bit.bor(ALittle.UIEnumTypes.KMOD_SHIFT, mod);
+		mod = 0x0003 | mod;
 	}
 	let key_code = KEY_CODE_MAP.get(event.keyCode);
 	if (key_code === undefined) {
@@ -778,13 +781,13 @@ let JSystem_KeyUp = function(event) {
 	}
 	let mod = 0;
 	if (event.altKey) {
-		mod = bit.bor(ALittle.UIEnumTypes.KMOD_ALT, mod);
+		mod = 0x0300 | mod;
 	}
 	if (event.ctrlKey) {
-		mod = bit.bor(ALittle.UIEnumTypes.KMOD_CTRL, mod);
+		mod = 0x00c0 | mod;
 	}
 	if (event.shiftKey) {
-		mod = bit.bor(ALittle.UIEnumTypes.KMOD_SHIFT, mod);
+		mod = 0x0003 | mod;
 	}
 	let key_code = KEY_CODE_MAP.get(event.keyCode);
 	if (key_code === undefined) {
@@ -1492,6 +1495,58 @@ JavaScript.JTriangle = JavaScript.Class(JavaScript.JDisplayObject, {
 }, "JavaScript.JTriangle");
 
 if (JavaScript.JDisplayObject === undefined) throw new Error(" extends class:JavaScript.JDisplayObject is undefined");
+JavaScript.JVertexImage = JavaScript.Class(JavaScript.JDisplayObject, {
+	Ctor : function() {
+		this._native = new PIXI.Container();
+		this._uv = [];
+		for (let i = 0; i < 8; i += 1) {
+			this._uv[i /*因为使用了Native修饰，下标从0开始，不做减1处理*/] = 0;
+		}
+		this._xy = [];
+		for (let i = 0; i < 8; i += 1) {
+			this._xy[i /*因为使用了Native修饰，下标从0开始，不做减1处理*/] = 0;
+		}
+		this._index = [];
+		for (let i = 0; i < 4; i += 1) {
+			this._index[i /*因为使用了Native修饰，下标从0开始，不做减1处理*/] = i;
+		}
+	},
+	ClearTexture : function() {
+		if (this._mesh !== undefined) {
+			this._mesh.texture = undefined;
+		}
+	},
+	SetTexture : function(texture) {
+		if (this._mesh === undefined) {
+			this._mesh = new PIXI.SimpleMesh(texture.native, this._xy, this._uv, this._index, 6);
+			this._native.addChild(this._mesh);
+		} else {
+			this._mesh.texture = texture.native;
+		}
+	},
+	SetTextureCoord : function(t, b, l, r) {
+	},
+	SetTexUV : function(index, u, v) {
+		if (this._mesh === undefined) {
+			this._uv[index * 2 /*因为使用了Native修饰，下标从0开始，不做减1处理*/] = u;
+			this._uv[index * 2 + 1 /*因为使用了Native修饰，下标从0开始，不做减1处理*/] = v;
+		} else {
+			this._mesh.uvBuffer.data[index * 2 + 1 - 1] = u;
+			this._mesh.uvBuffer.data[(index + 1) * 2 - 1] = v;
+		}
+	},
+	SetPosXY : function(index, x, y) {
+		if (this._mesh === undefined) {
+			this._xy[index * 2 /*因为使用了Native修饰，下标从0开始，不做减1处理*/] = x;
+			this._xy[index * 2 + 1 /*因为使用了Native修饰，下标从0开始，不做减1处理*/] = y;
+		} else {
+			this._mesh.verticesBuffer.data[index * 2 + 1 - 1] = x;
+			this._mesh.verticesBuffer.data[(index + 1) * 2 - 1] = y;
+		}
+	},
+}, "JavaScript.JVertexImage");
+
+if (JavaScript.JDisplayObject === undefined) throw new Error(" extends class:JavaScript.JDisplayObject is undefined");
 JavaScript.JText = JavaScript.Class(JavaScript.JDisplayObject, {
 	Ctor : function() {
 		this._native = new PIXI.Text();
@@ -1601,9 +1656,9 @@ JavaScript.JTextArea = JavaScript.Class(JavaScript.JDisplayObject, {
 			return;
 		}
 		this._h_align = align;
-		if (this._h_align === ALittle.UIEnumTypes.HALIGN_LEFT) {
+		if (this._h_align === 0) {
 			this._style.align = "left";
-		} else if (this._h_align === ALittle.UIEnumTypes.HALIGN_CENTER) {
+		} else if (this._h_align === 1) {
 			this._style.align = "center";
 		} else {
 			this._style.align = "right";
@@ -1676,16 +1731,16 @@ JavaScript.JTextArea = JavaScript.Class(JavaScript.JDisplayObject, {
 		return this._real_height;
 	},
 	UpdateShow : function() {
-		if (this._h_align === ALittle.UIEnumTypes.HALIGN_LEFT) {
+		if (this._h_align === 0) {
 			this._native.x = Math.floor(this._x);
-		} else if (this._h_align === ALittle.UIEnumTypes.HALIGN_CENTER) {
+		} else if (this._h_align === 1) {
 			this._native.x = Math.floor((this._width - this._real_width) / 2 + this._x);
 		} else {
 			this._native.x = Math.floor(this._width - this._real_width + this._x);
 		}
-		if (this._v_align === ALittle.UIEnumTypes.VALIGN_TOP) {
+		if (this._v_align === 0) {
 			this._native.y = Math.floor(this._y);
-		} else if (this._v_align === ALittle.UIEnumTypes.VALIGN_CENTER) {
+		} else if (this._v_align === 1) {
 			this._native.y = Math.floor((this._height - this._real_height) / 2 + this._y);
 		} else {
 			this._native.y = Math.floor(this._height - this._real_height + this._y);
@@ -2177,9 +2232,9 @@ ALittle.System_CalcPortrait = function(src_width, src_height, flag) {
 		let screen_width = ALittle.System_GetScreenWidth();
 		let screen_height = ALittle.System_GetScreenHeight();
 		src_height = ALittle.Math_Floor(screen_height / screen_width * src_width);
-		flag = ALittle.BitOr(flag, ALittle.UIEnumTypes.VIEW_FULLSCREEN);
+		flag = flag | 0x00000001;
 	} else if (platform === "Web") {
-		if (ALittle.BitAnd(flag, ALittle.UIEnumTypes.VIEW_RESIZABLE) > 0) {
+		if (flag & 0x00000020 > 0) {
 			src_width = ALittle.System_GetScreenWidth();
 			src_height = ALittle.System_GetScreenHeight();
 		} else {
@@ -2205,9 +2260,9 @@ ALittle.System_CalcLandscape = function(src_width, src_height, flag) {
 		let screen_width = ALittle.System_GetScreenWidth();
 		let screen_height = ALittle.System_GetScreenHeight();
 		src_width = ALittle.Math_Floor(screen_width / screen_height * src_height);
-		flag = ALittle.BitOr(flag, ALittle.UIEnumTypes.VIEW_FULLSCREEN);
+		flag = flag | 0x00000001;
 	} else if (platform === "Web") {
-		if (ALittle.BitAnd(flag, ALittle.UIEnumTypes.VIEW_RESIZABLE) > 0) {
+		if (flag & 0x00000020 > 0) {
 			src_width = ALittle.System_GetScreenWidth();
 			src_height = ALittle.System_GetScreenHeight();
 		} else {
@@ -3115,11 +3170,14 @@ ALittle.RevokeObject = JavaScript.Class(undefined, {
 }, "ALittle.RevokeObject");
 
 ALittle.RevokeList = JavaScript.Class(undefined, {
-	Ctor : function() {
+	Ctor : function(max_count) {
 		this._revoke_list = [];
 		this._revoke_count = 0;
 		this._revoke_index = 0;
-		this._max_count = 100;
+		if (max_count !== undefined) {
+			max_count = 100;
+		}
+		this._max_count = max_count;
 	},
 	PushRevoke : function(revoke) {
 		if (this._revoke_index < this._revoke_count) {
@@ -4035,8 +4093,8 @@ option_map : {}
 })
 ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
 name : "ALittle.UIClickEvent", ns_name : "ALittle", rl_name : "UIClickEvent", hash_code : -449066808,
-name_list : ["target","is_drag"],
-type_list : ["ALittle.DisplayObject","bool"],
+name_list : ["target","is_drag","count"],
+type_list : ["ALittle.DisplayObject","bool","int"],
 option_map : {}
 })
 ALittle.RegStruct(444989011, "ALittle.UISelectChangedEvent", {
@@ -4083,8 +4141,8 @@ option_map : {}
 })
 ALittle.RegStruct(286797479, "ALittle.UIFClickEvent", {
 name : "ALittle.UIFClickEvent", ns_name : "ALittle", rl_name : "UIFClickEvent", hash_code : 286797479,
-name_list : ["target","is_drag"],
-type_list : ["ALittle.DisplayObject","bool"],
+name_list : ["target","is_drag","count"],
+type_list : ["ALittle.DisplayObject","bool","int"],
 option_map : {}
 })
 ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
@@ -4113,8 +4171,8 @@ option_map : {}
 })
 ALittle.RegStruct(-1330840, "ALittle.UIMClickEvent", {
 name : "ALittle.UIMClickEvent", ns_name : "ALittle", rl_name : "UIMClickEvent", hash_code : -1330840,
-name_list : ["target","is_drag"],
-type_list : ["ALittle.DisplayObject","bool"],
+name_list : ["target","is_drag","count"],
+type_list : ["ALittle.DisplayObject","bool","int"],
 option_map : {}
 })
 
@@ -4369,15 +4427,15 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		this._ignore = false;
 		this._x = 0;
 		this._y = 0;
-		this._x_type = ALittle.UIEnumTypes.POS_ABS;
+		this._x_type = 1;
 		this._x_value = 0;
-		this._y_type = ALittle.UIEnumTypes.POS_ABS;
+		this._y_type = 1;
 		this._y_value = 0;
 		this._width = 0;
 		this._height = 0;
-		this._width_type = ALittle.UIEnumTypes.SIZE_ABS;
+		this._width_type = 1;
 		this._width_value = 0;
-		this._height_type = ALittle.UIEnumTypes.SIZE_ABS;
+		this._height_type = 1;
 		this._height_value = 0;
 		this._scale_x = 1;
 		this._scale_y = 1;
@@ -4701,7 +4759,7 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 	},
 	set x(value) {
 		this._x = value;
-		if (this._x_type === ALittle.UIEnumTypes.POS_ABS) {
+		if (this._x_type === 1) {
 			this._x_value = value;
 		}
 		this._show.SetX(value);
@@ -4735,7 +4793,7 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 	},
 	set y(value) {
 		this._y = value;
-		if (this._y_type === ALittle.UIEnumTypes.POS_ABS) {
+		if (this._y_type === 1) {
 			this._y_value = value;
 		}
 		this._show.SetY(value);
@@ -4769,7 +4827,7 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 	},
 	set width(value) {
 		this._width = value;
-		if (this._width_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._width_type === 1) {
 			this._width_value = value;
 		}
 		this._show.SetWidth(value);
@@ -4784,10 +4842,10 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		this._width_type = value;
 		if (this._show_parent !== undefined) {
 			this._show_parent.UpdateWidthLayout(this);
-			if (this._x_type !== ALittle.UIEnumTypes.POS_ABS && this._x_type !== ALittle.UIEnumTypes.POS_ALIGN_STARTING && this._x_type !== ALittle.UIEnumTypes.POS_PERCENT_STARTING) {
+			if (this._x_type !== 1 && this._x_type !== 2 && this._x_type !== 7) {
 				this._show_parent.UpdateXLayout(this);
 			}
-		} else if (this._width_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		} else if (this._width_type === 1) {
 			this.width = this._width_value;
 		}
 	},
@@ -4798,10 +4856,10 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		this._width_value = value;
 		if (this._show_parent !== undefined) {
 			this._show_parent.UpdateWidthLayout(this);
-			if (this._x_type !== ALittle.UIEnumTypes.POS_ABS && this._x_type !== ALittle.UIEnumTypes.POS_ALIGN_STARTING && this._x_type !== ALittle.UIEnumTypes.POS_PERCENT_STARTING) {
+			if (this._x_type !== 1 && this._x_type !== 2 && this._x_type !== 7) {
 				this._show_parent.UpdateXLayout(this);
 			}
-		} else if (this._width_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		} else if (this._width_type === 1) {
 			this.width = this._width_value;
 		}
 	},
@@ -4813,7 +4871,7 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 	},
 	set height(value) {
 		this._height = value;
-		if (this._height_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._height_type === 1) {
 			this._height_value = value;
 		}
 		this._show.SetHeight(value);
@@ -4828,10 +4886,10 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		this._height_type = value;
 		if (this._show_parent !== undefined) {
 			this._show_parent.UpdateHeightLayout(this);
-			if (this._y_type !== ALittle.UIEnumTypes.POS_ABS && this._y_type !== ALittle.UIEnumTypes.POS_ALIGN_STARTING && this._y_type !== ALittle.UIEnumTypes.POS_PERCENT_STARTING) {
+			if (this._y_type !== 1 && this._y_type !== 2 && this._y_type !== 7) {
 				this._show_parent.UpdateYLayout(this);
 			}
-		} else if (this._height_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		} else if (this._height_type === 1) {
 			this.height = this._height_value;
 		}
 	},
@@ -4842,10 +4900,10 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		this._height_value = value;
 		if (this._show_parent !== undefined) {
 			this._show_parent.UpdateHeightLayout(this);
-			if (this._y_type !== ALittle.UIEnumTypes.POS_ABS && this._y_type !== ALittle.UIEnumTypes.POS_ALIGN_STARTING && this._y_type !== ALittle.UIEnumTypes.POS_PERCENT_STARTING) {
+			if (this._y_type !== 1 && this._y_type !== 2 && this._y_type !== 7) {
 				this._show_parent.UpdateYLayout(this);
 			}
-		} else if (this._height_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		} else if (this._height_type === 1) {
 			this.height = this._height_value;
 		}
 	},
@@ -5564,7 +5622,7 @@ ALittle.DisplayLayout = JavaScript.Class(ALittle.DisplayGroup, {
 			return;
 		}
 		this._width = value;
-		if (this._width_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._width_type === 1) {
 			this._width_value = this._width;
 		}
 		let ___OBJECT_1 = this._childs;
@@ -5581,7 +5639,7 @@ ALittle.DisplayLayout = JavaScript.Class(ALittle.DisplayGroup, {
 			return;
 		}
 		this._height = value;
-		if (this._height_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._height_type === 1) {
 			this._height_value = this._height;
 		}
 		let ___OBJECT_2 = this._childs;
@@ -5597,19 +5655,19 @@ ALittle.DisplayLayout = JavaScript.Class(ALittle.DisplayGroup, {
 		if (child === undefined || child._show_parent !== this) {
 			return;
 		}
-		if (child._x_type === ALittle.UIEnumTypes.POS_ABS) {
+		if (child._x_type === 1) {
 			child.x = child._x_value;
-		} else if (child._x_type === ALittle.UIEnumTypes.POS_ALIGN_STARTING) {
+		} else if (child._x_type === 2) {
 			child.x = child._x_value;
-		} else if (child._x_type === ALittle.UIEnumTypes.POS_ALIGN_CENTER) {
+		} else if (child._x_type === 3) {
 			child.x = (this._width - child.width) / 2 + child._x_value;
-		} else if (child._x_type === ALittle.UIEnumTypes.POS_ALIGN_ENDING) {
+		} else if (child._x_type === 4) {
 			child.x = this._width - child.width - child._x_value;
-		} else if (child._x_type === ALittle.UIEnumTypes.POS_PERCENT_STARTING) {
+		} else if (child._x_type === 7) {
 			child.x = this._width * child._x_value;
-		} else if (child._x_type === ALittle.UIEnumTypes.POS_PERCENT_CENTER) {
+		} else if (child._x_type === 8) {
 			child.x = (this._width - child.width) / 2 + this._width * child._x_value;
-		} else if (child._x_type === ALittle.UIEnumTypes.POS_PERCENT_ENDING) {
+		} else if (child._x_type === 9) {
 			child.x = (this._width - child.width) * (1 - child._x_value);
 		}
 	},
@@ -5617,19 +5675,19 @@ ALittle.DisplayLayout = JavaScript.Class(ALittle.DisplayGroup, {
 		if (child === undefined || child._show_parent !== this) {
 			return;
 		}
-		if (child._y_type === ALittle.UIEnumTypes.POS_ABS) {
+		if (child._y_type === 1) {
 			child.y = child._y_value;
-		} else if (child._y_type === ALittle.UIEnumTypes.POS_ALIGN_STARTING) {
+		} else if (child._y_type === 2) {
 			child.y = child._y_value;
-		} else if (child._y_type === ALittle.UIEnumTypes.POS_ALIGN_CENTER) {
+		} else if (child._y_type === 3) {
 			child.y = (this._height - child.height) / 2 + child._y_value;
-		} else if (child._y_type === ALittle.UIEnumTypes.POS_ALIGN_ENDING) {
+		} else if (child._y_type === 4) {
 			child.y = this._height - child.height - child._y_value;
-		} else if (child._y_type === ALittle.UIEnumTypes.POS_PERCENT_STARTING) {
+		} else if (child._y_type === 7) {
 			child.y = this._height * child._y_value;
-		} else if (child._y_type === ALittle.UIEnumTypes.POS_PERCENT_CENTER) {
+		} else if (child._y_type === 8) {
 			child.y = (this._height - child.height) / 2 + this._height * child._y_value;
-		} else if (child._y_type === ALittle.UIEnumTypes.POS_PERCENT_ENDING) {
+		} else if (child._y_type === 9) {
 			child.y = (this._height - child.height) * (1 - child._y_value);
 		}
 	},
@@ -5637,19 +5695,19 @@ ALittle.DisplayLayout = JavaScript.Class(ALittle.DisplayGroup, {
 		if (child === undefined || child._show_parent !== this) {
 			return;
 		}
-		if (child._width_type === ALittle.UIEnumTypes.SIZE_PERCENT) {
+		if (child._width_type === 2) {
 			let real_width = this._width * child._width_value;
 			if (real_width < 0) {
 				real_width = 0;
 			}
 			child.width = real_width;
-		} else if (child._width_type === ALittle.UIEnumTypes.SIZE_MARGIN) {
+		} else if (child._width_type === 4) {
 			let real_width = this._width - child._width_value;
 			if (real_width < 0) {
 				real_width = 0;
 			}
 			child.width = real_width;
-		} else if (child._width_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		} else if (child._width_type === 1) {
 			let real_width = child._width_value;
 			if (real_width < 0) {
 				real_width = 0;
@@ -5661,19 +5719,19 @@ ALittle.DisplayLayout = JavaScript.Class(ALittle.DisplayGroup, {
 		if (child === undefined || child._show_parent !== this) {
 			return;
 		}
-		if (child._height_type === ALittle.UIEnumTypes.SIZE_PERCENT) {
+		if (child._height_type === 2) {
 			let real_height = this._height * child._height_value;
 			if (real_height < 0) {
 				real_height = 0;
 			}
 			child.height = real_height;
-		} else if (child._height_type === ALittle.UIEnumTypes.SIZE_MARGIN) {
+		} else if (child._height_type === 4) {
 			let real_height = this._height - child._height_value;
 			if (real_height < 0) {
 				real_height = 0;
 			}
 			child.height = real_height;
-		} else if (child._height_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		} else if (child._height_type === 1) {
 			let real_height = child._height_value;
 			if (real_height < 0) {
 				real_height = 0;
@@ -5721,6 +5779,7 @@ ALittle.Quad = JavaScript.Class(ALittle.DisplayObject, {
 		if (event.rel_x >= 0 && event.rel_y >= 0 && event.rel_x < event.target._width && event.rel_y < event.target._height) {
 			let c_event = {};
 			c_event.is_drag = event.is_drag;
+			c_event.count = event.count;
 			this.DispatchEvent(___all_struct.get(-449066808), c_event);
 		}
 	},
@@ -5765,6 +5824,7 @@ ALittle.Image = JavaScript.Class(ALittle.DisplayObject, {
 		if (event.rel_x >= 0 && event.rel_y >= 0 && event.rel_x < event.target._width && event.rel_y < event.target._height) {
 			let c_event = {};
 			c_event.is_drag = event.is_drag;
+			c_event.count = event.count;
 			this.DispatchEvent(___all_struct.get(-449066808), c_event);
 		}
 	},
@@ -5925,6 +5985,7 @@ ALittle.Sprite = JavaScript.Class(ALittle.DisplayObject, {
 		if (event.rel_x >= 0 && event.rel_y >= 0 && event.rel_x < event.target._width && event.rel_y < event.target._height) {
 			let c_event = {};
 			c_event.is_drag = event.is_drag;
+			c_event.count = event.count;
 			this.DispatchEvent(___all_struct.get(-449066808), c_event);
 		}
 	},
@@ -6240,8 +6301,8 @@ ALittle.TextArea = JavaScript.Class(ALittle.DisplayObject, {
 		this._underline = false;
 		this._deleteline = false;
 		this._flip = 0;
-		this._halign_type = ALittle.UIEnumTypes.HALIGN_LEFT;
-		this._valign_type = ALittle.UIEnumTypes.VALIGN_TOP;
+		this._halign_type = 0;
+		this._valign_type = 0;
 		this._show = ALittle.NewObject(JavaScript.JTextArea);
 	},
 	Redraw : function() {
@@ -6691,7 +6752,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 				event.handled = true;
 			}
 		} else if (event.sym === 1073741904) {
-			if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
+			if (event.mod & 0x0003 === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffsetLR(true);
 			} else {
@@ -6700,7 +6761,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 			}
 			event.handled = true;
 		} else if (event.sym === 1073741903) {
-			if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
+			if (event.mod & 0x0003 === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffsetLR(false);
 			} else {
@@ -6709,7 +6770,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 			}
 			event.handled = true;
 		} else if (event.sym === 1073741906) {
-			if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
+			if (event.mod & 0x0003 === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffsetUD(true);
 			} else {
@@ -6718,7 +6779,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 			}
 			event.handled = true;
 		} else if (event.sym === 1073741905) {
-			if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
+			if (event.mod & 0x0003 === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffsetUD(false);
 			} else {
@@ -6758,7 +6819,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 				}
 				event.handled = true;
 			}
-		} else if (event.sym === 120 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 120 && event.mod & 0x00c0 !== 0) {
 			if (this._editable || event.custom) {
 				this._is_selecting = false;
 				let select_text = this._show.GetSelectText();
@@ -6768,13 +6829,13 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 				}
 				event.handled = true;
 			}
-		} else if (event.sym === 99 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 99 && event.mod & 0x00c0 !== 0) {
 			let select_text = this._show.GetSelectText();
 			if (select_text !== "") {
 				ALittle.System_SetClipboardText(select_text);
 			}
 			event.handled = true;
-		} else if (event.sym === 118 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 118 && event.mod & 0x00c0 !== 0) {
 			if (this._editable || event.custom) {
 				this._is_selecting = false;
 				if (ALittle.System_HasClipboardText()) {
@@ -6786,7 +6847,7 @@ ALittle.TextEdit = JavaScript.Class(ALittle.DisplayObject, {
 				}
 				event.handled = true;
 			}
-		} else if (event.sym === 97 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 97 && event.mod & 0x00c0 !== 0) {
 			this._is_selecting = true;
 			this._show.SelectAll();
 			event.handled = true;
@@ -7234,7 +7295,7 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 	HandleKeyDown : function(event) {
 		let is_change = false;
 		if (event.sym === 1073741904) {
-			if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
+			if (event.mod & 0x0003 === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffset(true);
 			} else {
@@ -7243,7 +7304,7 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 			}
 			event.handled = true;
 		} else if (event.sym === 1073741903) {
-			if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
+			if (event.mod & 0x0003 === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffset(false);
 			} else {
@@ -7276,7 +7337,7 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 				this.DispatchEvent(___all_struct.get(776398171), {});
 				event.handled = true;
 			}
-		} else if (event.sym === 120 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 120 && event.mod & 0x00c0 !== 0) {
 			if (this._editable || event.custom) {
 				this._is_selecting = false;
 				let select_text = this._show.GetSelectText();
@@ -7286,13 +7347,13 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 				}
 				event.handled = true;
 			}
-		} else if (event.sym === 99 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 99 && event.mod & 0x00c0 !== 0) {
 			let select_text = this._show.GetSelectText();
 			if (select_text !== "" && (!this._password_mode)) {
 				ALittle.System_SetClipboardText(select_text);
 			}
 			event.handled = true;
-		} else if (event.sym === 118 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 118 && event.mod & 0x00c0 !== 0) {
 			if (this._editable || event.custom) {
 				this._is_selecting = false;
 				if (ALittle.System_HasClipboardText()) {
@@ -7304,14 +7365,14 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 				}
 				event.handled = true;
 			}
-		} else if (event.sym === 97 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 97 && event.mod & 0x00c0 !== 0) {
 			this._is_selecting = true;
 			this._show.SelectAll();
 			event.handled = true;
 		} else if (event.sym === 9) {
 			this.DispatchEvent(___all_struct.get(2024735182), {});
 			event.handled = true;
-		} else if (event.sym === ALittle.UIEnumTypes.KEY_ESC) {
+		} else if (event.sym === 27) {
 			this.DispatchEvent(___all_struct.get(1637310579), {});
 			event.handled = true;
 		}
@@ -7657,6 +7718,256 @@ ALittle.Triangle = JavaScript.Class(ALittle.DisplayObject, {
 }
 {
 if (typeof ALittle === "undefined") window.ALittle = {};
+
+
+if (ALittle.DisplayObject === undefined) throw new Error(" extends class:ALittle.DisplayObject is undefined");
+ALittle.VertexImage = JavaScript.Class(ALittle.DisplayObject, {
+	Ctor : function(ctrl_sys) {
+		this._show = ALittle.NewObject(JavaScript.JVertexImage);
+		this._u1 = 0;
+		this._v1 = 0;
+		this._u2 = 0;
+		this._v2 = 0;
+		this._u3 = 0;
+		this._v3 = 0;
+		this._u4 = 0;
+		this._v4 = 0;
+		this._x1 = 0;
+		this._y1 = 0;
+		this._x2 = 0;
+		this._y2 = 0;
+		this._x3 = 0;
+		this._y3 = 0;
+		this._x4 = 0;
+		this._y4 = 0;
+		this._texture_width = 0;
+		this._texture_height = 0;
+		this._auto_rejust = false;
+	},
+	Redraw : function() {
+		this._show.ClearTexture();
+		if (this._texture !== undefined) {
+			this._texture.Clear();
+			this._texture = undefined;
+		}
+		if (this._texture_name === undefined) {
+			return;
+		}
+		if (this._texture_cut !== undefined) {
+			A_LoadTextureManager.SetTextureCut(this, this._texture_name, this._texture_cut.max_width, this._texture_cut.max_height, this._texture_cut.cache);
+		} else {
+			this._ctrl_sys.SetTexture(this, this._texture_name);
+		}
+	},
+	set texture_name(value) {
+		if (this._texture_name === value) {
+			return;
+		}
+		if (this._texture_name !== undefined) {
+			this._show.ClearTexture();
+			this._texture = undefined;
+		}
+		this._texture_name = value;
+		if (this._texture_name !== undefined) {
+			this._texture_cut = undefined;
+			this._ctrl_sys.SetTexture(this, value);
+		}
+	},
+	SetTextureCut : function(texture_name, auto_rejust, max_width, max_height, cache, index) {
+		if (this._texture_name !== undefined) {
+			this._show.ClearTexture();
+			this._texture = undefined;
+		}
+		this._texture_name = texture_name;
+		if (this._texture_name !== undefined) {
+			this._texture_cut = {};
+			this._texture_cut.max_width = max_width;
+			this._texture_cut.max_height = max_height;
+			this._texture_cut.cache = cache;
+			this._auto_rejust = auto_rejust || false;
+			A_LoadTextureManager.SetTextureCut(this, texture_name, max_width, max_height, cache);
+		}
+	},
+	set texture_cut(param) {
+		this.SetTextureCut(param.texture_name, true, param.max_width, param.max_height, param.cache, undefined);
+	},
+	get texture_cut() {
+		if (this._texture_cut === undefined) {
+			return undefined;
+		}
+		let texture_cut = {};
+		texture_cut.max_width = this._texture_cut.max_width;
+		texture_cut.max_height = this._texture_cut.max_height;
+		texture_cut.texture_name = this._texture_name;
+		return texture_cut;
+	},
+	get texture_name() {
+		return this._texture_name;
+	},
+	set texture(value) {
+		this._show.SetTexture(value.GetTexture());
+		this._texture_width = value.GetWidth();
+		this._texture_height = value.GetHeight();
+		this._texture = value;
+		if (this._auto_rejust) {
+			this.width = this._texture_width;
+			this.height = this._texture_height;
+		}
+	},
+	get texture() {
+		return this._texture;
+	},
+	SetTextureCoord : function(t, b, l, r) {
+		this._show.SetTextureCoord(t, b, l, r);
+	},
+	get texture_width() {
+		return this._texture_width;
+	},
+	get texture_height() {
+		return this._texture_height;
+	},
+	get u1() {
+		return this._u1;
+	},
+	get v1() {
+		return this._v1;
+	},
+	get u2() {
+		return this._u2;
+	},
+	get v2() {
+		return this._v2;
+	},
+	get u3() {
+		return this._u3;
+	},
+	get v3() {
+		return this._v3;
+	},
+	get u4() {
+		return this._u4;
+	},
+	get v4() {
+		return this._v4;
+	},
+	set u1(v) {
+		this._u1 = v;
+		this._show.SetTexUV(0, this._u1, this._v1);
+	},
+	set v1(v) {
+		this._v1 = v;
+		this._show.SetTexUV(0, this._u1, this._v1);
+	},
+	set u2(v) {
+		this._u2 = v;
+		this._show.SetTexUV(1, this._u2, this._v2);
+	},
+	set v2(v) {
+		this._v2 = v;
+		this._show.SetTexUV(1, this._u2, this._v2);
+	},
+	set u3(v) {
+		this._u3 = v;
+		this._show.SetTexUV(2, this._u3, this._v3);
+	},
+	set v3(v) {
+		this._v3 = v;
+		this._show.SetTexUV(2, this._u3, this._v3);
+	},
+	set u4(v) {
+		this._u4 = v;
+		this._show.SetTexUV(3, this._u4, this._v4);
+	},
+	set v4(v) {
+		this._v4 = v;
+		this._show.SetTexUV(3, this._u4, this._v4);
+	},
+	get x1() {
+		return this._x1;
+	},
+	get y1() {
+		return this._y1;
+	},
+	get x2() {
+		return this._x2;
+	},
+	get y2() {
+		return this._y2;
+	},
+	get x3() {
+		return this._x3;
+	},
+	get y3() {
+		return this._y3;
+	},
+	get x4() {
+		return this._x4;
+	},
+	get y4() {
+		return this._y4;
+	},
+	set x1(v) {
+		this._x1 = v;
+		this._show.SetPosXY(0, this._x1, this._y1);
+	},
+	set y1(v) {
+		this._y1 = v;
+		this._show.SetPosXY(0, this._x1, this._y1);
+	},
+	set x2(v) {
+		this._x2 = v;
+		this._show.SetPosXY(1, this._x2, this._y2);
+	},
+	set y2(v) {
+		this._y2 = v;
+		this._show.SetPosXY(1, this._x2, this._y2);
+	},
+	set x3(v) {
+		this._x3 = v;
+		this._show.SetPosXY(2, this._x3, this._y3);
+	},
+	set y3(v) {
+		this._y3 = v;
+		this._show.SetPosXY(2, this._x3, this._y3);
+	},
+	set x4(v) {
+		this._x4 = v;
+		this._show.SetPosXY(3, this._x4, this._y4);
+	},
+	set y4(v) {
+		this._y4 = v;
+		this._show.SetPosXY(3, this._x4, this._y4);
+	},
+	RejuseSize : function() {
+		let max = this._x1;
+		if (max < this._x2) {
+			max = this._x2;
+		}
+		if (max < this._x3) {
+			max = this._x3;
+		}
+		if (max < this._x4) {
+			max = this._x4;
+		}
+		this.width = max;
+		max = this._y1;
+		if (max < this._y2) {
+			max = this._y2;
+		}
+		if (max < this._y3) {
+			max = this._y3;
+		}
+		if (max < this._y4) {
+			max = this._y4;
+		}
+		this.height = max;
+		this.UpdateLayout();
+	},
+}, "ALittle.VertexImage");
+
+}
+{
+if (typeof ALittle === "undefined") window.ALittle = {};
 let ___all_struct = ALittle.GetAllStruct();
 
 
@@ -7683,6 +7994,7 @@ ALittle.Grid9Image = JavaScript.Class(ALittle.DisplayObject, {
 		if (event.rel_x >= 0 && event.rel_y >= 0 && event.rel_x < event.target._width && event.rel_y < event.target._height) {
 			let c_event = {};
 			c_event.is_drag = event.is_drag;
+			c_event.count = event.count;
 			this.DispatchEvent(___all_struct.get(-449066808), c_event);
 		}
 	},
@@ -7853,31 +8165,31 @@ ALittle.TextButton = JavaScript.Class(ALittle.DisplayLayout, {
 		this._show_text.width = 0;
 		this._show_text.height = 0;
 		this._show_text.text = "";
-		this._show_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_text.x_type = 3;
 		this._show_text.x_value = 0;
 		this._show_text.visible = true;
 		this._show_down_text = ({});
 		this._show_down_text.width = 0;
 		this._show_down_text.height = 0;
 		this._show_down_text.text = "";
-		this._show_down_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_down_text.x_type = 3;
 		this._show_down_text.x_value = 0;
 		this._show_down_text.visible = false;
 		this._show_over_text = ({});
 		this._show_over_text.width = 0;
 		this._show_over_text.height = 0;
 		this._show_over_text.text = "";
-		this._show_over_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_over_text.x_type = 3;
 		this._show_over_text.x_value = 0;
 		this._show_over_text.visible = false;
 		this._show_disabled_text = ({});
 		this._show_disabled_text.width = 0;
 		this._show_disabled_text.height = 0;
 		this._show_disabled_text.text = "";
-		this._show_disabled_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_disabled_text.x_type = 3;
 		this._show_disabled_text.x_value = 0;
 		this._show_disabled_text.visible = false;
-		this._file_select = ALittle.UIEnumTypes.SELECT_NONE;
+		this._file_select = 0;
 		this.AddEventListener(___all_struct.get(544684311), this, this.HandleMoveIn);
 		this.AddEventListener(___all_struct.get(-1202439334), this, this.HandleMoveOut);
 		this.AddEventListener(___all_struct.get(1883782801), this, this.HandleLButtonDown);
@@ -7911,10 +8223,11 @@ ALittle.TextButton = JavaScript.Class(ALittle.DisplayLayout, {
 		if (event.rel_x >= 0 && event.rel_y >= 0 && event.rel_x < event.target._width && event.rel_y < event.target._height) {
 			let e = {};
 			e.is_drag = event.is_drag;
+			e.count = event.count;
 			this.DispatchEvent(___all_struct.get(-449066808), e);
-			if (this._file_select === ALittle.UIEnumTypes.SELECT_FILE) {
+			if (this._file_select === 1) {
 				A_OtherSystem.SystemSelectFile(this);
-			} else if (this._file_select === ALittle.UIEnumTypes.SELECT_DIR) {
+			} else if (this._file_select === 2) {
 				A_OtherSystem.SystemSelectDirectory(this);
 			}
 			if (ALittle.System_IsPhone() === false) {
@@ -8094,7 +8407,7 @@ ALittle.TextButton = JavaScript.Class(ALittle.DisplayLayout, {
 		value.x_value = this._show_text.x_value;
 		this.RemoveChild(this._show_text);
 		this._show_text = value;
-		this._show_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_text.y_type = 3;
 		this.AddChild(this._show_text, 6);
 	},
 	get show_text() {
@@ -8122,7 +8435,7 @@ ALittle.TextButton = JavaScript.Class(ALittle.DisplayLayout, {
 		value.x_value = this._show_over_text.x_value;
 		this.RemoveChild(this._show_over_text);
 		this._show_over_text = value;
-		this._show_over_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_over_text.y_type = 3;
 		this.AddChild(this._show_over_text, 6);
 	},
 	get show_over_text() {
@@ -8150,7 +8463,7 @@ ALittle.TextButton = JavaScript.Class(ALittle.DisplayLayout, {
 		value.x_value = this._show_down_text.x_value;
 		this.RemoveChild(this._show_down_text);
 		this._show_down_text = value;
-		this._show_down_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_down_text.y_type = 3;
 		this.AddChild(this._show_down_text, 6);
 	},
 	get show_down_text() {
@@ -8178,7 +8491,7 @@ ALittle.TextButton = JavaScript.Class(ALittle.DisplayLayout, {
 		value.x_value = this._show_disabled_text.x_value;
 		this.RemoveChild(this._show_disabled_text);
 		this._show_disabled_text = value;
-		this._show_disabled_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_disabled_text.y_type = 3;
 		this.AddChild(this._show_disabled_text, 6);
 	},
 	get show_disabled_text() {
@@ -8191,8 +8504,8 @@ ALittle.TextButton = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_up);
 		this._show_up = value;
 		if (this._show_up !== undefined) {
-			this._show_up.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_up.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_up.width_type = 4;
+			this._show_up.height_type = 4;
 			this._show_up.width_value = 0;
 			this._show_up.height_value = 0;
 			this.AddChild(this._show_up, 1);
@@ -8210,8 +8523,8 @@ ALittle.TextButton = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_down);
 		this._show_down = value;
 		if (this._show_down !== undefined) {
-			this._show_down.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_down.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_down.width_type = 4;
+			this._show_down.height_type = 4;
 			this._show_down.width_value = 0;
 			this._show_down.height_value = 0;
 			this.AddChild(this._show_down, 1);
@@ -8229,8 +8542,8 @@ ALittle.TextButton = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_over);
 		this._show_over = value;
 		if (this._show_over !== undefined) {
-			this._show_over.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_over.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_over.width_type = 4;
+			this._show_over.height_type = 4;
 			this._show_over.width_value = 0;
 			this._show_over.height_value = 0;
 			this.AddChild(this._show_over, 1);
@@ -8248,8 +8561,8 @@ ALittle.TextButton = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_disabled);
 		this._show_disabled = value;
 		if (this._show_disabled !== undefined) {
-			this._show_disabled.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_disabled.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_disabled.width_type = 4;
+			this._show_disabled.height_type = 4;
 			this._show_disabled.width_value = 0;
 			this._show_disabled.height_value = 0;
 			this.AddChild(this._show_disabled, 1);
@@ -8284,56 +8597,56 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 		this._show_text.width = 0;
 		this._show_text.height = 0;
 		this._show_text.text = "";
-		this._show_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_text.x_type = 3;
 		this._show_text.x_value = 0;
 		this._show_text.visible = true;
 		this._show_over_text = ({});
 		this._show_over_text.width = 0;
 		this._show_over_text.height = 0;
 		this._show_over_text.text = "";
-		this._show_over_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_over_text.x_type = 3;
 		this._show_over_text.x_value = 0;
 		this._show_over_text.visible = false;
 		this._show_down_text = ({});
 		this._show_down_text.width = 0;
 		this._show_down_text.height = 0;
 		this._show_down_text.text = "";
-		this._show_down_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_down_text.x_type = 3;
 		this._show_down_text.x_value = 0;
 		this._show_down_text.visible = false;
 		this._show_disabled_text = ({});
 		this._show_disabled_text.width = 0;
 		this._show_disabled_text.height = 0;
 		this._show_disabled_text.text = "";
-		this._show_disabled_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_disabled_text.x_type = 3;
 		this._show_disabled_text.x_value = 0;
 		this._show_disabled_text.visible = false;
 		this._show_selected_text = ({});
 		this._show_selected_text.width = 0;
 		this._show_selected_text.height = 0;
 		this._show_selected_text.text = "";
-		this._show_selected_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_selected_text.x_type = 3;
 		this._show_selected_text.x_value = 0;
 		this._show_selected_text.visible = false;
 		this._show_selected_over_text = ({});
 		this._show_selected_over_text.width = 0;
 		this._show_selected_over_text.height = 0;
 		this._show_selected_over_text.text = "";
-		this._show_selected_over_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_selected_over_text.x_type = 3;
 		this._show_selected_over_text.x_value = 0;
 		this._show_selected_over_text.visible = false;
 		this._show_selected_down_text = ({});
 		this._show_selected_down_text.width = 0;
 		this._show_selected_down_text.height = 0;
 		this._show_selected_down_text.text = "";
-		this._show_selected_down_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_selected_down_text.x_type = 3;
 		this._show_selected_down_text.x_value = 0;
 		this._show_selected_down_text.visible = false;
 		this._show_selected_disabled_text = ({});
 		this._show_selected_disabled_text.width = 0;
 		this._show_selected_disabled_text.height = 0;
 		this._show_selected_disabled_text.text = "";
-		this._show_selected_disabled_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_selected_disabled_text.x_type = 3;
 		this._show_selected_disabled_text.x_value = 0;
 		this._show_selected_disabled_text.visible = false;
 		this._selected = false;
@@ -8368,6 +8681,7 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 			this._selected = (this._selected === false);
 			let e = {};
 			e.is_drag = event.is_drag;
+			e.count = event.count;
 			this.DispatchEvent(___all_struct.get(-449066808), e);
 			this.DispatchEvent(___all_struct.get(958494922), {});
 			if (ALittle.System_IsPhone() === false) {
@@ -8674,7 +8988,7 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 		value.x_value = this._show_text.x_value;
 		this.RemoveChild(this._show_text);
 		this._show_text = value;
-		this._show_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_text.y_type = 3;
 		this.AddChild(this._show_text, 10);
 	},
 	get show_text() {
@@ -8704,7 +9018,7 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 		value.x_value = this._show_over_text.x_value;
 		this.RemoveChild(this._show_over_text);
 		this._show_over_text = value;
-		this._show_over_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_over_text.y_type = 3;
 		this.AddChild(this._show_over_text, 10);
 	},
 	get show_over_text() {
@@ -8734,7 +9048,7 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 		value.x_value = this._show_down_text.x_value;
 		this.RemoveChild(this._show_down_text);
 		this._show_down_text = value;
-		this._show_down_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_down_text.y_type = 3;
 		this.AddChild(this._show_down_text, 10);
 	},
 	get show_down_text() {
@@ -8764,7 +9078,7 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 		value.x_value = this._show_disabled_text.x_value;
 		this.RemoveChild(this._show_disabled_text);
 		this._show_disabled_text = value;
-		this._show_disabled_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_disabled_text.y_type = 3;
 		this.AddChild(this._show_disabled_text, 10);
 	},
 	get show_disabled_text() {
@@ -8794,7 +9108,7 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 		value.x_value = this._show_selected_text.x_value;
 		this.RemoveChild(this._show_selected_text);
 		this._show_selected_text = value;
-		this._show_selected_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_selected_text.y_type = 3;
 		this.AddChild(this._show_selected_text, 10);
 	},
 	get show_selected_text() {
@@ -8824,7 +9138,7 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 		value.x_value = this._show_selected_over_text.x_value;
 		this.RemoveChild(this._show_selected_over_text);
 		this._show_selected_over_text = value;
-		this._show_selected_over_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_selected_over_text.y_type = 3;
 		this.AddChild(this._show_selected_over_text, 10);
 	},
 	get show_selected_over_text() {
@@ -8854,7 +9168,7 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 		value.x_value = this._show_selected_down_text.x_value;
 		this.RemoveChild(this._show_selected_down_text);
 		this._show_selected_down_text = value;
-		this._show_selected_down_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_selected_down_text.y_type = 3;
 		this.AddChild(this._show_selected_down_text, 10);
 	},
 	get show_selected_down_text() {
@@ -8884,7 +9198,7 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 		value.x_value = this._show_selected_disabled_text.x_value;
 		this.RemoveChild(this._show_selected_disabled_text);
 		this._show_selected_disabled_text = value;
-		this._show_selected_disabled_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_selected_disabled_text.y_type = 3;
 		this.AddChild(this._show_selected_disabled_text, 10);
 	},
 	get show_selected_disabled_text() {
@@ -8897,8 +9211,8 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_up);
 		this._show_up = value;
 		if (this._show_up !== undefined) {
-			this._show_up.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_up.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_up.width_type = 4;
+			this._show_up.height_type = 4;
 			this._show_up.width_value = 0;
 			this._show_up.height_value = 0;
 			this.AddChild(this._show_up, 1);
@@ -8912,8 +9226,8 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_down);
 		this._show_down = value;
 		if (this._show_down !== undefined) {
-			this._show_down.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_down.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_down.width_type = 4;
+			this._show_down.height_type = 4;
 			this._show_down.width_value = 0;
 			this._show_down.height_value = 0;
 			this.AddChild(this._show_down, 1);
@@ -8927,8 +9241,8 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_over);
 		this._show_over = value;
 		if (this._show_over !== undefined) {
-			this._show_over.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_over.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_over.width_type = 4;
+			this._show_over.height_type = 4;
 			this._show_over.width_value = 0;
 			this._show_over.height_value = 0;
 			this.AddChild(this._show_over, 1);
@@ -8942,8 +9256,8 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_disabled);
 		this._show_disabled = value;
 		if (this._show_disabled !== undefined) {
-			this._show_disabled.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_disabled.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_disabled.width_type = 4;
+			this._show_disabled.height_type = 4;
 			this._show_disabled.width_value = 0;
 			this._show_disabled.height_value = 0;
 			this.AddChild(this._show_disabled, 1);
@@ -8957,8 +9271,8 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_selected_up);
 		this._show_selected_up = value;
 		if (this._show_selected_up !== undefined) {
-			this._show_selected_up.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_selected_up.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_selected_up.width_type = 4;
+			this._show_selected_up.height_type = 4;
 			this._show_selected_up.width_value = 0;
 			this._show_selected_up.height_value = 0;
 			this.AddChild(this._show_selected_up, 1);
@@ -8972,8 +9286,8 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_selected_down);
 		this._show_selected_down = value;
 		if (this._show_selected_down !== undefined) {
-			this._show_selected_down.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_selected_down.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_selected_down.width_type = 4;
+			this._show_selected_down.height_type = 4;
 			this._show_selected_down.width_value = 0;
 			this._show_selected_down.height_value = 0;
 			this.AddChild(this._show_selected_down, 1);
@@ -8987,8 +9301,8 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_selected_over);
 		this._show_selected_over = value;
 		if (this._show_selected_over !== undefined) {
-			this._show_selected_over.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_selected_over.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_selected_over.width_type = 4;
+			this._show_selected_over.height_type = 4;
 			this._show_selected_over.width_value = 0;
 			this._show_selected_over.height_value = 0;
 			this.AddChild(this._show_selected_over, 1);
@@ -9002,8 +9316,8 @@ ALittle.TextCheckButton = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_selected_disabled);
 		this._show_selected_disabled = value;
 		if (this._show_selected_disabled !== undefined) {
-			this._show_selected_disabled.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_selected_disabled.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_selected_disabled.width_type = 4;
+			this._show_selected_disabled.height_type = 4;
 			this._show_selected_disabled.width_value = 0;
 			this._show_selected_disabled.height_value = 0;
 			this.AddChild(this._show_selected_disabled, 1);
@@ -9071,6 +9385,7 @@ ALittle.TextRadioButton = JavaScript.Class(ALittle.TextCheckButton, {
 			}
 			let e = {};
 			e.is_drag = event.is_drag;
+			e.count = event.count;
 			this.DispatchEvent(___all_struct.get(-449066808), e);
 			if (ALittle.System_IsPhone() === false) {
 				this.ShowOver();
@@ -9114,7 +9429,7 @@ if (typeof ALittle === "undefined") window.ALittle = {};
 if (ALittle.DisplayGroup === undefined) throw new Error(" extends class:ALittle.DisplayGroup is undefined");
 ALittle.Grid3 = JavaScript.Class(ALittle.DisplayGroup, {
 	Ctor : function(ctrl_sys) {
-		this._type = ALittle.UIEnumTypes.TYPE_V;
+		this._type = 2;
 		this._child_map = [];
 		this._logic_up = 0;
 		this._logic_down = 0;
@@ -9164,7 +9479,7 @@ ALittle.Grid3 = JavaScript.Class(ALittle.DisplayGroup, {
 		}
 		this._child_map[index - 1] = child;
 		ALittle.DisplayGroup.AddChild.call(this, child);
-		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+		if (this._type === 2) {
 			child.x = 0;
 			child.width = this._width;
 			let y = 0.0;
@@ -9202,7 +9517,7 @@ ALittle.Grid3 = JavaScript.Class(ALittle.DisplayGroup, {
 	},
 	get center_size() {
 		let size = 0.0;
-		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+		if (this._type === 2) {
 			size = this._height - this._real_gap * 2 - this._real_up - this._real_down;
 		} else {
 			size = this._width - this._real_gap * 2 - this._real_up - this._real_down;
@@ -9247,7 +9562,7 @@ ALittle.Grid3 = JavaScript.Class(ALittle.DisplayGroup, {
 			return;
 		}
 		this._width = value;
-		if (this._width_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._width_type === 1) {
 			this._width_value = this._width;
 		}
 		this.CalcRealWidthCutting();
@@ -9257,13 +9572,13 @@ ALittle.Grid3 = JavaScript.Class(ALittle.DisplayGroup, {
 			return;
 		}
 		this._height = value;
-		if (this._height_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._height_type === 1) {
 			this._height_value = this._height;
 		}
 		this.CalcRealHeightCutting();
 	},
 	CalcRealWidthCutting : function() {
-		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+		if (this._type === 2) {
 			for (let index = 1; index <= 3; index += 1) {
 				if (this._child_map[index - 1] !== undefined) {
 					this._child_map[index - 1].x = 0;
@@ -9315,7 +9630,7 @@ ALittle.Grid3 = JavaScript.Class(ALittle.DisplayGroup, {
 		}
 	},
 	CalcRealHeightCutting : function() {
-		if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+		if (this._type === 1) {
 			for (let index = 1; index <= 3; index += 1) {
 				if (this._child_map[index - 1] !== undefined) {
 					this._child_map[index - 1].y = 0;
@@ -9489,7 +9804,7 @@ ALittle.Grid9 = JavaScript.Class(ALittle.DisplayGroup, {
 			return;
 		}
 		this._width = value;
-		if (this._width_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._width_type === 1) {
 			this._width_value = this._width;
 		}
 		this.CalcRealWidthCutting();
@@ -9499,7 +9814,7 @@ ALittle.Grid9 = JavaScript.Class(ALittle.DisplayGroup, {
 			return;
 		}
 		this._height = value;
-		if (this._height_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._height_type === 1) {
 			this._height_value = this._height;
 		}
 		this.CalcRealHeightCutting();
@@ -9630,7 +9945,7 @@ let __ceil = ALittle.Math_Ceil;
 if (ALittle.DisplayGroup === undefined) throw new Error(" extends class:ALittle.DisplayGroup is undefined");
 ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 	Ctor : function(ctrl_sys) {
-		this._type = ALittle.UIEnumTypes.TYPE_H;
+		this._type = 1;
 		this._size_fixed = true;
 		this._gap = 0;
 		this._clip_up_index = 0;
@@ -9693,7 +10008,7 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 		this._child_width_map.set(child, child.width);
 		this._child_height_map.set(child, child.height);
 		if (this._size_fixed) {
-			if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+			if (this._type === 1) {
 				child.height = this._height;
 			} else {
 				child.width = this._width;
@@ -9767,10 +10082,10 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 	},
 	set width(value) {
 		this._width = value;
-		if (this._width_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._width_type === 1) {
 			this._width_value = this._width;
 		}
-		if (this._type !== ALittle.UIEnumTypes.TYPE_H && this._size_fixed) {
+		if (this._type !== 1 && this._size_fixed) {
 			let ___OBJECT_2 = this._childs;
 			for (let index = 1; index <= ___OBJECT_2.length; ++index) {
 				let child = ___OBJECT_2[index - 1];
@@ -9781,7 +10096,7 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 	},
 	get width() {
 		if (this._size_fixed) {
-			if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+			if (this._type === 1) {
 				if (this._child_count === 0) {
 					return 0;
 				}
@@ -9794,10 +10109,10 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 	},
 	set height(value) {
 		this._height = value;
-		if (this._height_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._height_type === 1) {
 			this._height_value = this._height;
 		}
-		if (this._type !== ALittle.UIEnumTypes.TYPE_V && this._size_fixed) {
+		if (this._type !== 2 && this._size_fixed) {
 			let ___OBJECT_3 = this._childs;
 			for (let index = 1; index <= ___OBJECT_3.length; ++index) {
 				let child = ___OBJECT_3[index - 1];
@@ -9808,7 +10123,7 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 	},
 	get height() {
 		if (this._size_fixed) {
-			if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+			if (this._type === 2) {
 				if (this._child_count === 0) {
 					return 0;
 				}
@@ -9821,7 +10136,7 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 	},
 	UpdateSize : function() {
 		if (this._size_fixed) {
-			if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+			if (this._type === 1) {
 				for (let [k, v] of this._child_width_map) {
 					if (v === undefined) continue;
 					k.width = v;
@@ -9852,7 +10167,7 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 		if (index <= 0 || index > child_count) {
 			return;
 		}
-		if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+		if (this._type === 1) {
 			let offset = 0.0;
 			if (index > 1) {
 				offset = this._childs[index - 1 - 1].x + this._childs[index - 1 - 1].width + this._gap;
@@ -9881,7 +10196,7 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 		if (child_count === 0) {
 			return;
 		}
-		if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+		if (this._type === 1) {
 			let offset = 0.0;
 			for (let i = 1; i <= child_count; i += 1) {
 				let child = this._childs[i - 1];
@@ -9908,7 +10223,7 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 	HandleChildResize : function(event) {
 		this.Layout(this.GetChildIndex(event.target));
 		if (this._show_parent !== undefined) {
-			if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+			if (this._type === 1) {
 				this._show_parent.UpdateXLayout(this);
 			} else {
 				this._show_parent.UpdateYLayout(this);
@@ -9966,7 +10281,7 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 		let max_index = child_count;
 		let min_index = 1;
 		let index = min_index;
-		if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+		if (this._type === 1) {
 			if (h_move === undefined || this._clip_up_index === 0) {
 				do {
 					if (childs[index - 1].x > left) {
@@ -10085,14 +10400,14 @@ ALittle.Tab = JavaScript.Class(ALittle.Grid3, {
 		this._button_inner_gap = 8;
 		this._child_id_map = ALittle.CreateKeyWeakMap();
 		this._group = ALittle.CreateKeyWeakMap();
-		this.type = ALittle.UIEnumTypes.TYPE_V;
+		this.type = 2;
 		this._view = ALittle.NewObject(ALittle.DisplayView, this._ctrl_sys);
-		this._view.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-		this._view.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._view.height_type = 4;
+		this._view.width_type = 4;
 		this._linear = ALittle.NewObject(ALittle.Linear, this._ctrl_sys);
-		this._linear.type = ALittle.UIEnumTypes.TYPE_H;
-		this._linear.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-		this._linear.y_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING;
+		this._linear.type = 1;
+		this._linear.height_type = 4;
+		this._linear.y_type = 4;
 		this._view.AddChild(this._linear);
 		this._view_start = 0;
 		this._view_margin = 0;
@@ -10149,28 +10464,28 @@ ALittle.Tab = JavaScript.Class(ALittle.Grid3, {
 				radiobutton.AddEventListener(___all_struct.get(-641444818), this, this.HandleRadioButtonRButtonDown);
 				radiobutton.AddEventListener(___all_struct.get(-1604617962), this, this.HandleRadioButtonKeyDown);
 				radiobutton.group = this._group;
-				radiobutton.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-				radiobutton.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+				radiobutton.width_type = 4;
+				radiobutton.height_type = 4;
 				v.visible = radiobutton.selected;
 				text.text = this._child_id_map.get(v);
 				text.disabled = true;
-				text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+				text.y_type = 3;
 				text.y_value = 2;
 				text.x = this._button_inner_gap;
 				text.visible = !radiobutton.selected;
 				selected_text.text = this._child_id_map.get(v);
 				selected_text.disabled = true;
-				selected_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+				selected_text.y_type = 3;
 				selected_text.y_value = 2;
 				selected_text.x = this._button_inner_gap;
 				selected_text.visible = radiobutton.selected;
 				closebutton.AddEventListener(___all_struct.get(-449066808), this, this.HandleCloseButtonClick);
-				closebutton.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+				closebutton.y_type = 3;
 				closebutton.y_value = 2;
 				closebutton.x = text.x + text.width + this._button_inner_gap;
 				closebutton.visible = !radiobutton.selected;
 				selected_closebutton.AddEventListener(___all_struct.get(-449066808), this, this.HandleCloseButtonClick);
-				selected_closebutton.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+				selected_closebutton.y_type = 3;
 				selected_closebutton.y_value = 2;
 				selected_closebutton.x = selected_text.x + selected_text.width + this._button_inner_gap;
 				selected_closebutton.visible = radiobutton.selected;
@@ -10240,9 +10555,9 @@ ALittle.Tab = JavaScript.Class(ALittle.Grid3, {
 		}
 		this._head_background = value;
 		if (this._head_background !== undefined) {
-			this._head_background.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._head_background.width_type = 4;
 			this._head_background.width_value = 0;
-			this._head_background.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._head_background.height_type = 4;
 			this._head_background.height_value = 0;
 			this._view.AddChild(this._head_background, 1);
 		}
@@ -10380,11 +10695,11 @@ ALittle.Tab = JavaScript.Class(ALittle.Grid3, {
 		child._logic_parent = this;
 		child.x = 0;
 		child.y = 0;
-		child.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		child.width_type = 4;
 		child.width_value = this._child_width_margin;
-		child.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		child.height_type = 4;
 		child.height_value = 0;
-		child.x_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING;
+		child.x_type = 4;
 		this._child_id_map.set(child, child.description);
 		if (this._child_id_map.get(child) === undefined) {
 			this._child_id_map.set(child, "");
@@ -10407,30 +10722,30 @@ ALittle.Tab = JavaScript.Class(ALittle.Grid3, {
 			radiobutton.AddEventListener(___all_struct.get(-641444818), this, this.HandleRadioButtonRButtonDown);
 			radiobutton.AddEventListener(___all_struct.get(-1604617962), this, this.HandleRadioButtonKeyDown);
 			radiobutton.group = this._group;
-			radiobutton.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			radiobutton.width_type = 4;
 			radiobutton.width_value = 0;
-			radiobutton.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			radiobutton.height_type = 4;
 			radiobutton.height_value = 0;
 			child.visible = radiobutton.selected;
 			text.text = this._child_id_map.get(child);
 			text.disabled = true;
-			text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+			text.y_type = 3;
 			text.y_value = 2;
 			text.x = this._button_inner_gap;
 			text.visible = !radiobutton.selected;
 			selected_text.text = this._child_id_map.get(child);
 			selected_text.disabled = true;
-			selected_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+			selected_text.y_type = 3;
 			selected_text.y_value = 2;
 			selected_text.x = this._button_inner_gap;
 			selected_text.visible = radiobutton.selected;
 			closebutton.AddEventListener(___all_struct.get(-449066808), this, this.HandleCloseButtonClick);
-			closebutton.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+			closebutton.y_type = 3;
 			closebutton.y_value = 2;
 			closebutton.x = text.x + text.width + this._button_inner_gap;
 			closebutton.visible = !radiobutton.selected;
 			selected_closebutton.AddEventListener(___all_struct.get(-449066808), this, this.HandleCloseButtonClick);
-			selected_closebutton.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+			selected_closebutton.y_type = 3;
 			selected_closebutton.y_value = 2;
 			selected_closebutton.x = selected_text.x + selected_text.width + this._button_inner_gap;
 			selected_closebutton.visible = radiobutton.selected;
@@ -10835,11 +11150,11 @@ ALittle.Tab = JavaScript.Class(ALittle.Grid3, {
 		let layout_childs = simplelayout.childs;
 		layout_childs[3 - 1].visible = false;
 		layout_childs[3 - 1].disabled = true;
-		layout_childs[2 - 1].x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		layout_childs[2 - 1].x_type = 3;
 		layout_childs[2 - 1].x_value = 0;
 		layout_childs[5 - 1].visible = false;
 		layout_childs[5 - 1].disabled = true;
-		layout_childs[4 - 1].x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		layout_childs[4 - 1].x_type = 3;
 		layout_childs[4 - 1].x_value = 0;
 	},
 	DisableAllCloseButton : function() {
@@ -10854,11 +11169,11 @@ ALittle.Tab = JavaScript.Class(ALittle.Grid3, {
 			let layout_childs = simplelayout.childs;
 			layout_childs[3 - 1].visible = false;
 			layout_childs[3 - 1].disabled = true;
-			layout_childs[2 - 1].x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+			layout_childs[2 - 1].x_type = 3;
 			layout_childs[2 - 1].x_value = 0;
 			layout_childs[5 - 1].visible = false;
 			layout_childs[5 - 1].disabled = true;
-			layout_childs[4 - 1].x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+			layout_childs[4 - 1].x_type = 3;
 			layout_childs[4 - 1].x_value = 0;
 		}
 	},
@@ -10876,11 +11191,11 @@ ALittle.Tab = JavaScript.Class(ALittle.Grid3, {
 		let layout_childs = simplelayout.childs;
 		layout_childs[3 - 1].visible = !layout_childs[1 - 1].selected;
 		layout_childs[3 - 1].disabled = false;
-		layout_childs[2 - 1].x_type = ALittle.UIEnumTypes.POS_ABS;
+		layout_childs[2 - 1].x_type = 1;
 		layout_childs[2 - 1].x = this._button_inner_gap;
 		layout_childs[5 - 1].visible = layout_childs[1 - 1].selected;
 		layout_childs[5 - 1].disabled = false;
-		layout_childs[4 - 1].x_type = ALittle.UIEnumTypes.POS_ABS;
+		layout_childs[4 - 1].x_type = 1;
 		layout_childs[4 - 1].x = this._button_inner_gap;
 	},
 	GetChildHead : function(child) {
@@ -10907,15 +11222,15 @@ ALittle.DropDown = JavaScript.Class(ALittle.TextCheckButton, {
 		this._body.__right_data = this;
 		this._body.visible = false;
 		this._linear = ALittle.NewObject(ALittle.Linear, this._ctrl_sys);
-		this._linear.type = ALittle.UIEnumTypes.TYPE_V;
-		this._linear.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._linear.type = 2;
+		this._linear.width_type = 4;
 		this._linear.width_value = 0;
-		this._linear.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._linear.height_type = 4;
 		this._linear.height_value = 0;
 		this._scroll_screen = ALittle.NewObject(ALittle.ScrollScreen, this._ctrl_sys);
-		this._scroll_screen.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._scroll_screen.width_type = 4;
 		this._scroll_screen.width_value = 0;
-		this._scroll_screen.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._scroll_screen.height_type = 4;
 		this._scroll_screen.height_value = 0;
 		this._scroll_screen.container = this._linear;
 		this._body.AddChild(this._scroll_screen);
@@ -10935,8 +11250,8 @@ ALittle.DropDown = JavaScript.Class(ALittle.TextCheckButton, {
 		this._body.RemoveChild(this._background);
 		this._background = value;
 		if (this._background !== undefined) {
-			this._background.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._background.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._background.width_type = 4;
+			this._background.height_type = 4;
 			this._background.width_value = 0;
 			this._background.height_value = 0;
 			this._body.AddChild(this._background, 0);
@@ -11042,7 +11357,7 @@ ALittle.DropDown = JavaScript.Class(ALittle.TextCheckButton, {
 		this._button_style = undefined;
 		this._data_list = value;
 		this.button_style = button_style;
-		if (ALittle.List_MaxN(value) > 0) {
+		if (ALittle.List_Len(value) > 0) {
 			this.text = value[1 - 1];
 		} else {
 			this.text = "";
@@ -11114,10 +11429,10 @@ if (ALittle.DisplayLayout === undefined) throw new Error(" extends class:ALittle
 ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 	Ctor : function(ctrl_sys) {
 		this._pickup_rect = false;
-		this._type = ALittle.UIEnumTypes.TYPE_V;
+		this._type = 2;
 		this._offset_rate = 0;
 		this._drag_point_rate = 0;
-		this._fixed = ALittle.UIEnumTypes.FREE;
+		this._fixed = 1;
 		this._grade = 2;
 		this._grade_list = [];
 	},
@@ -11158,14 +11473,14 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 		return this._offset_rate;
 	},
 	set grade_value(value) {
-		if (this._fixed === ALittle.UIEnumTypes.FREE) {
+		if (this._fixed === 1) {
 			this.offset_rate = value;
 			return;
 		}
 		this.offset_rate = (lua.math.floor(value) - 1) / (this.grade - 1);
 	},
 	get grade_value() {
-		if (this._fixed === ALittle.UIEnumTypes.FREE) {
+		if (this._fixed === 1) {
 			return this._offset_rate;
 		}
 		return lua.math.floor(this._offset_rate * (this._grade - 1)) + 1;
@@ -11189,14 +11504,14 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 		let real_height = this.height;
 		let bar_width = this._bar_button.width;
 		let bar_height = this._bar_button.height;
-		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+		if (this._type === 2) {
 			let offset = rel_y / real_height;
 			if (offset > 1) {
 				offset = 1;
 			} else if (offset < 0) {
 				offset = 0;
 			}
-			if (this._fixed === ALittle.UIEnumTypes.FREE) {
+			if (this._fixed === 1) {
 				if (this._offset_rate === offset) {
 					return;
 				}
@@ -11224,7 +11539,7 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 			} else if (offset < 0) {
 				offset = 0;
 			}
-			if (this._fixed === ALittle.UIEnumTypes.FREE) {
+			if (this._fixed === 1) {
 				if (this._offset_rate === offset) {
 					return;
 				}
@@ -11276,14 +11591,14 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 			return;
 		}
 		this._fixed = value;
-		if (this._fixed === ALittle.UIEnumTypes.FIXED && this._grade !== undefined) {
+		if (this._fixed === 2 && this._grade !== undefined) {
 			this._grade_list = [];
 			this._grade_list[1 - 1] = 0;
 			let dist = 1 / (this._grade - 1);
 			for (let i = 1; i <= this._grade - 2; i += 1) {
 				this._grade_list[i + 1 - 1] = i * dist;
 			}
-			let num = ALittle.List_MaxN(this._grade_list);
+			let num = ALittle.List_Len(this._grade_list);
 			this._grade_list[num + 1 - 1] = 1;
 		}
 		this.AdjustBarButton();
@@ -11296,14 +11611,14 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 			return;
 		}
 		this._grade = value;
-		if (this._fixed === ALittle.UIEnumTypes.FIXED && value !== undefined) {
+		if (this._fixed === 2 && value !== undefined) {
 			this._grade_list = [];
 			this._grade_list[1 - 1] = 0;
 			let dist = 1 / (value - 1);
 			for (let i = 1; i <= value - 2; i += 1) {
 				this._grade_list[i + 1 - 1] = i * dist;
 			}
-			let num = ALittle.List_MaxN(this._grade_list);
+			let num = ALittle.List_Len(this._grade_list);
 			this._grade_list[num + 1 - 1] = 1;
 		}
 		this.AdjustBarButton();
@@ -11315,7 +11630,7 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 		let rel_x = undefined;
 		let rel_y = undefined;
 		[rel_x, rel_y] = this._bar_button.GlobalToLocalMatrix2D(event.abs_x, event.abs_y);
-		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+		if (this._type === 2) {
 			let height = this._bar_button.height;
 			this._drag_point_rate = 0;
 			if (height > 0) {
@@ -11340,8 +11655,8 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 		let real_height = this.height;
 		let bar_width = this._bar_button.width;
 		let bar_height = this._bar_button.height;
-		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
-			if (this._fixed === ALittle.UIEnumTypes.FREE) {
+		if (this._type === 2) {
+			if (this._fixed === 1) {
 				if ((event.delta_y > 0 && rel_y < bar_height * this._drag_point_rate) || (event.delta_y < 0 && rel_y > bar_height * this._drag_point_rate)) {
 					return;
 				}
@@ -11378,7 +11693,7 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 				}
 			}
 		} else {
-			if (this._fixed === ALittle.UIEnumTypes.FREE) {
+			if (this._fixed === 1) {
 				if ((event.delta_x > 0 && rel_x < bar_height * this._drag_point_rate) || (event.delta_x < 0 && rel_x > bar_height * this._drag_point_rate)) {
 					return;
 				}
@@ -11419,12 +11734,12 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	HandleBarButtonScroll : function(event) {
 		let step = undefined;
-		if (this._fixed === ALittle.UIEnumTypes.FREE) {
+		if (this._fixed === 1) {
 			step = 0.01;
 		} else {
 			step = 1 / (this._grade - 1);
 		}
-		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+		if (this._type === 2) {
 			if (event.delta_y > 0) {
 				this.HandleUpDownButton(-1 * step);
 			} else if (event.delta_y < 0) {
@@ -11446,7 +11761,7 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 		if (this._offset_rate > 1) {
 			this._offset_rate = 1;
 		}
-		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+		if (this._type === 2) {
 			this._bar_button.y = this._offset_rate * this.height - this._bar_button.height / 2;
 		} else {
 			this._bar_button.x = this._offset_rate * this.width - this._bar_button.width / 2;
@@ -11461,15 +11776,15 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 			this._bar_background.height = this.height;
 		}
 		if (this._bar_button !== undefined) {
-			if (this._type === ALittle.UIEnumTypes.TYPE_V) {
-				this._bar_button.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+			if (this._type === 2) {
+				this._bar_button.x_type = 3;
 				this._bar_button.x_value = 0;
-				this._bar_button.y_type = ALittle.UIEnumTypes.POS_ABS;
+				this._bar_button.y_type = 1;
 				this._bar_button.y_value = this._offset_rate * this.height - this._bar_button.height / 2;
 			} else {
-				this._bar_button.x_type = ALittle.UIEnumTypes.POS_ABS;
+				this._bar_button.x_type = 1;
 				this._bar_button.x_value = this._offset_rate * this.width - this._bar_button.width / 2;
-				this._bar_button.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+				this._bar_button.y_type = 3;
 				this._bar_button.y_value = 0;
 			}
 		}
@@ -11598,7 +11913,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 		}
 		if (this._bar_button !== undefined) {
 			let offset = this._offset_rate * (this._center_size - this._show_size);
-			if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+			if (this._type === 2) {
 				this._bar_button.y = offset;
 			} else {
 				this._bar_button.x = offset;
@@ -11627,7 +11942,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 		}
 		if (this._bar_button !== undefined) {
 			let offset = this._offset_rate * (this._center_size - this._show_size);
-			if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+			if (this._type === 2) {
 				this._bar_button.y = offset;
 			} else {
 				this._bar_button.x = offset;
@@ -11671,7 +11986,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 		return this._bar_background;
 	},
 	HandleBarButtonDragBegin : function(event) {
-		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+		if (this._type === 2) {
 			let height = this._bar_button.height;
 			this._drag_point_rate = 0;
 			if (height > 0) {
@@ -11686,7 +12001,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 		}
 	},
 	HandleBarButtonScroll : function(event) {
-		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+		if (this._type === 2) {
 			if (event.delta_y > 0) {
 				this.HandleUpButtonClick(undefined);
 			} else if (event.delta_y < 0) {
@@ -11705,7 +12020,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 	},
 	HandleBarButtonDrag : function(event) {
 		let real_size = this._center_size - this._show_size;
-		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+		if (this._type === 2) {
 			if ((event.delta_y > 0 && event.rel_y < this._show_size * this._drag_point_rate) || (event.delta_y < 0 && event.rel_y > this._show_size * this._drag_point_rate)) {
 				return;
 			}
@@ -11740,7 +12055,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 	},
 	AdjustBarButton : function() {
 		let real_size = this._center_size - this._show_size;
-		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+		if (this._type === 2) {
 			if (this._bar_button !== undefined) {
 				this._bar_button.x = 0;
 				this._bar_button.width = this._width;
@@ -12018,7 +12333,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 			return;
 		}
 		this._width = value;
-		if (this._width_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._width_type === 1) {
 			this._width_value = this._width;
 		}
 		let width = 0.0;
@@ -12075,7 +12390,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 			return;
 		}
 		this._height = value;
-		if (this._height_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._height_type === 1) {
 			this._height_value = this._height;
 		}
 		let height = 0.0;
@@ -12139,7 +12454,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		this._right_scroll_bar = value;
 		let width = 0.0;
 		if (this._right_scroll_bar !== undefined) {
-			this._right_scroll_bar.type = ALittle.UIEnumTypes.TYPE_V;
+			this._right_scroll_bar.type = 2;
 			width = this._right_scroll_bar.width;
 			ALittle.DisplayGroup.AddChild.call(this, this._right_scroll_bar);
 			this._right_scroll_bar.AddEventListener(___all_struct.get(958494922), this, this.HandleRightScrollBarChange);
@@ -12203,7 +12518,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		this._bottom_scroll_bar = value;
 		let height = 0.0;
 		if (this._bottom_scroll_bar !== undefined) {
-			this._bottom_scroll_bar.type = ALittle.UIEnumTypes.TYPE_H;
+			this._bottom_scroll_bar.type = 1;
 			height = this._bottom_scroll_bar.height;
 			ALittle.DisplayGroup.AddChild.call(this, this._bottom_scroll_bar);
 			this._bottom_scroll_bar.AddEventListener(___all_struct.get(958494922), this, this.HandleBottomScrollBarChange);
@@ -12320,7 +12635,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 			}
 		}
 		this._content_height = this._scroll_content.max_bottom;
-		if (event.delta_x !== 0 && this._bottom_scroll_bar !== undefined) {
+		if (event.delta_x !== 0) {
 			if (event.delta_x > 0) {
 				let min_x = 0.0;
 				let max_x = this._scroll_view.width * this._drag_rate;
@@ -12375,7 +12690,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 			}
 			this.RefreshClipDisLine(event.delta_x);
 		}
-		if (event.delta_y !== 0 && this._right_scroll_bar !== undefined) {
+		if (event.delta_y !== 0) {
 			if (event.delta_y > 0) {
 				let min_y = 0.0;
 				let max_y = this._scroll_view.height * this._drag_rate;
@@ -12644,8 +12959,8 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 		this._title_text = "";
 		this._head = ALittle.NewObject(ALittle.DisplayLayout, this._ctrl_sys);
 		this._head_container = ALittle.NewObject(ALittle.DisplayLayout, this._ctrl_sys);
-		this._head_container.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-		this._head_container.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._head_container.width_type = 4;
+		this._head_container.height_type = 4;
 		this._head.AddChild(this._head_container);
 		this._head_left_margin = 0;
 		this._head_right_margin = 0;
@@ -12653,11 +12968,11 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 		this._head_bottom_margin = 0;
 		this._body = ALittle.NewObject(ALittle.DisplayLayout, this._ctrl_sys);
 		this._grid3 = ALittle.NewObject(ALittle.Grid3, this._ctrl_sys);
-		this._grid3.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._grid3.width_type = 4;
 		this._grid3.width_value = 0;
-		this._grid3.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._grid3.height_type = 4;
 		this._grid3.height_value = 0;
-		this._grid3.type = ALittle.UIEnumTypes.TYPE_V;
+		this._grid3.type = 2;
 		this._grid3.show_up = this._head;
 		this._grid3.show_center = this._body;
 		ALittle.DisplayLayout.AddChild.call(this, this._grid3);
@@ -12713,11 +13028,11 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		this._background = value;
 		if (this._background !== undefined) {
-			this._background.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._background.width_type = 4;
 			this._background.width_value = 0;
-			this._background.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._background.height_type = 4;
 			this._background.height_value = this._grid3.up_size;
-			this._background.y_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING;
+			this._background.y_type = 4;
 			ALittle.DisplayLayout.AddChild.call(this, this._background, 1);
 		}
 	},
@@ -12733,9 +13048,9 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		this._head_drag = value;
 		if (this._head_drag !== undefined) {
-			this._head_drag.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._head_drag.width_type = 4;
 			this._head_drag.width_value = 0;
-			this._head_drag.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._head_drag.height_type = 4;
 			this._head_drag.height_value = 0;
 			this._head.AddChild(this._head_drag, 1);
 			this._head_drag.AddEventListener(___all_struct.get(1301789264), this, this.HandleHeadDragBegin);
@@ -12755,7 +13070,7 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 		if (this._title !== undefined) {
 			this._title.text = this._title_text;
 			this._title.disabled = true;
-			this._title.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+			this._title.y_type = 3;
 			this._title.y_value = 0;
 			this._title.x = 0;
 			this._head_container.AddChild(this._title);
@@ -12784,9 +13099,9 @@ ALittle.Dialog = JavaScript.Class(ALittle.DisplayLayout, {
 		this._close_button = value;
 		if (this._close_button !== undefined) {
 			this._close_button.y_value = 0;
-			this._close_button.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+			this._close_button.y_type = 3;
 			this._head_container.AddChild(this._close_button);
-			this._close_button.x_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING;
+			this._close_button.x_type = 4;
 			this._close_button.x_value = (this._grid3.up_size - this._close_button.height) / 2;
 			this._close_button.AddEventListener(___all_struct.get(-449066808), this, this.HandleCloseButtonClicked);
 		}
@@ -13270,8 +13585,8 @@ ALittle.ImagePlay = JavaScript.Class(ALittle.DisplayLayout, {
 			let v = ___OBJECT_1[k - 1];
 			if (v === undefined) break;
 			let image = ALittle.NewObject(ALittle.Image, this._ctrl_sys);
-			image.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			image.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			image.width_type = 4;
+			image.height_type = 4;
 			image.texture_name = v;
 			image.visible = false;
 			this.AddChild(image);
@@ -13376,6 +13691,142 @@ ALittle.SpritePlay = JavaScript.Class(ALittle.Sprite, {
 		this.col_index = this._play_index % this._col_count + 1;
 	},
 }, "ALittle.SpritePlay");
+
+}
+{
+if (typeof ALittle === "undefined") window.ALittle = {};
+
+
+let __tostring = ALittle.String_ToString;
+let __len = ALittle.String_Len;
+let __byte = ALittle.String_Byte;
+if (ALittle.Linear === undefined) throw new Error(" extends class:ALittle.Linear is undefined");
+ALittle.SpriteNumber = JavaScript.Class(ALittle.Linear, {
+	Ctor : function() {
+		this._col_count = 1;
+		this._text = "";
+		this._cell_width = 0;
+		this._sprite_pool = [];
+		this._pool_count = 0;
+	},
+	get texture_name() {
+		return this._texture_name;
+	},
+	get cell_width() {
+		return this._cell_width;
+	},
+	set cell_width(value) {
+		this._cell_width = value;
+		let ___OBJECT_1 = this._childs;
+		for (let index = 1; index <= ___OBJECT_1.length; ++index) {
+			let child = ___OBJECT_1[index - 1];
+			if (child === undefined) break;
+			child.width = value;
+		}
+		let ___OBJECT_2 = this._sprite_pool;
+		for (let index = 1; index <= ___OBJECT_2.length; ++index) {
+			let child = ___OBJECT_2[index - 1];
+			if (child === undefined) break;
+			child.width = value;
+		}
+		this.Layout(1);
+	},
+	set texture_name(value) {
+		if (this._texture_name === value) {
+			return;
+		}
+		this._texture_name = value;
+		let ___OBJECT_3 = this._childs;
+		for (let index = 1; index <= ___OBJECT_3.length; ++index) {
+			let child = ___OBJECT_3[index - 1];
+			if (child === undefined) break;
+			child.texture_name = value;
+		}
+		let ___OBJECT_4 = this._sprite_pool;
+		for (let index = 1; index <= ___OBJECT_4.length; ++index) {
+			let child = ___OBJECT_4[index - 1];
+			if (child === undefined) break;
+			child.texture_name = value;
+		}
+	},
+	get col_count() {
+		return this._col_count;
+	},
+	set col_count(value) {
+		if (value < 1) {
+			value = 1;
+		}
+		this._col_count = value;
+		let ___OBJECT_5 = this._childs;
+		for (let index = 1; index <= ___OBJECT_5.length; ++index) {
+			let child = ___OBJECT_5[index - 1];
+			if (child === undefined) break;
+			child.col_count = value;
+		}
+		let ___OBJECT_6 = this._sprite_pool;
+		for (let index = 1; index <= ___OBJECT_6.length; ++index) {
+			let child = ___OBJECT_6[index - 1];
+			if (child === undefined) break;
+			child.col_count = value;
+		}
+	},
+	get text() {
+		return this._text;
+	},
+	set text(value) {
+		if (value === undefined) {
+			return;
+		}
+		value = __tostring(value);
+		if (this._text === value) {
+			return;
+		}
+		this._text = value;
+		let len = __len(value);
+		if (this._child_count > len) {
+			for (let index = len + 1; index <= this._child_count; index += 1) {
+				this._pool_count = this._pool_count + (1);
+				this._sprite_pool[this._pool_count - 1] = this._childs[index - 1];
+			}
+			this.SpliceChild(len + 1);
+		} else if (this._child_count < len) {
+			for (let index = this._child_count + 1; index <= len; index += 1) {
+				let child = undefined;
+				if (this._pool_count > 1) {
+					child = this._sprite_pool[this._pool_count - 1];
+					this._sprite_pool[this._pool_count - 1] = undefined;
+					this._pool_count = this._pool_count - (1);
+				} else {
+					child = ALittle.NewObject(ALittle.Sprite, this._ctrl_sys);
+					child.col_count = this._col_count;
+					child.texture_name = this._texture_name;
+					child.width = this._cell_width;
+				}
+				this.AddChild(child);
+			}
+		}
+		let byte = 0;
+		let ___OBJECT_7 = this._childs;
+		for (let index = 1; index <= ___OBJECT_7.length; ++index) {
+			let child = ___OBJECT_7[index - 1];
+			if (child === undefined) break;
+			byte = __byte(value, index);
+			if (byte >= 48 && byte <= 57) {
+				child.col_index = byte - 47;
+			} else if (byte === 43) {
+				child.col_index = 11;
+			} else if (byte === 45) {
+				child.col_index = 12;
+			} else if (byte === 46) {
+				child.col_index = 13;
+			} else if (byte === 47) {
+				child.col_index = 14;
+			} else {
+				child.col_index = 1;
+			}
+		}
+	},
+}, "ALittle.SpriteNumber");
 
 }
 {
@@ -13547,9 +13998,9 @@ ALittle.Piechart = JavaScript.Class(ALittle.DisplayLayout, {
 			let triangle = ALittle.NewObject(ALittle.Triangle, this._ctrl_sys);
 			triangle.u2 = 0.5;
 			triangle.v2 = 0.5;
-			triangle.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			triangle.width_type = 4;
 			triangle.width_value = 0;
-			triangle.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			triangle.height_type = 4;
 			triangle.height_value = 0;
 			this._tri_list[i - 1] = triangle;
 			ALittle.DisplayLayout.AddChild.call(this, triangle);
@@ -13619,7 +14070,7 @@ ALittle.Piechart = JavaScript.Class(ALittle.DisplayLayout, {
 			return;
 		}
 		this._width = value;
-		if (this._width_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._width_type === 1) {
 			this._width_value = this._width;
 		}
 		let ___OBJECT_1 = this._tri_list;
@@ -13639,7 +14090,7 @@ ALittle.Piechart = JavaScript.Class(ALittle.DisplayLayout, {
 			return;
 		}
 		this._height = value;
-		if (this._height_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._height_type === 1) {
 			this._height_value = this._height;
 		}
 		let ___OBJECT_2 = this._tri_list;
@@ -13826,11 +14277,11 @@ if (ALittle.DisplayLayout === undefined) throw new Error(" extends class:ALittle
 ALittle.ImageInput = JavaScript.Class(ALittle.DisplayLayout, {
 	Ctor : function(ctrl_sys) {
 		this._show_input = ALittle.NewObject(ALittle.TextInput, this._ctrl_sys);
-		this._show_input.x_type = ALittle.UIEnumTypes.POS_ALIGN_STARTING;
-		this._show_input.y_type = ALittle.UIEnumTypes.POS_ALIGN_STARTING;
-		this._show_input.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._show_input.x_type = 2;
+		this._show_input.y_type = 2;
+		this._show_input.width_type = 4;
 		this._show_input.width_value = 0;
-		this._show_input.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._show_input.height_type = 4;
 		this._show_input.height_value = 0;
 		this.AddChild(this._show_input, 5);
 		this._logic_left = 0;
@@ -14164,8 +14615,8 @@ ALittle.ImageInput = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_up);
 		this._show_up = value;
 		if (this._show_up !== undefined) {
-			this._show_up.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_up.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_up.width_type = 4;
+			this._show_up.height_type = 4;
 			this._show_up.width_value = 0;
 			this._show_up.height_value = 0;
 			this._show_up.disabled = true;
@@ -14180,8 +14631,8 @@ ALittle.ImageInput = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_down);
 		this._show_down = value;
 		if (this._show_down !== undefined) {
-			this._show_down.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_down.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_down.width_type = 4;
+			this._show_down.height_type = 4;
 			this._show_down.width_value = 0;
 			this._show_down.height_value = 0;
 			this._show_down.disabled = true;
@@ -14196,8 +14647,8 @@ ALittle.ImageInput = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_over);
 		this._show_over = value;
 		if (this._show_over !== undefined) {
-			this._show_over.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_over.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_over.width_type = 4;
+			this._show_over.height_type = 4;
 			this._show_over.width_value = 0;
 			this._show_over.height_value = 0;
 			this._show_over.disabled = true;
@@ -14212,8 +14663,8 @@ ALittle.ImageInput = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_disabled);
 		this._show_disabled = value;
 		if (this._show_disabled !== undefined) {
-			this._show_disabled.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_disabled.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_disabled.width_type = 4;
+			this._show_disabled.height_type = 4;
 			this._show_disabled.width_value = 0;
 			this._show_disabled.height_value = 0;
 			this._show_disabled.disabled = true;
@@ -14342,11 +14793,11 @@ if (ALittle.DisplayLayout === undefined) throw new Error(" extends class:ALittle
 ALittle.ImageEdit = JavaScript.Class(ALittle.DisplayLayout, {
 	Ctor : function(ctrl_sys) {
 		this._show_edit = ALittle.NewObject(ALittle.TextEdit, this._ctrl_sys);
-		this._show_edit.x_type = ALittle.UIEnumTypes.POS_ALIGN_STARTING;
-		this._show_edit.y_type = ALittle.UIEnumTypes.POS_ALIGN_STARTING;
-		this._show_edit.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._show_edit.x_type = 2;
+		this._show_edit.y_type = 2;
+		this._show_edit.width_type = 4;
 		this._show_edit.width_value = 0;
-		this._show_edit.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._show_edit.height_type = 4;
 		this._show_edit.height_value = 0;
 		this.AddChild(this._show_edit, 5);
 		this._logic_left = 0;
@@ -14656,8 +15107,8 @@ ALittle.ImageEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_up);
 		this._show_up = value;
 		if (this._show_up !== undefined) {
-			this._show_up.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_up.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_up.width_type = 4;
+			this._show_up.height_type = 4;
 			this._show_up.width_value = 0;
 			this._show_up.height_value = 0;
 			this.AddChild(this._show_up, 1);
@@ -14671,8 +15122,8 @@ ALittle.ImageEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_down);
 		this._show_down = value;
 		if (this._show_down !== undefined) {
-			this._show_down.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_down.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_down.width_type = 4;
+			this._show_down.height_type = 4;
 			this._show_down.width_value = 0;
 			this._show_down.height_value = 0;
 			this.AddChild(this._show_down, 1);
@@ -14686,8 +15137,8 @@ ALittle.ImageEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_over);
 		this._show_over = value;
 		if (this._show_over !== undefined) {
-			this._show_over.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_over.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_over.width_type = 4;
+			this._show_over.height_type = 4;
 			this._show_over.width_value = 0;
 			this._show_over.height_value = 0;
 			this.AddChild(this._show_over, 1);
@@ -14701,8 +15152,8 @@ ALittle.ImageEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_disabled);
 		this._show_disabled = value;
 		if (this._show_disabled !== undefined) {
-			this._show_disabled.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_disabled.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_disabled.width_type = 4;
+			this._show_disabled.height_type = 4;
 			this._show_disabled.width_value = 0;
 			this._show_disabled.height_value = 0;
 			this.AddChild(this._show_disabled, 1);
@@ -14877,8 +15328,8 @@ ALittle.RichArea = JavaScript.Class(ALittle.DisplayLayout, {
 	Ctor : function(ctrl_sys) {
 		this._enter_key_height = 20;
 		this._line_spacing = 0;
-		this._halign = ALittle.UIEnumTypes.HALIGN_LEFT;
-		this._valign = ALittle.UIEnumTypes.VALIGN_TOP;
+		this._halign = 0;
+		this._valign = 0;
 		this._display_list = undefined;
 		this._line_list = [];
 		this._line_count = 0;
@@ -15165,9 +15616,9 @@ ALittle.RichArea = JavaScript.Class(ALittle.DisplayLayout, {
 			let line = ___OBJECT_2[k - 1];
 			if (line === undefined) break;
 			let offset_x = 0.0;
-			if (this._halign === ALittle.UIEnumTypes.HALIGN_CENTER) {
+			if (this._halign === 1) {
 				offset_x = (this.width - line.width) / 2;
-			} else if (this._halign === ALittle.UIEnumTypes.HALIGN_RIGHT) {
+			} else if (this._halign === 2) {
 				offset_x = this.width - line.width;
 			}
 			let ___OBJECT_3 = line.childs;
@@ -15194,9 +15645,9 @@ ALittle.RichArea = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		this._real_height = this._real_height + (line_count - 1) * this._line_spacing;
 		let offset_y = 0.0;
-		if (this._valign === ALittle.UIEnumTypes.VALIGN_CENTER) {
+		if (this._valign === 1) {
 			offset_y = (this.height - this._real_height) / 2;
-		} else if (this._valign === ALittle.UIEnumTypes.VALIGN_BOTTOM) {
+		} else if (this._valign === 2) {
 			offset_y = this.height - this._real_height;
 		}
 		let ___OBJECT_5 = this._line_list;

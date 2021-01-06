@@ -15,14 +15,14 @@ ALittle.Tab = JavaScript.Class(ALittle.Grid3, {
 		this._button_inner_gap = 8;
 		this._child_id_map = ALittle.CreateKeyWeakMap();
 		this._group = ALittle.CreateKeyWeakMap();
-		this.type = ALittle.UIEnumTypes.TYPE_V;
+		this.type = 2;
 		this._view = ALittle.NewObject(ALittle.DisplayView, this._ctrl_sys);
-		this._view.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-		this._view.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._view.height_type = 4;
+		this._view.width_type = 4;
 		this._linear = ALittle.NewObject(ALittle.Linear, this._ctrl_sys);
-		this._linear.type = ALittle.UIEnumTypes.TYPE_H;
-		this._linear.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-		this._linear.y_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING;
+		this._linear.type = 1;
+		this._linear.height_type = 4;
+		this._linear.y_type = 4;
 		this._view.AddChild(this._linear);
 		this._view_start = 0;
 		this._view_margin = 0;
@@ -79,28 +79,28 @@ ALittle.Tab = JavaScript.Class(ALittle.Grid3, {
 				radiobutton.AddEventListener(___all_struct.get(-641444818), this, this.HandleRadioButtonRButtonDown);
 				radiobutton.AddEventListener(___all_struct.get(-1604617962), this, this.HandleRadioButtonKeyDown);
 				radiobutton.group = this._group;
-				radiobutton.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-				radiobutton.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+				radiobutton.width_type = 4;
+				radiobutton.height_type = 4;
 				v.visible = radiobutton.selected;
 				text.text = this._child_id_map.get(v);
 				text.disabled = true;
-				text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+				text.y_type = 3;
 				text.y_value = 2;
 				text.x = this._button_inner_gap;
 				text.visible = !radiobutton.selected;
 				selected_text.text = this._child_id_map.get(v);
 				selected_text.disabled = true;
-				selected_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+				selected_text.y_type = 3;
 				selected_text.y_value = 2;
 				selected_text.x = this._button_inner_gap;
 				selected_text.visible = radiobutton.selected;
 				closebutton.AddEventListener(___all_struct.get(-449066808), this, this.HandleCloseButtonClick);
-				closebutton.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+				closebutton.y_type = 3;
 				closebutton.y_value = 2;
 				closebutton.x = text.x + text.width + this._button_inner_gap;
 				closebutton.visible = !radiobutton.selected;
 				selected_closebutton.AddEventListener(___all_struct.get(-449066808), this, this.HandleCloseButtonClick);
-				selected_closebutton.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+				selected_closebutton.y_type = 3;
 				selected_closebutton.y_value = 2;
 				selected_closebutton.x = selected_text.x + selected_text.width + this._button_inner_gap;
 				selected_closebutton.visible = radiobutton.selected;
@@ -170,9 +170,9 @@ ALittle.Tab = JavaScript.Class(ALittle.Grid3, {
 		}
 		this._head_background = value;
 		if (this._head_background !== undefined) {
-			this._head_background.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._head_background.width_type = 4;
 			this._head_background.width_value = 0;
-			this._head_background.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._head_background.height_type = 4;
 			this._head_background.height_value = 0;
 			this._view.AddChild(this._head_background, 1);
 		}
@@ -310,11 +310,11 @@ ALittle.Tab = JavaScript.Class(ALittle.Grid3, {
 		child._logic_parent = this;
 		child.x = 0;
 		child.y = 0;
-		child.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		child.width_type = 4;
 		child.width_value = this._child_width_margin;
-		child.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		child.height_type = 4;
 		child.height_value = 0;
-		child.x_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING;
+		child.x_type = 4;
 		this._child_id_map.set(child, child.description);
 		if (this._child_id_map.get(child) === undefined) {
 			this._child_id_map.set(child, "");
@@ -337,30 +337,30 @@ ALittle.Tab = JavaScript.Class(ALittle.Grid3, {
 			radiobutton.AddEventListener(___all_struct.get(-641444818), this, this.HandleRadioButtonRButtonDown);
 			radiobutton.AddEventListener(___all_struct.get(-1604617962), this, this.HandleRadioButtonKeyDown);
 			radiobutton.group = this._group;
-			radiobutton.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			radiobutton.width_type = 4;
 			radiobutton.width_value = 0;
-			radiobutton.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			radiobutton.height_type = 4;
 			radiobutton.height_value = 0;
 			child.visible = radiobutton.selected;
 			text.text = this._child_id_map.get(child);
 			text.disabled = true;
-			text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+			text.y_type = 3;
 			text.y_value = 2;
 			text.x = this._button_inner_gap;
 			text.visible = !radiobutton.selected;
 			selected_text.text = this._child_id_map.get(child);
 			selected_text.disabled = true;
-			selected_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+			selected_text.y_type = 3;
 			selected_text.y_value = 2;
 			selected_text.x = this._button_inner_gap;
 			selected_text.visible = radiobutton.selected;
 			closebutton.AddEventListener(___all_struct.get(-449066808), this, this.HandleCloseButtonClick);
-			closebutton.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+			closebutton.y_type = 3;
 			closebutton.y_value = 2;
 			closebutton.x = text.x + text.width + this._button_inner_gap;
 			closebutton.visible = !radiobutton.selected;
 			selected_closebutton.AddEventListener(___all_struct.get(-449066808), this, this.HandleCloseButtonClick);
-			selected_closebutton.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+			selected_closebutton.y_type = 3;
 			selected_closebutton.y_value = 2;
 			selected_closebutton.x = selected_text.x + selected_text.width + this._button_inner_gap;
 			selected_closebutton.visible = radiobutton.selected;
@@ -765,11 +765,11 @@ ALittle.Tab = JavaScript.Class(ALittle.Grid3, {
 		let layout_childs = simplelayout.childs;
 		layout_childs[3 - 1].visible = false;
 		layout_childs[3 - 1].disabled = true;
-		layout_childs[2 - 1].x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		layout_childs[2 - 1].x_type = 3;
 		layout_childs[2 - 1].x_value = 0;
 		layout_childs[5 - 1].visible = false;
 		layout_childs[5 - 1].disabled = true;
-		layout_childs[4 - 1].x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		layout_childs[4 - 1].x_type = 3;
 		layout_childs[4 - 1].x_value = 0;
 	},
 	DisableAllCloseButton : function() {
@@ -784,11 +784,11 @@ ALittle.Tab = JavaScript.Class(ALittle.Grid3, {
 			let layout_childs = simplelayout.childs;
 			layout_childs[3 - 1].visible = false;
 			layout_childs[3 - 1].disabled = true;
-			layout_childs[2 - 1].x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+			layout_childs[2 - 1].x_type = 3;
 			layout_childs[2 - 1].x_value = 0;
 			layout_childs[5 - 1].visible = false;
 			layout_childs[5 - 1].disabled = true;
-			layout_childs[4 - 1].x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+			layout_childs[4 - 1].x_type = 3;
 			layout_childs[4 - 1].x_value = 0;
 		}
 	},
@@ -806,11 +806,11 @@ ALittle.Tab = JavaScript.Class(ALittle.Grid3, {
 		let layout_childs = simplelayout.childs;
 		layout_childs[3 - 1].visible = !layout_childs[1 - 1].selected;
 		layout_childs[3 - 1].disabled = false;
-		layout_childs[2 - 1].x_type = ALittle.UIEnumTypes.POS_ABS;
+		layout_childs[2 - 1].x_type = 1;
 		layout_childs[2 - 1].x = this._button_inner_gap;
 		layout_childs[5 - 1].visible = layout_childs[1 - 1].selected;
 		layout_childs[5 - 1].disabled = false;
-		layout_childs[4 - 1].x_type = ALittle.UIEnumTypes.POS_ABS;
+		layout_childs[4 - 1].x_type = 1;
 		layout_childs[4 - 1].x = this._button_inner_gap;
 	},
 	GetChildHead : function(child) {

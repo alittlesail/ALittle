@@ -305,7 +305,7 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 	HandleKeyDown : function(event) {
 		let is_change = false;
 		if (event.sym === 1073741904) {
-			if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
+			if (event.mod & 0x0003 === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffset(true);
 			} else {
@@ -314,7 +314,7 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 			}
 			event.handled = true;
 		} else if (event.sym === 1073741903) {
-			if (ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) === 0) {
+			if (event.mod & 0x0003 === 0) {
 				this._is_selecting = false;
 				this._show.CursorOffset(false);
 			} else {
@@ -347,7 +347,7 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 				this.DispatchEvent(___all_struct.get(776398171), {});
 				event.handled = true;
 			}
-		} else if (event.sym === 120 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 120 && event.mod & 0x00c0 !== 0) {
 			if (this._editable || event.custom) {
 				this._is_selecting = false;
 				let select_text = this._show.GetSelectText();
@@ -357,13 +357,13 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 				}
 				event.handled = true;
 			}
-		} else if (event.sym === 99 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 99 && event.mod & 0x00c0 !== 0) {
 			let select_text = this._show.GetSelectText();
 			if (select_text !== "" && (!this._password_mode)) {
 				ALittle.System_SetClipboardText(select_text);
 			}
 			event.handled = true;
-		} else if (event.sym === 118 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 118 && event.mod & 0x00c0 !== 0) {
 			if (this._editable || event.custom) {
 				this._is_selecting = false;
 				if (ALittle.System_HasClipboardText()) {
@@ -375,14 +375,14 @@ ALittle.TextInput = JavaScript.Class(ALittle.DisplayObject, {
 				}
 				event.handled = true;
 			}
-		} else if (event.sym === 97 && ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) !== 0) {
+		} else if (event.sym === 97 && event.mod & 0x00c0 !== 0) {
 			this._is_selecting = true;
 			this._show.SelectAll();
 			event.handled = true;
 		} else if (event.sym === 9) {
 			this.DispatchEvent(___all_struct.get(2024735182), {});
 			event.handled = true;
-		} else if (event.sym === ALittle.UIEnumTypes.KEY_ESC) {
+		} else if (event.sym === 27) {
 			this.DispatchEvent(___all_struct.get(1637310579), {});
 			event.handled = true;
 		}

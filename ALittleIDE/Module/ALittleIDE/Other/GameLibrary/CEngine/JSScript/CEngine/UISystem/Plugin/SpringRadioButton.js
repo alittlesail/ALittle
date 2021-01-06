@@ -63,6 +63,7 @@ ALittle.SpringRadioButton = JavaScript.Class(ALittle.SpringCheckButton, {
 			}
 			let e = {};
 			e.is_drag = event.is_drag;
+			e.count = event.count;
 			this.DispatchEvent(___all_struct.get(-449066808), e);
 			if (ALittle.System_IsPhone() === false) {
 				this.ShowOver();

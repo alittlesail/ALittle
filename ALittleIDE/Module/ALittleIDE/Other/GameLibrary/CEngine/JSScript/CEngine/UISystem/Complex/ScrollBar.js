@@ -119,7 +119,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 		}
 		if (this._bar_button !== undefined) {
 			let offset = this._offset_rate * (this._center_size - this._show_size);
-			if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+			if (this._type === 2) {
 				this._bar_button.y = offset;
 			} else {
 				this._bar_button.x = offset;
@@ -148,7 +148,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 		}
 		if (this._bar_button !== undefined) {
 			let offset = this._offset_rate * (this._center_size - this._show_size);
-			if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+			if (this._type === 2) {
 				this._bar_button.y = offset;
 			} else {
 				this._bar_button.x = offset;
@@ -192,7 +192,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 		return this._bar_background;
 	},
 	HandleBarButtonDragBegin : function(event) {
-		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+		if (this._type === 2) {
 			let height = this._bar_button.height;
 			this._drag_point_rate = 0;
 			if (height > 0) {
@@ -207,7 +207,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 		}
 	},
 	HandleBarButtonScroll : function(event) {
-		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+		if (this._type === 2) {
 			if (event.delta_y > 0) {
 				this.HandleUpButtonClick(undefined);
 			} else if (event.delta_y < 0) {
@@ -226,7 +226,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 	},
 	HandleBarButtonDrag : function(event) {
 		let real_size = this._center_size - this._show_size;
-		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+		if (this._type === 2) {
 			if ((event.delta_y > 0 && event.rel_y < this._show_size * this._drag_point_rate) || (event.delta_y < 0 && event.rel_y > this._show_size * this._drag_point_rate)) {
 				return;
 			}
@@ -261,7 +261,7 @@ ALittle.ScrollBar = JavaScript.Class(ALittle.Grid3, {
 	},
 	AdjustBarButton : function() {
 		let real_size = this._center_size - this._show_size;
-		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+		if (this._type === 2) {
 			if (this._bar_button !== undefined) {
 				this._bar_button.x = 0;
 				this._bar_button.width = this._width;

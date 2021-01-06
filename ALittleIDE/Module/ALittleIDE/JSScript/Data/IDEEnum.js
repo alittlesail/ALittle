@@ -123,7 +123,8 @@ ALittleIDE.IDEEnum = JavaScript.Class(undefined, {
 		this.text_edit_display_map["TextCheckButton"] = true;
 		this.text_edit_display_map["TextRadioButton"] = true;
 		this.text_edit_display_map["SpringTextButton"] = true;
-		this.child_type_list = ["DisplayLayout", "DisplayView", "Quad", "Image", "Grid9Image", "Sprite", "SpringTextButton", "Text", "TextArea", "TextInput", "TextEdit", "Slider", "Grid3", "Grid9", "Linear", "Tab", "DropDown", "ScrollBar", "ScrollList", "ScrollScreen", "Dialog", "TileTable", "TextCheckButton", "TextRadioButton", "ImageEdit", "ImageInput", "RichArea", "RichInput", "RichEdit", "ImagePlay", "SpritePlay", "TextButton", "ScrollButton", "Triangle", "Piechart", "FramePlay"];
+		this.text_edit_display_map["SpringNumber"] = true;
+		this.child_type_list = ["DisplayLayout", "DisplayView", "Quad", "Image", "Grid9Image", "Sprite", "SpringTextButton", "Text", "TextArea", "TextInput", "TextEdit", "Slider", "Grid3", "Grid9", "Linear", "Tab", "DropDown", "ScrollBar", "ScrollList", "ScrollScreen", "Dialog", "TileTable", "TextCheckButton", "TextRadioButton", "ImageEdit", "ImageInput", "RichArea", "RichInput", "RichEdit", "ImagePlay", "SpritePlay", "SpriteNumber", "TextButton", "ScrollButton", "Triangle", "VertexImage", "Piechart", "FramePlay"];
 		this.type_default_map = {};
 		let ___OBJECT_1 = this.child_type_list;
 		for (let k = 1; k <= ___OBJECT_1.length; ++k) {

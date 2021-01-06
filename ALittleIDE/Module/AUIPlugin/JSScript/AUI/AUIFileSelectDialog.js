@@ -85,7 +85,9 @@ AUIPlugin.AUIFileSelectDialog = JavaScript.Class(ALittle.EventDispatcher, {
 	ShowSelect : function() {
 		return new Promise((async function(___COROUTINE, ___) {
 			this.ShowDialog();
-			___COROUTINE(await this._layout.ShowSelect()); return;
+			let result = await this._layout.ShowSelect();
+			this._dialog.visible = false;
+			___COROUTINE(result); return;
 		}).bind(this));
 	},
 	HandleDialogClose : function() {

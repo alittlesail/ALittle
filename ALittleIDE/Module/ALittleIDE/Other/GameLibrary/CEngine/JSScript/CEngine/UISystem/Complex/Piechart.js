@@ -12,9 +12,9 @@ ALittle.Piechart = JavaScript.Class(ALittle.DisplayLayout, {
 			let triangle = ALittle.NewObject(ALittle.Triangle, this._ctrl_sys);
 			triangle.u2 = 0.5;
 			triangle.v2 = 0.5;
-			triangle.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			triangle.width_type = 4;
 			triangle.width_value = 0;
-			triangle.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			triangle.height_type = 4;
 			triangle.height_value = 0;
 			this._tri_list[i - 1] = triangle;
 			ALittle.DisplayLayout.AddChild.call(this, triangle);
@@ -84,7 +84,7 @@ ALittle.Piechart = JavaScript.Class(ALittle.DisplayLayout, {
 			return;
 		}
 		this._width = value;
-		if (this._width_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._width_type === 1) {
 			this._width_value = this._width;
 		}
 		let ___OBJECT_1 = this._tri_list;
@@ -104,7 +104,7 @@ ALittle.Piechart = JavaScript.Class(ALittle.DisplayLayout, {
 			return;
 		}
 		this._height = value;
-		if (this._height_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._height_type === 1) {
 			this._height_value = this._height;
 		}
 		let ___OBJECT_2 = this._tri_list;

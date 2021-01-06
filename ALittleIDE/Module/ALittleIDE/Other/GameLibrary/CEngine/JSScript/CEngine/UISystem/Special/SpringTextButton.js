@@ -51,6 +51,7 @@ ALittle.SpringTextButton = JavaScript.Class(ALittle.DisplayLayout, {
 		if (event.rel_x >= 0 && event.rel_y >= 0 && event.rel_x < event.target._width && event.rel_y < event.target._height) {
 			let e = {};
 			e.is_drag = event.is_drag;
+			e.count = event.count;
 			this.DispatchEvent(___all_struct.get(-449066808), e);
 			if (this._file_select) {
 				A_OtherSystem.SystemSelectFile(this);
@@ -189,8 +190,8 @@ ALittle.SpringTextButton = JavaScript.Class(ALittle.DisplayLayout, {
 		value.visible = this._show_text.visible;
 		this.RemoveChild(this._show_text);
 		this._show_text = value;
-		this._show_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
-		this._show_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_text.x_type = 3;
+		this._show_text.y_type = 3;
 		this.AddChild(this._show_text, 6);
 	},
 	get show_text() {
@@ -214,8 +215,8 @@ ALittle.SpringTextButton = JavaScript.Class(ALittle.DisplayLayout, {
 		value.visible = this._show_disabled_text.visible;
 		this.RemoveChild(this._show_disabled_text);
 		this._show_disabled_text = value;
-		this._show_disabled_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
-		this._show_disabled_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+		this._show_disabled_text.x_type = 3;
+		this._show_disabled_text.y_type = 3;
 		this.AddChild(this._show_disabled_text, 6);
 	},
 	get show_disabled_text() {
@@ -228,8 +229,8 @@ ALittle.SpringTextButton = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_up);
 		this._show_up = value;
 		if (this._show_up !== undefined) {
-			this._show_up.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_up.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_up.width_type = 4;
+			this._show_up.height_type = 4;
 			this._show_up.width_value = 0;
 			this._show_up.height_value = 0;
 			this.AddChild(this._show_up, 1);
@@ -247,8 +248,8 @@ ALittle.SpringTextButton = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_disabled);
 		this._show_disabled = value;
 		if (this._show_disabled !== undefined) {
-			this._show_disabled.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_disabled.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_disabled.width_type = 4;
+			this._show_disabled.height_type = 4;
 			this._show_disabled.width_value = 0;
 			this._show_disabled.height_value = 0;
 			this.AddChild(this._show_disabled, 1);

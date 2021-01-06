@@ -9,11 +9,11 @@ if (ALittle.DisplayLayout === undefined) throw new Error(" extends class:ALittle
 ALittle.ImageEdit = JavaScript.Class(ALittle.DisplayLayout, {
 	Ctor : function(ctrl_sys) {
 		this._show_edit = ALittle.NewObject(ALittle.TextEdit, this._ctrl_sys);
-		this._show_edit.x_type = ALittle.UIEnumTypes.POS_ALIGN_STARTING;
-		this._show_edit.y_type = ALittle.UIEnumTypes.POS_ALIGN_STARTING;
-		this._show_edit.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._show_edit.x_type = 2;
+		this._show_edit.y_type = 2;
+		this._show_edit.width_type = 4;
 		this._show_edit.width_value = 0;
-		this._show_edit.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+		this._show_edit.height_type = 4;
 		this._show_edit.height_value = 0;
 		this.AddChild(this._show_edit, 5);
 		this._logic_left = 0;
@@ -323,8 +323,8 @@ ALittle.ImageEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_up);
 		this._show_up = value;
 		if (this._show_up !== undefined) {
-			this._show_up.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_up.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_up.width_type = 4;
+			this._show_up.height_type = 4;
 			this._show_up.width_value = 0;
 			this._show_up.height_value = 0;
 			this.AddChild(this._show_up, 1);
@@ -338,8 +338,8 @@ ALittle.ImageEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_down);
 		this._show_down = value;
 		if (this._show_down !== undefined) {
-			this._show_down.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_down.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_down.width_type = 4;
+			this._show_down.height_type = 4;
 			this._show_down.width_value = 0;
 			this._show_down.height_value = 0;
 			this.AddChild(this._show_down, 1);
@@ -353,8 +353,8 @@ ALittle.ImageEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_over);
 		this._show_over = value;
 		if (this._show_over !== undefined) {
-			this._show_over.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_over.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_over.width_type = 4;
+			this._show_over.height_type = 4;
 			this._show_over.width_value = 0;
 			this._show_over.height_value = 0;
 			this.AddChild(this._show_over, 1);
@@ -368,8 +368,8 @@ ALittle.ImageEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		this.RemoveChild(this._show_disabled);
 		this._show_disabled = value;
 		if (this._show_disabled !== undefined) {
-			this._show_disabled.width_type = ALittle.UIEnumTypes.SIZE_MARGIN;
-			this._show_disabled.height_type = ALittle.UIEnumTypes.SIZE_MARGIN;
+			this._show_disabled.width_type = 4;
+			this._show_disabled.height_type = 4;
 			this._show_disabled.width_value = 0;
 			this._show_disabled.height_value = 0;
 			this.AddChild(this._show_disabled, 1);

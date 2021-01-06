@@ -138,7 +138,6 @@ ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 			ALittle.List_Push(file_list, base_path + "Loop/LoopTimer.js");
 			ALittle.List_Push(file_list, base_path + "Config/CsvConfig.js");
 			ALittle.List_Push(file_list, base_path + "Config/JsonConfig.js");
-			ALittle.List_Push(file_list, base_path + "Bit/Bit.js");
 			ALittle.List_Push(file_list, base_path + "WeakRef/WeakRef.js");
 			ALittle.List_Push(file_list, base_path + "Loop/IHeapTimer.js");
 			ALittle.List_Push(file_list, base_path + "Schedule/ISchedule.js");
@@ -199,7 +198,6 @@ ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 			ALittle.List_Push(file_list, base_path + "Loop/LoopTimer.lua");
 			ALittle.List_Push(file_list, base_path + "Config/CsvConfig.lua");
 			ALittle.List_Push(file_list, base_path + "Config/JsonConfig.lua");
-			ALittle.List_Push(file_list, base_path + "Bit/Bit.lua");
 			ALittle.List_Push(file_list, base_path + "WeakRef/WeakRef.lua");
 			ALittle.List_Push(file_list, base_path + "Loop/IHeapTimer.lua");
 			ALittle.List_Push(file_list, base_path + "Schedule/ISchedule.lua");
@@ -275,6 +273,7 @@ ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/Base/TextEdit.js");
 		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/Base/TextInput.js");
 		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/Base/Triangle.js");
+		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/Base/VertexImage.js");
 		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/Complex/Grid9Image.js");
 		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/Complex/TextButton.js");
 		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/Complex/TextCheckButton.js");
@@ -291,6 +290,7 @@ ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/Complex/TileTable.js");
 		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/Complex/ImagePlay.js");
 		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/Complex/SpritePlay.js");
+		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/Complex/SpriteNumber.js");
 		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/Complex/FramePlay.js");
 		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/Complex/Piechart.js");
 		ALittle.List_Push(file_list, base_path + "CEngine/UISystem/Complex/ImageInput.js");

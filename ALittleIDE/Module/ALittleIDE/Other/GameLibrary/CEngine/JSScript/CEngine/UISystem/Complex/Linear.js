@@ -7,7 +7,7 @@ let __ceil = ALittle.Math_Ceil;
 if (ALittle.DisplayGroup === undefined) throw new Error(" extends class:ALittle.DisplayGroup is undefined");
 ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 	Ctor : function(ctrl_sys) {
-		this._type = ALittle.UIEnumTypes.TYPE_H;
+		this._type = 1;
 		this._size_fixed = true;
 		this._gap = 0;
 		this._clip_up_index = 0;
@@ -70,7 +70,7 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 		this._child_width_map.set(child, child.width);
 		this._child_height_map.set(child, child.height);
 		if (this._size_fixed) {
-			if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+			if (this._type === 1) {
 				child.height = this._height;
 			} else {
 				child.width = this._width;
@@ -144,10 +144,10 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 	},
 	set width(value) {
 		this._width = value;
-		if (this._width_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._width_type === 1) {
 			this._width_value = this._width;
 		}
-		if (this._type !== ALittle.UIEnumTypes.TYPE_H && this._size_fixed) {
+		if (this._type !== 1 && this._size_fixed) {
 			let ___OBJECT_2 = this._childs;
 			for (let index = 1; index <= ___OBJECT_2.length; ++index) {
 				let child = ___OBJECT_2[index - 1];
@@ -158,7 +158,7 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 	},
 	get width() {
 		if (this._size_fixed) {
-			if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+			if (this._type === 1) {
 				if (this._child_count === 0) {
 					return 0;
 				}
@@ -171,10 +171,10 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 	},
 	set height(value) {
 		this._height = value;
-		if (this._height_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._height_type === 1) {
 			this._height_value = this._height;
 		}
-		if (this._type !== ALittle.UIEnumTypes.TYPE_V && this._size_fixed) {
+		if (this._type !== 2 && this._size_fixed) {
 			let ___OBJECT_3 = this._childs;
 			for (let index = 1; index <= ___OBJECT_3.length; ++index) {
 				let child = ___OBJECT_3[index - 1];
@@ -185,7 +185,7 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 	},
 	get height() {
 		if (this._size_fixed) {
-			if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+			if (this._type === 2) {
 				if (this._child_count === 0) {
 					return 0;
 				}
@@ -198,7 +198,7 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 	},
 	UpdateSize : function() {
 		if (this._size_fixed) {
-			if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+			if (this._type === 1) {
 				for (let [k, v] of this._child_width_map) {
 					if (v === undefined) continue;
 					k.width = v;
@@ -229,7 +229,7 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 		if (index <= 0 || index > child_count) {
 			return;
 		}
-		if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+		if (this._type === 1) {
 			let offset = 0.0;
 			if (index > 1) {
 				offset = this._childs[index - 1 - 1].x + this._childs[index - 1 - 1].width + this._gap;
@@ -258,7 +258,7 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 		if (child_count === 0) {
 			return;
 		}
-		if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+		if (this._type === 1) {
 			let offset = 0.0;
 			for (let i = 1; i <= child_count; i += 1) {
 				let child = this._childs[i - 1];
@@ -285,7 +285,7 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 	HandleChildResize : function(event) {
 		this.Layout(this.GetChildIndex(event.target));
 		if (this._show_parent !== undefined) {
-			if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+			if (this._type === 1) {
 				this._show_parent.UpdateXLayout(this);
 			} else {
 				this._show_parent.UpdateYLayout(this);
@@ -343,7 +343,7 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 		let max_index = child_count;
 		let min_index = 1;
 		let index = min_index;
-		if (this._type === ALittle.UIEnumTypes.TYPE_H) {
+		if (this._type === 1) {
 			if (h_move === undefined || this._clip_up_index === 0) {
 				do {
 					if (childs[index - 1].x > left) {

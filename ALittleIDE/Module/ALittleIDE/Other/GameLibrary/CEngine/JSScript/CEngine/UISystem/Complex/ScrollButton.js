@@ -167,6 +167,7 @@ ALittle.ScrollButton = JavaScript.Class(ALittle.TextButton, {
 		if (event.rel_x >= 0 && event.rel_y >= 0 && event.rel_x < event.target._width && event.rel_y < event.target._height) {
 			let e = {};
 			e.is_drag = event.is_drag;
+			e.count = event.count;
 			this.DispatchEvent(___all_struct.get(-449066808), e);
 			if (ALittle.System_IsPhone() === false) {
 				this.ShowOver();

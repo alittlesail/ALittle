@@ -37,6 +37,7 @@ window.RequireCEngine = function(base_path) {
 		await Require(base_path, "CEngine/UISystem/Base/TextEdit");
 		await Require(base_path, "CEngine/UISystem/Base/TextInput");
 		await Require(base_path, "CEngine/UISystem/Base/Triangle");
+		await Require(base_path, "CEngine/UISystem/Base/VertexImage");
 		await Require(base_path, "CEngine/UISystem/Complex/Grid9Image");
 		await Require(base_path, "CEngine/UISystem/Complex/TextButton");
 		await Require(base_path, "CEngine/UISystem/Complex/TextCheckButton");
@@ -53,6 +54,7 @@ window.RequireCEngine = function(base_path) {
 		await Require(base_path, "CEngine/UISystem/Complex/TileTable");
 		await Require(base_path, "CEngine/UISystem/Complex/ImagePlay");
 		await Require(base_path, "CEngine/UISystem/Complex/SpritePlay");
+		await Require(base_path, "CEngine/UISystem/Complex/SpriteNumber");
 		await Require(base_path, "CEngine/UISystem/Complex/FramePlay");
 		await Require(base_path, "CEngine/UISystem/Complex/Piechart");
 		await Require(base_path, "CEngine/UISystem/Complex/ImageInput");

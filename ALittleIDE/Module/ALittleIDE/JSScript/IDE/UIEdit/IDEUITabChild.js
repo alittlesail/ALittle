@@ -175,6 +175,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 		this._attr_screen.visible = true;
 		this._anti_panel.visible = true;
 		ALittleIDE.g_IDECenter.center.tool_ui.visible = true;
+		ALittleIDE.g_IDECenter.center.detail_tree_tab.tab = ALittleIDE.g_IDECenter.center.control_tree;
 		let panel_childs = this._attr_screen.childs;
 		if (panel_childs[1 - 1] !== undefined) {
 			ALittleIDE.g_IDEAttrControlDialog.SetTitle(panel_childs[1 - 1]._user_data.title);
@@ -502,7 +503,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 		this._tree_search_info.index = 0;
 		this._save = true;
 		this.UpdateTitle();
-		this._revoke_list = ALittle.NewObject(ALittle.RevokeList);
+		this._revoke_list = ALittle.NewObject(ALittle.RevokeList, 10000);
 	},
 	ShowControlFocus : function() {
 		let tree = ALittleIDE.g_IDECenter.center.control_list.GetControlTree(this._module);
@@ -942,7 +943,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 		return a.index < b.index;
 	},
 	HandleHandleQuadKeyDown : function(event) {
-		if (event.sym === 99 && ALittle.BitAnd(event.mod, 0x00c0) !== 0) {
+		if (event.sym === 99 && event.mod & 0x00c0 !== 0) {
 			let copy_list = [];
 			let copy_list_count = 0;
 			for (let [target, handle_info] of this._tab_quad_map) {
@@ -962,7 +963,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 			}
 			return;
 		}
-		if (event.sym === 120 && ALittle.BitAnd(event.mod, 0x00c0) !== 0) {
+		if (event.sym === 120 && event.mod & 0x00c0 !== 0) {
 			let copy_list = [];
 			let copy_list_count = 0;
 			for (let [target, handle_info] of this._tab_quad_map) {
@@ -1001,7 +1002,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 			}
 			return;
 		}
-		if (event.sym === 118 && ALittle.BitAnd(event.mod, 0x00c0) !== 0) {
+		if (event.sym === 118 && event.mod & 0x00c0 !== 0) {
 			let handle_info = event.target._user_data;
 			let common_parent = handle_info.target.logic_parent;
 			let child_index = 1;
@@ -1250,7 +1251,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 				return;
 			}
 			let [error, copy_list_tmp] = (function() { try { let ___VALUE = ALittle.String_JsonDecode.call(undefined, text_info); return [undefined, ___VALUE]; } catch (___ERROR) { return [___ERROR.message]; } }).call(this);
-			if (error !== undefined || ALittle.List_MaxN(copy_list_tmp) === 0) {
+			if (error !== undefined || ALittle.List_Len(copy_list_tmp) === 0) {
 				g_AUITool.ShowNotice("错误", "剪切板的内容不能粘帖");
 				if (callback !== undefined) {
 					callback(false, undefined);
@@ -1411,7 +1412,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 			if (child === undefined) break;
 			child.GenerateClassMember(member_list);
 		}
-		if (ALittle.List_MaxN(member_list) === 0) {
+		if (ALittle.List_Len(member_list) === 0) {
 			return;
 		}
 		let text = ALittle.String_Join(member_list, "");
@@ -1492,7 +1493,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 			this._tree_search_info.index = 0;
 		}
 		let list = this._tree_object.SearchLink(name);
-		let count = ALittle.List_MaxN(list);
+		let count = ALittle.List_Len(list);
 		if (count === 0) {
 			return;
 		}
@@ -1512,7 +1513,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 			this._tree_search_info.index = 0;
 		}
 		let list = this._tree_object.SearchEvent(name);
-		let count = ALittle.List_MaxN(list);
+		let count = ALittle.List_Len(list);
 		if (count === 0) {
 			return;
 		}
@@ -1532,7 +1533,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 			this._tree_search_info.index = 0;
 		}
 		let list = this._tree_object.SearchDescription(name);
-		let count = ALittle.List_MaxN(list);
+		let count = ALittle.List_Len(list);
 		if (count === 0) {
 			return;
 		}
@@ -1552,7 +1553,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 			this._tree_search_info.index = 0;
 		}
 		let list = this._tree_object.SearchTargetClass(name);
-		let count = ALittle.List_MaxN(list);
+		let count = ALittle.List_Len(list);
 		if (count === 0) {
 			return;
 		}
@@ -1572,7 +1573,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 			this._tree_search_info.index = 0;
 		}
 		let list = this._tree_object.SearchTextureName(name);
-		let count = ALittle.List_MaxN(list);
+		let count = ALittle.List_Len(list);
 		if (count === 0) {
 			return;
 		}
@@ -1594,7 +1595,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 		let [global_x, global_y] = this._tab_handle_quad.LocalToGlobal();
 		let list = [];
 		this._tree_object.QuickPickUp(abs_x - global_x, abs_y - global_y, list);
-		let count = ALittle.List_MaxN(list);
+		let count = ALittle.List_Len(list);
 		if (count === 0) {
 			return;
 		}

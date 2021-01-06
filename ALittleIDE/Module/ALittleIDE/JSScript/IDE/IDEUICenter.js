@@ -14,6 +14,12 @@ name_list : ["target"],
 type_list : ["ALittle.EventDispatcher"],
 option_map : {}
 })
+ALittle.RegStruct(-1614198151, "ALittleIDE.IDEUICenterTileEraseOpChangedEvent", {
+name : "ALittleIDE.IDEUICenterTileEraseOpChangedEvent", ns_name : "ALittleIDE", rl_name : "IDEUICenterTileEraseOpChangedEvent", hash_code : -1614198151,
+name_list : ["target","value"],
+type_list : ["ALittle.DisplayObject","bool"],
+option_map : {}
+})
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
 name : "ALittle.UIEvent", ns_name : "ALittle", rl_name : "UIEvent", hash_code : -1479093282,
 name_list : ["target"],
@@ -28,6 +34,18 @@ option_map : {}
 })
 ALittle.RegStruct(1299500288, "ALittleIDE.IDEUICenterHandDragOpChangedEvent", {
 name : "ALittleIDE.IDEUICenterHandDragOpChangedEvent", ns_name : "ALittleIDE", rl_name : "IDEUICenterHandDragOpChangedEvent", hash_code : 1299500288,
+name_list : ["target","value"],
+type_list : ["ALittle.DisplayObject","bool"],
+option_map : {}
+})
+ALittle.RegStruct(-1173423947, "ALittleIDE.IDEUICenterTileBrushOpChangedEvent", {
+name : "ALittleIDE.IDEUICenterTileBrushOpChangedEvent", ns_name : "ALittleIDE", rl_name : "IDEUICenterTileBrushOpChangedEvent", hash_code : -1173423947,
+name_list : ["target","value"],
+type_list : ["ALittle.DisplayObject","bool"],
+option_map : {}
+})
+ALittle.RegStruct(-751714957, "ALittleIDE.IDEUICenterTileHandDragOpChangedEvent", {
+name : "ALittleIDE.IDEUICenterTileHandDragOpChangedEvent", ns_name : "ALittleIDE", rl_name : "IDEUICenterTileHandDragOpChangedEvent", hash_code : -751714957,
 name_list : ["target","value"],
 type_list : ["ALittle.DisplayObject","bool"],
 option_map : {}
@@ -56,10 +74,12 @@ ALittleIDE.IDEUICenter = JavaScript.Class(ALittle.DisplayLayout, {
 		this._project_quick_tab.tab_index = 1;
 		this._tool_ui_container.visible = false;
 		this._tool_code_container.visible = false;
+		this._tool_tile_container.visible = false;
 		this._quick_edit_grid3_down_size = this._quick_edit_grid3.down_size;
 		this._quick_edit_grid3.down_size = this._project_quick_tab.up_size;
 		this._quick_fold_updown.selected = false;
 		ALittle.TextRadioButton.SetGroup([this._tool_singleselect, this._tool_handdrag, this._tool_scale, this._tool_presee]);
+		ALittle.TextRadioButton.SetGroup([this._tool_tile_brush, this._tool_tile_handdrag, this._tool_tile_erase]);
 		ALittleIDE.g_IDEProject.AddEventListener(___all_struct.get(-975432877), this, this.HandleProjectOpen);
 	},
 	get project_edit_tab() {
@@ -71,8 +91,11 @@ ALittleIDE.IDEUICenter = JavaScript.Class(ALittle.DisplayLayout, {
 	get control_tree() {
 		return this._control_tree;
 	},
-	get tile_brush() {
-		return this._tile_brush;
+	get tile_brush_edit() {
+		return this._tile_brush_edit;
+	},
+	get tile_brush_list() {
+		return this._tile_brush_list;
 	},
 	get control_list() {
 		return this._control_list;
@@ -97,6 +120,9 @@ ALittleIDE.IDEUICenter = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	get tool_code() {
 		return this._tool_code_container;
+	},
+	get tool_tile() {
+		return this._tool_tile_container;
 	},
 	System_SetVDragCursor : function(event) {
 		ALittle.System_SetVDragCursor();
@@ -355,12 +381,38 @@ ALittleIDE.IDEUICenter = JavaScript.Class(ALittle.DisplayLayout, {
 		}
 		ALittleIDE.g_IDECenter.center.code_list.OpenByFullPath(info.file_path, info.it_line, info.it_char, undefined, undefined);
 	},
+	HandleToolTileBrushSelect : function(event) {
+		let object = event.target;
+		let op_event = {};
+		op_event.value = object.selected;
+		ALittleIDE.g_IDECenter.center.DispatchEvent(___all_struct.get(-1173423947), op_event);
+	},
+	HandleToolTileHandDrag : function(event) {
+		let op_event = {};
+		op_event.value = event.target.selected;
+		ALittleIDE.g_IDECenter.center.DispatchEvent(___all_struct.get(-751714957), op_event);
+	},
+	HandleToolTileErase : function(event) {
+		let op_event = {};
+		op_event.value = event.target.selected;
+		ALittleIDE.g_IDECenter.center.DispatchEvent(___all_struct.get(-1614198151), op_event);
+	},
+	get tile_brush() {
+		return this._tool_tile_brush.selected;
+	},
+	get tile_handdrag() {
+		return this._tool_tile_handdrag.selected;
+	},
+	get tile_erase() {
+		return this._tool_tile_erase.selected;
+	},
 	HandleFindFileClick : function(event) {
 		ALittleIDE.g_IDEProjectFindFileDialog.ShowFindFile();
 	},
 	HandleProjectOpen : function(event) {
 		this._tool_ui_container.visible = false;
 		this._tool_code_container.visible = false;
+		this._tool_tile_container.visible = false;
 		this._tool_language.text = ALittleIDE.g_IDEProject.project.config.GetConfig("target_language", "Lua");
 	},
 }, "ALittleIDE.IDEUICenter");

@@ -7,10 +7,10 @@ if (ALittle.DisplayLayout === undefined) throw new Error(" extends class:ALittle
 ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 	Ctor : function(ctrl_sys) {
 		this._pickup_rect = false;
-		this._type = ALittle.UIEnumTypes.TYPE_V;
+		this._type = 2;
 		this._offset_rate = 0;
 		this._drag_point_rate = 0;
-		this._fixed = ALittle.UIEnumTypes.FREE;
+		this._fixed = 1;
 		this._grade = 2;
 		this._grade_list = [];
 	},
@@ -51,14 +51,14 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 		return this._offset_rate;
 	},
 	set grade_value(value) {
-		if (this._fixed === ALittle.UIEnumTypes.FREE) {
+		if (this._fixed === 1) {
 			this.offset_rate = value;
 			return;
 		}
 		this.offset_rate = (lua.math.floor(value) - 1) / (this.grade - 1);
 	},
 	get grade_value() {
-		if (this._fixed === ALittle.UIEnumTypes.FREE) {
+		if (this._fixed === 1) {
 			return this._offset_rate;
 		}
 		return lua.math.floor(this._offset_rate * (this._grade - 1)) + 1;
@@ -82,14 +82,14 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 		let real_height = this.height;
 		let bar_width = this._bar_button.width;
 		let bar_height = this._bar_button.height;
-		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+		if (this._type === 2) {
 			let offset = rel_y / real_height;
 			if (offset > 1) {
 				offset = 1;
 			} else if (offset < 0) {
 				offset = 0;
 			}
-			if (this._fixed === ALittle.UIEnumTypes.FREE) {
+			if (this._fixed === 1) {
 				if (this._offset_rate === offset) {
 					return;
 				}
@@ -117,7 +117,7 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 			} else if (offset < 0) {
 				offset = 0;
 			}
-			if (this._fixed === ALittle.UIEnumTypes.FREE) {
+			if (this._fixed === 1) {
 				if (this._offset_rate === offset) {
 					return;
 				}
@@ -169,14 +169,14 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 			return;
 		}
 		this._fixed = value;
-		if (this._fixed === ALittle.UIEnumTypes.FIXED && this._grade !== undefined) {
+		if (this._fixed === 2 && this._grade !== undefined) {
 			this._grade_list = [];
 			this._grade_list[1 - 1] = 0;
 			let dist = 1 / (this._grade - 1);
 			for (let i = 1; i <= this._grade - 2; i += 1) {
 				this._grade_list[i + 1 - 1] = i * dist;
 			}
-			let num = ALittle.List_MaxN(this._grade_list);
+			let num = ALittle.List_Len(this._grade_list);
 			this._grade_list[num + 1 - 1] = 1;
 		}
 		this.AdjustBarButton();
@@ -189,14 +189,14 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 			return;
 		}
 		this._grade = value;
-		if (this._fixed === ALittle.UIEnumTypes.FIXED && value !== undefined) {
+		if (this._fixed === 2 && value !== undefined) {
 			this._grade_list = [];
 			this._grade_list[1 - 1] = 0;
 			let dist = 1 / (value - 1);
 			for (let i = 1; i <= value - 2; i += 1) {
 				this._grade_list[i + 1 - 1] = i * dist;
 			}
-			let num = ALittle.List_MaxN(this._grade_list);
+			let num = ALittle.List_Len(this._grade_list);
 			this._grade_list[num + 1 - 1] = 1;
 		}
 		this.AdjustBarButton();
@@ -208,7 +208,7 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 		let rel_x = undefined;
 		let rel_y = undefined;
 		[rel_x, rel_y] = this._bar_button.GlobalToLocalMatrix2D(event.abs_x, event.abs_y);
-		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+		if (this._type === 2) {
 			let height = this._bar_button.height;
 			this._drag_point_rate = 0;
 			if (height > 0) {
@@ -233,8 +233,8 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 		let real_height = this.height;
 		let bar_width = this._bar_button.width;
 		let bar_height = this._bar_button.height;
-		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
-			if (this._fixed === ALittle.UIEnumTypes.FREE) {
+		if (this._type === 2) {
+			if (this._fixed === 1) {
 				if ((event.delta_y > 0 && rel_y < bar_height * this._drag_point_rate) || (event.delta_y < 0 && rel_y > bar_height * this._drag_point_rate)) {
 					return;
 				}
@@ -271,7 +271,7 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 				}
 			}
 		} else {
-			if (this._fixed === ALittle.UIEnumTypes.FREE) {
+			if (this._fixed === 1) {
 				if ((event.delta_x > 0 && rel_x < bar_height * this._drag_point_rate) || (event.delta_x < 0 && rel_x > bar_height * this._drag_point_rate)) {
 					return;
 				}
@@ -312,12 +312,12 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 	},
 	HandleBarButtonScroll : function(event) {
 		let step = undefined;
-		if (this._fixed === ALittle.UIEnumTypes.FREE) {
+		if (this._fixed === 1) {
 			step = 0.01;
 		} else {
 			step = 1 / (this._grade - 1);
 		}
-		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+		if (this._type === 2) {
 			if (event.delta_y > 0) {
 				this.HandleUpDownButton(-1 * step);
 			} else if (event.delta_y < 0) {
@@ -339,7 +339,7 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 		if (this._offset_rate > 1) {
 			this._offset_rate = 1;
 		}
-		if (this._type === ALittle.UIEnumTypes.TYPE_V) {
+		if (this._type === 2) {
 			this._bar_button.y = this._offset_rate * this.height - this._bar_button.height / 2;
 		} else {
 			this._bar_button.x = this._offset_rate * this.width - this._bar_button.width / 2;
@@ -354,15 +354,15 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 			this._bar_background.height = this.height;
 		}
 		if (this._bar_button !== undefined) {
-			if (this._type === ALittle.UIEnumTypes.TYPE_V) {
-				this._bar_button.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+			if (this._type === 2) {
+				this._bar_button.x_type = 3;
 				this._bar_button.x_value = 0;
-				this._bar_button.y_type = ALittle.UIEnumTypes.POS_ABS;
+				this._bar_button.y_type = 1;
 				this._bar_button.y_value = this._offset_rate * this.height - this._bar_button.height / 2;
 			} else {
-				this._bar_button.x_type = ALittle.UIEnumTypes.POS_ABS;
+				this._bar_button.x_type = 1;
 				this._bar_button.x_value = this._offset_rate * this.width - this._bar_button.width / 2;
-				this._bar_button.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER;
+				this._bar_button.y_type = 3;
 				this._bar_button.y_value = 0;
 			}
 		}

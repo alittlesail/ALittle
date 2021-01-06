@@ -118,7 +118,7 @@ ALittle.Grid9 = JavaScript.Class(ALittle.DisplayGroup, {
 			return;
 		}
 		this._width = value;
-		if (this._width_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._width_type === 1) {
 			this._width_value = this._width;
 		}
 		this.CalcRealWidthCutting();
@@ -128,7 +128,7 @@ ALittle.Grid9 = JavaScript.Class(ALittle.DisplayGroup, {
 			return;
 		}
 		this._height = value;
-		if (this._height_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._height_type === 1) {
 			this._height_value = this._height;
 		}
 		this.CalcRealHeightCutting();

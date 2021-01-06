@@ -57,7 +57,7 @@ AUIPlugin.AUICodeFilterScreen = JavaScript.Class(undefined, {
 		}
 		let text = this._edit.text;
 		let split = ALittle.String_Split(text, ".");
-		let split_len = ALittle.List_MaxN(split);
+		let split_len = ALittle.List_Len(split);
 		if (split_len > 0) {
 			if (split[split_len - 1] === "") {
 				this._complete = undefined;

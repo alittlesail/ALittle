@@ -40,20 +40,20 @@ AUIPlugin.ALittleScriptIconType = {
 }
 
 let g_ALittleScriptIcon = new Map();
-g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.CLASS, "ABnf/ALittleScript/ALittleScriptClassIcon.png");
-g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.STRUCT, "ABnf/ALittleScript/ALittleScriptStructIcon.png");
-g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.PROPERTY, "ABnf/ALittleScript/ALittleScriptPropertyIcon.png");
-g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.NAMESPACE, "ABnf/ALittleScript/ALittleScriptNamespaceIcon.png");
-g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.TEMPLATE, "ABnf/ALittleScript/ALittleScriptTemplateIcon.png");
-g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.ENUM, "ABnf/ALittleScript/ALittleScriptEnumIcon.png");
-g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.LANGUAGE, "ABnf/ALittleScript/ALittleScriptNamespaceIcon.png");
-g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.GLOBAL_METHOD, "ABnf/ALittleScript/ALittleScriptStaticIcon.png");
-g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.MEMBER_METHOD, "ABnf/ALittleScript/ALittleScriptMethodIcon.png");
-g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.FIELD_METHOD, "ABnf/ALittleScript/ALittleScriptFieldIcon.png");
-g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.STATIC_METHOD, "ABnf/ALittleScript/ALittleScriptStaticIcon.png");
-g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.INSTANCE, "ABnf/ALittleScript/ALittleScriptInstanceIcon.png");
-g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.PARAM, "ABnf/ALittleScript/ALittleScriptParamIcon.png");
-g_ALittleScriptIcon.set(AUIPlugin.ALittleScriptIconType.VARIABLE, "ABnf/ALittleScript/ALittleScriptVariableIcon.png");
+g_ALittleScriptIcon.set(1, "ABnf/ALittleScript/ALittleScriptClassIcon.png");
+g_ALittleScriptIcon.set(2, "ABnf/ALittleScript/ALittleScriptStructIcon.png");
+g_ALittleScriptIcon.set(3, "ABnf/ALittleScript/ALittleScriptPropertyIcon.png");
+g_ALittleScriptIcon.set(4, "ABnf/ALittleScript/ALittleScriptNamespaceIcon.png");
+g_ALittleScriptIcon.set(5, "ABnf/ALittleScript/ALittleScriptTemplateIcon.png");
+g_ALittleScriptIcon.set(6, "ABnf/ALittleScript/ALittleScriptEnumIcon.png");
+g_ALittleScriptIcon.set(7, "ABnf/ALittleScript/ALittleScriptNamespaceIcon.png");
+g_ALittleScriptIcon.set(8, "ABnf/ALittleScript/ALittleScriptStaticIcon.png");
+g_ALittleScriptIcon.set(9, "ABnf/ALittleScript/ALittleScriptMethodIcon.png");
+g_ALittleScriptIcon.set(10, "ABnf/ALittleScript/ALittleScriptFieldIcon.png");
+g_ALittleScriptIcon.set(11, "ABnf/ALittleScript/ALittleScriptStaticIcon.png");
+g_ALittleScriptIcon.set(12, "ABnf/ALittleScript/ALittleScriptInstanceIcon.png");
+g_ALittleScriptIcon.set(13, "ABnf/ALittleScript/ALittleScriptParamIcon.png");
+g_ALittleScriptIcon.set(14, "ABnf/ALittleScript/ALittleScriptVariableIcon.png");
 if (AUIPlugin.AUICodeLanguage === undefined) throw new Error(" extends class:AUIPlugin.AUICodeLanguage is undefined");
 AUIPlugin.AUICodeALittleScript = JavaScript.Class(AUIPlugin.AUICodeLanguage, {
 	Ctor : function(project, full_path, module_path) {
@@ -65,63 +65,63 @@ AUIPlugin.AUICodeALittleScript = JavaScript.Class(AUIPlugin.AUICodeLanguage, {
 				color.red = 87 / 255;
 				color.green = 166 / 255;
 				color.blue = 74 / 255;
-				g_ALittleScriptColor.set(AUIPlugin.ALittleScriptColorType.COMMENT, color);
+				g_ALittleScriptColor.set(1, color);
 			}
 			{
 				color = {};
 				color.red = 78 / 255;
 				color.green = 201 / 255;
 				color.blue = 176 / 255;
-				g_ALittleScriptColor.set(AUIPlugin.ALittleScriptColorType.DEFINE_NAME, color);
+				g_ALittleScriptColor.set(2, color);
 			}
 			{
 				color = {};
 				color.red = 218 / 255;
 				color.green = 218 / 255;
 				color.blue = 218 / 255;
-				g_ALittleScriptColor.set(AUIPlugin.ALittleScriptColorType.VAR_NAME, color);
+				g_ALittleScriptColor.set(3, color);
 			}
 			{
 				color = {};
 				color.red = 146 / 255;
 				color.green = 210 / 255;
 				color.blue = 244 / 255;
-				g_ALittleScriptColor.set(AUIPlugin.ALittleScriptColorType.CUSTOM_NAME, color);
+				g_ALittleScriptColor.set(4, color);
 			}
 			{
 				color = {};
 				color.red = 216 / 255;
 				color.green = 160 / 255;
 				color.blue = 223 / 255;
-				g_ALittleScriptColor.set(AUIPlugin.ALittleScriptColorType.CTRL_KEYWORD, color);
+				g_ALittleScriptColor.set(5, color);
 			}
 			{
 				color = {};
 				color.red = 86 / 255;
 				color.green = 156 / 255;
 				color.blue = 214 / 255;
-				g_ALittleScriptColor.set(AUIPlugin.ALittleScriptColorType.KEYWORD, color);
+				g_ALittleScriptColor.set(6, color);
 			}
 			{
 				color = {};
 				color.red = 210 / 255;
 				color.green = 210 / 255;
 				color.blue = 160 / 255;
-				g_ALittleScriptColor.set(AUIPlugin.ALittleScriptColorType.METHOD_NAME, color);
+				g_ALittleScriptColor.set(7, color);
 			}
 			{
 				color = {};
 				color.red = 169 / 255;
 				color.green = 183 / 255;
 				color.blue = 198 / 255;
-				g_ALittleScriptColor.set(AUIPlugin.ALittleScriptColorType.DEFAULT, color);
+				g_ALittleScriptColor.set(8, color);
 			}
 			{
 				color = {};
 				color.red = 214 / 255;
 				color.green = 157 / 255;
 				color.blue = 133 / 255;
-				g_ALittleScriptColor.set(AUIPlugin.ALittleScriptColorType.TEXT, color);
+				g_ALittleScriptColor.set(9, color);
 			}
 		}
 		this._abnf_file = lua.alittlescript.create_alittlescript_file(project.project, module_path, full_path, "");
@@ -180,6 +180,7 @@ AUIPlugin.AUICodeALittleScriptProject = JavaScript.Class(AUIPlugin.AUICodeProjec
 		menu.AddItem("生成目标代码", this.GenerateFile.bind(this, full_path));
 		menu.AddItem("打开Lua代码", this.OpenTargetLuaFile.bind(this, full_path));
 		menu.AddItem("打开JavaScript代码", this.OpenTargetJavaScriptFile.bind(this, full_path));
+		menu.AddItem("打开Lua字节码", this.OpenTargetLuaByteCode.bind(this, full_path));
 	},
 	GenerateDir : async function(full_path) {
 		let index = ALittle.String_Find(full_path, "/src");
@@ -201,7 +202,7 @@ AUIPlugin.AUICodeALittleScriptProject = JavaScript.Class(AUIPlugin.AUICodeProjec
 			if (attr === undefined) continue;
 			let error = await this.Generate(file_path);
 			if (error !== undefined) {
-				if (AUIPlugin.AUIToolOption.YES === await g_AUITool.DeleteNotice("错误", error.error + "\n 文件路径" + file_path + "\n是否打开该文件?")) {
+				if ("YES" === await g_AUITool.DeleteNotice("错误", error.error + "\n 文件路径" + file_path + "\n是否打开该文件?")) {
 					let goto_event = {};
 					goto_event.file_path = error.full_path;
 					if (goto_event.file_path === undefined) {
@@ -235,6 +236,23 @@ AUIPlugin.AUICodeALittleScriptProject = JavaScript.Class(AUIPlugin.AUICodeProjec
 		let new_path = ALittle.String_Sub(full_path, 1, index) + "Script/" + (ALittle.String_Sub(full_path, index + 5));
 		let event = {};
 		event.file_path = new_path;
+		this.DispatchEvent(___all_struct.get(2057209532), event);
+	},
+	OpenTargetLuaByteCode : function(full_path) {
+		full_path = ALittle.File_ChangeFileExtByPath(full_path, "lua");
+		let index = ALittle.String_Find(full_path, "/src/");
+		if (index === undefined) {
+			return;
+		}
+		let new_path = ALittle.String_Sub(full_path, 1, index) + "Script/" + (ALittle.String_Sub(full_path, index + 5));
+		let out_path = ALittle.String_Sub(full_path, 1, index) + "ByteCode/" + (ALittle.String_Sub(full_path, index + 5));
+		let out_dir = ALittle.File_GetFilePathByPath(out_path);
+		ALittle.File_MakeDeepDir(out_dir);
+		out_path = ALittle.File_ChangeFileExtByPath(out_path, "txt");
+		let decompile = ALittle.NewObject(carp.CarpLuaDecompile);
+		decompile.Decompile(new_path, out_path);
+		let event = {};
+		event.file_path = out_path;
 		this.DispatchEvent(___all_struct.get(2057209532), event);
 	},
 	OpenTargetJavaScriptFile : function(full_path) {

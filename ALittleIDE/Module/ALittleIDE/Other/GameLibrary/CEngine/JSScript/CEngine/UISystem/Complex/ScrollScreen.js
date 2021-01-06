@@ -245,7 +245,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 			return;
 		}
 		this._width = value;
-		if (this._width_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._width_type === 1) {
 			this._width_value = this._width;
 		}
 		let width = 0.0;
@@ -302,7 +302,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 			return;
 		}
 		this._height = value;
-		if (this._height_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._height_type === 1) {
 			this._height_value = this._height;
 		}
 		let height = 0.0;
@@ -366,7 +366,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		this._right_scroll_bar = value;
 		let width = 0.0;
 		if (this._right_scroll_bar !== undefined) {
-			this._right_scroll_bar.type = ALittle.UIEnumTypes.TYPE_V;
+			this._right_scroll_bar.type = 2;
 			width = this._right_scroll_bar.width;
 			ALittle.DisplayGroup.AddChild.call(this, this._right_scroll_bar);
 			this._right_scroll_bar.AddEventListener(___all_struct.get(958494922), this, this.HandleRightScrollBarChange);
@@ -430,7 +430,7 @@ ALittle.ScrollScreen = JavaScript.Class(ALittle.DisplayGroup, {
 		this._bottom_scroll_bar = value;
 		let height = 0.0;
 		if (this._bottom_scroll_bar !== undefined) {
-			this._bottom_scroll_bar.type = ALittle.UIEnumTypes.TYPE_H;
+			this._bottom_scroll_bar.type = 1;
 			height = this._bottom_scroll_bar.height;
 			ALittle.DisplayGroup.AddChild.call(this, this._bottom_scroll_bar);
 			this._bottom_scroll_bar.AddEventListener(___all_struct.get(958494922), this, this.HandleBottomScrollBarChange);

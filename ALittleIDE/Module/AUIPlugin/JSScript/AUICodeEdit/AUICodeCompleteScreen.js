@@ -223,7 +223,7 @@ AUIPlugin.AUICodeCompleteScreen = JavaScript.Class(undefined, {
 		if (first_split > 1) {
 			ALittle.List_Insert(upper_list, 1, ALittle.String_Sub(upper_text, 1, first_split - 1));
 		}
-		let upper_list_count = ALittle.List_MaxN(upper_list);
+		let upper_list_count = ALittle.List_Len(upper_list);
 		if (upper_list_count > 1 && upper_list[upper_list_count - 1] === "") {
 			upper_list[upper_list_count - 1] = undefined;
 		}

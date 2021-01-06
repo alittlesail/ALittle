@@ -27,15 +27,15 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		this._ignore = false;
 		this._x = 0;
 		this._y = 0;
-		this._x_type = ALittle.UIEnumTypes.POS_ABS;
+		this._x_type = 1;
 		this._x_value = 0;
-		this._y_type = ALittle.UIEnumTypes.POS_ABS;
+		this._y_type = 1;
 		this._y_value = 0;
 		this._width = 0;
 		this._height = 0;
-		this._width_type = ALittle.UIEnumTypes.SIZE_ABS;
+		this._width_type = 1;
 		this._width_value = 0;
-		this._height_type = ALittle.UIEnumTypes.SIZE_ABS;
+		this._height_type = 1;
 		this._height_value = 0;
 		this._scale_x = 1;
 		this._scale_y = 1;
@@ -359,7 +359,7 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 	},
 	set x(value) {
 		this._x = value;
-		if (this._x_type === ALittle.UIEnumTypes.POS_ABS) {
+		if (this._x_type === 1) {
 			this._x_value = value;
 		}
 		this._show.SetX(value);
@@ -393,7 +393,7 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 	},
 	set y(value) {
 		this._y = value;
-		if (this._y_type === ALittle.UIEnumTypes.POS_ABS) {
+		if (this._y_type === 1) {
 			this._y_value = value;
 		}
 		this._show.SetY(value);
@@ -427,7 +427,7 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 	},
 	set width(value) {
 		this._width = value;
-		if (this._width_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._width_type === 1) {
 			this._width_value = value;
 		}
 		this._show.SetWidth(value);
@@ -442,10 +442,10 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		this._width_type = value;
 		if (this._show_parent !== undefined) {
 			this._show_parent.UpdateWidthLayout(this);
-			if (this._x_type !== ALittle.UIEnumTypes.POS_ABS && this._x_type !== ALittle.UIEnumTypes.POS_ALIGN_STARTING && this._x_type !== ALittle.UIEnumTypes.POS_PERCENT_STARTING) {
+			if (this._x_type !== 1 && this._x_type !== 2 && this._x_type !== 7) {
 				this._show_parent.UpdateXLayout(this);
 			}
-		} else if (this._width_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		} else if (this._width_type === 1) {
 			this.width = this._width_value;
 		}
 	},
@@ -456,10 +456,10 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		this._width_value = value;
 		if (this._show_parent !== undefined) {
 			this._show_parent.UpdateWidthLayout(this);
-			if (this._x_type !== ALittle.UIEnumTypes.POS_ABS && this._x_type !== ALittle.UIEnumTypes.POS_ALIGN_STARTING && this._x_type !== ALittle.UIEnumTypes.POS_PERCENT_STARTING) {
+			if (this._x_type !== 1 && this._x_type !== 2 && this._x_type !== 7) {
 				this._show_parent.UpdateXLayout(this);
 			}
-		} else if (this._width_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		} else if (this._width_type === 1) {
 			this.width = this._width_value;
 		}
 	},
@@ -471,7 +471,7 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 	},
 	set height(value) {
 		this._height = value;
-		if (this._height_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		if (this._height_type === 1) {
 			this._height_value = value;
 		}
 		this._show.SetHeight(value);
@@ -486,10 +486,10 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		this._height_type = value;
 		if (this._show_parent !== undefined) {
 			this._show_parent.UpdateHeightLayout(this);
-			if (this._y_type !== ALittle.UIEnumTypes.POS_ABS && this._y_type !== ALittle.UIEnumTypes.POS_ALIGN_STARTING && this._y_type !== ALittle.UIEnumTypes.POS_PERCENT_STARTING) {
+			if (this._y_type !== 1 && this._y_type !== 2 && this._y_type !== 7) {
 				this._show_parent.UpdateYLayout(this);
 			}
-		} else if (this._height_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		} else if (this._height_type === 1) {
 			this.height = this._height_value;
 		}
 	},
@@ -500,10 +500,10 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		this._height_value = value;
 		if (this._show_parent !== undefined) {
 			this._show_parent.UpdateHeightLayout(this);
-			if (this._y_type !== ALittle.UIEnumTypes.POS_ABS && this._y_type !== ALittle.UIEnumTypes.POS_ALIGN_STARTING && this._y_type !== ALittle.UIEnumTypes.POS_PERCENT_STARTING) {
+			if (this._y_type !== 1 && this._y_type !== 2 && this._y_type !== 7) {
 				this._show_parent.UpdateYLayout(this);
 			}
-		} else if (this._height_type === ALittle.UIEnumTypes.SIZE_ABS) {
+		} else if (this._height_type === 1) {
 			this.height = this._height_value;
 		}
 	},

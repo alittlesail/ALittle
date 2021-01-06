@@ -1,6 +1,8 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.ALittle == nil then _G.ALittle = {} end
+local ALittle = ALittle
+local Lua = Lua
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -42,7 +44,7 @@ function ALittle.LogEventSystem:Ctor()
 end
 
 function ALittle.LogEventSystem:HandleSessionConnected(event)
-	if event.route_num ~= ALittle.RouteType.RT_LOG and event.route_num ~= ALittle.RouteNum.RN_DEFAULT then
+	if event.route_num ~= 5 and event.route_num ~= 1 then
 		return
 	end
 	self._session = event.session
@@ -51,7 +53,7 @@ end
 ALittle.LogEventSystem.HandleSessionConnected = Lua.CoWrap(ALittle.LogEventSystem.HandleSessionConnected)
 
 function ALittle.LogEventSystem:HandleSessionDisconnected(event)
-	if event.route_num ~= ALittle.RouteType.RT_LOG and event.route_num ~= ALittle.RouteNum.RN_DEFAULT then
+	if event.route_num ~= 5 and event.route_num ~= 1 then
 		return
 	end
 	self._session = nil
@@ -76,7 +78,7 @@ end
 
 function ALittle.LogEventSystem:SendLogEvent(info)
 	if not self._init then
-		A_SessionSystem:AddConnectSession(ALittle.RouteType.RT_LOG, ALittle.RouteNum.RN_DEFAULT)
+		A_SessionSystem:AddConnectSession(5, 1)
 		A_SessionSystem:AddEventListener(___all_struct[888437463], self, self.HandleSessionConnected)
 		A_SessionSystem:AddEventListener(___all_struct[-36908822], self, self.HandleSessionDisconnected)
 		self._init = true

@@ -1,6 +1,9 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.LogServer == nil then _G.LogServer = {} end
+local LogServer = LogServer
+local Lua = Lua
+local ALittle = ALittle
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()

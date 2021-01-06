@@ -1,6 +1,8 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.ALittle == nil then _G.ALittle = {} end
+local ALittle = ALittle
+local Lua = Lua
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -137,7 +139,7 @@ function ALittle.GameAccount:Ctor(id)
 	___rawset(self, "_id", id)
 	___rawset(self, "_loading_count", 0)
 	___rawset(self, "_loading_failed", false)
-	___rawset(self, "_status", ALittle.GameAccountStatus.CREATE)
+	___rawset(self, "_status", 1)
 	___rawset(self, "_module_map", {})
 	___rawset(self, "_BACKUP_INTERVAL", 10 * 1000)
 	___rawset(self, "_CACHE_INTERVAL", 30 * 1000)
@@ -241,10 +243,10 @@ function ALittle.GameAccount:LoadOneCompletedImpl()
 	end
 	self:OnDataReady()
 	if self._client ~= nil then
-		self:SetStatus(ALittle.GameAccountStatus.ONLINE)
+		self:SetStatus(4)
 		self:LoginAction()
 	else
-		self:SetStatus(ALittle.GameAccountStatus.CACHE)
+		self:SetStatus(3)
 		self:StartCacheTimer()
 	end
 	self:StartBackupTimer()

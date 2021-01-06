@@ -1,6 +1,9 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.VersionServer == nil then _G.VersionServer = {} end
+local VersionServer = VersionServer
+local Lua = Lua
+local ALittle = ALittle
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()

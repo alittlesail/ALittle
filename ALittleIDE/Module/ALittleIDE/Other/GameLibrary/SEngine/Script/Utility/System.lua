@@ -1,6 +1,8 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.ALittle == nil then _G.ALittle = {} end
+local ALittle = ALittle
+local Lua = Lua
 local ___pairs = pairs
 local ___ipairs = ipairs
 
@@ -35,28 +37,28 @@ ALittle.RoutePort = {
 }
 
 function ALittle.GetRouteName(route_type, route_num)
-	if route_type == ALittle.RouteType.RT_GATEWAY then
+	if route_type == 1 then
 		return "Gateway_" .. route_num
 	end
-	if route_type == ALittle.RouteType.RT_DATA then
+	if route_type == 2 then
 		return "Data_" .. route_num
 	end
-	if route_type == ALittle.RouteType.RT_VERSION then
+	if route_type == 3 then
 		return "Version_" .. route_num
 	end
-	if route_type == ALittle.RouteType.RT_OPS then
+	if route_type == 4 then
 		return "OPS_" .. route_num
 	end
-	if route_type == ALittle.RouteType.RT_LOG then
+	if route_type == 5 then
 		return "Log_" .. route_num
 	end
-	if route_type == ALittle.RouteType.RT_FILE then
+	if route_type == 6 then
 		return "File_" .. route_num
 	end
-	if route_type == ALittle.RouteType.RT_GAME then
+	if route_type == 7 then
 		return "Game_" .. route_num
 	end
-	if route_type == ALittle.RouteType.RT_WEB then
+	if route_type == 8 then
 		return "Web_" .. route_num
 	end
 	return "Unknow_" .. route_num

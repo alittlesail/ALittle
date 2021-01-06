@@ -1,6 +1,9 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.WebServer == nil then _G.WebServer = {} end
+local WebServer = WebServer
+local Lua = Lua
+local ALittle = ALittle
 local ___pairs = pairs
 local ___ipairs = ipairs
 

@@ -1,6 +1,9 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.GatewayServer == nil then _G.GatewayServer = {} end
+local GatewayServer = GatewayServer
+local Lua = Lua
+local ALittle = ALittle
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs

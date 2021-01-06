@@ -1,6 +1,8 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.ALittle == nil then _G.ALittle = {} end
+local ALittle = ALittle
+local Lua = Lua
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -151,22 +153,22 @@ function ALittle.GameAccountManager:HandleClientDisconnected(event)
 		return
 	end
 	local status = account:GetStatus()
-	if status == ALittle.GameAccountStatus.CREATE then
+	if status == 1 then
 		self:SetAccountClient(account, nil)
 		return
 	end
-	if status == ALittle.GameAccountStatus.LOADING then
+	if status == 2 then
 		self:SetAccountClient(account, nil)
 		return
 	end
-	if status == ALittle.GameAccountStatus.CACHE then
+	if status == 3 then
 		account:Backup()
 		self:SetAccountClient(account, nil)
 		return
 	end
-	if status == ALittle.GameAccountStatus.ONLINE then
+	if status == 4 then
 		account:LogoutAction()
-		account:SetStatus(ALittle.GameAccountStatus.CACHE)
+		account:SetStatus(3)
 		account:StartCacheTimer()
 		self:SetAccountClient(account, nil)
 		return
@@ -175,7 +177,7 @@ function ALittle.GameAccountManager:HandleClientDisconnected(event)
 end
 
 function ALittle.GameAccountManager:HandleAnySessionDisconnected(event)
-	if event.route_type ~= ALittle.RouteType.RT_DATA then
+	if event.route_type ~= 2 then
 		return
 	end
 	self._reg_struct_map[event.session] = nil
@@ -187,23 +189,23 @@ function ALittle.GameAccountManager:HandleLeaseTimeout(account_id)
 		return
 	end
 	local status = account:GetStatus()
-	if status == ALittle.GameAccountStatus.CREATE then
+	if status == 1 then
 		self:SetAccountClient(account, nil)
 		self:DeleteAccount(account)
 		return
 	end
-	if status == ALittle.GameAccountStatus.LOADING then
+	if status == 2 then
 		self:SetAccountClient(account, nil)
 		self:DeleteAccount(account)
 		return
 	end
-	if status == ALittle.GameAccountStatus.CACHE then
+	if status == 3 then
 		account:Backup()
 		self:SetAccountClient(account, nil)
 		self:DeleteAccount(account)
 		return
 	end
-	if status == ALittle.GameAccountStatus.ONLINE then
+	if status == 4 then
 		account:LogoutAction()
 		local param = {}
 		param.reason = "租约超时"
@@ -224,30 +226,30 @@ function ALittle.HandleQLogin(client, msg)
 	ALittle.g_GameLoginManager:RemoveSession(msg.account_id)
 	local account = A_GameAccountManager:CreateAccount(msg.account_id)
 	local status = account:GetStatus()
-	if status == ALittle.GameAccountStatus.CREATE then
-		account:SetStatus(ALittle.GameAccountStatus.LOADING)
+	if status == 1 then
+		account:SetStatus(2)
 		A_GameAccountManager:SetAccountClient(account, client)
 		account:StartLoading(lease_info.session)
 		return {}
 	end
-	if status == ALittle.GameAccountStatus.LOADING then
+	if status == 2 then
 		local param = {}
 		param.reason = "您的账号在另一个地方登录"
 		account:SendMsg(___all_struct[-660832923], param)
 		A_GameAccountManager:SetAccountClient(account, client)
 		return {}
 	end
-	if status == ALittle.GameAccountStatus.CACHE then
+	if status == 3 then
 		local param = {}
 		param.reason = "您的账号在另一个地方登录"
 		account:SendMsg(___all_struct[-660832923], param)
 		A_GameAccountManager:SetAccountClient(account, client)
-		account:SetStatus(ALittle.GameAccountStatus.ONLINE)
+		account:SetStatus(4)
 		account:StopCacheTimer()
 		account:LoginAction()
 		return {}
 	end
-	if status == ALittle.GameAccountStatus.ONLINE then
+	if status == 4 then
 		account:LogoutAction()
 		local param = {}
 		param.reason = "您的账号在另一个地方登录"

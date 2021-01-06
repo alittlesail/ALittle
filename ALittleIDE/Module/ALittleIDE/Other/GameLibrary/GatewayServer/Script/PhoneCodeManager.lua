@@ -1,6 +1,9 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.GatewayServer == nil then _G.GatewayServer = {} end
+local GatewayServer = GatewayServer
+local Lua = Lua
+local ALittle = ALittle
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -137,8 +140,8 @@ function GatewayServer.HandleQPhoneCode(client, msg)
 	local ___COROUTINE = coroutine.running()
 	Lua.Assert(msg.phone_number ~= nil, "手机号码不能为空")
 	Lua.Assert(msg.phone_number ~= "", "手机号码不能为空")
-	Lua.Assert(msg.request_type > GatewayServer.PhoneCodeRequestType.PRT_BEGIN and msg.request_type < GatewayServer.PhoneCodeRequestType.PRT_END, "无效的请求方式!")
-	if msg.request_type == GatewayServer.PhoneCodeRequestType.PRT_FORGOTPWD or msg.request_type == GatewayServer.PhoneCodeRequestType.PRT_LOGIN then
+	Lua.Assert(msg.request_type > 0 and msg.request_type < 5, "无效的请求方式!")
+	if msg.request_type == 3 or msg.request_type == 4 then
 		local error, count = A_MysqlSystem:SelectCount(___all_struct[90250184], "phone_number", msg.phone_number)
 		if error ~= nil then
 			Lua.Throw(error)
@@ -152,7 +155,7 @@ function GatewayServer.HandleQPhoneCode(client, msg)
 	end
 	local phone_code_cfg = GatewayServer.g_PhoneCodeManager:GetPhoneCodeCfg()
 	Lua.Assert(phone_code_cfg.url ~= nil and phone_code_cfg.url ~= "", "暂时不支持获取验证码")
-	if msg.request_type == GatewayServer.PhoneCodeRequestType.PRT_REGISTER or msg.request_type == GatewayServer.PhoneCodeRequestType.PRT_BINDPHONE then
+	if msg.request_type == 1 or msg.request_type == 2 then
 		local error, count = A_MysqlSystem:SelectCount(___all_struct[90250184], "phone_number", msg.phone_number)
 		if error ~= nil then
 			Lua.Throw("数据库操作失败:" .. error)

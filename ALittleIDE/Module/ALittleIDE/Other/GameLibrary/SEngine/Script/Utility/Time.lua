@@ -1,6 +1,8 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.ALittle == nil then _G.ALittle = {} end
+local ALittle = ALittle
+local Lua = Lua
 local ___pairs = pairs
 local ___ipairs = ipairs
 
@@ -35,7 +37,7 @@ function ALittle.GetNextTodayBeginTime()
 	date.hour = 0
 	date.min = 0
 	date.sec = 0
-	return os.time(date) + ALittle.TimeSecond.ONE_DAY_SECONDS
+	return os.time(date) + 86400
 end
 
 end

@@ -1,6 +1,8 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.ALittle == nil then _G.ALittle = {} end
+local ALittle = ALittle
+local Lua = Lua
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -210,7 +212,7 @@ function ALittle.HandleQWebLogin(client, msg)
 	for i, permission in ___ipairs(role_info.permission) do
 		permission_map[permission] = true
 	end
-	Lua.Assert(msg.account_name == "alittle" or permission_map[ALittle.WebPermission.PERMISSION_ACCOUNT_LOGIN] ~= nil, "您没有登录权限")
+	Lua.Assert(msg.account_name == "alittle" or permission_map["105"] ~= nil, "您没有登录权限")
 	local other_account = A_WebAccountManager:GetAccountById(base_info.account_id)
 	if other_account ~= nil then
 		local other_client = other_account:GetClient()

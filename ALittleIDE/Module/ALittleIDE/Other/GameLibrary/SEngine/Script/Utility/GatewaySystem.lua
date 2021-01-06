@@ -1,6 +1,8 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.ALittle == nil then _G.ALittle = {} end
+local ALittle = ALittle
+local Lua = Lua
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -63,11 +65,11 @@ function ALittle.GatewayUpdateRoute:Ctor(client_yun_ip, client_ip, client_port, 
 	self._weight.route_weight = weight
 	A_SessionSystem:AddEventListener(___all_struct[-36908822], self, self.HandleAnySessionDisconnected)
 	A_SessionSystem:AddEventListener(___all_struct[888437463], self, self.HandleAnySessionConnected)
-	A_SessionSystem:AddConnectSession(ALittle.RouteType.RT_GATEWAY, ALittle.RouteNum.RN_DEFAULT)
+	A_SessionSystem:AddConnectSession(1, 1)
 end
 
 function ALittle.GatewayUpdateRoute:HandleAnySessionDisconnected(event)
-	if event.route_type ~= ALittle.RouteType.RT_GATEWAY then
+	if event.route_type ~= 1 then
 		return
 	end
 	self._session = nil
@@ -75,7 +77,7 @@ function ALittle.GatewayUpdateRoute:HandleAnySessionDisconnected(event)
 end
 
 function ALittle.GatewayUpdateRoute:HandleAnySessionConnected(event)
-	if event.route_type ~= ALittle.RouteType.RT_GATEWAY then
+	if event.route_type ~= 1 then
 		return
 	end
 	self._session = event.session
@@ -98,7 +100,7 @@ function ALittle.GatewaySystem:Ctor()
 end
 
 function ALittle.GatewaySystem:HandleAnySessionConnected(event)
-	if __CPPAPI_ServerSchedule:GetRouteType() == ALittle.RouteType.RT_GAME and event.route_type == ALittle.RouteType.RT_DATA then
+	if __CPPAPI_ServerSchedule:GetRouteType() == 7 and event.route_type == 2 then
 		do
 			local param = {}
 			param.client_ip = __CPPAPI_ServerSchedule:GetClientServerYunIp()
@@ -113,7 +115,7 @@ end
 
 _G.A_GatewaySystem = ALittle.GatewaySystem()
 function ALittle.HandleNRouteConnected(client, msg)
-	if __CPPAPI_ServerSchedule:GetRouteType() == ALittle.RouteType.RT_GAME and msg.route_type == ALittle.RouteType.RT_DATA then
+	if __CPPAPI_ServerSchedule:GetRouteType() == 7 and msg.route_type == 2 then
 		A_SessionSystem:AddConnectSession(msg.route_type, msg.route_num)
 	end
 end

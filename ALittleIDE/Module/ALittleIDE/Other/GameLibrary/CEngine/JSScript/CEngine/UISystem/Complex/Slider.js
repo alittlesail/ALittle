@@ -15,10 +15,16 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 		this._grade_list = [];
 	},
 	set width(value) {
+		if (this._width === value) {
+			return;
+		}
 		ALittle.DisplayLayout.__setter.width.call(this, value);
 		this.AdjustBarButton();
 	},
 	set height(value) {
+		if (this._height === value) {
+			return;
+		}
 		ALittle.DisplayLayout.__setter.height.call(this, value);
 		this.AdjustBarButton();
 	},

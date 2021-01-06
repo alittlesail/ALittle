@@ -4758,6 +4758,9 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		}
 	},
 	set x(value) {
+		if (this._x === value) {
+			return;
+		}
 		this._x = value;
 		if (this._x_type === 1) {
 			this._x_value = value;
@@ -4792,6 +4795,9 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		return this._x_value;
 	},
 	set y(value) {
+		if (this._y === value) {
+			return;
+		}
 		this._y = value;
 		if (this._y_type === 1) {
 			this._y_value = value;
@@ -4826,6 +4832,9 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		return this._y_value;
 	},
 	set width(value) {
+		if (this._width === value) {
+			return;
+		}
 		this._width = value;
 		if (this._width_type === 1) {
 			this._width_value = value;
@@ -4870,6 +4879,9 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		return this._width_value;
 	},
 	set height(value) {
+		if (this._height === value) {
+			return;
+		}
 		this._height = value;
 		if (this._height_type === 1) {
 			this._height_value = value;
@@ -5655,19 +5667,20 @@ ALittle.DisplayLayout = JavaScript.Class(ALittle.DisplayGroup, {
 		if (child === undefined || child._show_parent !== this) {
 			return;
 		}
-		if (child._x_type === 1) {
+		let x_type = child._x_type;
+		if (x_type === 1) {
 			child.x = child._x_value;
-		} else if (child._x_type === 2) {
+		} else if (x_type === 2) {
 			child.x = child._x_value;
-		} else if (child._x_type === 3) {
+		} else if (x_type === 3) {
 			child.x = (this._width - child.width) / 2 + child._x_value;
-		} else if (child._x_type === 4) {
+		} else if (x_type === 4) {
 			child.x = this._width - child.width - child._x_value;
-		} else if (child._x_type === 7) {
+		} else if (x_type === 7) {
 			child.x = this._width * child._x_value;
-		} else if (child._x_type === 8) {
+		} else if (x_type === 8) {
 			child.x = (this._width - child.width) / 2 + this._width * child._x_value;
-		} else if (child._x_type === 9) {
+		} else if (x_type === 9) {
 			child.x = (this._width - child.width) * (1 - child._x_value);
 		}
 	},
@@ -5675,19 +5688,20 @@ ALittle.DisplayLayout = JavaScript.Class(ALittle.DisplayGroup, {
 		if (child === undefined || child._show_parent !== this) {
 			return;
 		}
-		if (child._y_type === 1) {
+		let y_type = child._y_type;
+		if (y_type === 1) {
 			child.y = child._y_value;
-		} else if (child._y_type === 2) {
+		} else if (y_type === 2) {
 			child.y = child._y_value;
-		} else if (child._y_type === 3) {
+		} else if (y_type === 3) {
 			child.y = (this._height - child.height) / 2 + child._y_value;
-		} else if (child._y_type === 4) {
+		} else if (y_type === 4) {
 			child.y = this._height - child.height - child._y_value;
-		} else if (child._y_type === 7) {
+		} else if (y_type === 7) {
 			child.y = this._height * child._y_value;
-		} else if (child._y_type === 8) {
+		} else if (y_type === 8) {
 			child.y = (this._height - child.height) / 2 + this._height * child._y_value;
-		} else if (child._y_type === 9) {
+		} else if (y_type === 9) {
 			child.y = (this._height - child.height) * (1 - child._y_value);
 		}
 	},
@@ -5695,19 +5709,20 @@ ALittle.DisplayLayout = JavaScript.Class(ALittle.DisplayGroup, {
 		if (child === undefined || child._show_parent !== this) {
 			return;
 		}
-		if (child._width_type === 2) {
+		let width_type = child._width_type;
+		if (width_type === 2) {
 			let real_width = this._width * child._width_value;
 			if (real_width < 0) {
 				real_width = 0;
 			}
 			child.width = real_width;
-		} else if (child._width_type === 4) {
+		} else if (width_type === 4) {
 			let real_width = this._width - child._width_value;
 			if (real_width < 0) {
 				real_width = 0;
 			}
 			child.width = real_width;
-		} else if (child._width_type === 1) {
+		} else if (width_type === 1) {
 			let real_width = child._width_value;
 			if (real_width < 0) {
 				real_width = 0;
@@ -5719,19 +5734,20 @@ ALittle.DisplayLayout = JavaScript.Class(ALittle.DisplayGroup, {
 		if (child === undefined || child._show_parent !== this) {
 			return;
 		}
-		if (child._height_type === 2) {
+		let height_type = child._height_type;
+		if (height_type === 2) {
 			let real_height = this._height * child._height_value;
 			if (real_height < 0) {
 				real_height = 0;
 			}
 			child.height = real_height;
-		} else if (child._height_type === 4) {
+		} else if (height_type === 4) {
 			let real_height = this._height - child._height_value;
 			if (real_height < 0) {
 				real_height = 0;
 			}
 			child.height = real_height;
-		} else if (child._height_type === 1) {
+		} else if (height_type === 1) {
 			let real_height = child._height_value;
 			if (real_height < 0) {
 				real_height = 0;
@@ -10081,6 +10097,9 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 		return true;
 	},
 	set width(value) {
+		if (this._width === value) {
+			return;
+		}
 		this._width = value;
 		if (this._width_type === 1) {
 			this._width_value = this._width;
@@ -10108,6 +10127,9 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 		return ALittle.DisplayGroup.__getter.max_right.call(this);
 	},
 	set height(value) {
+		if (this._height === value) {
+			return;
+		}
 		this._height = value;
 		if (this._height_type === 1) {
 			this._height_value = this._height;
@@ -11437,10 +11459,16 @@ ALittle.Slider = JavaScript.Class(ALittle.DisplayLayout, {
 		this._grade_list = [];
 	},
 	set width(value) {
+		if (this._width === value) {
+			return;
+		}
 		ALittle.DisplayLayout.__setter.width.call(this, value);
 		this.AdjustBarButton();
 	},
 	set height(value) {
+		if (this._height === value) {
+			return;
+		}
 		ALittle.DisplayLayout.__setter.height.call(this, value);
 		this.AdjustBarButton();
 	},

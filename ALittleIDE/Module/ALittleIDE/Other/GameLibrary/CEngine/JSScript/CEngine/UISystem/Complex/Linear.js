@@ -143,6 +143,9 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 		return true;
 	},
 	set width(value) {
+		if (this._width === value) {
+			return;
+		}
 		this._width = value;
 		if (this._width_type === 1) {
 			this._width_value = this._width;
@@ -170,6 +173,9 @@ ALittle.Linear = JavaScript.Class(ALittle.DisplayGroup, {
 		return ALittle.DisplayGroup.__getter.max_right.call(this);
 	},
 	set height(value) {
+		if (this._height === value) {
+			return;
+		}
 		this._height = value;
 		if (this._height_type === 1) {
 			this._height_value = this._height;

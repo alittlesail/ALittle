@@ -358,6 +358,9 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		}
 	},
 	set x(value) {
+		if (this._x === value) {
+			return;
+		}
 		this._x = value;
 		if (this._x_type === 1) {
 			this._x_value = value;
@@ -392,6 +395,9 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		return this._x_value;
 	},
 	set y(value) {
+		if (this._y === value) {
+			return;
+		}
 		this._y = value;
 		if (this._y_type === 1) {
 			this._y_value = value;
@@ -426,6 +432,9 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		return this._y_value;
 	},
 	set width(value) {
+		if (this._width === value) {
+			return;
+		}
 		this._width = value;
 		if (this._width_type === 1) {
 			this._width_value = value;
@@ -470,6 +479,9 @@ ALittle.DisplayObject = JavaScript.Class(ALittle.UIEventDispatcher, {
 		return this._width_value;
 	},
 	set height(value) {
+		if (this._height === value) {
+			return;
+		}
 		this._height = value;
 		if (this._height_type === 1) {
 			this._height_value = value;

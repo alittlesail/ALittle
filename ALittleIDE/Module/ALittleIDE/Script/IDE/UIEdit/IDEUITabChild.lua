@@ -1283,7 +1283,7 @@ function ALittleIDE.IDEUITabChild:RightControlTreePasteImpl(target, copy_list, c
 			return
 		end
 		local error, copy_list_tmp = Lua.TCall(ALittle.String_JsonDecode, text_info)
-		if error ~= nil or ALittle.List_MaxN(copy_list_tmp) == 0 then
+		if error ~= nil or ALittle.List_Len(copy_list_tmp) == 0 then
 			g_AUITool:ShowNotice("错误", "剪切板的内容不能粘帖")
 			if callback ~= nil then
 				callback(false, nil)
@@ -1437,7 +1437,7 @@ function ALittleIDE.IDEUITabChild:GenerateClassMember(target)
 	for index, child in ___ipairs(target.childs) do
 		child:GenerateClassMember(member_list)
 	end
-	if ALittle.List_MaxN(member_list) == 0 then
+	if ALittle.List_Len(member_list) == 0 then
 		return
 	end
 	local text = ALittle.String_Join(member_list, "")
@@ -1524,7 +1524,7 @@ function ALittleIDE.IDEUITabChild:SearchLink(name)
 		self._tree_search_info.index = 0
 	end
 	local list = self._tree_object:SearchLink(name)
-	local count = ALittle.List_MaxN(list)
+	local count = ALittle.List_Len(list)
 	if count == 0 then
 		return
 	end
@@ -1545,7 +1545,7 @@ function ALittleIDE.IDEUITabChild:SearchEvent(name)
 		self._tree_search_info.index = 0
 	end
 	local list = self._tree_object:SearchEvent(name)
-	local count = ALittle.List_MaxN(list)
+	local count = ALittle.List_Len(list)
 	if count == 0 then
 		return
 	end
@@ -1566,7 +1566,7 @@ function ALittleIDE.IDEUITabChild:SearchDescription(name)
 		self._tree_search_info.index = 0
 	end
 	local list = self._tree_object:SearchDescription(name)
-	local count = ALittle.List_MaxN(list)
+	local count = ALittle.List_Len(list)
 	if count == 0 then
 		return
 	end
@@ -1587,7 +1587,7 @@ function ALittleIDE.IDEUITabChild:SearchTargetClass(name)
 		self._tree_search_info.index = 0
 	end
 	local list = self._tree_object:SearchTargetClass(name)
-	local count = ALittle.List_MaxN(list)
+	local count = ALittle.List_Len(list)
 	if count == 0 then
 		return
 	end
@@ -1608,7 +1608,7 @@ function ALittleIDE.IDEUITabChild:SearchTextureName(name)
 		self._tree_search_info.index = 0
 	end
 	local list = self._tree_object:SearchTextureName(name)
-	local count = ALittle.List_MaxN(list)
+	local count = ALittle.List_Len(list)
 	if count == 0 then
 		return
 	end
@@ -1631,7 +1631,7 @@ function ALittleIDE.IDEUITabChild:QuickDragAddControl(abs_x, abs_y, module_name,
 	local global_x, global_y = self._tab_handle_quad:LocalToGlobal()
 	local list = {}
 	self._tree_object:QuickPickUp(abs_x - global_x, abs_y - global_y, list)
-	local count = ALittle.List_MaxN(list)
+	local count = ALittle.List_Len(list)
 	if count == 0 then
 		return
 	end

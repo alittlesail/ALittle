@@ -97,7 +97,7 @@ protected class AUICodeParamList
         if (this._edit.language == null) return false;
         this._param_info = this._edit.language.QueryParamList(this._edit.cursor.line, this._edit.cursor.char - 1);
         if (this._param_info == null) return false;
-        this._param_count = ALittle.List_MaxN(this._param_info.param_list);
+        this._param_count = ALittle.List_Len(this._param_info.param_list);
         if (this._param_count == 0) return false;
         
         // 计算坐标
@@ -117,7 +117,7 @@ protected class AUICodeParamList
         this._item_list = new List<AUICodeParamItemInfo>();
         this._param_index = 0;
         var offset = 0.0;
-        var param_len = ALittle.List_MaxN(this._param_info.param_list);
+        var param_len = ALittle.List_Len(this._param_info.param_list);
         for (var param_index, param in this._param_info.param_list)
         {
             var info = new AUICodeParamItemInfo();

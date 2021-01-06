@@ -218,7 +218,7 @@ public class Slider : DisplayLayout
 			var dist = 1 / (this._grade-1);
     		for (var i = 1; i <= this._grade - 2; 1)
     			this._grade_list[i+1] = i*dist;
-			var num = ALittle.List_MaxN(this._grade_list);
+			var num = ALittle.List_Len(this._grade_list);
     		this._grade_list[num+1] = 1;
     	}
     	this.AdjustBarButton();
@@ -240,7 +240,7 @@ public class Slider : DisplayLayout
 			var dist = 1 / (value - 1);
     		for (var i = 1; i <= value - 2; 1)
     			this._grade_list[i+1] = i*dist;
-			var num = ALittle.List_MaxN(this._grade_list);
+			var num = ALittle.List_Len(this._grade_list);
     		this._grade_list[num+1] = 1;
     	}
     	this.AdjustBarButton();

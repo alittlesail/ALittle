@@ -392,7 +392,7 @@ public class IDEAntiFrameAntiItem : ALittle.DisplayLayout
 		loop_item.Init(this, child);
 		this._container.AddChild(loop_item);
 
-		var revoke = new IDEAntiInsertLoopRevoke(this, child, loop_item, ALittle.List_MaxN(this._info.childs));
+		var revoke = new IDEAntiInsertLoopRevoke(this, child, loop_item, ALittle.List_Len(this._info.childs));
 		this._panel.tab_child.revoke_list.PushRevoke(revoke);
 
 		loop_item.button.selected = true;

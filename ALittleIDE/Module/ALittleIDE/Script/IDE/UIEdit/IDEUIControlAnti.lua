@@ -367,7 +367,7 @@ function ALittleIDE.IDEAntiFrameAntiItem:Insert(rel_x, clazz)
 	local loop_item = ALittleIDE.g_Control:CreateControl("ide_anti_screen_loop_item")
 	loop_item:Init(self, child)
 	self._container:AddChild(loop_item)
-	local revoke = ALittleIDE.IDEAntiInsertLoopRevoke(self, child, loop_item, ALittle.List_MaxN(self._info.childs))
+	local revoke = ALittleIDE.IDEAntiInsertLoopRevoke(self, child, loop_item, ALittle.List_Len(self._info.childs))
 	self._panel.tab_child.revoke_list:PushRevoke(revoke)
 	loop_item.button.selected = true
 	self._panel:ShowAntiLoop(loop_item)

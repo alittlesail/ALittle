@@ -349,10 +349,10 @@ public static IDEUIUtility_CreateTree(const ALittle.DisplayInfo control, string 
 		tree_logic = new IDEUITreeItem(g_Control, user_info, tab_child);
 
 	// 处理子控件
-	if (g_IDEEnum.can_add_child_map[user_info.default.__class] && object.childs != null && ALittle.List_MaxN(object.childs) > 0)
+	if (g_IDEEnum.can_add_child_map[user_info.default.__class] && object.childs != null && ALittle.List_Len(object.childs) > 0)
 	{
 		// 如果当前信息就有子控件，那么是否是继承由extends变量决定
-		if (control.__childs != null && ALittle.List_MaxN(control.__childs) > 0)
+		if (control.__childs != null && ALittle.List_Len(control.__childs) > 0)
 		{
 			var childs = control.__childs;
 			for (var k, v in childs)
@@ -363,7 +363,7 @@ public static IDEUIUtility_CreateTree(const ALittle.DisplayInfo control, string 
             }
 		}
 		// 如果继承就有子控件，那么都是继承
-		elseif (user_info.default.__childs != null && ALittle.List_MaxN(user_info.default.__childs) > 0)
+		elseif (user_info.default.__childs != null && ALittle.List_Len(user_info.default.__childs) > 0)
 		{
             var module_name = module;
             if (control.__module != null) module_name = control.__module;

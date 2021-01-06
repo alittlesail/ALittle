@@ -47,7 +47,7 @@ protected class AUICodeFilterScreen
 
         var text = this._edit.text;
         var split = ALittle.String_Split(text, ".");
-        var split_len = ALittle.List_MaxN(split);
+        var split_len = ALittle.List_Len(split);
         if (split_len > 0) 
         {
             if (split[split_len] == "") this._complete = null;

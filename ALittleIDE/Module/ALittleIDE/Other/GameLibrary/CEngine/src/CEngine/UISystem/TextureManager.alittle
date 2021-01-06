@@ -533,7 +533,7 @@ protected class TextureManager
         if (big_list == null)
             return;
 
-        var big_list_count = List_MaxN(big_list);
+        var big_list_count = List_Len(big_list);
         if (big_list_count < 2)
             return;
     

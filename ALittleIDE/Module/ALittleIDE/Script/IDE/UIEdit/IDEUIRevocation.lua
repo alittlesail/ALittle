@@ -353,7 +353,7 @@ function ALittleIDE.IDEAntiAddAttrRevoke:Back()
 	if info == nil then
 		return
 	end
-	ALittle.List_Remove(info.childs, ALittle.List_MaxN(info.childs))
+	ALittle.List_Remove(info.childs, ALittle.List_Len(info.childs))
 	if self._target.cur_show == self._name then
 		self._target.anti_anti_linear:RemoveChild(self._anti_item)
 		self._target.anti_link_linear:RemoveChild(self._link_item)

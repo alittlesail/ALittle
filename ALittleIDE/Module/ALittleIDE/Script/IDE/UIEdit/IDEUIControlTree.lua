@@ -119,7 +119,7 @@ function ALittleIDE.IDEUIControlTree:ShowAddDialog(target)
 		self._control_add_dialog.visible = false
 	end
 	local data_list = target:GetDataListForAdd()
-	if ALittle.List_MaxN(data_list) == 0 then
+	if ALittle.List_Len(data_list) == 0 then
 		g_AUITool:ShowNotice("提示", "当前控件不能添加子控件")
 		return
 	end
@@ -147,7 +147,7 @@ end
 
 function ALittleIDE.IDEUIControlTree:ShowPasteDialog(target, info, child_index, revoke_bind, callback)
 	local data_list = target:GetDataListForAdd()
-	if ALittle.List_MaxN(data_list) == 0 then
+	if ALittle.List_Len(data_list) == 0 then
 		g_AUITool:ShowNotice("提示", "当前控件不能添加子控件")
 		if callback ~= nil then
 			callback(false, nil)

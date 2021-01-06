@@ -665,7 +665,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
 
         var content = this._find_input.text;
         this._find_text = ALittle.String_SplitUTF8(content);
-        var find_len = ALittle.List_MaxN(this._find_text);
+        var find_len = ALittle.List_Len(this._find_text);
         if (find_len == 0) return;
 
         this._find_map = new Map<AUICodeFindInfo, ALittle.DisplayObject>();
@@ -799,7 +799,7 @@ public class AUICodeEdit : ALittle.DisplayLayout
         line.container._find.RemoveAllChild();
 
         // 重新计算
-        var find_len = ALittle.List_MaxN(this._find_text);
+        var find_len = ALittle.List_Len(this._find_text);
         if (find_len == 0) return;
 
         if (line.char_count < find_len) return;

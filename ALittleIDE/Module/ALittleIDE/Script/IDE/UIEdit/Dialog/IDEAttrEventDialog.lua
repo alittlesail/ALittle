@@ -144,7 +144,7 @@ function ALittleIDE.IDEAttrEventDialog:HandleEventConfirm(event)
 		end
 		local event_info = nil
 		local event_split = ALittle.String_Split(ALittle.String_Trim(event_string), ":")
-		local event_count = ALittle.List_MaxN(event_split)
+		local event_count = ALittle.List_Len(event_split)
 		if event_count == 2 then
 			event_info = {}
 			event_info.type = event_split[1]

@@ -282,8 +282,8 @@ function ALittleIDE.IDEUIUtility_CreateTree(control, module, extends_v, object, 
 	else
 		tree_logic = ALittleIDE.IDEUITreeItem(ALittleIDE.g_Control, user_info, tab_child)
 	end
-	if ALittleIDE.g_IDEEnum.can_add_child_map[user_info.default.__class] and object.childs ~= nil and ALittle.List_MaxN(object.childs) > 0 then
-		if control.__childs ~= nil and ALittle.List_MaxN(control.__childs) > 0 then
+	if ALittleIDE.g_IDEEnum.can_add_child_map[user_info.default.__class] and object.childs ~= nil and ALittle.List_Len(object.childs) > 0 then
+		if control.__childs ~= nil and ALittle.List_Len(control.__childs) > 0 then
 			local childs = control.__childs
 			for k, v in ___ipairs(childs) do
 				local tree = ALittleIDE.IDEUIUtility_CreateTree(v, module, extends_v, object.childs[k], "child", tab_child, false)
@@ -292,7 +292,7 @@ function ALittleIDE.IDEUIUtility_CreateTree(control, module, extends_v, object, 
 				end
 				tree_logic:AddChild(tree)
 			end
-		elseif user_info.default.__childs ~= nil and ALittle.List_MaxN(user_info.default.__childs) > 0 then
+		elseif user_info.default.__childs ~= nil and ALittle.List_Len(user_info.default.__childs) > 0 then
 			local module_name = module
 			if control.__module ~= nil then
 				module_name = control.__module

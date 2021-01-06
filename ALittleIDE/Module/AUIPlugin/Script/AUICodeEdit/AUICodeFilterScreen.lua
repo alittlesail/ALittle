@@ -66,7 +66,7 @@ function AUIPlugin.AUICodeFilterScreen:ShowComplete(project, pre_input, edit)
 	end
 	local text = self._edit.text
 	local split = ALittle.String_Split(text, ".")
-	local split_len = ALittle.List_MaxN(split)
+	local split_len = ALittle.List_Len(split)
 	if split_len > 0 then
 		if split[split_len] == "" then
 			self._complete = nil

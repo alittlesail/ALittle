@@ -69,7 +69,7 @@ public class AUICodeLineNumber : ALittle.DisplayLayout
         break_btn.selected = this._edit.GetBreakPoint(this._line_number);
 
         var offset = 0.0;
-        var len = ALittle.List_MaxN(text_list);
+        var len = ALittle.List_Len(text_list);
         for (var index = len; index >= 1; -1)
         {
             var char = text_list[index];

@@ -83,7 +83,7 @@ function AUIPlugin.AUICodeParamList:ReInit()
 	if self._param_info == nil then
 		return false
 	end
-	self._param_count = ALittle.List_MaxN(self._param_info.param_list)
+	self._param_count = ALittle.List_Len(self._param_info.param_list)
 	if self._param_count == 0 then
 		return false
 	end
@@ -100,7 +100,7 @@ function AUIPlugin.AUICodeParamList:ReInit()
 	self._item_list = {}
 	self._param_index = 0
 	local offset = 0.0
-	local param_len = ALittle.List_MaxN(self._param_info.param_list)
+	local param_len = ALittle.List_Len(self._param_info.param_list)
 	for param_index, param in ___ipairs(self._param_info.param_list) do
 		local info = {}
 		info.text_list = {}

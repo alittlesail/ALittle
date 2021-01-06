@@ -81,7 +81,7 @@ function AUIPlugin.AUICodeLineNumber:UpdateShow()
 	break_btn:AddEventListener(___all_struct[958494922], self, self.HandleBreakChanged)
 	break_btn.selected = self._edit:GetBreakPoint(self._line_number)
 	local offset = 0.0
-	local len = ALittle.List_MaxN(text_list)
+	local len = ALittle.List_Len(text_list)
 	local index = len
 	while true do
 		if not(index >= 1) then break end

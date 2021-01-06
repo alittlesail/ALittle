@@ -356,7 +356,7 @@ public class IDEVersionList : ALittle.DisplayLayout
 	public fun CheckDateString(string content) : bool
 	{
 		var list = ALittle.String_Split(content, "-");
-		if (ALittle.List_MaxN(list) != 6) return false;
+		if (ALittle.List_Len(list) != 6) return false;
 
 		if (ALittle.String_Len(list[1]) != 4) return false;
 		if (ALittle.Math_ToInt(list[1]) == null) return false;
@@ -373,7 +373,7 @@ public class IDEVersionList : ALittle.DisplayLayout
 	public fun CheckVersionString(string content) : bool
 	{
 		var list = ALittle.String_Split(content, ".");
-		if (ALittle.List_MaxN(list) != 3) return false;
+		if (ALittle.List_Len(list) != 3) return false;
 
 		for (var i = 1; i <= 2; 1)
 		{

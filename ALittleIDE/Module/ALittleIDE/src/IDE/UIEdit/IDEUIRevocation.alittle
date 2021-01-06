@@ -456,7 +456,7 @@ public class IDEAntiAddAttrRevoke : ALittle.RevokeObject
 		var info = user_info.base.loop_map[this._name];
 		if (info == null) return;
 
-		ALittle.List_Remove(info.childs, ALittle.List_MaxN(info.childs));
+		ALittle.List_Remove(info.childs, ALittle.List_Len(info.childs));
 
 		if (this._target.cur_show == this._name)
 		{

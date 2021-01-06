@@ -726,7 +726,7 @@ function ALittleIDE.IDEExport:HandleNewVersionInfoImpl(submit_info)
 	self._submit_cancel_btn.visible = true
 	self._is_in_submit = true
 	local upload_index = 0
-	local total_count = ALittle.List_MaxN(submit_info.upload_list) + 2
+	local total_count = ALittle.List_Len(submit_info.upload_list) + 2
 	local param = {}
 	param.__account_id = ALittleIDE.g_IDEWebLoginManager.account_id
 	param.__session_id = ALittleIDE.g_IDEWebLoginManager.session_id

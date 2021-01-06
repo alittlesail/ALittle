@@ -648,7 +648,7 @@ public class AUIFileTreeLayout : ALittle.DisplayLayout
 			this._search_info.list = new List<AUIFileTreeLogic>();
 			for (var index, child:AUIFileTreeLogic in this._file_scroll_screen.childs)
                 child.SearchFile(this._search_info.name, this._search_info.list);
-			this._search_info.count = ALittle.List_MaxN(this._search_info.list);
+			this._search_info.count = ALittle.List_Len(this._search_info.list);
         }
 
 		if (this._search_info.count <= 0) return;

@@ -165,7 +165,7 @@ function ALittle.DropDown.__setter:data_list(value)
 	self._button_style = nil
 	self._data_list = value
 	self.button_style = button_style
-	if ALittle.List_MaxN(value) > 0 then
+	if ALittle.List_Len(value) > 0 then
 		self.text = value[1]
 	else
 		self.text = ""

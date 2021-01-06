@@ -254,7 +254,7 @@ function ALittleIDE.IDEUICodeList:HandleCodeSearchClick(event)
 		for index, child in ___ipairs(self._code_scroll_screen.childs) do
 			child:SearchFile(self._search_info.name, self._search_info.list)
 		end
-		self._search_info.count = ALittle.List_MaxN(self._search_info.list)
+		self._search_info.count = ALittle.List_Len(self._search_info.list)
 	end
 	if self._search_info.count <= 0 then
 		return

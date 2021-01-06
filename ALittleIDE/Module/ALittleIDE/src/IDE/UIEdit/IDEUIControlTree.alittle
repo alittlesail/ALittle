@@ -115,7 +115,7 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 		}
 		// 设置这个下拉菜单
 		var data_list = target.GetDataListForAdd();
-		if (ALittle.List_MaxN(data_list) == 0)
+		if (ALittle.List_Len(data_list) == 0)
 		{
 			g_AUITool.ShowNotice("提示", "当前控件不能添加子控件");
 			return;
@@ -152,7 +152,7 @@ public class IDEUIControlTree : ALittle.DisplayLayout
 	public fun ShowPasteDialog(IDEUITreeLogic target, ALittle.DisplayInfo info, int child_index, ALittle.RevokeBind revoke_bind, Functor<(bool, List<IDEUITreeLogic>)> callback)
 	{
 		var data_list = target.GetDataListForAdd();
-		if (ALittle.List_MaxN(data_list) == 0)
+		if (ALittle.List_Len(data_list) == 0)
 		{
 			g_AUITool.ShowNotice("提示", "当前控件不能添加子控件");
 			if (callback != null) callback(false, null);

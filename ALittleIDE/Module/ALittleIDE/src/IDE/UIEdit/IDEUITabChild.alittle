@@ -1472,7 +1472,7 @@ public class IDEUITabChild : IDETabChild
 			}
 	
             var error, copy_list_tmp:List<IDEControlCopyInfo> = tcall(ALittle.String_JsonDecode, text_info);
-			if (error != null || ALittle.List_MaxN(copy_list_tmp) == 0)
+			if (error != null || ALittle.List_Len(copy_list_tmp) == 0)
             {
                 g_AUITool.ShowNotice("错误", "剪切板的内容不能粘帖");
                 if (callback != null) callback(false, null);
@@ -1647,7 +1647,7 @@ public class IDEUITabChild : IDETabChild
         var member_list = new List<string>();
         for (var index, child:IDEUITreeLogic in target.childs)
             child.GenerateClassMember(member_list);
-        if (ALittle.List_MaxN(member_list) == 0) return;
+        if (ALittle.List_Len(member_list) == 0) return;
 
         var text = ALittle.String_Join(member_list, "");
         tab_child.edit.EditFocus(info.line_end + 2, 0, null, null, true);
@@ -1745,7 +1745,7 @@ public class IDEUITabChild : IDETabChild
             this._tree_search_info.index = 0;
 		}
         var list = this._tree_object.SearchLink(name);
-        var count = ALittle.List_MaxN(list);
+        var count = ALittle.List_Len(list);
         if (count == 0) return;
 	
         this._tree_search_info.index = this._tree_search_info.index + 1;
@@ -1767,7 +1767,7 @@ public class IDEUITabChild : IDETabChild
             this._tree_search_info.index = 0;
 		}
         var list = this._tree_object.SearchEvent(name);
-        var count = ALittle.List_MaxN(list);
+        var count = ALittle.List_Len(list);
         if (count == 0) return;
 	
         this._tree_search_info.index = this._tree_search_info.index + 1;
@@ -1789,7 +1789,7 @@ public class IDEUITabChild : IDETabChild
             this._tree_search_info.index = 0;
 		}
         var list = this._tree_object.SearchDescription(name);
-        var count = ALittle.List_MaxN(list);
+        var count = ALittle.List_Len(list);
         if (count == 0) return;
 	
         this._tree_search_info.index = this._tree_search_info.index + 1;
@@ -1811,7 +1811,7 @@ public class IDEUITabChild : IDETabChild
             this._tree_search_info.index = 0;
 		}
         var list = this._tree_object.SearchTargetClass(name);
-        var count = ALittle.List_MaxN(list);
+        var count = ALittle.List_Len(list);
         if (count == 0) return;
 	
         this._tree_search_info.index = this._tree_search_info.index + 1;
@@ -1833,7 +1833,7 @@ public class IDEUITabChild : IDETabChild
             this._tree_search_info.index = 0;
 		}
         var list = this._tree_object.SearchTextureName(name);
-        var count = ALittle.List_MaxN(list);
+        var count = ALittle.List_Len(list);
         if (count == 0) return;
 	
         this._tree_search_info.index = this._tree_search_info.index + 1;
@@ -1862,7 +1862,7 @@ public class IDEUITabChild : IDETabChild
 	
         var list = new List<IDEUITreeLogic>();
         this._tree_object.QuickPickUp(abs_x - global_x, abs_y - global_y, list);
-        var count = ALittle.List_MaxN(list);
+        var count = ALittle.List_Len(list);
         if (count == 0) return;
 	
         var user_data = new IDEUITabChildQuickDragAddUserData();

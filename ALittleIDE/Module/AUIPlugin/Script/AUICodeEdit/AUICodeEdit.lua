@@ -694,7 +694,7 @@ function AUIPlugin.AUICodeEdit:HandleFindInputChanged(event)
 	self:ClearFindInfo()
 	local content = self._find_input.text
 	self._find_text = ALittle.String_SplitUTF8(content)
-	local find_len = ALittle.List_MaxN(self._find_text)
+	local find_len = ALittle.List_Len(self._find_text)
 	if find_len == 0 then
 		return
 	end
@@ -811,7 +811,7 @@ function AUIPlugin.AUICodeEdit:UpdateLineFind(it_line)
 		end
 	end
 	line.container._find:RemoveAllChild()
-	local find_len = ALittle.List_MaxN(self._find_text)
+	local find_len = ALittle.List_Len(self._find_text)
 	if find_len == 0 then
 		return
 	end

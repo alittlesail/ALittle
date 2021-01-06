@@ -381,7 +381,7 @@ function ALittle.TextureManager:LoadAtlas()
 	if big_list == nil then
 		return
 	end
-	local big_list_count = ALittle.List_MaxN(big_list)
+	local big_list_count = ALittle.List_Len(big_list)
 	if big_list_count < 2 then
 		return
 	end

@@ -142,7 +142,7 @@ public class IDEAttrEventDialog
             var event_info:ALittle.EventInfo = null;
             // 根据冒号拆分
             var event_split = ALittle.String_Split(ALittle.String_Trim(event_string), ":");
-            var event_count = ALittle.List_MaxN(event_split);
+            var event_count = ALittle.List_Len(event_split);
             if (event_count == 2)
             {
                 event_info = new ALittle.EventInfo();

@@ -953,7 +953,7 @@ class IDEExport
         this._is_in_submit = true;
 
         var upload_index = 0;
-        var total_count = ALittle.List_MaxN(submit_info.upload_list) + 2;
+        var total_count = ALittle.List_Len(submit_info.upload_list) + 2;
 
         var param = new VersionServer.QUploadVersionFile();
 		param.__account_id = g_IDEWebLoginManager.account_id;

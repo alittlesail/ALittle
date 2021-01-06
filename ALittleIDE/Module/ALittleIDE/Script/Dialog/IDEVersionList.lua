@@ -354,7 +354,7 @@ end
 
 function ALittleIDE.IDEVersionList:CheckDateString(content)
 	local list = ALittle.String_Split(content, "-")
-	if ALittle.List_MaxN(list) ~= 6 then
+	if ALittle.List_Len(list) ~= 6 then
 		return false
 	end
 	if ALittle.String_Len(list[1]) ~= 4 then
@@ -379,7 +379,7 @@ end
 
 function ALittleIDE.IDEVersionList:CheckVersionString(content)
 	local list = ALittle.String_Split(content, ".")
-	if ALittle.List_MaxN(list) ~= 3 then
+	if ALittle.List_Len(list) ~= 3 then
 		return false
 	end
 	local i = 1

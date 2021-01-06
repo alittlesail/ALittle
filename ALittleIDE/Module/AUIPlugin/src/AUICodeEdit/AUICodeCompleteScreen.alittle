@@ -251,7 +251,7 @@ protected class AUICodeCompleteScreen
         // 将第一个分隔符前面的字符添加到列表
         if (first_split > 1) ALittle.List_Insert(upper_list, 1, ALittle.String_Sub(upper_text, 1, first_split - 1));
         // 如果数组长度大于0，并且最后一个是空串，那么就剔除掉
-        var upper_list_count = ALittle.List_MaxN(upper_list);
+        var upper_list_count = ALittle.List_Len(upper_list);
         if (upper_list_count > 1 && upper_list[upper_list_count] == "") upper_list[upper_list_count] = null;
 
         var sort_list = new List<AUICodeCompleteItemInfo>();

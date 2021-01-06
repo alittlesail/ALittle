@@ -17,15 +17,15 @@ function ALittle.DropDown:Ctor(ctrl_sys)
 	self._body.__right_data = self
 	self._body.visible = false
 	___rawset(self, "_linear", ALittle.Linear(self._ctrl_sys))
-	self._linear.type = ALittle.UIEnumTypes.TYPE_V
-	self._linear.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	self._linear.type = 2
+	self._linear.width_type = 4
 	self._linear.width_value = 0
-	self._linear.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	self._linear.height_type = 4
 	self._linear.height_value = 0
 	___rawset(self, "_scroll_screen", ALittle.ScrollScreen(self._ctrl_sys))
-	self._scroll_screen.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	self._scroll_screen.width_type = 4
 	self._scroll_screen.width_value = 0
-	self._scroll_screen.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	self._scroll_screen.height_type = 4
 	self._scroll_screen.height_value = 0
 	self._scroll_screen.container = self._linear
 	self._body:AddChild(self._scroll_screen)
@@ -46,8 +46,8 @@ function ALittle.DropDown.__setter:show_background(value)
 	self._body:RemoveChild(self._background)
 	self._background = value
 	if self._background ~= nil then
-		self._background.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
-		self._background.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._background.width_type = 4
+		self._background.height_type = 4
 		self._background.width_value = 0
 		self._background.height_value = 0
 		self._body:AddChild(self._background, 0)

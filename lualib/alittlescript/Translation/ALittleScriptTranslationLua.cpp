@@ -2120,7 +2120,8 @@ ABnfGuessError ALittleScriptTranslationLua::GenerateEnumValue(std::shared_ptr<AL
 
     auto enum_name_dec = enum_name_guess->enum_name_dec.lock();
     if (enum_name_dec == nullptr) return ABnfGuessError(nullptr, u8"节点失效");
-    if (enum_name_dec->GetModulePath() == m_module_path) return nullptr;
+    // 这行注释掉，让所有枚举全部使用常量值
+    // if (enum_name_dec->GetModulePath() == m_module_path) return nullptr;
 
     auto dot_id = suffix->GetPropertyValueDotId();
     if (dot_id == nullptr) return nullptr;

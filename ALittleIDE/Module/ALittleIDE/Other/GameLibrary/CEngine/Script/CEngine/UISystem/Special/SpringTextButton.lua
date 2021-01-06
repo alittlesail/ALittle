@@ -214,8 +214,8 @@ function ALittle.SpringTextButton.__setter:show_text(value)
 	value.visible = self._show_text.visible
 	self:RemoveChild(self._show_text)
 	self._show_text = value
-	self._show_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
-	self._show_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+	self._show_text.x_type = 3
+	self._show_text.y_type = 3
 	self:AddChild(self._show_text, 6)
 end
 
@@ -241,8 +241,8 @@ function ALittle.SpringTextButton.__setter:show_disabled_text(value)
 	value.visible = self._show_disabled_text.visible
 	self:RemoveChild(self._show_disabled_text)
 	self._show_disabled_text = value
-	self._show_disabled_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
-	self._show_disabled_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+	self._show_disabled_text.x_type = 3
+	self._show_disabled_text.y_type = 3
 	self:AddChild(self._show_disabled_text, 6)
 end
 
@@ -257,8 +257,8 @@ function ALittle.SpringTextButton.__setter:show_up(value)
 	self:RemoveChild(self._show_up)
 	self._show_up = value
 	if self._show_up ~= nil then
-		self._show_up.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
-		self._show_up.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_up.width_type = 4
+		self._show_up.height_type = 4
 		self._show_up.width_value = 0
 		self._show_up.height_value = 0
 		self:AddChild(self._show_up, 1)
@@ -278,8 +278,8 @@ function ALittle.SpringTextButton.__setter:show_disabled(value)
 	self:RemoveChild(self._show_disabled)
 	self._show_disabled = value
 	if self._show_disabled ~= nil then
-		self._show_disabled.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
-		self._show_disabled.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_disabled.width_type = 4
+		self._show_disabled.height_type = 4
 		self._show_disabled.width_value = 0
 		self._show_disabled.height_value = 0
 		self:AddChild(self._show_disabled, 1)

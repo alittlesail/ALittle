@@ -14,9 +14,9 @@ function ALittle.System_CalcPortrait(src_width, src_height, flag)
 		local screen_width = ALittle.System_GetScreenWidth()
 		local screen_height = ALittle.System_GetScreenHeight()
 		src_height = ALittle.Math_Floor(screen_height / screen_width * src_width)
-		flag = ALittle.BitOr(flag, ALittle.UIEnumTypes.VIEW_FULLSCREEN)
+		flag = ALittle.BitOr(flag, 0x00000001)
 	elseif platform == "Web" then
-		if ALittle.BitAnd(flag, ALittle.UIEnumTypes.VIEW_RESIZABLE) > 0 then
+		if ALittle.BitAnd(flag, 0x00000020) > 0 then
 			src_width = ALittle.System_GetScreenWidth()
 			src_height = ALittle.System_GetScreenHeight()
 		else
@@ -42,9 +42,9 @@ function ALittle.System_CalcLandscape(src_width, src_height, flag)
 		local screen_width = ALittle.System_GetScreenWidth()
 		local screen_height = ALittle.System_GetScreenHeight()
 		src_width = ALittle.Math_Floor(screen_width / screen_height * src_height)
-		flag = ALittle.BitOr(flag, ALittle.UIEnumTypes.VIEW_FULLSCREEN)
+		flag = ALittle.BitOr(flag, 0x00000001)
 	elseif platform == "Web" then
-		if ALittle.BitAnd(flag, ALittle.UIEnumTypes.VIEW_RESIZABLE) > 0 then
+		if ALittle.BitAnd(flag, 0x00000020) > 0 then
 			src_width = ALittle.System_GetScreenWidth()
 			src_height = ALittle.System_GetScreenHeight()
 		else

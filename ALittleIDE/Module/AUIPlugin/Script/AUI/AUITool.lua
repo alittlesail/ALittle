@@ -105,7 +105,7 @@ function AUIPlugin.AUITool:HandleSaveConfirmClick(event)
 		return
 	end
 	self._save_dialog._user_data = nil
-	ALittle.Coroutine.Resume(thread, AUIPlugin.AUIToolOption.YES)
+	ALittle.Coroutine.Resume(thread, "YES")
 end
 
 function AUIPlugin.AUITool:HandleNoSaveClick(event)
@@ -115,7 +115,7 @@ function AUIPlugin.AUITool:HandleNoSaveClick(event)
 		return
 	end
 	self._save_dialog._user_data = nil
-	ALittle.Coroutine.Resume(thread, AUIPlugin.AUIToolOption.NO)
+	ALittle.Coroutine.Resume(thread, "NO")
 end
 
 function AUIPlugin.AUITool:HandleSaveCancelClick(event)
@@ -125,7 +125,7 @@ function AUIPlugin.AUITool:HandleSaveCancelClick(event)
 		return
 	end
 	self._save_dialog._user_data = nil
-	ALittle.Coroutine.Resume(thread, AUIPlugin.AUIToolOption.CANCEL)
+	ALittle.Coroutine.Resume(thread, "CANCEL")
 end
 
 function AUIPlugin.AUITool:DeleteNotice(title, content)
@@ -151,7 +151,7 @@ function AUIPlugin.AUITool:HandleDeleteConfirmClick(event)
 		return
 	end
 	self._delete_dialog._user_data = nil
-	ALittle.Coroutine.Resume(thread, AUIPlugin.AUIToolOption.YES)
+	ALittle.Coroutine.Resume(thread, "YES")
 end
 
 function AUIPlugin.AUITool:HandleDeleteCancelClick(event)
@@ -161,7 +161,7 @@ function AUIPlugin.AUITool:HandleDeleteCancelClick(event)
 		return
 	end
 	self._delete_dialog._user_data = nil
-	ALittle.Coroutine.Resume(thread, AUIPlugin.AUIToolOption.CANCEL)
+	ALittle.Coroutine.Resume(thread, "CANCEL")
 end
 
 function AUIPlugin.AUITool:ShowRename(text, x, y, width)

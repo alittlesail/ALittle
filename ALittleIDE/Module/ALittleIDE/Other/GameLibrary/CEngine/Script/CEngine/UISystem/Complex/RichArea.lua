@@ -68,8 +68,8 @@ end
 function ALittle.RichArea:Ctor(ctrl_sys)
 	___rawset(self, "_enter_key_height", 20)
 	___rawset(self, "_line_spacing", 0)
-	___rawset(self, "_halign", ALittle.UIEnumTypes.HALIGN_LEFT)
-	___rawset(self, "_valign", ALittle.UIEnumTypes.VALIGN_TOP)
+	___rawset(self, "_halign", 0)
+	___rawset(self, "_valign", 0)
 	___rawset(self, "_display_list", nil)
 	___rawset(self, "_line_list", {})
 	___rawset(self, "_line_count", 0)
@@ -368,9 +368,9 @@ function ALittle.RichArea:RefreshX()
 	end
 	for k, line in ___ipairs(self._line_list) do
 		local offset_x = 0.0
-		if self._halign == ALittle.UIEnumTypes.HALIGN_CENTER then
+		if self._halign == 1 then
 			offset_x = (self.width - line.width) / 2
-		elseif self._halign == ALittle.UIEnumTypes.HALIGN_RIGHT then
+		elseif self._halign == 2 then
 			offset_x = self.width - line.width
 		end
 		for index, child in ___ipairs(line.childs) do
@@ -392,9 +392,9 @@ function ALittle.RichArea:RefreshY()
 	end
 	self._real_height = self._real_height + (line_count - 1) * self._line_spacing
 	local offset_y = 0.0
-	if self._valign == ALittle.UIEnumTypes.VALIGN_CENTER then
+	if self._valign == 1 then
 		offset_y = (self.height - self._real_height) / 2
-	elseif self._valign == ALittle.UIEnumTypes.VALIGN_BOTTOM then
+	elseif self._valign == 2 then
 		offset_y = self.height - self._real_height
 	end
 	for k, line in ___ipairs(self._line_list) do

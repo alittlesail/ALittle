@@ -21,17 +21,17 @@ Lua.ISocket = Lua.Class(nil, "Lua.ISocket")
 function Lua.ISocket:Ctor(disconnected_callback)
 	__MAX_ID = __MAX_ID + 1
 	___rawset(self, "_id", __MAX_ID)
-	___rawset(self, "_status", Lua.SocketStatus.SS_IDLE)
+	___rawset(self, "_status", 0)
 	___rawset(self, "_disconnected_callback", disconnected_callback)
 	___rawset(self, "_socket", A_LuaProtobufSchedule._socket)
 end
 
 function Lua.ISocket:IsConnected()
-	return self._status == Lua.SocketStatus.SS_CONNECTED
+	return self._status == 2
 end
 
 function Lua.ISocket:IsConnecting()
-	return self._status == Lua.SocketStatus.SS_CONNECTING
+	return self._status == 1
 end
 
 function Lua.ISocket:Connect(ip, port)
@@ -42,7 +42,7 @@ function Lua.ISocket:Connect(ip, port)
 	if self:IsConnected() then
 		return "已经连接，请先关闭连接"
 	end
-	self._status = Lua.SocketStatus.SS_CONNECTING
+	self._status = 1
 	socket.connect(self._socket, self._id, ip, port)
 	self._connect_thread = ___COROUTINE
 	__SOCKET_MAP[self._id] = self
@@ -52,7 +52,7 @@ end
 function Lua.ISocket:Close()
 	socket.close(self._socket, self._id)
 	__SOCKET_MAP[self._id] = nil
-	self._status = Lua.SocketStatus.SS_IDLE
+	self._status = 0
 	if self._connect_thread ~= nil then
 		local result, error = ALittle.Coroutine.Resume(self._connect_thread, "closed")
 		if result ~= true then
@@ -419,7 +419,7 @@ function Lua.ISocket.HandleConnectFailed(id)
 		return
 	end
 	__SOCKET_MAP[id] = nil
-	socket._status = Lua.SocketStatus.SS_IDLE
+	socket._status = 0
 	local result, error = ALittle.Coroutine.Resume(socket._connect_thread, "connect failed")
 	if result ~= true then
 		ALittle.Error(error)
@@ -432,7 +432,7 @@ function Lua.ISocket.HandleConnectSucceed(id)
 	if socket == nil then
 		return
 	end
-	socket._status = Lua.SocketStatus.SS_CONNECTED
+	socket._status = 2
 	local result, error = ALittle.Coroutine.Resume(socket._connect_thread, nil)
 	if result ~= true then
 		ALittle.Error(error)
@@ -446,7 +446,7 @@ function Lua.ISocket.HandleDisconnected(id)
 		return
 	end
 	__SOCKET_MAP[id] = nil
-	socket._status = Lua.SocketStatus.SS_IDLE
+	socket._status = 0
 	if socket._read_thread ~= nil then
 		local result, error = ALittle.Coroutine.Resume(socket._read_thread, "disconnected")
 		if result ~= true then

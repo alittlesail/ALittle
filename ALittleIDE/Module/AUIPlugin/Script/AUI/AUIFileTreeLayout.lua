@@ -212,7 +212,7 @@ AUIPlugin.AUIFileTree.HandleCreateDir = Lua.CoWrap(AUIPlugin.AUIFileTree.HandleC
 function AUIPlugin.AUIFileTree:HandleDeleteDir()
 	local file_name = ALittle.File_GetFileNameByPath(self._user_info.path)
 	local result = g_AUITool:DeleteNotice("删除", "确定要删除" .. file_name .. "，以及子文件和子文件夹吗?")
-	if result ~= AUIPlugin.AUIToolOption.YES then
+	if result ~= "YES" then
 		return
 	end
 	if self._user_info.on_delete_dir ~= nil then
@@ -550,7 +550,7 @@ end
 function AUIPlugin.AUIFileTreeItem:HandleDeleteFile()
 	local file_name = ALittle.File_GetFileNameByPath(self._user_info.path)
 	local result = g_AUITool:DeleteNotice("删除", "确定要删除" .. file_name .. "吗?")
-	if result ~= AUIPlugin.AUIToolOption.YES then
+	if result ~= "YES" then
 		return
 	end
 	if self._user_info.on_delete_file ~= nil then

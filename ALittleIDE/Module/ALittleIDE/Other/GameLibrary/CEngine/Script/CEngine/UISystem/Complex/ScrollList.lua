@@ -27,10 +27,10 @@ function ALittle.ScrollList:Ctor(ctrl_sys)
 	___rawset(self, "_clip_atonce", false)
 	___rawset(self, "_drag_time", 0)
 	___rawset(self, "_max_speed", 40)
-	___rawset(self, "_type", ALittle.UIEnumTypes.TYPE_V)
+	___rawset(self, "_type", 2)
 	___rawset(self, "_scroll_linear", ALittle.Linear(self._ctrl_sys))
-	self._scroll_linear.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
-	self._scroll_linear.type = ALittle.UIEnumTypes.TYPE_V
+	self._scroll_linear.width_type = 4
+	self._scroll_linear.type = 2
 	ALittle.DisplayView.AddChild(self, self._scroll_linear)
 	self._scroll_linear:AddEventListener(___all_struct[-431205740], self, self.HandleLinearResize)
 	___rawset(self, "_pickup_rect", true)
@@ -71,14 +71,14 @@ function ALittle.ScrollList.__setter:type(value)
 		return
 	end
 	self._type = value
-	if self._type == ALittle.UIEnumTypes.TYPE_H then
-		self._scroll_linear.width_type = ALittle.UIEnumTypes.SIZE_ABS
-		self._scroll_linear.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
-		self._scroll_linear.type = ALittle.UIEnumTypes.TYPE_H
+	if self._type == 1 then
+		self._scroll_linear.width_type = 1
+		self._scroll_linear.height_type = 4
+		self._scroll_linear.type = 1
 	else
-		self._scroll_linear.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
-		self._scroll_linear.height_type = ALittle.UIEnumTypes.SIZE_ABS
-		self._scroll_linear.type = ALittle.UIEnumTypes.TYPE_V
+		self._scroll_linear.width_type = 4
+		self._scroll_linear.height_type = 1
+		self._scroll_linear.type = 2
 	end
 	self:RefreshChild(false)
 end
@@ -122,7 +122,7 @@ function ALittle.ScrollList:AddChildEffect(child, up)
 		return false
 	end
 	if up then
-		if self._type == ALittle.UIEnumTypes.TYPE_H then
+		if self._type == 1 then
 			local target_value = self._scroll_linear.x + self._scroll_linear.width
 			if self._scroll_linear:AddChild(child, 1) == false then
 				return false
@@ -146,7 +146,7 @@ end
 
 function ALittle.ScrollList:RemoveChildEffect(up, loop)
 	if up then
-		if self._type == ALittle.UIEnumTypes.TYPE_H then
+		if self._type == 1 then
 			local child = self._scroll_linear:GetChildByIndex(1)
 			local target_value = self._scroll_linear.x + self._scroll_linear.width
 			if self._scroll_linear:RemoveChild(child) == false then
@@ -180,7 +180,7 @@ function ALittle.ScrollList:HasChild(child)
 end
 
 function ALittle.ScrollList:RemoveAllChild()
-	if self._type == ALittle.UIEnumTypes.TYPE_H then
+	if self._type == 1 then
 		A_LoopSystem:RemoveUpdater(self._drag_loop_x)
 		A_LoopSystem:RemoveUpdater(self._drag_delta_loop_x)
 		self._scroll_linear.x = 0
@@ -195,7 +195,7 @@ function ALittle.ScrollList:RemoveAllChild()
 end
 
 function ALittle.ScrollList:RefreshChild(loop)
-	if self._type == ALittle.UIEnumTypes.TYPE_H then
+	if self._type == 1 then
 		local linear_width = self._scroll_linear.width
 		local target_x = nil
 		if linear_width >= self._width then
@@ -279,7 +279,7 @@ function ALittle.ScrollList.__getter:clip_atonce()
 end
 
 function ALittle.ScrollList.__setter:scroll_offset(value)
-	if self._type == ALittle.UIEnumTypes.TYPE_H then
+	if self._type == 1 then
 		A_LoopSystem:RemoveUpdater(self._drag_loop_x)
 		A_LoopSystem:RemoveUpdater(self._drag_delta_loop_x)
 		if value > 0 then
@@ -315,7 +315,7 @@ function ALittle.ScrollList.__setter:scroll_offset(value)
 end
 
 function ALittle.ScrollList.__getter:scroll_offset()
-	if self._type == ALittle.UIEnumTypes.TYPE_H then
+	if self._type == 1 then
 		return self._scroll_linear.x
 	end
 	return self._scroll_linear.y
@@ -350,7 +350,7 @@ function ALittle.ScrollList.__getter:real_width()
 end
 
 function ALittle.ScrollList.__setter:width(value)
-	if self._type == ALittle.UIEnumTypes.TYPE_V then
+	if self._type == 2 then
 		ALittle.DisplayView.__setter.width(self, value)
 		return
 	end
@@ -358,7 +358,7 @@ function ALittle.ScrollList.__setter:width(value)
 		return
 	end
 	self._width = value
-	if self._width_type == ALittle.UIEnumTypes.SIZE_ABS then
+	if self._width_type == 1 then
 		self._width_value = self._width
 	end
 	self._show:SetWidth(self._width)
@@ -384,7 +384,7 @@ function ALittle.ScrollList.__setter:width(value)
 end
 
 function ALittle.ScrollList.__setter:height(value)
-	if self._type == ALittle.UIEnumTypes.TYPE_H then
+	if self._type == 1 then
 		ALittle.DisplayView.__setter.height(self, value)
 		return
 	end
@@ -392,7 +392,7 @@ function ALittle.ScrollList.__setter:height(value)
 		return
 	end
 	self._height = value
-	if self._height_type == ALittle.UIEnumTypes.SIZE_ABS then
+	if self._height_type == 1 then
 		self._height_value = self._height
 	end
 	self._show:SetHeight(self._height)
@@ -426,11 +426,11 @@ function ALittle.ScrollList.__setter:right_scrollbar(value)
 	end
 	self._scroll_bar = value
 	if self._scroll_bar ~= nil then
-		if self._type == ALittle.UIEnumTypes.TYPE_H then
+		if self._type == 1 then
 			self._scroll_bar.alpha = 0
 			self._scroll_bar.visible = false
-			self._scroll_bar.type = ALittle.UIEnumTypes.TYPE_H
-			self._scroll_bar.y_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING
+			self._scroll_bar.type = 1
+			self._scroll_bar.y_type = 4
 			ALittle.DisplayView.AddChild(self, self._scroll_bar)
 			self._scroll_bar:AddEventListener(___all_struct[958494922], self, self.HandleRightScrollBarChange)
 			self._scroll_bar:AddEventListener(___all_struct[1309977874], self, self.HandleRightScrollBarChangeEnd)
@@ -443,8 +443,8 @@ function ALittle.ScrollList.__setter:right_scrollbar(value)
 		else
 			self._scroll_bar.alpha = 0
 			self._scroll_bar.visible = false
-			self._scroll_bar.type = ALittle.UIEnumTypes.TYPE_V
-			self._scroll_bar.x_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING
+			self._scroll_bar.type = 2
+			self._scroll_bar.x_type = 4
 			ALittle.DisplayView.AddChild(self, self._scroll_bar)
 			self._scroll_bar:AddEventListener(___all_struct[958494922], self, self.HandleRightScrollBarChange)
 			self._scroll_bar:AddEventListener(___all_struct[1309977874], self, self.HandleRightScrollBarChangeEnd)
@@ -463,7 +463,7 @@ function ALittle.ScrollList.__getter:right_scrollbar()
 end
 
 function ALittle.ScrollList:AdjustScrollBar()
-	if self._type == ALittle.UIEnumTypes.TYPE_H then
+	if self._type == 1 then
 		local linear_width = self._scroll_linear.width
 		if self._scroll_bar ~= nil then
 			local rate = 0.0
@@ -508,7 +508,7 @@ function ALittle.ScrollList.__setter:loading_show_up(value)
 	if value ~= nil then
 		self._loading_show_up = value
 		ALittle.DisplayView.AddChild(self, self._loading_show_up)
-		if self._type == ALittle.UIEnumTypes.TYPE_H then
+		if self._type == 1 then
 			self._loading_show_up.x = self._scroll_linear.x - self._loading_show_up.width
 		else
 			self._loading_show_up.y = self._scroll_linear.y - self._loading_show_up.height
@@ -528,7 +528,7 @@ function ALittle.ScrollList.__setter:loading_show_down(value)
 	if value ~= nil then
 		self._loading_show_down = value
 		ALittle.DisplayView.AddChild(self, self._loading_show_down)
-		if self._type == ALittle.UIEnumTypes.TYPE_H then
+		if self._type == 1 then
 			self._loading_show_down.x = self._scroll_linear.x + self._scroll_linear.width
 		else
 			self._loading_show_down.y = self._scroll_linear.y + self._scroll_linear.height
@@ -537,7 +537,7 @@ function ALittle.ScrollList.__setter:loading_show_down(value)
 end
 
 function ALittle.ScrollList:UpdateLoadingShow()
-	if self._type == ALittle.UIEnumTypes.TYPE_H then
+	if self._type == 1 then
 		if self._loading_show_up ~= nil then
 			self._loading_show_up.x = self._scroll_linear.x - self._loading_show_up.width
 		end
@@ -570,7 +570,7 @@ function ALittle.ScrollList:HandleLinearResize(event)
 end
 
 function ALittle.ScrollList:HandleRightScrollBarChange(event)
-	if self._type == ALittle.UIEnumTypes.TYPE_H then
+	if self._type == 1 then
 		local rate = self._scroll_bar.offset_rate
 		local x = 0.0
 		local linear_width = self._scroll_linear.width
@@ -629,7 +629,7 @@ function ALittle.ScrollList:HandleDragBegin(event)
 		self._scroll_bar.visible = true
 		self._scroll_bar.alpha = 1
 	end
-	if self._type == ALittle.UIEnumTypes.TYPE_H then
+	if self._type == 1 then
 		A_LoopSystem:RemoveUpdater(self._drag_loop_x)
 		A_LoopSystem:RemoveUpdater(self._drag_delta_loop_x)
 	else
@@ -639,7 +639,7 @@ function ALittle.ScrollList:HandleDragBegin(event)
 end
 
 function ALittle.ScrollList:HandleDrag(event)
-	if self._type == ALittle.UIEnumTypes.TYPE_H then
+	if self._type == 1 then
 		if self._drag_delta_table_count < 3 then
 			self._drag_delta_table_count = self._drag_delta_table_count + 1
 			self._drag_delta_table[self._drag_delta_table_count] = event.delta_x
@@ -761,7 +761,7 @@ function ALittle.ScrollList:HandleDrag(event)
 end
 
 function ALittle.ScrollList:HandleDragEnd(event)
-	if self._type == ALittle.UIEnumTypes.TYPE_H then
+	if self._type == 1 then
 		local linear_width = self._scroll_linear.width
 		if self._scroll_linear.x > 0 then
 			A_LoopSystem:RemoveUpdater(self._drag_loop_x)

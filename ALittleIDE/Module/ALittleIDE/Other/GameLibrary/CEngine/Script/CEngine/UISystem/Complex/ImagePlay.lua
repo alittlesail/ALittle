@@ -28,8 +28,8 @@ function ALittle.ImagePlay.__setter:path_list(value)
 	end
 	for k, v in ___ipairs(self._path_list) do
 		local image = ALittle.Image(self._ctrl_sys)
-		image.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
-		image.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		image.width_type = 4
+		image.height_type = 4
 		image.texture_name = v
 		image.visible = false
 		self:AddChild(image)

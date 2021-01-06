@@ -46,12 +46,12 @@ function ALittle.TileMapContainer:Ctor(ctrl_sys)
 	___rawset(self, "_linear_x", 0.0)
 	___rawset(self, "_linear_y", 0.0)
 	___rawset(self, "_tile_layout", ALittle.TileLayoutContainer(ctrl_sys))
-	self._tile_layout.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
-	self._tile_layout.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	self._tile_layout.width_type = 4
+	self._tile_layout.height_type = 4
 	self:AddChild(self._tile_layout)
 	___rawset(self, "_user_layout", ALittle.TileLayoutContainer(ctrl_sys))
-	self._user_layout.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
-	self._user_layout.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	self._user_layout.width_type = 4
+	self._user_layout.height_type = 4
 	self:AddChild(self._user_layout)
 end
 
@@ -77,11 +77,11 @@ function ALittle.TileMapContainer:Init(tile_map, row_count, col_count)
 	for index, layer in ___ipairs(tile_map.layer_list) do
 		local group = ALittle.TileGroupContainer(self._ctrl_sys)
 		linear_1 = ALittle.Linear(self._ctrl_sys)
-		linear_1.type = ALittle.UIEnumTypes.TYPE_V
+		linear_1.type = 2
 		linear_1.width = grid_map_width
 		group:AddChild(linear_1)
 		linear_2 = ALittle.Linear(self._ctrl_sys)
-		linear_2.type = ALittle.UIEnumTypes.TYPE_V
+		linear_2.type = 2
 		linear_2.width = grid_map_width
 		linear_2.x = self._linear_x
 		linear_2.y = self._linear_y
@@ -135,7 +135,7 @@ function ALittle.TileMapContainer:GetImage(layer, row, col)
 	local linear_1 = group:GetChildByIndex(1)
 	local linear_2 = group:GetChildByIndex(2)
 	local tile_type = self._tile_map.tile_type
-	if tile_type == ALittle.TileType.HEX_V then
+	if tile_type == 2 then
 		if row % 2 == 1 then
 			image = linear_1.childs[floor(row / 2) + 1].childs[col]._user_data
 			row_map[col] = image
@@ -192,14 +192,14 @@ function ALittle.TileMapContainer:ResizeLinear(linear_1, linear_2, layer)
 	local tile_map = self._tile_map
 	local col_count = self._col_count
 	local row_count = self._row_count
-	if tile_map.tile_type == ALittle.TileType.HEX_V then
+	if tile_map.tile_type == 2 then
 		linear_1.width = self._cell_width * col_count
 		linear_2.width = linear_1.width
 		local row = 1
 		while true do
 			if not(row <= row_count) then break end
 			local linear = ALittle.Linear(self._ctrl_sys)
-			linear.type = ALittle.UIEnumTypes.TYPE_H
+			linear.type = 1
 			linear.height = self._cell_height
 			local col = 1
 			while true do
@@ -220,7 +220,7 @@ function ALittle.TileMapContainer:ResizeLinear(linear_1, linear_2, layer)
 		while true do
 			if not(row <= row_count) then break end
 			local linear = ALittle.Linear(self._ctrl_sys)
-			linear.type = ALittle.UIEnumTypes.TYPE_H
+			linear.type = 1
 			linear.height = self._cell_height
 			local col = 1
 			while true do
@@ -236,7 +236,7 @@ function ALittle.TileMapContainer:ResizeLinear(linear_1, linear_2, layer)
 		while true do
 			if not(row <= row_count) then break end
 			local linear = ALittle.Linear(self._ctrl_sys)
-			linear.type = ALittle.UIEnumTypes.TYPE_H
+			linear.type = 1
 			linear.height = self._cell_height
 			local col = 1
 			while true do
@@ -254,7 +254,7 @@ function ALittle.TileMapContainer:CreateCell()
 	local tile_map = self._tile_map
 	local tile_type = tile_map.tile_type
 	local side_len = tile_map.side_len
-	if tile_type == ALittle.TileType.HEX_V then
+	if tile_type == 2 then
 		local cell = ALittle.DisplayLayout(self._ctrl_sys)
 		cell.width = self._cell_width
 		local image = ALittle.Image(self._ctrl_sys)
@@ -266,7 +266,7 @@ function ALittle.TileMapContainer:CreateCell()
 		cell:AddChild(image)
 		return cell
 	end
-	if tile_type == ALittle.TileType.SQUARE then
+	if tile_type == 1 then
 		local cell = ALittle.DisplayLayout(self._ctrl_sys)
 		cell.width = self._cell_width
 		local image = ALittle.Image(self._ctrl_sys)
@@ -278,7 +278,7 @@ function ALittle.TileMapContainer:CreateCell()
 		cell:AddChild(image)
 		return cell
 	end
-	if tile_type == ALittle.TileType.HEX_H then
+	if tile_type == 3 then
 		local cell = ALittle.DisplayLayout(self._ctrl_sys)
 		cell.width = self._cell_width
 		local image = ALittle.Image(self._ctrl_sys)
@@ -314,13 +314,13 @@ end
 function ALittle.Tile_CalcLinear2OffsetX(tile_map)
 	local tile_type = tile_map.tile_type
 	local side_len = tile_map.side_len
-	if tile_type == ALittle.TileType.SQUARE then
+	if tile_type == 1 then
 		return side_len
 	end
-	if tile_type == ALittle.TileType.HEX_V then
+	if tile_type == 2 then
 		return side_len * 1.732 / 2
 	end
-	if tile_type == ALittle.TileType.HEX_H then
+	if tile_type == 3 then
 		return side_len * 3 / 2
 	end
 	return 0
@@ -329,13 +329,13 @@ end
 function ALittle.Tile_CalcLinear2OffsetY(tile_map)
 	local tile_type = tile_map.tile_type
 	local side_len = tile_map.side_len
-	if tile_type == ALittle.TileType.SQUARE then
+	if tile_type == 1 then
 		return 0
 	end
-	if tile_type == ALittle.TileType.HEX_V then
+	if tile_type == 2 then
 		return side_len * 3 / 2
 	end
-	if tile_type == ALittle.TileType.HEX_H then
+	if tile_type == 3 then
 		return side_len * 1.732 / 2
 	end
 	return 0
@@ -417,16 +417,16 @@ end
 function ALittle.Tile_CalcRowColByPos(tile_map, x, y)
 	local tile_type = tile_map.tile_type
 	local side_len = tile_map.side_len
-	if tile_type == ALittle.TileType.SQUARE then
+	if tile_type == 1 then
 		local row = floor(y / side_len)
 		local col = floor(x / side_len)
 		return row + 1, col + 1
 	end
-	if tile_type == ALittle.TileType.HEX_H then
+	if tile_type == 3 then
 		local col, row = ALittle.Tile_CalcRowColByPosInHexV(tile_map, y, x)
 		return row, col
 	end
-	if tile_type == ALittle.TileType.HEX_V then
+	if tile_type == 2 then
 		return ALittle.Tile_CalcRowColByPosInHexV(tile_map, x, y)
 	end
 	return 0, 0
@@ -435,13 +435,13 @@ end
 function ALittle.Tile_CalcCellHeight(tile_map)
 	local tile_type = tile_map.tile_type
 	local side_len = tile_map.side_len
-	if tile_type == ALittle.TileType.SQUARE then
+	if tile_type == 1 then
 		return side_len
 	end
-	if tile_type == ALittle.TileType.HEX_V then
+	if tile_type == 2 then
 		return side_len * 3
 	end
-	if tile_type == ALittle.TileType.HEX_H then
+	if tile_type == 3 then
 		return side_len * 1.732
 	end
 	return 0
@@ -450,13 +450,13 @@ end
 function ALittle.Tile_CalcCellWidth(tile_map)
 	local tile_type = tile_map.tile_type
 	local side_len = tile_map.side_len
-	if tile_type == ALittle.TileType.SQUARE then
+	if tile_type == 1 then
 		return side_len * 2
 	end
-	if tile_type == ALittle.TileType.HEX_V then
+	if tile_type == 2 then
 		return side_len * 1.732
 	end
-	if tile_type == ALittle.TileType.HEX_H then
+	if tile_type == 3 then
 		return side_len * 3
 	end
 	return 0

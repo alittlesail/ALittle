@@ -34,15 +34,15 @@ function ALittle.DisplayObject:Ctor(ctrl_sys)
 	___rawset(self, "_ignore", false)
 	___rawset(self, "_x", 0)
 	___rawset(self, "_y", 0)
-	___rawset(self, "_x_type", ALittle.UIEnumTypes.POS_ABS)
+	___rawset(self, "_x_type", 1)
 	___rawset(self, "_x_value", 0)
-	___rawset(self, "_y_type", ALittle.UIEnumTypes.POS_ABS)
+	___rawset(self, "_y_type", 1)
 	___rawset(self, "_y_value", 0)
 	___rawset(self, "_width", 0)
 	___rawset(self, "_height", 0)
-	___rawset(self, "_width_type", ALittle.UIEnumTypes.SIZE_ABS)
+	___rawset(self, "_width_type", 1)
 	___rawset(self, "_width_value", 0)
-	___rawset(self, "_height_type", ALittle.UIEnumTypes.SIZE_ABS)
+	___rawset(self, "_height_type", 1)
 	___rawset(self, "_height_value", 0)
 	___rawset(self, "_scale_x", 1)
 	___rawset(self, "_scale_y", 1)
@@ -434,7 +434,7 @@ end
 
 function ALittle.DisplayObject.__setter:x(value)
 	self._x = value
-	if self._x_type == ALittle.UIEnumTypes.POS_ABS then
+	if self._x_type == 1 then
 		self._x_value = value
 	end
 	self._show:SetX(value)
@@ -474,7 +474,7 @@ end
 
 function ALittle.DisplayObject.__setter:y(value)
 	self._y = value
-	if self._y_type == ALittle.UIEnumTypes.POS_ABS then
+	if self._y_type == 1 then
 		self._y_value = value
 	end
 	self._show:SetY(value)
@@ -514,7 +514,7 @@ end
 
 function ALittle.DisplayObject.__setter:width(value)
 	self._width = value
-	if self._width_type == ALittle.UIEnumTypes.SIZE_ABS then
+	if self._width_type == 1 then
 		self._width_value = value
 	end
 	self._show:SetWidth(value)
@@ -531,10 +531,10 @@ function ALittle.DisplayObject.__setter:width_type(value)
 	self._width_type = value
 	if self._show_parent ~= nil then
 		self._show_parent:UpdateWidthLayout(self)
-		if self._x_type ~= ALittle.UIEnumTypes.POS_ABS and self._x_type ~= ALittle.UIEnumTypes.POS_ALIGN_STARTING and self._x_type ~= ALittle.UIEnumTypes.POS_PERCENT_STARTING then
+		if self._x_type ~= 1 and self._x_type ~= 2 and self._x_type ~= 7 then
 			self._show_parent:UpdateXLayout(self)
 		end
-	elseif self._width_type == ALittle.UIEnumTypes.SIZE_ABS then
+	elseif self._width_type == 1 then
 		self.width = self._width_value
 	end
 end
@@ -546,10 +546,10 @@ function ALittle.DisplayObject.__setter:width_value(value)
 	self._width_value = value
 	if self._show_parent ~= nil then
 		self._show_parent:UpdateWidthLayout(self)
-		if self._x_type ~= ALittle.UIEnumTypes.POS_ABS and self._x_type ~= ALittle.UIEnumTypes.POS_ALIGN_STARTING and self._x_type ~= ALittle.UIEnumTypes.POS_PERCENT_STARTING then
+		if self._x_type ~= 1 and self._x_type ~= 2 and self._x_type ~= 7 then
 			self._show_parent:UpdateXLayout(self)
 		end
-	elseif self._width_type == ALittle.UIEnumTypes.SIZE_ABS then
+	elseif self._width_type == 1 then
 		self.width = self._width_value
 	end
 end
@@ -564,7 +564,7 @@ end
 
 function ALittle.DisplayObject.__setter:height(value)
 	self._height = value
-	if self._height_type == ALittle.UIEnumTypes.SIZE_ABS then
+	if self._height_type == 1 then
 		self._height_value = value
 	end
 	self._show:SetHeight(value)
@@ -581,10 +581,10 @@ function ALittle.DisplayObject.__setter:height_type(value)
 	self._height_type = value
 	if self._show_parent ~= nil then
 		self._show_parent:UpdateHeightLayout(self)
-		if self._y_type ~= ALittle.UIEnumTypes.POS_ABS and self._y_type ~= ALittle.UIEnumTypes.POS_ALIGN_STARTING and self._y_type ~= ALittle.UIEnumTypes.POS_PERCENT_STARTING then
+		if self._y_type ~= 1 and self._y_type ~= 2 and self._y_type ~= 7 then
 			self._show_parent:UpdateYLayout(self)
 		end
-	elseif self._height_type == ALittle.UIEnumTypes.SIZE_ABS then
+	elseif self._height_type == 1 then
 		self.height = self._height_value
 	end
 end
@@ -596,10 +596,10 @@ function ALittle.DisplayObject.__setter:height_value(value)
 	self._height_value = value
 	if self._show_parent ~= nil then
 		self._show_parent:UpdateHeightLayout(self)
-		if self._y_type ~= ALittle.UIEnumTypes.POS_ABS and self._y_type ~= ALittle.UIEnumTypes.POS_ALIGN_STARTING and self._y_type ~= ALittle.UIEnumTypes.POS_PERCENT_STARTING then
+		if self._y_type ~= 1 and self._y_type ~= 2 and self._y_type ~= 7 then
 			self._show_parent:UpdateYLayout(self)
 		end
-	elseif self._height_type == ALittle.UIEnumTypes.SIZE_ABS then
+	elseif self._height_type == 1 then
 		self.height = self._height_value
 	end
 end

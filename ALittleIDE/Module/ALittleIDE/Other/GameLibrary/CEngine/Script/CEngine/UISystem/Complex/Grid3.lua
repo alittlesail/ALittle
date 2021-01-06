@@ -12,7 +12,7 @@ assert(ALittle.DisplayGroup, " extends class:ALittle.DisplayGroup is nil")
 ALittle.Grid3 = Lua.Class(ALittle.DisplayGroup, "ALittle.Grid3")
 
 function ALittle.Grid3:Ctor(ctrl_sys)
-	___rawset(self, "_type", ALittle.UIEnumTypes.TYPE_V)
+	___rawset(self, "_type", 2)
 	___rawset(self, "_child_map", {})
 	___rawset(self, "_logic_up", 0)
 	___rawset(self, "_logic_down", 0)
@@ -71,7 +71,7 @@ function ALittle.Grid3:SetShow(index, child)
 	end
 	self._child_map[index] = child
 	ALittle.DisplayGroup.AddChild(self, child)
-	if self._type == ALittle.UIEnumTypes.TYPE_V then
+	if self._type == 2 then
 		child.x = 0
 		child.width = self._width
 		local y = 0.0
@@ -110,7 +110,7 @@ end
 
 function ALittle.Grid3.__getter:center_size()
 	local size = 0.0
-	if self._type == ALittle.UIEnumTypes.TYPE_V then
+	if self._type == 2 then
 		size = self._height - self._real_gap * 2 - self._real_up - self._real_down
 	else
 		size = self._width - self._real_gap * 2 - self._real_up - self._real_down
@@ -165,7 +165,7 @@ function ALittle.Grid3.__setter:width(value)
 		return
 	end
 	self._width = value
-	if self._width_type == ALittle.UIEnumTypes.SIZE_ABS then
+	if self._width_type == 1 then
 		self._width_value = self._width
 	end
 	self:CalcRealWidthCutting()
@@ -176,14 +176,14 @@ function ALittle.Grid3.__setter:height(value)
 		return
 	end
 	self._height = value
-	if self._height_type == ALittle.UIEnumTypes.SIZE_ABS then
+	if self._height_type == 1 then
 		self._height_value = self._height
 	end
 	self:CalcRealHeightCutting()
 end
 
 function ALittle.Grid3:CalcRealWidthCutting()
-	if self._type == ALittle.UIEnumTypes.TYPE_V then
+	if self._type == 2 then
 		local index = 1
 		while true do
 			if not(index <= 3) then break end
@@ -242,7 +242,7 @@ function ALittle.Grid3:CalcRealWidthCutting()
 end
 
 function ALittle.Grid3:CalcRealHeightCutting()
-	if self._type == ALittle.UIEnumTypes.TYPE_H then
+	if self._type == 1 then
 		local index = 1
 		while true do
 			if not(index <= 3) then break end

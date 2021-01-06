@@ -14,7 +14,7 @@ assert(ALittle.DisplayGroup, " extends class:ALittle.DisplayGroup is nil")
 ALittle.Linear = Lua.Class(ALittle.DisplayGroup, "ALittle.Linear")
 
 function ALittle.Linear:Ctor(ctrl_sys)
-	___rawset(self, "_type", ALittle.UIEnumTypes.TYPE_H)
+	___rawset(self, "_type", 1)
 	___rawset(self, "_size_fixed", true)
 	___rawset(self, "_gap", 0)
 	___rawset(self, "_clip_up_index", 0)
@@ -87,7 +87,7 @@ function ALittle.Linear:AddChild(child, index)
 	self._child_width_map[child] = child.width
 	self._child_height_map[child] = child.height
 	if self._size_fixed then
-		if self._type == ALittle.UIEnumTypes.TYPE_H then
+		if self._type == 1 then
 			child.height = self._height
 		else
 			child.width = self._width
@@ -166,10 +166,10 @@ end
 
 function ALittle.Linear.__setter:width(value)
 	self._width = value
-	if self._width_type == ALittle.UIEnumTypes.SIZE_ABS then
+	if self._width_type == 1 then
 		self._width_value = self._width
 	end
-	if self._type ~= ALittle.UIEnumTypes.TYPE_H and self._size_fixed then
+	if self._type ~= 1 and self._size_fixed then
 		for index, child in ___ipairs(self._childs) do
 			child.width = value
 		end
@@ -178,7 +178,7 @@ end
 
 function ALittle.Linear.__getter:width()
 	if self._size_fixed then
-		if self._type == ALittle.UIEnumTypes.TYPE_H then
+		if self._type == 1 then
 			if self._child_count == 0 then
 				return 0
 			end
@@ -192,10 +192,10 @@ end
 
 function ALittle.Linear.__setter:height(value)
 	self._height = value
-	if self._height_type == ALittle.UIEnumTypes.SIZE_ABS then
+	if self._height_type == 1 then
 		self._height_value = self._height
 	end
-	if self._type ~= ALittle.UIEnumTypes.TYPE_V and self._size_fixed then
+	if self._type ~= 2 and self._size_fixed then
 		for index, child in ___ipairs(self._childs) do
 			child.height = value
 		end
@@ -204,7 +204,7 @@ end
 
 function ALittle.Linear.__getter:height()
 	if self._size_fixed then
-		if self._type == ALittle.UIEnumTypes.TYPE_V then
+		if self._type == 2 then
 			if self._child_count == 0 then
 				return 0
 			end
@@ -218,7 +218,7 @@ end
 
 function ALittle.Linear:UpdateSize()
 	if self._size_fixed then
-		if self._type == ALittle.UIEnumTypes.TYPE_H then
+		if self._type == 1 then
 			for k, v in ___pairs(self._child_width_map) do
 				k.width = v
 				k.height = self._height
@@ -246,7 +246,7 @@ function ALittle.Linear:Layout(index)
 	if index <= 0 or index > child_count then
 		return
 	end
-	if self._type == ALittle.UIEnumTypes.TYPE_H then
+	if self._type == 1 then
 		local offset = 0.0
 		if index > 1 then
 			offset = self._childs[index - 1].x + self._childs[index - 1].width + self._gap
@@ -282,7 +282,7 @@ function ALittle.Linear:DeepLayout()
 	if child_count == 0 then
 		return
 	end
-	if self._type == ALittle.UIEnumTypes.TYPE_H then
+	if self._type == 1 then
 		local offset = 0.0
 		local i = 1
 		while true do
@@ -316,7 +316,7 @@ end
 function ALittle.Linear:HandleChildResize(event)
 	self:Layout(self:GetChildIndex(event.target))
 	if self._show_parent ~= nil then
-		if self._type == ALittle.UIEnumTypes.TYPE_H then
+		if self._type == 1 then
 			self._show_parent:UpdateXLayout(self)
 		else
 			self._show_parent:UpdateYLayout(self)
@@ -379,7 +379,7 @@ function ALittle.Linear:ClipRect(left, top, right, bottom, h_move, v_move)
 	local max_index = child_count
 	local min_index = 1
 	local index = min_index
-	if self._type == ALittle.UIEnumTypes.TYPE_H then
+	if self._type == 1 then
 		if h_move == nil or self._clip_up_index == 0 then
 			repeat
 				if childs[index].x > left then

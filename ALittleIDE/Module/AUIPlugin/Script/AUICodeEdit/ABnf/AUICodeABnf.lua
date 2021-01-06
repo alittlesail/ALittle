@@ -36,49 +36,49 @@ function AUIPlugin.AUICodeABnf:Ctor(project, full_path)
 			color.red = 255 / 255
 			color.green = 198 / 255
 			color.blue = 109 / 255
-			g_ABnfColor[AUIPlugin.ABnfColorType.ABnfKeyWord] = color
+			g_ABnfColor[1] = color
 		end
 		do
 			color = {}
 			color.red = 204 / 255
 			color.green = 120 / 255
 			color.blue = 50 / 255
-			g_ABnfColor[AUIPlugin.ABnfColorType.ABnfId] = color
+			g_ABnfColor[2] = color
 		end
 		do
 			color = {}
 			color.red = 128 / 255
 			color.green = 128 / 255
 			color.blue = 128 / 255
-			g_ABnfColor[AUIPlugin.ABnfColorType.ABnfComment] = color
+			g_ABnfColor[3] = color
 		end
 		do
 			color = {}
 			color.red = 53 / 255
 			color.green = 155 / 255
 			color.blue = 185 / 255
-			g_ABnfColor[AUIPlugin.ABnfColorType.ABnfKey] = color
+			g_ABnfColor[4] = color
 		end
 		do
 			color = {}
 			color.red = 85 / 255
 			color.green = 134 / 255
 			color.blue = 74 / 255
-			g_ABnfColor[AUIPlugin.ABnfColorType.ABnfString] = color
+			g_ABnfColor[5] = color
 		end
 		do
 			color = {}
 			color.red = 152 / 255
 			color.green = 118 / 255
 			color.blue = 170 / 255
-			g_ABnfColor[AUIPlugin.ABnfColorType.ABnfRegex] = color
+			g_ABnfColor[6] = color
 		end
 		do
 			color = {}
 			color.red = 152 / 255
 			color.green = 118 / 255
 			color.blue = 170 / 255
-			g_ABnfColor[AUIPlugin.ABnfColorType.ABnfNumber] = color
+			g_ABnfColor[8] = color
 		end
 	end
 	___rawset(self, "_abnf_file", abnf.create_abnf_file(self._project.project, full_path, ""))

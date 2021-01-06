@@ -21,9 +21,9 @@ function ALittle.Piechart:Ctor(ctrl_sys)
 		local triangle = ALittle.Triangle(self._ctrl_sys)
 		triangle.u2 = 0.5
 		triangle.v2 = 0.5
-		triangle.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		triangle.width_type = 4
 		triangle.width_value = 0
-		triangle.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		triangle.height_type = 4
 		triangle.height_value = 0
 		self._tri_list[i] = triangle
 		ALittle.DisplayLayout.AddChild(self, triangle)
@@ -111,7 +111,7 @@ function ALittle.Piechart.__setter:width(value)
 		return
 	end
 	self._width = value
-	if self._width_type == ALittle.UIEnumTypes.SIZE_ABS then
+	if self._width_type == 1 then
 		self._width_value = self._width
 	end
 	for k, v in ___ipairs(self._tri_list) do
@@ -129,7 +129,7 @@ function ALittle.Piechart.__setter:height(value)
 		return
 	end
 	self._height = value
-	if self._height_type == ALittle.UIEnumTypes.SIZE_ABS then
+	if self._height_type == 1 then
 		self._height_value = self._height
 	end
 	for k, v in ___ipairs(self._tri_list) do

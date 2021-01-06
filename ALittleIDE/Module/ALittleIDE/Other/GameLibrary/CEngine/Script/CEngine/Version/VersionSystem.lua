@@ -267,15 +267,15 @@ function ALittle.VersionSystem:UpdateVersion(ip, port, callback, check, repeat_c
 	local ___COROUTINE = coroutine.running()
 	if self._doing == true then
 		ALittle.Log("VersionSystem.UpdateVersion, already in updating!")
-		return ALittle.VersionProcess.UPDATE_VERSION_FAILED
+		return 11
 	end
 	if ip == nil then
 		ALittle.Log("VersionSystem.UpdateVersion, ip must not be null!")
-		return ALittle.VersionProcess.UPDATE_VERSION_FAILED
+		return 11
 	end
 	if port == nil then
 		ALittle.Log("VersionSystem.UpdateVersion, port must not be null!")
-		return ALittle.VersionProcess.UPDATE_VERSION_FAILED
+		return 11
 	end
 	self._callback = callback
 	self._check = check
@@ -319,25 +319,25 @@ function ALittle.VersionSystem:UpdateVersion(ip, port, callback, check, repeat_c
 		if error ~= nil then
 			ALittle.Log("VersionSystem:UpdateVersion error:" .. error)
 			self._doing = false
-			return ALittle.VersionProcess.UPDATE_VERSION_FAILED
+			return 11
 		end
 		self._ask_update_request = nil
 		if error ~= nil then
 			ALittle.Log("VersionSystem:UpdateVersion error:" .. error)
 			self._doing = false
-			return ALittle.VersionProcess.UPDATE_VERSION_FAILED
+			return 11
 		end
 		if result.result == false then
 			self._doing = false
-			return ALittle.VersionProcess.VERSION_NONEED_UPDATE
+			return 1
 		end
 		self._update_info = result
 		if self._check then
 			self._doing = false
 			if self._cur_big_version == nil or result.version_info.big_version ~= self._cur_big_version.c_big_version then
-				return ALittle.VersionProcess.VERSION_NEED_UPDATE_FORCE
+				return 3
 			else
-				return ALittle.VersionProcess.VERSION_NEED_UPDATE_ADD
+				return 2
 			end
 		end
 		if self._cur_big_version == nil or self._update_info.version_info.install_version ~= self._cur_big_version.c_install_version then
@@ -360,7 +360,7 @@ function ALittle.VersionSystem:UpdateVersion(ip, port, callback, check, repeat_c
 		self._current_request = nil
 		if error ~= nil then
 			self._doing = false
-			return ALittle.VersionProcess.UPDATE_VERSION_FAILED
+			return 11
 		end
 		ALittle.File_RenameFile(ALittle.File_BaseFilePath() .. self._update_path .. self._new_version_tmp, ALittle.File_BaseFilePath() .. self._update_path .. self._new_in_version)
 		local sqlite_new = sqlite3.open(ALittle.File_BaseFilePath() .. self._update_path .. self._new_in_version)
@@ -382,7 +382,7 @@ function ALittle.VersionSystem:UpdateVersion(ip, port, callback, check, repeat_c
 			ALittle.Log("VersionSystem error. new_version_db open failed!")
 			ALittle.File_DeleteDeepDir(ALittle.File_BaseFilePath() .. "Update/" .. self._module_name, false)
 			self._doing = false
-			return ALittle.VersionProcess.UPDATE_VERSION_FAILED
+			return 11
 		end
 		if self._install_info ~= nil then
 			self._download_list = {}
@@ -430,7 +430,7 @@ function ALittle.VersionSystem:UpdateVersion(ip, port, callback, check, repeat_c
 			return self:DownloadNext()
 		else
 			self._doing = false
-			return ALittle.VersionProcess.VERSION_NONEED_UPDATE
+			return 1
 		end
 	end
 end
@@ -442,13 +442,13 @@ function ALittle.VersionSystem:DownloadNext()
 		self._doing = false
 		ALittle.File_DeleteFile(ALittle.File_BaseFilePath() .. self._update_path .. self._tmp_in_version)
 		if self._install_info ~= nil then
-			return ALittle.VersionProcess.UPDATE_VERSION_INSTALL
+			return 13
 		end
 		if ALittle.File_GetFileAttr(ALittle.File_BaseFilePath() .. self._update_path .. "Engine") ~= nil then
 			ALittle.File_MakeDir(ALittle.File_BaseFilePath() .. self._module_path .. "Engine")
 			ALittle.File_CopyDeepDir(ALittle.File_BaseFilePath() .. self._update_path .. "Engine", ALittle.File_BaseFilePath() .. self._module_path .. "Engine", nil, false)
 		end
-		return ALittle.VersionProcess.UPDATE_VERSION_SUCCEED
+		return 12
 	end
 	self._cur_file_index = self._cur_file_index + 1
 	local file_info = self._download_list[1]
@@ -472,7 +472,7 @@ function ALittle.VersionSystem:DownloadNext()
 		self._current_request = nil
 		if self._remain_repeat_count <= 0 then
 			self._doing = false
-			return ALittle.VersionProcess.UPDATE_VERSION_FAILED
+			return 11
 		end
 		self._remain_repeat_count = self._remain_repeat_count - 1
 		self._cur_file_index = self._cur_file_index - 1

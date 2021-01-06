@@ -257,7 +257,7 @@ function Lua.LuaProtobufSchedule:Run()
 		if event == nil then
 			break
 		end
-		if event.type == Lua.socket_type.TIMER then
+		if event.type == 21 then
 			if self._last_time ~= nil then
 				A_LuaLoopSystem:Update(event.time - self._last_time)
 				A_LuaWeakLoopSystem:Update(event.time - self._last_time)
@@ -271,19 +271,19 @@ function Lua.LuaProtobufSchedule:Run()
 end
 
 function Lua.LuaProtobufSchedule:HandleEvent(event)
-	if event.type == Lua.socket_type.MSG_CONNECT_FAILED then
+	if event.type == 32 then
 		Lua.ISocket.HandleConnectFailed(event.id)
-	elseif event.type == Lua.socket_type.MSG_CONNECT_SUCCEED then
+	elseif event.type == 31 then
 		Lua.ISocket.HandleConnectSucceed(event.id)
-	elseif event.type == Lua.socket_type.MSG_DISCONNECTED then
+	elseif event.type == 33 then
 		Lua.ISocket.HandleDisconnected(event.id)
-	elseif event.type >= Lua.socket_type.MSG_READ_INT8 and event.type <= Lua.socket_type.MSG_READ_INT64 then
+	elseif event.type >= 35 and event.type <= 41 then
 		Lua.ISocket.HandleReadInt(event.id, event.int_value)
-	elseif event.type >= Lua.socket_type.MSG_READ_FLOAT and event.type <= Lua.socket_type.MSG_READ_DOUBLE then
+	elseif event.type >= 42 and event.type <= 43 then
 		Lua.ISocket.HandleReadDouble(event.id, event.double_value)
-	elseif event.type == Lua.socket_type.MSG_READ_STRING then
+	elseif event.type == 44 then
 		Lua.ISocket.HandleReadString(event.id, event.string_value)
-	elseif event.type == Lua.socket_type.MSG_READ_BINARY then
+	elseif event.type == 45 then
 		Lua.ISocket.HandleReadProtobuf(event.id, event.binary_value)
 		socket.freebinary(event.binary_value)
 	end

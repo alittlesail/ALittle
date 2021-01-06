@@ -16,11 +16,11 @@ ALittle.ImageEdit = Lua.Class(ALittle.DisplayLayout, "ALittle.ImageEdit")
 
 function ALittle.ImageEdit:Ctor(ctrl_sys)
 	___rawset(self, "_show_edit", ALittle.TextEdit(self._ctrl_sys))
-	self._show_edit.x_type = ALittle.UIEnumTypes.POS_ALIGN_STARTING
-	self._show_edit.y_type = ALittle.UIEnumTypes.POS_ALIGN_STARTING
-	self._show_edit.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	self._show_edit.x_type = 2
+	self._show_edit.y_type = 2
+	self._show_edit.width_type = 4
 	self._show_edit.width_value = 0
-	self._show_edit.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	self._show_edit.height_type = 4
 	self._show_edit.height_value = 0
 	self:AddChild(self._show_edit, 5)
 	___rawset(self, "_logic_left", 0)
@@ -393,8 +393,8 @@ function ALittle.ImageEdit.__setter:show_up(value)
 	self:RemoveChild(self._show_up)
 	self._show_up = value
 	if self._show_up ~= nil then
-		self._show_up.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
-		self._show_up.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_up.width_type = 4
+		self._show_up.height_type = 4
 		self._show_up.width_value = 0
 		self._show_up.height_value = 0
 		self:AddChild(self._show_up, 1)
@@ -410,8 +410,8 @@ function ALittle.ImageEdit.__setter:show_down(value)
 	self:RemoveChild(self._show_down)
 	self._show_down = value
 	if self._show_down ~= nil then
-		self._show_down.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
-		self._show_down.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_down.width_type = 4
+		self._show_down.height_type = 4
 		self._show_down.width_value = 0
 		self._show_down.height_value = 0
 		self:AddChild(self._show_down, 1)
@@ -427,8 +427,8 @@ function ALittle.ImageEdit.__setter:show_over(value)
 	self:RemoveChild(self._show_over)
 	self._show_over = value
 	if self._show_over ~= nil then
-		self._show_over.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
-		self._show_over.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_over.width_type = 4
+		self._show_over.height_type = 4
 		self._show_over.width_value = 0
 		self._show_over.height_value = 0
 		self:AddChild(self._show_over, 1)
@@ -444,8 +444,8 @@ function ALittle.ImageEdit.__setter:show_disabled(value)
 	self:RemoveChild(self._show_disabled)
 	self._show_disabled = value
 	if self._show_disabled ~= nil then
-		self._show_disabled.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
-		self._show_disabled.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_disabled.width_type = 4
+		self._show_disabled.height_type = 4
 		self._show_disabled.width_value = 0
 		self._show_disabled.height_value = 0
 		self:AddChild(self._show_disabled, 1)

@@ -90,9 +90,9 @@ function ALittle.LayerManager:AddToModal(dialog, index)
 	if dialog == nil then
 		return
 	end
-	dialog.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+	dialog.x_type = 3
 	dialog.x_value = 0
-	dialog.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+	dialog.y_type = 3
 	dialog.y_value = 0
 	dialog.modal = true
 	dialog.visible = false

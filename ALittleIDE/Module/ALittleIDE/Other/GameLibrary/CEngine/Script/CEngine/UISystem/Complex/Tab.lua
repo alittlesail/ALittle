@@ -22,14 +22,14 @@ function ALittle.Tab:Ctor(ctrl_sys)
 	___rawset(self, "_button_inner_gap", 8)
 	___rawset(self, "_child_id_map", ALittle.CreateKeyWeakMap())
 	___rawset(self, "_group", ALittle.CreateKeyWeakMap())
-	self.type = ALittle.UIEnumTypes.TYPE_V
+	self.type = 2
 	___rawset(self, "_view", ALittle.DisplayView(self._ctrl_sys))
-	self._view.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
-	self._view.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	self._view.height_type = 4
+	self._view.width_type = 4
 	___rawset(self, "_linear", ALittle.Linear(self._ctrl_sys))
-	self._linear.type = ALittle.UIEnumTypes.TYPE_H
-	self._linear.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
-	self._linear.y_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING
+	self._linear.type = 1
+	self._linear.height_type = 4
+	self._linear.y_type = 4
 	self._view:AddChild(self._linear)
 	___rawset(self, "_view_start", 0)
 	___rawset(self, "_view_margin", 0)
@@ -81,28 +81,28 @@ function ALittle.Tab:RefreshView()
 			radiobutton:AddEventListener(___all_struct[-641444818], self, self.HandleRadioButtonRButtonDown)
 			radiobutton:AddEventListener(___all_struct[-1604617962], self, self.HandleRadioButtonKeyDown)
 			radiobutton.group = self._group
-			radiobutton.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
-			radiobutton.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+			radiobutton.width_type = 4
+			radiobutton.height_type = 4
 			v.visible = radiobutton.selected
 			text.text = self._child_id_map[v]
 			text.disabled = true
-			text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+			text.y_type = 3
 			text.y_value = 2
 			text.x = self._button_inner_gap
 			text.visible = not radiobutton.selected
 			selected_text.text = self._child_id_map[v]
 			selected_text.disabled = true
-			selected_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+			selected_text.y_type = 3
 			selected_text.y_value = 2
 			selected_text.x = self._button_inner_gap
 			selected_text.visible = radiobutton.selected
 			closebutton:AddEventListener(___all_struct[-449066808], self, self.HandleCloseButtonClick)
-			closebutton.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+			closebutton.y_type = 3
 			closebutton.y_value = 2
 			closebutton.x = text.x + text.width + self._button_inner_gap
 			closebutton.visible = not radiobutton.selected
 			selected_closebutton:AddEventListener(___all_struct[-449066808], self, self.HandleCloseButtonClick)
-			selected_closebutton.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+			selected_closebutton.y_type = 3
 			selected_closebutton.y_value = 2
 			selected_closebutton.x = selected_text.x + selected_text.width + self._button_inner_gap
 			selected_closebutton.visible = radiobutton.selected
@@ -183,9 +183,9 @@ function ALittle.Tab.__setter:show_head_background(value)
 	end
 	self._head_background = value
 	if self._head_background ~= nil then
-		self._head_background.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._head_background.width_type = 4
 		self._head_background.width_value = 0
-		self._head_background.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._head_background.height_type = 4
 		self._head_background.height_value = 0
 		self._view:AddChild(self._head_background, 1)
 	end
@@ -350,11 +350,11 @@ function ALittle.Tab:AddChild(child, index)
 	child._logic_parent = self
 	child.x = 0
 	child.y = 0
-	child.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	child.width_type = 4
 	child.width_value = self._child_width_margin
-	child.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	child.height_type = 4
 	child.height_value = 0
-	child.x_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING
+	child.x_type = 4
 	self._child_id_map[child] = child.description
 	if self._child_id_map[child] == nil then
 		self._child_id_map[child] = ""
@@ -377,30 +377,30 @@ function ALittle.Tab:AddChild(child, index)
 		radiobutton:AddEventListener(___all_struct[-641444818], self, self.HandleRadioButtonRButtonDown)
 		radiobutton:AddEventListener(___all_struct[-1604617962], self, self.HandleRadioButtonKeyDown)
 		radiobutton.group = self._group
-		radiobutton.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		radiobutton.width_type = 4
 		radiobutton.width_value = 0
-		radiobutton.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		radiobutton.height_type = 4
 		radiobutton.height_value = 0
 		child.visible = radiobutton.selected
 		text.text = self._child_id_map[child]
 		text.disabled = true
-		text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+		text.y_type = 3
 		text.y_value = 2
 		text.x = self._button_inner_gap
 		text.visible = not radiobutton.selected
 		selected_text.text = self._child_id_map[child]
 		selected_text.disabled = true
-		selected_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+		selected_text.y_type = 3
 		selected_text.y_value = 2
 		selected_text.x = self._button_inner_gap
 		selected_text.visible = radiobutton.selected
 		closebutton:AddEventListener(___all_struct[-449066808], self, self.HandleCloseButtonClick)
-		closebutton.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+		closebutton.y_type = 3
 		closebutton.y_value = 2
 		closebutton.x = text.x + text.width + self._button_inner_gap
 		closebutton.visible = not radiobutton.selected
 		selected_closebutton:AddEventListener(___all_struct[-449066808], self, self.HandleCloseButtonClick)
-		selected_closebutton.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+		selected_closebutton.y_type = 3
 		selected_closebutton.y_value = 2
 		selected_closebutton.x = selected_text.x + selected_text.width + self._button_inner_gap
 		selected_closebutton.visible = radiobutton.selected
@@ -818,11 +818,11 @@ function ALittle.Tab:DisableCloseButton(child)
 	local layout_childs = simplelayout.childs
 	layout_childs[3].visible = false
 	layout_childs[3].disabled = true
-	layout_childs[2].x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+	layout_childs[2].x_type = 3
 	layout_childs[2].x_value = 0
 	layout_childs[5].visible = false
 	layout_childs[5].disabled = true
-	layout_childs[4].x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+	layout_childs[4].x_type = 3
 	layout_childs[4].x_value = 0
 end
 
@@ -840,11 +840,11 @@ function ALittle.Tab:DisableAllCloseButton()
 		local layout_childs = simplelayout.childs
 		layout_childs[3].visible = false
 		layout_childs[3].disabled = true
-		layout_childs[2].x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+		layout_childs[2].x_type = 3
 		layout_childs[2].x_value = 0
 		layout_childs[5].visible = false
 		layout_childs[5].disabled = true
-		layout_childs[4].x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+		layout_childs[4].x_type = 3
 		layout_childs[4].x_value = 0
 		index = index+(1)
 	end
@@ -864,11 +864,11 @@ function ALittle.Tab:EnableCloseButton(child)
 	local layout_childs = simplelayout.childs
 	layout_childs[3].visible = not layout_childs[1].selected
 	layout_childs[3].disabled = false
-	layout_childs[2].x_type = ALittle.UIEnumTypes.POS_ABS
+	layout_childs[2].x_type = 1
 	layout_childs[2].x = self._button_inner_gap
 	layout_childs[5].visible = layout_childs[1].selected
 	layout_childs[5].disabled = false
-	layout_childs[4].x_type = ALittle.UIEnumTypes.POS_ABS
+	layout_childs[4].x_type = 1
 	layout_childs[4].x = self._button_inner_gap
 end
 

@@ -376,16 +376,16 @@ function ALittle.RichInput:Ctor(ctrl_sys)
 	___rawset(self, "_char_cursor_it", 1)
 	___rawset(self, "_char_select_it", 1)
 	___rawset(self, "_display_view", ALittle.DisplayView(self._ctrl_sys))
-	self._display_view.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
-	self._display_view.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
-	self._display_view.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
-	self._display_view.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+	self._display_view.width_type = 4
+	self._display_view.height_type = 4
+	self._display_view.x_type = 3
+	self._display_view.y_type = 3
 	self:AddChild(self._display_view)
 	___rawset(self, "_display_show", ALittle.DisplayLayout(self._ctrl_sys))
 	self._display_show.width = 0
 	self._display_show.height = 0
 	self._display_show.x = 0
-	self._display_show.y_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING
+	self._display_show.y_type = 4
 	self._display_show.y_value = 0
 	self._display_view:AddChild(self._display_show)
 	___rawset(self, "_current_flash_alpha", 1)
@@ -430,7 +430,7 @@ function ALittle.RichInput:Ctor(ctrl_sys)
 	___rawset(self, "_password_mode", false)
 	___rawset(self, "_ims_padding", 0)
 	___rawset(self, "_default_text", ALittle.Text(self._ctrl_sys))
-	self._default_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING
+	self._default_text.y_type = 4
 	self._default_text.y_value = 0
 	self._display_view:AddChild(self._default_text)
 	___rawset(self, "_default_font_height", 20)
@@ -718,10 +718,10 @@ function ALittle.RichInput.__setter:start_cursor(value)
 		return
 	end
 	self:RemoveChild(self._start_cursor)
-	value.x_type = ALittle.UIEnumTypes.POS_ABS
-	value.y_type = ALittle.UIEnumTypes.POS_ABS
-	value.width_type = ALittle.UIEnumTypes.SIZE_ABS
-	value.height_type = ALittle.UIEnumTypes.SIZE_ABS
+	value.x_type = 1
+	value.y_type = 1
+	value.width_type = 1
+	value.height_type = 1
 	self._start_cursor = value
 	self:AddChild(self._start_cursor)
 	self._start_cursor.visible = false
@@ -740,10 +740,10 @@ function ALittle.RichInput.__setter:end_cursor(value)
 		return
 	end
 	self:RemoveChild(self._end_cursor)
-	value.x_type = ALittle.UIEnumTypes.POS_ABS
-	value.y_type = ALittle.UIEnumTypes.POS_ABS
-	value.width_type = ALittle.UIEnumTypes.SIZE_ABS
-	value.height_type = ALittle.UIEnumTypes.SIZE_ABS
+	value.x_type = 1
+	value.y_type = 1
+	value.width_type = 1
+	value.height_type = 1
 	self._end_cursor = value
 	self:AddChild(self._end_cursor)
 	self._end_cursor.visible = false
@@ -947,9 +947,9 @@ function ALittle.RichInput:DrawImpl()
 		end
 		if child ~= nil and child ~= last_child then
 			last_child = child
-			child.x_type = ALittle.UIEnumTypes.POS_ALIGN_STARTING
+			child.x_type = 2
 			child.x_value = offset_x
-			child.y_type = ALittle.UIEnumTypes.POS_ALIGN_ENDING
+			child.y_type = 4
 			child.y_value = 0
 			self._display_show:AddChild(child)
 			offset_x = offset_x + child.width
@@ -2184,7 +2184,7 @@ function ALittle.RichInput:HandleKeyDown(event)
 	local is_change = false
 	if event.sym == 1073741904 then
 		if self._multi_cursor == false then
-			if ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
+			if ALittle.BitAnd(event.mod, 0x0003) == 0 then
 				self._is_selecting = false
 				self:CursorOffsetLR(true)
 			else
@@ -2195,7 +2195,7 @@ function ALittle.RichInput:HandleKeyDown(event)
 		event.handled = true
 	elseif event.sym == 1073741903 then
 		if self._multi_cursor == false then
-			if ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
+			if ALittle.BitAnd(event.mod, 0x0003) == 0 then
 				self._is_selecting = false
 				self:CursorOffsetLR(false)
 			else
@@ -2246,7 +2246,7 @@ function ALittle.RichInput:HandleKeyDown(event)
 			self:DispatchEvent(___all_struct[776398171], {})
 			event.handled = true
 		end
-	elseif event.sym == 120 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 120 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
 		if self._multi_cursor == false then
 			if (self._editable or event.custom) and not self._password_mode then
 				self._is_selecting = false
@@ -2268,7 +2268,7 @@ function ALittle.RichInput:HandleKeyDown(event)
 			end
 		end
 		event.handled = true
-	elseif event.sym == 99 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 99 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
 		if not self._password_mode then
 			local select_text = self:GetSelectText()
 			if select_text[1] ~= nil then
@@ -2276,7 +2276,7 @@ function ALittle.RichInput:HandleKeyDown(event)
 			end
 		end
 		event.handled = true
-	elseif event.sym == 118 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 118 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
 		if self._multi_cursor == false then
 			if self._editable or event.custom then
 				self._is_selecting = false
@@ -2312,7 +2312,7 @@ function ALittle.RichInput:HandleKeyDown(event)
 			end
 		end
 		event.handled = true
-	elseif event.sym == 97 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 97 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
 		self._is_selecting = true
 		self:SelectAll()
 		event.handled = true

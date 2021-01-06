@@ -17,31 +17,31 @@ function ALittle.TextButton:Ctor(ctrl_sys)
 	self._show_text.width = 0
 	self._show_text.height = 0
 	self._show_text.text = ""
-	self._show_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+	self._show_text.x_type = 3
 	self._show_text.x_value = 0
 	self._show_text.visible = true
 	___rawset(self, "_show_down_text", ({}))
 	self._show_down_text.width = 0
 	self._show_down_text.height = 0
 	self._show_down_text.text = ""
-	self._show_down_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+	self._show_down_text.x_type = 3
 	self._show_down_text.x_value = 0
 	self._show_down_text.visible = false
 	___rawset(self, "_show_over_text", ({}))
 	self._show_over_text.width = 0
 	self._show_over_text.height = 0
 	self._show_over_text.text = ""
-	self._show_over_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+	self._show_over_text.x_type = 3
 	self._show_over_text.x_value = 0
 	self._show_over_text.visible = false
 	___rawset(self, "_show_disabled_text", ({}))
 	self._show_disabled_text.width = 0
 	self._show_disabled_text.height = 0
 	self._show_disabled_text.text = ""
-	self._show_disabled_text.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+	self._show_disabled_text.x_type = 3
 	self._show_disabled_text.x_value = 0
 	self._show_disabled_text.visible = false
-	___rawset(self, "_file_select", ALittle.UIEnumTypes.SELECT_NONE)
+	___rawset(self, "_file_select", 0)
 	self:AddEventListener(___all_struct[544684311], self, self.HandleMoveIn)
 	self:AddEventListener(___all_struct[-1202439334], self, self.HandleMoveOut)
 	self:AddEventListener(___all_struct[1883782801], self, self.HandleLButtonDown)
@@ -82,9 +82,9 @@ function ALittle.TextButton:HandleLButtonUp(event)
 		e.is_drag = event.is_drag
 		e.count = event.count
 		self:DispatchEvent(___all_struct[-449066808], e)
-		if self._file_select == ALittle.UIEnumTypes.SELECT_FILE then
+		if self._file_select == 1 then
 			A_OtherSystem:SystemSelectFile(self)
-		elseif self._file_select == ALittle.UIEnumTypes.SELECT_DIR then
+		elseif self._file_select == 2 then
 			A_OtherSystem:SystemSelectDirectory(self)
 		end
 		if ALittle.System_IsPhone() == false then
@@ -279,7 +279,7 @@ function ALittle.TextButton.__setter:show_text(value)
 	value.x_value = self._show_text.x_value
 	self:RemoveChild(self._show_text)
 	self._show_text = value
-	self._show_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+	self._show_text.y_type = 3
 	self:AddChild(self._show_text, 6)
 end
 
@@ -309,7 +309,7 @@ function ALittle.TextButton.__setter:show_over_text(value)
 	value.x_value = self._show_over_text.x_value
 	self:RemoveChild(self._show_over_text)
 	self._show_over_text = value
-	self._show_over_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+	self._show_over_text.y_type = 3
 	self:AddChild(self._show_over_text, 6)
 end
 
@@ -339,7 +339,7 @@ function ALittle.TextButton.__setter:show_down_text(value)
 	value.x_value = self._show_down_text.x_value
 	self:RemoveChild(self._show_down_text)
 	self._show_down_text = value
-	self._show_down_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+	self._show_down_text.y_type = 3
 	self:AddChild(self._show_down_text, 6)
 end
 
@@ -369,7 +369,7 @@ function ALittle.TextButton.__setter:show_disabled_text(value)
 	value.x_value = self._show_disabled_text.x_value
 	self:RemoveChild(self._show_disabled_text)
 	self._show_disabled_text = value
-	self._show_disabled_text.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+	self._show_disabled_text.y_type = 3
 	self:AddChild(self._show_disabled_text, 6)
 end
 
@@ -384,8 +384,8 @@ function ALittle.TextButton.__setter:show_up(value)
 	self:RemoveChild(self._show_up)
 	self._show_up = value
 	if self._show_up ~= nil then
-		self._show_up.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
-		self._show_up.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_up.width_type = 4
+		self._show_up.height_type = 4
 		self._show_up.width_value = 0
 		self._show_up.height_value = 0
 		self:AddChild(self._show_up, 1)
@@ -405,8 +405,8 @@ function ALittle.TextButton.__setter:show_down(value)
 	self:RemoveChild(self._show_down)
 	self._show_down = value
 	if self._show_down ~= nil then
-		self._show_down.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
-		self._show_down.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_down.width_type = 4
+		self._show_down.height_type = 4
 		self._show_down.width_value = 0
 		self._show_down.height_value = 0
 		self:AddChild(self._show_down, 1)
@@ -426,8 +426,8 @@ function ALittle.TextButton.__setter:show_over(value)
 	self:RemoveChild(self._show_over)
 	self._show_over = value
 	if self._show_over ~= nil then
-		self._show_over.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
-		self._show_over.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_over.width_type = 4
+		self._show_over.height_type = 4
 		self._show_over.width_value = 0
 		self._show_over.height_value = 0
 		self:AddChild(self._show_over, 1)
@@ -447,8 +447,8 @@ function ALittle.TextButton.__setter:show_disabled(value)
 	self:RemoveChild(self._show_disabled)
 	self._show_disabled = value
 	if self._show_disabled ~= nil then
-		self._show_disabled.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
-		self._show_disabled.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
+		self._show_disabled.width_type = 4
+		self._show_disabled.height_type = 4
 		self._show_disabled.width_value = 0
 		self._show_disabled.height_value = 0
 		self:AddChild(self._show_disabled, 1)

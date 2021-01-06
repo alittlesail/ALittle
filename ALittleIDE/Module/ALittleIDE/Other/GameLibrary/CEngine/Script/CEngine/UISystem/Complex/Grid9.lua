@@ -145,7 +145,7 @@ function ALittle.Grid9.__setter:width(value)
 		return
 	end
 	self._width = value
-	if self._width_type == ALittle.UIEnumTypes.SIZE_ABS then
+	if self._width_type == 1 then
 		self._width_value = self._width
 	end
 	self:CalcRealWidthCutting()
@@ -156,7 +156,7 @@ function ALittle.Grid9.__setter:height(value)
 		return
 	end
 	self._height = value
-	if self._height_type == ALittle.UIEnumTypes.SIZE_ABS then
+	if self._height_type == 1 then
 		self._height_value = self._height
 	end
 	self:CalcRealHeightCutting()

@@ -21,7 +21,7 @@ function ALittle.DisplayLayout.__setter:width(value)
 		return
 	end
 	self._width = value
-	if self._width_type == ALittle.UIEnumTypes.SIZE_ABS then
+	if self._width_type == 1 then
 		self._width_value = self._width
 	end
 	for index, child in ___ipairs(self._childs) do
@@ -36,7 +36,7 @@ function ALittle.DisplayLayout.__setter:height(value)
 		return
 	end
 	self._height = value
-	if self._height_type == ALittle.UIEnumTypes.SIZE_ABS then
+	if self._height_type == 1 then
 		self._height_value = self._height
 	end
 	for index, child in ___ipairs(self._childs) do
@@ -50,19 +50,19 @@ function ALittle.DisplayLayout:UpdateXLayout(child)
 	if child == nil or child._show_parent ~= self then
 		return
 	end
-	if child._x_type == ALittle.UIEnumTypes.POS_ABS then
+	if child._x_type == 1 then
 		child.x = child._x_value
-	elseif child._x_type == ALittle.UIEnumTypes.POS_ALIGN_STARTING then
+	elseif child._x_type == 2 then
 		child.x = child._x_value
-	elseif child._x_type == ALittle.UIEnumTypes.POS_ALIGN_CENTER then
+	elseif child._x_type == 3 then
 		child.x = (self._width - child.width) / 2 + child._x_value
-	elseif child._x_type == ALittle.UIEnumTypes.POS_ALIGN_ENDING then
+	elseif child._x_type == 4 then
 		child.x = self._width - child.width - child._x_value
-	elseif child._x_type == ALittle.UIEnumTypes.POS_PERCENT_STARTING then
+	elseif child._x_type == 7 then
 		child.x = self._width * child._x_value
-	elseif child._x_type == ALittle.UIEnumTypes.POS_PERCENT_CENTER then
+	elseif child._x_type == 8 then
 		child.x = (self._width - child.width) / 2 + self._width * child._x_value
-	elseif child._x_type == ALittle.UIEnumTypes.POS_PERCENT_ENDING then
+	elseif child._x_type == 9 then
 		child.x = (self._width - child.width) * (1 - child._x_value)
 	end
 end
@@ -71,19 +71,19 @@ function ALittle.DisplayLayout:UpdateYLayout(child)
 	if child == nil or child._show_parent ~= self then
 		return
 	end
-	if child._y_type == ALittle.UIEnumTypes.POS_ABS then
+	if child._y_type == 1 then
 		child.y = child._y_value
-	elseif child._y_type == ALittle.UIEnumTypes.POS_ALIGN_STARTING then
+	elseif child._y_type == 2 then
 		child.y = child._y_value
-	elseif child._y_type == ALittle.UIEnumTypes.POS_ALIGN_CENTER then
+	elseif child._y_type == 3 then
 		child.y = (self._height - child.height) / 2 + child._y_value
-	elseif child._y_type == ALittle.UIEnumTypes.POS_ALIGN_ENDING then
+	elseif child._y_type == 4 then
 		child.y = self._height - child.height - child._y_value
-	elseif child._y_type == ALittle.UIEnumTypes.POS_PERCENT_STARTING then
+	elseif child._y_type == 7 then
 		child.y = self._height * child._y_value
-	elseif child._y_type == ALittle.UIEnumTypes.POS_PERCENT_CENTER then
+	elseif child._y_type == 8 then
 		child.y = (self._height - child.height) / 2 + self._height * child._y_value
-	elseif child._y_type == ALittle.UIEnumTypes.POS_PERCENT_ENDING then
+	elseif child._y_type == 9 then
 		child.y = (self._height - child.height) * (1 - child._y_value)
 	end
 end
@@ -92,19 +92,19 @@ function ALittle.DisplayLayout:UpdateWidthLayout(child)
 	if child == nil or child._show_parent ~= self then
 		return
 	end
-	if child._width_type == ALittle.UIEnumTypes.SIZE_PERCENT then
+	if child._width_type == 2 then
 		local real_width = self._width * child._width_value
 		if real_width < 0 then
 			real_width = 0
 		end
 		child.width = real_width
-	elseif child._width_type == ALittle.UIEnumTypes.SIZE_MARGIN then
+	elseif child._width_type == 4 then
 		local real_width = self._width - child._width_value
 		if real_width < 0 then
 			real_width = 0
 		end
 		child.width = real_width
-	elseif child._width_type == ALittle.UIEnumTypes.SIZE_ABS then
+	elseif child._width_type == 1 then
 		local real_width = child._width_value
 		if real_width < 0 then
 			real_width = 0
@@ -117,19 +117,19 @@ function ALittle.DisplayLayout:UpdateHeightLayout(child)
 	if child == nil or child._show_parent ~= self then
 		return
 	end
-	if child._height_type == ALittle.UIEnumTypes.SIZE_PERCENT then
+	if child._height_type == 2 then
 		local real_height = self._height * child._height_value
 		if real_height < 0 then
 			real_height = 0
 		end
 		child.height = real_height
-	elseif child._height_type == ALittle.UIEnumTypes.SIZE_MARGIN then
+	elseif child._height_type == 4 then
 		local real_height = self._height - child._height_value
 		if real_height < 0 then
 			real_height = 0
 		end
 		child.height = real_height
-	elseif child._height_type == ALittle.UIEnumTypes.SIZE_ABS then
+	elseif child._height_type == 1 then
 		local real_height = child._height_value
 		if real_height < 0 then
 			real_height = 0

@@ -145,7 +145,7 @@ function ALittle.ScrollBar:HandleUpButtonClick(event)
 	end
 	if self._bar_button ~= nil then
 		local offset = self._offset_rate * (self._center_size - self._show_size)
-		if self._type == ALittle.UIEnumTypes.TYPE_V then
+		if self._type == 2 then
 			self._bar_button.y = offset
 		else
 			self._bar_button.x = offset
@@ -177,7 +177,7 @@ function ALittle.ScrollBar:HandleDownButtonClick(event)
 	end
 	if self._bar_button ~= nil then
 		local offset = self._offset_rate * (self._center_size - self._show_size)
-		if self._type == ALittle.UIEnumTypes.TYPE_V then
+		if self._type == 2 then
 			self._bar_button.y = offset
 		else
 			self._bar_button.x = offset
@@ -226,7 +226,7 @@ function ALittle.ScrollBar.__getter:bar_background()
 end
 
 function ALittle.ScrollBar:HandleBarButtonDragBegin(event)
-	if self._type == ALittle.UIEnumTypes.TYPE_V then
+	if self._type == 2 then
 		local height = self._bar_button.height
 		self._drag_point_rate = 0
 		if height > 0 then
@@ -242,7 +242,7 @@ function ALittle.ScrollBar:HandleBarButtonDragBegin(event)
 end
 
 function ALittle.ScrollBar:HandleBarButtonScroll(event)
-	if self._type == ALittle.UIEnumTypes.TYPE_V then
+	if self._type == 2 then
 		if event.delta_y > 0 then
 			self:HandleUpButtonClick(nil)
 		elseif event.delta_y < 0 then
@@ -263,7 +263,7 @@ end
 
 function ALittle.ScrollBar:HandleBarButtonDrag(event)
 	local real_size = self._center_size - self._show_size
-	if self._type == ALittle.UIEnumTypes.TYPE_V then
+	if self._type == 2 then
 		if (event.delta_y > 0 and event.rel_y < self._show_size * self._drag_point_rate) or (event.delta_y < 0 and event.rel_y > self._show_size * self._drag_point_rate) then
 			return
 		end
@@ -299,7 +299,7 @@ end
 
 function ALittle.ScrollBar:AdjustBarButton()
 	local real_size = self._center_size - self._show_size
-	if self._type == ALittle.UIEnumTypes.TYPE_V then
+	if self._type == 2 then
 		if self._bar_button ~= nil then
 			self._bar_button.x = 0
 			self._bar_button.width = self._width

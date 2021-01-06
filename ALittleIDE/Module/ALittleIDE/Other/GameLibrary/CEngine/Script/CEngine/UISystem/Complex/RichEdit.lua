@@ -491,10 +491,10 @@ function ALittle.RichEdit:Ctor(ctrl_sys)
 	___rawset(self, "_char_select_it", nil)
 	___rawset(self, "_scroll_list", ALittle.ScrollList(self._ctrl_sys))
 	self._scroll_list.right_scrollbar = ALittle.ScrollBar(self._ctrl_sys)
-	self._scroll_list.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
-	self._scroll_list.height_type = ALittle.UIEnumTypes.SIZE_MARGIN
-	self._scroll_list.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
-	self._scroll_list.y_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+	self._scroll_list.width_type = 4
+	self._scroll_list.height_type = 4
+	self._scroll_list.x_type = 3
+	self._scroll_list.y_type = 3
 	self:AddChild(self._scroll_list)
 	___rawset(self, "_current_flash_alpha", 1)
 	___rawset(self, "_current_flash_dir", -0.05)
@@ -547,9 +547,9 @@ function ALittle.RichEdit:Ctor(ctrl_sys)
 	___rawset(self, "_is_drag_begin", false)
 	___rawset(self, "_ims_padding", 0)
 	___rawset(self, "_default_text_area", ALittle.TextArea(self._ctrl_sys))
-	self._default_text_area.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+	self._default_text_area.width_type = 4
 	self._default_text_area.height = 0
-	self._default_text_area.x_type = ALittle.UIEnumTypes.POS_ALIGN_CENTER
+	self._default_text_area.x_type = 3
 	self._default_text_area.y = 0
 	self:AddChild(self._default_text_area)
 	___rawset(self, "_link_map", ALittle.CreateValueWeakMap())
@@ -873,10 +873,10 @@ function ALittle.RichEdit.__setter:start_cursor(value)
 		return
 	end
 	self:RemoveChild(self._start_cursor)
-	value.x_type = ALittle.UIEnumTypes.POS_ABS
-	value.y_type = ALittle.UIEnumTypes.POS_ABS
-	value.width_type = ALittle.UIEnumTypes.SIZE_ABS
-	value.height_type = ALittle.UIEnumTypes.SIZE_ABS
+	value.x_type = 1
+	value.y_type = 1
+	value.width_type = 1
+	value.height_type = 1
 	self._start_cursor = value
 	self:AddChild(self._start_cursor)
 	self._start_cursor.visible = false
@@ -892,10 +892,10 @@ function ALittle.RichEdit.__setter:end_cursor(value)
 		return
 	end
 	self:RemoveChild(self._end_cursor)
-	value.x_type = ALittle.UIEnumTypes.POS_ABS
-	value.y_type = ALittle.UIEnumTypes.POS_ABS
-	value.width_type = ALittle.UIEnumTypes.SIZE_ABS
-	value.height_type = ALittle.UIEnumTypes.SIZE_ABS
+	value.x_type = 1
+	value.y_type = 1
+	value.width_type = 1
+	value.height_type = 1
 	self._end_cursor = value
 	self:AddChild(self._end_cursor)
 	self._end_cursor.visible = false
@@ -2326,7 +2326,7 @@ function ALittle.RichEdit:DrawImpl()
 		if displayout == nil then
 			displayout = ALittle.DisplayLayout(self._ctrl_sys)
 			line_info.container = displayout
-			displayout.width_type = ALittle.UIEnumTypes.SIZE_MARGIN
+			displayout.width_type = 4
 			displayout.height = line_info.acc_height - line_info.pre_height
 			local offset_x = 0.0
 			for child_index, child in ___ipairs(line_info.child_list) do
@@ -3235,7 +3235,7 @@ function ALittle.RichEdit:HandleKeyDown(event)
 		end
 	elseif event.sym == 1073741904 then
 		if self._multi_cursor == false then
-			if ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
+			if ALittle.BitAnd(event.mod, 0x0003) == 0 then
 				self._is_selecting = false
 				self:CursorOffsetLR(true)
 				self:UpdateFontText()
@@ -3247,7 +3247,7 @@ function ALittle.RichEdit:HandleKeyDown(event)
 		event.handled = true
 	elseif event.sym == 1073741903 then
 		if self._multi_cursor == false then
-			if ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
+			if ALittle.BitAnd(event.mod, 0x0003) == 0 then
 				self._is_selecting = false
 				self:CursorOffsetLR(false)
 				self:UpdateFontText()
@@ -3259,7 +3259,7 @@ function ALittle.RichEdit:HandleKeyDown(event)
 		event.handled = true
 	elseif event.sym == 1073741906 then
 		if self._multi_cursor == false then
-			if ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
+			if ALittle.BitAnd(event.mod, 0x0003) == 0 then
 				self._is_selecting = false
 				self:CursorOffsetUD(true)
 				self:UpdateFontText()
@@ -3271,7 +3271,7 @@ function ALittle.RichEdit:HandleKeyDown(event)
 		event.handled = true
 	elseif event.sym == 1073741905 then
 		if self._multi_cursor == false then
-			if ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_SHIFT) == 0 then
+			if ALittle.BitAnd(event.mod, 0x0003) == 0 then
 				self._is_selecting = false
 				self:CursorOffsetUD(false)
 				self:UpdateFontText()
@@ -3342,7 +3342,7 @@ function ALittle.RichEdit:HandleKeyDown(event)
 				self._multi_cursor = false
 			end
 		end
-	elseif event.sym == 120 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 120 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
 		if self._multi_cursor == false then
 			if self._editable or event.custom then
 				self._is_selecting = false
@@ -3367,13 +3367,13 @@ function ALittle.RichEdit:HandleKeyDown(event)
 				self._multi_cursor = false
 			end
 		end
-	elseif event.sym == 99 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 99 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
 		local select_text = self:GetSelectText()
 		if select_text[1] ~= nil then
 			ALittle.System_SetClipboardText(ALittle.String_JsonEncode(select_text))
 		end
 		event.handled = true
-	elseif event.sym == 118 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 118 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
 		if self._multi_cursor == false then
 			if self._editable or event.custom then
 				self._is_selecting = false
@@ -3409,7 +3409,7 @@ function ALittle.RichEdit:HandleKeyDown(event)
 				self._multi_cursor = false
 			end
 		end
-	elseif event.sym == 97 and ALittle.BitAnd(event.mod, ALittle.UIEnumTypes.KMOD_CTRL) ~= 0 then
+	elseif event.sym == 97 and ALittle.BitAnd(event.mod, 0x00c0) ~= 0 then
 		self._is_selecting = true
 		self:SelectAll()
 		event.handled = true

@@ -47,20 +47,20 @@ AUIPlugin.ALittleScriptIconType = {
 }
 
 local g_ALittleScriptIcon = {}
-g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.CLASS] = "ABnf/ALittleScript/ALittleScriptClassIcon.png"
-g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.STRUCT] = "ABnf/ALittleScript/ALittleScriptStructIcon.png"
-g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.PROPERTY] = "ABnf/ALittleScript/ALittleScriptPropertyIcon.png"
-g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.NAMESPACE] = "ABnf/ALittleScript/ALittleScriptNamespaceIcon.png"
-g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.TEMPLATE] = "ABnf/ALittleScript/ALittleScriptTemplateIcon.png"
-g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.ENUM] = "ABnf/ALittleScript/ALittleScriptEnumIcon.png"
-g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.LANGUAGE] = "ABnf/ALittleScript/ALittleScriptNamespaceIcon.png"
-g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.GLOBAL_METHOD] = "ABnf/ALittleScript/ALittleScriptStaticIcon.png"
-g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.MEMBER_METHOD] = "ABnf/ALittleScript/ALittleScriptMethodIcon.png"
-g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.FIELD_METHOD] = "ABnf/ALittleScript/ALittleScriptFieldIcon.png"
-g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.STATIC_METHOD] = "ABnf/ALittleScript/ALittleScriptStaticIcon.png"
-g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.INSTANCE] = "ABnf/ALittleScript/ALittleScriptInstanceIcon.png"
-g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.PARAM] = "ABnf/ALittleScript/ALittleScriptParamIcon.png"
-g_ALittleScriptIcon[AUIPlugin.ALittleScriptIconType.VARIABLE] = "ABnf/ALittleScript/ALittleScriptVariableIcon.png"
+g_ALittleScriptIcon[1] = "ABnf/ALittleScript/ALittleScriptClassIcon.png"
+g_ALittleScriptIcon[2] = "ABnf/ALittleScript/ALittleScriptStructIcon.png"
+g_ALittleScriptIcon[3] = "ABnf/ALittleScript/ALittleScriptPropertyIcon.png"
+g_ALittleScriptIcon[4] = "ABnf/ALittleScript/ALittleScriptNamespaceIcon.png"
+g_ALittleScriptIcon[5] = "ABnf/ALittleScript/ALittleScriptTemplateIcon.png"
+g_ALittleScriptIcon[6] = "ABnf/ALittleScript/ALittleScriptEnumIcon.png"
+g_ALittleScriptIcon[7] = "ABnf/ALittleScript/ALittleScriptNamespaceIcon.png"
+g_ALittleScriptIcon[8] = "ABnf/ALittleScript/ALittleScriptStaticIcon.png"
+g_ALittleScriptIcon[9] = "ABnf/ALittleScript/ALittleScriptMethodIcon.png"
+g_ALittleScriptIcon[10] = "ABnf/ALittleScript/ALittleScriptFieldIcon.png"
+g_ALittleScriptIcon[11] = "ABnf/ALittleScript/ALittleScriptStaticIcon.png"
+g_ALittleScriptIcon[12] = "ABnf/ALittleScript/ALittleScriptInstanceIcon.png"
+g_ALittleScriptIcon[13] = "ABnf/ALittleScript/ALittleScriptParamIcon.png"
+g_ALittleScriptIcon[14] = "ABnf/ALittleScript/ALittleScriptVariableIcon.png"
 assert(AUIPlugin.AUICodeLanguage, " extends class:AUIPlugin.AUICodeLanguage is nil")
 AUIPlugin.AUICodeALittleScript = Lua.Class(AUIPlugin.AUICodeLanguage, "AUIPlugin.AUICodeALittleScript")
 
@@ -73,63 +73,63 @@ function AUIPlugin.AUICodeALittleScript:Ctor(project, full_path, module_path)
 			color.red = 87 / 255
 			color.green = 166 / 255
 			color.blue = 74 / 255
-			g_ALittleScriptColor[AUIPlugin.ALittleScriptColorType.COMMENT] = color
+			g_ALittleScriptColor[1] = color
 		end
 		do
 			color = {}
 			color.red = 78 / 255
 			color.green = 201 / 255
 			color.blue = 176 / 255
-			g_ALittleScriptColor[AUIPlugin.ALittleScriptColorType.DEFINE_NAME] = color
+			g_ALittleScriptColor[2] = color
 		end
 		do
 			color = {}
 			color.red = 218 / 255
 			color.green = 218 / 255
 			color.blue = 218 / 255
-			g_ALittleScriptColor[AUIPlugin.ALittleScriptColorType.VAR_NAME] = color
+			g_ALittleScriptColor[3] = color
 		end
 		do
 			color = {}
 			color.red = 146 / 255
 			color.green = 210 / 255
 			color.blue = 244 / 255
-			g_ALittleScriptColor[AUIPlugin.ALittleScriptColorType.CUSTOM_NAME] = color
+			g_ALittleScriptColor[4] = color
 		end
 		do
 			color = {}
 			color.red = 216 / 255
 			color.green = 160 / 255
 			color.blue = 223 / 255
-			g_ALittleScriptColor[AUIPlugin.ALittleScriptColorType.CTRL_KEYWORD] = color
+			g_ALittleScriptColor[5] = color
 		end
 		do
 			color = {}
 			color.red = 86 / 255
 			color.green = 156 / 255
 			color.blue = 214 / 255
-			g_ALittleScriptColor[AUIPlugin.ALittleScriptColorType.KEYWORD] = color
+			g_ALittleScriptColor[6] = color
 		end
 		do
 			color = {}
 			color.red = 210 / 255
 			color.green = 210 / 255
 			color.blue = 160 / 255
-			g_ALittleScriptColor[AUIPlugin.ALittleScriptColorType.METHOD_NAME] = color
+			g_ALittleScriptColor[7] = color
 		end
 		do
 			color = {}
 			color.red = 169 / 255
 			color.green = 183 / 255
 			color.blue = 198 / 255
-			g_ALittleScriptColor[AUIPlugin.ALittleScriptColorType.DEFAULT] = color
+			g_ALittleScriptColor[8] = color
 		end
 		do
 			color = {}
 			color.red = 214 / 255
 			color.green = 157 / 255
 			color.blue = 133 / 255
-			g_ALittleScriptColor[AUIPlugin.ALittleScriptColorType.TEXT] = color
+			g_ALittleScriptColor[9] = color
 		end
 	end
 	___rawset(self, "_abnf_file", alittlescript.create_alittlescript_file(project.project, module_path, full_path, ""))
@@ -219,7 +219,7 @@ function AUIPlugin.AUICodeALittleScriptProject:GenerateDir(full_path)
 	for file_path, attr in ___pairs(file_map) do
 		local error = self:Generate(file_path)
 		if error ~= nil then
-			if AUIPlugin.AUIToolOption.YES == g_AUITool:DeleteNotice("错误", error.error .. "\n 文件路径" .. file_path .. "\n是否打开该文件?") then
+			if "YES" == g_AUITool:DeleteNotice("错误", error.error .. "\n 文件路径" .. file_path .. "\n是否打开该文件?") then
 				local goto_event = {}
 				goto_event.file_path = error.full_path
 				if goto_event.file_path == nil then

@@ -275,7 +275,7 @@ function ALittle.ScrollScreen.__setter:width(value)
 		return
 	end
 	self._width = value
-	if self._width_type == ALittle.UIEnumTypes.SIZE_ABS then
+	if self._width_type == 1 then
 		self._width_value = self._width
 	end
 	local width = 0.0
@@ -334,7 +334,7 @@ function ALittle.ScrollScreen.__setter:height(value)
 		return
 	end
 	self._height = value
-	if self._height_type == ALittle.UIEnumTypes.SIZE_ABS then
+	if self._height_type == 1 then
 		self._height_value = self._height
 	end
 	local height = 0.0
@@ -402,7 +402,7 @@ function ALittle.ScrollScreen.__setter:right_scrollbar(value)
 	self._right_scroll_bar = value
 	local width = 0.0
 	if self._right_scroll_bar ~= nil then
-		self._right_scroll_bar.type = ALittle.UIEnumTypes.TYPE_V
+		self._right_scroll_bar.type = 2
 		width = self._right_scroll_bar.width
 		ALittle.DisplayGroup.AddChild(self, self._right_scroll_bar)
 		self._right_scroll_bar:AddEventListener(___all_struct[958494922], self, self.HandleRightScrollBarChange)
@@ -470,7 +470,7 @@ function ALittle.ScrollScreen.__setter:bottom_scrollbar(value)
 	self._bottom_scroll_bar = value
 	local height = 0.0
 	if self._bottom_scroll_bar ~= nil then
-		self._bottom_scroll_bar.type = ALittle.UIEnumTypes.TYPE_H
+		self._bottom_scroll_bar.type = 1
 		height = self._bottom_scroll_bar.height
 		ALittle.DisplayGroup.AddChild(self, self._bottom_scroll_bar)
 		self._bottom_scroll_bar:AddEventListener(___all_struct[958494922], self, self.HandleBottomScrollBarChange)

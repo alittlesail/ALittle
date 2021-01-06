@@ -27,13 +27,17 @@ public class Slider : DisplayLayout
     }
     
     public set width(double value)
-    { 
+    {
+        if (this._width == value) return;
+
     	DisplayLayout.width(this, value);
     	this.AdjustBarButton();
     }
     
     public set height(double value)
     { 
+        if (this._height == value) return;
+
     	DisplayLayout.height(this, value);
     	this.AdjustBarButton();
     }

@@ -110,8 +110,8 @@ public class RichArea : DisplayLayout
     // 设置宽度
     public set width(double value)
     {
-        if (this.width == value)
-            return;
+        if (this.width == value) return;
+
         DisplayLayout.width(this, value);
         this.Refresh();
     }

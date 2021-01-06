@@ -471,8 +471,7 @@ public class ScrollList : DisplayView
             return;
         }
     
-        if (this._width == value)
-            return;
+        if (this._width == value) return;
             
         this._width = value;
         if (this._width_type == UIEnumTypes.SIZE_ABS)
@@ -513,8 +512,7 @@ public class ScrollList : DisplayView
             return;
         }
     
-        if (this._height == value)
-            return;
+        if (this._height == value) return;
             
         this._height = value;
         if (this._height_type == UIEnumTypes.SIZE_ABS)

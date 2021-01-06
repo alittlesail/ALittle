@@ -23,11 +23,17 @@ function ALittle.Slider:Ctor(ctrl_sys)
 end
 
 function ALittle.Slider.__setter:width(value)
+	if self._width == value then
+		return
+	end
 	ALittle.DisplayLayout.__setter.width(self, value)
 	self:AdjustBarButton()
 end
 
 function ALittle.Slider.__setter:height(value)
+	if self._height == value then
+		return
+	end
 	ALittle.DisplayLayout.__setter.height(self, value)
 	self:AdjustBarButton()
 end

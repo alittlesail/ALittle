@@ -433,6 +433,9 @@ function ALittle.DisplayObject:MoveToTop()
 end
 
 function ALittle.DisplayObject.__setter:x(value)
+	if self._x == value then
+		return
+	end
 	self._x = value
 	if self._x_type == 1 then
 		self._x_value = value
@@ -473,6 +476,9 @@ function ALittle.DisplayObject.__getter:x_value()
 end
 
 function ALittle.DisplayObject.__setter:y(value)
+	if self._y == value then
+		return
+	end
 	self._y = value
 	if self._y_type == 1 then
 		self._y_value = value
@@ -513,6 +519,9 @@ function ALittle.DisplayObject.__getter:y_value()
 end
 
 function ALittle.DisplayObject.__setter:width(value)
+	if self._width == value then
+		return
+	end
 	self._width = value
 	if self._width_type == 1 then
 		self._width_value = value
@@ -563,6 +572,9 @@ function ALittle.DisplayObject.__getter:width_value()
 end
 
 function ALittle.DisplayObject.__setter:height(value)
+	if self._height == value then
+		return
+	end
 	self._height = value
 	if self._height_type == 1 then
 		self._height_value = value

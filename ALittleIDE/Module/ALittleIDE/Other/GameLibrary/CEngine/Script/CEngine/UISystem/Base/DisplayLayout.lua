@@ -50,19 +50,20 @@ function ALittle.DisplayLayout:UpdateXLayout(child)
 	if child == nil or child._show_parent ~= self then
 		return
 	end
-	if child._x_type == 1 then
+	local x_type = child._x_type
+	if x_type == 1 then
 		child.x = child._x_value
-	elseif child._x_type == 2 then
+	elseif x_type == 2 then
 		child.x = child._x_value
-	elseif child._x_type == 3 then
+	elseif x_type == 3 then
 		child.x = (self._width - child.width) / 2 + child._x_value
-	elseif child._x_type == 4 then
+	elseif x_type == 4 then
 		child.x = self._width - child.width - child._x_value
-	elseif child._x_type == 7 then
+	elseif x_type == 7 then
 		child.x = self._width * child._x_value
-	elseif child._x_type == 8 then
+	elseif x_type == 8 then
 		child.x = (self._width - child.width) / 2 + self._width * child._x_value
-	elseif child._x_type == 9 then
+	elseif x_type == 9 then
 		child.x = (self._width - child.width) * (1 - child._x_value)
 	end
 end
@@ -71,19 +72,20 @@ function ALittle.DisplayLayout:UpdateYLayout(child)
 	if child == nil or child._show_parent ~= self then
 		return
 	end
-	if child._y_type == 1 then
+	local y_type = child._y_type
+	if y_type == 1 then
 		child.y = child._y_value
-	elseif child._y_type == 2 then
+	elseif y_type == 2 then
 		child.y = child._y_value
-	elseif child._y_type == 3 then
+	elseif y_type == 3 then
 		child.y = (self._height - child.height) / 2 + child._y_value
-	elseif child._y_type == 4 then
+	elseif y_type == 4 then
 		child.y = self._height - child.height - child._y_value
-	elseif child._y_type == 7 then
+	elseif y_type == 7 then
 		child.y = self._height * child._y_value
-	elseif child._y_type == 8 then
+	elseif y_type == 8 then
 		child.y = (self._height - child.height) / 2 + self._height * child._y_value
-	elseif child._y_type == 9 then
+	elseif y_type == 9 then
 		child.y = (self._height - child.height) * (1 - child._y_value)
 	end
 end
@@ -92,19 +94,20 @@ function ALittle.DisplayLayout:UpdateWidthLayout(child)
 	if child == nil or child._show_parent ~= self then
 		return
 	end
-	if child._width_type == 2 then
+	local width_type = child._width_type
+	if width_type == 2 then
 		local real_width = self._width * child._width_value
 		if real_width < 0 then
 			real_width = 0
 		end
 		child.width = real_width
-	elseif child._width_type == 4 then
+	elseif width_type == 4 then
 		local real_width = self._width - child._width_value
 		if real_width < 0 then
 			real_width = 0
 		end
 		child.width = real_width
-	elseif child._width_type == 1 then
+	elseif width_type == 1 then
 		local real_width = child._width_value
 		if real_width < 0 then
 			real_width = 0
@@ -117,19 +120,20 @@ function ALittle.DisplayLayout:UpdateHeightLayout(child)
 	if child == nil or child._show_parent ~= self then
 		return
 	end
-	if child._height_type == 2 then
+	local height_type = child._height_type
+	if height_type == 2 then
 		local real_height = self._height * child._height_value
 		if real_height < 0 then
 			real_height = 0
 		end
 		child.height = real_height
-	elseif child._height_type == 4 then
+	elseif height_type == 4 then
 		local real_height = self._height - child._height_value
 		if real_height < 0 then
 			real_height = 0
 		end
 		child.height = real_height
-	elseif child._height_type == 1 then
+	elseif height_type == 1 then
 		local real_height = child._height_value
 		if real_height < 0 then
 			real_height = 0

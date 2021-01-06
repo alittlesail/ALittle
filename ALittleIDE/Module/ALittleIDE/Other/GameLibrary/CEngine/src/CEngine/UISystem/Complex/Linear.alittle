@@ -183,6 +183,8 @@ public class Linear : DisplayGroup
     
     public set width(double value)
     {
+        if (this._width == value) return;
+
         this._width = value;
         if (this._width_type == UIEnumTypes.SIZE_ABS)
             this._width_value = this._width;
@@ -212,6 +214,8 @@ public class Linear : DisplayGroup
     
     public set height(double value)
     {
+        if (this._height == value) return;
+
         this._height = value;
         if (this._height_type == UIEnumTypes.SIZE_ABS)
             this._height_value = this._height;

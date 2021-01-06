@@ -165,6 +165,9 @@ function ALittle.Linear:SetChildIndex(child, index)
 end
 
 function ALittle.Linear.__setter:width(value)
+	if self._width == value then
+		return
+	end
 	self._width = value
 	if self._width_type == 1 then
 		self._width_value = self._width
@@ -191,6 +194,9 @@ function ALittle.Linear.__getter:width()
 end
 
 function ALittle.Linear.__setter:height(value)
+	if self._height == value then
+		return
+	end
 	self._height = value
 	if self._height_type == 1 then
 		self._height_value = self._height

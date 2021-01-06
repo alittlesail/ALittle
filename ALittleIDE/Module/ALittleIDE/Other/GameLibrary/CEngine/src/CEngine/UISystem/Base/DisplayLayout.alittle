@@ -11,8 +11,8 @@ public class DisplayLayout : DisplayGroup
     
     public set width(double value)
     {
-        if (value == this._width)
-            return;
+        if (value == this._width) return;
+
         this._width = value;
         if (this._width_type == UIEnumTypes.SIZE_ABS)
             this._width_value = this._width;
@@ -28,8 +28,7 @@ public class DisplayLayout : DisplayGroup
     
     public set height(double value)
     {
-        if (value == this._height)
-            return;
+        if (value == this._height) return;
             
         this._height = value;
         if (this._height_type == UIEnumTypes.SIZE_ABS)
@@ -49,25 +48,26 @@ public class DisplayLayout : DisplayGroup
         if (child == null || child._show_parent != this)
             return;
     
-        if (child._x_type == UIEnumTypes.POS_ABS)
+        var x_type = child._x_type;
+        if (x_type == UIEnumTypes.POS_ABS)
             // 以控件左边为锚点，向右偏移x_value
             child.x = child._x_value;
-        elseif (child._x_type == UIEnumTypes.POS_ALIGN_STARTING)
+        elseif (x_type == UIEnumTypes.POS_ALIGN_STARTING)
             // 以控件左边为锚点，向右偏移x_value
             child.x = child._x_value;
-        elseif (child._x_type == UIEnumTypes.POS_ALIGN_CENTER)
+        elseif (x_type == UIEnumTypes.POS_ALIGN_CENTER)
             // 以控件中心为锚点，向右偏移x_value
             child.x = (this._width - child.width) / 2 + child._x_value;
-        elseif (child._x_type == UIEnumTypes.POS_ALIGN_ENDING)
+        elseif (x_type == UIEnumTypes.POS_ALIGN_ENDING)
             // 以控件右边为锚点，向左偏移x_value
             child.x = this._width - child.width - child._x_value;
-        elseif (child._x_type == UIEnumTypes.POS_PERCENT_STARTING)
+        elseif (x_type == UIEnumTypes.POS_PERCENT_STARTING)
             // 以控件左边为锚点，计算百分比位置
             child.x = this._width * child._x_value;
-        elseif (child._x_type == UIEnumTypes.POS_PERCENT_CENTER)
+        elseif (x_type == UIEnumTypes.POS_PERCENT_CENTER)
             // 以控件中心为锚点，计算百分比位置
             child.x = (this._width - child.width) / 2 + this._width * child._x_value;
-        elseif (child._x_type == UIEnumTypes.POS_PERCENT_ENDING)
+        elseif (x_type == UIEnumTypes.POS_PERCENT_ENDING)
             // 以控件右边为锚点，计算百分比位置
             child.x = (this._width - child.width) * (1 - child._x_value);
     }
@@ -76,25 +76,26 @@ public class DisplayLayout : DisplayGroup
         if (child == null || child._show_parent != this)
             return;
     
-        if (child._y_type == UIEnumTypes.POS_ABS)
+        var y_type = child._y_type;
+        if (y_type == UIEnumTypes.POS_ABS)
             // 以控件上边为锚点，向下偏移y_value
             child.y = child._y_value;
-        elseif (child._y_type == UIEnumTypes.POS_ALIGN_STARTING)
+        elseif (y_type == UIEnumTypes.POS_ALIGN_STARTING)
             // 以控件上边为锚点，向下偏移y_value
             child.y = child._y_value;
-        elseif (child._y_type == UIEnumTypes.POS_ALIGN_CENTER)
+        elseif (y_type == UIEnumTypes.POS_ALIGN_CENTER)
             // 以控件中心为锚点，向下偏移y_value
             child.y = (this._height - child.height) / 2 + child._y_value;
-        elseif (child._y_type == UIEnumTypes.POS_ALIGN_ENDING)
+        elseif (y_type == UIEnumTypes.POS_ALIGN_ENDING)
             // 以控件下边为锚点，向上偏移y_value
             child.y = this._height - child.height - child._y_value;
-        elseif (child._y_type == UIEnumTypes.POS_PERCENT_STARTING)
+        elseif (y_type == UIEnumTypes.POS_PERCENT_STARTING)
             // 以控件上边为锚点，计算百分比位置
             child.y = this._height * child._y_value;
-        elseif (child._y_type == UIEnumTypes.POS_PERCENT_CENTER)
+        elseif (y_type == UIEnumTypes.POS_PERCENT_CENTER)
             // 以控件中心为锚点，计算百分比位置
             child.y = (this._height - child.height) / 2 + this._height * child._y_value;
-        elseif (child._y_type == UIEnumTypes.POS_PERCENT_ENDING)
+        elseif (y_type == UIEnumTypes.POS_PERCENT_ENDING)
             // 以控件下边为锚点，计算百分比位置
             child.y = (this._height - child.height) * (1 - child._y_value);
     }
@@ -104,21 +105,22 @@ public class DisplayLayout : DisplayGroup
         if (child == null || child._show_parent != this)
             return;
     
-        if (child._width_type == UIEnumTypes.SIZE_PERCENT)
+        var width_type = child._width_type;
+        if (width_type == UIEnumTypes.SIZE_PERCENT)
         {
             var real_width = this._width * child._width_value;
             if (real_width < 0)
                 real_width = 0;
             child.width = real_width;
         }
-        elseif (child._width_type == UIEnumTypes.SIZE_MARGIN)
+        elseif (width_type == UIEnumTypes.SIZE_MARGIN)
         {
             var real_width = this._width - child._width_value;
             if (real_width < 0)
                 real_width = 0;
             child.width = real_width;
         }
-        elseif (child._width_type == UIEnumTypes.SIZE_ABS)
+        elseif (width_type == UIEnumTypes.SIZE_ABS)
         {
             var real_width = child._width_value;
             if (real_width < 0)
@@ -132,25 +134,23 @@ public class DisplayLayout : DisplayGroup
         if (child == null || child._show_parent != this)
             return;
     
-        if (child._height_type == UIEnumTypes.SIZE_PERCENT)
+        var height_type = child._height_type;
+        if (height_type == UIEnumTypes.SIZE_PERCENT)
         {
             var real_height = this._height * child._height_value;
-            if (real_height < 0)
-                real_height = 0;
+            if (real_height < 0) real_height = 0;
             child.height = real_height;
        }
-       elseif (child._height_type == UIEnumTypes.SIZE_MARGIN)
+       elseif (height_type == UIEnumTypes.SIZE_MARGIN)
        {
             var real_height = this._height - child._height_value;
-            if (real_height < 0)
-                real_height = 0;
+            if (real_height < 0) real_height = 0;
             child.height = real_height;
        }
-       elseif (child._height_type == UIEnumTypes.SIZE_ABS)
+       elseif (height_type == UIEnumTypes.SIZE_ABS)
        {
             var real_height = child._height_value;
-            if (real_height < 0)
-                real_height = 0;
+            if (real_height < 0) real_height = 0;
             child.height = real_height;
         }
     }

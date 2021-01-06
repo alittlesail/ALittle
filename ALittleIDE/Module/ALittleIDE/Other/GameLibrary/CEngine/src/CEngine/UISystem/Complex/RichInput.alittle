@@ -695,8 +695,8 @@ public class RichInput : DisplayLayout
     // 设置宽度
     public set width(double value)
     {
-        if (this.width == value)
-            return;
+        if (this.width == value) return;
+
         DisplayLayout.width(this, value);
         // 设置宽度，重设控件位置，重设光标位置
         this.ResetShowXByCursor();
@@ -706,8 +706,8 @@ public class RichInput : DisplayLayout
     // 设置高度
     public set height(double value)
     {
-        if (this.height == value)
-            return;
+        if (this.height == value) return;
+
         DisplayLayout.height(this, value);
         // 设置高度，重设光标显示高度
         this.ResetCursor();

@@ -199,8 +199,7 @@ public class Grid3 : DisplayGroup
     
     public set width(double value)
     {
-        if (value == this._width)
-            return;
+        if (value == this._width) return;
 
         this._width = value;
         if (this._width_type == UIEnumTypes.SIZE_ABS)
@@ -211,8 +210,7 @@ public class Grid3 : DisplayGroup
     
     public set height(double value)
     {
-        if (value == this._height)
-            return;
+        if (value == this._height) return;
 
         this._height = value;
         if (this._height_type == UIEnumTypes.SIZE_ABS)

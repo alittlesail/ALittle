@@ -133,8 +133,7 @@ public class ScrollBar : Grid3
     
     public set width(double value)
     {
-        if (this._width == value)
-            return;
+        if (this._width == value) return;
             
         Grid3.width(this, value);
     
@@ -144,8 +143,8 @@ public class ScrollBar : Grid3
     
     public set height(double value)
     {
-        if (this._height == value)
-            return;
+        if (this._height == value) return;
+
         Grid3.height(this, value);
     
         this.UpdateShowSize();

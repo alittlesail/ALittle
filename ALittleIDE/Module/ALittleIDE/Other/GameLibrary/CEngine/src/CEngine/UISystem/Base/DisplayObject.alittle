@@ -607,6 +607,7 @@ public class DisplayObject : UIEventDispatcher
     // 设置控件的x坐标
     public set x(double value)
     {
+        if (this._x == value) return;
         // 设置x坐标
         this._x = value;
         if (this._x_type == UIEnumTypes.POS_ABS)
@@ -622,6 +623,7 @@ public class DisplayObject : UIEventDispatcher
     public set x_type(int value)
     {
         if (this._x_type == value) return;
+
         this._x_type = value;
         if (this._show_parent != null)
             this._show_parent.UpdateXLayout(this);
@@ -629,6 +631,7 @@ public class DisplayObject : UIEventDispatcher
     public set x_value(double value)
     {
         if (this._x_value == value) return;
+
         this._x_value = value;
         if (this._show_parent != null)
             this._show_parent.UpdateXLayout(this);
@@ -645,6 +648,8 @@ public class DisplayObject : UIEventDispatcher
     // 设置控件的y坐标
     public set y(double value)
     {
+        if (this._y == value) return;
+
         // 设置y坐标
         this._y = value;
         if (this._y_type == UIEnumTypes.POS_ABS)
@@ -659,16 +664,16 @@ public class DisplayObject : UIEventDispatcher
     }
     public set y_type(int value)
     {
-        if (this._y_type == value)
-            return;
+        if (this._y_type == value) return;
+
         this._y_type = value;
         if (this._show_parent != null)
             this._show_parent.UpdateYLayout(this);
     }
     public set y_value(double value)
     {
-        if (this._y_value == value)
-            return;
+        if (this._y_value == value) return;
+
         this._y_value = value;
         if (this._show_parent != null)
             this._show_parent.UpdateYLayout(this);
@@ -685,6 +690,8 @@ public class DisplayObject : UIEventDispatcher
     // 设置控件的宽
     public set width(double value)
     {
+        if (this._width == value) return;
+
         // 设置宽
         this._width = value;
         if (this._width_type == UIEnumTypes.SIZE_ABS)
@@ -740,6 +747,8 @@ public class DisplayObject : UIEventDispatcher
     // 设置控件的高
     public set height(double value)
     {
+        if (this._height == value) return;
+
         // 设置高
         this._height = value;
         if (this._height_type == UIEnumTypes.SIZE_ABS)

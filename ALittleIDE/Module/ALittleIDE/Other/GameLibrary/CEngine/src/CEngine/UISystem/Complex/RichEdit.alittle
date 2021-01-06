@@ -861,8 +861,7 @@ public class RichEdit : DisplayLayout
     // 设置宽度
     public set width(double value)
     {
-        if (this.width == value)
-            return;
+        if (this.width == value) return;
             
         DisplayLayout.width(this, value);
 
@@ -875,8 +874,8 @@ public class RichEdit : DisplayLayout
     // 设置高度
     public set height(double value)
     {
-        if (this.height == value)
-            return;
+        if (this.height == value) return;
+
         DisplayLayout.height(this, value);
     
         this._default_text_area.y = this._scroll_list.y;

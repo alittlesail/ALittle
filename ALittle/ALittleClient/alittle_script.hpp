@@ -3,8 +3,6 @@
 
 #include <string>
 
-#include "Carp/carp_surface_bind.hpp"
-
 extern "C" {
 #include "lua.h"
 #include "lualib/ajson/lua_ajson.h"
@@ -20,9 +18,9 @@ extern "C" {
 #include "Carp/carp_timer_bind.hpp"
 #include "Carp/carp_file_bind.hpp"
 #include "Carp/carp_string_bind.hpp"
-#include "Carp/carp_bit_bind.hpp"
 #include "Carp/carp_rwops_bind.hpp"
 #include "Carp/carp_task_consumer_bind.hpp"
+#include "Carp/carp_surface_bind.hpp"
 
 class ALittleScript : public CarpScript
 {
@@ -42,7 +40,6 @@ public:
 		CarpTimerBind::Bind(m_L);
 		CarpFileBind::Bind(m_L);
 		CarpStringBind::Bind(m_L);
-		CarpBitBind::Bind(m_L);
 		CarpRWopsBind::Bind(m_L);
 		CarpTaskConsumerBind::Bind(m_L);
 		CarpSurfaceBind::Bind(m_L);

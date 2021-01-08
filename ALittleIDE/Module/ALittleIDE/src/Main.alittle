@@ -42,6 +42,8 @@ protected var g_IDEServerConfig:ALittle.IJsonConfig;
 protected var g_MainLayer:ALittle.DisplayLayout;
 protected var g_DialogLayer:ALittle.DisplayLayout;
 
+protected var g_Worker:ALittle.Worker;
+
 // 模块入口函数
 public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.ControlSystem control
                             , string module_base_path, string script_base_path)
@@ -83,6 +85,8 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 
     // 初始化
     g_IDECenter.Setup();
+
+    g_Worker = new ALittle.Worker(script_base_path.."Test");
 }
 
 // 模块结束函数
@@ -94,6 +98,8 @@ public static __Module_Shutdown()
 	g_IDEImageSelectDialog.Shutdown();
 	g_IDEImageManagerDialog.Shutdown();
 	g_IDEEditImageDialog.Shutdown();
+
+    if (g_Worker != null) g_Worker.Stop();
 }
 
 // 提供给壳的模块信息

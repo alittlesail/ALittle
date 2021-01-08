@@ -33,6 +33,7 @@ ALittleIDE.g_IDEConfig = nil
 ALittleIDE.g_IDEServerConfig = nil
 ALittleIDE.g_MainLayer = nil
 ALittleIDE.g_DialogLayer = nil
+ALittleIDE.g_Worker = nil
 function ALittleIDE.__Module_Setup(layer_group, control, module_base_path, script_base_path)
 	ALittleIDE.g_Control = control
 	ALittleIDE.g_LayerGroup = layer_group
@@ -82,6 +83,7 @@ function ALittleIDE.__Module_Setup(layer_group, control, module_base_path, scrip
 		, "UIEdit/Setting/TextInputS.alittle", "UIEdit/Setting/ScrollBarS.alittle", "UIEdit/Setting/ImageInputS.alittle"
 		, "UIEdit/Tree/IDEUITreeLogic.alittle", "UIEdit/Tree/IDEUITreeItem.alittle", "UIEdit/Tree/IDEUITree.alittle"})
 	ALittleIDE.g_IDECenter:Setup()
+	ALittleIDE.g_Worker = ALittle.Worker(script_base_path .. "Test")
 end
 ALittleIDE.__Module_Setup = Lua.CoWrap(ALittleIDE.__Module_Setup)
 
@@ -91,6 +93,9 @@ function ALittleIDE.__Module_Shutdown()
 	ALittleIDE.g_IDEImageSelectDialog:Shutdown()
 	ALittleIDE.g_IDEImageManagerDialog:Shutdown()
 	ALittleIDE.g_IDEEditImageDialog:Shutdown()
+	if ALittleIDE.g_Worker ~= nil then
+		ALittleIDE.g_Worker:Stop()
+	end
 end
 
 function ALittleIDE.__Module_GetInfo(control, module_base_path, script_base_path)

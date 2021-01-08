@@ -30,16 +30,6 @@ function ALittleDeploy.DPLCenter.__getter:center()
 	return self._center
 end
 
-function ALittleDeploy.DPLCenter:RefreshProject()
-	if not self._center.content_edit:IsSaveAll() then
-		local result = g_AUITool:SaveNotice("提示", "是否保存当前项目?")
-		if result == "YES" then
-			self._center.content_edit:SaveAllTab()
-		end
-	end
-end
-ALittleDeploy.DPLCenter.RefreshProject = Lua.CoWrap(ALittleDeploy.DPLCenter.RefreshProject)
-
 function ALittleDeploy.DPLCenter:HandleShortcutKey(mod, sym, scancode)
 	if A_UISystem.sym_map[1073741886] then
 		return
@@ -56,9 +46,6 @@ function ALittleDeploy.DPLCenter:HandleShortcutKey(mod, sym, scancode)
 end
 
 function ALittleDeploy.DPLCenter:HandleQuit()
-	if self._center.content_edit:IsSaveAll() then
-		return true
-	end
 	self:HandleQuitImpl()
 	return false
 end
@@ -66,7 +53,6 @@ end
 function ALittleDeploy.DPLCenter:HandleQuitImpl()
 	local result = g_AUITool:SaveNotice("提示", "是否保存当前项目?")
 	if result == "YES" then
-		self._center.content_edit:SaveAllTab()
 	end
 	ALittle.System_Exit()
 end

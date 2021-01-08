@@ -310,6 +310,7 @@ public class ScrollScreen : DisplayGroup
             return false;
         if (this._scroll_content.AddChild(child, index) == false)
             return false;
+        child._logic_parent = this;
         this.AdjustScrollBar();
         return true;
     }

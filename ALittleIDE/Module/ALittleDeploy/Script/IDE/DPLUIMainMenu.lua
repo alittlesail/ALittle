@@ -32,21 +32,6 @@ function ALittleDeploy.DPLUIMainMenu:HandleMenuHide(button)
 	button.selected = false
 end
 
-function ALittleDeploy.DPLUIMainMenu:HandleFileMenuClick(event)
-	local menu = AUIPlugin.AUIRightMenu()
-	menu:Show(event.target, Lua.Bind(self.HandleMenuHide, self, event.target))
-end
-
-function ALittleDeploy.DPLUIMainMenu:HandleEditMenuClick(event)
-	local menu = AUIPlugin.AUIRightMenu()
-	menu:Show(event.target, Lua.Bind(self.HandleMenuHide, self, event.target))
-end
-
-function ALittleDeploy.DPLUIMainMenu:HandleToolMenuClick(event)
-	local menu = AUIPlugin.AUIRightMenu()
-	menu:Show(event.target, Lua.Bind(self.HandleMenuHide, self, event.target))
-end
-
 function ALittleDeploy.DPLUIMainMenu:HandleHelpMenuClick(event)
 	local menu = AUIPlugin.AUIRightMenu()
 	menu:AddItem("版本检查", Lua.Bind(self._version_manager.ShowDialog, self._version_manager))

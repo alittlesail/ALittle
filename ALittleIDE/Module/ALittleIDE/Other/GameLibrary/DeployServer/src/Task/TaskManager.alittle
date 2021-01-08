@@ -10,6 +10,8 @@ protected struct TaskInfo
 {
     option primary = "task_id";
     int task_id;          			// 版本ID
+    string task_name;				// 任务名称
+    string task_desc;				// 任务描述
     Map<string, bool> web_hook;	   // web推送的项目url
     List<JobInfo> job_list;			// 任务列表
     int create_time;      			// 创建时间

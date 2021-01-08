@@ -5,91 +5,15 @@ protected class DPLUICenter : ALittle.DisplayLayout
 {
 	private ALittle.Tab _main_tab;				// 编辑区标签容器
 
-	private ALittle.Grid3 _right_edit_grid3;		// 下面全部三宫格
-	private double _quick_edit_grid3_down_size;
-
-	private DPLContentEdit	 _content_edit;	// 内容编辑管理器
-
 	public fun TCtor()
 	{
-	}
-
-    public get content_edit() : DPLContentEdit { return this._content_edit; }
-
-	////////////////////////////////////////////////////////////////////////////////////////
-
-	public fun System_SetVDragCursor(ALittle.UIEvent event) { ALittle.System_SetVDragCursor(); }
-	public fun System_SetNormalCursor(ALittle.UIEvent event) { ALittle.System_SetNormalCursor(); }
-	public fun System_SetHDragCursor(ALittle.UIEvent event) { ALittle.System_SetHDragCursor(); }
-	public fun System_SetHVDragCursor(ALittle.UIEvent event) { ALittle.System_SetHVDragCursor(); }
-
-	////////////////////////////////////////////////////////////////////////////////////////
-	// 处理面板大小拖拽
-	private fun HandleLeftEditResizeDrag(ALittle.UIButtonDragEvent event)
-	{
-		var up_size = this._right_edit_grid3.up_size;
-		up_size = up_size + event.delta_x;
-		var max_size = this._right_edit_grid3.width - this._right_edit_grid3.down_size - 50;
-		if (up_size > max_size) up_size = max_size;
-		if (up_size < 100) up_size = 100;
-		this._right_edit_grid3.up_size = up_size;
+        this._main_tab.tab_index = 1;
+        this._main_tab.DisableAllCloseButton();
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////
 	// 处理快捷点
 	public fun HandleShortcutKey()
 	{
-		// 判断ESC
-		if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_ESC])
-		{
-        }
-
-            // 判定Ctrl键是否按下
-		var ctrl = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_CTRL];
-		if (ctrl == null) return;
-            // 判断Ctrl+Z
-		var z = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_Z];
-		if (z)
-		{
-			this.HandleUndoRevoke(null);
-			return;
-		}
-            // 判断Ctrl+S
-		var s = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_S];
-		if (s)
-		{
-			this.HandleSaveCurrent(null);
-			return;
-		}
-            // 判断Ctrl+N
-		var n = A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_N];
-		if (n)
-		{
-			return;
-		}
-	}
-	// 快捷键 撤销
-	public fun HandleUndoRevoke(ALittle.UIEvent event)
-	{
-		// 如果某些对话框打开着那么就直接返回
-		var tab_child = this._content_edit.cur_tab_child;
-		if (tab_child == null) return;
-		tab_child.revoke_list.UndoRevoke();
-		tab_child.OnUndo();
-	}
-	// 快捷键 重做
-	public fun HandleDoRevoke(ALittle.UIEvent event)
-	{
-		var tab_child = this._content_edit.cur_tab_child;
-		if (tab_child == null) return;
-		tab_child.revoke_list.DoRevoke();
-		tab_child.OnRedo();
-	}
-	// 快捷键 保存
-	public fun HandleSaveCurrent(ALittle.UIEvent event)
-	{
-		var tab_child = this._content_edit.cur_tab_child;
-		if (tab_child == null) return;
-		tab_child.save = true;
 	}
 }

@@ -561,8 +561,8 @@ public class DisplayObject : UIEventDispatcher
     // 从父控件移除
     public fun RemoveFromParent()
     {
-        var parent = this._show_parent;
-        if (parent == null) parent = this._logic_parent;
+        var parent = this._logic_parent;
+        if (parent == null) parent = this._show_parent;
         if (parent == null) return;
         parent.RemoveChild(this);
     }

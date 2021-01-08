@@ -34,24 +34,7 @@ protected class DPLUIMainMenu : ALittle.Linear
     }
 
 	//////////////////////////////////////////////////////////////////////////////////////////-
-	// 处理文件菜单
-	private fun HandleFileMenuClick(ALittle.UIClickEvent event)
-	{
-		var menu = new AUIPlugin.AUIRightMenu();
-		menu.Show(event.target, bind(this.HandleMenuHide, this, event.target));
-	}
-	// 处理编辑菜单
-	private fun HandleEditMenuClick(ALittle.UIClickEvent event)
-	{
-		var menu = new AUIPlugin.AUIRightMenu();
-		menu.Show(event.target, bind(this.HandleMenuHide, this, event.target));
-	}
-	// 处理工具菜单
-	private fun HandleToolMenuClick(ALittle.UIClickEvent event)
-	{
-		var menu = new AUIPlugin.AUIRightMenu();
-		menu.Show(event.target, bind(this.HandleMenuHide, this, event.target));
-	}
+
 	// 处理版本菜单
 	private fun HandleHelpMenuClick(ALittle.UIClickEvent event)
     {

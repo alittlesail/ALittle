@@ -232,6 +232,7 @@ function ALittle.ScrollScreen:AddChild(child, index)
 	if self._scroll_content:AddChild(child, index) == false then
 		return false
 	end
+	child._logic_parent = self
 	self:AdjustScrollBar()
 	return true
 end

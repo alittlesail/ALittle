@@ -11,8 +11,8 @@ local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(-1686717773, "ALittleDeploy.TaskInfo", {
 name = "ALittleDeploy.TaskInfo", ns_name = "ALittleDeploy", rl_name = "TaskInfo", hash_code = -1686717773,
-name_list = {"task_id","web_hook","job_list","create_time"},
-type_list = {"int","Map<string,bool>","List<ALittleDeploy.JobInfo>","int"},
+name_list = {"task_id","task_name","task_desc","web_hook","job_list","create_time"},
+type_list = {"int","string","string","Map<string,bool>","List<ALittleDeploy.JobInfo>","int"},
 option_map = {primary="task_id"}
 })
 ALittle.RegStruct(1037962987, "ALittleDeploy.JobInfo", {

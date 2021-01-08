@@ -74,7 +74,6 @@ private:
 		ALittleTextInput::Bind(s_alittle_script.GetLuaState());
 		ALittleTextEdit::Bind(s_alittle_script.GetLuaState());
 		ALittleTextureBind::Bind(s_alittle_script.GetLuaState());
-		/// ALittleSurface::Bind(s_alittle_script.GetLuaState());
 		s_alittle_system.Bind(s_alittle_script.GetLuaState());
 		s_alittle_render.Bind(s_alittle_script.GetLuaState());
 		s_alittle_audio.Bind(s_alittle_script.GetLuaState());

@@ -10,6 +10,7 @@
 #include "Carp/carp_file_bind.hpp"
 #include "Carp/carp_string_bind.hpp"
 #include "Carp/carp_task_consumer_bind.hpp"
+#include "Carp/carp_lua_worker.hpp"
 
 extern "C" {
 #include "lualib/ajson/lua_ajson.h"
@@ -38,6 +39,8 @@ void ScriptSystem::Setup()
 	CarpBitBind::Bind(m_L);
 	CarpRWopsBind::Bind(m_L);
 	CarpTaskConsumerBind::Bind(m_L);
+	CarpSurfaceBind::Bind(m_L);
+	CarpLuaWorker::Bind(m_L);
 }
 
 void ScriptSystem::Shutdown()

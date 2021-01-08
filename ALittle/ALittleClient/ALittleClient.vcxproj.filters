@@ -279,5 +279,8 @@
     <ClInclude Include="alittle_verteximage.hpp">
       <Filter>ALittle</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_lua_worker.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

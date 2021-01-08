@@ -456,6 +456,40 @@ ABnfGuessError ALittleScriptMethodNameDecReference::GuessTypes(std::vector<ABnfG
                     }
                 }
             }
+            else if (info->proto == "Worker")
+            {
+                auto class_name_element = index->FindALittleNameDec(ABnfElementType::CLASS_NAME, element->GetFile(), u8"ALittle", u8"IWorkerCommon", true);
+                if (!std::dynamic_pointer_cast<ALittleScriptClassNameDecElement>(class_name_element)) return ABnfGuessError(error_element, u8"语言框架中找不到ALittle.IWorkerCommon");
+                auto class_name_dec = std::dynamic_pointer_cast<ALittleScriptClassNameDecElement>(class_name_element);
+                ABnfGuessPtr class_name_dec_guess;
+                error = class_name_dec->GuessType(class_name_dec_guess);
+                if (error) return error;
+                info->param_list.push_back(class_name_dec_guess);
+                info->param_nullable_list.push_back(false);
+                info->param_name_list.emplace_back("sender");
+                info->param_list.push_back(guess);
+                info->param_nullable_list.push_back(false);
+                info->param_name_list.emplace_back("param");
+
+                auto return_dec = global_method_dec->GetMethodReturnDec();
+                if (return_dec != nullptr)
+                {
+                    const auto& return_one_list = return_dec->GetMethodReturnOneDecList();
+                    if (!return_one_list.empty())
+                    {
+                        auto return_one_all_type = return_one_list[0]->GetAllType();
+                        if (return_one_all_type == nullptr)
+                            return ABnfGuessError(error_element, u8"带" + info->proto + u8"注解的函数返回值必须是struct");
+                        ABnfGuessPtr return_guess;
+                        error = return_one_all_type->GuessType(return_guess);
+                        if (error) return error;
+                        if (!std::dynamic_pointer_cast<ALittleScriptGuessStruct>(return_guess))
+                            return ABnfGuessError(error_element, u8"带" + info->proto + u8"注解的函数返回值必须是struct");
+                        info->return_list.push_back(ALittleScriptStatic::Inst().sStringGuess);
+                        info->return_list.push_back(return_guess);
+                    }
+                }
+            }
             else
             {
                 return ABnfGuessError(error_element, u8"未知的注解类型:" + info->proto);

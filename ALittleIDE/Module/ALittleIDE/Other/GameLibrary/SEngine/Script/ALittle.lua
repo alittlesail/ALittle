@@ -129,6 +129,4 @@ function _G.__ALITTLEAPI_HandleConsoleCmd(cmd)
 	ALittle.ExecuteCommand(cmd)
 end
 
-_G.__ALITTLEAPI_WorkerMessage = ALittle.__ALITTLEAPI_WorkerMessage
-_G.__ALITTLEAPI_WorkerUpdate = ALittle.__ALITTLEAPI_WorkerUpdate
 end

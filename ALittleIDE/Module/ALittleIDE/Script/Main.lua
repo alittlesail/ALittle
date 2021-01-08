@@ -33,7 +33,6 @@ ALittleIDE.g_IDEConfig = nil
 ALittleIDE.g_IDEServerConfig = nil
 ALittleIDE.g_MainLayer = nil
 ALittleIDE.g_DialogLayer = nil
-ALittleIDE.g_Worker = nil
 function ALittleIDE.__Module_Setup(layer_group, control, module_base_path, script_base_path)
 	ALittleIDE.g_Control = control
 	ALittleIDE.g_LayerGroup = layer_group
@@ -53,7 +52,7 @@ function ALittleIDE.__Module_Setup(layer_group, control, module_base_path, scrip
 	ALittleIDE.g_DialogLayer.width_type = 4
 	ALittleIDE.g_DialogLayer.height_type = 4
 	ALittleIDE.g_LayerGroup:AddChild(ALittleIDE.g_DialogLayer)
-	RequireFromPaths(ALittleIDE.g_ScriptBasePath, "Data/", {"IDEUIManager.alittle", "IDEProject.alittle", "IDEEnum.alittle"})
+	RequireFromPaths(script_base_path, "Data/", {"IDEUIManager.alittle", "IDEProject.alittle", "IDEEnum.alittle"})
 	RequireFromPaths(script_base_path, "Dialog/", {"IDEVersionList.alittle", "IDEProjectSettingDialog.alittle", "IDEProjectOpenDialog.alittle"
 		, "IDEProjectNewDialog.alittle", "IDEProjectFindFileDialog.alittle", "IDEProjectExportDialog.alittle"
 		, "IDEImageSelectDialog.alittle", "IDEExport.alittle"})
@@ -82,8 +81,8 @@ function ALittleIDE.__Module_Setup(layer_group, control, module_base_path, scrip
 		, "UIEdit/Setting/DropDownS.alittle", "UIEdit/Setting/DisplayViewS.alittle", "UIEdit/Setting/TextRadioButtonS.alittle"
 		, "UIEdit/Setting/TextInputS.alittle", "UIEdit/Setting/ScrollBarS.alittle", "UIEdit/Setting/ImageInputS.alittle"
 		, "UIEdit/Tree/IDEUITreeLogic.alittle", "UIEdit/Tree/IDEUITreeItem.alittle", "UIEdit/Tree/IDEUITree.alittle"})
+	Require(script_base_path, "Test")
 	ALittleIDE.g_IDECenter:Setup()
-	ALittleIDE.g_Worker = ALittle.Worker(script_base_path .. "Test")
 end
 ALittleIDE.__Module_Setup = Lua.CoWrap(ALittleIDE.__Module_Setup)
 
@@ -93,9 +92,6 @@ function ALittleIDE.__Module_Shutdown()
 	ALittleIDE.g_IDEImageSelectDialog:Shutdown()
 	ALittleIDE.g_IDEImageManagerDialog:Shutdown()
 	ALittleIDE.g_IDEEditImageDialog:Shutdown()
-	if ALittleIDE.g_Worker ~= nil then
-		ALittleIDE.g_Worker:Stop()
-	end
 end
 
 function ALittleIDE.__Module_GetInfo(control, module_base_path, script_base_path)

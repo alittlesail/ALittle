@@ -191,6 +191,37 @@ ABnfGuessError ALittleScriptGlobalMethodDecReference::CheckProtoError()
                 return ABnfGuessError(element, u8"带" + text + u8"的全局函数，当没有返回值时，不能使用await，可以使用async");
         }
     }
+    else if (text == "Worker")
+    {
+        if (return_guess_list.size() > 1) return ABnfGuessError(element, u8"带" + text + u8"的全局函数，最多只能有一个返回值");
+        // 第一个参数
+        if (param_guess_list[0]->GetValue() != "ALittle.IWorkerCommon")
+            return ABnfGuessError(param_one_dec_list[0], u8"带" + text + u8"的全局函数，第一个参数必须是ALittle.IWorkerCommon");
+
+        std::unordered_set<std::string> temp;
+        error = CheckMsgStruct(param_one_dec_list[1], param_guess_list[1], temp);
+        if (error) return error;
+
+        // 返回值
+        if (!return_guess_list.empty())
+        {
+            if (co_text != "await")
+                return ABnfGuessError(element, u8"带" + text + u8"的全局函数，并且有返回值，必须使用await修饰");
+
+            if (!std::dynamic_pointer_cast<ALittleScriptGuessStruct>(return_guess_list[0]))
+                return ABnfGuessError(element, u8"带" + text + u8"的全局函数，返回值必须是struct");
+
+            std::unordered_set<std::string> temp;
+            error = CheckMsgStruct(return_list[0], return_guess_list[0], temp);
+            if (error) return error;
+        }
+        else
+        {
+            // 如果没有返回值，那么不能使用await，只能使用async，或者不使用
+            if (co_text == "await")
+                return ABnfGuessError(element, u8"带" + text + u8"的全局函数，当没有返回值时，不能使用await，可以使用async");
+        }
+    }
     return nullptr;
 }
 

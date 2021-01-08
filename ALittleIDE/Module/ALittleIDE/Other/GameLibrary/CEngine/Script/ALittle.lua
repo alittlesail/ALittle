@@ -228,8 +228,6 @@ _G.__ALITTLEAPI_ConnectSucceed = ALittle.__ALITTLEAPI_ConnectSucceed
 _G.__ALITTLEAPI_Disconnected = ALittle.__ALITTLEAPI_Disconnected
 _G.__ALITTLEAPI_ConnectFailed = ALittle.__ALITTLEAPI_ConnectFailed
 _G.__ALITTLEAPI_Message = ALittle.__ALITTLEAPI_Message
-_G.__ALITTLEAPI_WorkerMessage = ALittle.__ALITTLEAPI_WorkerMessage
-_G.__ALITTLEAPI_WorkerUpdate = ALittle.__ALITTLEAPI_WorkerUpdate
 function _G.__ALITTLEAPI_AudioChunkStoppedEvent(id)
 	A_AudioSystem:HandleAudioChunkStoppedEvent(id)
 end

@@ -2583,6 +2583,13 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GeneratePropertyValue(std::sh
                     else
                         content = "await ALittle.IMsgCommon.InvokeRPC";
                 }
+                else if (pre_type_functor->proto == "Worker")
+                {
+                    if (pre_type_functor->return_list.size() == 0)
+                        content = "await ALittle.IWorkerCommon.Invoke";
+                    else
+                        content = "await ALittle.IWorkerCommon.InvokeRPC";
+                }
                 m_has_call_await = true;
 
                 if (pre_type_functor->param_list.size() != 2)
@@ -2593,7 +2600,7 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GeneratePropertyValue(std::sh
                 int msg_id = ALittleScriptUtility::StructHash(param_struct);
 
                 std::vector<std::string> param_list;
-                if (pre_type_functor->proto == "Msg")
+                if (pre_type_functor->proto == "Msg" || pre_type_functor->proto == "Worker")
                 {
                     param_list.push_back(std::to_string(msg_id));
                     // 注册协议
@@ -4420,6 +4427,32 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateGlobalMethod(const st
 
                 content += pre_tab
                     + "ALittle.RegMsgRpcCallback(" + std::to_string(ALittleScriptUtility::StructHash(guess_param_struct))
+                    + ", " + m_namespace_name + "." + method_name + ", " + std::to_string(ALittleScriptUtility::StructHash(guess_return_struct))
+                    + ")\n";
+
+                error = GenerateReflectStructInfo(guess_return_struct);
+                if (error) return error;
+            }
+        }
+        else if (proto_type == "Worker")
+        {
+            if (return_list.size() > 1) return ABnfGuessError(nullptr, u8"带" + proto_type + u8"的全局函数，最多只有一个返回值");
+            error = GenerateReflectStructInfo(guess_param_struct);
+            if (error) return error;
+
+            if (guess_return == nullptr)
+            {
+                content += pre_tab
+                    + "ALittle.RegWorkerCallback(" + std::to_string(ALittleScriptUtility::StructHash(guess_param_struct))
+                    + ", " + m_namespace_name + "." + method_name + ")\n";
+            }
+            else
+            {
+                auto guess_return_struct = std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess_return);
+                if (!guess_return_struct) return ABnfGuessError(nullptr, u8"带" + proto_type + u8"的全局函数，返回值必须是struct");
+
+                content += pre_tab
+                    + "ALittle.RegWorkerRpcCallback(" + std::to_string(ALittleScriptUtility::StructHash(guess_param_struct))
                     + ", " + m_namespace_name + "." + method_name + ", " + std::to_string(ALittleScriptUtility::StructHash(guess_return_struct))
                     + ")\n";
 

@@ -293,9 +293,6 @@ public var __ALITTLEAPI_Disconnected = ALittle.__ALITTLEAPI_Disconnected;
 public var __ALITTLEAPI_ConnectFailed = ALittle.__ALITTLEAPI_ConnectFailed;
 public var __ALITTLEAPI_Message = ALittle.__ALITTLEAPI_Message;
 
-public var __ALITTLEAPI_WorkerMessage = ALittle.__ALITTLEAPI_WorkerMessage;
-public var __ALITTLEAPI_WorkerUpdate = ALittle.__ALITTLEAPI_WorkerUpdate;
-
 //////////////////////////////////////////////////////////////////////////////////////
 public static __ALITTLEAPI_AudioChunkStoppedEvent(int id)
 {

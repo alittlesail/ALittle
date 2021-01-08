@@ -88,7 +88,7 @@ AccessModifier = <public>@ | <private>@ | <protected>@;
 CoroutineModifier = <async>@ | <await>@;
 
 // 协议修饰符
-ProtocolModifier = <Http> | <HttpDownload> | <HttpUpload> | <Msg>;
+ProtocolModifier = <Http> | <HttpDownload> | <HttpUpload> | <Msg> | <Worker>;
 
 // 命令修饰符，用于开发人员指令执行函数
 CommandBodyDec = '('@ Text ')';

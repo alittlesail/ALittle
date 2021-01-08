@@ -158,6 +158,3 @@ public static __ALITTLEAPI_HandleConsoleCmd(string cmd)
 {
     ALittle.ExecuteCommand(cmd);
 }
-
-public var __ALITTLEAPI_WorkerMessage = ALittle.__ALITTLEAPI_WorkerMessage;
-public var __ALITTLEAPI_WorkerUpdate = ALittle.__ALITTLEAPI_WorkerUpdate;

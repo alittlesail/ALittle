@@ -1,0 +1,54 @@
+
+namespace ALittleDeploy;
+
+protected struct JobInfo
+{
+    int job_type;		// 任务类型
+}
+
+protected struct TaskInfo
+{
+    option primary = "task_id";
+    int task_id;          			// 版本ID
+    Map<string, bool> web_hook;	   // web推送的项目url
+    List<JobInfo> job_list;			// 任务列表
+    int create_time;      			// 创建时间
+}
+
+public class TaskManager
+{
+    private int _max_task_id = 0;
+    private int _max_job_id = 0;
+
+    private Map<int, Task> _task_map = new Map<int, Task>();
+
+    public await fun Setup()
+    {
+        var error = A_MysqlSystem.CreateIfNotExit{TaskInfo}();
+        assert(error == null, error);
+        error = A_MysqlSystem.CreateIfNotExit{JobInfo}();
+        assert(error == null, error);
+
+        var task_error, task_list = A_MysqlSystem.SelectListFromByMap(new TaskInfo());
+        assert(task_error == null, task_error);
+
+        // 开始构建任务列表
+        for (var index, task_info in task_list)
+            this._task_map[task_info.task_id] = new Task(task_info);
+    }
+
+    public fun GetTask(int task_id) : Task { return this._task_map[task_id]; }
+
+    public fun StartTaskByWebHook(string url)
+    {
+        for (var index, task in this._task_map)
+            task.StartByWebHook(url);
+    }
+
+    public fun Shutdown()
+    {
+
+    }
+}
+
+public var g_TaskManager = new TaskManager();

@@ -368,10 +368,11 @@ public class MysqlSystem
             query.value = value;
         var error = this.ExecuteStatement(query, thread_id);
         if (error != null) return error, null;
-        if (query.count == 0) return null, new List<any>();
+        var query_count = query.count;
+        if (query_count == 0) return null, new List<any>();
 
         var list = new List<any>();
-        for (var row = 1; row <= query.count; 1)
+        for (var row = 1; row <= query_count; 1)
         {
             var map = new Map<string, any>();
             for (var i, name in info.name_list)
@@ -489,6 +490,7 @@ public class MysqlSystem
         return this.InsertIntoByReflect(reflect<T>, cast<Map<string, any>>(value), table_name, thread_id);
     }
     
+    // info 表的反射信息，map是当前要写入的数据信息，key是主键的字段名，key_value是主键的值
     public await fun UpdateOneByReflect(ALittle.StructInfo info, Map<string, any> map, string key, any key_value, [Nullable] int thread_id) : string
     {
         if (key_value == null) return "key_value == null";
@@ -562,7 +564,8 @@ public class MysqlSystem
         query.value = key_value;
         return this.ExecuteStatement(query, thread_id);
     }
-    
+
+    // value是当前要写入的数据信息，key是主键的字段名，key_value是主键的值
     public await fun UpdateOne<T:struct>(T value, string key, any key_value, [Nullable] int thread_id) : string
     {
         return this.UpdateOneByReflect(reflect<T>, cast<Map<string, any>>(value), key, key_value, thread_id);

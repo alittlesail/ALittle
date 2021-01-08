@@ -1,0 +1,26 @@
+
+namespace ALittleDeploy;
+
+public struct WebHookRepository
+{
+    string html_url;
+}
+
+struct QWebHook
+{
+    WebHookRepository repository;
+}
+
+struct AWebHook
+{
+
+}
+
+
+[Http]
+public await static HandleQWebHook(ALittle.IHttpReceiver sender, QWebHook msg) : AWebHook
+{
+    ALittle.Log(ALittle.String_JsonEncode(msg));
+    g_TaskManager.StartTaskByWebHook(msg.repository.html_url);
+    return new AWebHook();
+}

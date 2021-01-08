@@ -423,13 +423,14 @@ function ALittle.MysqlSystem:SelectListFromByMapByReflect(info, value_map, threa
 	if error ~= nil then
 		return error, nil
 	end
-	if query.count == 0 then
+	local query_count = query.count
+	if query_count == 0 then
 		return nil, {}
 	end
 	local list = {}
 	local row = 1
 	while true do
-		if not(row <= query.count) then break end
+		if not(row <= query_count) then break end
 		local map = {}
 		for i, name in ___ipairs(info.name_list) do
 			local type = __TypeMap[info.type_list[i]]

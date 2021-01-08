@@ -1,0 +1,39 @@
+
+namespace ALittleDeploy;
+
+protected class Task
+{
+    private TaskInfo _info;
+
+    private List<Job> _job_list = new List<Job>();
+
+    public ctor(TaskInfo info)
+    {
+        this._info = info;
+
+        // 构建job
+        for (var index, job_info in info.job_list)
+        {
+            var job = CreateJob(job_info);
+            this._job_list[index] = job;
+        }
+    }
+
+    public fun Start()
+    {
+    }
+
+    public fun StartByWebHook(string url)
+    {
+        for (var key, open in this._info.web_hook)
+        {
+            if (key == url && open)
+            {
+                this.Start();
+                break;
+            }
+        }
+    }
+
+    public get info() : TaskInfo { return this._info; }
+}

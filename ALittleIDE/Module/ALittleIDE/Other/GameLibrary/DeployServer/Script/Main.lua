@@ -14,7 +14,8 @@ function DeployServer.__Module_Setup(sengine_path, module_path, config_path)
 	Require(sengine_path, "Script/WebAccount/WebAccount")
 	Require(sengine_path, "Script/WebAccount/WebAccountManager")
 	Require(sengine_path, "Script/WebAccount/WebOPSManager")
-	Require(module_path, "Script/DeployManager")
+	RequireFromPaths(module_path, "Script/Utility/", {"WebHookManager.alittle", "SettingManager.alittle", "KeyValueManager.alittle"})
+	RequireFromPaths(module_path, "Script/Task/", {"TaskManager.alittle", "Task.alittle", "Job.alittle"})
 	math.randomseed(os.time())
 	DeployServer.g_ConfigSystem = ALittle.CreateJsonConfig(config_path, true)
 	local wan_ip = DeployServer.g_ConfigSystem:GetConfig("wan_ip", "127.0.0.1")
@@ -25,11 +26,14 @@ function DeployServer.__Module_Setup(sengine_path, module_path, config_path)
 	__CPPAPI_ServerSchedule:CreateHttpServer(yun_ip, wan_ip, 1800 + port_offset, false)
 	__CPPAPI_ServerSchedule:CreateClientServer(yun_ip, wan_ip, 1801 + port_offset, false)
 	A_WebAccountManager:Setup()
-	DeployServer.g_DeployManager:Setup()
+	g_KeyValueManager:Setup()
+	g_TaskManager:Setup()
 end
 DeployServer.__Module_Setup = Lua.CoWrap(DeployServer.__Module_Setup)
 
 function DeployServer.__Module_Shutdown()
+	g_TaskManager:Shutdown()
+	g_KeyValueManager:Shutdown()
 end
 
 end

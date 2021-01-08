@@ -1,0 +1,19 @@
+
+namespace ALittleDeploy;
+
+protected class Job
+{
+    private JobInfo _info;
+
+    public ctor(JobInfo info)
+    {
+        this._info = info;
+    }
+
+    public get info() : JobInfo { return this._info; }
+}
+
+protected static CreateJob(JobInfo info) : Job
+{
+    return null;
+}

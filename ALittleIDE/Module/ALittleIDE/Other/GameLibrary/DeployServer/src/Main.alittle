@@ -11,7 +11,8 @@ public async static __Module_Setup(string sengine_path, string module_path, stri
     alittle.Require(sengine_path, "Script/WebAccount/WebAccountManager");
     alittle.Require(sengine_path, "Script/WebAccount/WebOPSManager");
     
-    alittle.Require(module_path, "Script/DeployManager");
+    alittle.RequireFromPaths(module_path, "Script/Utility/", paths("src/Utility"));
+    alittle.RequireFromPaths(module_path, "Script/Task/", paths("src/Task"));
 
     lua.math.randomseed(lua.os.time());
     g_ConfigSystem = ALittle.CreateJsonConfig(config_path, true);
@@ -33,10 +34,13 @@ public async static __Module_Setup(string sengine_path, string module_path, stri
     __CPPAPI_ServerSchedule.CreateClientServer(yun_ip, wan_ip, ALittle.RoutePort.RT_DEPLOY_CLIENT + port_offset, false);
     
     A_WebAccountManager.Setup();
-    g_DeployManager.Setup();
+    g_KeyValueManager.Setup();
+    g_TaskManager.Setup();
 }
 
 // 模块结束函数
 public static __Module_Shutdown()
 {
+    g_TaskManager.Shutdown();
+    g_KeyValueManager.Shutdown();
 }

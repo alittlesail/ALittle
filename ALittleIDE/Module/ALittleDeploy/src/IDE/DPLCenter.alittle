@@ -1,0 +1,81 @@
+
+namespace ALittleDeploy;
+
+class DPLCenter
+{
+	private DPLUIAccount _account;
+	private DPLUIMainMenu _main_menu;
+	private DPLUICenter _center;
+
+	public await fun Setup()
+	{
+		// 创建主界面
+		g_Control.CreateControl{ALittle.DisplayObject}("dpl_main_scene", this, g_MainLayer);
+		// 初始化组合键
+		A_UISystem.keydown_callback = bind(this.HandleShortcutKey, this);
+        // 退出处理
+        A_UISystem.quit_callback = bind(this.HandleQuit, this);
+	}
+
+	public fun Shutdown()
+	{
+		if (this._account != null) this._account.Shutdown();
+		if (this._main_menu != null) this._main_menu.Shutdown();
+	}
+
+	public get center() : DPLUICenter { return this._center; }
+
+	public async fun RefreshProject()
+	{
+		// 检查是否都保存了
+		if (!this._center.content_edit.IsSaveAll())
+		{
+			var result = g_AUITool.SaveNotice("提示", "是否保存当前项目?");
+			if (result == AUIPlugin.AUIToolOption.YES)
+				this._center.content_edit.SaveAllTab();
+		}
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////
+	// 处理快捷点
+	public fun HandleShortcutKey(int mod, int sym, int scancode)
+	{
+		// 判断F5，运行当前项目快捷键
+		if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_F5])
+		{
+			return;
+		}
+    
+        if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_F6])
+        {
+            return;
+        }
+
+        if (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_F10])
+        {
+            return;
+        }
+
+		if (this._center != null)
+			this._center.HandleShortcutKey();
+	}
+
+    // 处理退出
+    public fun HandleQuit() : bool
+    {
+		// 检查是否都保存了
+		if (this._center.content_edit.IsSaveAll()) return true;
+        this.HandleQuitImpl();
+        return false;
+    }
+
+    private async fun HandleQuitImpl()
+    {
+        var result = g_AUITool.SaveNotice("提示", "是否保存当前项目?");
+        if (result == AUIPlugin.AUIToolOption.YES)
+            this._center.content_edit.SaveAllTab();
+        ALittle.System_Exit();
+    }
+}
+
+protected var g_DPLCenter = new DPLCenter();

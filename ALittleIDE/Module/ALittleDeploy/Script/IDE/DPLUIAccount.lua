@@ -1,7 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.ALittleIDE == nil then _G.ALittleIDE = {} end
-local ALittleIDE = ALittleIDE
+if _G.ALittleDeploy == nil then _G.ALittleDeploy = {} end
+local ALittleDeploy = ALittleDeploy
 local Lua = Lua
 local ALittle = ALittle
 local ___pairs = pairs
@@ -33,40 +33,40 @@ type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
 
-ALittleIDE.g_IDEWebLoginManager = nil
+ALittleDeploy.g_DPLWebLoginManager = nil
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-ALittleIDE.IDEUIAccount = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEUIAccount")
+ALittleDeploy.DPLUIAccount = Lua.Class(ALittle.DisplayLayout, "ALittleDeploy.DPLUIAccount")
 
-function ALittleIDE.IDEUIAccount:TCtor()
-	local logingate_ip = ALittleIDE.g_IDEServerConfig:GetConfig("logingate_ip", "139.159.176.119")
-	local logingate_port = ALittleIDE.g_IDEServerConfig:GetConfig("logingate_port", 1000)
-	ALittleIDE.g_IDEWebLoginManager = AUIPlugin.AUIWebLoginManager()
-	ALittleIDE.g_IDEWebLoginManager:AddEventListener(___all_struct[-262794256], self, self.HandleAccountInReconnect)
-	ALittleIDE.g_IDEWebLoginManager:AddEventListener(___all_struct[-1848509213], self, self.HandleAccountInLogout)
-	ALittleIDE.g_IDEWebLoginManager:AddEventListener(___all_struct[-420010531], self, self.HandleAccountInLogin)
-	ALittleIDE.g_IDEWebLoginManager:Setup(logingate_ip, logingate_port, true, ALittleIDE.g_IDEConfig)
+function ALittleDeploy.DPLUIAccount:TCtor()
+	local client_ip = ALittleDeploy.g_DPLServerConfig:GetConfig("client_ip", "139.159.176.119")
+	local client_port = ALittleDeploy.g_DPLServerConfig:GetConfig("client_port", 1800)
+	ALittleDeploy.g_DPLWebLoginManager = AUIPlugin.AUIWebLoginManager()
+	ALittleDeploy.g_DPLWebLoginManager:AddEventListener(___all_struct[-262794256], self, self.HandleAccountInReconnect)
+	ALittleDeploy.g_DPLWebLoginManager:AddEventListener(___all_struct[-1848509213], self, self.HandleAccountInLogout)
+	ALittleDeploy.g_DPLWebLoginManager:AddEventListener(___all_struct[-420010531], self, self.HandleAccountInLogin)
+	ALittleDeploy.g_DPLWebLoginManager:Setup(client_ip, client_port, false, ALittleDeploy.g_DPLConfig)
 end
 
-function ALittleIDE.IDEUIAccount:Shutdown()
-	ALittleIDE.g_IDEWebLoginManager:Shutdown()
+function ALittleDeploy.DPLUIAccount:Shutdown()
+	ALittleDeploy.g_DPLWebLoginManager:Shutdown()
 end
 
-function ALittleIDE.IDEUIAccount:HandleAccountLoginLB(event)
-	ALittleIDE.g_IDEWebLoginManager:ShowLoginDialog()
+function ALittleDeploy.DPLUIAccount:HandleAccountLoginLB(event)
+	ALittleDeploy.g_DPLWebLoginManager:ShowLoginDialog()
 end
 
-function ALittleIDE.IDEUIAccount:HandleAccountInLogin(event)
+function ALittleDeploy.DPLUIAccount:HandleAccountInLogin(event)
 	self._account_login.visible = false
 	self._account_dropdown.visible = true
 	local data_list = {}
 	data_list[1] = "修改密码"
 	data_list[2] = "登出"
 	self._account_dropdown.data_list = data_list
-	self._account_dropdown.text = ALittleIDE.g_IDEWebLoginManager.account_name
+	self._account_dropdown.text = ALittleDeploy.g_DPLWebLoginManager.account_name
 	self._account_icon.x_value = self._account_dropdown.x_value + self._account_dropdown.width + 5
 end
 
-function ALittleIDE.IDEUIAccount:HandleAccountInLogout(event)
+function ALittleDeploy.DPLUIAccount:HandleAccountInLogout(event)
 	self._account_login.text = "请登录"
 	self._account_login.underline = true
 	self._account_login.visible = true
@@ -75,7 +75,7 @@ function ALittleIDE.IDEUIAccount:HandleAccountInLogout(event)
 	self._account_icon.x_value = self._account_login.x_value + self._account_login.width + 5
 end
 
-function ALittleIDE.IDEUIAccount:HandleAccountInReconnect(event)
+function ALittleDeploy.DPLUIAccount:HandleAccountInReconnect(event)
 	self._account_login.text = "正在重连"
 	self._account_login.underline = false
 	self._account_login.visible = true
@@ -84,13 +84,13 @@ function ALittleIDE.IDEUIAccount:HandleAccountInReconnect(event)
 	self._account_icon.x_value = self._account_login.x_value + self._account_login.width + 5
 end
 
-function ALittleIDE.IDEUIAccount:HandleAccountDropdownChange(event)
+function ALittleDeploy.DPLUIAccount:HandleAccountDropdownChange(event)
 	if event.target.text == "登出" then
-		ALittleIDE.g_IDEWebLoginManager:Logout()
+		ALittleDeploy.g_DPLWebLoginManager:Logout()
 	elseif event.target.text == "修改密码" then
-		ALittleIDE.g_IDEWebLoginManager:ShowPasswordDialog()
+		ALittleDeploy.g_DPLWebLoginManager:ShowPasswordDialog()
 	end
-	self._account_dropdown.text = ALittleIDE.g_IDEWebLoginManager.account_name
+	self._account_dropdown.text = ALittleDeploy.g_DPLWebLoginManager.account_name
 end
 
 end

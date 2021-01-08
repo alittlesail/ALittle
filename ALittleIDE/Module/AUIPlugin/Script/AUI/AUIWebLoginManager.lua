@@ -96,9 +96,10 @@ option_map = {}
 assert(ALittle.EventDispatcher, " extends class:ALittle.EventDispatcher is nil")
 AUIPlugin.AUIWebLoginManager = Lua.Class(ALittle.EventDispatcher, "AUIPlugin.AUIWebLoginManager")
 
-function AUIPlugin.AUIWebLoginManager:Setup(ip, port, config)
+function AUIPlugin.AUIWebLoginManager:Setup(ip, port, is_logingate, config)
 	self._logingate_ip = ip
 	self._logingate_port = port
+	self._is_logingate = is_logingate
 	self._config = config
 	self._session_id = ""
 	self._account_info = {}
@@ -134,26 +135,32 @@ function AUIPlugin.AUIWebLoginManager:Shutdown()
 end
 
 function AUIPlugin.AUIWebLoginManager:Connect()
-	local param = {}
-	param.route_type = 3
-	local client = ALittle.CreateHttpSender(self._logingate_ip, self._logingate_port)
-	local error, result = ALittle.IHttpSender.Invoke("GatewayServer.QRouteInfo", client, param)
-	if error ~= nil then
-		ALittle.Log(error)
-		self._msg_client = nil
-		self:OnConnectFailed()
-		A_LoopSystem:AddTimer(5000, Lua.Bind(self.Connect, self))
-		return
-	end
-	if result.client_ip == nil or result.client_ip == "" or result.client_port == nil then
-		self._msg_client = nil
-		self:OnConnectFailed()
-		A_LoopSystem:AddTimer(5000, Lua.Bind(self.Connect, self))
-		return
+	local client_ip = self._logingate_ip
+	local client_port = self._logingate_port
+	if self._is_logingate then
+		local param = {}
+		param.route_type = 3
+		local client = ALittle.CreateHttpSender(self._logingate_ip, self._logingate_port)
+		local error, result = ALittle.IHttpSender.Invoke("GatewayServer.QRouteInfo", client, param)
+		if error ~= nil then
+			ALittle.Log(error)
+			self._msg_client = nil
+			self:OnConnectFailed()
+			A_LoopSystem:AddTimer(5000, Lua.Bind(self.Connect, self))
+			return
+		end
+		if result.client_ip == nil or result.client_ip == "" or result.client_port == nil then
+			self._msg_client = nil
+			self:OnConnectFailed()
+			A_LoopSystem:AddTimer(5000, Lua.Bind(self.Connect, self))
+			return
+		end
+		client_ip = result.client_ip
+		client_port = result.client_port
 	end
 	self._msg_client = ALittle.CreateMsgSender(60, true, Lua.Bind(self.OnDisconnected, self))
 	self._msg_client._user_data = self
-	error = self._msg_client:Connect(result.client_ip, result.client_port)
+	local error = self._msg_client:Connect(client_ip, client_port)
 	if error ~= nil then
 		self._msg_client = nil
 		self:OnConnectFailed()

@@ -18,6 +18,7 @@ public enum RouteType
     RT_FILE = 6;        // 文件服务器
     RT_GAME = 7;        // 游戏服务器
     RT_WEB = 8;		 // 普通的文件下载服务器
+    RT_DEPLOY = 9;	  // 部署服务器
 }
 
 // 路由端口
@@ -39,7 +40,10 @@ public enum RoutePort
     RT_GAME_CLIENT_BEGIN = 1500;      // 游戏服务器起始端口
     RT_DATA_BEGIN = 1600;      // 数据服务器起始端口
 
-    RT_WEB_HTTP = 1500;		// 普通的文件下载服务器
+    RT_WEB_HTTP = 1700;		// 普通的文件下载服务器
+
+    RT_DEPLOY_HTTP = 1800;     // 部署http端口
+    RT_DEPLOY_CLIENT = 1801;   // 部署客户端端口
 }
 
 // 获取路由名称

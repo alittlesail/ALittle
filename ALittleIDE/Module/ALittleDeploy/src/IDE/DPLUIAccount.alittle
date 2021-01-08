@@ -1,9 +1,9 @@
 
-namespace ALittleIDE;
+namespace ALittleDeploy;
 
-protected var g_IDEWebLoginManager:AUIPlugin.AUIWebLoginManager;
+protected var g_DPLWebLoginManager:AUIPlugin.AUIWebLoginManager;
 
-protected class IDEUIAccount : ALittle.DisplayLayout
+protected class DPLUIAccount : ALittle.DisplayLayout
 {
 	// 账号登录相关
 	private ALittle.Text _account_login;
@@ -13,26 +13,26 @@ protected class IDEUIAccount : ALittle.DisplayLayout
 	public fun TCtor()
 	{
 		// 初始化登录
-		var logingate_ip = g_IDEServerConfig.GetConfig("logingate_ip", "139.159.176.119");
-		var logingate_port = g_IDEServerConfig.GetConfig("logingate_port", 1000);
+		var client_ip = g_DPLServerConfig.GetConfig("client_ip", "139.159.176.119");
+		var client_port = g_DPLServerConfig.GetConfig("client_port", 1800);
 		
-		g_IDEWebLoginManager = new AUIPlugin.AUIWebLoginManager();
-		g_IDEWebLoginManager.AddEventListener(this, this.HandleAccountInReconnect);
-		g_IDEWebLoginManager.AddEventListener(this, this.HandleAccountInLogout);
-		g_IDEWebLoginManager.AddEventListener(this, this.HandleAccountInLogin);
-		g_IDEWebLoginManager.Setup(logingate_ip, logingate_port, true, g_IDEConfig);
+		g_DPLWebLoginManager = new AUIPlugin.AUIWebLoginManager();
+		g_DPLWebLoginManager.AddEventListener(this, this.HandleAccountInReconnect);
+		g_DPLWebLoginManager.AddEventListener(this, this.HandleAccountInLogout);
+		g_DPLWebLoginManager.AddEventListener(this, this.HandleAccountInLogin);
+		g_DPLWebLoginManager.Setup(client_ip, client_port, false, g_DPLConfig);
 	}
 	
 	public fun Shutdown()
 	{
-		g_IDEWebLoginManager.Shutdown();
+		g_DPLWebLoginManager.Shutdown();
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////
 	// 处理账号登录
 	private fun HandleAccountLoginLB(ALittle.UILButtonDownEvent event)
 	{
-		g_IDEWebLoginManager.ShowLoginDialog();
+		g_DPLWebLoginManager.ShowLoginDialog();
 	}
 	// 已登录
 	private fun HandleAccountInLogin(AUIPlugin.AUIWebAccountLoginEvent event)
@@ -44,7 +44,7 @@ protected class IDEUIAccount : ALittle.DisplayLayout
 		data_list[1] = "修改密码";
 		data_list[2] = "登出";
 		this._account_dropdown.data_list = data_list;
-		this._account_dropdown.text = g_IDEWebLoginManager.account_name;
+		this._account_dropdown.text = g_DPLWebLoginManager.account_name;
 	
 		this._account_icon.x_value = this._account_dropdown.x_value + this._account_dropdown.width + 5;
 	}
@@ -74,10 +74,10 @@ protected class IDEUIAccount : ALittle.DisplayLayout
 	private fun HandleAccountDropdownChange(ALittle.UISelectChangedEvent event)
 	{
 		if (event.target.text == "登出")
-			g_IDEWebLoginManager.Logout();
+			g_DPLWebLoginManager.Logout();
 		elseif (event.target.text == "修改密码")
-			g_IDEWebLoginManager.ShowPasswordDialog();
+			g_DPLWebLoginManager.ShowPasswordDialog();
 		
-		this._account_dropdown.text = g_IDEWebLoginManager.account_name;
+		this._account_dropdown.text = g_DPLWebLoginManager.account_name;
 	}
 }

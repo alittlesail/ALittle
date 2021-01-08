@@ -80,7 +80,6 @@ public async static __Module_Setup(ALittle.DisplayLayout layer_group, ALittle.Co
 	alittle.RequireFromPaths(script_base_path, "Data/", paths("src/Data"));	
     alittle.RequireFromPaths(script_base_path, "Dialog/", paths("src/Dialog"));
     alittle.RequireFromPaths(script_base_path, "IDE/", paths("src/IDE"));
-    alittle.Require(script_base_path, "Test");
 
     // 初始化
     g_IDECenter.Setup();

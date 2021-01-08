@@ -312,9 +312,9 @@ function ALittleIDE.IDEContentEdit:HandleMainTabRightClick(event)
 	local menu = AUIPlugin.AUIRightMenu()
 	menu:AddItem("保存", Lua.Bind(tab_child.Save, tab_child))
 	tab_child:OnTabRightMenu(menu)
-	menu:AddItem("关闭自己", Lua.Bind(ALittleIDE.g_IDECenter.center.content_edit.CloseTabWithAsk, ALittleIDE.g_IDECenter.center.content_edit, tab_child.tab_body))
-	menu:AddItem("关闭左侧", Lua.Bind(ALittleIDE.g_IDECenter.center.content_edit.CloseLeftTab, ALittleIDE.g_IDECenter.center.content_edit, tab_child.tab_body))
-	menu:AddItem("关闭右侧", Lua.Bind(ALittleIDE.g_IDECenter.center.content_edit.CloseRightTab, ALittleIDE.g_IDECenter.center.content_edit, tab_child.tab_body))
+	menu:AddItem("关闭自己", Lua.Bind(self.CloseTabWithAsk, self, tab_child.tab_body))
+	menu:AddItem("关闭左侧", Lua.Bind(self.CloseLeftTab, self, tab_child.tab_body))
+	menu:AddItem("关闭右侧", Lua.Bind(self.CloseRightTab, self, tab_child.tab_body))
 	menu:Show()
 end
 

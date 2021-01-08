@@ -9,6 +9,8 @@ public class AUIWebLoginManager : ALittle.EventDispatcher
 {
 	private string _logingate_ip;
 	private int _logingate_port;
+    private bool _is_logingate;
+
 	private string _version_ip;
 	private int _version_port;
 	private ALittle.IMsgCommonTemplate _msg_client;
@@ -41,11 +43,12 @@ public class AUIWebLoginManager : ALittle.EventDispatcher
 
 	private ALittle.IJsonConfig _config;
 
-	public fun Setup(string ip, int port, ALittle.IJsonConfig config)
+	public fun Setup(string ip, int port, bool is_logingate, ALittle.IJsonConfig config)
 	{
 		// 登录网关
 		this._logingate_ip = ip;
 		this._logingate_port = port;
+        this._is_logingate = is_logingate;
 		this._config = config;
 	
 		// 短链接会话ID
@@ -98,30 +101,39 @@ public class AUIWebLoginManager : ALittle.EventDispatcher
     
 	public async fun Connect()
 	{
-        var param = new GatewayServer.QRouteInfo();
-        param.route_type = ALittle.RouteType.RT_VERSION; // 版本服务器
-		var client = ALittle.CreateHttpSender(this._logingate_ip, this._logingate_port);
-		var error, result = GatewayServer.HandleQRouteInfo(client, param);
-		if (error != null)
-		{
-            ALittle.Log(error); 
-			this._msg_client = null;
-			this.OnConnectFailed();
-			A_LoopSystem.AddTimer(5000, bind(this.Connect, this));
-			return;
-		}
+        var client_ip:string = this._logingate_ip;
+        var client_port:int = this._logingate_port;
 
-        if (result.client_ip == null || result.client_ip == "" || result.client_port == null)
+        if (this._is_logingate)
         {
-			this._msg_client = null;
-			this.OnConnectFailed();
-			A_LoopSystem.AddTimer(5000, bind(this.Connect, this));
-			return;
+            var param = new GatewayServer.QRouteInfo();
+            param.route_type = ALittle.RouteType.RT_VERSION; // 版本服务器
+            var client = ALittle.CreateHttpSender(this._logingate_ip, this._logingate_port);
+            var error, result = GatewayServer.HandleQRouteInfo(client, param);
+            if (error != null)
+            {
+                ALittle.Log(error); 
+                this._msg_client = null;
+                this.OnConnectFailed();
+                A_LoopSystem.AddTimer(5000, bind(this.Connect, this));
+                return;
+            }
+
+            if (result.client_ip == null || result.client_ip == "" || result.client_port == null)
+            {
+                this._msg_client = null;
+                this.OnConnectFailed();
+                A_LoopSystem.AddTimer(5000, bind(this.Connect, this));
+                return;
+            }
+
+            client_ip = result.client_ip;
+            client_port = result.client_port;
         }
 
 		this._msg_client = ALittle.CreateMsgSender(60, true, bind(this.OnDisconnected, this));
 		this._msg_client._user_data = this;
-		error = this._msg_client.Connect(result.client_ip, result.client_port);
+		var error = this._msg_client.Connect(client_ip, client_port);
 		if (error != null)
 		{
 			this._msg_client = null;

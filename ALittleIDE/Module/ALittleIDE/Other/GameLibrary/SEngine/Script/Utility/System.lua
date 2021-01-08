@@ -20,6 +20,7 @@ ALittle.RouteType = {
 	RT_FILE = 6,
 	RT_GAME = 7,
 	RT_WEB = 8,
+	RT_DEPLOY = 9,
 }
 
 ALittle.RoutePort = {
@@ -33,7 +34,9 @@ ALittle.RoutePort = {
 	RT_FILE_HTTP = 1400,
 	RT_GAME_CLIENT_BEGIN = 1500,
 	RT_DATA_BEGIN = 1600,
-	RT_WEB_HTTP = 1500,
+	RT_WEB_HTTP = 1700,
+	RT_DEPLOY_HTTP = 1800,
+	RT_DEPLOY_CLIENT = 1801,
 }
 
 function ALittle.GetRouteName(route_type, route_num)

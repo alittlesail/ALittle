@@ -274,9 +274,9 @@ public class IDEContentEdit : ALittle.DisplayLayout
 		var menu = new AUIPlugin.AUIRightMenu();
 		menu.AddItem("保存", bind(tab_child.Save, tab_child));
 		tab_child.OnTabRightMenu(menu);
-		menu.AddItem("关闭自己", bind(g_IDECenter.center.content_edit.CloseTabWithAsk, g_IDECenter.center.content_edit, tab_child.tab_body));
-		menu.AddItem("关闭左侧", bind(g_IDECenter.center.content_edit.CloseLeftTab, g_IDECenter.center.content_edit, tab_child.tab_body));
-		menu.AddItem("关闭右侧", bind(g_IDECenter.center.content_edit.CloseRightTab, g_IDECenter.center.content_edit, tab_child.tab_body));
+		menu.AddItem("关闭自己", bind(this.CloseTabWithAsk, this, tab_child.tab_body));
+		menu.AddItem("关闭左侧", bind(this.CloseLeftTab, this, tab_child.tab_body));
+		menu.AddItem("关闭右侧", bind(this.CloseRightTab, this, tab_child.tab_body));
 		menu.Show();
 	}
 	

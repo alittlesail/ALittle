@@ -54,8 +54,8 @@ function ALittleDeploy.__Module_Setup(layer_group, control, module_base_path, sc
 	ALittleDeploy.g_LayerGroup:AddChild(ALittleDeploy.g_DialogLayer)
 	RequireFromPaths(script_base_path, "Data/", {})
 	RequireFromPaths(script_base_path, "Dialog/", {})
-	RequireFromPaths(script_base_path, "IDE/", {"DPLUITaskCenter.alittle", "DPLUIMainMenu.alittle", "DPLUICenter.alittle"
-		, "DPLUIAccount.alittle", "DPLCenter.alittle"})
+	RequireFromPaths(script_base_path, "IDE/", {"DPLUITaskDetail.alittle", "DPLUITaskCenter.alittle", "DPLUIMainMenu.alittle"
+		, "DPLUICenter.alittle", "DPLUIAccount.alittle", "DPLCenter.alittle"})
 	ALittleDeploy.g_DPLCenter:Setup()
 end
 ALittleDeploy.__Module_Setup = Lua.CoWrap(ALittleDeploy.__Module_Setup)

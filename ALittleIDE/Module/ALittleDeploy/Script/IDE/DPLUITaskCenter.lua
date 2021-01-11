@@ -11,8 +11,8 @@ local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(-2092771429, "ALittleDeploy.TaskItemInfo", {
 name = "ALittleDeploy.TaskItemInfo", ns_name = "ALittleDeploy", rl_name = "TaskItemInfo", hash_code = -2092771429,
-name_list = {"item","info","_button","_status"},
-type_list = {"ALittle.DisplayObject","DeployServer.D_TaskInfo","ALittle.DisplayObject","ALittle.DisplayObject"},
+name_list = {"item","info","_button","_status","detail"},
+type_list = {"ALittle.DisplayObject","DeployServer.D_TaskInfo","ALittle.DisplayObject","ALittle.DisplayObject","ALittleDeploy.DPLUITaskDetail"},
 option_map = {}
 })
 ALittle.RegStruct(2082241964, "DeployServer.C2SStartTask", {
@@ -25,6 +25,12 @@ ALittle.RegStruct(-2035971543, "DeployServer.D_JobInfo", {
 name = "DeployServer.D_JobInfo", ns_name = "DeployServer", rl_name = "D_JobInfo", hash_code = -2035971543,
 name_list = {"job_type","status","progress"},
 type_list = {"int","int","double"},
+option_map = {}
+})
+ALittle.RegStruct(-1662612614, "DeployServer.NUpdateTaskInfo", {
+name = "DeployServer.NUpdateTaskInfo", ns_name = "DeployServer", rl_name = "NUpdateTaskInfo", hash_code = -1662612614,
+name_list = {"task_id","task_name","task_desc","web_hook"},
+type_list = {"int","string","string","List<string>"},
 option_map = {}
 })
 ALittle.RegStruct(-1533563228, "DeployServer.S2CCreateTask", {
@@ -69,6 +75,12 @@ name_list = {"task_id"},
 type_list = {"int"},
 option_map = {}
 })
+ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
+name = "ALittle.UIChangedEvent", ns_name = "ALittle", rl_name = "UIChangedEvent", hash_code = 958494922,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
 ALittle.RegStruct(816033453, "DeployServer.NTaskStatus", {
 name = "DeployServer.NTaskStatus", ns_name = "DeployServer", rl_name = "NTaskStatus", hash_code = 816033453,
 name_list = {"task_id","status","progress"},
@@ -110,6 +122,7 @@ assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 ALittleDeploy.DPLUITaskCenter = Lua.Class(ALittle.DisplayLayout, "ALittleDeploy.DPLUITaskCenter")
 
 function ALittleDeploy.DPLUITaskCenter:Ctor()
+	___rawset(self, "_group", {})
 	___rawset(self, "_item_map", {})
 end
 
@@ -149,6 +162,8 @@ function ALittleDeploy.DPLUITaskCenter:AddTaskItem(info)
 	task_info._button.text = info.task_name
 	task_info._button._user_data = task_info
 	task_info._button:AddEventListener(___all_struct[-641444818], self, self.HandleItemRButtonDown)
+	task_info._button:AddEventListener(___all_struct[958494922], self, self.HandleItemChanged)
+	task_info._button.group = self._group
 	self._scroll_list:AddChild(task_info.item)
 	if info.status == 0 then
 		task_info._status.text = ""
@@ -168,6 +183,22 @@ function ALittleDeploy.DPLUITaskCenter:HandleItemRButtonDown(event)
 		menu:AddItem("删除", Lua.Bind(self.HandleDeleteTask, self, task_info))
 	end
 	menu:Show()
+end
+
+function ALittleDeploy.DPLUITaskCenter:HandleItemChanged(event)
+	local task_info = event.target._user_data
+	if event.target.selected then
+		if task_info.detail == nil then
+			task_info.detail = ALittleDeploy.g_Control:CreateControl("dpl_task_detail")
+			self._task_detail_container:AddChild(task_info.detail)
+			task_info.detail:Init(task_info)
+		end
+		task_info.detail:Show()
+	else
+		if task_info.detail ~= nil then
+			task_info.detail:Hide()
+		end
+	end
 end
 
 function ALittleDeploy.DPLUITaskCenter:HandleStartTask(task_info)
@@ -205,13 +236,32 @@ function ALittleDeploy.DPLUITaskCenter:RemoveTaskItem(task_id)
 	if task_info == nil then
 		return
 	end
+	task_info._button.group = nil
 	self._item_map[task_id] = nil
 	self._scroll_list:RemoveChild(task_info.item)
+	if task_info.detail ~= nil then
+		self._task_detail_container:RemoveChild(task_info.detail)
+	end
+end
+
+function ALittleDeploy.DPLUITaskCenter:UpdateTaskItem(info)
+	local task_info = self._item_map[info.task_id]
+	if task_info == nil then
+		return
+	end
+	task_info.info.task_name = info.task_name
+	task_info._button.text = info.task_name
+	task_info.info.task_desc = info.task_desc
+	task_info.info.web_hook = info.web_hook
+	if task_info.detail ~= nil then
+		task_info.detail:UpdateTaskInfo()
+	end
 end
 
 function ALittleDeploy.DPLUITaskCenter:RemoveAllTaskItem()
 	self._item_map = {}
 	self._scroll_list:RemoveAllChild()
+	self._task_detail_container:RemoveAllChild()
 end
 
 function ALittleDeploy.DPLUITaskCenter:UpdateTaskStatus(info)
@@ -271,4 +321,9 @@ function ALittleDeploy.HandleNDeleteTask(sender, msg)
 end
 
 ALittle.RegMsgCallback(-1164681133, ALittleDeploy.HandleNDeleteTask)
+function ALittleDeploy.HandleNUpdateTaskInfo(sender, msg)
+	ALittleDeploy.g_DPLCenter.center.task_center:UpdateTaskItem(msg)
+end
+
+ALittle.RegMsgCallback(-1662612614, ALittleDeploy.HandleNUpdateTaskInfo)
 end

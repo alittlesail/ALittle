@@ -239,7 +239,6 @@ protected class AUICodeCompleteScreen
 
     private fun Fliter(string text) : bool
     {
-        ALittle.Log(text);
         // 将内容改为大写
         var upper_text = ALittle.String_Upper(text);
         // 找出第一个分隔符
@@ -254,7 +253,6 @@ protected class AUICodeCompleteScreen
         var upper_list_count = ALittle.List_Len(upper_list);
         if (upper_list_count > 1 && upper_list[upper_list_count] == "") upper_list[upper_list_count] = null;
 
-        ALittle.Log(text, ALittle.String_JsonEncode(upper_list));
         var sort_list = new List<AUICodeCompleteItemInfo>();
         var count = 0;
         this._screen.RemoveAllChild();

@@ -1,0 +1,72 @@
+
+namespace ALittleDeploy;
+
+public class DPLUITaskDetail : ALittle.DisplayLayout
+{
+    private TaskItemInfo _item_info;
+
+    private ALittle.DisplayObject _task_name_input;
+    private ALittle.DisplayObject _task_desc_input;
+    private ALittle.DisplayObject _webhook_input;
+
+    private ALittle.DisplayObject _save_button;
+
+    public fun Init(TaskItemInfo item_info)
+    {
+        this._item_info = item_info;
+
+        this.UpdateTaskInfo();
+    }
+
+    public fun Show()
+    {
+        this.visible = true;
+
+        if (!this._save_button.disabled)
+        {
+            this.UpdateTaskInfo();
+        }
+    }
+
+    public fun Hide()
+    {
+        this.visible = false;
+    }
+
+    public fun UpdateTaskInfo()
+    {
+        this._save_button.disabled = true;
+        this._task_name_input.text = this._item_info.info.task_name;
+        this._task_desc_input.text = this._item_info.info.task_desc;
+        this._webhook_input.text = ALittle.String_Join(this._item_info.info.web_hook, "\n");
+    }
+
+    private fun HandleTaskBaseChanged(ALittle.UIChangedEvent event)
+    {
+        this._save_button.disabled = false;
+    }
+
+    public async fun HandleTaskSaveClick(ALittle.UIClickEvent event)
+    {
+        var msg_client = g_DPLWebLoginManager.msg_client;
+        if (msg_client == null || !msg_client.IsConnected())
+        {
+            g_AUITool.ShowNotice("提示", "当前还未连接成功!");
+            return;
+        }
+
+        if (this._task_name_input.text == "")
+        {
+            g_AUITool.ShowNotice("提示", "任务名称不能为空!");
+            return;
+        }
+
+        var msg = new DeployServer.C2SUpdateTaskInfo();
+        msg.task_id = this._item_info.info.task_id;
+        msg.task_name = this._task_name_input.text;
+        msg.task_desc = this._task_desc_input.text;
+        msg.web_hook = ALittle.String_SplitSepList(this._webhook_input.text, ["\r", "\n"]);
+        var error = DeployServer.HandleC2SUpdateTaskInfo(msg_client, msg);
+        if (error != null) g_AUITool.ShowNotice("提示", error);
+    }
+}

@@ -373,7 +373,10 @@ function ALittleIDE.IDEUITabChild:SelectAlign(align_type)
 		return
 	end
 	if count == 1 then
-		local parent = first_target.logic_parent
+		local parent = ALittle.Cast(ALittleIDE.IDEUITreeLogic, ALittle.DisplayGroup, first_target.logic_parent)
+		if parent == nil then
+			return
+		end
 		local parent_object = parent.user_info.object
 		local drag_x = 0.0
 		local drag_y = 0.0
@@ -625,14 +628,18 @@ function ALittleIDE.IDEUITabChild:ShowHandleQuad(target, force_shift)
 	local common_parent = nil
 	local has_target = false
 	for tree_target, handle_info in ___pairs(self._tab_quad_map) do
-		common_parent = tree_target.logic_parent
+		common_parent = ALittle.Cast(ALittleIDE.IDEUITreeLogic, ALittle.DisplayGroup, tree_target.logic_parent)
 		has_target = true
 		break
 	end
 	if has_target and common_parent ~= target.logic_parent then
 		local parent = target.logic_parent
 		while parent ~= nil and common_parent ~= parent do
-			target = parent
+			target = ALittle.Cast(ALittleIDE.IDEUITreeLogic, ALittle.DisplayGroup, parent)
+			if target == nil then
+				parent = nil
+				break
+			end
 			parent = parent.logic_parent
 		end
 		if parent == nil then
@@ -1185,7 +1192,7 @@ end
 function ALittleIDE.IDEUITabChild:HandleHandleSizeQuadDragBegin(event)
 	local target_handle_info = event.target._user_data
 	local target = target_handle_info.target
-	local parent = target.logic_parent
+	local parent = ALittle.Cast(ALittleIDE.IDEUITreeLogic, ALittle.DisplayGroup, target.logic_parent)
 	if parent ~= nil and ALittleIDE.g_IDEEnum.can_move_child_map[parent.user_info.default.__class] == nil then
 		return
 	end
@@ -1200,7 +1207,7 @@ end
 function ALittleIDE.IDEUITabChild:HandleHandleSizeQuadDrag(event)
 	local handle_info = event.target._user_data
 	local target = handle_info.target
-	local parent = target.logic_parent
+	local parent = ALittle.Cast(ALittleIDE.IDEUITreeLogic, ALittle.DisplayGroup, target.logic_parent)
 	if parent ~= nil and ALittleIDE.g_IDEEnum.can_move_child_map[parent.user_info.default.__class] == nil then
 		return
 	end

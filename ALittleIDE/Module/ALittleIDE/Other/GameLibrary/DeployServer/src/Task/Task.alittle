@@ -117,6 +117,24 @@ protected class Task
     public get info() : TaskInfo { return this._info; }
     public get upper_name() : string { return this._upper_name; }
 
+    public fun UpdateInfo(C2SUpdateTaskInfo msg)
+    {
+        this._info.task_name = msg.task_name;
+        this._info.task_desc = msg.task_desc;
+        this._info.web_hook = new Map<string, bool>();
+        for (var index, value in msg.web_hook)
+        	this._info.web_hook[value] = true;
+
+        this._upper_name = ALittle.String_Upper(msg.task_name);
+
+        var ntf = new NUpdateTaskInfo();
+        ntf.task_id = msg.task_id;
+        ntf.task_name = msg.task_name;
+        ntf.task_desc = msg.task_desc;
+        ntf.web_hook = msg.web_hook;
+        A_WebAccountManager.SendMsgToAll(ntf);
+    }
+
     public get data_info() : D_TaskInfo
     {
         var data = new D_TaskInfo();
@@ -170,4 +188,36 @@ public await static HandleC2SStartTask(ALittle.IMsgCommon sender, C2SStartTask m
     var error = task.Start();
     assert (error == null, error);
     return new S2CStartTask();
+}
+
+public struct C2SUpdateTaskInfo
+{
+    int task_id;
+    string task_name;
+    string task_desc;
+    List<string> web_hook;
+}
+
+public struct S2CUpdateTaskInfo
+{
+
+}
+
+public struct NUpdateTaskInfo
+{
+    int task_id;
+    string task_name;
+    string task_desc;
+    List<string> web_hook;
+}
+
+[Msg]
+public await static HandleC2SUpdateTaskInfo(ALittle.IMsgCommon sender, C2SUpdateTaskInfo msg) : S2CUpdateTaskInfo
+{
+    A_WebAccountManager.CheckLoginByClient(sender);
+
+    var task = g_TaskManager.GetTask(msg.task_id);
+    assert (task != null, "任务不存在");
+    task.UpdateInfo(msg);
+    return new S2CUpdateTaskInfo();
 }

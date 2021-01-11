@@ -366,7 +366,8 @@ public class IDEUITabChild : IDETabChild
 		if (count == 1)
         {
 			// 获取父控件
-            var parent = cast<IDEUITreeLogic>(first_target.logic_parent);
+            var parent = ALittle.Cast{IDEUITreeLogic}(first_target.logic_parent);
+            if (parent == null) return;
             var parent_object = parent.user_info.object;
             var drag_x = 0.0;
             var drag_y = 0.0;
@@ -672,7 +673,7 @@ public class IDEUITabChild : IDETabChild
         var has_target = false;
 		for (var tree_target, handle_info in this._tab_quad_map)
         {
-            common_parent = cast<IDEUITreeLogic>(tree_target.logic_parent);
+            common_parent = ALittle.Cast{IDEUITreeLogic}(tree_target.logic_parent);
             has_target = true;
             break;
 		}
@@ -681,7 +682,12 @@ public class IDEUITabChild : IDETabChild
             var parent = target.logic_parent;
             while (parent != null && common_parent != parent)
             {
-                target = cast<IDEUITreeLogic>(parent);
+                target = ALittle.Cast{IDEUITreeLogic}(parent);
+                if (target == null)
+                {
+                    parent = null;
+                    break;
+                }
                 parent = parent.logic_parent;
             }
             if (parent == null) return;
@@ -1337,8 +1343,8 @@ public class IDEUITabChild : IDETabChild
         var target_handle_info:IDEUITabChildHandleInfo = event.target._user_data;
 		// 获取target
         var target = target_handle_info.target;
-        var parent = cast<IDEUITreeLogic>(target.logic_parent);
-		
+        var parent = ALittle.Cast{IDEUITreeLogic}(target.logic_parent);
+
 		// 检查这个父控件的子控件是否可以变化大小
 		if (parent != null && g_IDEEnum.can_move_child_map[parent.user_info.default.__class] == null)
             return;
@@ -1359,7 +1365,7 @@ public class IDEUITabChild : IDETabChild
         var handle_info:IDEUITabChildHandleInfo = event.target._user_data;
         // 获取target
         var target = handle_info.target;
-        var parent = cast<IDEUITreeLogic>(target.logic_parent);
+        var parent = ALittle.Cast{IDEUITreeLogic}(target.logic_parent);
 		
 		// 检查这个父控件的子控件是否可以变化大小
 		if (parent != null && g_IDEEnum.can_move_child_map[parent.user_info.default.__class] == null)

@@ -217,7 +217,6 @@ function AUIPlugin.AUICodeCompleteScreen.ItemInfoSort(a, b)
 end
 
 function AUIPlugin.AUICodeCompleteScreen:Fliter(text)
-	ALittle.Log(text)
 	local upper_text = ALittle.String_Upper(text)
 	local first_split = ALittle.String_Find(upper_text, "_")
 	if first_split == nil then
@@ -233,7 +232,6 @@ function AUIPlugin.AUICodeCompleteScreen:Fliter(text)
 	if upper_list_count > 1 and upper_list[upper_list_count] == "" then
 		upper_list[upper_list_count] = nil
 	end
-	ALittle.Log(text, ALittle.String_JsonEncode(upper_list))
 	local sort_list = {}
 	local count = 0
 	self._screen:RemoveAllChild()

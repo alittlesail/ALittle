@@ -7,6 +7,9 @@ protected struct TaskItemInfo
     DeployServer.D_TaskInfo info;
     ALittle.DisplayObject _button;
     ALittle.DisplayObject _status;
+
+    // 任务面板详细信息
+    DPLUITaskDetail detail;
 }
 
 public class DPLUITaskCenter : ALittle.DisplayLayout
@@ -15,6 +18,8 @@ public class DPLUITaskCenter : ALittle.DisplayLayout
 
     private ALittle.DisplayObject _task_key;	// 搜索输入
     private ALittle.ScrollList _scroll_list;	// 滚动屏
+    private ALittle.TextRadioButtonGroup _group = new ALittle.TextRadioButtonGroup(); 
+    private ALittle.DisplayLayout _task_detail_container;
 
     private Map<int, TaskItemInfo> _item_map = new Map<int, TaskItemInfo>();
 
@@ -42,6 +47,8 @@ public class DPLUITaskCenter : ALittle.DisplayLayout
         task_info._button.text = info.task_name;
         task_info._button._user_data = task_info;
         task_info._button.AddEventListener(this, this.HandleItemRButtonDown);
+        task_info._button.AddEventListener(this, this.HandleItemChanged);
+        task_info._button.group = this._group;
         this._scroll_list.AddChild(task_info.item);
 
         if (info.status == DeployServer.TaskStatus.IDLE)
@@ -60,6 +67,26 @@ public class DPLUITaskCenter : ALittle.DisplayLayout
         if (task_info.info.status == DeployServer.TaskStatus.IDLE) menu.AddItem("执行", bind(this.HandleStartTask, this, task_info));
         if (task_info.info.status == DeployServer.TaskStatus.IDLE) menu.AddItem("删除", bind(this.HandleDeleteTask, this, task_info));
         menu.Show();
+    }
+
+    private fun HandleItemChanged(ALittle.UIChangedEvent event)
+    {
+        var task_info:TaskItemInfo = event.target._user_data;
+
+        if (event.target.selected)
+        {
+            if (task_info.detail == null)
+            {
+                task_info.detail = g_Control.CreateControl{DPLUITaskDetail}("dpl_task_detail");
+                this._task_detail_container.AddChild(task_info.detail);
+                task_info.detail.Init(task_info);
+            }
+            task_info.detail.Show();
+        }
+        else
+        {
+            if (task_info.detail != null) task_info.detail.Hide();
+        }
     }
 
     private async fun HandleStartTask(TaskItemInfo task_info)
@@ -96,15 +123,31 @@ public class DPLUITaskCenter : ALittle.DisplayLayout
     {
         var task_info = this._item_map[task_id];
         if (task_info == null) return;
+        task_info._button.group = null;
         this._item_map[task_id] = null;
 
         this._scroll_list.RemoveChild(task_info.item);
+        if (task_info.detail != null) this._task_detail_container.RemoveChild(task_info.detail);
+    }
+
+    public fun UpdateTaskItem(DeployServer.NUpdateTaskInfo info)
+    {
+        var task_info = this._item_map[info.task_id];
+        if (task_info == null) return;
+
+        task_info.info.task_name = info.task_name;
+        task_info._button.text = info.task_name;
+        task_info.info.task_desc = info.task_desc;
+        task_info.info.web_hook = info.web_hook;
+
+        if (task_info.detail != null) task_info.detail.UpdateTaskInfo();
     }
 
     public fun RemoveAllTaskItem()
     {
         this._item_map = new Map<int, TaskItemInfo>();
         this._scroll_list.RemoveAllChild();
+        this._task_detail_container.RemoveAllChild();
     }
 
     public fun UpdateTaskStatus(DeployServer.NTaskStatus info)
@@ -165,4 +208,10 @@ public static HandleNTaskStatus(ALittle.IMsgCommon sender, DeployServer.NTaskSta
 public static HandleNDeleteTask(ALittle.IMsgCommon sender, DeployServer.NDeleteTask msg)
 {
     g_DPLCenter.center.task_center.RemoveTaskItem(msg.task_id);
+}
+
+[Msg]
+public static HandleNUpdateTaskInfo(ALittle.IMsgCommon sender, DeployServer.NUpdateTaskInfo msg)
+{
+    g_DPLCenter.center.task_center.UpdateTaskItem(msg);
 }

@@ -15,6 +15,24 @@ name_list = {"task_id"},
 type_list = {"int"},
 option_map = {}
 })
+ALittle.RegStruct(-1662612614, "DeployServer.NUpdateTaskInfo", {
+name = "DeployServer.NUpdateTaskInfo", ns_name = "DeployServer", rl_name = "NUpdateTaskInfo", hash_code = -1662612614,
+name_list = {"task_id","task_name","task_desc","web_hook"},
+type_list = {"int","string","string","List<string>"},
+option_map = {}
+})
+ALittle.RegStruct(1566214727, "DeployServer.S2CUpdateTaskInfo", {
+name = "DeployServer.S2CUpdateTaskInfo", ns_name = "DeployServer", rl_name = "S2CUpdateTaskInfo", hash_code = 1566214727,
+name_list = {},
+type_list = {},
+option_map = {}
+})
+ALittle.RegStruct(1149037254, "DeployServer.C2SUpdateTaskInfo", {
+name = "DeployServer.C2SUpdateTaskInfo", ns_name = "DeployServer", rl_name = "C2SUpdateTaskInfo", hash_code = 1149037254,
+name_list = {"task_id","task_name","task_desc","web_hook"},
+type_list = {"int","string","string","List<string>"},
+option_map = {}
+})
 ALittle.RegStruct(816033453, "DeployServer.NTaskStatus", {
 name = "DeployServer.NTaskStatus", ns_name = "DeployServer", rl_name = "NTaskStatus", hash_code = 816033453,
 name_list = {"task_id","status","progress"},
@@ -120,6 +138,22 @@ function DeployServer.Task.__getter:upper_name()
 	return self._upper_name
 end
 
+function DeployServer.Task:UpdateInfo(msg)
+	self._info.task_name = msg.task_name
+	self._info.task_desc = msg.task_desc
+	self._info.web_hook = {}
+	for index, value in ___ipairs(msg.web_hook) do
+		self._info.web_hook[value] = true
+	end
+	self._upper_name = ALittle.String_Upper(msg.task_name)
+	local ntf = {}
+	ntf.task_id = msg.task_id
+	ntf.task_name = msg.task_name
+	ntf.task_desc = msg.task_desc
+	ntf.web_hook = msg.web_hook
+	A_WebAccountManager:SendMsgToAll(___all_struct[-1662612614], ntf)
+end
+
 function DeployServer.Task.__getter:data_info()
 	local data = {}
 	data.task_id = self._info.task_id
@@ -152,4 +186,14 @@ function DeployServer.HandleC2SStartTask(sender, msg)
 end
 
 ALittle.RegMsgRpcCallback(2082241964, DeployServer.HandleC2SStartTask, 625732643)
+function DeployServer.HandleC2SUpdateTaskInfo(sender, msg)
+	local ___COROUTINE = coroutine.running()
+	A_WebAccountManager:CheckLoginByClient(sender)
+	local task = g_TaskManager:GetTask(msg.task_id)
+	Lua.Assert(task ~= nil, "任务不存在")
+	task:UpdateInfo(msg)
+	return {}
+end
+
+ALittle.RegMsgRpcCallback(1149037254, DeployServer.HandleC2SUpdateTaskInfo, 1566214727)
 end

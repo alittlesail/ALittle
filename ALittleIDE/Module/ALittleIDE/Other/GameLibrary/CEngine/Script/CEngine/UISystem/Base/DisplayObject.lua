@@ -390,10 +390,7 @@ function ALittle.DisplayObject:GlobalToLocalMatrix2D(x, y, target)
 end
 
 function ALittle.DisplayObject:RemoveFromParent()
-	local parent = self._logic_parent
-	if parent == nil then
-		parent = self._show_parent
-	end
+	local parent = self.parent
 	if parent == nil then
 		return
 	end

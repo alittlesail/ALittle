@@ -1,6 +1,9 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.Emulator == nil then _G.Emulator = {} end
+local Emulator = Emulator
+local Lua = Lua
+local ALittle = ALittle
 local ___pairs = pairs
 local ___ipairs = ipairs
 
@@ -63,7 +66,7 @@ function Emulator.GCenter:UpdateFrame(frame_time)
 end
 
 function Emulator.GCenter:HandleKeyDown(mod, sym, scancode)
-	if sym == 115 and ALittle.BitAnd(mod, 0x00c0) ~= 0 then
+	if sym == 115 and mod & 0x00c0 ~= 0 then
 		self._grobot:Save(true)
 	end
 end

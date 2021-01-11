@@ -97,7 +97,7 @@ class GCenter
 
     public fun HandleKeyDown(int mod, int sym, int scancode)
     {
-        if (sym == ALittle.UIEnumTypes.KEY_S && ALittle.BitAnd(mod, ALittle.UIEnumTypes.KMOD_CTRL) != 0)
+        if (sym == ALittle.UIEnumTypes.KEY_S && mod & ALittle.UIEnumTypes.KMOD_CTRL != 0)
         {
             this._grobot.Save(true);
         }

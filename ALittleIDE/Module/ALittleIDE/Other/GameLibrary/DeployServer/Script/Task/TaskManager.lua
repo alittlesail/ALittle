@@ -21,6 +21,24 @@ name_list = {"job_type"},
 type_list = {"int"},
 option_map = {}
 })
+ALittle.RegStruct(-940476300, "ALittleDeploy.AQueryTask", {
+name = "ALittleDeploy.AQueryTask", ns_name = "ALittleDeploy", rl_name = "AQueryTask", hash_code = -940476300,
+name_list = {"task_list"},
+type_list = {"List<ALittleDeploy.D_TaskInfo>"},
+option_map = {}
+})
+ALittle.RegStruct(-760006533, "ALittleDeploy.QQueryTask", {
+name = "ALittleDeploy.QQueryTask", ns_name = "ALittleDeploy", rl_name = "QQueryTask", hash_code = -760006533,
+name_list = {"key"},
+type_list = {"string"},
+option_map = {}
+})
+ALittle.RegStruct(109366875, "ALittleDeploy.D_TaskInfo", {
+name = "ALittleDeploy.D_TaskInfo", ns_name = "ALittleDeploy", rl_name = "D_TaskInfo", hash_code = 109366875,
+name_list = {"info"},
+type_list = {"ALittleDeploy.TaskInfo"},
+option_map = {}
+})
 
 ALittleDeploy.TaskManager = Lua.Class(nil, "ALittleDeploy.TaskManager")
 
@@ -53,8 +71,66 @@ function ALittleDeploy.TaskManager:StartTaskByWebHook(url)
 	end
 end
 
+function ALittleDeploy.TaskManager:FindTaskByUpperKey(key)
+	local result = {}
+	local count = 0
+	for id, task in ___pairs(self._task_map) do
+		if ALittle.String_Find(task.upper_name, key) ~= nil then
+			count = count + 1
+			result[count] = task
+		end
+	end
+	return result
+end
+
+function ALittleDeploy.TaskManager:FindTaskByUpperKeyList(key_list)
+	local result = {}
+	local count = 0
+	for id, task in ___pairs(self._task_map) do
+		local find = true
+		local init = 1
+		for index, key in ___ipairs(key_list) do
+			local pos = ALittle.String_Find(task.upper_name, key, init)
+			if pos == nil then
+				find = false
+				break
+			end
+			init = pos + ALittle.String_Len(key)
+		end
+		if find then
+			count = count + (1)
+			result[count] = task
+		end
+	end
+	return result
+end
+
+function ALittleDeploy.TaskManager:FindTask(key)
+	key = ALittle.String_Upper(key)
+	local key_list = ALittle.String_SplitSepList(key, {" ", "\t"})
+	if key_list[1] == nil then
+		return self:FindTaskByUpperKey(key)
+	else
+		return self:FindTaskByUpperKeyList(key_list)
+	end
+end
+
 function ALittleDeploy.TaskManager:Shutdown()
 end
 
 _G.g_TaskManager = ALittleDeploy.TaskManager()
+function ALittleDeploy.HandleQQueryTask(sender, msg)
+	local ___COROUTINE = coroutine.running()
+	local rsp = {}
+	rsp.task_list = {}
+	local task_list = g_TaskManager:FindTask(msg.key)
+	for index, task in ___ipairs(task_list) do
+		local info = {}
+		info.info = task.info
+		ALittle.List_Push(rsp.task_list, info)
+	end
+	return rsp
+end
+
+ALittle.RegHttpCallback("ALittleDeploy.QQueryTask", ALittleDeploy.HandleQQueryTask)
 end

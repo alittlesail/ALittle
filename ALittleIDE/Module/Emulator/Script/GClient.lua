@@ -1,6 +1,9 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.Emulator == nil then _G.Emulator = {} end
+local Emulator = Emulator
+local Lua = Lua
+local ALittle = ALittle
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -90,7 +93,7 @@ function Emulator.GClient:Ctor(sys_ctrl)
 	___rawset(self, "_log_search_group", {})
 	___rawset(self, "_log_item_list", {})
 	___rawset(self, "_log_item_count", 0)
-	___rawset(self, "_login_status", Emulator.LoginStatus.EMULATOR_IDLE)
+	___rawset(self, "_login_status", 0)
 end
 
 function Emulator.GClient:Setup()
@@ -107,7 +110,7 @@ function Emulator.GClient:Setup()
 	local msg_info = A_LuaProtobufSchedule:GetMessageInfo(login_proto)
 	if msg_info ~= nil then
 		self._login_detail_info = Emulator.Utility_CreateTreeForEdit(msg_info)
-		self._login_scroll_screen:SetContainer(self._login_detail_info.tree)
+		self._login_scroll_screen.container = self._login_detail_info.tree
 	end
 	self._login_button.visible = true
 	self._logout_button.visible = false
@@ -138,7 +141,7 @@ function Emulator.GClient:HandleSettingChanged()
 	self._proto_search_item_pool = {}
 	self._proto_search_group = {}
 	self:RefreshProtoList()
-	self._detail_scroll_screen:SetContainer(nil)
+	self._detail_scroll_screen.container = nil
 	self._detail_tree_item_pool = {}
 	self._log_search_group = {}
 	self._log_item_list = {}
@@ -149,9 +152,9 @@ function Emulator.GClient:HandleSettingChanged()
 	local msg_info = A_LuaProtobufSchedule:GetMessageInfo(Emulator.g_GConfig:GetString("login_proto", ""))
 	if msg_info ~= nil then
 		self._login_detail_info = Emulator.Utility_CreateTreeForEdit(msg_info)
-		self._login_scroll_screen:SetContainer(self._login_detail_info.tree)
+		self._login_scroll_screen.container = self._login_detail_info.tree
 	else
-		self._login_scroll_screen:SetContainer(nil)
+		self._login_scroll_screen.container = nil
 	end
 end
 
@@ -168,7 +171,7 @@ function Emulator.GClient:RefreshProtoList()
 	end
 	self._protobuf_scroll_screen:RemoveAllChild()
 	local list
-	if ALittle.List_MaxN(key_list) == 0 then
+	if ALittle.List_Len(key_list) == 0 then
 		list = A_LuaProtobufSchedule:FindMessageByUpperKey("")
 	else
 		list = A_LuaProtobufSchedule:FindMessageByUpperKeyList(key_list)
@@ -202,7 +205,7 @@ function Emulator.GClient:HandleProtoItemSelected(event)
 		end
 		self._detail_tree_item_pool[info.full_name] = detail_info
 	end
-	self._detail_scroll_screen:SetContainer(detail_info.tree)
+	self._detail_scroll_screen.container = detail_info.tree
 	self._detail_scroll_screen:AdjustScrollBar()
 end
 
@@ -350,7 +353,7 @@ function Emulator.GClient:HandleClientSocketDisconnected(socket)
 	self._send_button.disabled = true
 	self._login_button.visible = true
 	self._logout_button.visible = false
-	if self._login_status == Emulator.LoginStatus.EMULATOR_LOGINED then
+	if self._login_status == 2 then
 		local func = _G["__PLUGIN_HandleLogout"]
 		if func ~= nil then
 			local error = Lua.TCall(func)
@@ -359,7 +362,7 @@ function Emulator.GClient:HandleClientSocketDisconnected(socket)
 			end
 		end
 	end
-	self._login_status = Emulator.LoginStatus.EMULATOR_IDLE
+	self._login_status = 0
 end
 
 function Emulator.GClient:HandleSendClick(event)
@@ -384,11 +387,11 @@ function Emulator.GClient:HandleLoginClick(event)
 		g_AUITool:ShowNotice("提示", "请设置登陆协议")
 		return
 	end
-	if self._login_status == Emulator.LoginStatus.EMULATOR_LOGINING then
+	if self._login_status == 1 then
 		g_AUITool:ShowNotice("提示", "当前正在登陆，请先断开")
 		return
 	end
-	if self._login_status == Emulator.LoginStatus.EMULATOR_LOGINED then
+	if self._login_status == 2 then
 		g_AUITool:ShowNotice("提示", "当前已登录，请先断开")
 		return
 	end
@@ -403,7 +406,7 @@ function Emulator.GClient:HandleLoginClick(event)
 	self._ip_dropdown.text = ""
 	self._login_button.visible = false
 	self._logout_button.visible = true
-	self._login_status = Emulator.LoginStatus.EMULATOR_LOGINING
+	self._login_status = 1
 	local error = nil
 	if self._client_socket ~= nil then
 		self._client_socket:Close()
@@ -424,11 +427,11 @@ function Emulator.GClient:HandleLoginClick(event)
 			self._client_socket.disconnect_callback = Lua.Bind(self.HandleClientSocketDisconnected, self)
 			self._client_socket:ReceiveMessage()
 		end
-		self._login_status = Emulator.LoginStatus.EMULATOR_LOGINED
+		self._login_status = 2
 		self._send_button.disabled = false
 	else
 		g_AUITool:ShowNotice("提示", error)
-		self._login_status = Emulator.LoginStatus.EMULATOR_IDLE
+		self._login_status = 0
 		self._login_button.visible = true
 		self._logout_button.visible = false
 	end
@@ -443,7 +446,7 @@ function Emulator.GClient:HandleLogoutClick(event)
 	self._send_button.disabled = true
 	self._login_button.visible = true
 	self._logout_button.visible = false
-	if self._login_status == Emulator.LoginStatus.EMULATOR_LOGINED then
+	if self._login_status == 2 then
 		local func = _G["__PLUGIN_HandleLogout"]
 		if func ~= nil then
 			local error = Lua.TCall(func)
@@ -452,7 +455,7 @@ function Emulator.GClient:HandleLogoutClick(event)
 			end
 		end
 	end
-	self._login_status = Emulator.LoginStatus.EMULATOR_IDLE
+	self._login_status = 0
 end
 
 function Emulator.GClient:HandleDragRightQuadUD(event)

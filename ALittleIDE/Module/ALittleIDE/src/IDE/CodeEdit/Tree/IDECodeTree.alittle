@@ -125,9 +125,7 @@ public class IDECodeTree : IDECodeTreeLogic
 		this.OnDelete();
 		ALittle.File_DeleteDeepDir(this._user_info.path);
 
-		var parent = this.parent;
         this.RemoveFromParent();
-		if (parent != null) parent.DispatchEvent(new ALittle.UIResizeEvent());
     }
 
 	private async fun HandleRemoveModule()

@@ -4,12 +4,14 @@ namespace ALittleDeploy;
 protected class Task
 {
     private TaskInfo _info;
+    private string _upper_name;
 
     private List<Job> _job_list = new List<Job>();
 
     public ctor(TaskInfo info)
     {
         this._info = info;
+        this._upper_name = ALittle.String_Upper(info.task_name);
 
         // 构建job
         for (var index, job_info in info.job_list)
@@ -36,4 +38,5 @@ protected class Task
     }
 
     public get info() : TaskInfo { return this._info; }
+    public get upper_name() : string { return this._upper_name; }
 }

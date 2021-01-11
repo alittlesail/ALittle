@@ -111,7 +111,7 @@ protected class GClient : ALittle.DisplayLayout
         if (msg_info != null)
         {
             this._login_detail_info = Utility_CreateTreeForEdit(msg_info);
-            this._login_scroll_screen.SetContainer(this._login_detail_info.tree);
+            this._login_scroll_screen.container = this._login_detail_info.tree;
         }
 
         // 界面初始化
@@ -152,7 +152,7 @@ protected class GClient : ALittle.DisplayLayout
         this.RefreshProtoList();
 
         // 协议内容
-        this._detail_scroll_screen.SetContainer(null);
+        this._detail_scroll_screen.container = null;
         this._detail_tree_item_pool = new Map<string, DetailInfo>();
 
         // 日志列表
@@ -169,10 +169,10 @@ protected class GClient : ALittle.DisplayLayout
         if (msg_info != null)
         {
             this._login_detail_info = Utility_CreateTreeForEdit(msg_info);
-            this._login_scroll_screen.SetContainer(this._login_detail_info.tree);
+            this._login_scroll_screen.container = this._login_detail_info.tree;
         }
         else
-            this._login_scroll_screen.SetContainer(null);
+            this._login_scroll_screen.container = null;
     }
 
     // 处理消息
@@ -195,7 +195,7 @@ protected class GClient : ALittle.DisplayLayout
 
         // 搜索
         var list:List<Lua.lua_socket_schedule_message_info>;
-        if (ALittle.List_MaxN(key_list) == 0)
+        if (ALittle.List_Len(key_list) == 0)
             list = A_LuaProtobufSchedule.FindMessageByUpperKey("");
         else
             list = A_LuaProtobufSchedule.FindMessageByUpperKeyList(key_list);
@@ -204,7 +204,7 @@ protected class GClient : ALittle.DisplayLayout
             var item = this._proto_search_item_pool[info.name];
             if (item == null)
             {
-                item = g_Control.CreateControl{ALittle.TextRadioButton }("item_radiobutton");
+                item = g_Control.CreateControl{ALittle.TextRadioButton}("item_radiobutton");
                 item.text = info.name;
                 this._proto_search_item_pool[info.name] = item;
                 item.drag_trans_target = this._protobuf_scroll_screen;
@@ -233,7 +233,7 @@ protected class GClient : ALittle.DisplayLayout
             if (detail_info == null) return;
             this._detail_tree_item_pool[info.full_name] = detail_info;
         }
-        this._detail_scroll_screen.SetContainer(detail_info.tree);
+        this._detail_scroll_screen.container = detail_info.tree;
         this._detail_scroll_screen.AdjustScrollBar();
     }
 

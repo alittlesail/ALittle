@@ -593,6 +593,7 @@ end
 function AUIPlugin.AUICodeCursor:Hide()
 	if self._loop ~= nil then
 		self._loop:Stop()
+		self._loop = nil
 	end
 	self.visible = false
 end

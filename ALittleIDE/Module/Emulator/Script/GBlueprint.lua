@@ -1,6 +1,9 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.Emulator == nil then _G.Emulator = {} end
+local Emulator = Emulator
+local Lua = Lua
+local ALittle = ALittle
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
@@ -360,16 +363,16 @@ function Emulator.GBlueprint:HandleNodeDragBegin(event)
 	self._cur_drag_image = nil
 	if event.target == self._robot_step_send_node then
 		self._cur_node_ui = "robot_step_send_message"
-		self._cur_drag_type = Emulator.RobotStepType.RST_SEND_MESSAGE
+		self._cur_drag_type = 2
 	elseif event.target == self._robot_step_receive_node then
 		self._cur_node_ui = "robot_step_receive_message"
-		self._cur_drag_type = Emulator.RobotStepType.RST_RECEIVE_MESSAGE
+		self._cur_drag_type = 1
 	elseif event.target == self._robot_step_delay_node then
 		self._cur_node_ui = "robot_step_delay"
-		self._cur_drag_type = Emulator.RobotStepType.RST_DELAY
+		self._cur_drag_type = 3
 	elseif event.target == self._robot_step_log_node then
 		self._cur_node_ui = "robot_step_log"
-		self._cur_drag_type = Emulator.RobotStepType.RST_LOG
+		self._cur_drag_type = 5
 	end
 	if self._cur_node_ui == nil then
 		return
@@ -405,13 +408,13 @@ function Emulator.GBlueprint:HandleNodeDragEnd(event)
 	if y < 0 then
 		y = 0
 	end
-	if self._cur_drag_type == Emulator.RobotStepType.RST_RECEIVE_MESSAGE then
+	if self._cur_drag_type == 1 then
 		self:HandleCreateRobotStepReceiveMessage(x, y)
-	elseif self._cur_drag_type == Emulator.RobotStepType.RST_SEND_MESSAGE then
+	elseif self._cur_drag_type == 2 then
 		self:HandleCreateRobotStepSendMessage(x, y)
-	elseif self._cur_drag_type == Emulator.RobotStepType.RST_DELAY then
+	elseif self._cur_drag_type == 3 then
 		self:HandleCreateRobotStepDelay(x, y)
-	elseif self._cur_drag_type == Emulator.RobotStepType.RST_LOG then
+	elseif self._cur_drag_type == 5 then
 		self:HandleCreateRobotStepLog(x, y)
 	end
 	self._cur_node_ui = nil
@@ -443,7 +446,7 @@ function Emulator.GBlueprint:HandleCreateRobotStepLog(x, y)
 	self._step_file.step_map[info.id] = info
 	info.x = x
 	info.y = y
-	info.type = Emulator.RobotStepType.RST_LOG
+	info.type = 5
 	self:CreateRobotStepDialog(info)
 	self:Save(false)
 end
@@ -455,7 +458,7 @@ function Emulator.GBlueprint:HandleCreateRobotStepSendMessage(x, y)
 	self._step_file.step_map[info.id] = info
 	info.x = x
 	info.y = y
-	info.type = Emulator.RobotStepType.RST_SEND_MESSAGE
+	info.type = 2
 	info.full_name = ""
 	info.message_json = "{}"
 	self:CreateRobotStepDialog(info)
@@ -489,8 +492,7 @@ function Emulator.GBlueprint:HandleRobotStepSendMessageEditClick(event)
 	if root.detail_info == nil then
 		return
 	end
-	self._edit_scroll_screen:SetContainer(root.detail_info.tree)
-	self._edit_scroll_screen:AdjustScrollBar()
+	self._edit_scroll_screen.container = root.detail_info.tree
 	self._message_edit_dialog.visible = true
 	self._message_edit_dialog._user_data = link_info
 	self:Save(false)
@@ -513,7 +515,7 @@ function Emulator.GBlueprint:HandleCreateRobotStepReceiveMessage(x, y)
 	self._step_file.step_map[info.id] = info
 	info.x = x
 	info.y = y
-	info.type = Emulator.RobotStepType.RST_RECEIVE_MESSAGE
+	info.type = 1
 	info.full_name = ""
 	self:CreateRobotStepDialog(info)
 	self:Save(false)
@@ -537,7 +539,7 @@ function Emulator.GBlueprint:HandleCreateRobotStepDelay(x, y)
 	self._step_file.step_map[info.id] = info
 	info.x = x
 	info.y = y
-	info.type = Emulator.RobotStepType.RST_DELAY
+	info.type = 3
 	info.full_name = ""
 	info.delay_ms = 0
 	self:CreateRobotStepDialog(info)
@@ -596,9 +598,9 @@ function Emulator.GBlueprint:HandleRobotStepLineDragBegin(event)
 	local link_info = event.target._user_data
 	local type = nil
 	if link_info._left_step_image == event.target then
-		type = Emulator.RobotStepLineType.RSLT_LEFT
+		type = 1
 	elseif link_info._right_step_image == event.target then
-		type = Emulator.RobotStepLineType.RSLT_RIGHT
+		type = 2
 	end
 	if type == nil then
 		return
@@ -697,9 +699,9 @@ function Emulator.GBlueprint:HandleRobotStepLineDragEnd(event)
 	end
 	local next_type = nil
 	if next_link._left_step_image == image then
-		next_type = Emulator.RobotStepLineType.RSLT_LEFT
+		next_type = 1
 	elseif next_link._right_step_image == image then
-		next_type = Emulator.RobotStepLineType.RSLT_RIGHT
+		next_type = 2
 	else
 		return
 	end
@@ -715,16 +717,16 @@ function Emulator.GBlueprint:UpdateRobotStepDialogPosition(link_info, x, y)
 	if link_info._line_tri ~= nil then
 		local tri = link_info._line_tri
 		local pre_image
-		if link_info.info.pre_type == Emulator.RobotStepLineType.RSLT_LEFT then
+		if link_info.info.pre_type == 1 then
 			pre_image = link_info._left_step_image
-		elseif link_info.info.pre_type == Emulator.RobotStepLineType.RSLT_RIGHT then
+		elseif link_info.info.pre_type == 2 then
 			pre_image = link_info._right_step_image
 		end
 		local next_image
 		if link_info.next_link ~= nil then
-			if link_info.info.next_type == Emulator.RobotStepLineType.RSLT_LEFT then
+			if link_info.info.next_type == 1 then
 				next_image = link_info.next_link._left_step_image
-			elseif link_info.info.next_type == Emulator.RobotStepLineType.RSLT_RIGHT then
+			elseif link_info.info.next_type == 2 then
 				next_image = link_info.next_link._right_step_image
 			end
 		end
@@ -739,15 +741,15 @@ function Emulator.GBlueprint:UpdateRobotStepDialogPosition(link_info, x, y)
 		for id, pre_link in ___pairs(link_info.pre_link) do
 			local tri = pre_link._line_tri
 			local pre_image
-			if pre_link.info.pre_type == Emulator.RobotStepLineType.RSLT_LEFT then
+			if pre_link.info.pre_type == 1 then
 				pre_image = pre_link._left_step_image
-			elseif pre_link.info.pre_type == Emulator.RobotStepLineType.RSLT_RIGHT then
+			elseif pre_link.info.pre_type == 2 then
 				pre_image = pre_link._right_step_image
 			end
 			local next_image
-			if pre_link.info.next_type == Emulator.RobotStepLineType.RSLT_LEFT then
+			if pre_link.info.next_type == 1 then
 				next_image = link_info._left_step_image
-			elseif pre_link.info.next_type == Emulator.RobotStepLineType.RSLT_RIGHT then
+			elseif pre_link.info.next_type == 2 then
 				next_image = link_info._right_step_image
 			end
 			if pre_image ~= nil and next_image ~= nil then
@@ -794,7 +796,7 @@ function Emulator.GBlueprint:AskRobotStepDelete(dialog)
 		return
 	end
 	local link_info = dialog._user_data
-	if link_info.info.type == Emulator.RobotStepType.RST_START then
+	if link_info.info.type == 4 then
 		g_AUITool:ShowNotice("提示", "开始节点不能删除")
 		return
 	end
@@ -877,7 +879,7 @@ function Emulator.GBlueprint:HandleFileTreeSelectFile(event)
 	end
 	if self._step_file.start_step == nil then
 		self._step_file.start_step = {}
-		self._step_file.start_step.type = Emulator.RobotStepType.RST_START
+		self._step_file.start_step.type = 4
 		self._step_file.max_id = self._step_file.max_id + (1)
 		self._step_file.start_step.x = 0
 		self._step_file.start_step.y = 0
@@ -899,10 +901,10 @@ function Emulator.GBlueprint:HandleFileTreeSelectFile(event)
 end
 
 function Emulator.GBlueprint:CreateRobotStepDialog(info)
-	if info.type == Emulator.RobotStepType.RST_START then
+	if info.type == 4 then
 		local link_info = {}
 		local dialog = self:CreateCommonDialog("robot_step_start", link_info, info)
-	elseif info.type == Emulator.RobotStepType.RST_RECEIVE_MESSAGE then
+	elseif info.type == 1 then
 		local link_info = {}
 		local dialog = self:CreateCommonDialog("robot_step_receive_message", link_info, info)
 		if A_LuaProtobufSchedule:GetMessageInfo(info.full_name) == nil then
@@ -916,7 +918,7 @@ function Emulator.GBlueprint:CreateRobotStepDialog(info)
 		link_info._log_edit:AddEventListener(___all_struct[-431205740], self, self.HandleRobotStepReceiveLogEditResize)
 		link_info._log_edit._user_data = link_info
 		link_info._log_edit:Init(info.receive_log_list)
-	elseif info.type == Emulator.RobotStepType.RST_SEND_MESSAGE then
+	elseif info.type == 2 then
 		local link_info = {}
 		local dialog = self:CreateCommonDialog("robot_step_send_message", link_info, info)
 		link_info._full_name_input.text = info.full_name
@@ -934,13 +936,13 @@ function Emulator.GBlueprint:CreateRobotStepDialog(info)
 		link_info._cmd_edit:AddEventListener(___all_struct[-431205740], self, self.HandleRobotStepCmdEditResize)
 		link_info._cmd_edit._user_data = link_info
 		link_info._cmd_edit:Init(info.cmd_list)
-	elseif info.type == Emulator.RobotStepType.RST_DELAY then
+	elseif info.type == 3 then
 		local link_info = {}
 		local dialog = self:CreateCommonDialog("robot_step_delay", link_info, info)
 		link_info._delay_input.text = info.delay_ms
 		link_info._delay_input:AddEventListener(___all_struct[958494922], self, self.HandleRobotStepDelayChanged)
 		link_info._delay_input._user_data = link_info
-	elseif info.type == Emulator.RobotStepType.RST_LOG then
+	elseif info.type == 5 then
 		local link_info = {}
 		local dialog = self:CreateCommonDialog("robot_step_log", link_info, info)
 		link_info._log_input.text = info.log
@@ -972,15 +974,15 @@ function Emulator.GBlueprint:CreateRobotStepLine(info)
 	tri._user_data = next_link
 	link_info._line_tri = tri
 	local pre_image
-	if link_info.info.pre_type == Emulator.RobotStepLineType.RSLT_LEFT then
+	if link_info.info.pre_type == 1 then
 		pre_image = link_info._left_step_image
-	elseif link_info.info.pre_type == Emulator.RobotStepLineType.RSLT_RIGHT then
+	elseif link_info.info.pre_type == 2 then
 		pre_image = link_info._right_step_image
 	end
 	local next_image
-	if link_info.info.next_type == Emulator.RobotStepLineType.RSLT_LEFT then
+	if link_info.info.next_type == 1 then
 		next_image = next_link._left_step_image
-	elseif link_info.info.next_type == Emulator.RobotStepLineType.RSLT_RIGHT then
+	elseif link_info.info.next_type == 2 then
 		next_image = next_link._right_step_image
 	end
 	if pre_image == nil or next_image == nil then

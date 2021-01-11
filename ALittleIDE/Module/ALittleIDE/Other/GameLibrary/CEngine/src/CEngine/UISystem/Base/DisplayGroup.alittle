@@ -144,7 +144,7 @@ public class DisplayGroup : DisplayObject
             return false;
         
         // 判定child的父控件是否是自己，如果不是则返回false
-        if (child._show_parent !=  this && child._logic_parent !=  this)
+        if (child._show_parent != this && child._logic_parent != this)
             return false;
         
         for (var index, value in this._childs)
@@ -200,14 +200,6 @@ public class DisplayGroup : DisplayObject
         if (child == null)
             return false;
         return child._show_parent == this || child._logic_parent == this;
-    }
-    
-    // 获取父控件
-    public get parent() : DisplayGroup
-    {
-        if (this._logic_parent != null)
-            return this._logic_parent;
-        return this._show_parent;
     }
     
     // 移除所有子控件

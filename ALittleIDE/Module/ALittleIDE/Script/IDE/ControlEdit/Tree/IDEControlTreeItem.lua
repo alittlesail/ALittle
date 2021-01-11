@@ -45,12 +45,6 @@ name_list = {"target","is_drag","count"},
 type_list = {"ALittle.DisplayObject","bool","int"},
 option_map = {}
 })
-ALittle.RegStruct(-431205740, "ALittle.UIResizeEvent", {
-name = "ALittle.UIResizeEvent", ns_name = "ALittle", rl_name = "UIResizeEvent", hash_code = -431205740,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
 ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
 name = "ALittle.UIButtonDragEndEvent", ns_name = "ALittle", rl_name = "UIButtonDragEndEvent", hash_code = 150587926,
 name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
@@ -139,11 +133,7 @@ function ALittleIDE.IDEControlTreeItem:HandleDelete()
 		return
 	end
 	self:OnDelete()
-	local parent = self.parent
 	self:RemoveFromParent()
-	if parent ~= nil then
-		parent:DispatchEvent(___all_struct[-431205740], {})
-	end
 	ALittleIDE.g_IDECenter.center.content_edit:CloseTabByName(ALittleIDE.IDEUITabChild, self._user_info.name)
 end
 ALittleIDE.IDEControlTreeItem.HandleDelete = Lua.CoWrap(ALittleIDE.IDEControlTreeItem.HandleDelete)

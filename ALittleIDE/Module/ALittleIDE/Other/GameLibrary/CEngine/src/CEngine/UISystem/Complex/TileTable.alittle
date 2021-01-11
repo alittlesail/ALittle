@@ -116,8 +116,7 @@ public class TileTable : DisplayGroup
     public fun AddChild(DisplayObject child, [Nullable] int index) : bool
     {
         var result = DisplayGroup.AddChild(this, child, index);
-        if (result == false)
-            return false;
+        if (result == false) return false;
         if (index == null)
             this.Layout(this.child_count);
         else

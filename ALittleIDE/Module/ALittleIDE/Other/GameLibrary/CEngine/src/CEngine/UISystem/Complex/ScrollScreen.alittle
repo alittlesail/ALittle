@@ -141,8 +141,8 @@ public class ScrollScreen : DisplayGroup
     // 设置容器控件
     public set container(DisplayGroup value)
     {
-        if (value == null)
-            value = new DisplayGroup(this._ctrl_sys);
+        if (value == null) value = new DisplayGroup(this._ctrl_sys);
+
         // 从旧的容器中取出控件
         var child_list = new List<DisplayObject>();
         var child_list_count = 0;
@@ -152,32 +152,28 @@ public class ScrollScreen : DisplayGroup
             ++ child_list_count;
             child_list[child_list_count] = v;
         }
+        // 移除所有控件，这样就可以标记logic_parent为null
+        this._scroll_content.RemoveAllChild();
+        // 移除resize监听
         this._scroll_content.RemoveEventListener(this, this.HandleContainerResize);
+        // 移除content
         this._scroll_view.RemoveChild(this._scroll_content);
+        // 设置新的content
         this._scroll_content = value;
         // 把控件添加到新的容器中
         for (var k, v in child_list)
             value.AddChild(v);
-
+        // 遍历所有子控件设置新的logic_parent
+        for (var k, child in value.childs)
+            child._logic_parent = this;
+        // 监听resize
         this._scroll_content.AddEventListener(this, this.HandleContainerResize);
+        // 添加到view
         this._scroll_view.AddChild(this._scroll_content, 1);
+        // 调整滚动条
         this.AdjustScrollBar();
     }
 
-    // 单纯更换container
-    public fun SetContainer(DisplayGroup value)
-    {
-        if (value == null) value = new DisplayGroup(this._ctrl_sys);
-
-        this._scroll_content.RemoveEventListener(this, this.HandleContainerResize);
-        this._scroll_view.RemoveChild(this._scroll_content);
-        this._scroll_content = value;
-        
-        this._scroll_content.AddEventListener(this, this.HandleContainerResize);
-        this._scroll_view.AddChild(this._scroll_content, 1);   
-        this.AdjustScrollBar();
-    }
-    
     // 设置容器的Y轴相对位置
     public set container_y(double value)
     {
@@ -306,10 +302,8 @@ public class ScrollScreen : DisplayGroup
     }
     public fun AddChild(DisplayObject child, [Nullable] int index) : bool
     {
-        if (child == null)
-            return false;
-        if (this._scroll_content.AddChild(child, index) == false)
-            return false;
+        if (child == null) return false;
+        if (this._scroll_content.AddChild(child, index) == false) return false;
         child._logic_parent = this;
         this.AdjustScrollBar();
         return true;

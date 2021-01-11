@@ -138,11 +138,9 @@ public class ScrollList : DisplayView
     }
     public fun AddChild(DisplayObject child, [Nullable] int index) : bool
     {
-        if (child == null)
-            return false;
-            
-        if (this._scroll_linear.AddChild(child, index) == false)
-            return false;
+        if (child == null) return false;
+        if (this._scroll_linear.AddChild(child, index) == false) return false;
+		child._logic_parent = this;
 
         this.RefreshChild(false);
         return true;

@@ -167,9 +167,7 @@ public class AUIFileTree : AUIFileTreeLogic
 
 		ALittle.File_DeleteDeepDir(this._user_info.path);
 
-		var parent = this.parent;
         this.RemoveFromParent();
-		if (parent != null) parent.DispatchEvent(new ALittle.UIResizeEvent());
     }
 
 	public get is_tree() : bool { return true; }

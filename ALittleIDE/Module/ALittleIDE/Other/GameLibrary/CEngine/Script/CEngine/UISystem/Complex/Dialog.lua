@@ -272,11 +272,6 @@ function ALittle.Dialog:AddChild(child, index)
 	if child._show_parent == self._body or child._logic_parent == self then
 		return true
 	end
-	if child._logic_parent ~= nil then
-		child._logic_parent:RemoveChild(child)
-	elseif child._show_parent ~= nil then
-		child._show_parent:RemoveChild(child)
-	end
 	local result = self._body:AddChild(child, index)
 	child._logic_parent = self
 	return result

@@ -14,6 +14,7 @@ ALittleDeploy.Task = Lua.Class(nil, "ALittleDeploy.Task")
 function ALittleDeploy.Task:Ctor(info)
 	___rawset(self, "_job_list", {})
 	___rawset(self, "_info", info)
+	___rawset(self, "_upper_name", ALittle.String_Upper(info.task_name))
 	for index, job_info in ___ipairs(info.job_list) do
 		local job = ALittleDeploy.CreateJob(job_info)
 		self._job_list[index] = job
@@ -34,6 +35,10 @@ end
 
 function ALittleDeploy.Task.__getter:info()
 	return self._info
+end
+
+function ALittleDeploy.Task.__getter:upper_name()
+	return self._upper_name
 end
 
 end

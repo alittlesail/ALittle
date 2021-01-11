@@ -45,12 +45,6 @@ name_list = {"target","is_drag","count"},
 type_list = {"ALittle.DisplayObject","bool","int"},
 option_map = {}
 })
-ALittle.RegStruct(-431205740, "ALittle.UIResizeEvent", {
-name = "ALittle.UIResizeEvent", ns_name = "ALittle", rl_name = "UIResizeEvent", hash_code = -431205740,
-name_list = {"target"},
-type_list = {"ALittle.DisplayObject"},
-option_map = {}
-})
 
 assert(ALittleIDE.IDECodeTreeLogic, " extends class:ALittleIDE.IDECodeTreeLogic is nil")
 ALittleIDE.IDECodeTreeItem = Lua.Class(ALittleIDE.IDECodeTreeLogic, "ALittleIDE.IDECodeTreeItem")
@@ -127,11 +121,7 @@ function ALittleIDE.IDECodeTreeItem:HandleDeleteFile()
 	end
 	self:OnDelete()
 	ALittle.File_DeleteFile(self._user_info.path)
-	local parent = self.parent
 	self:RemoveFromParent()
-	if parent ~= nil then
-		parent:DispatchEvent(___all_struct[-431205740], {})
-	end
 	ALittleIDE.g_IDECenter.center.content_edit:CloseTabByName(ALittleIDE.IDECodeTabChild, self._user_info.name)
 end
 ALittleIDE.IDECodeTreeItem.HandleDeleteFile = Lua.CoWrap(ALittleIDE.IDECodeTreeItem.HandleDeleteFile)

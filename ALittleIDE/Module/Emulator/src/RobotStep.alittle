@@ -67,7 +67,7 @@ protected class RobotStepReceiveMessage : RobotStep
             for (var index, log in this._info.receive_log_list)
             {
                 var dst_field_list = ALittle.String_Split(log.dst_field, ".");
-                var dst_field_len = ALittle.List_MaxN(dst_field_list);
+                var dst_field_len = ALittle.List_Len(dst_field_list);
                 var dst_temp = dst_info;
                 for (var i = 1; i <= dst_field_len; 1)
                 {
@@ -188,7 +188,7 @@ protected class RobotStepSendMessage : RobotStep
             }
 
             var dst_field_list = ALittle.String_Split(cmd.dst_field, ".");
-            var dst_field_len = ALittle.List_MaxN(dst_field_list);
+            var dst_field_len = ALittle.List_Len(dst_field_list);
             var dst_temp = dst_info;
             for (var i = 1; i <= dst_field_len; 1)
             {

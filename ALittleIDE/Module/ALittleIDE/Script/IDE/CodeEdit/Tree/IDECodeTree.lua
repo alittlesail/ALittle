@@ -157,11 +157,7 @@ function ALittleIDE.IDECodeTree:HandleDeleteDir()
 	end
 	self:OnDelete()
 	ALittle.File_DeleteDeepDir(self._user_info.path)
-	local parent = self.parent
 	self:RemoveFromParent()
-	if parent ~= nil then
-		parent:DispatchEvent(___all_struct[-431205740], {})
-	end
 end
 ALittleIDE.IDECodeTree.HandleDeleteDir = Lua.CoWrap(ALittleIDE.IDECodeTree.HandleDeleteDir)
 

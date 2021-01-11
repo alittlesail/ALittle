@@ -1,6 +1,9 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
 if _G.Emulator == nil then _G.Emulator = {} end
+local Emulator = Emulator
+local Lua = Lua
+local ALittle = ALittle
 local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
@@ -67,7 +70,7 @@ function Emulator.RobotStepReceiveMessage:ReceiveMessage(msg)
 	else
 		for index, log in ___ipairs(self._info.receive_log_list) do
 			local dst_field_list = ALittle.String_Split(log.dst_field, ".")
-			local dst_field_len = ALittle.List_MaxN(dst_field_list)
+			local dst_field_len = ALittle.List_Len(dst_field_list)
 			local dst_temp = dst_info
 			local i = 1
 			while true do
@@ -166,7 +169,7 @@ function Emulator.RobotStepSendMessage:Execute()
 			end
 		end
 		local dst_field_list = ALittle.String_Split(cmd.dst_field, ".")
-		local dst_field_len = ALittle.List_MaxN(dst_field_list)
+		local dst_field_len = ALittle.List_Len(dst_field_list)
 		local dst_temp = dst_info
 		local i = 1
 		while true do
@@ -235,16 +238,16 @@ function Emulator.RobotStepManager:Ctor(player_id, socket, file, trace)
 	end
 	for id, info in ___pairs(file.step_map) do
 		local step = nil
-		if info.type == Emulator.RobotStepType.RST_RECEIVE_MESSAGE then
+		if info.type == 1 then
 			step = Emulator.RobotStepReceiveMessage(self, info)
-		elseif info.type == Emulator.RobotStepType.RST_SEND_MESSAGE then
+		elseif info.type == 2 then
 			step = Emulator.RobotStepSendMessage(self, info)
-		elseif info.type == Emulator.RobotStepType.RST_DELAY then
+		elseif info.type == 3 then
 			step = Emulator.RobotStepDelay(self, info)
-		elseif info.type == Emulator.RobotStepType.RST_START then
+		elseif info.type == 4 then
 			step = Emulator.RobotStepStart(self, info)
 			___rawset(self, "_cur_step", step)
-		elseif info.type == Emulator.RobotStepType.RST_LOG then
+		elseif info.type == 5 then
 			step = Emulator.RobotStepLog(self, info)
 		end
 		if step ~= nil then

@@ -87,9 +87,7 @@ public class IDEControlTreeItem : IDEControlTreeLogic
 
 		this.OnDelete();
 
-		var parent = this.parent;
         this.RemoveFromParent();
-		if (parent != null) parent.DispatchEvent(new ALittle.UIResizeEvent());
 		g_IDECenter.center.content_edit.CloseTabByName{IDEUITabChild}(this._user_info.name);
 	}
 	// 处理复制控件名

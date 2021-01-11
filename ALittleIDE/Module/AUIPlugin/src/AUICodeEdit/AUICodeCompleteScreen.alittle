@@ -224,7 +224,6 @@ protected class AUICodeCompleteScreen
         this._screen.width = max_width + this._screen.right_scrollbar.width;
 
         this._edit.help_container.AddChild(this._screen);
-
         return true;
     }
 

@@ -219,11 +219,7 @@ function AUIPlugin.AUIFileTree:HandleDeleteDir()
 		self._user_info.on_delete_dir(self._user_info.path)
 	end
 	ALittle.File_DeleteDeepDir(self._user_info.path)
-	local parent = self.parent
 	self:RemoveFromParent()
-	if parent ~= nil then
-		parent:DispatchEvent(___all_struct[-431205740], {})
-	end
 end
 AUIPlugin.AUIFileTree.HandleDeleteDir = Lua.CoWrap(AUIPlugin.AUIFileTree.HandleDeleteDir)
 

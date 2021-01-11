@@ -305,13 +305,7 @@ public class Dialog : DisplayLayout
         // 判定child的父控件是否是自己，如果不是则返回false
         if (child._show_parent == this._body || child._logic_parent == this)
             return true;
-            
-        // 判定child是否有父控件，如果有则父控件移除child
-        if (child._logic_parent != null)
-            child._logic_parent.RemoveChild(child);
-        elseif (child._show_parent != null)
-            child._show_parent.RemoveChild(child);
-
+        
         // 添加到容器中，讲逻辑父控件设置为自己
         var result = this._body.AddChild(child, index);
         child._logic_parent = this;

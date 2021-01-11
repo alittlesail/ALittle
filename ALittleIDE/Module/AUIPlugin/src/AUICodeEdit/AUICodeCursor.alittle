@@ -38,7 +38,7 @@ public class AUICodeCursor : ALittle.Quad
     public fun Show([Nullable]double x, [Nullable]double y)
     {
         if (this._loop == null) this._loop = new ALittle.LoopFunction(bind(this.Update, this), -1, 1, 1);
-        if (!A_LoopSystem.HasUpdater(this._loop)) A_LoopSystem.AddUpdater(this._loop);
+		if (!A_LoopSystem.HasUpdater(this._loop)) A_LoopSystem.AddUpdater(this._loop);
         this.visible = true;
     }
 
@@ -115,7 +115,7 @@ public class AUICodeCursor : ALittle.Quad
         {
             var char = line.char_list[this._it_char];
             this.x = char.pre_width + char.width;
-        }   
+        }
         if (show == null || show) this.Show();
 
         this._virtual_indent = 0;
@@ -139,7 +139,6 @@ public class AUICodeCursor : ALittle.Quad
             this.x = 0;
         else
             this.x = line.char_list[this._it_char].pre_width + line.char_list[this._it_char].width;
-
         this._virtual_indent = 0;
     }
 
@@ -614,7 +613,7 @@ public class AUICodeCursor : ALittle.Quad
 
     public fun Hide()
     {
-        if (this._loop != null) this._loop.Stop();
+        if (this._loop != null) { this._loop.Stop(); this._loop = null; }
         this.visible = false;
     }
 

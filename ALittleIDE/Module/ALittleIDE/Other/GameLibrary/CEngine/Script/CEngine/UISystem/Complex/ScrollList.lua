@@ -94,6 +94,7 @@ function ALittle.ScrollList:AddChild(child, index)
 	if self._scroll_linear:AddChild(child, index) == false then
 		return false
 	end
+	child._logic_parent = self
 	self:RefreshChild(false)
 	return true
 end

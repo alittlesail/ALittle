@@ -22,7 +22,7 @@ public class TaskManager
     private int _max_task_id = 0;
     private int _max_job_id = 0;
 
-    private Map<int, Task> _task_map = new Map<int, Task>();
+    public Map<int, Task> _task_map = new Map<int, Task>();
 
     public await fun Setup()
     {
@@ -47,6 +47,67 @@ public class TaskManager
             task.StartByWebHook(url);
     }
 
+    // 根据key查找名称
+    public fun FindTaskByUpperKey(string key) : List<Task>
+    {
+        var result = new List<Task>();
+        var count = 0;
+        for (var id, task in this._task_map)
+        {
+            if (ALittle.String_Find(task.upper_name, key) != null)
+            {
+                ++count;
+                result[count] = task;
+            }
+        }
+        return result;
+    }
+
+    // 根据key_list查找
+    public fun FindTaskByUpperKeyList(List<string> key_list) : List<Task>
+    {
+        var result = new List<Task>();
+        var count = 0;
+        for (var id, task in this._task_map)
+        {
+            var find = true;
+            var init = 1;
+            for (var index, key in key_list)
+            {
+                var pos = ALittle.String_Find(task.upper_name, key, init);
+                if (pos == null)
+                {
+                    find = false;
+                    break;
+                }
+
+                init = pos + ALittle.String_Len(key);
+            }
+
+            if (find)
+            {
+                count += 1;
+                result[count] = task;
+            }
+        }
+    
+        return result;
+    }
+
+    public fun FindTask(string key) : List<Task>
+    {
+        // 获取key
+        key = ALittle.String_Upper(key);
+
+        // 通过空格切割
+        var key_list = ALittle.String_SplitSepList(key, [" ", "\t"]);
+
+        if (key_list[1] == null)
+        	return this.FindTaskByUpperKey(key);
+        else
+            return this.FindTaskByUpperKeyList(key_list);
+    }
+
     public fun Shutdown()
     {
 
@@ -54,3 +115,34 @@ public class TaskManager
 }
 
 public var g_TaskManager = new TaskManager();
+
+public struct D_TaskInfo
+{
+    TaskInfo info;
+}
+
+public struct QQueryTask
+{
+    string key;
+}
+
+public struct AQueryTask
+{
+    List<D_TaskInfo> task_list;
+}
+
+[Http]
+public await static HandleQQueryTask(ALittle.IHttpReceiver sender, QQueryTask msg) : AQueryTask
+{
+    var rsp = new AQueryTask();
+    rsp.task_list = new List<D_TaskInfo>();
+
+    var task_list = g_TaskManager.FindTask(msg.key);
+    for (var index, task in task_list)
+    {
+        var info = new D_TaskInfo();
+        info.info = task.info;
+        ALittle.List_Push(rsp.task_list, info);
+    }
+    return rsp;
+}

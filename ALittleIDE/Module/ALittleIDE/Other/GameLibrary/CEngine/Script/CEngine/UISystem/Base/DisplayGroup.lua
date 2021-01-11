@@ -168,13 +168,6 @@ function ALittle.DisplayGroup:HasChild(child)
 	return child._show_parent == self or child._logic_parent == self
 end
 
-function ALittle.DisplayGroup.__getter:parent()
-	if self._logic_parent ~= nil then
-		return self._logic_parent
-	end
-	return self._show_parent
-end
-
 function ALittle.DisplayGroup:RemoveAllChild()
 	for index, value in ___ipairs(self._childs) do
 		value._show_parent = nil

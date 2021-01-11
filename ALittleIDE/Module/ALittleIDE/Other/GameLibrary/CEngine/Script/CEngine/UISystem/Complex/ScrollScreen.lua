@@ -94,24 +94,16 @@ function ALittle.ScrollScreen.__setter:container(value)
 		child_list_count = child_list_count + 1
 		child_list[child_list_count] = v
 	end
+	self._scroll_content:RemoveAllChild()
 	self._scroll_content:RemoveEventListener(___all_struct[-431205740], self, self.HandleContainerResize)
 	self._scroll_view:RemoveChild(self._scroll_content)
 	self._scroll_content = value
 	for k, v in ___ipairs(child_list) do
 		value:AddChild(v)
 	end
-	self._scroll_content:AddEventListener(___all_struct[-431205740], self, self.HandleContainerResize)
-	self._scroll_view:AddChild(self._scroll_content, 1)
-	self:AdjustScrollBar()
-end
-
-function ALittle.ScrollScreen:SetContainer(value)
-	if value == nil then
-		value = ALittle.DisplayGroup(self._ctrl_sys)
+	for k, child in ___ipairs(value.childs) do
+		child._logic_parent = self
 	end
-	self._scroll_content:RemoveEventListener(___all_struct[-431205740], self, self.HandleContainerResize)
-	self._scroll_view:RemoveChild(self._scroll_content)
-	self._scroll_content = value
 	self._scroll_content:AddEventListener(___all_struct[-431205740], self, self.HandleContainerResize)
 	self._scroll_view:AddChild(self._scroll_content, 1)
 	self:AdjustScrollBar()

@@ -520,8 +520,7 @@ protected class GBlueprint : ALittle.DisplayLayout
         root.detail_info = tree.GetDetailInfo();
         if (root.detail_info == null) return;
 
-        this._edit_scroll_screen.SetContainer(root.detail_info.tree);
-        this._edit_scroll_screen.AdjustScrollBar();
+        this._edit_scroll_screen.container = root.detail_info.tree;
         this._message_edit_dialog.visible = true;
         this._message_edit_dialog._user_data = link_info;
 

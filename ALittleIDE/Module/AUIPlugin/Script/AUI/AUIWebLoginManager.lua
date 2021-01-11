@@ -96,6 +96,10 @@ option_map = {}
 assert(ALittle.EventDispatcher, " extends class:ALittle.EventDispatcher is nil")
 AUIPlugin.AUIWebLoginManager = Lua.Class(ALittle.EventDispatcher, "AUIPlugin.AUIWebLoginManager")
 
+function AUIPlugin.AUIWebLoginManager.__getter:msg_client()
+	return self._msg_client
+end
+
 function AUIPlugin.AUIWebLoginManager:Setup(ip, port, is_logingate, config)
 	self._logingate_ip = ip
 	self._logingate_port = port

@@ -43,6 +43,8 @@ public class AUIWebLoginManager : ALittle.EventDispatcher
 
 	private ALittle.IJsonConfig _config;
 
+    public get msg_client() : ALittle.IMsgCommonTemplate { return this._msg_client; }
+
 	public fun Setup(string ip, int port, bool is_logingate, ALittle.IJsonConfig config)
 	{
 		// 登录网关

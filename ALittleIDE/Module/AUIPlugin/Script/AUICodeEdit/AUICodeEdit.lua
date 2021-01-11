@@ -1073,6 +1073,9 @@ function AUIPlugin.AUICodeEdit:HandleTextInput(event)
 		end
 		self:DispatchEvent(___all_struct[958494922], {})
 		if text ~= " " then
+			if text == "." then
+				self._complete_screen:Hide()
+			end
 			self._complete_screen:ShowComplete()
 		else
 			self._complete_screen:Hide()

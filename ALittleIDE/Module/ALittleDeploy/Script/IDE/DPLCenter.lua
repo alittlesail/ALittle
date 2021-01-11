@@ -51,9 +51,6 @@ function ALittleDeploy.DPLCenter:HandleQuit()
 end
 
 function ALittleDeploy.DPLCenter:HandleQuitImpl()
-	local result = g_AUITool:SaveNotice("提示", "是否保存当前项目?")
-	if result == "YES" then
-	end
 	ALittle.System_Exit()
 end
 ALittleDeploy.DPLCenter.HandleQuitImpl = Lua.CoWrap(ALittleDeploy.DPLCenter.HandleQuitImpl)

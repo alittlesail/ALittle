@@ -16,6 +16,10 @@ function ALittleDeploy.DPLUICenter:TCtor()
 	self._main_tab:DisableAllCloseButton()
 end
 
+function ALittleDeploy.DPLUICenter.__getter:task_center()
+	return self._task_center
+end
+
 function ALittleDeploy.DPLUICenter:HandleShortcutKey()
 end
 

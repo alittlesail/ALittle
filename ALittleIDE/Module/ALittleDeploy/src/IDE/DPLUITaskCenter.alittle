@@ -1,9 +1,22 @@
 
 namespace ALittleDeploy;
 
+protected struct TaskItemInfo
+{
+    ALittle.DisplayObject item;
+    DeployServer.D_TaskInfo info;
+    ALittle.DisplayObject _button;
+    ALittle.DisplayObject _status;
+}
+
 public class DPLUITaskCenter : ALittle.DisplayLayout
 {
 	private ALittle.Grid3 _task_grid3;		// 任务三宫格
+
+    private ALittle.DisplayObject _task_key;	// 搜索输入
+    private ALittle.ScrollList _scroll_list;	// 滚动屏
+
+    private Map<int, TaskItemInfo> _item_map = new Map<int, TaskItemInfo>();
 
 	public fun System_SetVDragCursor(ALittle.UIEvent event) { ALittle.System_SetVDragCursor(); }
 	public fun System_SetNormalCursor(ALittle.UIEvent event) { ALittle.System_SetNormalCursor(); }
@@ -20,4 +33,136 @@ public class DPLUITaskCenter : ALittle.DisplayLayout
 		if (up_size < 100) up_size = 100;
 		this._task_grid3.up_size = up_size;
 	}
+
+    public fun AddTaskItem(DeployServer.D_TaskInfo info)
+    {
+        var task_info = new TaskItemInfo();
+        task_info.item = g_Control.CreateControl{ALittle.DisplayObject}("dpl_task_item", task_info);
+        task_info.info = info;
+        task_info._button.text = info.task_name;
+        task_info._button._user_data = task_info;
+        task_info._button.AddEventListener(this, this.HandleItemRButtonDown);
+        this._scroll_list.AddChild(task_info.item);
+
+        if (info.status == DeployServer.TaskStatus.IDLE)
+        	task_info._status.text = "";
+        else
+            task_info._status.text = ALittle.Math_Floor(info.progress * 100) / 100 .."%";
+
+        this._item_map[info.task_id] = task_info;
+    }
+
+    private fun HandleItemRButtonDown(ALittle.UIRButtonDownEvent event)
+    {
+        var task_info:TaskItemInfo = event.target._user_data;
+
+        var menu = new AUIPlugin.AUIRightMenu();
+        if (task_info.info.status == DeployServer.TaskStatus.IDLE) menu.AddItem("执行", bind(this.HandleStartTask, this, task_info));
+        if (task_info.info.status == DeployServer.TaskStatus.IDLE) menu.AddItem("删除", bind(this.HandleDeleteTask, this, task_info));
+        menu.Show();
+    }
+
+    private async fun HandleStartTask(TaskItemInfo task_info)
+    {
+        var msg_client = g_DPLWebLoginManager.msg_client;
+        if (msg_client == null || !msg_client.IsConnected())
+        {
+            g_AUITool.ShowNotice("提示", "当前还未连接成功!");
+            return;
+        }
+
+        var msg = new DeployServer.C2SStartTask();
+        msg.task_id = task_info.info.task_id;
+        var error = DeployServer.HandleC2SStartTask(msg_client, msg);
+        if (error != null) g_AUITool.ShowNotice("提示", error);
+    }
+
+    private async fun HandleDeleteTask(TaskItemInfo task_info)
+    {
+        var msg_client = g_DPLWebLoginManager.msg_client;
+        if (msg_client == null || !msg_client.IsConnected())
+        {
+            g_AUITool.ShowNotice("提示", "当前还未连接成功!");
+            return;
+        }
+
+        var msg = new DeployServer.C2SDeleteTask();
+        msg.task_id = task_info.info.task_id;
+        var error = DeployServer.HandleC2SDeleteTask(msg_client, msg);
+        if (error != null) g_AUITool.ShowNotice("提示", error);
+    }
+
+    public fun RemoveTaskItem(int task_id)
+    {
+        var task_info = this._item_map[task_id];
+        if (task_info == null) return;
+        this._item_map[task_id] = null;
+
+        this._scroll_list.RemoveChild(task_info.item);
+    }
+
+    public fun RemoveAllTaskItem()
+    {
+        this._item_map = new Map<int, TaskItemInfo>();
+        this._scroll_list.RemoveAllChild();
+    }
+
+    public fun UpdateTaskStatus(DeployServer.NTaskStatus info)
+    {
+        var task_info = this._item_map[info.task_id];
+        if (task_info == null) return;
+
+        task_info.info.status = info.status;
+        task_info.info.progress = info.progress;
+
+        if (info.status == DeployServer.TaskStatus.IDLE)
+        	task_info._status.text = "";
+        else
+            task_info._status.text = ALittle.Math_Floor(info.progress * 100) / 100 .."%";
+    }
+
+    private async fun HandleNewTaskClick(ALittle.UIClickEvent event)
+    {
+        var msg_client = g_DPLWebLoginManager.msg_client;
+        if (msg_client == null || !msg_client.IsConnected())
+        {
+            g_AUITool.ShowNotice("提示", "当前还未连接成功!");
+            return;
+        }
+
+        var x, y = event.target.LocalToGlobal();
+        var result = g_AUITool.ShowRename("", x, y + event.target.height, 200);
+        if (result == null || result == "") return;
+
+        var msg = new DeployServer.C2SCreateTask();
+        msg.task_name = result;
+        var error = DeployServer.HandleC2SCreateTask(msg_client, msg);
+        if (error != null) g_AUITool.ShowNotice("提示", error);
+    }
+}
+
+[Msg]
+public static HandleS2CTaskList(ALittle.IMsgCommon sender, DeployServer.S2CTaskList msg)
+{
+    g_DPLCenter.center.task_center.RemoveAllTaskItem();
+    for (var index, info in msg.task_list)
+    	g_DPLCenter.center.task_center.AddTaskItem(info);
+}
+
+[Msg]
+public static HandleS2CCreateTask(ALittle.IMsgCommon sender, DeployServer.NCreateTask msg)
+{
+    g_DPLCenter.center.task_center.AddTaskItem(msg.task_info);
+}
+
+[Msg]
+public static HandleNTaskStatus(ALittle.IMsgCommon sender, DeployServer.NTaskStatus msg)
+{
+    g_DPLCenter.center.task_center.UpdateTaskStatus(msg);
+}
+
+[Msg]
+public static HandleNDeleteTask(ALittle.IMsgCommon sender, DeployServer.NDeleteTask msg)
+{
+    g_DPLCenter.center.task_center.RemoveTaskItem(msg.task_id);
 }

@@ -1,57 +1,57 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.ALittleDeploy == nil then _G.ALittleDeploy = {} end
-local ALittleDeploy = ALittleDeploy
+if _G.DeployServer == nil then _G.DeployServer = {} end
+local DeployServer = DeployServer
 local Lua = Lua
 local ALittle = ALittle
 local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(-2127477562, "ALittleDeploy.QSettingInfo", {
-name = "ALittleDeploy.QSettingInfo", ns_name = "ALittleDeploy", rl_name = "QSettingInfo", hash_code = -2127477562,
+ALittle.RegStruct(1161439561, "DeployServer.AGetSetting", {
+name = "DeployServer.AGetSetting", ns_name = "DeployServer", rl_name = "AGetSetting", hash_code = 1161439561,
 name_list = {"data"},
-type_list = {"ALittleDeploy.D_SettingInfo"},
+type_list = {"DeployServer.D_SettingInfo"},
 option_map = {}
 })
-ALittle.RegStruct(1869312477, "ALittleDeploy.D_SettingInfo", {
-name = "ALittleDeploy.D_SettingInfo", ns_name = "ALittleDeploy", rl_name = "D_SettingInfo", hash_code = 1869312477,
+ALittle.RegStruct(955867961, "DeployServer.ASettingInfo", {
+name = "DeployServer.ASettingInfo", ns_name = "DeployServer", rl_name = "ASettingInfo", hash_code = 955867961,
+name_list = {},
+type_list = {},
+option_map = {}
+})
+ALittle.RegStruct(-777308643, "DeployServer.QGetSetting", {
+name = "DeployServer.QGetSetting", ns_name = "DeployServer", rl_name = "QGetSetting", hash_code = -777308643,
+name_list = {},
+type_list = {},
+option_map = {}
+})
+ALittle.RegStruct(448683642, "DeployServer.D_SettingInfo", {
+name = "DeployServer.D_SettingInfo", ns_name = "DeployServer", rl_name = "D_SettingInfo", hash_code = 448683642,
 name_list = {"git_path","svn_path"},
 type_list = {"string","string"},
 option_map = {}
 })
-ALittle.RegStruct(1351115674, "ALittleDeploy.AGetSetting", {
-name = "ALittleDeploy.AGetSetting", ns_name = "ALittleDeploy", rl_name = "AGetSetting", hash_code = 1351115674,
+ALittle.RegStruct(103825275, "DeployServer.QSettingInfo", {
+name = "DeployServer.QSettingInfo", ns_name = "DeployServer", rl_name = "QSettingInfo", hash_code = 103825275,
 name_list = {"data"},
-type_list = {"ALittleDeploy.D_SettingInfo"},
-option_map = {}
-})
-ALittle.RegStruct(-777126020, "ALittleDeploy.QGetSetting", {
-name = "ALittleDeploy.QGetSetting", ns_name = "ALittleDeploy", rl_name = "QGetSetting", hash_code = -777126020,
-name_list = {},
-type_list = {},
-option_map = {}
-})
-ALittle.RegStruct(50637560, "ALittleDeploy.ASettingInfo", {
-name = "ALittleDeploy.ASettingInfo", ns_name = "ALittleDeploy", rl_name = "ASettingInfo", hash_code = 50637560,
-name_list = {},
-type_list = {},
+type_list = {"DeployServer.D_SettingInfo"},
 option_map = {}
 })
 
-function ALittleDeploy.HandleQGetSetting(sender, msg)
+function DeployServer.HandleQGetSetting(sender, msg)
 	local ___COROUTINE = coroutine.running()
 	local rsp = {}
-	rsp.data = g_KeyValueManager:GetConfig(___all_struct[1869312477], "setting", nil)
+	rsp.data = g_KeyValueManager:GetConfig(___all_struct[448683642], "setting", nil)
 	return rsp
 end
 
-ALittle.RegHttpCallback("ALittleDeploy.QGetSetting", ALittleDeploy.HandleQGetSetting)
-function ALittleDeploy.HandleQSettingInfo(sender, msg)
+ALittle.RegHttpCallback("DeployServer.QGetSetting", DeployServer.HandleQGetSetting)
+function DeployServer.HandleQSettingInfo(sender, msg)
 	local ___COROUTINE = coroutine.running()
 	g_KeyValueManager:SetConfig("setting", msg.data)
 	return {}
 end
 
-ALittle.RegHttpCallback("ALittleDeploy.QSettingInfo", ALittleDeploy.HandleQSettingInfo)
+ALittle.RegHttpCallback("DeployServer.QSettingInfo", DeployServer.HandleQSettingInfo)
 end

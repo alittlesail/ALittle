@@ -13,6 +13,12 @@ public class IDEAttrEventItem : ALittle.DisplayLayout
         this._dialog = dialog;
         this._name.text = name;
         this._handle.text = handle;
+        this._name.AddEventListener(this, this.HandleTabKey);
+    }
+
+    private fun HandleTabKey(ALittle.UITabKeyEvent event)
+    {
+        this._handle.focus = true;
     }
     
     private fun HandleDeleteClick(ALittle.UIClickEvent event)

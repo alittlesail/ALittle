@@ -4,12 +4,114 @@ if _G.ALittleDeploy == nil then _G.ALittleDeploy = {} end
 local ALittleDeploy = ALittleDeploy
 local Lua = Lua
 local ALittle = ALittle
+local ___rawset = rawset
 local ___pairs = pairs
 local ___ipairs = ipairs
+local ___all_struct = ALittle.GetAllStruct()
 
+ALittle.RegStruct(-2092771429, "ALittleDeploy.TaskItemInfo", {
+name = "ALittleDeploy.TaskItemInfo", ns_name = "ALittleDeploy", rl_name = "TaskItemInfo", hash_code = -2092771429,
+name_list = {"item","info","_button","_status"},
+type_list = {"ALittle.DisplayObject","DeployServer.D_TaskInfo","ALittle.DisplayObject","ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(2082241964, "DeployServer.C2SStartTask", {
+name = "DeployServer.C2SStartTask", ns_name = "DeployServer", rl_name = "C2SStartTask", hash_code = 2082241964,
+name_list = {"task_id"},
+type_list = {"int"},
+option_map = {}
+})
+ALittle.RegStruct(-2035971543, "DeployServer.D_JobInfo", {
+name = "DeployServer.D_JobInfo", ns_name = "DeployServer", rl_name = "D_JobInfo", hash_code = -2035971543,
+name_list = {"job_type","status","progress"},
+type_list = {"int","int","double"},
+option_map = {}
+})
+ALittle.RegStruct(-1533563228, "DeployServer.S2CCreateTask", {
+name = "DeployServer.S2CCreateTask", ns_name = "DeployServer", rl_name = "S2CCreateTask", hash_code = -1533563228,
+name_list = {},
+type_list = {},
+option_map = {}
+})
+ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
+name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
+name = "ALittle.UIButtonEvent", ns_name = "ALittle", rl_name = "UIButtonEvent", hash_code = -1347278145,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-1294478047, "DeployServer.S2CDeleteTask", {
+name = "DeployServer.S2CDeleteTask", ns_name = "DeployServer", rl_name = "S2CDeleteTask", hash_code = -1294478047,
+name_list = {},
+type_list = {},
+option_map = {}
+})
+ALittle.RegStruct(1287526271, "DeployServer.C2SCreateTask", {
+name = "DeployServer.C2SCreateTask", ns_name = "DeployServer", rl_name = "C2SCreateTask", hash_code = 1287526271,
+name_list = {"task_name"},
+type_list = {"string"},
+option_map = {}
+})
+ALittle.RegStruct(-1243553967, "DeployServer.NCreateTask", {
+name = "DeployServer.NCreateTask", ns_name = "DeployServer", rl_name = "NCreateTask", hash_code = -1243553967,
+name_list = {"task_info"},
+type_list = {"DeployServer.D_TaskInfo"},
+option_map = {}
+})
+ALittle.RegStruct(-1164681133, "DeployServer.NDeleteTask", {
+name = "DeployServer.NDeleteTask", ns_name = "DeployServer", rl_name = "NDeleteTask", hash_code = -1164681133,
+name_list = {"task_id"},
+type_list = {"int"},
+option_map = {}
+})
+ALittle.RegStruct(816033453, "DeployServer.NTaskStatus", {
+name = "DeployServer.NTaskStatus", ns_name = "DeployServer", rl_name = "NTaskStatus", hash_code = 816033453,
+name_list = {"task_id","status","progress"},
+type_list = {"int","int","double"},
+option_map = {}
+})
+ALittle.RegStruct(808269380, "DeployServer.C2SDeleteTask", {
+name = "DeployServer.C2SDeleteTask", ns_name = "DeployServer", rl_name = "C2SDeleteTask", hash_code = 808269380,
+name_list = {"task_id"},
+type_list = {"int"},
+option_map = {}
+})
+ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
+name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
+name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
+type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(625732643, "DeployServer.S2CStartTask", {
+name = "DeployServer.S2CStartTask", ns_name = "DeployServer", rl_name = "S2CStartTask", hash_code = 625732643,
+name_list = {},
+type_list = {},
+option_map = {}
+})
+ALittle.RegStruct(-542744414, "DeployServer.S2CTaskList", {
+name = "DeployServer.S2CTaskList", ns_name = "DeployServer", rl_name = "S2CTaskList", hash_code = -542744414,
+name_list = {"task_list"},
+type_list = {"List<DeployServer.D_TaskInfo>"},
+option_map = {}
+})
+ALittle.RegStruct(390627548, "DeployServer.D_TaskInfo", {
+name = "DeployServer.D_TaskInfo", ns_name = "DeployServer", rl_name = "D_TaskInfo", hash_code = 390627548,
+name_list = {"task_id","task_name","task_desc","web_hook","create_time","status","progress","job_list"},
+type_list = {"int","string","string","List<string>","int","int","double","List<DeployServer.D_JobInfo>"},
+option_map = {}
+})
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 ALittleDeploy.DPLUITaskCenter = Lua.Class(ALittle.DisplayLayout, "ALittleDeploy.DPLUITaskCenter")
+
+function ALittleDeploy.DPLUITaskCenter:Ctor()
+	___rawset(self, "_item_map", {})
+end
 
 function ALittleDeploy.DPLUITaskCenter:System_SetVDragCursor(event)
 	ALittle.System_SetVDragCursor()
@@ -40,4 +142,133 @@ function ALittleDeploy.DPLUITaskCenter:HandleTaskGrid3ResizeDrag(event)
 	self._task_grid3.up_size = up_size
 end
 
+function ALittleDeploy.DPLUITaskCenter:AddTaskItem(info)
+	local task_info = {}
+	task_info.item = ALittleDeploy.g_Control:CreateControl("dpl_task_item", task_info)
+	task_info.info = info
+	task_info._button.text = info.task_name
+	task_info._button._user_data = task_info
+	task_info._button:AddEventListener(___all_struct[-641444818], self, self.HandleItemRButtonDown)
+	self._scroll_list:AddChild(task_info.item)
+	if info.status == 0 then
+		task_info._status.text = ""
+	else
+		task_info._status.text = ALittle.Math_Floor(info.progress * 100) / 100 .. "%"
+	end
+	self._item_map[info.task_id] = task_info
+end
+
+function ALittleDeploy.DPLUITaskCenter:HandleItemRButtonDown(event)
+	local task_info = event.target._user_data
+	local menu = AUIPlugin.AUIRightMenu()
+	if task_info.info.status == 0 then
+		menu:AddItem("执行", Lua.Bind(self.HandleStartTask, self, task_info))
+	end
+	if task_info.info.status == 0 then
+		menu:AddItem("删除", Lua.Bind(self.HandleDeleteTask, self, task_info))
+	end
+	menu:Show()
+end
+
+function ALittleDeploy.DPLUITaskCenter:HandleStartTask(task_info)
+	local msg_client = ALittleDeploy.g_DPLWebLoginManager.msg_client
+	if msg_client == nil or not msg_client:IsConnected() then
+		g_AUITool:ShowNotice("提示", "当前还未连接成功!")
+		return
+	end
+	local msg = {}
+	msg.task_id = task_info.info.task_id
+	local error = ALittle.IMsgCommon.InvokeRPC(2082241964, msg_client, msg)
+	if error ~= nil then
+		g_AUITool:ShowNotice("提示", error)
+	end
+end
+ALittleDeploy.DPLUITaskCenter.HandleStartTask = Lua.CoWrap(ALittleDeploy.DPLUITaskCenter.HandleStartTask)
+
+function ALittleDeploy.DPLUITaskCenter:HandleDeleteTask(task_info)
+	local msg_client = ALittleDeploy.g_DPLWebLoginManager.msg_client
+	if msg_client == nil or not msg_client:IsConnected() then
+		g_AUITool:ShowNotice("提示", "当前还未连接成功!")
+		return
+	end
+	local msg = {}
+	msg.task_id = task_info.info.task_id
+	local error = ALittle.IMsgCommon.InvokeRPC(808269380, msg_client, msg)
+	if error ~= nil then
+		g_AUITool:ShowNotice("提示", error)
+	end
+end
+ALittleDeploy.DPLUITaskCenter.HandleDeleteTask = Lua.CoWrap(ALittleDeploy.DPLUITaskCenter.HandleDeleteTask)
+
+function ALittleDeploy.DPLUITaskCenter:RemoveTaskItem(task_id)
+	local task_info = self._item_map[task_id]
+	if task_info == nil then
+		return
+	end
+	self._item_map[task_id] = nil
+	self._scroll_list:RemoveChild(task_info.item)
+end
+
+function ALittleDeploy.DPLUITaskCenter:RemoveAllTaskItem()
+	self._item_map = {}
+	self._scroll_list:RemoveAllChild()
+end
+
+function ALittleDeploy.DPLUITaskCenter:UpdateTaskStatus(info)
+	local task_info = self._item_map[info.task_id]
+	if task_info == nil then
+		return
+	end
+	task_info.info.status = info.status
+	task_info.info.progress = info.progress
+	if info.status == 0 then
+		task_info._status.text = ""
+	else
+		task_info._status.text = ALittle.Math_Floor(info.progress * 100) / 100 .. "%"
+	end
+end
+
+function ALittleDeploy.DPLUITaskCenter:HandleNewTaskClick(event)
+	local msg_client = ALittleDeploy.g_DPLWebLoginManager.msg_client
+	if msg_client == nil or not msg_client:IsConnected() then
+		g_AUITool:ShowNotice("提示", "当前还未连接成功!")
+		return
+	end
+	local x, y = event.target:LocalToGlobal()
+	local result = g_AUITool:ShowRename("", x, y + event.target.height, 200)
+	if result == nil or result == "" then
+		return
+	end
+	local msg = {}
+	msg.task_name = result
+	local error = ALittle.IMsgCommon.InvokeRPC(1287526271, msg_client, msg)
+	if error ~= nil then
+		g_AUITool:ShowNotice("提示", error)
+	end
+end
+ALittleDeploy.DPLUITaskCenter.HandleNewTaskClick = Lua.CoWrap(ALittleDeploy.DPLUITaskCenter.HandleNewTaskClick)
+
+function ALittleDeploy.HandleS2CTaskList(sender, msg)
+	ALittleDeploy.g_DPLCenter.center.task_center:RemoveAllTaskItem()
+	for index, info in ___ipairs(msg.task_list) do
+		ALittleDeploy.g_DPLCenter.center.task_center:AddTaskItem(info)
+	end
+end
+
+ALittle.RegMsgCallback(-542744414, ALittleDeploy.HandleS2CTaskList)
+function ALittleDeploy.HandleS2CCreateTask(sender, msg)
+	ALittleDeploy.g_DPLCenter.center.task_center:AddTaskItem(msg.task_info)
+end
+
+ALittle.RegMsgCallback(-1243553967, ALittleDeploy.HandleS2CCreateTask)
+function ALittleDeploy.HandleNTaskStatus(sender, msg)
+	ALittleDeploy.g_DPLCenter.center.task_center:UpdateTaskStatus(msg)
+end
+
+ALittle.RegMsgCallback(816033453, ALittleDeploy.HandleNTaskStatus)
+function ALittleDeploy.HandleNDeleteTask(sender, msg)
+	ALittleDeploy.g_DPLCenter.center.task_center:RemoveTaskItem(msg.task_id)
+end
+
+ALittle.RegMsgCallback(-1164681133, ALittleDeploy.HandleNDeleteTask)
 end

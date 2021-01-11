@@ -1,7 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.ALittleDeploy == nil then _G.ALittleDeploy = {} end
-local ALittleDeploy = ALittleDeploy
+if _G.DeployServer == nil then _G.DeployServer = {} end
+local DeployServer = DeployServer
 local Lua = Lua
 local ALittle = ALittle
 local ___rawset = rawset
@@ -9,31 +9,31 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(-761159939, "ALittleDeploy.TextContent", {
-name = "ALittleDeploy.TextContent", ns_name = "ALittleDeploy", rl_name = "TextContent", hash_code = -761159939,
+ALittle.RegStruct(-1947700139, "DeployServer.KeyValueInfo", {
+name = "DeployServer.KeyValueInfo", ns_name = "DeployServer", rl_name = "KeyValueInfo", hash_code = -1947700139,
+name_list = {"key","value"},
+type_list = {"string","DeployServer.TextContent"},
+option_map = {primary="key"}
+})
+ALittle.RegStruct(1001867448, "DeployServer.TextContent", {
+name = "DeployServer.TextContent", ns_name = "DeployServer", rl_name = "TextContent", hash_code = 1001867448,
 name_list = {"text"},
 type_list = {"string"},
 option_map = {}
 })
-ALittle.RegStruct(274010638, "ALittleDeploy.KeyValueInfo", {
-name = "ALittleDeploy.KeyValueInfo", ns_name = "ALittleDeploy", rl_name = "KeyValueInfo", hash_code = 274010638,
-name_list = {"key","value"},
-type_list = {"string","ALittleDeploy.TextContent"},
-option_map = {primary="key"}
-})
 
-ALittleDeploy.KeyValueManager = Lua.Class(nil, "ALittleDeploy.KeyValueManager")
+DeployServer.KeyValueManager = Lua.Class(nil, "DeployServer.KeyValueManager")
 
-function ALittleDeploy.KeyValueManager:Ctor()
+function DeployServer.KeyValueManager:Ctor()
 	___rawset(self, "_map", {})
 end
 
-function ALittleDeploy.KeyValueManager:Setup()
+function DeployServer.KeyValueManager:Setup()
 	local ___COROUTINE = coroutine.running()
-	local error = A_MysqlSystem:CreateIfNotExit(___all_struct[274010638])
+	local error = A_MysqlSystem:CreateIfNotExit(___all_struct[-1947700139])
 	Lua.Assert(error == nil, error)
 	local list
-	error, list = A_MysqlSystem:SelectListFromByMap(___all_struct[274010638], {})
+	error, list = A_MysqlSystem:SelectListFromByMap(___all_struct[-1947700139], {})
 	Lua.Assert(error == nil, error)
 	for index, info in ___ipairs(list) do
 		local succeed = false
@@ -50,20 +50,20 @@ function ALittleDeploy.KeyValueManager:Setup()
 	end
 end
 
-function ALittleDeploy.KeyValueManager:SetConfig(key, value)
+function DeployServer.KeyValueManager:SetConfig(key, value)
 	self._map[key] = value
 	local info = {}
 	info.key = key
 	info.value = {}
 	info.value.text = ajson.encode(value)
-	local error = A_MysqlSystem:UpdateOne(___all_struct[274010638], info, "key", key)
+	local error = A_MysqlSystem:UpdateOne(___all_struct[-1947700139], info, "key", key)
 	if error ~= nil then
 		ALittle.Error(error)
 	end
 end
-ALittleDeploy.KeyValueManager.SetConfig = Lua.CoWrap(ALittleDeploy.KeyValueManager.SetConfig)
+DeployServer.KeyValueManager.SetConfig = Lua.CoWrap(DeployServer.KeyValueManager.SetConfig)
 
-function ALittleDeploy.KeyValueManager:GetConfig(T, key, default)
+function DeployServer.KeyValueManager:GetConfig(T, key, default)
 	local value = self._map[key]
 	if value ~= nil then
 		return value
@@ -71,11 +71,11 @@ function ALittleDeploy.KeyValueManager:GetConfig(T, key, default)
 	return default
 end
 
-function ALittleDeploy.KeyValueManager:Shutdown()
+function DeployServer.KeyValueManager:Shutdown()
 end
 
-_G.g_KeyValueManager = ALittleDeploy.KeyValueManager()
-ALittleDeploy.KeyValueType = {
+_G.g_KeyValueManager = DeployServer.KeyValueManager()
+DeployServer.KeyValueType = {
 	SETTING = "setting",
 }
 

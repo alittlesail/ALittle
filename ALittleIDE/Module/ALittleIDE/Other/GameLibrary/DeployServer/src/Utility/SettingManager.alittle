@@ -1,5 +1,5 @@
 
-namespace ALittleDeploy;
+namespace DeployServer;
 
 public struct D_SettingInfo
 {

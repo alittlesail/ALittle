@@ -1,26 +1,9 @@
 
-namespace ALittleDeploy;
-
-protected struct JobInfo
-{
-    int job_type;		// 任务类型
-}
-
-protected struct TaskInfo
-{
-    option primary = "task_id";
-    int task_id;          			// 版本ID
-    string task_name;				// 任务名称
-    string task_desc;				// 任务描述
-    Map<string, bool> web_hook;	   // web推送的项目url
-    List<JobInfo> job_list;			// 任务列表
-    int create_time;      			// 创建时间
-}
+namespace DeployServer;
 
 public class TaskManager
 {
     private int _max_task_id = 0;
-    private int _max_job_id = 0;
 
     public Map<int, Task> _task_map = new Map<int, Task>();
 
@@ -36,7 +19,58 @@ public class TaskManager
 
         // 开始构建任务列表
         for (var index, task_info in task_list)
+        {
             this._task_map[task_info.task_id] = new Task(task_info);
+            if (this._max_task_id < task_info.task_id) this._max_task_id = task_info.task_id;
+        }
+
+        A_WebAccountManager.AddEventListener(this, this.HandleAccountLogin);
+    }
+
+    private fun HandleAccountLogin(ALittle.WebAccountLoginEvent event)
+    {
+        var info = new S2CTaskList();
+        info.task_list = new List<D_TaskInfo>();
+        for (var id, task in this._task_map)
+            ALittle.List_Push(info.task_list, task.data_info);
+        event.account.SendMsg(info);
+    }
+
+    public await fun HandleCreateTask(string task_name)
+    {
+        ++this._max_task_id;
+        var task_info = new TaskInfo();
+        task_info.task_id = this._max_task_id;
+        task_info.task_name = task_name;
+        task_info.create_time = ALittle.Time_GetCurTime();
+        var error = A_MysqlSystem.InsertInto(task_info);
+        assert(error == null, error);
+
+        // 创建任务
+        var task = new Task(task_info);
+        this._task_map[task_info.task_id] = task;
+
+        // 将消息发给所有账号
+        var msg = new NCreateTask();
+        msg.task_info = task.data_info;
+        A_WebAccountManager.SendMsgToAll(msg);
+    }
+
+    public await fun HandleDeleteTask(int task_id)
+    {
+        var task = this._task_map[task_id];
+        assert (task != null, "任务不存在");
+        assert (task.status == TaskStatus.IDLE, "任务不在空闲状态");
+
+        var error = A_MysqlSystem.DeleteFromByKey{TaskInfo}("task_id", task_id);
+        assert(error == null, error);
+
+        this._task_map[task_id] = null;
+
+        // 将消息发给所有账号
+        var msg = new NDeleteTask();
+        msg.task_id = task_id;
+        A_WebAccountManager.SendMsgToAll(msg);
     }
 
     public fun GetTask(int task_id) : Task { return this._task_map[task_id]; }
@@ -116,33 +150,53 @@ public class TaskManager
 
 public var g_TaskManager = new TaskManager();
 
-public struct D_TaskInfo
-{
-    TaskInfo info;
-}
 
-public struct QQueryTask
-{
-    string key;
-}
-
-public struct AQueryTask
+public struct S2CTaskList
 {
     List<D_TaskInfo> task_list;
 }
 
-[Http]
-public await static HandleQQueryTask(ALittle.IHttpReceiver sender, QQueryTask msg) : AQueryTask
+public struct C2SCreateTask
 {
-    var rsp = new AQueryTask();
-    rsp.task_list = new List<D_TaskInfo>();
+    string task_name;
+}
 
-    var task_list = g_TaskManager.FindTask(msg.key);
-    for (var index, task in task_list)
-    {
-        var info = new D_TaskInfo();
-        info.info = task.info;
-        ALittle.List_Push(rsp.task_list, info);
-    }
-    return rsp;
+public struct S2CCreateTask
+{
+}
+
+public struct NCreateTask
+{
+    D_TaskInfo task_info;
+}
+
+[Msg]
+public await static HandleC2SCreateTask(ALittle.IMsgCommon sender, C2SCreateTask msg) : S2CCreateTask
+{
+    A_WebAccountManager.CheckLoginByClient(sender);
+    g_TaskManager.HandleCreateTask(msg.task_name);
+    return new S2CCreateTask();
+}
+
+public struct C2SDeleteTask
+{
+    int task_id;
+}
+
+public struct S2CDeleteTask
+{
+
+}
+
+public struct NDeleteTask
+{
+    int task_id;
+}
+
+[Msg]
+public await static HandleC2SDeleteTask(ALittle.IMsgCommon sender, C2SDeleteTask msg) : S2CDeleteTask
+{
+    A_WebAccountManager.CheckLoginByClient(sender);
+    g_TaskManager.HandleDeleteTask(msg.task_id);
+    return new S2CDeleteTask();
 }

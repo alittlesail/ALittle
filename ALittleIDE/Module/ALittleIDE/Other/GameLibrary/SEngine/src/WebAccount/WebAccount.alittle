@@ -80,6 +80,13 @@ public class WebAccount
     public fun GetAccountName() : string { return this._base_info.account_name; }
     public fun GetClient() : MsgReceiver { return this._client; }
 
+    // 发送数据包
+    public fun SendMsg<T:struct>(T msg)
+    {
+        if (this._client == null) return;
+        this._client.SendMsg(msg);
+    }
+
     protected await fun UpdateRoleInfo()
     {
         // 获取基本信息

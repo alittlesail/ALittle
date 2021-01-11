@@ -1047,7 +1047,11 @@ public class AUICodeEdit : ALittle.DisplayLayout
             this.DispatchEvent(new ALittle.UIChangedEvent());
 
             if (text != " ")
-            	this._complete_screen.ShowComplete();
+            {
+                if (text == ".")
+                    this._complete_screen.Hide();
+                this._complete_screen.ShowComplete();
+            }
             else
             	this._complete_screen.Hide();
             this._param_dialog.ShowParamList();

@@ -26,10 +26,22 @@ name_list = {},
 type_list = {},
 option_map = {}
 })
+ALittle.RegStruct(-1393745450, "ALittle.WebAccountLogoutEvent", {
+name = "ALittle.WebAccountLogoutEvent", ns_name = "ALittle", rl_name = "WebAccountLogoutEvent", hash_code = -1393745450,
+name_list = {"target","account"},
+type_list = {"ALittle.EventDispatcher","ALittle.WebAccount"},
+option_map = {}
+})
 ALittle.RegStruct(-1373673802, "ALittle.QWebChangePassword", {
 name = "ALittle.QWebChangePassword", ns_name = "ALittle", rl_name = "QWebChangePassword", hash_code = -1373673802,
 name_list = {"old_password","new_password"},
 type_list = {"string","string"},
+option_map = {}
+})
+ALittle.RegStruct(-1353883986, "ALittle.WebAccountLoginEvent", {
+name = "ALittle.WebAccountLoginEvent", ns_name = "ALittle", rl_name = "WebAccountLoginEvent", hash_code = -1353883986,
+name_list = {"target","account"},
+type_list = {"ALittle.EventDispatcher","ALittle.WebAccount"},
 option_map = {}
 })
 ALittle.RegStruct(898014419, "ALittle.QWebLogin", {
@@ -63,7 +75,8 @@ type_list = {"string","string","string","string","string","int","int","int","int
 option_map = {primary="account_id",unique="account_name"}
 })
 
-ALittle.WebAccountManager = Lua.Class(nil, "ALittle.WebAccountManager")
+assert(ALittle.EventDispatcher, " extends class:ALittle.EventDispatcher is nil")
+ALittle.WebAccountManager = Lua.Class(ALittle.EventDispatcher, "ALittle.WebAccountManager")
 
 function ALittle.WebAccountManager:Ctor()
 	___rawset(self, "_id_map_account", {})
@@ -127,6 +140,12 @@ function ALittle.WebAccountManager:GetAccountById(account_id)
 	return self._id_map_account[account_id]
 end
 
+function ALittle.WebAccountManager:SendMsgToAll(T, msg)
+	for id, account in ___pairs(self._id_map_account) do
+		account:SendMsg(T, msg)
+	end
+end
+
 function ALittle.WebAccountManager:GetAccountByClient(client)
 	return self._client_map_account[client]
 end
@@ -153,6 +172,9 @@ function ALittle.WebAccountManager:ForceLogout(account_id, reason)
 	if account == nil then
 		return false
 	end
+	local logout_event = {}
+	logout_event.account = account
+	self:DispatchEvent(___all_struct[-1393745450], logout_event)
 	account:ForceLogout(reason)
 	account:LogoutActionSystem()
 	self:RemoveAccount(account_id)
@@ -181,6 +203,9 @@ function ALittle.WebAccountManager:HandleClientDisconnect(event)
 	if account == nil then
 		return
 	end
+	local logout_event = {}
+	logout_event.account = account
+	self:DispatchEvent(___all_struct[-245025090], event)
 	event.msg_receiver._web_account_id = ""
 	account:LogoutActionSystem()
 	self:RemoveAccount(account:GetID())
@@ -227,6 +252,9 @@ function ALittle.HandleQWebLogin(client, msg)
 	A_WebAccountManager:AddAccount(web_account)
 	receiver._web_account_id = base_info.account_id
 	web_account:LoginActionSystem()
+	local login_event = {}
+	login_event.account = web_account
+	A_WebAccountManager:DispatchEvent(___all_struct[-1353883986], login_event)
 	A_WebAccountManager._update_route:UpdateRouteWeight(A_WebAccountManager._account_count)
 	return {}
 end
@@ -238,6 +266,9 @@ function ALittle.HandleQWebLogout(client, msg)
 	Lua.Assert(receiver._web_account_id ~= nil and receiver._web_account_id ~= "", "当前连接还未登录")
 	local web_account = A_WebAccountManager:GetAccountByClient(receiver)
 	Lua.Assert(web_account ~= nil, "账号还未登录")
+	local logout_event = {}
+	logout_event.account = web_account
+	A_WebAccountManager:DispatchEvent(___all_struct[-1393745450], logout_event)
 	receiver._web_account_id = ""
 	web_account:LogoutActionSystem()
 	A_WebAccountManager:RemoveAccount(web_account:GetID())

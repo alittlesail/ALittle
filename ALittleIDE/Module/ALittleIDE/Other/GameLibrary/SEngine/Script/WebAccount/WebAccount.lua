@@ -79,6 +79,13 @@ function ALittle.WebAccount:GetClient()
 	return self._client
 end
 
+function ALittle.WebAccount:SendMsg(T, msg)
+	if self._client == nil then
+		return
+	end
+	self._client:SendMsg(T, msg)
+end
+
 function ALittle.WebAccount:UpdateRoleInfo()
 	local ___COROUTINE = coroutine.running()
 	do

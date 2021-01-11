@@ -58,11 +58,11 @@ class DPLCenter
 
     private async fun HandleQuitImpl()
     {
-        var result = g_AUITool.SaveNotice("提示", "是否保存当前项目?");
-        if (result == AUIPlugin.AUIToolOption.YES)
-        {
+        // var result = g_AUITool.SaveNotice("提示", "是否保存当前项目?");
+        // if (result == AUIPlugin.AUIToolOption.YES)
+        // {
             // TODO
-        }
+        // }
         ALittle.System_Exit();
     }
 }

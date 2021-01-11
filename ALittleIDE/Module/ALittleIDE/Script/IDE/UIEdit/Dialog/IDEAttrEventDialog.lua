@@ -6,7 +6,20 @@ local Lua = Lua
 local ALittle = ALittle
 local ___pairs = pairs
 local ___ipairs = ipairs
+local ___all_struct = ALittle.GetAllStruct()
 
+ALittle.RegStruct(2024735182, "ALittle.UITabKeyEvent", {
+name = "ALittle.UITabKeyEvent", ns_name = "ALittle", rl_name = "UITabKeyEvent", hash_code = 2024735182,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
+name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
 ALittleIDE.IDEAttrEventItem = Lua.Class(ALittle.DisplayLayout, "ALittleIDE.IDEAttrEventItem")
@@ -15,6 +28,11 @@ function ALittleIDE.IDEAttrEventItem:Init(dialog, name, handle)
 	self._dialog = dialog
 	self._name.text = name
 	self._handle.text = handle
+	self._name:AddEventListener(___all_struct[2024735182], self, self.HandleTabKey)
+end
+
+function ALittleIDE.IDEAttrEventItem:HandleTabKey(event)
+	self._handle.focus = true
 end
 
 function ALittleIDE.IDEAttrEventItem:HandleDeleteClick(event)

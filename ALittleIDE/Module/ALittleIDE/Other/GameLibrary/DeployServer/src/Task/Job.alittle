@@ -1,19 +1,89 @@
 
-namespace ALittleDeploy;
+namespace DeployServer;
+
+public enum JobType
+{
+    NONE = 0;
+}
+
+protected struct JobInfo
+{
+    int job_type;		// 任务类型
+    List<string> log;	// 日志列表
+    List<string> error;  // 错误信息
+}
+
+public enum JobStatus
+{
+    IDLE = 0;
+    DOING = 1;
+}
+
+public struct D_JobInfo
+{
+    int job_type;
+
+    int status;
+    double progress;	// 执行进度
+}
 
 protected class Job
 {
+    private Task _task;
     private JobInfo _info;
+    private int _status = 0;
+    private double _progress = 0;
 
-    public ctor(JobInfo info)
+    public ctor(Task task, JobInfo info)
     {
+        this._task = task;
         this._info = info;
     }
 
     public get info() : JobInfo { return this._info; }
+
+    public get data_info() : D_JobInfo
+    {
+        var data = new D_JobInfo();
+        data.job_type = this._info.job_type;
+        data.status = this._status;
+        data.progress = this._progress;
+        return data;
+    }
+
+    public await fun Doing() : string
+    {
+        this._status = JobStatus.DOING;
+        this._progress = 0;
+        this.SendStatus();
+
+        // 执行
+
+        this._status = JobStatus.IDLE;
+        this._progress = 1;
+        this.SendStatus();
+        return null;
+    }
+
+    private fun SendStatus()
+    {
+        var status_msg = new NJobStatus();
+        status_msg.task_id = this._task.info.task_id;
+        status_msg.status = this._status;
+        status_msg.progress = this._progress;
+        A_WebAccountManager.SendMsgToAll(status_msg);
+    }
 }
 
-protected static CreateJob(JobInfo info) : Job
+public struct NJobStatus
+{
+    int task_id;
+    int index;
+    int status;
+    double progress;
+}
+
+protected static CreateJob(Task task, JobInfo info) : Job
 {
     return null;
 }

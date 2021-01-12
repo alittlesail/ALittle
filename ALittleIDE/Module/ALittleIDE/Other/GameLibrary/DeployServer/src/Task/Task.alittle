@@ -117,11 +117,11 @@ protected class Task
 
         // 只保存最近的1000条记录
         var len = ALittle.List_Len(build_info.log_list);
-        if (len > 1000)
+        if (len > 100)
         {
             var new_list = new List<string>();
             var new_count = 0;
-            for (var i = len - 1000 + 1; i <= len; 1)
+            for (var i = len - 100 + 1; i <= len; 1)
             {
                 ++new_count;
             	new_list[new_count] = build_info.log_list[i];

@@ -81,6 +81,12 @@ name_list = {"task_id","task_name","task_desc","web_hook"},
 type_list = {"int","string","string","List<string>"},
 option_map = {}
 })
+ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
+name = "ALittle.UIChangedEvent", ns_name = "ALittle", rl_name = "UIChangedEvent", hash_code = 958494922,
+name_list = {"target"},
+type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
 ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
 name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
 name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
@@ -206,6 +212,10 @@ function ALittleDeploy.DPLUITaskDetail:HandleNewJobClick(event)
 	menu:Show()
 end
 
+function ALittleDeploy.DPLUITaskDetail:HandleStartTaskClick(event)
+	ALittleDeploy.g_DPLCenter.center.task_center:HandleStartTask(self._task_item)
+end
+
 function ALittleDeploy.DPLUITaskDetail:HandleNewBatchJob()
 	local dialog = ALittleDeploy.g_Control:CreateControl("batch_job_dialog")
 	dialog:Show(self._task_item.info.task_id, nil, nil)
@@ -231,6 +241,7 @@ function ALittleDeploy.DPLUITaskDetail:AddBuildItem(build_info)
 	build_item._button._user_data = build_item
 	build_item._button.group = self._build_group
 	build_item._button:AddEventListener(___all_struct[-641444818], self, self.HandleBuildRButtonDown)
+	build_item._button:AddEventListener(___all_struct[958494922], self, self.HandlePreSeeBuild)
 	build_item._download_button:AddEventListener(___all_struct[1800966813], self, self.HandleDownloadBuild)
 	build_item._download_button._user_data = build_item
 	self._build_list:AddChild(build_item.item)
@@ -271,6 +282,22 @@ function ALittleDeploy.DPLUITaskDetail:HandleBuildRButtonDown(event)
 	menu:AddItem("删除", Lua.Bind(self.HandleDeleteBuild, self, build_item, build_index))
 	menu:Show()
 end
+
+function ALittleDeploy.DPLUITaskDetail:HandlePreSeeBuild(event)
+	local build_item = event.target._user_data
+	local build_index = self._build_list:GetChildIndex(build_item.item)
+	ALittleDeploy.g_DPLCenter.center.task_center._build_edit.text = ""
+	local msg = {}
+	msg.task_id = self._task_item.info.task_id
+	msg.build_index = build_index
+	local sender = ALittleDeploy.g_DPLCenter:CreateHttpSender()
+	local error, rsp = ALittle.IHttpSender.Invoke("DeployServer.QPreSeeBuild", sender, msg)
+	if error ~= nil then
+		g_AUITool:ShowNotice("提示", error)
+	end
+	ALittleDeploy.g_DPLCenter.center.task_center._build_edit.text = ALittle.String_Join(rsp.log_list, "\r\n")
+end
+ALittleDeploy.DPLUITaskDetail.HandlePreSeeBuild = Lua.CoWrap(ALittleDeploy.DPLUITaskDetail.HandlePreSeeBuild)
 
 function ALittleDeploy.DPLUITaskDetail:HandleDownloadBuild(event)
 	if event.path == nil or event.path == "" then

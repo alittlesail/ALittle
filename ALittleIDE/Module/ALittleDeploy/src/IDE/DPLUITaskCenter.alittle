@@ -20,6 +20,7 @@ public class DPLUITaskCenter : ALittle.DisplayLayout
     private ALittle.ScrollList _scroll_list;	// 滚动屏
     private ALittle.TextRadioButtonGroup _group = new ALittle.TextRadioButtonGroup(); 
     private ALittle.DisplayLayout _task_detail_container;
+    public ALittle.DisplayObject _build_edit;
 
     private Map<int, TaskItemInfo> _item_map = new Map<int, TaskItemInfo>();
 
@@ -123,7 +124,7 @@ public class DPLUITaskCenter : ALittle.DisplayLayout
         }
     }
 
-    private async fun HandleStartTask(TaskItemInfo task_info)
+    public async fun HandleStartTask(TaskItemInfo task_info)
     {
         var msg_client = g_DPLWebLoginManager.msg_client;
         if (msg_client == null || !msg_client.IsConnected())

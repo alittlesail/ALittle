@@ -140,11 +140,16 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         if (error != null) g_AUITool.ShowNotice("提示", error);
     }
 
-    public fun HandleNewJobClick(ALittle.UIClickEvent event)
+    private fun HandleNewJobClick(ALittle.UIClickEvent event)
     {
         var menu = new AUIPlugin.AUIRightMenu();
         menu.AddItem("批处理", bind(this.HandleNewBatchJob, this));
         menu.Show();
+    }
+
+    private fun HandleStartTaskClick(ALittle.UIClickEvent event)
+    {
+        g_DPLCenter.center.task_center.HandleStartTask(this._task_item);
     }
 
     private fun HandleNewBatchJob()
@@ -176,6 +181,7 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         build_item._button._user_data = build_item;
         build_item._button.group = this._build_group;
         build_item._button.AddEventListener(this, this.HandleBuildRButtonDown);
+        build_item._button.AddEventListener(this, this.HandlePreSeeBuild);
         build_item._download_button.AddEventListener(this, this.HandleDownloadBuild);
         build_item._download_button._user_data = build_item;
         this._build_list.AddChild(build_item.item);
@@ -220,6 +226,23 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         var menu = new AUIPlugin.AUIRightMenu();
         menu.AddItem("删除", bind(this.HandleDeleteBuild, this, build_item, build_index));
         menu.Show();
+    }
+
+    private async fun HandlePreSeeBuild(ALittle.UIChangedEvent event)
+    {
+        var build_item = cast<BuildItemInfo>(event.target._user_data);
+        var build_index = this._build_list.GetChildIndex(build_item.item);
+
+        g_DPLCenter.center.task_center._build_edit.text = "";
+
+        var msg = new DeployServer.QPreSeeBuild();
+        msg.task_id = this._task_item.info.task_id;
+        msg.build_index = build_index;
+        var sender = g_DPLCenter.CreateHttpSender();
+        var error, rsp = DeployServer.HandlePreSeeBuild(sender, msg);
+        if (error != null) g_AUITool.ShowNotice("提示", error);
+
+        g_DPLCenter.center.task_center._build_edit.text = ALittle.String_Join(rsp.log_list, "\r\n");
     }
 
     private async fun HandleDownloadBuild(ALittle.UISystemSelectDirectoryEvent event)

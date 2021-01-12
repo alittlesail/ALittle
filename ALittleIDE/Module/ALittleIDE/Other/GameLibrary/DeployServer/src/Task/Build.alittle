@@ -24,3 +24,30 @@ public await static HandleDownloadBuild(ALittle.IHttpReceiver sender, QDownloadB
 
     return task.GetBuildPath(build_info.create_time), 0;
 }
+
+public struct QPreSeeBuild
+{
+    int task_id;
+    int build_index;
+}
+
+public struct APreSeeBuild
+{
+    int create_time;
+    List<string> log_list;
+}
+
+[Http]
+public await static HandlePreSeeBuild(ALittle.IHttpReceiver sender, QPreSeeBuild msg) : APreSeeBuild
+{
+    var task = g_TaskManager.GetTask(msg.task_id);
+    assert(task != null, "任务不存在");
+
+    var build_info = task.info.build_list[msg.build_index];
+    assert (build_info != null, "构建信息不存在");
+
+    var rsp = new APreSeeBuild();
+    rsp.log_list = build_info.log_list;
+    rsp.create_time = build_info.create_time;
+    return rsp;
+}

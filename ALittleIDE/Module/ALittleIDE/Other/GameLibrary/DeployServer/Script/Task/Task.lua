@@ -204,10 +204,10 @@ function DeployServer.Task:StartImpl()
 		log_file:close()
 	end
 	local len = ALittle.List_Len(build_info.log_list)
-	if len > 1000 then
+	if len > 100 then
 		local new_list = {}
 		local new_count = 0
-		local i = len - 1000 + 1
+		local i = len - 100 + 1
 		while true do
 			if not(i <= len) then break end
 			new_count = new_count + 1

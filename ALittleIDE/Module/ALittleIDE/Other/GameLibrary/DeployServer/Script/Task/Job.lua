@@ -84,12 +84,12 @@ function DeployServer.Job:Doing(build_info)
 	self:SendStatus()
 	local error, log = self:Execute(build_info)
 	if log ~= nil then
-		ALittle.List_Push(build_info.log_list, "Job Begin:" .. self._info.job_name)
+		ALittle.List_Push(build_info.log_list, "===>Job Begin:" .. self._info.job_name)
 		local log_list = ALittle.String_SplitSepList(log, {"\r", "\n"})
 		for index, log_content in ___ipairs(log_list) do
 			ALittle.List_Push(build_info.log_list, log_content)
 		end
-		ALittle.List_Push(build_info.log_list, "Job End")
+		ALittle.List_Push(build_info.log_list, "===>Job End")
 	end
 	self._status = 2
 	self._progress = 1

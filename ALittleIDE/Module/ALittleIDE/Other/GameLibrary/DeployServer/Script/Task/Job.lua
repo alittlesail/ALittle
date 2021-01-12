@@ -11,14 +11,14 @@ local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(-2035971543, "DeployServer.D_JobInfo", {
 name = "DeployServer.D_JobInfo", ns_name = "DeployServer", rl_name = "D_JobInfo", hash_code = -2035971543,
-name_list = {"job_type","status","progress"},
-type_list = {"int","int","double"},
+name_list = {"job_type","job_name","status","progress","batch_cmd","batch_param"},
+type_list = {"int","string","int","double","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(1544249038, "DeployServer.JobInfo", {
 name = "DeployServer.JobInfo", ns_name = "DeployServer", rl_name = "JobInfo", hash_code = 1544249038,
-name_list = {"job_type","log","error"},
-type_list = {"int","List<string>","List<string>"},
+name_list = {"job_type","job_name","batch_cmd","batch_param"},
+type_list = {"int","string","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(1462309182, "DeployServer.NJobStatus", {
@@ -30,11 +30,13 @@ option_map = {}
 
 DeployServer.JobType = {
 	NONE = 0,
+	BATCH = 1,
 }
 
 DeployServer.JobStatus = {
-	IDLE = 0,
+	WAITING = 0,
 	DOING = 1,
+	COMPLETED = 2,
 }
 
 DeployServer.Job = Lua.Class(nil, "DeployServer.Job")
@@ -53,9 +55,19 @@ end
 function DeployServer.Job.__getter:data_info()
 	local data = {}
 	data.job_type = self._info.job_type
+	data.job_name = self._info.job_name
 	data.status = self._status
 	data.progress = self._progress
 	return data
+end
+
+function DeployServer.Job:Modify(msg)
+	self._info.job_name = msg.job_name
+end
+
+function DeployServer.Job:Waiting()
+	self._status = 0
+	self:SendStatus()
 end
 
 function DeployServer.Job:Doing()
@@ -63,9 +75,15 @@ function DeployServer.Job:Doing()
 	self._status = 1
 	self._progress = 0
 	self:SendStatus()
-	self._status = 0
+	local error = self:Execute()
+	self._status = 2
 	self._progress = 1
 	self:SendStatus()
+	return error
+end
+
+function DeployServer.Job:Execute()
+	local ___COROUTINE = coroutine.running()
 	return nil
 end
 
@@ -78,6 +96,9 @@ function DeployServer.Job:SendStatus()
 end
 
 function DeployServer.CreateJob(task, info)
+	if info.job_type == 1 then
+		return DeployServer.BatchJob(task, info)
+	end
 	return nil
 end
 

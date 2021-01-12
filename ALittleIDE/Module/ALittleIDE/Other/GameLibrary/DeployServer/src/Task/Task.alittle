@@ -57,6 +57,12 @@ protected class Task
         }
     }
 
+    public async fun Save()
+    {
+        var error = A_MysqlSystem.UpdateOne(this._info, "task_id", this._info.task_id);
+        if (error != null) ALittle.Error(error);
+    }
+
     public fun Start() : string
     {
         if (this._status != TaskStatus.IDLE) return "当前任务不是空闲状态";
@@ -69,6 +75,10 @@ protected class Task
         this._status = TaskStatus.DOING;
         this._progress = 0;
         this.SendStatus();
+
+        // 全部标记为等待
+        for (var index, job in this._job_list)
+        	job.Waiting();
 
         for (var index, job in this._job_list)
         {
@@ -95,7 +105,6 @@ protected class Task
         msg.status = this._status;
         msg.progress = this._progress;
         A_WebAccountManager.SendMsgToAll(msg);
-
     }
 
     public get status() : int { return this._status; }
@@ -133,6 +142,78 @@ protected class Task
         ntf.task_desc = msg.task_desc;
         ntf.web_hook = msg.web_hook;
         A_WebAccountManager.SendMsgToAll(ntf);
+
+        this.Save();
+    }
+
+    public fun CreateJob(C2SCreateJob msg)
+    {
+        assert(this._status == TaskStatus.IDLE, "当前任务不是空闲状态");
+
+        var job_info = new JobInfo();
+        job_info.job_type = msg.job_type;
+        job_info.job_name = msg.job_name;
+
+        job_info.batch_cmd = msg.batch_cmd;
+        job_info.batch_param = msg.batch_param;
+
+        var job = CreateJob(this, job_info);
+        assert (job != null, "任务创建失败");
+
+        if (msg.job_index == null || msg.job_index <= 0 || msg.job_index > ALittle.List_Len(this._info.job_list))
+        {
+            ALittle.List_Push(this._info.job_list, job_info);
+            ALittle.List_Push(this._job_list, job);
+        }
+        else
+        {
+            ALittle.List_Insert(this._info.job_list, msg.job_index, job_info);
+            ALittle.List_Insert(this._job_list, msg.job_index, job);
+        }
+
+        var ntf = new NCreateJob();
+        ntf.task_id = this._info.task_id;
+        ntf.job_index = msg.job_index;
+        ntf.job_info = job.data_info;
+        A_WebAccountManager.SendMsgToAll(ntf);
+
+        this.Save();
+    }
+
+    public fun ModifyJob(C2SModifyJob msg)
+    {
+        assert(this._status == TaskStatus.IDLE, "当前任务不是空闲状态");
+
+        var job = this._job_list[msg.job_index];
+        assert(job != null, "任务不存在");
+
+        job.Modify(msg);
+
+        var ntf = new NModifyJob();
+        ntf.task_id = this._info.task_id;
+        ntf.job_index = msg.job_index;
+        ntf.job_info = job.data_info;
+        A_WebAccountManager.SendMsgToAll(ntf);
+
+        this.Save();
+    }
+
+    public fun DeleteJob(C2SDeleteJob msg)
+    {
+        assert(this._status == TaskStatus.IDLE, "当前任务不是空闲状态");
+
+        var job = this._job_list[msg.job_index];
+        assert(job != null, "任务不存在");
+
+        ALittle.List_Remove(this._job_list, msg.job_index);
+        ALittle.List_Remove(this._info.job_list, msg.job_index);
+
+        var ntf = new NDeleteJob();
+        ntf.task_id = this._info.task_id;
+        ntf.job_index = msg.job_index;
+        A_WebAccountManager.SendMsgToAll(ntf);
+
+        this.Save();
     }
 
     public get data_info() : D_TaskInfo
@@ -220,4 +301,102 @@ public await static HandleC2SUpdateTaskInfo(ALittle.IMsgCommon sender, C2SUpdate
     assert (task != null, "任务不存在");
     task.UpdateInfo(msg);
     return new S2CUpdateTaskInfo();
+}
+
+public struct C2SCreateJob
+{
+    int task_id;
+    int job_type;
+    int job_index;	// job所在的位置
+
+    string job_name;	// job名称
+
+    // 批处理
+    string batch_cmd;
+    string batch_param;
+}
+
+public struct S2CCreateJob
+{
+
+}
+
+public struct NCreateJob
+{
+    int task_id;
+    int job_index;
+    D_JobInfo job_info;
+}
+
+[Msg]
+public await static HandleC2SCreateJob(ALittle.IMsgCommon sender, C2SCreateJob msg) : S2CCreateJob
+{
+    A_WebAccountManager.CheckLoginByClient(sender);
+
+    var task = g_TaskManager.GetTask(msg.task_id);
+    assert (task != null, "任务不存在");
+    task.CreateJob(msg);
+    return new S2CCreateJob();
+}
+
+public struct C2SModifyJob
+{
+    int task_id;
+    int job_index;	// job所在的位置
+    string job_name;
+
+    // 批处理
+    string batch_cmd;
+    string batch_param;
+}
+
+public struct S2CModifyJob
+{
+
+}
+
+public struct NModifyJob
+{
+    int task_id;
+    int job_index;
+    D_JobInfo job_info;
+}
+
+[Msg]
+public await static HandleC2SModifyJob(ALittle.IMsgCommon sender, C2SModifyJob msg) : S2CModifyJob
+{
+    A_WebAccountManager.CheckLoginByClient(sender);
+
+    var task = g_TaskManager.GetTask(msg.task_id);
+    assert (task != null, "任务不存在");
+    task.ModifyJob(msg);
+    return new S2CModifyJob();
+}
+
+public struct C2SDeleteJob
+{
+    int task_id;
+    int job_index;	// job所在的位置
+}
+
+public struct S2CDeleteJob
+{
+
+}
+
+public struct NDeleteJob
+{
+    int task_id;
+    int job_index;
+}
+
+[Msg]
+public await static HandleC2SDeleteJob(ALittle.IMsgCommon sender, C2SDeleteJob msg) : S2CDeleteJob
+{
+    A_WebAccountManager.CheckLoginByClient(sender);
+
+    var task = g_TaskManager.GetTask(msg.task_id);
+    assert (task != null, "任务不存在");
+    task.DeleteJob(msg);
+    return new S2CDeleteJob();
 }

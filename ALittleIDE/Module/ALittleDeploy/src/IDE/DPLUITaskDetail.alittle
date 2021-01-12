@@ -1,21 +1,32 @@
 
 namespace ALittleDeploy;
 
+public struct JobItemInfo
+{
+    ALittle.DisplayObject item;
+    DeployServer.D_JobInfo info;
+
+    ALittle.DisplayObject _button;
+    ALittle.DisplayObject _status;
+}
+
 public class DPLUITaskDetail : ALittle.DisplayLayout
 {
-    private TaskItemInfo _item_info;
+    private TaskItemInfo _task_item;
+    private ALittle.TextRadioButtonGroup _group = new ALittle.TextRadioButtonGroup();
 
     private ALittle.DisplayObject _task_name_input;
     private ALittle.DisplayObject _task_desc_input;
     private ALittle.DisplayObject _webhook_input;
-
     private ALittle.DisplayObject _save_button;
 
-    public fun Init(TaskItemInfo item_info)
-    {
-        this._item_info = item_info;
+    private ALittle.ScrollList _scroll_list;
 
+    public fun Init(TaskItemInfo task_item)
+    {
+        this._task_item = task_item;
         this.UpdateTaskInfo();
+        this.RefreshJobInfo();
     }
 
     public fun Show()
@@ -23,9 +34,7 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         this.visible = true;
 
         if (!this._save_button.disabled)
-        {
             this.UpdateTaskInfo();
-        }
     }
 
     public fun Hide()
@@ -36,9 +45,34 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
     public fun UpdateTaskInfo()
     {
         this._save_button.disabled = true;
-        this._task_name_input.text = this._item_info.info.task_name;
-        this._task_desc_input.text = this._item_info.info.task_desc;
-        this._webhook_input.text = ALittle.String_Join(this._item_info.info.web_hook, "\n");
+        this._task_name_input.text = this._task_item.info.task_name;
+        this._task_desc_input.text = this._task_item.info.task_desc;
+        this._webhook_input.text = ALittle.String_Join(this._task_item.info.web_hook, "\n");
+    }
+
+    public fun UpdateJobInfo(int index)
+    {
+        var job_info = this._task_item.info.job_list[index];
+        if (job_info == null) return;
+
+        var job_item = cast<JobItemInfo>(this._scroll_list.childs[index]._user_data);
+        job_item.info = job_info;
+        this.RefreshJobItem(job_item);
+    }
+
+    public fun RemoveJobItem(int index)
+    {
+        var job_info = this._task_item.info.job_list[index];
+        if (job_info == null) return;
+
+        this._scroll_list.SpliceChild(index, 1);
+    }
+
+    private fun RefreshJobInfo()
+    {
+        this._scroll_list.RemoveAllChild();
+        for (var index, job_info in this._task_item.info.job_list)
+            this.AddJobItem(null, job_info);
     }
 
     private fun HandleTaskBaseChanged(ALittle.UIChangedEvent event)
@@ -46,7 +80,16 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         this._save_button.disabled = false;
     }
 
-    public async fun HandleTaskSaveClick(ALittle.UIClickEvent event)
+    public fun HandleTaskStart()
+    {
+        for (var index, child in this._scroll_list.childs)
+        {
+            var job_item = cast<JobItemInfo>(child._user_data);
+            job_item._status.text = "等待";
+        }
+    }
+
+    private async fun HandleTaskSaveClick(ALittle.UIClickEvent event)
     {
         var msg_client = g_DPLWebLoginManager.msg_client;
         if (msg_client == null || !msg_client.IsConnected())
@@ -62,11 +105,95 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         }
 
         var msg = new DeployServer.C2SUpdateTaskInfo();
-        msg.task_id = this._item_info.info.task_id;
+        msg.task_id = this._task_item.info.task_id;
         msg.task_name = this._task_name_input.text;
         msg.task_desc = this._task_desc_input.text;
         msg.web_hook = ALittle.String_SplitSepList(this._webhook_input.text, ["\r", "\n"]);
         var error = DeployServer.HandleC2SUpdateTaskInfo(msg_client, msg);
+        if (error != null) g_AUITool.ShowNotice("提示", error);
+    }
+
+    public fun HandleNewJobClick(ALittle.UIClickEvent event)
+    {
+        var menu = new AUIPlugin.AUIRightMenu();
+        menu.AddItem("批处理", bind(this.HandleNewBatchJob, this));
+        menu.Show();
+    }
+
+    private fun HandleNewBatchJob()
+    {
+        var dialog = g_Control.CreateControl{BatchJobDialog}("batch_job_dialog");
+        dialog.Show(this._task_item.info.task_id, null, null);
+    }
+
+    public fun AddJobItem(int job_index, DeployServer.D_JobInfo job_info)
+    {
+        var job_item = new JobItemInfo();
+        job_item.info = job_info;
+        job_item.item = g_Control.CreateControl{ALittle.DisplayObject}("dpl_job_item", job_item);
+        job_item.item._user_data = job_item;
+        job_item._button._user_data = job_item;
+        job_item._button.group = this._group;
+        job_item._button.AddEventListener(this, this.HandleJobRButtonDown);
+        this._scroll_list.AddChild(job_item.item, job_index);
+
+        this.RefreshJobItem(job_item);
+    }
+
+    private fun RefreshJobItem(JobItemInfo job_item)
+    {
+        if (job_item.info.job_type == DeployServer.JobType.BATCH)
+        	job_item._button.text = "[Batch] "..job_item.info.job_name.." "..job_item.info.batch_cmd;
+
+        if (this._task_item.info.status == DeployServer.TaskStatus.IDLE)
+            job_item._status.text = "";
+        else
+        {
+            if (job_item.info.status == DeployServer.JobStatus.WAITING)
+                job_item._status.text = "等待";
+            elseif (job_item.info.status == DeployServer.JobStatus.DOING)
+                job_item._status.text = "执行:"..ALittle.Math_Floor(job_item.info.progress * 100) / 100.."%";
+            if (job_item.info.status == DeployServer.JobStatus.WAITING)
+                job_item._status.text = "完成";
+        }
+    }
+
+    private fun HandleJobRButtonDown(ALittle.UIRButtonDownEvent event)
+    {
+        var job_item = cast<JobItemInfo>(event.target._user_data);
+        var job_index = this._scroll_list.GetChildIndex(job_item.item);
+
+        var menu = new AUIPlugin.AUIRightMenu();
+        menu.AddItem("修改", bind(this.HandleModifyJob, this, job_item, job_index));
+        menu.AddItem("删除", bind(this.HandleDeleteJob, this, job_item, job_index));
+        menu.Show();
+    }
+
+    private fun HandleModifyJob(JobItemInfo info, int index)
+    {
+        if (info.info.job_type == DeployServer.JobType.BATCH)
+        {
+            var dialog = g_Control.CreateControl{BatchJobDialog}("batch_job_dialog");
+            dialog.Show(this._task_item.info.task_id, index, info.info);
+        }
+    }
+
+    private async fun HandleDeleteJob(JobItemInfo info, int index)
+    {
+        var msg_client = g_DPLWebLoginManager.msg_client;
+        if (msg_client == null || !msg_client.IsConnected())
+        {
+            g_AUITool.ShowNotice("提示", "当前还未连接成功!");
+            return;
+        }
+
+        var result = g_AUITool.DeleteNotice("删除", "确定要删除该任务吗?");
+        if (result != AUIPlugin.AUIToolOption.YES) return;
+
+        var msg = new DeployServer.C2SDeleteJob();
+        msg.task_id = this._task_item.info.task_id;
+        msg.job_index = index;
+        var error = DeployServer.HandleC2SDeleteJob(msg_client, msg);
         if (error != null) g_AUITool.ShowNotice("提示", error);
     }
 }

@@ -15,6 +15,12 @@ name_list = {"task_id"},
 type_list = {"int"},
 option_map = {}
 })
+ALittle.RegStruct(1809409109, "DeployServer.S2CDeleteJob", {
+name = "DeployServer.S2CDeleteJob", ns_name = "DeployServer", rl_name = "S2CDeleteJob", hash_code = 1809409109,
+name_list = {},
+type_list = {},
+option_map = {}
+})
 ALittle.RegStruct(-1662612614, "DeployServer.NUpdateTaskInfo", {
 name = "DeployServer.NUpdateTaskInfo", ns_name = "DeployServer", rl_name = "NUpdateTaskInfo", hash_code = -1662612614,
 name_list = {"task_id","task_name","task_desc","web_hook"},
@@ -27,16 +33,52 @@ name_list = {},
 type_list = {},
 option_map = {}
 })
+ALittle.RegStruct(-1492768812, "DeployServer.C2SModifyJob", {
+name = "DeployServer.C2SModifyJob", ns_name = "DeployServer", rl_name = "C2SModifyJob", hash_code = -1492768812,
+name_list = {"task_id","job_index","job_name","batch_cmd","batch_param"},
+type_list = {"int","int","string","string","string"},
+option_map = {}
+})
+ALittle.RegStruct(-1402593517, "DeployServer.S2CCreateJob", {
+name = "DeployServer.S2CCreateJob", ns_name = "DeployServer", rl_name = "S2CCreateJob", hash_code = -1402593517,
+name_list = {},
+type_list = {},
+option_map = {}
+})
+ALittle.RegStruct(-1320965296, "DeployServer.C2SDeleteJob", {
+name = "DeployServer.C2SDeleteJob", ns_name = "DeployServer", rl_name = "C2SDeleteJob", hash_code = -1320965296,
+name_list = {"task_id","job_index"},
+type_list = {"int","int"},
+option_map = {}
+})
 ALittle.RegStruct(1149037254, "DeployServer.C2SUpdateTaskInfo", {
 name = "DeployServer.C2SUpdateTaskInfo", ns_name = "DeployServer", rl_name = "C2SUpdateTaskInfo", hash_code = 1149037254,
 name_list = {"task_id","task_name","task_desc","web_hook"},
 type_list = {"int","string","string","List<string>"},
 option_map = {}
 })
+ALittle.RegStruct(-1050312971, "DeployServer.NDeleteJob", {
+name = "DeployServer.NDeleteJob", ns_name = "DeployServer", rl_name = "NDeleteJob", hash_code = -1050312971,
+name_list = {"task_id","job_index"},
+type_list = {"int","int"},
+option_map = {}
+})
+ALittle.RegStruct(917908039, "DeployServer.NCreateJob", {
+name = "DeployServer.NCreateJob", ns_name = "DeployServer", rl_name = "NCreateJob", hash_code = 917908039,
+name_list = {"task_id","job_index","job_info"},
+type_list = {"int","int","DeployServer.D_JobInfo"},
+option_map = {}
+})
 ALittle.RegStruct(816033453, "DeployServer.NTaskStatus", {
 name = "DeployServer.NTaskStatus", ns_name = "DeployServer", rl_name = "NTaskStatus", hash_code = 816033453,
 name_list = {"task_id","status","progress"},
 type_list = {"int","int","double"},
+option_map = {}
+})
+ALittle.RegStruct(812356121, "DeployServer.S2CModifyJob", {
+name = "DeployServer.S2CModifyJob", ns_name = "DeployServer", rl_name = "S2CModifyJob", hash_code = 812356121,
+name_list = {},
+type_list = {},
 option_map = {}
 })
 ALittle.RegStruct(625732643, "DeployServer.S2CStartTask", {
@@ -56,6 +98,18 @@ name = "DeployServer.TaskInfo", ns_name = "DeployServer", rl_name = "TaskInfo", 
 name_list = {"task_id","task_name","task_desc","web_hook","job_list","create_time"},
 type_list = {"int","string","string","Map<string,bool>","List<DeployServer.JobInfo>","int"},
 option_map = {primary="task_id"}
+})
+ALittle.RegStruct(-173628832, "DeployServer.NModifyJob", {
+name = "DeployServer.NModifyJob", ns_name = "DeployServer", rl_name = "NModifyJob", hash_code = -173628832,
+name_list = {"task_id","job_index","job_info"},
+type_list = {"int","int","DeployServer.D_JobInfo"},
+option_map = {}
+})
+ALittle.RegStruct(-105312390, "DeployServer.C2SCreateJob", {
+name = "DeployServer.C2SCreateJob", ns_name = "DeployServer", rl_name = "C2SCreateJob", hash_code = -105312390,
+name_list = {"task_id","job_type","job_index","job_name","batch_cmd","batch_param"},
+type_list = {"int","int","int","string","string","string"},
+option_map = {}
 })
 
 DeployServer.TaskStatus = {
@@ -79,6 +133,14 @@ function DeployServer.Task:Ctor(info)
 	end
 end
 
+function DeployServer.Task:Save()
+	local error = A_MysqlSystem:UpdateOne(___all_struct[276033112], self._info, "task_id", self._info.task_id)
+	if error ~= nil then
+		ALittle.Error(error)
+	end
+end
+DeployServer.Task.Save = Lua.CoWrap(DeployServer.Task.Save)
+
 function DeployServer.Task:Start()
 	if self._status ~= 0 then
 		return "当前任务不是空闲状态"
@@ -91,6 +153,9 @@ function DeployServer.Task:StartImpl()
 	self._status = 1
 	self._progress = 0
 	self:SendStatus()
+	for index, job in ___ipairs(self._job_list) do
+		job:Waiting()
+	end
 	for index, job in ___ipairs(self._job_list) do
 		local error = job:Doing()
 		if error ~= nil then
@@ -152,6 +217,57 @@ function DeployServer.Task:UpdateInfo(msg)
 	ntf.task_desc = msg.task_desc
 	ntf.web_hook = msg.web_hook
 	A_WebAccountManager:SendMsgToAll(___all_struct[-1662612614], ntf)
+	self:Save()
+end
+
+function DeployServer.Task:CreateJob(msg)
+	Lua.Assert(self._status == 0, "当前任务不是空闲状态")
+	local job_info = {}
+	job_info.job_type = msg.job_type
+	job_info.job_name = msg.job_name
+	job_info.batch_cmd = msg.batch_cmd
+	job_info.batch_param = msg.batch_param
+	local job = DeployServer.CreateJob(self, job_info)
+	Lua.Assert(job ~= nil, "任务创建失败")
+	if msg.job_index == nil or msg.job_index <= 0 or msg.job_index > ALittle.List_Len(self._info.job_list) then
+		ALittle.List_Push(self._info.job_list, job_info)
+		ALittle.List_Push(self._job_list, job)
+	else
+		ALittle.List_Insert(self._info.job_list, msg.job_index, job_info)
+		ALittle.List_Insert(self._job_list, msg.job_index, job)
+	end
+	local ntf = {}
+	ntf.task_id = self._info.task_id
+	ntf.job_index = msg.job_index
+	ntf.job_info = job.data_info
+	A_WebAccountManager:SendMsgToAll(___all_struct[917908039], ntf)
+	self:Save()
+end
+
+function DeployServer.Task:ModifyJob(msg)
+	Lua.Assert(self._status == 0, "当前任务不是空闲状态")
+	local job = self._job_list[msg.job_index]
+	Lua.Assert(job ~= nil, "任务不存在")
+	job:Modify(msg)
+	local ntf = {}
+	ntf.task_id = self._info.task_id
+	ntf.job_index = msg.job_index
+	ntf.job_info = job.data_info
+	A_WebAccountManager:SendMsgToAll(___all_struct[-173628832], ntf)
+	self:Save()
+end
+
+function DeployServer.Task:DeleteJob(msg)
+	Lua.Assert(self._status == 0, "当前任务不是空闲状态")
+	local job = self._job_list[msg.job_index]
+	Lua.Assert(job ~= nil, "任务不存在")
+	ALittle.List_Remove(self._job_list, msg.job_index)
+	ALittle.List_Remove(self._info.job_list, msg.job_index)
+	local ntf = {}
+	ntf.task_id = self._info.task_id
+	ntf.job_index = msg.job_index
+	A_WebAccountManager:SendMsgToAll(___all_struct[-1050312971], ntf)
+	self:Save()
 end
 
 function DeployServer.Task.__getter:data_info()
@@ -196,4 +312,34 @@ function DeployServer.HandleC2SUpdateTaskInfo(sender, msg)
 end
 
 ALittle.RegMsgRpcCallback(1149037254, DeployServer.HandleC2SUpdateTaskInfo, 1566214727)
+function DeployServer.HandleC2SCreateJob(sender, msg)
+	local ___COROUTINE = coroutine.running()
+	A_WebAccountManager:CheckLoginByClient(sender)
+	local task = g_TaskManager:GetTask(msg.task_id)
+	Lua.Assert(task ~= nil, "任务不存在")
+	task:CreateJob(msg)
+	return {}
+end
+
+ALittle.RegMsgRpcCallback(-105312390, DeployServer.HandleC2SCreateJob, -1402593517)
+function DeployServer.HandleC2SModifyJob(sender, msg)
+	local ___COROUTINE = coroutine.running()
+	A_WebAccountManager:CheckLoginByClient(sender)
+	local task = g_TaskManager:GetTask(msg.task_id)
+	Lua.Assert(task ~= nil, "任务不存在")
+	task:ModifyJob(msg)
+	return {}
+end
+
+ALittle.RegMsgRpcCallback(-1492768812, DeployServer.HandleC2SModifyJob, 812356121)
+function DeployServer.HandleC2SDeleteJob(sender, msg)
+	local ___COROUTINE = coroutine.running()
+	A_WebAccountManager:CheckLoginByClient(sender)
+	local task = g_TaskManager:GetTask(msg.task_id)
+	Lua.Assert(task ~= nil, "任务不存在")
+	task:DeleteJob(msg)
+	return {}
+end
+
+ALittle.RegMsgRpcCallback(-1320965296, DeployServer.HandleC2SDeleteJob, 1809409109)
 end

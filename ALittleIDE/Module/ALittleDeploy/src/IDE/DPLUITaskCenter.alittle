@@ -72,6 +72,18 @@ public class DPLUITaskCenter : ALittle.DisplayLayout
         this._item_map[info.task_id] = task_info;
     }
 
+    public fun AddJobItem(int task_id, int job_index, DeployServer.D_JobInfo info)
+    {
+        var task_info = this._item_map[task_id];
+        if (task_info == null) return;
+
+        if (job_index == null || job_index <= 0 || job_index > ALittle.List_Len(task_info.info.job_list))
+            ALittle.List_Push(task_info.info.job_list, info);
+        else
+	        ALittle.List_Insert(task_info.info.job_list, job_index, info);
+        if (task_info.detail != null) task_info.detail.AddJobItem(job_index, info);
+    }
+
     private fun HandleItemRButtonDown(ALittle.UIRButtonDownEvent event)
     {
         var task_info:TaskItemInfo = event.target._user_data;
@@ -126,6 +138,9 @@ public class DPLUITaskCenter : ALittle.DisplayLayout
             return;
         }
 
+        var result = g_AUITool.DeleteNotice("删除", "确定要删除该任务吗?");
+        if (result != AUIPlugin.AUIToolOption.YES) return;
+
         var msg = new DeployServer.C2SDeleteTask();
         msg.task_id = task_info.info.task_id;
         var error = DeployServer.HandleC2SDeleteTask(msg_client, msg);
@@ -156,6 +171,28 @@ public class DPLUITaskCenter : ALittle.DisplayLayout
         if (task_info.detail != null) task_info.detail.UpdateTaskInfo();
     }
 
+    public fun UpdateJobItem(DeployServer.NModifyJob info)
+    {
+        var task_info = this._item_map[info.task_id];
+        if (task_info == null) return;
+
+        var job_info = task_info.info.job_list[info.job_index];
+        if (job_info == null) return;
+
+        task_info.info.job_list[info.job_index] = info.job_info;
+
+        if (task_info.detail != null) task_info.detail.UpdateJobInfo(info.job_index);
+    }
+
+    public fun RemoveJobItem(int task_id, int job_index)
+    {
+        var task_info = this._item_map[task_id];
+        if (task_info == null) return;
+
+        if (task_info.detail != null) task_info.detail.RemoveJobItem(job_index);
+        ALittle.List_Remove(task_info.info.job_list, job_index);
+    }
+
     public fun RemoveAllTaskItem()
     {
         this._item_map = new Map<int, TaskItemInfo>();
@@ -175,6 +212,19 @@ public class DPLUITaskCenter : ALittle.DisplayLayout
         	task_info._status.text = "";
         else
             task_info._status.text = ALittle.Math_Floor(info.progress * 100) / 100 .."%";
+    }
+
+    public fun UpdateJobStatus(DeployServer.NJobStatus msg)
+    {
+        var task_info = this._item_map[msg.task_id];
+        if (task_info == null) return;
+
+        var job_info = task_info.info.job_list[msg.index];
+        if (job_info == null) return;
+        job_info.status = msg.status;
+        job_info.progress = msg.progress;
+
+        if (task_info.detail != null) task_info.detail.UpdateJobInfo(msg.index);
     }
 
     private async fun HandleNewTaskClick(ALittle.UIClickEvent event)
@@ -227,4 +277,28 @@ public static HandleNDeleteTask(ALittle.IMsgCommon sender, DeployServer.NDeleteT
 public static HandleNUpdateTaskInfo(ALittle.IMsgCommon sender, DeployServer.NUpdateTaskInfo msg)
 {
     g_DPLCenter.center.task_center.UpdateTaskItem(msg);
+}
+
+[Msg]
+public static HandleNCreateJob(ALittle.IMsgCommon sender, DeployServer.NCreateJob msg)
+{
+    g_DPLCenter.center.task_center.AddJobItem(msg.task_id, msg.job_index, msg.job_info);
+}
+
+[Msg]
+public static HandleNJobStatus(ALittle.IMsgCommon sender, DeployServer.NJobStatus msg)
+{
+    g_DPLCenter.center.task_center.UpdateJobStatus(msg);
+}
+
+[Msg]
+public static HandleNModifyJob(ALittle.IMsgCommon sender, DeployServer.NModifyJob msg)
+{
+    g_DPLCenter.center.task_center.UpdateJobItem(msg);
+}
+
+[Msg]
+public static HandleNDeleteJob(ALittle.IMsgCommon sender, DeployServer.NDeleteJob msg)
+{
+    g_DPLCenter.center.task_center.RemoveJobItem(msg.task_id, msg.job_index);
 }

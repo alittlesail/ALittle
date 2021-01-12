@@ -4,27 +4,36 @@ namespace DeployServer;
 public enum JobType
 {
     NONE = 0;
+    BATCH = 1;	// 批处理
 }
 
 protected struct JobInfo
 {
     int job_type;		// 任务类型
-    List<string> log;	// 日志列表
-    List<string> error;  // 错误信息
+    string job_name;
+
+    // 批处理命令
+    string batch_cmd;
+    string batch_param;
 }
 
 public enum JobStatus
 {
-    IDLE = 0;
-    DOING = 1;
+    WAITING = 0;	// 等待执行
+    DOING = 1;		// 正在执行
+    COMPLETED = 2;	// 执行完成
 }
 
 public struct D_JobInfo
 {
     int job_type;
-
+    string job_name;
     int status;
     double progress;	// 执行进度
+
+    // 批处理命令
+    string batch_cmd;
+    string batch_param;
 }
 
 protected class Job
@@ -46,9 +55,21 @@ protected class Job
     {
         var data = new D_JobInfo();
         data.job_type = this._info.job_type;
+        data.job_name = this._info.job_name;
         data.status = this._status;
         data.progress = this._progress;
         return data;
+    }
+
+    public fun Modify(C2SModifyJob msg)
+    {
+
+        this._info.job_name = msg.job_name;    }
+
+    public fun Waiting()
+    {
+        this._status = JobStatus.WAITING;
+        this.SendStatus();
     }
 
     public await fun Doing() : string
@@ -58,12 +79,15 @@ protected class Job
         this.SendStatus();
 
         // 执行
+        var error = this.Execute();
 
-        this._status = JobStatus.IDLE;
+        this._status = JobStatus.COMPLETED;
         this._progress = 1;
         this.SendStatus();
-        return null;
+        return error;
     }
+
+    private await fun Execute() : string { return null; }
 
     private fun SendStatus()
     {
@@ -85,5 +109,7 @@ public struct NJobStatus
 
 protected static CreateJob(Task task, JobInfo info) : Job
 {
+    if (info.job_type == JobType.BATCH)
+    	return new BatchJob(task, info);
     return null;
 }

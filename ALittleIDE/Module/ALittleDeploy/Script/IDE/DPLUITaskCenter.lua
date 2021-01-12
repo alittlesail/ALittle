@@ -23,8 +23,8 @@ option_map = {}
 })
 ALittle.RegStruct(-2035971543, "DeployServer.D_JobInfo", {
 name = "DeployServer.D_JobInfo", ns_name = "DeployServer", rl_name = "D_JobInfo", hash_code = -2035971543,
-name_list = {"job_type","status","progress"},
-type_list = {"int","int","double"},
+name_list = {"job_type","job_name","status","progress","batch_cmd","batch_param"},
+type_list = {"int","string","int","double","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(-1662612614, "DeployServer.NUpdateTaskInfo", {
@@ -43,6 +43,12 @@ ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
 name = "ALittle.UIEvent", ns_name = "ALittle", rl_name = "UIEvent", hash_code = -1479093282,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(1462309182, "DeployServer.NJobStatus", {
+name = "DeployServer.NJobStatus", ns_name = "DeployServer", rl_name = "NJobStatus", hash_code = 1462309182,
+name_list = {"task_id","index","status","progress"},
+type_list = {"int","int","int","double"},
 option_map = {}
 })
 ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
@@ -75,10 +81,22 @@ name_list = {"task_id"},
 type_list = {"int"},
 option_map = {}
 })
+ALittle.RegStruct(-1050312971, "DeployServer.NDeleteJob", {
+name = "DeployServer.NDeleteJob", ns_name = "DeployServer", rl_name = "NDeleteJob", hash_code = -1050312971,
+name_list = {"task_id","job_index"},
+type_list = {"int","int"},
+option_map = {}
+})
 ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
 name = "ALittle.UIChangedEvent", ns_name = "ALittle", rl_name = "UIChangedEvent", hash_code = 958494922,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(917908039, "DeployServer.NCreateJob", {
+name = "DeployServer.NCreateJob", ns_name = "DeployServer", rl_name = "NCreateJob", hash_code = 917908039,
+name_list = {"task_id","job_index","job_info"},
+type_list = {"int","int","DeployServer.D_JobInfo"},
 option_map = {}
 })
 ALittle.RegStruct(816033453, "DeployServer.NTaskStatus", {
@@ -115,6 +133,12 @@ ALittle.RegStruct(390627548, "DeployServer.D_TaskInfo", {
 name = "DeployServer.D_TaskInfo", ns_name = "DeployServer", rl_name = "D_TaskInfo", hash_code = 390627548,
 name_list = {"task_id","task_name","task_desc","web_hook","create_time","status","progress","job_list"},
 type_list = {"int","string","string","List<string>","int","int","double","List<DeployServer.D_JobInfo>"},
+option_map = {}
+})
+ALittle.RegStruct(-173628832, "DeployServer.NModifyJob", {
+name = "DeployServer.NModifyJob", ns_name = "DeployServer", rl_name = "NModifyJob", hash_code = -173628832,
+name_list = {"task_id","job_index","job_info"},
+type_list = {"int","int","DeployServer.D_JobInfo"},
 option_map = {}
 })
 
@@ -186,6 +210,21 @@ function ALittleDeploy.DPLUITaskCenter:AddTaskItem(info)
 	self._item_map[info.task_id] = task_info
 end
 
+function ALittleDeploy.DPLUITaskCenter:AddJobItem(task_id, job_index, info)
+	local task_info = self._item_map[task_id]
+	if task_info == nil then
+		return
+	end
+	if job_index == nil or job_index <= 0 or job_index > ALittle.List_Len(task_info.info.job_list) then
+		ALittle.List_Push(task_info.info.job_list, info)
+	else
+		ALittle.List_Insert(task_info.info.job_list, job_index, info)
+	end
+	if task_info.detail ~= nil then
+		task_info.detail:AddJobItem(job_index, info)
+	end
+end
+
 function ALittleDeploy.DPLUITaskCenter:HandleItemRButtonDown(event)
 	local task_info = event.target._user_data
 	local menu = AUIPlugin.AUIRightMenu()
@@ -235,6 +274,10 @@ function ALittleDeploy.DPLUITaskCenter:HandleDeleteTask(task_info)
 		g_AUITool:ShowNotice("提示", "当前还未连接成功!")
 		return
 	end
+	local result = g_AUITool:DeleteNotice("删除", "确定要删除该任务吗?")
+	if result ~= "YES" then
+		return
+	end
 	local msg = {}
 	msg.task_id = task_info.info.task_id
 	local error = ALittle.IMsgCommon.InvokeRPC(808269380, msg_client, msg)
@@ -271,6 +314,32 @@ function ALittleDeploy.DPLUITaskCenter:UpdateTaskItem(info)
 	end
 end
 
+function ALittleDeploy.DPLUITaskCenter:UpdateJobItem(info)
+	local task_info = self._item_map[info.task_id]
+	if task_info == nil then
+		return
+	end
+	local job_info = task_info.info.job_list[info.job_index]
+	if job_info == nil then
+		return
+	end
+	task_info.info.job_list[info.job_index] = info.job_info
+	if task_info.detail ~= nil then
+		task_info.detail:UpdateJobInfo(info.job_index)
+	end
+end
+
+function ALittleDeploy.DPLUITaskCenter:RemoveJobItem(task_id, job_index)
+	local task_info = self._item_map[task_id]
+	if task_info == nil then
+		return
+	end
+	if task_info.detail ~= nil then
+		task_info.detail:RemoveJobItem(job_index)
+	end
+	ALittle.List_Remove(task_info.info.job_list, job_index)
+end
+
 function ALittleDeploy.DPLUITaskCenter:RemoveAllTaskItem()
 	self._item_map = {}
 	self._scroll_list:RemoveAllChild()
@@ -288,6 +357,22 @@ function ALittleDeploy.DPLUITaskCenter:UpdateTaskStatus(info)
 		task_info._status.text = ""
 	else
 		task_info._status.text = ALittle.Math_Floor(info.progress * 100) / 100 .. "%"
+	end
+end
+
+function ALittleDeploy.DPLUITaskCenter:UpdateJobStatus(msg)
+	local task_info = self._item_map[msg.task_id]
+	if task_info == nil then
+		return
+	end
+	local job_info = task_info.info.job_list[msg.index]
+	if job_info == nil then
+		return
+	end
+	job_info.status = msg.status
+	job_info.progress = msg.progress
+	if task_info.detail ~= nil then
+		task_info.detail:UpdateJobInfo(msg.index)
 	end
 end
 
@@ -339,4 +424,24 @@ function ALittleDeploy.HandleNUpdateTaskInfo(sender, msg)
 end
 
 ALittle.RegMsgCallback(-1662612614, ALittleDeploy.HandleNUpdateTaskInfo)
+function ALittleDeploy.HandleNCreateJob(sender, msg)
+	ALittleDeploy.g_DPLCenter.center.task_center:AddJobItem(msg.task_id, msg.job_index, msg.job_info)
+end
+
+ALittle.RegMsgCallback(917908039, ALittleDeploy.HandleNCreateJob)
+function ALittleDeploy.HandleNJobStatus(sender, msg)
+	ALittleDeploy.g_DPLCenter.center.task_center:UpdateJobStatus(msg)
+end
+
+ALittle.RegMsgCallback(1462309182, ALittleDeploy.HandleNJobStatus)
+function ALittleDeploy.HandleNModifyJob(sender, msg)
+	ALittleDeploy.g_DPLCenter.center.task_center:UpdateJobItem(msg)
+end
+
+ALittle.RegMsgCallback(-173628832, ALittleDeploy.HandleNModifyJob)
+function ALittleDeploy.HandleNDeleteJob(sender, msg)
+	ALittleDeploy.g_DPLCenter.center.task_center:RemoveJobItem(msg.task_id, msg.job_index)
+end
+
+ALittle.RegMsgCallback(-1050312971, ALittleDeploy.HandleNDeleteJob)
 end

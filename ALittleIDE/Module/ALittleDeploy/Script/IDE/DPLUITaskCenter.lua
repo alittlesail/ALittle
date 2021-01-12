@@ -142,7 +142,7 @@ function ALittleDeploy.DPLUITaskCenter:System_SetHVDragCursor(event)
 	ALittle.System_SetHVDragCursor()
 end
 
-function ALittleDeploy.DPLUITaskCenter:HandleTaskGrid3ResizeDrag(event)
+function ALittleDeploy.DPLUITaskCenter:HandleGrid3UpResizeDrag(event)
 	local up_size = self._task_grid3.up_size
 	up_size = up_size + event.delta_x
 	local max_size = self._task_grid3.width - self._task_grid3.down_size - 50
@@ -153,6 +153,19 @@ function ALittleDeploy.DPLUITaskCenter:HandleTaskGrid3ResizeDrag(event)
 		up_size = 100
 	end
 	self._task_grid3.up_size = up_size
+end
+
+function ALittleDeploy.DPLUITaskCenter:HandleGrid3DownResizeDrag(event)
+	local down_size = self._task_grid3.down_size
+	down_size = down_size - event.delta_x
+	local max_size = self._task_grid3.width - self._task_grid3.down_size - 50
+	if down_size > max_size then
+		down_size = max_size
+	end
+	if down_size < 100 then
+		down_size = 100
+	end
+	self._task_grid3.down_size = down_size
 end
 
 function ALittleDeploy.DPLUITaskCenter:AddTaskItem(info)

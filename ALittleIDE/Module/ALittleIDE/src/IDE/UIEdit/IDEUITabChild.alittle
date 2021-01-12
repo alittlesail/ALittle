@@ -656,9 +656,9 @@ public class IDEUITabChild : IDETabChild
 	public fun ShowHandleQuad(IDEUITreeLogic target, [Nullable] bool force_shift)
     {
 		// 检查是否有按下shift键
-        var shift = (A_UISystem.sym_map[1073742049] != null || A_UISystem.sym_map[1073742053] != null);
+        var shift = (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_LSHIFT] != null || A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_RSHIFT] != null);
         if (force_shift) shift = true;
-		var ctrl = (A_UISystem.sym_map[1073742048] != null || A_UISystem.sym_map[1073742052] != null);
+		var ctrl = (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_LCTRL] != null || A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_RCTRL] != null);
         if (shift) ctrl = false;
 
 		// 如果没有按下shift键，那么就直接清空所有的
@@ -863,9 +863,8 @@ public class IDEUITabChild : IDETabChild
         var handle_info = this._tab_quad_map[target];
         if (handle_info == null) return;
 	
-		if (shift == null)
-            shift = (A_UISystem.sym_map[1073742049] != null || A_UISystem.sym_map[1073742053] != null);
-		var ctrl = (A_UISystem.sym_map[1073742048] != null || A_UISystem.sym_map[1073742052] != null);
+		if (shift == null) shift = (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_LSHIFT] != null || A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_RSHIFT] != null);
+		var ctrl = (A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_LCTRL] != null || A_UISystem.sym_map[ALittle.UIEnumTypes.KEY_RCTRL] != null);
         if (shift) ctrl = false;
 
 		if (shift == false && ctrl == false)

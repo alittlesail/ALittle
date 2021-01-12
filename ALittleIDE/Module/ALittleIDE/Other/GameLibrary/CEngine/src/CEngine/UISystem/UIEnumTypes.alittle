@@ -102,6 +102,8 @@ public enum UIEnumTypes
     KEY_TAB = 9;
     KEY_LSHIFT = 1073742049;
     KEY_RSHIFT = 1073742053;
+    KEY_LCTRL = 1073742048;
+    KEY_RCTRL = 1073742052;
     KEY_1 = 1073741913;
 
     VIEW_FULLSCREEN = 0x00000001; // /**< fullscreen window */

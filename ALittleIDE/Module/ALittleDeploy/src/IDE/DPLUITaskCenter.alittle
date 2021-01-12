@@ -23,13 +23,14 @@ public class DPLUITaskCenter : ALittle.DisplayLayout
 
     private Map<int, TaskItemInfo> _item_map = new Map<int, TaskItemInfo>();
 
+    // 面板拖拽 //////////////////////////////////////////////////////////////////////////////////////
 	public fun System_SetVDragCursor(ALittle.UIEvent event) { ALittle.System_SetVDragCursor(); }
 	public fun System_SetNormalCursor(ALittle.UIEvent event) { ALittle.System_SetNormalCursor(); }
 	public fun System_SetHDragCursor(ALittle.UIEvent event) { ALittle.System_SetHDragCursor(); }
 	public fun System_SetHVDragCursor(ALittle.UIEvent event) { ALittle.System_SetHVDragCursor(); }
 
 	// 处理面板大小拖拽
-	private fun HandleTaskGrid3ResizeDrag(ALittle.UIButtonDragEvent event)
+	private fun HandleGrid3UpResizeDrag(ALittle.UIButtonDragEvent event)
 	{
 		var up_size = this._task_grid3.up_size;
 		up_size = up_size + event.delta_x;
@@ -38,6 +39,18 @@ public class DPLUITaskCenter : ALittle.DisplayLayout
 		if (up_size < 100) up_size = 100;
 		this._task_grid3.up_size = up_size;
 	}
+
+	// 处理面板大小拖拽
+	private fun HandleGrid3DownResizeDrag(ALittle.UIButtonDragEvent event)
+	{
+		var down_size = this._task_grid3.down_size;
+		down_size = down_size - event.delta_x;
+		var max_size = this._task_grid3.width - this._task_grid3.down_size - 50;
+		if (down_size > max_size) down_size = max_size;
+		if (down_size < 100) down_size = 100;
+		this._task_grid3.down_size = down_size;
+	}
+    //////////////////////////////////////////////////////////////////////////////////////////////
 
     public fun AddTaskItem(DeployServer.D_TaskInfo info)
     {

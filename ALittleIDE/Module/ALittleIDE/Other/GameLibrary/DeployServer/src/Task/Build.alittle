@@ -1,0 +1,8 @@
+
+namespace DeployServer;
+
+protected struct BuildInfo
+{
+    List<string> log_list;	// 构建日志
+    int create_time;			// 构建时间
+}

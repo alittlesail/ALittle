@@ -15,6 +15,12 @@ name_list = {"job_type","job_name","status","progress","batch_cmd","batch_param"
 type_list = {"int","string","int","double","string","string"},
 option_map = {}
 })
+ALittle.RegStruct(1811432266, "DeployServer.D_BuildInfo", {
+name = "DeployServer.D_BuildInfo", ns_name = "DeployServer", rl_name = "D_BuildInfo", hash_code = 1811432266,
+name_list = {"create_time"},
+type_list = {"int"},
+option_map = {}
+})
 ALittle.RegStruct(1544249038, "DeployServer.JobInfo", {
 name = "DeployServer.JobInfo", ns_name = "DeployServer", rl_name = "JobInfo", hash_code = 1544249038,
 name_list = {"job_type","job_name","batch_cmd","batch_param"},
@@ -67,24 +73,33 @@ end
 
 function DeployServer.Job:Waiting()
 	self._status = 0
+	self._progress = 0
 	self:SendStatus()
 end
 
-function DeployServer.Job:Doing()
+function DeployServer.Job:Doing(build_info)
 	local ___COROUTINE = coroutine.running()
 	self._status = 1
 	self._progress = 0
 	self:SendStatus()
-	local error = self:Execute()
+	local error, log = self:Execute(build_info)
+	if log ~= nil then
+		ALittle.List_Push(build_info.log_list, "Job Begin:" .. self._info.job_name .. "\n")
+		local log_list = ALittle.String_SplitSepList(log, {"\r", "\n"})
+		for index, log_content in ___ipairs(log_list) do
+			ALittle.List_Push(build_info.log_list, log_content)
+		end
+		ALittle.List_Push(build_info.log_list, "Job End\n")
+	end
 	self._status = 2
 	self._progress = 1
 	self:SendStatus()
 	return error
 end
 
-function DeployServer.Job:Execute()
+function DeployServer.Job:Execute(build_info)
 	local ___COROUTINE = coroutine.running()
-	return nil
+	return nil, nil
 end
 
 function DeployServer.Job:SendStatus()

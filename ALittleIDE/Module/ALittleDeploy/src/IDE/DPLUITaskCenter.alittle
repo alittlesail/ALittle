@@ -84,6 +84,15 @@ public class DPLUITaskCenter : ALittle.DisplayLayout
         if (task_info.detail != null) task_info.detail.AddJobItem(job_index, info);
     }
 
+    public fun AddBuildItem(int task_id, DeployServer.D_BuildInfo info)
+    {
+        var task_info = this._item_map[task_id];
+        if (task_info == null) return;
+
+	    ALittle.List_Push(task_info.info.build_list, info);
+        if (task_info.detail != null) task_info.detail.AddBuildItem(info);
+    }
+
     private fun HandleItemRButtonDown(ALittle.UIRButtonDownEvent event)
     {
         var task_info:TaskItemInfo = event.target._user_data;
@@ -191,6 +200,15 @@ public class DPLUITaskCenter : ALittle.DisplayLayout
 
         if (task_info.detail != null) task_info.detail.RemoveJobItem(job_index);
         ALittle.List_Remove(task_info.info.job_list, job_index);
+    }
+
+    public fun RemoveBuildItem(int task_id, int build_index)
+    {
+        var task_info = this._item_map[task_id];
+        if (task_info == null) return;
+
+        if (task_info.detail != null) task_info.detail.RemoveBuildItem(build_index);
+        ALittle.List_Remove(task_info.info.build_list, build_index);
     }
 
     public fun RemoveAllTaskItem()
@@ -301,4 +319,16 @@ public static HandleNModifyJob(ALittle.IMsgCommon sender, DeployServer.NModifyJo
 public static HandleNDeleteJob(ALittle.IMsgCommon sender, DeployServer.NDeleteJob msg)
 {
     g_DPLCenter.center.task_center.RemoveJobItem(msg.task_id, msg.job_index);
+}
+
+[Msg]
+public static HandleNCreateBuild(ALittle.IMsgCommon sender, DeployServer.NCreateBuild msg)
+{
+    g_DPLCenter.center.task_center.AddBuildItem(msg.task_id, msg.build_info);
+}
+
+[Msg]
+public static HandleNDeleteBuild(ALittle.IMsgCommon sender, DeployServer.NDeleteBuild msg)
+{
+    g_DPLCenter.center.task_center.RemoveBuildItem(msg.task_id, msg.build_index);
 }

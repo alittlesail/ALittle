@@ -27,6 +27,12 @@ name_list = {"job_type","job_name","status","progress","batch_cmd","batch_param"
 type_list = {"int","string","int","double","string","string"},
 option_map = {}
 })
+ALittle.RegStruct(1811432266, "DeployServer.D_BuildInfo", {
+name = "DeployServer.D_BuildInfo", ns_name = "DeployServer", rl_name = "D_BuildInfo", hash_code = 1811432266,
+name_list = {"create_time"},
+type_list = {"int"},
+option_map = {}
+})
 ALittle.RegStruct(-1662612614, "DeployServer.NUpdateTaskInfo", {
 name = "DeployServer.NUpdateTaskInfo", ns_name = "DeployServer", rl_name = "NUpdateTaskInfo", hash_code = -1662612614,
 name_list = {"task_id","task_name","task_desc","web_hook"},
@@ -37,6 +43,12 @@ ALittle.RegStruct(-1533563228, "DeployServer.S2CCreateTask", {
 name = "DeployServer.S2CCreateTask", ns_name = "DeployServer", rl_name = "S2CCreateTask", hash_code = -1533563228,
 name_list = {},
 type_list = {},
+option_map = {}
+})
+ALittle.RegStruct(1487624699, "DeployServer.NCreateBuild", {
+name = "DeployServer.NCreateBuild", ns_name = "DeployServer", rl_name = "NCreateBuild", hash_code = 1487624699,
+name_list = {"task_id","build_info"},
+type_list = {"int","DeployServer.D_BuildInfo"},
 option_map = {}
 })
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -131,8 +143,14 @@ option_map = {}
 })
 ALittle.RegStruct(390627548, "DeployServer.D_TaskInfo", {
 name = "DeployServer.D_TaskInfo", ns_name = "DeployServer", rl_name = "D_TaskInfo", hash_code = 390627548,
-name_list = {"task_id","task_name","task_desc","web_hook","create_time","status","progress","job_list"},
-type_list = {"int","string","string","List<string>","int","int","double","List<DeployServer.D_JobInfo>"},
+name_list = {"task_id","task_name","task_desc","web_hook","create_time","status","progress","job_list","build_list"},
+type_list = {"int","string","string","List<string>","int","int","double","List<DeployServer.D_JobInfo>","List<DeployServer.D_BuildInfo>"},
+option_map = {}
+})
+ALittle.RegStruct(-206375730, "DeployServer.NDeleteBuild", {
+name = "DeployServer.NDeleteBuild", ns_name = "DeployServer", rl_name = "NDeleteBuild", hash_code = -206375730,
+name_list = {"task_id","build_index"},
+type_list = {"int","int"},
 option_map = {}
 })
 ALittle.RegStruct(-173628832, "DeployServer.NModifyJob", {
@@ -222,6 +240,17 @@ function ALittleDeploy.DPLUITaskCenter:AddJobItem(task_id, job_index, info)
 	end
 	if task_info.detail ~= nil then
 		task_info.detail:AddJobItem(job_index, info)
+	end
+end
+
+function ALittleDeploy.DPLUITaskCenter:AddBuildItem(task_id, info)
+	local task_info = self._item_map[task_id]
+	if task_info == nil then
+		return
+	end
+	ALittle.List_Push(task_info.info.build_list, info)
+	if task_info.detail ~= nil then
+		task_info.detail:AddBuildItem(info)
 	end
 end
 
@@ -340,6 +369,17 @@ function ALittleDeploy.DPLUITaskCenter:RemoveJobItem(task_id, job_index)
 	ALittle.List_Remove(task_info.info.job_list, job_index)
 end
 
+function ALittleDeploy.DPLUITaskCenter:RemoveBuildItem(task_id, build_index)
+	local task_info = self._item_map[task_id]
+	if task_info == nil then
+		return
+	end
+	if task_info.detail ~= nil then
+		task_info.detail:RemoveBuildItem(build_index)
+	end
+	ALittle.List_Remove(task_info.info.build_list, build_index)
+end
+
 function ALittleDeploy.DPLUITaskCenter:RemoveAllTaskItem()
 	self._item_map = {}
 	self._scroll_list:RemoveAllChild()
@@ -444,4 +484,14 @@ function ALittleDeploy.HandleNDeleteJob(sender, msg)
 end
 
 ALittle.RegMsgCallback(-1050312971, ALittleDeploy.HandleNDeleteJob)
+function ALittleDeploy.HandleNCreateBuild(sender, msg)
+	ALittleDeploy.g_DPLCenter.center.task_center:AddBuildItem(msg.task_id, msg.build_info)
+end
+
+ALittle.RegMsgCallback(1487624699, ALittleDeploy.HandleNCreateBuild)
+function ALittleDeploy.HandleNDeleteBuild(sender, msg)
+	ALittleDeploy.g_DPLCenter.center.task_center:RemoveBuildItem(msg.task_id, msg.build_index)
+end
+
+ALittle.RegMsgCallback(-206375730, ALittleDeploy.HandleNDeleteBuild)
 end

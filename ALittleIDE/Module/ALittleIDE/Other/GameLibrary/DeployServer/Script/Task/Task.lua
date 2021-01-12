@@ -15,6 +15,12 @@ name_list = {"task_id"},
 type_list = {"int"},
 option_map = {}
 })
+ALittle.RegStruct(1984174335, "DeployServer.S2CDeleteBuild", {
+name = "DeployServer.S2CDeleteBuild", ns_name = "DeployServer", rl_name = "S2CDeleteBuild", hash_code = 1984174335,
+name_list = {},
+type_list = {},
+option_map = {}
+})
 ALittle.RegStruct(1809409109, "DeployServer.S2CDeleteJob", {
 name = "DeployServer.S2CDeleteJob", ns_name = "DeployServer", rl_name = "S2CDeleteJob", hash_code = 1809409109,
 name_list = {},
@@ -39,6 +45,12 @@ name_list = {"task_id","job_index","job_name","batch_cmd","batch_param"},
 type_list = {"int","int","string","string","string"},
 option_map = {}
 })
+ALittle.RegStruct(1487624699, "DeployServer.NCreateBuild", {
+name = "DeployServer.NCreateBuild", ns_name = "DeployServer", rl_name = "NCreateBuild", hash_code = 1487624699,
+name_list = {"task_id","build_info"},
+type_list = {"int","DeployServer.D_BuildInfo"},
+option_map = {}
+})
 ALittle.RegStruct(-1402593517, "DeployServer.S2CCreateJob", {
 name = "DeployServer.S2CCreateJob", ns_name = "DeployServer", rl_name = "S2CCreateJob", hash_code = -1402593517,
 name_list = {},
@@ -48,6 +60,12 @@ option_map = {}
 ALittle.RegStruct(-1320965296, "DeployServer.C2SDeleteJob", {
 name = "DeployServer.C2SDeleteJob", ns_name = "DeployServer", rl_name = "C2SDeleteJob", hash_code = -1320965296,
 name_list = {"task_id","job_index"},
+type_list = {"int","int"},
+option_map = {}
+})
+ALittle.RegStruct(1254025721, "DeployServer.C2SDeleteBuild", {
+name = "DeployServer.C2SDeleteBuild", ns_name = "DeployServer", rl_name = "C2SDeleteBuild", hash_code = 1254025721,
+name_list = {"task_id","build_index"},
 type_list = {"int","int"},
 option_map = {}
 })
@@ -89,15 +107,21 @@ option_map = {}
 })
 ALittle.RegStruct(390627548, "DeployServer.D_TaskInfo", {
 name = "DeployServer.D_TaskInfo", ns_name = "DeployServer", rl_name = "D_TaskInfo", hash_code = 390627548,
-name_list = {"task_id","task_name","task_desc","web_hook","create_time","status","progress","job_list"},
-type_list = {"int","string","string","List<string>","int","int","double","List<DeployServer.D_JobInfo>"},
+name_list = {"task_id","task_name","task_desc","web_hook","create_time","status","progress","job_list","build_list"},
+type_list = {"int","string","string","List<string>","int","int","double","List<DeployServer.D_JobInfo>","List<DeployServer.D_BuildInfo>"},
 option_map = {}
 })
 ALittle.RegStruct(276033112, "DeployServer.TaskInfo", {
 name = "DeployServer.TaskInfo", ns_name = "DeployServer", rl_name = "TaskInfo", hash_code = 276033112,
-name_list = {"task_id","task_name","task_desc","web_hook","job_list","create_time"},
-type_list = {"int","string","string","Map<string,bool>","List<DeployServer.JobInfo>","int"},
+name_list = {"task_id","task_name","task_desc","web_hook","job_list","build_list","create_time"},
+type_list = {"int","string","string","Map<string,bool>","List<DeployServer.JobInfo>","List<DeployServer.BuildInfo>","int"},
 option_map = {primary="task_id"}
+})
+ALittle.RegStruct(-206375730, "DeployServer.NDeleteBuild", {
+name = "DeployServer.NDeleteBuild", ns_name = "DeployServer", rl_name = "NDeleteBuild", hash_code = -206375730,
+name_list = {"task_id","build_index"},
+type_list = {"int","int"},
+option_map = {}
 })
 ALittle.RegStruct(-173628832, "DeployServer.NModifyJob", {
 name = "DeployServer.NModifyJob", ns_name = "DeployServer", rl_name = "NModifyJob", hash_code = -173628832,
@@ -153,11 +177,15 @@ function DeployServer.Task:StartImpl()
 	self._status = 1
 	self._progress = 0
 	self:SendStatus()
+	local build_info = {}
+	build_info.create_time = ALittle.Time_GetCurTime()
+	build_info.log_list = {}
+	ALittle.List_Push(self._info.build_list, build_info)
 	for index, job in ___ipairs(self._job_list) do
 		job:Waiting()
 	end
 	for index, job in ___ipairs(self._job_list) do
-		local error = job:Doing()
+		local error = job:Doing(build_info)
 		if error ~= nil then
 			ALittle.Log("task" .. self._info.task_id .. ":" .. self._info.task_name .. " doing failed:" .. error)
 			break
@@ -165,9 +193,40 @@ function DeployServer.Task:StartImpl()
 		self._progress = (index - 1) / ALittle.List_Len(self._job_list)
 		self:SendStatus()
 	end
+	local file_path = "DeployBuildLog/" .. self._info.task_id .. "/" .. ALittle.Time_GetCurDate(build_info.create_time) .. ".log"
+	ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(file_path))
+	local log_file = io.open(file_path, "wb")
+	if log_file ~= nil then
+		for index, log in ___ipairs(build_info.log_list) do
+			log_file:write(log)
+			log_file:write("\n")
+		end
+		log_file:close()
+	end
+	local len = ALittle.List_Len(build_info.log_list)
+	if len > 1000 then
+		local new_list = {}
+		local new_count = 0
+		local i = len - 1000 + 1
+		while true do
+			if not(i <= len) then break end
+			new_count = new_count + 1
+			new_list[new_count] = build_info.log_list[i]
+			i = i+(1)
+		end
+		build_info.log_list = new_list
+	end
 	self._status = 0
 	self._progress = 1
 	self:SendStatus()
+	do
+		local msg = {}
+		msg.task_id = self._info.task_id
+		msg.build_info = {}
+		msg.build_info.create_time = build_info.create_time
+		A_WebAccountManager:SendMsgToAll(___all_struct[1487624699], msg)
+	end
+	self:Save()
 end
 DeployServer.Task.StartImpl = Lua.CoWrap(DeployServer.Task.StartImpl)
 
@@ -201,6 +260,10 @@ end
 
 function DeployServer.Task.__getter:upper_name()
 	return self._upper_name
+end
+
+function DeployServer.Task:HandleDelete()
+	ALittle.File_DeleteDeepDir("DeployBuildLog/" .. self._info.task_id)
 end
 
 function DeployServer.Task:UpdateInfo(msg)
@@ -270,6 +333,20 @@ function DeployServer.Task:DeleteJob(msg)
 	self:Save()
 end
 
+function DeployServer.Task:DeleteBuild(msg)
+	Lua.Assert(self._status == 0, "当前任务不是空闲状态")
+	local build_info = self._info.build_list[msg.build_index]
+	Lua.Assert(build_info ~= nil, "构建信息不存在")
+	ALittle.List_Remove(self._info.build_list, msg.build_index)
+	local file_path = "DeployBuildLog/" .. self._info.task_id .. "/" .. ALittle.Time_GetCurDate(build_info.create_time) .. ".log"
+	ALittle.File_DeleteFile(file_path)
+	local ntf = {}
+	ntf.task_id = self._info.task_id
+	ntf.build_index = msg.build_index
+	A_WebAccountManager:SendMsgToAll(___all_struct[-206375730], ntf)
+	self:Save()
+end
+
 function DeployServer.Task.__getter:data_info()
 	local data = {}
 	data.task_id = self._info.task_id
@@ -287,6 +364,12 @@ function DeployServer.Task.__getter:data_info()
 	data.job_list = {}
 	for index, job in ___ipairs(self._job_list) do
 		ALittle.List_Push(data.job_list, job.data_info)
+	end
+	data.build_list = {}
+	for index, build in ___ipairs(self._info.build_list) do
+		local info = {}
+		info.create_time = build.create_time
+		ALittle.List_Push(data.build_list, info)
 	end
 	return data
 end
@@ -342,4 +425,14 @@ function DeployServer.HandleC2SDeleteJob(sender, msg)
 end
 
 ALittle.RegMsgRpcCallback(-1320965296, DeployServer.HandleC2SDeleteJob, 1809409109)
+function DeployServer.HandleC2SDeleteBuild(sender, msg)
+	local ___COROUTINE = coroutine.running()
+	A_WebAccountManager:CheckLoginByClient(sender)
+	local task = g_TaskManager:GetTask(msg.task_id)
+	Lua.Assert(task ~= nil, "任务不存在")
+	task:DeleteBuild(msg)
+	return {}
+end
+
+ALittle.RegMsgRpcCallback(1254025721, DeployServer.HandleC2SDeleteBuild, 1984174335)
 end

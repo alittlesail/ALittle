@@ -10,23 +10,34 @@ public struct JobItemInfo
     ALittle.DisplayObject _status;
 }
 
+public struct BuildItemInfo
+{
+    ALittle.DisplayObject item;
+    DeployServer.D_BuildInfo info;
+
+    ALittle.DisplayObject _button;
+}
+
 public class DPLUITaskDetail : ALittle.DisplayLayout
 {
     private TaskItemInfo _task_item;
-    private ALittle.TextRadioButtonGroup _group = new ALittle.TextRadioButtonGroup();
+    private ALittle.TextRadioButtonGroup _job_group = new ALittle.TextRadioButtonGroup();
+    private ALittle.TextRadioButtonGroup _build_group = new ALittle.TextRadioButtonGroup();
 
     private ALittle.DisplayObject _task_name_input;
     private ALittle.DisplayObject _task_desc_input;
     private ALittle.DisplayObject _webhook_input;
     private ALittle.DisplayObject _save_button;
 
-    private ALittle.ScrollList _scroll_list;
+    private ALittle.ScrollList _job_list;
+    private ALittle.ScrollList _build_list;
 
     public fun Init(TaskItemInfo task_item)
     {
         this._task_item = task_item;
         this.UpdateTaskInfo();
         this.RefreshJobInfo();
+        this.RefreshBuildInfo();
     }
 
     public fun Show()
@@ -55,7 +66,7 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         var job_info = this._task_item.info.job_list[index];
         if (job_info == null) return;
 
-        var job_item = cast<JobItemInfo>(this._scroll_list.childs[index]._user_data);
+        var job_item = cast<JobItemInfo>(this._job_list.childs[index]._user_data);
         job_item.info = job_info;
         this.RefreshJobItem(job_item);
     }
@@ -65,14 +76,29 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         var job_info = this._task_item.info.job_list[index];
         if (job_info == null) return;
 
-        this._scroll_list.SpliceChild(index, 1);
+        this._job_list.SpliceChild(index, 1);
+    }
+
+    public fun RemoveBuildItem(int index)
+    {
+        var build_info = this._task_item.info.build_list[index];
+        if (build_info == null) return;
+
+        this._build_list.SpliceChild(index, 1);
     }
 
     private fun RefreshJobInfo()
     {
-        this._scroll_list.RemoveAllChild();
+        this._job_list.RemoveAllChild();
         for (var index, job_info in this._task_item.info.job_list)
             this.AddJobItem(null, job_info);
+    }
+
+    private fun RefreshBuildInfo()
+    {
+        this._build_list.RemoveAllChild();
+        for (var index, build_info in this._task_item.info.build_list)
+            this.AddBuildItem(build_info);
     }
 
     private fun HandleTaskBaseChanged(ALittle.UIChangedEvent event)
@@ -82,7 +108,7 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
 
     public fun HandleTaskStart()
     {
-        for (var index, child in this._scroll_list.childs)
+        for (var index, child in this._job_list.childs)
         {
             var job_item = cast<JobItemInfo>(child._user_data);
             job_item._status.text = "等待";
@@ -133,11 +159,25 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         job_item.item = g_Control.CreateControl{ALittle.DisplayObject}("dpl_job_item", job_item);
         job_item.item._user_data = job_item;
         job_item._button._user_data = job_item;
-        job_item._button.group = this._group;
+        job_item._button.group = this._job_group;
         job_item._button.AddEventListener(this, this.HandleJobRButtonDown);
-        this._scroll_list.AddChild(job_item.item, job_index);
+        this._job_list.AddChild(job_item.item, job_index);
 
         this.RefreshJobItem(job_item);
+    }
+
+    public fun AddBuildItem(DeployServer.D_BuildInfo build_info)
+    {
+        var build_item = new BuildItemInfo();
+        build_item.info = build_info;
+        build_item.item = g_Control.CreateControl{ALittle.DisplayObject}("dpl_build_item", build_item);
+        build_item.item._user_data = build_item;
+        build_item._button._user_data = build_item;
+        build_item._button.group = this._build_group;
+        build_item._button.AddEventListener(this, this.HandleBuildRButtonDown);
+        this._build_list.AddChild(build_item.item);
+
+        build_item._button.text = ALittle.Time_GetCurDate(build_info.create_time);
     }
 
     private fun RefreshJobItem(JobItemInfo job_item)
@@ -161,11 +201,21 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
     private fun HandleJobRButtonDown(ALittle.UIRButtonDownEvent event)
     {
         var job_item = cast<JobItemInfo>(event.target._user_data);
-        var job_index = this._scroll_list.GetChildIndex(job_item.item);
+        var job_index = this._job_list.GetChildIndex(job_item.item);
 
         var menu = new AUIPlugin.AUIRightMenu();
         menu.AddItem("修改", bind(this.HandleModifyJob, this, job_item, job_index));
         menu.AddItem("删除", bind(this.HandleDeleteJob, this, job_item, job_index));
+        menu.Show();
+    }
+
+    private fun HandleBuildRButtonDown(ALittle.UIRButtonDownEvent event)
+    {
+        var build_item = cast<BuildItemInfo>(event.target._user_data);
+        var build_index = this._build_list.GetChildIndex(build_item.item);
+
+        var menu = new AUIPlugin.AUIRightMenu();
+        menu.AddItem("删除", bind(this.HandleDeleteBuild, this, build_item, build_index));
         menu.Show();
     }
 
@@ -194,6 +244,25 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         msg.task_id = this._task_item.info.task_id;
         msg.job_index = index;
         var error = DeployServer.HandleC2SDeleteJob(msg_client, msg);
+        if (error != null) g_AUITool.ShowNotice("提示", error);
+    }
+
+    private async fun HandleDeleteBuild(BuildItemInfo info, int index)
+    {
+        var msg_client = g_DPLWebLoginManager.msg_client;
+        if (msg_client == null || !msg_client.IsConnected())
+        {
+            g_AUITool.ShowNotice("提示", "当前还未连接成功!");
+            return;
+        }
+
+        var result = g_AUITool.DeleteNotice("删除", "确定要删除该任务吗?");
+        if (result != AUIPlugin.AUIToolOption.YES) return;
+
+        var msg = new DeployServer.C2SDeleteBuild();
+        msg.task_id = this._task_item.info.task_id;
+        msg.build_index = index;
+        var error = DeployServer.HandleC2SDeleteBuild(msg_client, msg);
         if (error != null) g_AUITool.ShowNotice("提示", error);
     }
 }

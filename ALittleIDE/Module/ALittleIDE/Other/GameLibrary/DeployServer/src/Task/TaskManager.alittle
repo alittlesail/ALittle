@@ -47,6 +47,8 @@ public class TaskManager
         task_info.task_id = this._max_task_id;
         task_info.task_name = task_name;
         task_info.create_time = ALittle.Time_GetCurTime();
+        task_info.build_list = new List<BuildInfo>();
+        task_info.job_list = new List<JobInfo>();
         var error = A_MysqlSystem.InsertInto(task_info);
         assert(error == null, error);
 
@@ -69,6 +71,7 @@ public class TaskManager
         var error = A_MysqlSystem.DeleteFromByKey{TaskInfo}("task_id", task_id);
         assert(error == null, error);
 
+        task.HandleDelete();
         this._task_map[task_id] = null;
 
         // 将消息发给所有账号

@@ -106,6 +106,8 @@ function DeployServer.TaskManager:HandleCreateTask(task_name)
 	task_info.task_id = self._max_task_id
 	task_info.task_name = task_name
 	task_info.create_time = ALittle.Time_GetCurTime()
+	task_info.build_list = {}
+	task_info.job_list = {}
 	local error = A_MysqlSystem:InsertInto(___all_struct[276033112], task_info)
 	Lua.Assert(error == nil, error)
 	local task = DeployServer.Task(task_info)
@@ -122,6 +124,7 @@ function DeployServer.TaskManager:HandleDeleteTask(task_id)
 	Lua.Assert(task.status == 0, "任务不在空闲状态")
 	local error = A_MysqlSystem:DeleteFromByKey(___all_struct[276033112], "task_id", task_id)
 	Lua.Assert(error == nil, error)
+	task:HandleDelete()
 	self._task_map[task_id] = nil
 	local msg = {}
 	msg.task_id = task_id

@@ -11,14 +11,13 @@ protected class BatchJob : Job
         return data;
     }
 
-    public await fun Execute() : string
+    public await fun Execute(BuildInfo build_info) : string, string
     {
         var msg = new QBatchExecute();
         msg.cmd = this._info.batch_cmd;
         msg.param = this._info.batch_param;
         var error, rsp = HandleBatchWorker(g_JobWorker, msg);
-        ALittle.Log(ALittle.String_JsonEncode(rsp));
-        return null;
+        return error, rsp.content;
     }
 
     public fun Modify(C2SModifyJob msg)

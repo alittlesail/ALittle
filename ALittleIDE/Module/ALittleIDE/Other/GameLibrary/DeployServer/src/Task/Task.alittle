@@ -9,6 +9,7 @@ public struct TaskInfo
     string task_desc;				// 任务描述
     Map<string, bool> web_hook;	   // web推送的项目url
     List<JobInfo> job_list;			// 任务列表
+    List<BuildInfo> build_list;		// 构建列表
     int create_time;      			// 创建时间
 }
 
@@ -29,7 +30,8 @@ public struct D_TaskInfo
     int status;
     double progress;		// 如果是执行，执行进度
 
-    List<D_JobInfo> job_list;
+    List<D_JobInfo> job_list;	// 任务信息
+    List<D_BuildInfo> build_list;	// 构建信息
 }
 
 protected class Task
@@ -76,13 +78,19 @@ protected class Task
         this._progress = 0;
         this.SendStatus();
 
+        // 创建日志
+        var build_info = new BuildInfo();
+        build_info.create_time = ALittle.Time_GetCurTime();
+        build_info.log_list = new List<string>();
+        ALittle.List_Push(this._info.build_list, build_info);
+
         // 全部标记为等待
         for (var index, job in this._job_list)
         	job.Waiting();
 
         for (var index, job in this._job_list)
         {
-        	var error = job.Doing();
+        	var error = job.Doing(build_info);
             if (error != null)
             {
                 ALittle.Log("task"..this._info.task_id..":"..this._info.task_name.." doing failed:"..error);
@@ -93,9 +101,48 @@ protected class Task
             this.SendStatus();
         }
 
+        var file_path = "DeployBuildLog/"..this._info.task_id.."/"..ALittle.Time_GetCurDate(build_info.create_time)..".log";
+        ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(file_path));
+        var log_file = lua.io.open(file_path, "wb");
+        if (log_file != null)
+        {
+            for (var index, log in build_info.log_list)
+            {
+                log_file.write(log);
+                log_file.write("\n");
+            }
+
+            log_file.close();
+        }
+
+        // 只保存最近的1000条记录
+        var len = ALittle.List_Len(build_info.log_list);
+        if (len > 1000)
+        {
+            var new_list = new List<string>();
+            var new_count = 0;
+            for (var i = len - 1000 + 1; i <= len; 1)
+            {
+                ++new_count;
+            	new_list[new_count] = build_info.log_list[i];
+            }
+            build_info.log_list = new_list;
+        }
+
         this._status = TaskStatus.IDLE;
         this._progress = 1;
         this.SendStatus();
+
+        // 发送build
+        {
+            var msg = new NCreateBuild();
+            msg.task_id = this._info.task_id;
+            msg.build_info = new D_BuildInfo();
+            msg.build_info.create_time = build_info.create_time;
+            A_WebAccountManager.SendMsgToAll(msg);
+        }
+
+        this.Save();
     }
 
     private fun SendStatus()
@@ -125,6 +172,11 @@ protected class Task
 
     public get info() : TaskInfo { return this._info; }
     public get upper_name() : string { return this._upper_name; }
+
+    public fun HandleDelete()
+    {
+        ALittle.File_DeleteDeepDir("DeployBuildLog/"..this._info.task_id);
+    }
 
     public fun UpdateInfo(C2SUpdateTaskInfo msg)
     {
@@ -216,6 +268,26 @@ protected class Task
         this.Save();
     }
 
+    public fun DeleteBuild(C2SDeleteBuild msg)
+    {
+        assert(this._status == TaskStatus.IDLE, "当前任务不是空闲状态");
+
+        var build_info = this._info.build_list[msg.build_index];
+        assert(build_info != null, "构建信息不存在");
+
+        // 移除信息，删除文件
+        ALittle.List_Remove(this._info.build_list, msg.build_index);
+        var file_path = "DeployBuildLog/"..this._info.task_id.."/"..ALittle.Time_GetCurDate(build_info.create_time)..".log";
+        ALittle.File_DeleteFile(file_path);
+
+        var ntf = new NDeleteBuild();
+        ntf.task_id = this._info.task_id;
+        ntf.build_index = msg.build_index;
+        A_WebAccountManager.SendMsgToAll(ntf);
+
+        this.Save();
+    }
+
     public get data_info() : D_TaskInfo
     {
         var data = new D_TaskInfo();
@@ -237,6 +309,14 @@ protected class Task
         data.job_list = new List<D_JobInfo>();
         for (var index, job in this._job_list)
             ALittle.List_Push(data.job_list, job.data_info);
+
+        data.build_list = new List<D_BuildInfo>();
+        for (var index, build in this._info.build_list)
+        {
+            var info = new D_BuildInfo();
+            info.create_time = build.create_time;
+            ALittle.List_Push(data.build_list, info);
+        }
 
         return data;
     }
@@ -399,4 +479,39 @@ public await static HandleC2SDeleteJob(ALittle.IMsgCommon sender, C2SDeleteJob m
     assert (task != null, "任务不存在");
     task.DeleteJob(msg);
     return new S2CDeleteJob();
+}
+
+public struct NCreateBuild
+{
+    int task_id;
+    D_BuildInfo build_info;
+}
+
+
+public struct C2SDeleteBuild
+{
+    int task_id;
+    int build_index;	// 构建所在的位置
+}
+
+public struct S2CDeleteBuild
+{
+
+}
+
+public struct NDeleteBuild
+{
+    int task_id;
+    int build_index;
+}
+
+[Msg]
+public await static HandleC2SDeleteBuild(ALittle.IMsgCommon sender, C2SDeleteBuild msg) : S2CDeleteBuild
+{
+    A_WebAccountManager.CheckLoginByClient(sender);
+
+    var task = g_TaskManager.GetTask(msg.task_id);
+    assert (task != null, "任务不存在");
+    task.DeleteBuild(msg);
+    return new S2CDeleteBuild();
 }

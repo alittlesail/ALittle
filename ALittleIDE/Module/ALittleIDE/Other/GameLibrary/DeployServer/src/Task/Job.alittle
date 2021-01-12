@@ -36,6 +36,11 @@ public struct D_JobInfo
     string batch_param;
 }
 
+public struct D_BuildInfo
+{
+    int create_time;	// 构建时间
+}
+
 protected class Job
 {
     private Task _task;
@@ -63,31 +68,42 @@ protected class Job
 
     public fun Modify(C2SModifyJob msg)
     {
-
-        this._info.job_name = msg.job_name;    }
+        this._info.job_name = msg.job_name;
+    }
 
     public fun Waiting()
     {
         this._status = JobStatus.WAITING;
+        this._progress = 0;
         this.SendStatus();
     }
 
-    public await fun Doing() : string
+    public await fun Doing(BuildInfo build_info) : string
     {
         this._status = JobStatus.DOING;
         this._progress = 0;
         this.SendStatus();
 
         // 执行
-        var error = this.Execute();
+        var error, log = this.Execute(build_info);
+        if (log != null)
+        {
+            ALittle.List_Push(build_info.log_list, "Job Begin:"..this._info.job_name.."\n");
 
+            var log_list = ALittle.String_SplitSepList(log, ["\r","\n"]);
+            for (var index, log_content in log_list)
+                ALittle.List_Push(build_info.log_list, log_content);
+
+            ALittle.List_Push(build_info.log_list, "Job End\n");
+        }
+        
         this._status = JobStatus.COMPLETED;
         this._progress = 1;
         this.SendStatus();
         return error;
     }
 
-    private await fun Execute() : string { return null; }
+    private await fun Execute(BuildInfo build_info) : string, string { return null, null; }
 
     private fun SendStatus()
     {

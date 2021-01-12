@@ -18,14 +18,13 @@ function DeployServer.BatchJob.__getter:data_info()
 	return data
 end
 
-function DeployServer.BatchJob:Execute()
+function DeployServer.BatchJob:Execute(build_info)
 	local ___COROUTINE = coroutine.running()
 	local msg = {}
 	msg.cmd = self._info.batch_cmd
 	msg.param = self._info.batch_param
 	local error, rsp = ALittle.IWorkerCommon.InvokeRPC(-1431809884, DeployServer.g_JobWorker, msg)
-	ALittle.Log(ALittle.String_JsonEncode(rsp))
-	return nil
+	return error, rsp.content
 end
 
 function DeployServer.BatchJob:Modify(msg)

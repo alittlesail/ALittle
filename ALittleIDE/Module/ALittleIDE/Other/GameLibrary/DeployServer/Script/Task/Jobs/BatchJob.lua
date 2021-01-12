@@ -20,6 +20,11 @@ end
 
 function DeployServer.BatchJob:Execute()
 	local ___COROUTINE = coroutine.running()
+	local msg = {}
+	msg.cmd = self._info.batch_cmd
+	msg.param = self._info.batch_param
+	local error, rsp = ALittle.IWorkerCommon.InvokeRPC(-1431809884, DeployServer.g_JobWorker, msg)
+	ALittle.Log(ALittle.String_JsonEncode(rsp))
 	return nil
 end
 

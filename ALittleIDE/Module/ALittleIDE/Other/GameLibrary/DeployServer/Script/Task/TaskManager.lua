@@ -64,6 +64,7 @@ type_list = {"List<DeployServer.D_TaskInfo>"},
 option_map = {}
 })
 
+DeployServer.g_JobWorker = nil
 DeployServer.TaskManager = Lua.Class(nil, "DeployServer.TaskManager")
 
 function DeployServer.TaskManager:Ctor()
@@ -86,6 +87,7 @@ function DeployServer.TaskManager:Setup()
 		end
 	end
 	A_WebAccountManager:AddEventListener(___all_struct[-1353883986], self, self.HandleAccountLogin)
+	DeployServer.g_JobWorker = ALittle.Worker(DeployServer.g_ModuleScriptPath .. "Task/Workers/JobWorker")
 end
 
 function DeployServer.TaskManager:HandleAccountLogin(event)
@@ -181,6 +183,10 @@ function DeployServer.TaskManager:FindTask(key)
 end
 
 function DeployServer.TaskManager:Shutdown()
+	if DeployServer.g_JobWorker ~= nil then
+		DeployServer.g_JobWorker:Stop()
+		DeployServer.g_JobWorker = nil
+	end
 end
 
 _G.g_TaskManager = DeployServer.TaskManager()

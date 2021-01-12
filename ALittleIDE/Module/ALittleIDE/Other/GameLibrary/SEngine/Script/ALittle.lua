@@ -53,6 +53,7 @@ end
 
 function _G.__ALITTLEAPI_Update(frame_time)
 	A_LoopSystem:Update(frame_time)
+	A_WeakLoopSystem:Update(frame_time)
 end
 
 function _G.__ALITTLEAPI_HandleMysqlQueryTask(id, reason)

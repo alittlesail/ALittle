@@ -63,6 +63,7 @@ public static __ALITTLEAPI_ShutdownMainModule(string module_name)
 public static __ALITTLEAPI_Update(int frame_time)
 {
     A_LoopSystem.Update(frame_time);
+    A_WeakLoopSystem.Update(frame_time);
 }
 
 public static __ALITTLEAPI_HandleMysqlQueryTask(int id, string reason)

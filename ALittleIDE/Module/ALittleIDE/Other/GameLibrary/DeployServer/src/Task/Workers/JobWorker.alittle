@@ -1,0 +1,27 @@
+
+namespace DeployServer;
+
+public struct QBatchExecute
+{
+    string cmd;
+    string param;
+}
+
+public struct ABatchExecute
+{
+    string content;
+}
+
+[Worker]
+public await static HandleBatchWorker(ALittle.IWorkerCommon sender, QBatchExecute msg) : ABatchExecute
+{
+    var rsp = new ABatchExecute();
+
+    var cmd = msg.cmd.." "..msg.param;
+    var file = lua.io.popen(cmd, "r");
+    assert(file != null, "命令执行失败:"..cmd);
+    rsp.content = file.read("*a");
+    file.close();
+
+    return rsp;
+}

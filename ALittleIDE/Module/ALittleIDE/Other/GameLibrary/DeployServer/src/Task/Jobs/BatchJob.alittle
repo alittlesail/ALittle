@@ -13,6 +13,11 @@ protected class BatchJob : Job
 
     public await fun Execute() : string
     {
+        var msg = new QBatchExecute();
+        msg.cmd = this._info.batch_cmd;
+        msg.param = this._info.batch_param;
+        var error, rsp = HandleBatchWorker(g_JobWorker, msg);
+        ALittle.Log(ALittle.String_JsonEncode(rsp));
         return null;
     }
 

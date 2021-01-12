@@ -9,14 +9,16 @@ local ___ipairs = ipairs
 
 
 DeployServer.g_ConfigSystem = nil
+DeployServer.g_ModuleScriptPath = nil
 function DeployServer.__Module_Setup(sengine_path, module_path, config_path)
 	Require(sengine_path, "Script/WebAccount/WebPermission")
 	Require(sengine_path, "Script/WebAccount/WebAccount")
 	Require(sengine_path, "Script/WebAccount/WebAccountManager")
 	Require(sengine_path, "Script/WebAccount/WebOPSManager")
+	DeployServer.g_ModuleScriptPath = module_path .. "Script/"
 	RequireFromPaths(module_path, "Script/Utility/", {"WebHookManager.alittle", "SettingManager.alittle", "KeyValueManager.alittle"})
 	RequireFromPaths(module_path, "Script/Task/", {"TaskManager.alittle", "Task.alittle", "Job.alittle"
-		, "Jobs/BatchJob.alittle"})
+		, "Jobs/BatchJob.alittle", "Workers/JobWorker.alittle"})
 	math.randomseed(os.time())
 	DeployServer.g_ConfigSystem = ALittle.CreateJsonConfig(config_path, true)
 	local wan_ip = DeployServer.g_ConfigSystem:GetConfig("wan_ip", "127.0.0.1")

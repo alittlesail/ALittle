@@ -88,13 +88,13 @@ protected class Job
         var error, log = this.Execute(build_info);
         if (log != null)
         {
-            ALittle.List_Push(build_info.log_list, "Job Begin:"..this._info.job_name.."\n");
+            ALittle.List_Push(build_info.log_list, "Job Begin:"..this._info.job_name);
 
             var log_list = ALittle.String_SplitSepList(log, ["\r","\n"]);
             for (var index, log_content in log_list)
                 ALittle.List_Push(build_info.log_list, log_content);
 
-            ALittle.List_Push(build_info.log_list, "Job End\n");
+            ALittle.List_Push(build_info.log_list, "Job End");
         }
         
         this._status = JobStatus.COMPLETED;

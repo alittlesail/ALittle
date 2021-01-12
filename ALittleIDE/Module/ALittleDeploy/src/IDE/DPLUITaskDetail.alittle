@@ -16,6 +16,7 @@ public struct BuildItemInfo
     DeployServer.D_BuildInfo info;
 
     ALittle.DisplayObject _button;
+    ALittle.DisplayObject _download_button;
 }
 
 public class DPLUITaskDetail : ALittle.DisplayLayout
@@ -175,6 +176,8 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         build_item._button._user_data = build_item;
         build_item._button.group = this._build_group;
         build_item._button.AddEventListener(this, this.HandleBuildRButtonDown);
+        build_item._download_button.AddEventListener(this, this.HandleDownloadBuild);
+        build_item._download_button._user_data = build_item;
         this._build_list.AddChild(build_item.item);
 
         build_item._button.text = ALittle.Time_GetCurDate(build_info.create_time);
@@ -217,6 +220,22 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         var menu = new AUIPlugin.AUIRightMenu();
         menu.AddItem("删除", bind(this.HandleDeleteBuild, this, build_item, build_index));
         menu.Show();
+    }
+
+    private async fun HandleDownloadBuild(ALittle.UISystemSelectDirectoryEvent event)
+    {
+        if (event.path == null || event.path == "") return;
+
+        var build_item = cast<BuildItemInfo>(event.target._user_data);
+        var build_index = this._build_list.GetChildIndex(build_item.item);
+        
+        var msg = new DeployServer.QDownloadBuild();
+        msg.task_id = this._task_item.info.task_id;
+        msg.build_index = build_index;
+
+        var sender = g_DPLCenter.CreateHttpFileSender(event.path.."/"..ALittle.Time_GetCurDate(build_item.info.create_time)..".log");
+        var error = DeployServer.HandleDownloadBuild(sender, msg);
+        if (error != null) g_AUITool.ShowNotice("提示", error);
     }
 
     private fun HandleModifyJob(JobItemInfo info, int index)

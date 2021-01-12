@@ -193,13 +193,13 @@ function DeployServer.Task:StartImpl()
 		self._progress = (index - 1) / ALittle.List_Len(self._job_list)
 		self:SendStatus()
 	end
-	local file_path = "DeployBuildLog/" .. self._info.task_id .. "/" .. ALittle.Time_GetCurDate(build_info.create_time) .. ".log"
+	local file_path = self:GetBuildPath(build_info.create_time)
 	ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(file_path))
 	local log_file = io.open(file_path, "wb")
 	if log_file ~= nil then
 		for index, log in ___ipairs(build_info.log_list) do
 			log_file:write(log)
-			log_file:write("\n")
+			log_file:write("\r\n")
 		end
 		log_file:close()
 	end
@@ -338,13 +338,17 @@ function DeployServer.Task:DeleteBuild(msg)
 	local build_info = self._info.build_list[msg.build_index]
 	Lua.Assert(build_info ~= nil, "构建信息不存在")
 	ALittle.List_Remove(self._info.build_list, msg.build_index)
-	local file_path = "DeployBuildLog/" .. self._info.task_id .. "/" .. ALittle.Time_GetCurDate(build_info.create_time) .. ".log"
+	local file_path = self:GetBuildPath(build_info.create_time)
 	ALittle.File_DeleteFile(file_path)
 	local ntf = {}
 	ntf.task_id = self._info.task_id
 	ntf.build_index = msg.build_index
 	A_WebAccountManager:SendMsgToAll(___all_struct[-206375730], ntf)
 	self:Save()
+end
+
+function DeployServer.Task:GetBuildPath(create_time)
+	return "DeployBuildLog/" .. self._info.task_id .. "/" .. ALittle.Time_GetCurDate(create_time) .. ".log"
 end
 
 function DeployServer.Task.__getter:data_info()

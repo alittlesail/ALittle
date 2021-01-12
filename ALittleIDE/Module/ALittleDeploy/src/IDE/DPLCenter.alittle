@@ -17,6 +17,15 @@ class DPLCenter
         A_UISystem.quit_callback = bind(this.HandleQuit, this);
 	}
 
+    public fun CreateHttpFileSender(string file_path) : ALittle.IHttpFileSender
+    {
+		// 初始化登录
+		var http_ip = g_DPLServerConfig.GetConfig("http_ip", "139.159.176.119");
+		var http_port = g_DPLServerConfig.GetConfig("http_port", 1801);
+   
+        return ALittle.CreateHttpFileSender(http_ip, http_port, file_path, 0);
+    }
+
 	public fun Shutdown()
 	{
 		if (this._account != null) this._account.Shutdown();

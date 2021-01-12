@@ -101,7 +101,7 @@ protected class Task
             this.SendStatus();
         }
 
-        var file_path = "DeployBuildLog/"..this._info.task_id.."/"..ALittle.Time_GetCurDate(build_info.create_time)..".log";
+        var file_path = this.GetBuildPath(build_info.create_time);
         ALittle.File_MakeDeepDir(ALittle.File_GetFilePathByPath(file_path));
         var log_file = lua.io.open(file_path, "wb");
         if (log_file != null)
@@ -109,7 +109,7 @@ protected class Task
             for (var index, log in build_info.log_list)
             {
                 log_file.write(log);
-                log_file.write("\n");
+                log_file.write("\r\n");
             }
 
             log_file.close();
@@ -277,7 +277,7 @@ protected class Task
 
         // 移除信息，删除文件
         ALittle.List_Remove(this._info.build_list, msg.build_index);
-        var file_path = "DeployBuildLog/"..this._info.task_id.."/"..ALittle.Time_GetCurDate(build_info.create_time)..".log";
+        var file_path = this.GetBuildPath(build_info.create_time);
         ALittle.File_DeleteFile(file_path);
 
         var ntf = new NDeleteBuild();
@@ -286,6 +286,11 @@ protected class Task
         A_WebAccountManager.SendMsgToAll(ntf);
 
         this.Save();
+    }
+
+    public fun GetBuildPath(int create_time) : string
+    {
+    	return "DeployBuildLog/"..this._info.task_id.."/"..ALittle.Time_GetCurDate(create_time)..".log";
     }
 
     public get data_info() : D_TaskInfo

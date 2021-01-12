@@ -33,6 +33,12 @@ name_list = {},
 type_list = {},
 option_map = {}
 })
+ALittle.RegStruct(1800966813, "ALittle.UISystemSelectDirectoryEvent", {
+name = "ALittle.UISystemSelectDirectoryEvent", ns_name = "ALittle", rl_name = "UISystemSelectDirectoryEvent", hash_code = 1800966813,
+name_list = {"target","path"},
+type_list = {"ALittle.DisplayObject","string"},
+option_map = {}
+})
 ALittle.RegStruct(1566214727, "DeployServer.S2CUpdateTaskInfo", {
 name = "DeployServer.S2CUpdateTaskInfo", ns_name = "DeployServer", rl_name = "S2CUpdateTaskInfo", hash_code = 1566214727,
 name_list = {},
@@ -47,8 +53,8 @@ option_map = {}
 })
 ALittle.RegStruct(-1417845740, "ALittleDeploy.BuildItemInfo", {
 name = "ALittleDeploy.BuildItemInfo", ns_name = "ALittleDeploy", rl_name = "BuildItemInfo", hash_code = -1417845740,
-name_list = {"item","info","_button"},
-type_list = {"ALittle.DisplayObject","DeployServer.D_BuildInfo","ALittle.DisplayObject"},
+name_list = {"item","info","_button","_download_button"},
+type_list = {"ALittle.DisplayObject","DeployServer.D_BuildInfo","ALittle.DisplayObject","ALittle.DisplayObject"},
 option_map = {}
 })
 ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
@@ -225,6 +231,8 @@ function ALittleDeploy.DPLUITaskDetail:AddBuildItem(build_info)
 	build_item._button._user_data = build_item
 	build_item._button.group = self._build_group
 	build_item._button:AddEventListener(___all_struct[-641444818], self, self.HandleBuildRButtonDown)
+	build_item._download_button:AddEventListener(___all_struct[1800966813], self, self.HandleDownloadBuild)
+	build_item._download_button._user_data = build_item
 	self._build_list:AddChild(build_item.item)
 	build_item._button.text = ALittle.Time_GetCurDate(build_info.create_time)
 end
@@ -263,6 +271,23 @@ function ALittleDeploy.DPLUITaskDetail:HandleBuildRButtonDown(event)
 	menu:AddItem("删除", Lua.Bind(self.HandleDeleteBuild, self, build_item, build_index))
 	menu:Show()
 end
+
+function ALittleDeploy.DPLUITaskDetail:HandleDownloadBuild(event)
+	if event.path == nil or event.path == "" then
+		return
+	end
+	local build_item = event.target._user_data
+	local build_index = self._build_list:GetChildIndex(build_item.item)
+	local msg = {}
+	msg.task_id = self._task_item.info.task_id
+	msg.build_index = build_index
+	local sender = ALittleDeploy.g_DPLCenter:CreateHttpFileSender(event.path .. "/" .. ALittle.Time_GetCurDate(build_item.info.create_time) .. ".log")
+	local error = ALittle.IHttpFileSender.InvokeDownload("DeployServer.QDownloadBuild", sender, msg)
+	if error ~= nil then
+		g_AUITool:ShowNotice("提示", error)
+	end
+end
+ALittleDeploy.DPLUITaskDetail.HandleDownloadBuild = Lua.CoWrap(ALittleDeploy.DPLUITaskDetail.HandleDownloadBuild)
 
 function ALittleDeploy.DPLUITaskDetail:HandleModifyJob(info, index)
 	if info.info.job_type == 1 then

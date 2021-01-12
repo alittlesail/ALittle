@@ -6,3 +6,21 @@ protected struct BuildInfo
     List<string> log_list;	// 构建日志
     int create_time;			// 构建时间
 }
+
+public struct QDownloadBuild
+{
+    int task_id;
+    int build_index;
+}
+
+[HttpDownload]
+public await static HandleDownloadBuild(ALittle.IHttpReceiver sender, QDownloadBuild msg) : string, int
+{
+    var task = g_TaskManager.GetTask(msg.task_id);
+    assert(task != null, "任务不存在");
+
+    var build_info = task.info.build_list[msg.build_index];
+    assert (build_info != null, "构建信息不存在");
+
+    return task.GetBuildPath(build_info.create_time), 0;
+}

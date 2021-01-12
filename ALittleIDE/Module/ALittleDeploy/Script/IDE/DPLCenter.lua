@@ -17,6 +17,12 @@ function ALittleDeploy.DPLCenter:Setup()
 	A_UISystem.quit_callback = Lua.Bind(self.HandleQuit, self)
 end
 
+function ALittleDeploy.DPLCenter:CreateHttpFileSender(file_path)
+	local http_ip = ALittleDeploy.g_DPLServerConfig:GetConfig("http_ip", "139.159.176.119")
+	local http_port = ALittleDeploy.g_DPLServerConfig:GetConfig("http_port", 1801)
+	return ALittle.CreateHttpFileSender(http_ip, http_port, file_path, 0)
+end
+
 function ALittleDeploy.DPLCenter:Shutdown()
 	if self._account ~= nil then
 		self._account:Shutdown()

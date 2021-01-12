@@ -3,6 +3,7 @@ namespace DeployServer;
 
 public struct QBatchExecute
 {
+    string dir;
     string cmd;
     string param;
 }
@@ -17,7 +18,15 @@ public await static HandleBatchWorker(ALittle.IWorkerCommon sender, QBatchExecut
 {
     var rsp = new ABatchExecute();
 
-    var cmd = msg.cmd.." "..msg.param;
+    var cmd = "";
+    if (msg.dir != null && msg.dir != "")
+    {
+        var index = ALittle.String_Find(msg.dir, ":");
+        if (index != null)
+            cmd = cmd..ALittle.String_Sub(msg.dir, 1, index).." && ";
+        cmd = cmd.."cd \""..msg.dir.."\" && ";
+    }
+    cmd = cmd..msg.cmd.." "..msg.param;
     var file = lua.io.popen(cmd, "r");
     assert(file != null, "命令执行失败:"..cmd);
     rsp.content = file.read("*a");

@@ -11,8 +11,8 @@ local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(-2035971543, "DeployServer.D_JobInfo", {
 name = "DeployServer.D_JobInfo", ns_name = "DeployServer", rl_name = "D_JobInfo", hash_code = -2035971543,
-name_list = {"job_type","job_name","status","progress","batch_cmd","batch_param"},
-type_list = {"int","string","int","double","string","string"},
+name_list = {"job_type","job_name","status","progress","batch_dir","batch_cmd","batch_param"},
+type_list = {"int","string","int","double","string","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(1984174335, "DeployServer.S2CDeleteBuild", {

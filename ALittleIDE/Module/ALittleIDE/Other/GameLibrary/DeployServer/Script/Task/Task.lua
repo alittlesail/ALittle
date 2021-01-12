@@ -41,8 +41,8 @@ option_map = {}
 })
 ALittle.RegStruct(-1492768812, "DeployServer.C2SModifyJob", {
 name = "DeployServer.C2SModifyJob", ns_name = "DeployServer", rl_name = "C2SModifyJob", hash_code = -1492768812,
-name_list = {"task_id","job_index","job_name","batch_cmd","batch_param"},
-type_list = {"int","int","string","string","string"},
+name_list = {"task_id","job_index","job_name","batch_dir","batch_cmd","batch_param"},
+type_list = {"int","int","string","string","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(1487624699, "DeployServer.NCreateBuild", {
@@ -131,8 +131,8 @@ option_map = {}
 })
 ALittle.RegStruct(-105312390, "DeployServer.C2SCreateJob", {
 name = "DeployServer.C2SCreateJob", ns_name = "DeployServer", rl_name = "C2SCreateJob", hash_code = -105312390,
-name_list = {"task_id","job_type","job_index","job_name","batch_cmd","batch_param"},
-type_list = {"int","int","int","string","string","string"},
+name_list = {"task_id","job_type","job_index","job_name","batch_dir","batch_cmd","batch_param"},
+type_list = {"int","int","int","string","string","string","string"},
 option_map = {}
 })
 
@@ -288,6 +288,7 @@ function DeployServer.Task:CreateJob(msg)
 	local job_info = {}
 	job_info.job_type = msg.job_type
 	job_info.job_name = msg.job_name
+	job_info.batch_dir = msg.batch_dir
 	job_info.batch_cmd = msg.batch_cmd
 	job_info.batch_param = msg.batch_param
 	local job = DeployServer.CreateJob(self, job_info)

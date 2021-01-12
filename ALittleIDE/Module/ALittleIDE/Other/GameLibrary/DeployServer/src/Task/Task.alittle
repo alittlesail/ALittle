@@ -206,6 +206,7 @@ protected class Task
         job_info.job_type = msg.job_type;
         job_info.job_name = msg.job_name;
 
+        job_info.batch_dir = msg.batch_dir;
         job_info.batch_cmd = msg.batch_cmd;
         job_info.batch_param = msg.batch_param;
 
@@ -397,6 +398,7 @@ public struct C2SCreateJob
     string job_name;	// job名称
 
     // 批处理
+    string batch_dir;
     string batch_cmd;
     string batch_param;
 }
@@ -431,6 +433,7 @@ public struct C2SModifyJob
     string job_name;
 
     // 批处理
+    string batch_dir;
     string batch_cmd;
     string batch_param;
 }

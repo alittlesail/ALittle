@@ -13,6 +13,7 @@ protected struct JobInfo
     string job_name;
 
     // 批处理命令
+    string batch_dir;
     string batch_cmd;
     string batch_param;
 }
@@ -32,6 +33,7 @@ public struct D_JobInfo
     double progress;	// 执行进度
 
     // 批处理命令
+    string batch_dir;
     string batch_cmd;
     string batch_param;
 }

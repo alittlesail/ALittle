@@ -79,7 +79,10 @@ public class DPLUITaskCenter : ALittle.DisplayLayout
         if (task_info == null) return;
 
         if (job_index == null || job_index <= 0 || job_index > ALittle.List_Len(task_info.info.job_list))
+        {
             ALittle.List_Push(task_info.info.job_list, info);
+            job_index = ALittle.List_Len(task_info.info.job_list);
+        }
         else
 	        ALittle.List_Insert(task_info.info.job_list, job_index, info);
         if (task_info.detail != null) task_info.detail.AddJobItem(job_index, info);

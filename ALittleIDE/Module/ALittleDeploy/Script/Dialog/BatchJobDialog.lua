@@ -10,8 +10,8 @@ local ___ipairs = ipairs
 
 ALittle.RegStruct(-1492768812, "DeployServer.C2SModifyJob", {
 name = "DeployServer.C2SModifyJob", ns_name = "DeployServer", rl_name = "C2SModifyJob", hash_code = -1492768812,
-name_list = {"task_id","job_index","job_name","batch_cmd","batch_param"},
-type_list = {"int","int","string","string","string"},
+name_list = {"task_id","job_index","job_name","batch_dir","batch_cmd","batch_param"},
+type_list = {"int","int","string","string","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(-1402593517, "DeployServer.S2CCreateJob", {
@@ -28,8 +28,8 @@ option_map = {}
 })
 ALittle.RegStruct(-105312390, "DeployServer.C2SCreateJob", {
 name = "DeployServer.C2SCreateJob", ns_name = "DeployServer", rl_name = "C2SCreateJob", hash_code = -105312390,
-name_list = {"task_id","job_type","job_index","job_name","batch_cmd","batch_param"},
-type_list = {"int","int","int","string","string","string"},
+name_list = {"task_id","job_type","job_index","job_name","batch_dir","batch_cmd","batch_param"},
+type_list = {"int","int","int","string","string","string","string"},
 option_map = {}
 })
 
@@ -48,10 +48,12 @@ function ALittleDeploy.BatchJobDialog:Show(task_id, job_index, info)
 	self._job_index = job_index
 	if info ~= nil then
 		self._name.text = info.job_name
+		self._dir.text = info.batch_dir
 		self._cmd.text = info.batch_cmd
 		self._param.text = info.batch_param
 	else
 		self._name.text = ""
+		self._dir.text = ""
 		self._cmd.text = ""
 		self._param.text = ""
 	end
@@ -75,6 +77,7 @@ function ALittleDeploy.BatchJobDialog:HandleComfirmClick(event)
 		msg.job_type = 1
 		msg.job_index = self._job_index
 		msg.job_name = self._name.text
+		msg.batch_dir = self._dir.text
 		msg.batch_cmd = self._cmd.text
 		msg.batch_param = self._param.text
 		local error = ALittle.IMsgCommon.InvokeRPC(-105312390, msg_client, msg)
@@ -86,6 +89,7 @@ function ALittleDeploy.BatchJobDialog:HandleComfirmClick(event)
 		msg.task_id = self._task_id
 		msg.job_index = self._job_index
 		msg.job_name = self._name.text
+		msg.batch_dir = self._dir.text
 		msg.batch_cmd = self._cmd.text
 		msg.batch_param = self._param.text
 		local error = ALittle.IMsgCommon.InvokeRPC(-1492768812, msg_client, msg)

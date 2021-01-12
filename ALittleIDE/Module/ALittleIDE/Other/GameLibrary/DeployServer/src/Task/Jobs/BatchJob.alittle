@@ -6,6 +6,7 @@ protected class BatchJob : Job
     public get data_info() : D_JobInfo
     {
         var data = Job.data_info(this);
+        data.batch_dir = this._info.batch_dir;
         data.batch_cmd = this._info.batch_cmd;
         data.batch_param = this._info.batch_param;
         return data;
@@ -14,6 +15,7 @@ protected class BatchJob : Job
     public await fun Execute(BuildInfo build_info) : string, string
     {
         var msg = new QBatchExecute();
+        msg.dir = this._info.batch_dir;
         msg.cmd = this._info.batch_cmd;
         msg.param = this._info.batch_param;
         var error, rsp = HandleBatchWorker(g_JobWorker, msg);
@@ -24,6 +26,7 @@ protected class BatchJob : Job
     {
         Job.Modify(this, msg);
 
+        this._info.batch_dir = msg.batch_dir;
         this._info.batch_cmd = msg.batch_cmd;
         this._info.batch_param = msg.batch_param;
     }

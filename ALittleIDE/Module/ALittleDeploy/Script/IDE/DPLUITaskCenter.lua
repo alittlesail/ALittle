@@ -23,8 +23,8 @@ option_map = {}
 })
 ALittle.RegStruct(-2035971543, "DeployServer.D_JobInfo", {
 name = "DeployServer.D_JobInfo", ns_name = "DeployServer", rl_name = "D_JobInfo", hash_code = -2035971543,
-name_list = {"job_type","job_name","status","progress","batch_cmd","batch_param"},
-type_list = {"int","string","int","double","string","string"},
+name_list = {"job_type","job_name","status","progress","batch_dir","batch_cmd","batch_param"},
+type_list = {"int","string","int","double","string","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(1811432266, "DeployServer.D_BuildInfo", {
@@ -235,6 +235,7 @@ function ALittleDeploy.DPLUITaskCenter:AddJobItem(task_id, job_index, info)
 	end
 	if job_index == nil or job_index <= 0 or job_index > ALittle.List_Len(task_info.info.job_list) then
 		ALittle.List_Push(task_info.info.job_list, info)
+		job_index = ALittle.List_Len(task_info.info.job_list)
 	else
 		ALittle.List_Insert(task_info.info.job_list, job_index, info)
 	end

@@ -4,6 +4,7 @@ namespace ALittleDeploy;
 public class BatchJobDialog : ALittle.Dialog
 {
 	private ALittle.ImageInput _name;
+	private ALittle.ImageInput _dir;
 	private ALittle.ImageInput _cmd;
 	private ALittle.ImageEdit _param;
 
@@ -21,12 +22,14 @@ public class BatchJobDialog : ALittle.Dialog
         if (info != null)
         {
             this._name.text = info.job_name;
+            this._dir.text = info.batch_dir;
             this._cmd.text = info.batch_cmd;
             this._param.text = info.batch_param;
         }
         else
         {
             this._name.text = "";
+            this._dir.text = "";
             this._cmd.text = "";
             this._param.text = "";
         }
@@ -56,6 +59,7 @@ public class BatchJobDialog : ALittle.Dialog
             msg.job_type = DeployServer.JobType.BATCH;
             msg.job_index = this._job_index;
             msg.job_name = this._name.text;
+            msg.batch_dir = this._dir.text;
             msg.batch_cmd = this._cmd.text;
             msg.batch_param = this._param.text;
             var error = DeployServer.HandleC2SCreateJob(msg_client, msg);
@@ -67,6 +71,7 @@ public class BatchJobDialog : ALittle.Dialog
             msg.task_id = this._task_id;
             msg.job_index = this._job_index;
             msg.job_name = this._name.text;
+            msg.batch_dir = this._dir.text;
             msg.batch_cmd = this._cmd.text;
             msg.batch_param = this._param.text;
             var error = DeployServer.HandleC2SModifyJob(msg_client, msg);

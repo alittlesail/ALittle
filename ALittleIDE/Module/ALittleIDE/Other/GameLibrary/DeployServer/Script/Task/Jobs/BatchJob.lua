@@ -13,6 +13,7 @@ DeployServer.BatchJob = Lua.Class(DeployServer.Job, "DeployServer.BatchJob")
 
 function DeployServer.BatchJob.__getter:data_info()
 	local data = DeployServer.Job.__getter.data_info(self)
+	data.batch_dir = self._info.batch_dir
 	data.batch_cmd = self._info.batch_cmd
 	data.batch_param = self._info.batch_param
 	return data
@@ -21,6 +22,7 @@ end
 function DeployServer.BatchJob:Execute(build_info)
 	local ___COROUTINE = coroutine.running()
 	local msg = {}
+	msg.dir = self._info.batch_dir
 	msg.cmd = self._info.batch_cmd
 	msg.param = self._info.batch_param
 	local error, rsp = ALittle.IWorkerCommon.InvokeRPC(-1431809884, DeployServer.g_JobWorker, msg)
@@ -29,6 +31,7 @@ end
 
 function DeployServer.BatchJob:Modify(msg)
 	DeployServer.Job.Modify(self, msg)
+	self._info.batch_dir = msg.batch_dir
 	self._info.batch_cmd = msg.batch_cmd
 	self._info.batch_param = msg.batch_param
 end

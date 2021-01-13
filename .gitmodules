@@ -37,3 +37,6 @@
 [submodule "lua"]
 	path = lua
 	url = https://github.com/alittlesail/lua.git
+[submodule "ALittleIDE/Module/ALittleIDE/Other/GameLibrary/SEngine"]
+	path = ALittleIDE/Module/ALittleIDE/Other/GameLibrary/SEngine
+	url = https://github.com/alittlesail/ALittle-SEngine.git

@@ -1,5 +1,0 @@
-
-register namespace carp;
-
-public static SetThreadCount(int count) {}
-public static GetThreadCount() : int {}

@@ -46,3 +46,9 @@
 [submodule "ALittleIDE/Module/ALittleIDE/Other/GameLibrary/DeployServer"]
 	path = ALittleIDE/Module/ALittleIDE/Other/GameLibrary/DeployServer
 	url = https://github.com/alittlesail/ALittle-DeployServer.git
+[submodule "ALittleIDE/Module/ALittleIDE/Other/GameLibrary/VersionServer"]
+	path = ALittleIDE/Module/ALittleIDE/Other/GameLibrary/VersionServer
+	url = https://github.com/alittlesail/ALittle-VersionServer.git
+[submodule "ALittleIDE/Module/ALittleIDE/Other/GameLibrary/GatewayServer"]
+	path = ALittleIDE/Module/ALittleIDE/Other/GameLibrary/GatewayServer
+	url = https://github.com/alittlesail/ALittle-GatewayServer.git

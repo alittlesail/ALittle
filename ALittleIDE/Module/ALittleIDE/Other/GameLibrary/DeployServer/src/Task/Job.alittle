@@ -6,6 +6,8 @@ public enum JobType
     NONE = 0;
     BATCH = 1;	// 批处理
     DEEPCOPY = 2;	// 复制目录
+    COPYFILE = 3;	// 复制文件
+    RESTART = 4;	// 重启服务器指令
 }
 
 public struct JobInfoDetail
@@ -19,6 +21,11 @@ public struct JobInfoDetail
     string deepcopy_src;
     string deepcopy_dst;
     string deepcopy_ext;
+
+    // 拷贝文件
+    string copyfile_src;
+    List<string> copyfile_file;
+    string copyfile_dst;
 }
 
 protected struct JobInfo
@@ -139,5 +146,9 @@ protected static CreateJob(Task task, JobInfo info) : Job
     	return new BatchJob(task, info);
     elseif (info.job_type == JobType.DEEPCOPY)
     	return new DeepCopyJob(task, info);
+    elseif (info.job_type == JobType.COPYFILE)
+    	return new CopyFileJob(task, info);
+    elseif (info.job_type == JobType.RESTART)
+    	return new RestartJob(task, info);
     return null;
 }

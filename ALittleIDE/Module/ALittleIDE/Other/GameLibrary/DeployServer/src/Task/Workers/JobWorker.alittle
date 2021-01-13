@@ -59,3 +59,33 @@ public await static HandleDeepCopyWorker(ALittle.IWorkerCommon sender, QDeepCopy
     ALittle.File_CopyDeepDir(detail.deepcopy_src, detail.deepcopy_dst, detail.deepcopy_ext);
     return rsp;
 }
+
+public struct QCopyFileExecute
+{
+    JobInfoDetail detail;
+}
+
+public struct ACopyFileExecute
+{
+}
+
+[Worker]
+public await static HandleCopyFileWorker(ALittle.IWorkerCommon sender, QCopyFileExecute msg) : ACopyFileExecute
+{
+    var detail = msg.detail;
+    var rsp = new ACopyFileExecute();
+    var attr = ALittle.File_GetFileAttr(detail.copyfile_src);
+    assert (attr != null && attr.directory, "源目录不存在");
+    ALittle.File_MakeDeepDir(detail.copyfile_dst);
+    attr = ALittle.File_GetFileAttr(detail.copyfile_dst);
+    assert (attr != null && attr.directory, "目标目录创建失败");
+
+    var src = ALittle.File_PathEndWithSplit(detail.copyfile_src);
+    var dst = ALittle.File_PathEndWithSplit(detail.copyfile_dst);
+    for (var index, file_name in detail.copyfile_file)
+    {
+    	var result = ALittle.File_CopyFile(src..file_name, dst..file_name);
+        assert(result, "文件复制失败:"..src..file_name);
+    }
+    return rsp;
+}

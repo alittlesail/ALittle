@@ -57,10 +57,22 @@ name_list = {"task_id"},
 type_list = {"int"},
 option_map = {}
 })
+ALittle.RegStruct(-601303991, "DeployServer.S2CCopyTask", {
+name = "DeployServer.S2CCopyTask", ns_name = "DeployServer", rl_name = "S2CCopyTask", hash_code = -601303991,
+name_list = {},
+type_list = {},
+option_map = {}
+})
 ALittle.RegStruct(-542744414, "DeployServer.S2CTaskList", {
 name = "DeployServer.S2CTaskList", ns_name = "DeployServer", rl_name = "S2CTaskList", hash_code = -542744414,
 name_list = {"task_list"},
 type_list = {"List<DeployServer.D_TaskInfo>"},
+option_map = {}
+})
+ALittle.RegStruct(-478034953, "DeployServer.C2SCopyTask", {
+name = "DeployServer.C2SCopyTask", ns_name = "DeployServer", rl_name = "C2SCopyTask", hash_code = -478034953,
+name_list = {"task_id"},
+type_list = {"int"},
 option_map = {}
 })
 
@@ -108,6 +120,24 @@ function DeployServer.TaskManager:HandleCreateTask(task_name)
 	task_info.create_time = ALittle.Time_GetCurTime()
 	task_info.build_list = {}
 	task_info.job_list = {}
+	local error = A_MysqlSystem:InsertInto(___all_struct[276033112], task_info)
+	Lua.Assert(error == nil, error)
+	local task = DeployServer.Task(task_info)
+	self._task_map[task_info.task_id] = task
+	local msg = {}
+	msg.task_info = task.data_info
+	A_WebAccountManager:SendMsgToAll(___all_struct[-1243553967], msg)
+end
+
+function DeployServer.TaskManager:HandleCopyTask(task_id)
+	local ___COROUTINE = coroutine.running()
+	local target = self._task_map[task_id]
+	Lua.Assert(target ~= nil, "要复制的任务不存在")
+	self._max_task_id = self._max_task_id + 1
+	local task_info = ALittle.String_CopyTable(target.info)
+	task_info.task_id = self._max_task_id
+	task_info.create_time = ALittle.Time_GetCurTime()
+	task_info.build_list = {}
 	local error = A_MysqlSystem:InsertInto(___all_struct[276033112], task_info)
 	Lua.Assert(error == nil, error)
 	local task = DeployServer.Task(task_info)
@@ -201,6 +231,14 @@ function DeployServer.HandleC2SCreateTask(sender, msg)
 end
 
 ALittle.RegMsgRpcCallback(1287526271, DeployServer.HandleC2SCreateTask, -1533563228)
+function DeployServer.HandleC2SCopyTask(sender, msg)
+	local ___COROUTINE = coroutine.running()
+	A_WebAccountManager:CheckLoginByClient(sender)
+	g_TaskManager:HandleCopyTask(msg.task_id)
+	return {}
+end
+
+ALittle.RegMsgRpcCallback(-478034953, DeployServer.HandleC2SCopyTask, -601303991)
 function DeployServer.HandleC2SDeleteTask(sender, msg)
 	local ___COROUTINE = coroutine.running()
 	A_WebAccountManager:CheckLoginByClient(sender)

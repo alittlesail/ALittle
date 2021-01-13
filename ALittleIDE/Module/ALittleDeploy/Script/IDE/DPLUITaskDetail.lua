@@ -63,6 +63,12 @@ name_list = {"item","info","_button","_download_button"},
 type_list = {"ALittle.DisplayObject","DeployServer.D_BuildInfo","ALittle.DisplayObject","ALittle.DisplayObject"},
 option_map = {}
 })
+ALittle.RegStruct(-1402593517, "DeployServer.S2CCreateJob", {
+name = "DeployServer.S2CCreateJob", ns_name = "DeployServer", rl_name = "S2CCreateJob", hash_code = -1402593517,
+name_list = {},
+type_list = {},
+option_map = {}
+})
 ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
 name = "ALittle.UIButtonEvent", ns_name = "ALittle", rl_name = "UIButtonEvent", hash_code = -1347278145,
 name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
@@ -83,8 +89,8 @@ option_map = {}
 })
 ALittle.RegStruct(1232578034, "DeployServer.JobInfoDetail", {
 name = "DeployServer.JobInfoDetail", ns_name = "DeployServer", rl_name = "JobInfoDetail", hash_code = 1232578034,
-name_list = {"batch_dir","batch_cmd","batch_param","deepcopy_src","deepcopy_dst","deepcopy_ext"},
-type_list = {"string","string","string","string","string","string"},
+name_list = {"batch_dir","batch_cmd","batch_param","deepcopy_src","deepcopy_dst","deepcopy_ext","copyfile_src","copyfile_file","copyfile_dst"},
+type_list = {"string","string","string","string","string","string","string","List<string>","string"},
 option_map = {}
 })
 ALittle.RegStruct(1149037254, "DeployServer.C2SUpdateTaskInfo", {
@@ -115,6 +121,12 @@ ALittle.RegStruct(365671136, "ALittleDeploy.JobItemInfo", {
 name = "ALittleDeploy.JobItemInfo", ns_name = "ALittleDeploy", rl_name = "JobItemInfo", hash_code = 365671136,
 name_list = {"item","info","_button","_status"},
 type_list = {"ALittle.DisplayObject","DeployServer.D_JobInfo","ALittle.DisplayObject","ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(-105312390, "DeployServer.C2SCreateJob", {
+name = "DeployServer.C2SCreateJob", ns_name = "DeployServer", rl_name = "C2SCreateJob", hash_code = -105312390,
+name_list = {"task_id","job_type","job_index","job_name","detail"},
+type_list = {"int","int","int","string","DeployServer.JobInfoDetail"},
 option_map = {}
 })
 
@@ -236,6 +248,8 @@ function ALittleDeploy.DPLUITaskDetail:HandleNewJobClick(event)
 	local menu = AUIPlugin.AUIRightMenu()
 	menu:AddItem("批处理", Lua.Bind(self.HandleNewCommonJob, self, "batch_job_dialog"))
 	menu:AddItem("复制目录", Lua.Bind(self.HandleNewCommonJob, self, "deepcopy_job_dialog"))
+	menu:AddItem("复制文件", Lua.Bind(self.HandleNewCommonJob, self, "copyfile_job_dialog"))
+	menu:AddItem("重启Deploy", Lua.Bind(self.HandleNewRestartJob, self))
 	menu:Show()
 end
 
@@ -247,6 +261,24 @@ function ALittleDeploy.DPLUITaskDetail:HandleNewCommonJob(ui)
 	local dialog = ALittleDeploy.g_Control:CreateControl(ui)
 	dialog:Show(self._task_item.info.task_id, nil, nil)
 end
+
+function ALittleDeploy.DPLUITaskDetail:HandleNewRestartJob()
+	local msg_client = ALittleDeploy.g_DPLWebLoginManager.msg_client
+	if msg_client == nil or not msg_client:IsConnected() then
+		g_AUITool:ShowNotice("提示", "当前还未连接成功!")
+		return
+	end
+	local msg = {}
+	msg.task_id = self._task_item.info.task_id
+	msg.job_type = 4
+	msg.job_index = 0
+	msg.job_name = "重启Deploy"
+	local error = ALittle.IMsgCommon.InvokeRPC(-105312390, msg_client, msg)
+	if error ~= nil then
+		g_AUITool:ShowNotice("提示", error)
+	end
+end
+ALittleDeploy.DPLUITaskDetail.HandleNewRestartJob = Lua.CoWrap(ALittleDeploy.DPLUITaskDetail.HandleNewRestartJob)
 
 function ALittleDeploy.DPLUITaskDetail:AddJobItem(job_index, job_info)
 	local job_item = {}
@@ -280,6 +312,10 @@ function ALittleDeploy.DPLUITaskDetail:RefreshJobItem(job_item)
 		job_item._button.text = "[批处理] " .. job_item.info.job_name .. ":" .. job_item.info.detail.batch_cmd
 	elseif job_item.info.job_type == 2 then
 		job_item._button.text = "[复制目录] " .. job_item.info.job_name .. ":" .. job_item.info.detail.deepcopy_src .. "->" .. job_item.info.detail.deepcopy_dst
+	elseif job_item.info.job_type == 3 then
+		job_item._button.text = "[复制文件] " .. job_item.info.job_name .. ":" .. job_item.info.detail.copyfile_src .. "->" .. job_item.info.detail.copyfile_dst
+	elseif job_item.info.job_type == 4 then
+		job_item._button.text = "[重启Deploy]"
 	end
 	if self._task_item.info.status == 0 then
 		job_item._status.text = ""
@@ -353,6 +389,8 @@ function ALittleDeploy.DPLUITaskDetail:HandleModifyJob(info, index)
 		ui = "batch_job_dialog"
 	elseif info.info.job_type == 2 then
 		ui = "deepcopy_job_dialog"
+	elseif info.info.job_type == 3 then
+		ui = "copyfile_job_dialog"
 	end
 	if ui ~= nil then
 		local dialog = ALittleDeploy.g_Control:CreateControl(ui)

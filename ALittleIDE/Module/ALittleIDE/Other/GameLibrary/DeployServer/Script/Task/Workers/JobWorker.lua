@@ -13,6 +13,12 @@ name_list = {"exit_code","content"},
 type_list = {"int","string"},
 option_map = {}
 })
+ALittle.RegStruct(1447368920, "DeployServer.ACopyFileExecute", {
+name = "DeployServer.ACopyFileExecute", ns_name = "DeployServer", rl_name = "ACopyFileExecute", hash_code = 1447368920,
+name_list = {},
+type_list = {},
+option_map = {}
+})
 ALittle.RegStruct(-1431809884, "DeployServer.QBatchExecute", {
 name = "DeployServer.QBatchExecute", ns_name = "DeployServer", rl_name = "QBatchExecute", hash_code = -1431809884,
 name_list = {"detail"},
@@ -29,6 +35,12 @@ ALittle.RegStruct(-876622592, "DeployServer.ADeepCopyExecute", {
 name = "DeployServer.ADeepCopyExecute", ns_name = "DeployServer", rl_name = "ADeepCopyExecute", hash_code = -876622592,
 name_list = {},
 type_list = {},
+option_map = {}
+})
+ALittle.RegStruct(-467409153, "DeployServer.QCopyFileExecute", {
+name = "DeployServer.QCopyFileExecute", ns_name = "DeployServer", rl_name = "QCopyFileExecute", hash_code = -467409153,
+name_list = {"detail"},
+type_list = {"DeployServer.JobInfoDetail"},
 option_map = {}
 })
 
@@ -72,4 +84,23 @@ function DeployServer.HandleDeepCopyWorker(sender, msg)
 end
 
 ALittle.RegWorkerRpcCallback(-1351236611, DeployServer.HandleDeepCopyWorker, -876622592)
+function DeployServer.HandleCopyFileWorker(sender, msg)
+	local ___COROUTINE = coroutine.running()
+	local detail = msg.detail
+	local rsp = {}
+	local attr = ALittle.File_GetFileAttr(detail.copyfile_src)
+	Lua.Assert(attr ~= nil and attr.directory, "源目录不存在")
+	ALittle.File_MakeDeepDir(detail.copyfile_dst)
+	attr = ALittle.File_GetFileAttr(detail.copyfile_dst)
+	Lua.Assert(attr ~= nil and attr.directory, "目标目录创建失败")
+	local src = ALittle.File_PathEndWithSplit(detail.copyfile_src)
+	local dst = ALittle.File_PathEndWithSplit(detail.copyfile_dst)
+	for index, file_name in ___ipairs(detail.copyfile_file) do
+		local result = ALittle.File_CopyFile(src .. file_name, dst .. file_name)
+		Lua.Assert(result, "文件复制失败:" .. src .. file_name)
+	end
+	return rsp
+end
+
+ALittle.RegWorkerRpcCallback(-467409153, DeployServer.HandleCopyFileWorker, 1447368920)
 end

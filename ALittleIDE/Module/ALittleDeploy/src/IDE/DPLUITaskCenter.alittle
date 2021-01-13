@@ -103,6 +103,7 @@ public class DPLUITaskCenter : ALittle.DisplayLayout
 
         var menu = new AUIPlugin.AUIRightMenu();
         if (task_info.info.status == DeployServer.TaskStatus.IDLE) menu.AddItem("执行", bind(this.HandleStartTask, this, task_info));
+        menu.AddItem("复制", bind(this.HandleCopyTask, this, task_info));
         if (task_info.info.status == DeployServer.TaskStatus.IDLE) menu.AddItem("删除", bind(this.HandleDeleteTask, this, task_info));
         menu.Show();
     }
@@ -139,6 +140,21 @@ public class DPLUITaskCenter : ALittle.DisplayLayout
         var msg = new DeployServer.C2SStartTask();
         msg.task_id = task_info.info.task_id;
         var error = DeployServer.HandleC2SStartTask(msg_client, msg);
+        if (error != null) g_AUITool.ShowNotice("提示", error);
+    }
+
+    public async fun HandleCopyTask(TaskItemInfo task_info)
+    {
+        var msg_client = g_DPLWebLoginManager.msg_client;
+        if (msg_client == null || !msg_client.IsConnected())
+        {
+            g_AUITool.ShowNotice("提示", "当前还未连接成功!");
+            return;
+        }
+
+        var msg = new DeployServer.C2SCopyTask();
+        msg.task_id = task_info.info.task_id;
+        var error = DeployServer.HandleC2SCopyTask(msg_client, msg);
         if (error != null) g_AUITool.ShowNotice("提示", error);
     }
 

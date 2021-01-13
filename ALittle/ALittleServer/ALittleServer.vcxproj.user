@@ -3,7 +3,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(TargetDir)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>Module/ALittleIDE/Other/GameLibrary/Core/ Module/ALittleIDE/Other/GameLibrary/Std/ Module/ALittleIDE/Other/GameLibrary/SEngine/ GatewayServer,GatewayServer,Module/ALittleIDE/Other/GameLibrary/GatewayServer/,Module/ALittleIDE/Other/GameLibrary/GatewayServer.cfg;VersionServer,VersionServer,Module/ALittleIDE/Other/GameLibrary/VersionServer/,Module/ALittleIDE/Other/GameLibrary/VersionServer.cfg</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>Module/ALittleIDE/Other/GameLibrary/Core/ Module/ALittleIDE/Other/GameLibrary/Std/ Module/ALittleIDE/Other/GameLibrary/SEngine/ DeployServer,DeployServer,Module/ALittleIDE/Other/GameLibrary/DeployServer/,Module/ALittleIDE/Other/GameLibrary/DeployServer.cfg</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerWorkingDirectory>$(TargetDir)</LocalDebuggerWorkingDirectory>

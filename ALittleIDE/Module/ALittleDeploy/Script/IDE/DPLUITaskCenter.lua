@@ -95,8 +95,8 @@ option_map = {}
 })
 ALittle.RegStruct(1232578034, "DeployServer.JobInfoDetail", {
 name = "DeployServer.JobInfoDetail", ns_name = "DeployServer", rl_name = "JobInfoDetail", hash_code = 1232578034,
-name_list = {"batch_dir","batch_cmd","batch_param","deepcopy_src","deepcopy_dst","deepcopy_ext"},
-type_list = {"string","string","string","string","string","string"},
+name_list = {"batch_dir","batch_cmd","batch_param","deepcopy_src","deepcopy_dst","deepcopy_ext","copyfile_src","copyfile_file","copyfile_dst"},
+type_list = {"string","string","string","string","string","string","string","List<string>","string"},
 option_map = {}
 })
 ALittle.RegStruct(-1164681133, "DeployServer.NDeleteTask", {
@@ -147,10 +147,22 @@ name_list = {},
 type_list = {},
 option_map = {}
 })
+ALittle.RegStruct(-601303991, "DeployServer.S2CCopyTask", {
+name = "DeployServer.S2CCopyTask", ns_name = "DeployServer", rl_name = "S2CCopyTask", hash_code = -601303991,
+name_list = {},
+type_list = {},
+option_map = {}
+})
 ALittle.RegStruct(-542744414, "DeployServer.S2CTaskList", {
 name = "DeployServer.S2CTaskList", ns_name = "DeployServer", rl_name = "S2CTaskList", hash_code = -542744414,
 name_list = {"task_list"},
 type_list = {"List<DeployServer.D_TaskInfo>"},
+option_map = {}
+})
+ALittle.RegStruct(-478034953, "DeployServer.C2SCopyTask", {
+name = "DeployServer.C2SCopyTask", ns_name = "DeployServer", rl_name = "C2SCopyTask", hash_code = -478034953,
+name_list = {"task_id"},
+type_list = {"int"},
 option_map = {}
 })
 ALittle.RegStruct(390627548, "DeployServer.D_TaskInfo", {
@@ -273,6 +285,7 @@ function ALittleDeploy.DPLUITaskCenter:HandleItemRButtonDown(event)
 	if task_info.info.status == 0 then
 		menu:AddItem("执行", Lua.Bind(self.HandleStartTask, self, task_info))
 	end
+	menu:AddItem("复制", Lua.Bind(self.HandleCopyTask, self, task_info))
 	if task_info.info.status == 0 then
 		menu:AddItem("删除", Lua.Bind(self.HandleDeleteTask, self, task_info))
 	end
@@ -309,6 +322,21 @@ function ALittleDeploy.DPLUITaskCenter:HandleStartTask(task_info)
 	end
 end
 ALittleDeploy.DPLUITaskCenter.HandleStartTask = Lua.CoWrap(ALittleDeploy.DPLUITaskCenter.HandleStartTask)
+
+function ALittleDeploy.DPLUITaskCenter:HandleCopyTask(task_info)
+	local msg_client = ALittleDeploy.g_DPLWebLoginManager.msg_client
+	if msg_client == nil or not msg_client:IsConnected() then
+		g_AUITool:ShowNotice("提示", "当前还未连接成功!")
+		return
+	end
+	local msg = {}
+	msg.task_id = task_info.info.task_id
+	local error = ALittle.IMsgCommon.InvokeRPC(-478034953, msg_client, msg)
+	if error ~= nil then
+		g_AUITool:ShowNotice("提示", error)
+	end
+end
+ALittleDeploy.DPLUITaskCenter.HandleCopyTask = Lua.CoWrap(ALittleDeploy.DPLUITaskCenter.HandleCopyTask)
 
 function ALittleDeploy.DPLUITaskCenter:HandleDeleteTask(task_info)
 	local msg_client = ALittleDeploy.g_DPLWebLoginManager.msg_client

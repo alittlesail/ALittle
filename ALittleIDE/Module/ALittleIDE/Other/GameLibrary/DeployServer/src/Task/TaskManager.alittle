@@ -62,6 +62,29 @@ public class TaskManager
         A_WebAccountManager.SendMsgToAll(msg);
     }
 
+    public await fun HandleCopyTask(int task_id)
+    {
+        var target = this._task_map[task_id];
+        assert (target != null, "要复制的任务不存在");
+
+        ++this._max_task_id;
+        var task_info = ALittle.String_CopyTable(target.info);
+        task_info.task_id = this._max_task_id;
+        task_info.create_time = ALittle.Time_GetCurTime();
+        task_info.build_list = new List<BuildInfo>();
+        var error = A_MysqlSystem.InsertInto(task_info);
+        assert(error == null, error);
+
+        // 创建任务
+        var task = new Task(task_info);
+        this._task_map[task_info.task_id] = task;
+
+        // 将消息发给所有账号
+        var msg = new NCreateTask();
+        msg.task_info = task.data_info;
+        A_WebAccountManager.SendMsgToAll(msg);
+    }
+
     public await fun HandleDeleteTask(int task_id)
     {
         var task = this._task_map[task_id];
@@ -187,6 +210,24 @@ public await static HandleC2SCreateTask(ALittle.IMsgCommon sender, C2SCreateTask
     A_WebAccountManager.CheckLoginByClient(sender);
     g_TaskManager.HandleCreateTask(msg.task_name);
     return new S2CCreateTask();
+}
+
+public struct C2SCopyTask
+{
+    int task_id;
+}
+
+public struct S2CCopyTask
+{
+
+}
+
+[Msg]
+public await static HandleC2SCopyTask(ALittle.IMsgCommon sender, C2SCopyTask msg) : S2CCopyTask
+{
+    A_WebAccountManager.CheckLoginByClient(sender);
+    g_TaskManager.HandleCopyTask(msg.task_id);
+    return new S2CCopyTask();
 }
 
 public struct C2SDeleteTask

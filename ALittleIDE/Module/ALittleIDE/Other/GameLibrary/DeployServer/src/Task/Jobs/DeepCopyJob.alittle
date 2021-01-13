@@ -1,0 +1,13 @@
+
+namespace DeployServer;
+
+protected class DeepCopyJob : Job
+{
+    public await fun Execute(BuildInfo build_info) : string, string
+    {
+        var msg = new QDeepCopyExecute();
+        msg.detail = this._info.detail;
+        var error, rsp = HandleDeepCopyWorker(g_JobWorker, msg);
+        return error, null;
+    }
+}

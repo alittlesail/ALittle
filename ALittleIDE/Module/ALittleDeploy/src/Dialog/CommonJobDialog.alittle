@@ -1,0 +1,90 @@
+
+namespace ALittleDeploy;
+
+public class CommonJobDialog : ALittle.Dialog
+{
+	private ALittle.ImageInput _name;
+    private bool _is_create = false;
+
+    private int _task_id = 0;
+    private int _job_index = 0;
+
+    public fun Show(int task_id, int job_index, DeployServer.D_JobInfo info)
+    {
+        this._is_create = info == null;
+        this._task_id = task_id;
+        this._job_index = job_index;
+
+        if (info != null)
+        {
+            this._name.text = info.job_name;
+            this.ShowDetail(info.detail);
+        }
+        else
+        {
+            this._name.text = "";
+            this.ShowDetail(null);
+        }
+
+        g_DialogLayer.AddChild(this);
+        this.MoveToTop();
+    }
+
+    private fun ShowDetail(DeployServer.JobInfoDetail detail)
+    {
+
+    }
+
+    public get type() : int { return null; }
+
+    public fun Hide()
+    {
+        g_DialogLayer.RemoveChild(this);
+    }
+
+    private fun GetDetail() : DeployServer.JobInfoDetail
+    {
+        return null;
+    }
+
+    private async fun HandleComfirmClick(ALittle.UIClickEvent event)
+    {
+        var msg_client = g_DPLWebLoginManager.msg_client;
+        if (msg_client == null || !msg_client.IsConnected())
+        {
+            g_AUITool.ShowNotice("提示", "当前还未连接成功!");
+            return;
+        }
+
+        var detail = this.GetDetail();
+
+        if (this._is_create)
+        {
+            var msg = new DeployServer.C2SCreateJob();
+            msg.task_id = this._task_id;
+            msg.job_type = this.type;
+            msg.job_index = this._job_index;
+            msg.job_name = this._name.text;
+            msg.detail = detail;
+            var error = DeployServer.HandleC2SCreateJob(msg_client, msg);
+            if (error != null) g_AUITool.ShowNotice("提示", error);
+        }
+        else
+        {
+            var msg = new DeployServer.C2SModifyJob();
+            msg.task_id = this._task_id;
+            msg.job_index = this._job_index;
+            msg.job_name = this._name.text;
+            msg.detail = detail;
+            var error = DeployServer.HandleC2SModifyJob(msg_client, msg);
+            if (error != null) g_AUITool.ShowNotice("提示", error);
+        }
+
+        this.Hide();
+    }
+
+    private fun HandleCancelClick(ALittle.UIClickEvent event)
+    {
+        this.Hide();
+    }
+}

@@ -80,6 +80,14 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         this._job_list.SpliceChild(index, 1);
     }
 
+    public fun MoveJobItem(int index, int target_index)
+    {
+        var job_info = this._task_item.info.job_list[index];
+        if (job_info == null) return;
+
+        this._job_list.SetChildIndex(this._job_list.GetChildByIndex(index), target_index);
+    }
+
     public fun RemoveBuildItem(int index)
     {
         var build_info = this._task_item.info.build_list[index];
@@ -143,7 +151,8 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
     private fun HandleNewJobClick(ALittle.UIClickEvent event)
     {
         var menu = new AUIPlugin.AUIRightMenu();
-        menu.AddItem("批处理", bind(this.HandleNewBatchJob, this));
+        menu.AddItem("批处理", bind(this.HandleNewCommonJob, this, "batch_job_dialog"));
+        menu.AddItem("复制目录", bind(this.HandleNewCommonJob, this, "deepcopy_job_dialog"));
         menu.Show();
     }
 
@@ -152,9 +161,9 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         g_DPLCenter.center.task_center.HandleStartTask(this._task_item);
     }
 
-    private fun HandleNewBatchJob()
+    private fun HandleNewCommonJob(string ui)
     {
-        var dialog = g_Control.CreateControl{BatchJobDialog}("batch_job_dialog");
+        var dialog = g_Control.CreateControl{CommonJobDialog}(ui);
         dialog.Show(this._task_item.info.task_id, null, null);
     }
 
@@ -192,7 +201,9 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
     private fun RefreshJobItem(JobItemInfo job_item)
     {
         if (job_item.info.job_type == DeployServer.JobType.BATCH)
-        	job_item._button.text = "[Batch] "..job_item.info.job_name.." "..job_item.info.batch_cmd;
+        	job_item._button.text = "[批处理] "..job_item.info.job_name.." "..job_item.info.detail.batch_cmd;
+        elseif (job_item.info.job_type == DeployServer.JobType.DEEPCOPY)
+        	job_item._button.text = "[复制目录] "..job_item.info.job_name.." "..job_item.info.detail.deepcopy_src.."->"..job_item.info.detail.deepcopy_dst;
 
         if (this._task_item.info.status == DeployServer.TaskStatus.IDLE)
             job_item._status.text = "";
@@ -214,6 +225,8 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
 
         var menu = new AUIPlugin.AUIRightMenu();
         menu.AddItem("修改", bind(this.HandleModifyJob, this, job_item, job_index));
+        menu.AddItem("上移", bind(this.HandleMoveJob, this, job_item, job_index, job_index - 1));
+        menu.AddItem("下移", bind(this.HandleMoveJob, this, job_item, job_index, job_index + 1));
         menu.AddItem("删除", bind(this.HandleDeleteJob, this, job_item, job_index));
         menu.Show();
     }
@@ -268,6 +281,29 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
             var dialog = g_Control.CreateControl{BatchJobDialog}("batch_job_dialog");
             dialog.Show(this._task_item.info.task_id, index, info.info);
         }
+        elseif (info.info.job_type == DeployServer.JobType.DEEPCOPY)
+        {
+            var dialog = g_Control.CreateControl{BatchJobDialog}("deepcopy_job_dialog");
+            dialog.Show(this._task_item.info.task_id, index, info.info);
+        }
+
+    }
+
+    private async fun HandleMoveJob(JobItemInfo info, int index, int new_index)
+    {
+        var msg_client = g_DPLWebLoginManager.msg_client;
+        if (msg_client == null || !msg_client.IsConnected())
+        {
+            g_AUITool.ShowNotice("提示", "当前还未连接成功!");
+            return;
+        }
+
+        var msg = new DeployServer.C2SMoveJob();
+        msg.task_id = this._task_item.info.task_id;
+        msg.job_index = index;
+        msg.target_index = new_index;
+        var error = DeployServer.HandleC2SMoveJob(msg_client, msg);
+        if (error != null) g_AUITool.ShowNotice("提示", error);
     }
 
     private async fun HandleDeleteJob(JobItemInfo info, int index)

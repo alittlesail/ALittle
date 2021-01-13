@@ -1,0 +1,36 @@
+
+namespace ALittleDeploy;
+
+public class DeepCopyJobDialog : CommonJobDialog
+{
+	private ALittle.ImageInput _src_dir;
+	private ALittle.ImageInput _dst_dir;
+	private ALittle.ImageInput _ext;
+
+    private get type() : int { return DeployServer.JobType.DEEPCOPY; }
+
+    private fun ShowDetail(DeployServer.JobInfoDetail detail)
+    {
+        if (detail != null)
+        {
+            this._src_dir.text = detail.deepcopy_src;
+            this._dst_dir.text = detail.deepcopy_dst;
+            this._ext.text = detail.deepcopy_ext;
+        }
+        else
+        {
+            this._src_dir.text = "";
+            this._dst_dir.text = "";
+            this._ext.text = "";
+        }
+    }
+
+    private fun GetDetail() : DeployServer.JobInfoDetail
+    {
+        var detail = new DeployServer.JobInfoDetail();
+        detail.deepcopy_src = this._src_dir.text;
+        detail.deepcopy_dst = this._dst_dir.text;
+        detail.deepcopy_ext = this._ext.text;
+        return detail;
+    }
+}

@@ -23,8 +23,14 @@ option_map = {}
 })
 ALittle.RegStruct(-2035971543, "DeployServer.D_JobInfo", {
 name = "DeployServer.D_JobInfo", ns_name = "DeployServer", rl_name = "D_JobInfo", hash_code = -2035971543,
-name_list = {"job_type","job_name","status","progress","batch_dir","batch_cmd","batch_param"},
-type_list = {"int","string","int","double","string","string","string"},
+name_list = {"job_type","job_name","status","progress","detail"},
+type_list = {"int","string","int","double","DeployServer.JobInfoDetail"},
+option_map = {}
+})
+ALittle.RegStruct(-2015558870, "DeployServer.NMoveJob", {
+name = "DeployServer.NMoveJob", ns_name = "DeployServer", rl_name = "NMoveJob", hash_code = -2015558870,
+name_list = {"task_id","job_index","target_index"},
+type_list = {"int","int","int"},
 option_map = {}
 })
 ALittle.RegStruct(1811432266, "DeployServer.D_BuildInfo", {
@@ -85,6 +91,12 @@ ALittle.RegStruct(-1243553967, "DeployServer.NCreateTask", {
 name = "DeployServer.NCreateTask", ns_name = "DeployServer", rl_name = "NCreateTask", hash_code = -1243553967,
 name_list = {"task_info"},
 type_list = {"DeployServer.D_TaskInfo"},
+option_map = {}
+})
+ALittle.RegStruct(1232578034, "DeployServer.JobInfoDetail", {
+name = "DeployServer.JobInfoDetail", ns_name = "DeployServer", rl_name = "JobInfoDetail", hash_code = 1232578034,
+name_list = {"batch_dir","batch_cmd","batch_param","deepcopy_src","deepcopy_dst","deepcopy_ext"},
+type_list = {"string","string","string","string","string","string"},
 option_map = {}
 })
 ALittle.RegStruct(-1164681133, "DeployServer.NDeleteTask", {
@@ -370,6 +382,24 @@ function ALittleDeploy.DPLUITaskCenter:RemoveJobItem(task_id, job_index)
 	ALittle.List_Remove(task_info.info.job_list, job_index)
 end
 
+function ALittleDeploy.DPLUITaskCenter:MoveJobItem(task_id, job_index, target_index)
+	local task_info = self._item_map[task_id]
+	if task_info == nil then
+		return
+	end
+	if task_info.detail ~= nil then
+		task_info.detail:MoveJobItem(job_index, target_index)
+	end
+	local job = task_info.info.job_list[job_index]
+	ALittle.List_Remove(task_info.info.job_list, job_index)
+	local job_len = ALittle.List_Len(task_info.info.job_list)
+	if target_index <= 0 or target_index > job_len then
+		ALittle.List_Push(task_info.info.job_list, job)
+	else
+		ALittle.List_Insert(task_info.info.job_list, target_index, job)
+	end
+end
+
 function ALittleDeploy.DPLUITaskCenter:RemoveBuildItem(task_id, build_index)
 	local task_info = self._item_map[task_id]
 	if task_info == nil then
@@ -485,6 +515,11 @@ function ALittleDeploy.HandleNDeleteJob(sender, msg)
 end
 
 ALittle.RegMsgCallback(-1050312971, ALittleDeploy.HandleNDeleteJob)
+function ALittleDeploy.HandleNMoveJob(sender, msg)
+	ALittleDeploy.g_DPLCenter.center.task_center:MoveJobItem(msg.task_id, msg.job_index, msg.target_index)
+end
+
+ALittle.RegMsgCallback(-2015558870, ALittleDeploy.HandleNMoveJob)
 function ALittleDeploy.HandleNCreateBuild(sender, msg)
 	ALittleDeploy.g_DPLCenter.center.task_center:AddBuildItem(msg.task_id, msg.build_info)
 end

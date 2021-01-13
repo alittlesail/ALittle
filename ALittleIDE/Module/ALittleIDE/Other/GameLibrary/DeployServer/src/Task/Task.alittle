@@ -205,10 +205,7 @@ protected class Task
         var job_info = new JobInfo();
         job_info.job_type = msg.job_type;
         job_info.job_name = msg.job_name;
-
-        job_info.batch_dir = msg.batch_dir;
-        job_info.batch_cmd = msg.batch_cmd;
-        job_info.batch_param = msg.batch_param;
+        job_info.detail = msg.detail;
 
         var job = CreateJob(this, job_info);
         assert (job != null, "任务创建失败");
@@ -264,6 +261,38 @@ protected class Task
         var ntf = new NDeleteJob();
         ntf.task_id = this._info.task_id;
         ntf.job_index = msg.job_index;
+        A_WebAccountManager.SendMsgToAll(ntf);
+
+        this.Save();
+    }
+
+    public fun MoveJob(C2SMoveJob msg)
+    {
+        assert(this._status == TaskStatus.IDLE, "当前任务不是空闲状态");
+
+        var job = this._job_list[msg.job_index];
+        assert(job != null, "任务不存在");
+        var job_info = this._info.job_list[msg.job_index];
+
+        ALittle.List_Remove(this._job_list, msg.job_index);
+        ALittle.List_Remove(this._info.job_list, msg.job_index);
+
+        var job_len = ALittle.List_Len(this._job_list);
+        if (msg.target_index <= 0 || msg.target_index > job_len)
+        {
+            ALittle.List_Push(this._job_list, job);
+            ALittle.List_Push(this._info.job_list, job_info);
+        }
+        else
+        {
+            ALittle.List_Insert(this._job_list, msg.target_index, job);
+            ALittle.List_Insert(this._info.job_list, msg.target_index, job_info);
+        }
+
+        var ntf = new NMoveJob();
+        ntf.task_id = this._info.task_id;
+        ntf.job_index = msg.job_index;
+        ntf.target_index = msg.target_index;
         A_WebAccountManager.SendMsgToAll(ntf);
 
         this.Save();
@@ -396,11 +425,7 @@ public struct C2SCreateJob
     int job_index;	// job所在的位置
 
     string job_name;	// job名称
-
-    // 批处理
-    string batch_dir;
-    string batch_cmd;
-    string batch_param;
+    JobInfoDetail detail;
 }
 
 public struct S2CCreateJob
@@ -432,10 +457,7 @@ public struct C2SModifyJob
     int job_index;	// job所在的位置
     string job_name;
 
-    // 批处理
-    string batch_dir;
-    string batch_cmd;
-    string batch_param;
+    JobInfoDetail detail;
 }
 
 public struct S2CModifyJob
@@ -487,6 +509,36 @@ public await static HandleC2SDeleteJob(ALittle.IMsgCommon sender, C2SDeleteJob m
     assert (task != null, "任务不存在");
     task.DeleteJob(msg);
     return new S2CDeleteJob();
+}
+
+public struct C2SMoveJob
+{
+    int task_id;
+    int job_index;
+    int target_index;
+}
+
+public struct S2CMoveJob
+{
+
+}
+
+public struct NMoveJob
+{
+    int task_id;
+    int job_index;
+    int target_index;
+}
+
+[Msg]
+public await static HandleC2SMoveJob(ALittle.IMsgCommon sender, C2SMoveJob msg) : S2CMoveJob
+{
+    A_WebAccountManager.CheckLoginByClient(sender);
+
+    var task = g_TaskManager.GetTask(msg.task_id);
+    assert (task != null, "任务不存在");
+    task.MoveJob(msg);
+    return new S2CMoveJob();
 }
 
 public struct NCreateBuild

@@ -31,6 +31,7 @@ public:
 	void Start(const std::string& core_path, const std::string& std_path, const std::string& sengine_path
 		, const std::map<std::string, ModuleInfo>& modules, bool block);
 	void Close();
+	void Restart();
 
 	// 把命令发给指定模块线程的脚本系统
 	void HandleConsoleCmd(const std::string& module_name, const std::string& cmd);
@@ -44,8 +45,17 @@ private:
 	static int ScheduleRun(ServerSchedule* self);
 
 private:
+	bool m_init = false;
+	bool m_start = false;
 	std::map<std::thread*, ServerSchedule*> m_map;
 	bool m_block;
+
+private:
+	std::mutex m_mutex;
+	std::string m_core_path;
+	std::string m_std_path;
+	std::string m_sengine_path;
+	std::map<std::string, ModuleInfo> m_modules;
 
 private:
 	ServerSystem() : m_block(false) {}

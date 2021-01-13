@@ -153,16 +153,6 @@ public static File_ExternalFilePath() : string
     return "";
 }
 
-// 复制文件
-// src_path 要复制的源文件路径
-// dst_path 目标文件路径
-public static File_CopyFile(string src_path, string dst_path) : bool
-{
-    [Language(Lua)]
-    return carp.CopyFile(src_path, dst_path, false);
-    [Language(JavaScript)]
-    return JavaScript.File_CopyFile(src_path, dst_path);
-}
 public static File_CopyFileFromAsset(string src_path, string dst_path) : bool
 {
     [Language(Lua)]
@@ -195,52 +185,6 @@ public static File_Md5(string path) : string
     if (content == null) return "";
     [Language(JavaScript)]
     return javascript.md5(content);
-}
-
-// 深度复制文件夹
-// src_path 原文件夹
-// dest_path 目标文件夹
-// ext 目标后缀名的文件，如果是null表示所有文件
-// log 是否打印日志
-public static File_CopyDeepDir(string src_path, string dest_path, [Nullable] string ext, [Nullable] bool log)
-{
-    [Language(Lua)]
-    {
-        var upper_ext:string = null;
-        if (ext != null) upper_ext = lua.String.upper(ext);
-    
-        // 遍历源文件夹
-        var file_list = carp.GetFileNameListInFolder(src_path);
-        for (var index, file in file_list)
-        {
-            // 源文件路径
-            var src_file_path = src_path .. "/" .. file;
-            // 目标文件路径
-            var dest_file_path = dest_path .. "/" .. file;
-
-            if (upper_ext == null || File_GetFileExtByPathAndUpper(src_file_path) == upper_ext)
-            {
-                File_CopyFile(src_file_path, dest_file_path);
-                if (log) Log("copy file:", src_file_path, dest_file_path);
-            }
-        }
-        var folder_list = carp.GetFolderNameListInFolder(src_path);
-        for (var index, file in folder_list)
-        {
-            // 源文件路径
-            var src_file_path = src_path .. "/" .. file;
-            // 目标文件路径
-            var dest_file_path = dest_path .. "/" .. file;
-
-            // 创建文件夹
-            carp.CreateFolder(dest_file_path);
-            // 开始复制
-            File_CopyDeepDir(src_file_path, dest_file_path, upper_ext, log);
-        }
-    }
-
-    [Language(JavaScript)]
-    JavaScript.File_CopyDeepDir(src_path, dest_path, ext, log);
 }
 
 // 直接从文件读入文本，只从现有的目录里面找

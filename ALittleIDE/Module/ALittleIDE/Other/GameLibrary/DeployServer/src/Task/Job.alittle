@@ -5,6 +5,20 @@ public enum JobType
 {
     NONE = 0;
     BATCH = 1;	// 批处理
+    DEEPCOPY = 2;	// 复制目录
+}
+
+public struct JobInfoDetail
+{
+    // 批处理命令
+    string batch_dir;
+    string batch_cmd;
+    string batch_param;
+
+    // 深度拷贝
+    string deepcopy_src;
+    string deepcopy_dst;
+    string deepcopy_ext;
 }
 
 protected struct JobInfo
@@ -12,10 +26,7 @@ protected struct JobInfo
     int job_type;		// 任务类型
     string job_name;
 
-    // 批处理命令
-    string batch_dir;
-    string batch_cmd;
-    string batch_param;
+    JobInfoDetail detail;
 }
 
 public enum JobStatus
@@ -32,10 +43,7 @@ public struct D_JobInfo
     int status;
     double progress;	// 执行进度
 
-    // 批处理命令
-    string batch_dir;
-    string batch_cmd;
-    string batch_param;
+    JobInfoDetail detail;
 }
 
 public struct D_BuildInfo
@@ -65,12 +73,14 @@ protected class Job
         data.job_name = this._info.job_name;
         data.status = this._status;
         data.progress = this._progress;
+        data.detail = this._info.detail;
         return data;
     }
 
     public fun Modify(C2SModifyJob msg)
     {
         this._info.job_name = msg.job_name;
+        this._info.detail = msg.detail;
     }
 
     public fun Waiting()
@@ -127,5 +137,7 @@ protected static CreateJob(Task task, JobInfo info) : Job
 {
     if (info.job_type == JobType.BATCH)
     	return new BatchJob(task, info);
+    elseif (info.job_type == JobType.DEEPCOPY)
+    	return new DeepCopyJob(task, info);
     return null;
 }

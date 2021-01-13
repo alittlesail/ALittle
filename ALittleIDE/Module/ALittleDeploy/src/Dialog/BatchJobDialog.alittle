@@ -1,88 +1,36 @@
 
 namespace ALittleDeploy;
 
-public class BatchJobDialog : ALittle.Dialog
+public class BatchJobDialog : CommonJobDialog
 {
-	private ALittle.ImageInput _name;
 	private ALittle.ImageInput _dir;
 	private ALittle.ImageInput _cmd;
 	private ALittle.ImageEdit _param;
 
-    private bool _is_create = false;
+    private get type() : int { return DeployServer.JobType.BATCH; }
 
-    private int _task_id = 0;
-    private int _job_index = 0;
-
-    public fun Show(int task_id, int job_index, DeployServer.D_JobInfo info)
+    private fun ShowDetail(DeployServer.JobInfoDetail detail)
     {
-        this._is_create = info == null;
-        this._task_id = task_id;
-        this._job_index = job_index;
-
-        if (info != null)
+        if (detail != null)
         {
-            this._name.text = info.job_name;
-            this._dir.text = info.batch_dir;
-            this._cmd.text = info.batch_cmd;
-            this._param.text = info.batch_param;
+            this._dir.text = detail.batch_dir;
+            this._cmd.text = detail.batch_cmd;
+            this._param.text = detail.batch_param;
         }
         else
         {
-            this._name.text = "";
             this._dir.text = "";
             this._cmd.text = "";
             this._param.text = "";
         }
-
-        g_DialogLayer.AddChild(this);
-        this.MoveToTop();
     }
 
-    public fun Hide()
+    private fun GetDetail() : DeployServer.JobInfoDetail
     {
-        g_DialogLayer.RemoveChild(this);
-    }
-
-    private async fun HandleComfirmClick(ALittle.UIClickEvent event)
-    {
-        var msg_client = g_DPLWebLoginManager.msg_client;
-        if (msg_client == null || !msg_client.IsConnected())
-        {
-            g_AUITool.ShowNotice("提示", "当前还未连接成功!");
-            return;
-        }
-
-        if (this._is_create)
-        {
-            var msg = new DeployServer.C2SCreateJob();
-            msg.task_id = this._task_id;
-            msg.job_type = DeployServer.JobType.BATCH;
-            msg.job_index = this._job_index;
-            msg.job_name = this._name.text;
-            msg.batch_dir = this._dir.text;
-            msg.batch_cmd = this._cmd.text;
-            msg.batch_param = this._param.text;
-            var error = DeployServer.HandleC2SCreateJob(msg_client, msg);
-            if (error != null) g_AUITool.ShowNotice("提示", error);
-        }
-        else
-        {
-            var msg = new DeployServer.C2SModifyJob();
-            msg.task_id = this._task_id;
-            msg.job_index = this._job_index;
-            msg.job_name = this._name.text;
-            msg.batch_dir = this._dir.text;
-            msg.batch_cmd = this._cmd.text;
-            msg.batch_param = this._param.text;
-            var error = DeployServer.HandleC2SModifyJob(msg_client, msg);
-            if (error != null) g_AUITool.ShowNotice("提示", error);
-        }
-
-        this.Hide();
-    }
-
-    private fun HandleCancelClick(ALittle.UIClickEvent event)
-    {
-        this.Hide();
+        var detail = new DeployServer.JobInfoDetail();
+        detail.batch_dir = this._dir.text;
+        detail.batch_cmd = this._cmd.text;
+        detail.batch_param = this._param.text;
+        return detail;
     }
 }

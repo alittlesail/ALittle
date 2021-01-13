@@ -3,34 +3,59 @@ namespace DeployServer;
 
 public struct QBatchExecute
 {
-    string dir;
-    string cmd;
-    string param;
+    JobInfoDetail detail;
 }
 
 public struct ABatchExecute
 {
+    int exit_code;
     string content;
 }
 
 [Worker]
 public await static HandleBatchWorker(ALittle.IWorkerCommon sender, QBatchExecute msg) : ABatchExecute
 {
+    var detail = msg.detail;
+
     var rsp = new ABatchExecute();
 
     var cmd = "";
-    if (msg.dir != null && msg.dir != "")
+    if (detail.batch_dir != null && detail.batch_dir != "")
     {
-        var index = ALittle.String_Find(msg.dir, ":");
+        var index = ALittle.String_Find(detail.batch_dir, ":");
         if (index != null)
-            cmd = cmd..ALittle.String_Sub(msg.dir, 1, index).." && ";
-        cmd = cmd.."cd \""..msg.dir.."\" && ";
+            cmd = cmd..ALittle.String_Sub(detail.batch_dir, 1, index).." && ";
+        if (index != ALittle.String_Len(detail.batch_dir))
+        	cmd = cmd.."cd \""..detail.batch_dir.."\" && ";
     }
-    cmd = cmd..msg.cmd.." "..msg.param;
-    var file = lua.io.popen(cmd, "r");
-    assert(file != null, "命令执行失败:"..cmd);
+    cmd = cmd..detail.batch_cmd.." "..detail.batch_param;
+    var file = lua.io.popen(cmd, "rb");
+    assert (file != null, "命令执行失败:"..cmd);
     rsp.content = file.read("*a");
-    file.close();
+    rsp.exit_code = file.close();
+    return rsp;
+}
 
+public struct QDeepCopyExecute
+{
+    JobInfoDetail detail;
+}
+
+public struct ADeepCopyExecute
+{
+}
+
+[Worker]
+public await static HandleDeepCopyWorker(ALittle.IWorkerCommon sender, QDeepCopyExecute msg) : ADeepCopyExecute
+{
+    var detail = msg.detail;
+    var rsp = new ADeepCopyExecute();
+    if (detail.deepcopy_ext == "") detail.deepcopy_ext = null;
+    var attr = ALittle.File_GetFileAttr(detail.deepcopy_src);
+    assert (attr != null && attr.directory, "源目录不存在");
+    ALittle.File_MakeDeepDir(detail.deepcopy_dst);
+    attr = ALittle.File_GetFileAttr(detail.deepcopy_dst);
+    assert (attr != null && attr.directory, "目标目录创建失败");
+    ALittle.File_CopyDeepDir(detail.deepcopy_src, detail.deepcopy_dst, detail.deepcopy_ext);
     return rsp;
 }

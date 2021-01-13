@@ -3,6 +3,9 @@ register namespace lua;
 
 public class __CPPAPIServerSchedule
 {
+    // 全部重启
+    public fun RestartAll() {}
+
     // 数据库
     public fun StartMysqlQuery(int thread_count, string ip, string username, string password, int port, string db_name) {}
     public fun AddMysqlStatement(int thread_id, int query_id, lua.__CPPAPIMysqlStatementQuery query) : bool {}

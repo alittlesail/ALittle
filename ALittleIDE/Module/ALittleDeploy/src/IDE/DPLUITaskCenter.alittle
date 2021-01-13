@@ -206,6 +206,23 @@ public class DPLUITaskCenter : ALittle.DisplayLayout
         ALittle.List_Remove(task_info.info.job_list, job_index);
     }
 
+    public fun MoveJobItem(int task_id, int job_index, int target_index)
+    {
+        var task_info = this._item_map[task_id];
+        if (task_info == null) return;
+
+        if (task_info.detail != null) task_info.detail.MoveJobItem(job_index, target_index);
+
+        var job = task_info.info.job_list[job_index];
+        ALittle.List_Remove(task_info.info.job_list, job_index);
+
+        var job_len = ALittle.List_Len(task_info.info.job_list);
+        if (target_index <= 0 || target_index > job_len)
+            ALittle.List_Push(task_info.info.job_list, job);
+        else
+        	ALittle.List_Insert(task_info.info.job_list, target_index, job);
+    }
+
     public fun RemoveBuildItem(int task_id, int build_index)
     {
         var task_info = this._item_map[task_id];
@@ -323,6 +340,12 @@ public static HandleNModifyJob(ALittle.IMsgCommon sender, DeployServer.NModifyJo
 public static HandleNDeleteJob(ALittle.IMsgCommon sender, DeployServer.NDeleteJob msg)
 {
     g_DPLCenter.center.task_center.RemoveJobItem(msg.task_id, msg.job_index);
+}
+
+[Msg]
+public static HandleNMoveJob(ALittle.IMsgCommon sender, DeployServer.NMoveJob msg)
+{
+    g_DPLCenter.center.task_center.MoveJobItem(msg.task_id, msg.job_index, msg.target_index);
 }
 
 [Msg]

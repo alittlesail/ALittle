@@ -2,6 +2,7 @@
 #include <asio.hpp>
 
 #include "ServerSchedule.h"
+#include "ServerSystem.h"
 
 #include "../HttpSystem/HttpServer.h"
 #include "../HttpSystem/HttpSender.h"
@@ -43,6 +44,7 @@ void ServerSchedule::RegisterToScript()
 	// register script system
 	luabridge::getGlobalNamespace(L)
         .beginClass<ServerSchedule>("__CPPAPIServerSchedule")
+		.addFunction("RestartAll", &ServerSchedule::RestartAll)
         .addFunction("StartMysqlQuery", &ServerSchedule::StartMysqlQuery)
         .addFunction("AddMysqlStatement", &ServerSchedule::AddMysqlStatement)
         .addFunction("AddMysqlNormal", &ServerSchedule::AddMysqlNormal)
@@ -164,6 +166,11 @@ void ServerSchedule::Update(time_t cur_time)
 	// update script logic
 	m_script_system.Invoke("__ALITTLEAPI_Update", cur_time - m_current_time);
 	m_current_time = cur_time;
+}
+
+void ServerSchedule::RestartAll()
+{
+	ServerSystem::Instance().Restart();
 }
 
 void ServerSchedule::StartMysqlQuery(int thread_count, const char* ip, const char* username, const char* password, unsigned int port, const char* db_name)

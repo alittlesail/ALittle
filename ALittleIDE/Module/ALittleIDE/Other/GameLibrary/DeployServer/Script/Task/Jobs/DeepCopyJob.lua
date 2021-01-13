@@ -9,14 +9,14 @@ local ___ipairs = ipairs
 
 
 assert(DeployServer.Job, " extends class:DeployServer.Job is nil")
-DeployServer.BatchJob = Lua.Class(DeployServer.Job, "DeployServer.BatchJob")
+DeployServer.DeepCopyJob = Lua.Class(DeployServer.Job, "DeployServer.DeepCopyJob")
 
-function DeployServer.BatchJob:Execute(build_info)
+function DeployServer.DeepCopyJob:Execute(build_info)
 	local ___COROUTINE = coroutine.running()
 	local msg = {}
 	msg.detail = self._info.detail
-	local error, rsp = ALittle.IWorkerCommon.InvokeRPC(-1431809884, DeployServer.g_JobWorker, msg)
-	return error, rsp.content
+	local error, rsp = ALittle.IWorkerCommon.InvokeRPC(-1351236611, DeployServer.g_JobWorker, msg)
+	return error, nil
 end
 
 end

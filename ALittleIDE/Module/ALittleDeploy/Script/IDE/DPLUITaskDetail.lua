@@ -11,8 +11,8 @@ local ___all_struct = ALittle.GetAllStruct()
 
 ALittle.RegStruct(-2035971543, "DeployServer.D_JobInfo", {
 name = "DeployServer.D_JobInfo", ns_name = "DeployServer", rl_name = "D_JobInfo", hash_code = -2035971543,
-name_list = {"job_type","job_name","status","progress","batch_dir","batch_cmd","batch_param"},
-type_list = {"int","string","int","double","string","string","string"},
+name_list = {"job_type","job_name","status","progress","detail"},
+type_list = {"int","string","int","double","DeployServer.JobInfoDetail"},
 option_map = {}
 })
 ALittle.RegStruct(1984174335, "DeployServer.S2CDeleteBuild", {
@@ -37,6 +37,12 @@ ALittle.RegStruct(1800966813, "ALittle.UISystemSelectDirectoryEvent", {
 name = "ALittle.UISystemSelectDirectoryEvent", ns_name = "ALittle", rl_name = "UISystemSelectDirectoryEvent", hash_code = 1800966813,
 name_list = {"target","path"},
 type_list = {"ALittle.DisplayObject","string"},
+option_map = {}
+})
+ALittle.RegStruct(1624339767, "DeployServer.S2CMoveJob", {
+name = "DeployServer.S2CMoveJob", ns_name = "DeployServer", rl_name = "S2CMoveJob", hash_code = 1624339767,
+name_list = {},
+type_list = {},
 option_map = {}
 })
 ALittle.RegStruct(1566214727, "DeployServer.S2CUpdateTaskInfo", {
@@ -75,6 +81,12 @@ name_list = {"task_id","build_index"},
 type_list = {"int","int"},
 option_map = {}
 })
+ALittle.RegStruct(1232578034, "DeployServer.JobInfoDetail", {
+name = "DeployServer.JobInfoDetail", ns_name = "DeployServer", rl_name = "JobInfoDetail", hash_code = 1232578034,
+name_list = {"batch_dir","batch_cmd","batch_param","deepcopy_src","deepcopy_dst","deepcopy_ext"},
+type_list = {"string","string","string","string","string","string"},
+option_map = {}
+})
 ALittle.RegStruct(1149037254, "DeployServer.C2SUpdateTaskInfo", {
 name = "DeployServer.C2SUpdateTaskInfo", ns_name = "DeployServer", rl_name = "C2SUpdateTaskInfo", hash_code = 1149037254,
 name_list = {"task_id","task_name","task_desc","web_hook"},
@@ -91,6 +103,12 @@ ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
 name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
 name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
+option_map = {}
+})
+ALittle.RegStruct(-616678126, "DeployServer.C2SMoveJob", {
+name = "DeployServer.C2SMoveJob", ns_name = "DeployServer", rl_name = "C2SMoveJob", hash_code = -616678126,
+name_list = {"task_id","job_index","target_index"},
+type_list = {"int","int","int"},
 option_map = {}
 })
 ALittle.RegStruct(365671136, "ALittleDeploy.JobItemInfo", {
@@ -151,6 +169,14 @@ function ALittleDeploy.DPLUITaskDetail:RemoveJobItem(index)
 	self._job_list:SpliceChild(index, 1)
 end
 
+function ALittleDeploy.DPLUITaskDetail:MoveJobItem(index, target_index)
+	local job_info = self._task_item.info.job_list[index]
+	if job_info == nil then
+		return
+	end
+	self._job_list:SetChildIndex(self._job_list:GetChildByIndex(index), target_index)
+end
+
 function ALittleDeploy.DPLUITaskDetail:RemoveBuildItem(index)
 	local build_info = self._task_item.info.build_list[index]
 	if build_info == nil then
@@ -208,7 +234,8 @@ ALittleDeploy.DPLUITaskDetail.HandleTaskSaveClick = Lua.CoWrap(ALittleDeploy.DPL
 
 function ALittleDeploy.DPLUITaskDetail:HandleNewJobClick(event)
 	local menu = AUIPlugin.AUIRightMenu()
-	menu:AddItem("批处理", Lua.Bind(self.HandleNewBatchJob, self))
+	menu:AddItem("批处理", Lua.Bind(self.HandleNewCommonJob, self, "batch_job_dialog"))
+	menu:AddItem("复制目录", Lua.Bind(self.HandleNewCommonJob, self, "deepcopy_job_dialog"))
 	menu:Show()
 end
 
@@ -216,8 +243,8 @@ function ALittleDeploy.DPLUITaskDetail:HandleStartTaskClick(event)
 	ALittleDeploy.g_DPLCenter.center.task_center:HandleStartTask(self._task_item)
 end
 
-function ALittleDeploy.DPLUITaskDetail:HandleNewBatchJob()
-	local dialog = ALittleDeploy.g_Control:CreateControl("batch_job_dialog")
+function ALittleDeploy.DPLUITaskDetail:HandleNewCommonJob(ui)
+	local dialog = ALittleDeploy.g_Control:CreateControl(ui)
 	dialog:Show(self._task_item.info.task_id, nil, nil)
 end
 
@@ -250,7 +277,9 @@ end
 
 function ALittleDeploy.DPLUITaskDetail:RefreshJobItem(job_item)
 	if job_item.info.job_type == 1 then
-		job_item._button.text = "[Batch] " .. job_item.info.job_name .. " " .. job_item.info.batch_cmd
+		job_item._button.text = "[批处理] " .. job_item.info.job_name .. " " .. job_item.info.detail.batch_cmd
+	elseif job_item.info.job_type == 2 then
+		job_item._button.text = "[复制目录] " .. job_item.info.job_name .. " " .. job_item.info.detail.deepcopy_src .. "->" .. job_item.info.detail.deepcopy_dst
 	end
 	if self._task_item.info.status == 0 then
 		job_item._status.text = ""
@@ -271,6 +300,8 @@ function ALittleDeploy.DPLUITaskDetail:HandleJobRButtonDown(event)
 	local job_index = self._job_list:GetChildIndex(job_item.item)
 	local menu = AUIPlugin.AUIRightMenu()
 	menu:AddItem("修改", Lua.Bind(self.HandleModifyJob, self, job_item, job_index))
+	menu:AddItem("上移", Lua.Bind(self.HandleMoveJob, self, job_item, job_index, job_index - 1))
+	menu:AddItem("下移", Lua.Bind(self.HandleMoveJob, self, job_item, job_index, job_index + 1))
 	menu:AddItem("删除", Lua.Bind(self.HandleDeleteJob, self, job_item, job_index))
 	menu:Show()
 end
@@ -320,8 +351,28 @@ function ALittleDeploy.DPLUITaskDetail:HandleModifyJob(info, index)
 	if info.info.job_type == 1 then
 		local dialog = ALittleDeploy.g_Control:CreateControl("batch_job_dialog")
 		dialog:Show(self._task_item.info.task_id, index, info.info)
+	elseif info.info.job_type == 2 then
+		local dialog = ALittleDeploy.g_Control:CreateControl("deepcopy_job_dialog")
+		dialog:Show(self._task_item.info.task_id, index, info.info)
 	end
 end
+
+function ALittleDeploy.DPLUITaskDetail:HandleMoveJob(info, index, new_index)
+	local msg_client = ALittleDeploy.g_DPLWebLoginManager.msg_client
+	if msg_client == nil or not msg_client:IsConnected() then
+		g_AUITool:ShowNotice("提示", "当前还未连接成功!")
+		return
+	end
+	local msg = {}
+	msg.task_id = self._task_item.info.task_id
+	msg.job_index = index
+	msg.target_index = new_index
+	local error = ALittle.IMsgCommon.InvokeRPC(-616678126, msg_client, msg)
+	if error ~= nil then
+		g_AUITool:ShowNotice("提示", error)
+	end
+end
+ALittleDeploy.DPLUITaskDetail.HandleMoveJob = Lua.CoWrap(ALittleDeploy.DPLUITaskDetail.HandleMoveJob)
 
 function ALittleDeploy.DPLUITaskDetail:HandleDeleteJob(info, index)
 	local msg_client = ALittleDeploy.g_DPLWebLoginManager.msg_client

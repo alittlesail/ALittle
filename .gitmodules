@@ -43,3 +43,6 @@
 [submodule "ALittleIDE/Module/ALittleIDE/Other/GameLibrary/CEngine"]
 	path = ALittleIDE/Module/ALittleIDE/Other/GameLibrary/CEngine
 	url = https://github.com/alittlesail/ALittle-CEngine.git
+[submodule "ALittleIDE/Module/ALittleIDE/Other/GameLibrary/DeployServer"]
+	path = ALittleIDE/Module/ALittleIDE/Other/GameLibrary/DeployServer
+	url = https://github.com/alittlesail/ALittle-DeployServer.git

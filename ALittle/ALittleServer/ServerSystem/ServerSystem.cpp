@@ -41,11 +41,6 @@ BOOL CtrlHandler(DWORD fdwCtrlType)
 
 void ServerSystem::Setup(const std::map<std::string, ModuleInfo>& modules)
 {
-	// 加锁
-	std::lock_guard<std::mutex> lock(m_mutex);
-	if (m_init) return;
-	m_init = true;
-
 	// 计算模块名
 	std::vector<std::string> module_name_list;
 	for (auto it = modules.begin(); it != modules.end(); ++it)
@@ -83,11 +78,6 @@ void ServerSystem::Setup(const std::map<std::string, ModuleInfo>& modules)
 
 void ServerSystem::Shutdown()
 {
-	// 加锁
-	std::lock_guard<std::mutex> lock(m_mutex);
-	if (!m_init) return;
-	m_init = false;
-
 	s_carp_log.Shutdown();
 	MysqlConnection::Shutdown();
 
@@ -99,29 +89,14 @@ void ServerSystem::Shutdown()
 void ServerSystem::Start(const std::string& core_path, const std::string& std_path, const std::string& sengine_path
 	, const std::map<std::string, ModuleInfo>& modules, bool block)
 {
-	// 加锁
+	for (auto it = modules.begin(); it != modules.end(); ++it)
 	{
-		std::lock_guard<std::mutex> lock(m_mutex);
-
-		if (!m_init) return;
-		if (m_start) return;
-		m_start = true;
-
-		m_core_path = core_path;
-		m_std_path = std_path;
-		m_sengine_path = sengine_path;
-		m_modules = modules;
-
-		for (auto it = modules.begin(); it != modules.end(); ++it)
-		{
-			ServerSchedule* schedule = new ServerSchedule(core_path, std_path, sengine_path, it->first, it->second.module_name, it->second.module_path, it->second.config_path);
-			std::thread* thread = new std::thread(ServerSystem::ScheduleRun, schedule);
-			m_map[thread] = schedule;
-		}
-
-		m_block = block;
+		ServerSchedule* schedule = new ServerSchedule(core_path, std_path, sengine_path, it->first, it->second.module_name, it->second.module_path, it->second.config_path);
+		std::thread* thread = new std::thread(ServerSystem::ScheduleRun, schedule);
+		m_map[thread] = schedule;
 	}
 
+	m_block = block;
 	if (m_block)
 	{
 		for (auto it = m_map.begin(); it != m_map.end(); ++it)
@@ -141,12 +116,6 @@ void ServerSystem::Start(const std::string& core_path, const std::string& std_pa
 
 void ServerSystem::Close()
 {
-	// 加锁
-	std::lock_guard<std::mutex> lock(m_mutex);
-
-	if (!m_start) return;
-	m_start = false;
-
 	for (auto it = m_map.begin(); it != m_map.end(); ++it)
 	{
 		it->second->Exit();
@@ -169,17 +138,8 @@ void ServerSystem::Close()
 	}
 }
 
-void ServerSystem::Restart()
-{
-	Close();
-	Start(m_core_path, m_std_path, m_sengine_path, m_modules, m_block);
-}
-
 void ServerSystem::HandleConsoleCmd(const std::string& module_title, const std::string& cmd)
 {
-	// 加锁
-	std::lock_guard<std::mutex> lock(m_mutex);
-
 	for (auto it = m_map.begin(); it != m_map.end(); ++it)
 	{
 		if (it->second->GetModuleTitle() == module_title)
@@ -199,9 +159,6 @@ void ServerSystem::HandleConsoleExit()
 
 void ServerSystem::HandleConsoleHelp()
 {
-	// 加锁
-	std::lock_guard<std::mutex> lock(m_mutex);
-
 	std::list<std::string> name_list;
 	for (auto it = m_map.begin(); it != m_map.end(); ++it)
 		name_list.push_back(it->second->GetModuleTitle());

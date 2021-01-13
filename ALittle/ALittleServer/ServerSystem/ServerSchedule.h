@@ -50,7 +50,6 @@ public:
 
 private:
 	void Update(time_t cur_time);
-	void RestartAll();
 
 private:
 	std::string m_core_path;

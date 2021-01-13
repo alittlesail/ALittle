@@ -154,7 +154,6 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         menu.AddItem("批处理", bind(this.HandleNewCommonJob, this, "batch_job_dialog"));
         menu.AddItem("复制目录", bind(this.HandleNewCommonJob, this, "deepcopy_job_dialog"));
         menu.AddItem("复制文件", bind(this.HandleNewCommonJob, this, "copyfile_job_dialog"));
-        menu.AddItem("重启Deploy", bind(this.HandleNewRestartJob, this));
         menu.Show();
     }
 
@@ -167,24 +166,6 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
     {
         var dialog = g_Control.CreateControl{CommonJobDialog}(ui);
         dialog.Show(this._task_item.info.task_id, null, null);
-    }
-
-    private async fun HandleNewRestartJob()
-    {
-        var msg_client = g_DPLWebLoginManager.msg_client;
-        if (msg_client == null || !msg_client.IsConnected())
-        {
-            g_AUITool.ShowNotice("提示", "当前还未连接成功!");
-            return;
-        }
-
-        var msg = new DeployServer.C2SCreateJob();
-        msg.task_id = this._task_item.info.task_id;
-        msg.job_type = DeployServer.JobType.RESTART;
-        msg.job_index = 0;
-        msg.job_name = "重启Deploy";
-        var error = DeployServer.HandleC2SCreateJob(msg_client, msg);
-        if (error != null) g_AUITool.ShowNotice("提示", error);
     }
 
     public fun AddJobItem(int job_index, DeployServer.D_JobInfo job_info)
@@ -226,8 +207,6 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         	job_item._button.text = "[复制目录] "..job_item.info.job_name..":"..job_item.info.detail.deepcopy_src.."->"..job_item.info.detail.deepcopy_dst;
         elseif (job_item.info.job_type == DeployServer.JobType.COPYFILE)
         	job_item._button.text = "[复制文件] "..job_item.info.job_name..":"..job_item.info.detail.copyfile_src.."->"..job_item.info.detail.copyfile_dst;
-        elseif (job_item.info.job_type == DeployServer.JobType.RESTART)
-        	job_item._button.text = "[重启Deploy]";
 
         if (this._task_item.info.status == DeployServer.TaskStatus.IDLE)
             job_item._status.text = "";

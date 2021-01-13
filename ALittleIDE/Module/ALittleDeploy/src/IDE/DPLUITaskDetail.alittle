@@ -201,9 +201,9 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
     private fun RefreshJobItem(JobItemInfo job_item)
     {
         if (job_item.info.job_type == DeployServer.JobType.BATCH)
-        	job_item._button.text = "[批处理] "..job_item.info.job_name.." "..job_item.info.detail.batch_cmd;
+        	job_item._button.text = "[批处理] "..job_item.info.job_name..":"..job_item.info.detail.batch_cmd;
         elseif (job_item.info.job_type == DeployServer.JobType.DEEPCOPY)
-        	job_item._button.text = "[复制目录] "..job_item.info.job_name.." "..job_item.info.detail.deepcopy_src.."->"..job_item.info.detail.deepcopy_dst;
+        	job_item._button.text = "[复制目录] "..job_item.info.job_name..":"..job_item.info.detail.deepcopy_src.."->"..job_item.info.detail.deepcopy_dst;
 
         if (this._task_item.info.status == DeployServer.TaskStatus.IDLE)
             job_item._status.text = "";
@@ -276,17 +276,18 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
 
     private fun HandleModifyJob(JobItemInfo info, int index)
     {
-        if (info.info.job_type == DeployServer.JobType.BATCH)
-        {
-            var dialog = g_Control.CreateControl{BatchJobDialog}("batch_job_dialog");
-            dialog.Show(this._task_item.info.task_id, index, info.info);
-        }
-        elseif (info.info.job_type == DeployServer.JobType.DEEPCOPY)
-        {
-            var dialog = g_Control.CreateControl{BatchJobDialog}("deepcopy_job_dialog");
-            dialog.Show(this._task_item.info.task_id, index, info.info);
-        }
+        var ui:string = null;
 
+        if (info.info.job_type == DeployServer.JobType.BATCH)
+            ui = "batch_job_dialog";
+        elseif (info.info.job_type == DeployServer.JobType.DEEPCOPY)
+            ui = "deepcopy_job_dialog";
+
+        if (ui != null)
+        {
+            var dialog = g_Control.CreateControl{CommonJobDialog}(ui);
+            dialog.Show(this._task_item.info.task_id, index, info.info);
+        }
     }
 
     private async fun HandleMoveJob(JobItemInfo info, int index, int new_index)

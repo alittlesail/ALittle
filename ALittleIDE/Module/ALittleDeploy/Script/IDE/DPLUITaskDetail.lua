@@ -277,9 +277,9 @@ end
 
 function ALittleDeploy.DPLUITaskDetail:RefreshJobItem(job_item)
 	if job_item.info.job_type == 1 then
-		job_item._button.text = "[批处理] " .. job_item.info.job_name .. " " .. job_item.info.detail.batch_cmd
+		job_item._button.text = "[批处理] " .. job_item.info.job_name .. ":" .. job_item.info.detail.batch_cmd
 	elseif job_item.info.job_type == 2 then
-		job_item._button.text = "[复制目录] " .. job_item.info.job_name .. " " .. job_item.info.detail.deepcopy_src .. "->" .. job_item.info.detail.deepcopy_dst
+		job_item._button.text = "[复制目录] " .. job_item.info.job_name .. ":" .. job_item.info.detail.deepcopy_src .. "->" .. job_item.info.detail.deepcopy_dst
 	end
 	if self._task_item.info.status == 0 then
 		job_item._status.text = ""
@@ -348,11 +348,14 @@ end
 ALittleDeploy.DPLUITaskDetail.HandleDownloadBuild = Lua.CoWrap(ALittleDeploy.DPLUITaskDetail.HandleDownloadBuild)
 
 function ALittleDeploy.DPLUITaskDetail:HandleModifyJob(info, index)
+	local ui = nil
 	if info.info.job_type == 1 then
-		local dialog = ALittleDeploy.g_Control:CreateControl("batch_job_dialog")
-		dialog:Show(self._task_item.info.task_id, index, info.info)
+		ui = "batch_job_dialog"
 	elseif info.info.job_type == 2 then
-		local dialog = ALittleDeploy.g_Control:CreateControl("deepcopy_job_dialog")
+		ui = "deepcopy_job_dialog"
+	end
+	if ui ~= nil then
+		local dialog = ALittleDeploy.g_Control:CreateControl(ui)
 		dialog:Show(self._task_item.info.task_id, index, info.info)
 	end
 end

@@ -15,6 +15,12 @@ name_list = {"job_type","job_name","status","progress","detail"},
 type_list = {"int","string","int","double","DeployServer.JobInfoDetail"},
 option_map = {}
 })
+ALittle.RegStruct(-2031251578, "DeployServer.C2SCopyJob", {
+name = "DeployServer.C2SCopyJob", ns_name = "DeployServer", rl_name = "C2SCopyJob", hash_code = -2031251578,
+name_list = {"task_id","job_index"},
+type_list = {"int","int"},
+option_map = {}
+})
 ALittle.RegStruct(1984174335, "DeployServer.S2CDeleteBuild", {
 name = "DeployServer.S2CDeleteBuild", ns_name = "DeployServer", rl_name = "S2CDeleteBuild", hash_code = 1984174335,
 name_list = {},
@@ -97,6 +103,12 @@ ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
 name = "ALittle.UIChangedEvent", ns_name = "ALittle", rl_name = "UIChangedEvent", hash_code = 958494922,
 name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(874244823, "DeployServer.S2CCopyJob", {
+name = "DeployServer.S2CCopyJob", ns_name = "DeployServer", rl_name = "S2CCopyJob", hash_code = 874244823,
+name_list = {},
+type_list = {},
 option_map = {}
 })
 ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
@@ -305,6 +317,7 @@ function ALittleDeploy.DPLUITaskDetail:HandleJobRButtonDown(event)
 	menu:AddItem("修改", Lua.Bind(self.HandleModifyJob, self, job_item, job_index))
 	menu:AddItem("上移", Lua.Bind(self.HandleMoveJob, self, job_item, job_index, job_index - 1))
 	menu:AddItem("下移", Lua.Bind(self.HandleMoveJob, self, job_item, job_index, job_index + 1))
+	menu:AddItem("复制", Lua.Bind(self.HandleCopyJob, self, job_item, job_index))
 	menu:AddItem("删除", Lua.Bind(self.HandleDeleteJob, self, job_item, job_index))
 	menu:Show()
 end
@@ -381,6 +394,22 @@ function ALittleDeploy.DPLUITaskDetail:HandleMoveJob(info, index, new_index)
 	end
 end
 ALittleDeploy.DPLUITaskDetail.HandleMoveJob = Lua.CoWrap(ALittleDeploy.DPLUITaskDetail.HandleMoveJob)
+
+function ALittleDeploy.DPLUITaskDetail:HandleCopyJob(info, index)
+	local msg_client = ALittleDeploy.g_DPLWebLoginManager.msg_client
+	if msg_client == nil or not msg_client:IsConnected() then
+		g_AUITool:ShowNotice("提示", "当前还未连接成功!")
+		return
+	end
+	local msg = {}
+	msg.task_id = self._task_item.info.task_id
+	msg.job_index = index
+	local error = ALittle.IMsgCommon.InvokeRPC(-2031251578, msg_client, msg)
+	if error ~= nil then
+		g_AUITool:ShowNotice("提示", error)
+	end
+end
+ALittleDeploy.DPLUITaskDetail.HandleCopyJob = Lua.CoWrap(ALittleDeploy.DPLUITaskDetail.HandleCopyJob)
 
 function ALittleDeploy.DPLUITaskDetail:HandleDeleteJob(info, index)
 	local msg_client = ALittleDeploy.g_DPLWebLoginManager.msg_client

@@ -230,6 +230,7 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         menu.AddItem("修改", bind(this.HandleModifyJob, this, job_item, job_index));
         menu.AddItem("上移", bind(this.HandleMoveJob, this, job_item, job_index, job_index - 1));
         menu.AddItem("下移", bind(this.HandleMoveJob, this, job_item, job_index, job_index + 1));
+        menu.AddItem("复制", bind(this.HandleCopyJob, this, job_item, job_index));
         menu.AddItem("删除", bind(this.HandleDeleteJob, this, job_item, job_index));
         menu.Show();
     }
@@ -309,6 +310,22 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         msg.job_index = index;
         msg.target_index = new_index;
         var error = DeployServer.HandleC2SMoveJob(msg_client, msg);
+        if (error != null) g_AUITool.ShowNotice("提示", error);
+    }
+
+    private async fun HandleCopyJob(JobItemInfo info, int index)
+    {
+        var msg_client = g_DPLWebLoginManager.msg_client;
+        if (msg_client == null || !msg_client.IsConnected())
+        {
+            g_AUITool.ShowNotice("提示", "当前还未连接成功!");
+            return;
+        }
+
+        var msg = new DeployServer.C2SCopyJob();
+        msg.task_id = this._task_item.info.task_id;
+        msg.job_index = index;
+        var error = DeployServer.HandleC2SCopyJob(msg_client, msg);
         if (error != null) g_AUITool.ShowNotice("提示", error);
     }
 

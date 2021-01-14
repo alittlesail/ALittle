@@ -311,6 +311,8 @@ function ALittleDeploy.DPLUITaskDetail:RefreshJobItem(job_item)
 			job_item._status.text = ALittle.Math_Floor(job_item.info.progress * 10000) / 100 .. "%"
 		elseif job_item.info.status == 2 then
 			job_item._status.text = "完成"
+		elseif job_item.info.status == 3 then
+			job_item._status.text = "失败"
 		end
 	end
 end

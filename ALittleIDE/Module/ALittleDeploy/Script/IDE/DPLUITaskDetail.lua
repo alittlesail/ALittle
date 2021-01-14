@@ -287,6 +287,7 @@ function ALittleDeploy.DPLUITaskDetail:AddBuildItem(build_info)
 	build_item._download_button:AddEventListener(___all_struct[1800966813], self, self.HandleDownloadBuild)
 	build_item._download_button._user_data = build_item
 	self._build_list:AddChild(build_item.item)
+	self._build_list:ScrollToBottom()
 	build_item._button.text = ALittle.Time_GetCurDate(build_info.create_time)
 end
 
@@ -449,7 +450,7 @@ function ALittleDeploy.DPLUITaskDetail:HandleDeleteBuild(info, index)
 		g_AUITool:ShowNotice("提示", "当前还未连接成功!")
 		return
 	end
-	local result = g_AUITool:DeleteNotice("删除", "确定要删除该任务吗?")
+	local result = g_AUITool:DeleteNotice("删除", "确定要删除该构建信息吗?")
 	if result ~= "YES" then
 		return
 	end

@@ -197,6 +197,7 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         build_item._download_button.AddEventListener(this, this.HandleDownloadBuild);
         build_item._download_button._user_data = build_item;
         this._build_list.AddChild(build_item.item);
+        this._build_list.ScrollToBottom();
 
         build_item._button.text = ALittle.Time_GetCurDate(build_info.create_time);
     }
@@ -373,7 +374,7 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
             return;
         }
 
-        var result = g_AUITool.DeleteNotice("删除", "确定要删除该任务吗?");
+        var result = g_AUITool.DeleteNotice("删除", "确定要删除该构建信息吗?");
         if (result != AUIPlugin.AUIToolOption.YES) return;
 
         var msg = new DeployServer.C2SDeleteBuild();

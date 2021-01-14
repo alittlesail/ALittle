@@ -260,7 +260,11 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         msg.build_index = build_index;
         var sender = g_DPLCenter.CreateHttpSender();
         var error, rsp = DeployServer.HandlePreSeeBuild(sender, msg);
-        if (error != null) g_AUITool.ShowNotice("提示", error);
+        if (error != null)
+        {
+            g_AUITool.ShowNotice("提示", error);
+            return;
+        }
 
         g_DPLCenter.center.task_center._build_edit.text = ALittle.String_Join(rsp.log_list, "\r\n");
     }

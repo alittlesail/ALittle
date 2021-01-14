@@ -343,6 +343,7 @@ function ALittleDeploy.DPLUITaskDetail:HandlePreSeeBuild(event)
 	local error, rsp = ALittle.IHttpSender.Invoke("DeployServer.QPreSeeBuild", sender, msg)
 	if error ~= nil then
 		g_AUITool:ShowNotice("提示", error)
+		return
 	end
 	ALittleDeploy.g_DPLCenter.center.task_center._build_edit.text = ALittle.String_Join(rsp.log_list, "\r\n")
 end

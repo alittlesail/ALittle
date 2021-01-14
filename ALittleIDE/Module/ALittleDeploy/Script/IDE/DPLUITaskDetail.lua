@@ -89,8 +89,8 @@ option_map = {}
 })
 ALittle.RegStruct(1232578034, "DeployServer.JobInfoDetail", {
 name = "DeployServer.JobInfoDetail", ns_name = "DeployServer", rl_name = "JobInfoDetail", hash_code = 1232578034,
-name_list = {"batch_dir","batch_cmd","batch_param","deepcopy_src","deepcopy_dst","deepcopy_ext","copyfile_src","copyfile_file","copyfile_dst"},
-type_list = {"string","string","string","string","string","string","string","List<string>","string"},
+name_list = {"batch_dir","batch_cmd","batch_param","deepcopy_src","deepcopy_dst","deepcopy_ext","copyfile_src","copyfile_file","copyfile_dst","virtualkey_exepath","virtualkey_cmd"},
+type_list = {"string","string","string","string","string","string","string","List<string>","string","string","List<string>"},
 option_map = {}
 })
 ALittle.RegStruct(1149037254, "DeployServer.C2SUpdateTaskInfo", {
@@ -249,6 +249,7 @@ function ALittleDeploy.DPLUITaskDetail:HandleNewJobClick(event)
 	menu:AddItem("批处理", Lua.Bind(self.HandleNewCommonJob, self, "batch_job_dialog"))
 	menu:AddItem("复制目录", Lua.Bind(self.HandleNewCommonJob, self, "deepcopy_job_dialog"))
 	menu:AddItem("复制文件", Lua.Bind(self.HandleNewCommonJob, self, "copyfile_job_dialog"))
+	menu:AddItem("发送命令", Lua.Bind(self.HandleNewCommonJob, self, "sendvirtualkey_job_dialog"))
 	menu:Show()
 end
 
@@ -295,6 +296,8 @@ function ALittleDeploy.DPLUITaskDetail:RefreshJobItem(job_item)
 		job_item._button.text = "[复制目录] " .. job_item.info.job_name .. ":" .. job_item.info.detail.deepcopy_src .. "->" .. job_item.info.detail.deepcopy_dst
 	elseif job_item.info.job_type == 3 then
 		job_item._button.text = "[复制文件] " .. job_item.info.job_name .. ":" .. job_item.info.detail.copyfile_src .. "->" .. job_item.info.detail.copyfile_dst
+	elseif job_item.info.job_type == 4 then
+		job_item._button.text = "[发送命令] " .. job_item.info.job_name .. ":" .. job_item.info.detail.virtualkey_exepath
 	end
 	if self._task_item.info.status == 0 then
 		job_item._status.text = ""
@@ -303,8 +306,7 @@ function ALittleDeploy.DPLUITaskDetail:RefreshJobItem(job_item)
 			job_item._status.text = "等待"
 		elseif job_item.info.status == 1 then
 			job_item._status.text = "执行:" .. ALittle.Math_Floor(job_item.info.progress * 100) / 100 .. "%"
-		end
-		if job_item.info.status == 0 then
+		elseif job_item.info.status == 2 then
 			job_item._status.text = "完成"
 		end
 	end
@@ -371,6 +373,8 @@ function ALittleDeploy.DPLUITaskDetail:HandleModifyJob(info, index)
 		ui = "deepcopy_job_dialog"
 	elseif info.info.job_type == 3 then
 		ui = "copyfile_job_dialog"
+	elseif info.info.job_type == 4 then
+		ui = "sendvirtualkey_job_dialog"
 	end
 	if ui ~= nil then
 		local dialog = ALittleDeploy.g_Control:CreateControl(ui)

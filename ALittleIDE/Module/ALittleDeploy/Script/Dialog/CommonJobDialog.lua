@@ -22,8 +22,8 @@ option_map = {}
 })
 ALittle.RegStruct(1232578034, "DeployServer.JobInfoDetail", {
 name = "DeployServer.JobInfoDetail", ns_name = "DeployServer", rl_name = "JobInfoDetail", hash_code = 1232578034,
-name_list = {"batch_dir","batch_cmd","batch_param","deepcopy_src","deepcopy_dst","deepcopy_ext","copyfile_src","copyfile_file","copyfile_dst"},
-type_list = {"string","string","string","string","string","string","string","List<string>","string"},
+name_list = {"batch_dir","batch_cmd","batch_param","deepcopy_src","deepcopy_dst","deepcopy_ext","copyfile_src","copyfile_file","copyfile_dst","virtualkey_exepath","virtualkey_cmd"},
+type_list = {"string","string","string","string","string","string","string","List<string>","string","string","List<string>"},
 option_map = {}
 })
 ALittle.RegStruct(812356121, "DeployServer.S2CModifyJob", {

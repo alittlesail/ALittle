@@ -154,6 +154,7 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         menu.AddItem("批处理", bind(this.HandleNewCommonJob, this, "batch_job_dialog"));
         menu.AddItem("复制目录", bind(this.HandleNewCommonJob, this, "deepcopy_job_dialog"));
         menu.AddItem("复制文件", bind(this.HandleNewCommonJob, this, "copyfile_job_dialog"));
+        menu.AddItem("发送命令", bind(this.HandleNewCommonJob, this, "sendvirtualkey_job_dialog"));
         menu.Show();
     }
 
@@ -207,6 +208,8 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         	job_item._button.text = "[复制目录] "..job_item.info.job_name..":"..job_item.info.detail.deepcopy_src.."->"..job_item.info.detail.deepcopy_dst;
         elseif (job_item.info.job_type == DeployServer.JobType.COPYFILE)
         	job_item._button.text = "[复制文件] "..job_item.info.job_name..":"..job_item.info.detail.copyfile_src.."->"..job_item.info.detail.copyfile_dst;
+        elseif (job_item.info.job_type == DeployServer.JobType.SENDVIRTUALKEY)
+        	job_item._button.text = "[发送命令] "..job_item.info.job_name..":"..job_item.info.detail.virtualkey_exepath;
 
         if (this._task_item.info.status == DeployServer.TaskStatus.IDLE)
             job_item._status.text = "";
@@ -216,7 +219,7 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
                 job_item._status.text = "等待";
             elseif (job_item.info.status == DeployServer.JobStatus.DOING)
                 job_item._status.text = "执行:"..ALittle.Math_Floor(job_item.info.progress * 100) / 100.."%";
-            if (job_item.info.status == DeployServer.JobStatus.WAITING)
+            elseif (job_item.info.status == DeployServer.JobStatus.COMPLETED)
                 job_item._status.text = "完成";
         }
     }
@@ -288,6 +291,8 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
             ui = "deepcopy_job_dialog";
         elseif (info.info.job_type == DeployServer.JobType.COPYFILE)
             ui = "copyfile_job_dialog";
+        elseif (info.info.job_type == DeployServer.JobType.SENDVIRTUALKEY)
+            ui = "sendvirtualkey_job_dialog";
 
         if (ui != null)
         {

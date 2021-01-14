@@ -87,7 +87,7 @@ void ServerSystem::Shutdown()
 }
 
 void ServerSystem::Start(const std::string& core_path, const std::string& std_path, const std::string& sengine_path
-	, const std::map<std::string, ModuleInfo>& modules, bool block)
+	, const std::map<std::string, ModuleInfo>& modules)
 {
 	for (auto it = modules.begin(); it != modules.end(); ++it)
 	{
@@ -96,22 +96,30 @@ void ServerSystem::Start(const std::string& core_path, const std::string& std_pa
 		m_map[thread] = schedule;
 	}
 
-	m_block = block;
-	if (m_block)
+	for (auto it = m_map.begin(); it != m_map.end(); ++it)
 	{
-		for (auto it = m_map.begin(); it != m_map.end(); ++it)
-		{
-			it->first->join();
-		}
-
-		for (auto it = m_map.begin(); it != m_map.end(); ++it)
-		{
-			delete it->second;
-			delete it->first;
-		}
-
-		m_map.clear();
+		it->first->join();
 	}
+
+	CARP_SYSTEM("close schedule 5s later");
+	std::this_thread::sleep_for(std::chrono::seconds(1));
+	CARP_SYSTEM("close schedule 4s later");
+	std::this_thread::sleep_for(std::chrono::seconds(1));
+	CARP_SYSTEM("close schedule 3s later");
+	std::this_thread::sleep_for(std::chrono::seconds(1));
+	CARP_SYSTEM("close schedule 2s later");
+	std::this_thread::sleep_for(std::chrono::seconds(1));
+	CARP_SYSTEM("close schedule 1s later");
+	std::this_thread::sleep_for(std::chrono::seconds(1));
+
+	for (auto it = m_map.begin(); it != m_map.end(); ++it)
+	{
+		CARP_SYSTEM("delete schedule " << it->second->GetModuleTitle());
+		delete it->second;
+		delete it->first;
+	}
+
+	m_map.clear();
 }
 
 void ServerSystem::Close()
@@ -119,22 +127,6 @@ void ServerSystem::Close()
 	for (auto it = m_map.begin(); it != m_map.end(); ++it)
 	{
 		it->second->Exit();
-	}
-
-	if (!m_block)
-	{
-		for (auto it = m_map.begin(); it != m_map.end(); ++it)
-		{
-			it->first->join();
-		}
-
-		for (auto it = m_map.begin(); it != m_map.end(); ++it)
-		{
-			delete it->second;
-			delete it->first;
-		}
-
-		m_map.clear();
 	}
 }
 
@@ -154,7 +146,6 @@ void ServerSystem::HandleConsoleCmd(const std::string& module_title, const std::
 void ServerSystem::HandleConsoleExit()
 {
 	Close();
-	Shutdown();
 }
 
 void ServerSystem::HandleConsoleHelp()

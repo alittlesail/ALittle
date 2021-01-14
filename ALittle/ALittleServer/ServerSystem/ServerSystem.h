@@ -29,7 +29,7 @@ public:
 
 public:
 	void Start(const std::string& core_path, const std::string& std_path, const std::string& sengine_path
-		, const std::map<std::string, ModuleInfo>& modules, bool block);
+		, const std::map<std::string, ModuleInfo>& modules);
 	void Close();
 	
 	// 把命令发给指定模块线程的脚本系统
@@ -45,10 +45,9 @@ private:
 
 private:
 	std::map<std::thread*, ServerSchedule*> m_map;
-	bool m_block;
-
+	
 private:
-	ServerSystem() : m_block(false) {}
+	ServerSystem() {}
 	~ServerSystem() {}
 };
 

@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
 	}
 
 	ALittle::ServerSystem::Instance().Setup(module_map);
-	ALittle::ServerSystem::Instance().Start(core_path, std_path, sengine_path, module_map, true);
+	ALittle::ServerSystem::Instance().Start(core_path, std_path, sengine_path, module_map);
 	ALittle::ServerSystem::Instance().Shutdown();
 	return 0;
 }

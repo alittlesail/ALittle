@@ -1,1 +1,0 @@
-{"battle_bullet":{"height_value":8,"width_value":8,"__childs":[{"col_count":4,"height_value":8,"width_value":8,"__class":"Sprite","__link":"_bullet","texture_name":"bullet.png"},{"y_type":3,"__link":"_effect_explosion","__extends":"effect_explosion_small","__module":"BattleCity","x_type":3}],"__class":"DisplayLayout","__target_class":["BattleCity","BattleBullet"]}}

@@ -17,9 +17,9 @@ end
 
 function ALittleDeploy.CreateProcessJobDialog:ShowDetail(detail)
 	if detail ~= nil then
-		self._dir.text = detail.batch_dir
-		self._cmd.text = detail.batch_cmd
-		self._param.text = detail.batch_param
+		self._dir.text = detail.createprocess_dir
+		self._cmd.text = detail.createprocess_cmd
+		self._param.text = detail.createprocess_param
 	else
 		self._dir.text = ""
 		self._cmd.text = ""
@@ -29,9 +29,9 @@ end
 
 function ALittleDeploy.CreateProcessJobDialog:GetDetail()
 	local detail = {}
-	detail.batch_dir = self._dir.text
-	detail.batch_cmd = self._cmd.text
-	detail.batch_param = self._param.text
+	detail.createprocess_dir = self._dir.text
+	detail.createprocess_cmd = self._cmd.text
+	detail.createprocess_param = self._param.text
 	return detail
 end
 

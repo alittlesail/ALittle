@@ -13,9 +13,9 @@ public class CreateProcessJobDialog : CommonJobDialog
     {
         if (detail != null)
         {
-            this._dir.text = detail.batch_dir;
-            this._cmd.text = detail.batch_cmd;
-            this._param.text = detail.batch_param;
+            this._dir.text = detail.createprocess_dir;
+            this._cmd.text = detail.createprocess_cmd;
+            this._param.text = detail.createprocess_param;
         }
         else
         {
@@ -28,9 +28,9 @@ public class CreateProcessJobDialog : CommonJobDialog
     private fun GetDetail() : DeployServer.JobInfoDetail
     {
         var detail = new DeployServer.JobInfoDetail();
-        detail.batch_dir = this._dir.text;
-        detail.batch_cmd = this._cmd.text;
-        detail.batch_param = this._param.text;
+        detail.createprocess_dir = this._dir.text;
+        detail.createprocess_cmd = this._cmd.text;
+        detail.createprocess_param = this._param.text;
         return detail;
     }
 }

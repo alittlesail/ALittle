@@ -221,7 +221,7 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
             if (job_item.info.status == DeployServer.JobStatus.WAITING)
                 job_item._status.text = "等待";
             elseif (job_item.info.status == DeployServer.JobStatus.DOING)
-                job_item._status.text = "执行:"..ALittle.Math_Floor(job_item.info.progress * 100) / 100.."%";
+                job_item._status.text = ALittle.Math_Floor(job_item.info.progress * 10000) / 100.."%";
             elseif (job_item.info.status == DeployServer.JobStatus.COMPLETED)
                 job_item._status.text = "完成";
         }

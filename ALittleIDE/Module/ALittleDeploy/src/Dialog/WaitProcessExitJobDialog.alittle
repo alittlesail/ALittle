@@ -4,6 +4,7 @@ namespace ALittleDeploy;
 public class WaitProcessExitJobDialog : CommonJobDialog
 {
 	private ALittle.ImageEdit _exe_path;
+    private ALittle.ImageInput _max_time;
 
     private get type() : int { return DeployServer.JobType.WAITPROCSSEXIT; }
 
@@ -12,10 +13,12 @@ public class WaitProcessExitJobDialog : CommonJobDialog
         if (detail != null)
         {
             this._exe_path.text = ALittle.String_Join(detail.wait_p_exit_exe_path, "\n");
+            this._max_time.text = detail.wait_p_exit_max_time;
         }
         else
         {
             this._exe_path.text = "";
+            this._max_time.text = "";
         }
     }
 
@@ -23,6 +26,7 @@ public class WaitProcessExitJobDialog : CommonJobDialog
     {
         var detail = new DeployServer.JobInfoDetail();
         detail.wait_p_exit_exe_path = ALittle.String_SplitSepList(this._exe_path.text, ["\r", "\n"]);
+        detail.wait_p_exit_max_time = ALittle.Math_ToIntOrZero(this._max_time.text);
         return detail;
     }
 }

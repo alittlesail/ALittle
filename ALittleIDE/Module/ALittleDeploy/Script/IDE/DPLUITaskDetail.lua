@@ -308,7 +308,7 @@ function ALittleDeploy.DPLUITaskDetail:RefreshJobItem(job_item)
 		if job_item.info.status == 0 then
 			job_item._status.text = "等待"
 		elseif job_item.info.status == 1 then
-			job_item._status.text = "执行:" .. ALittle.Math_Floor(job_item.info.progress * 100) / 100 .. "%"
+			job_item._status.text = ALittle.Math_Floor(job_item.info.progress * 10000) / 100 .. "%"
 		elseif job_item.info.status == 2 then
 			job_item._status.text = "完成"
 		end

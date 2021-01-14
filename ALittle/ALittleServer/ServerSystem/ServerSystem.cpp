@@ -101,20 +101,8 @@ void ServerSystem::Start(const std::string& core_path, const std::string& std_pa
 		it->first->join();
 	}
 
-	CARP_SYSTEM("close schedule 5s later");
-	std::this_thread::sleep_for(std::chrono::seconds(1));
-	CARP_SYSTEM("close schedule 4s later");
-	std::this_thread::sleep_for(std::chrono::seconds(1));
-	CARP_SYSTEM("close schedule 3s later");
-	std::this_thread::sleep_for(std::chrono::seconds(1));
-	CARP_SYSTEM("close schedule 2s later");
-	std::this_thread::sleep_for(std::chrono::seconds(1));
-	CARP_SYSTEM("close schedule 1s later");
-	std::this_thread::sleep_for(std::chrono::seconds(1));
-
 	for (auto it = m_map.begin(); it != m_map.end(); ++it)
 	{
-		CARP_SYSTEM("delete schedule " << it->second->GetModuleTitle());
 		delete it->second;
 		delete it->first;
 	}

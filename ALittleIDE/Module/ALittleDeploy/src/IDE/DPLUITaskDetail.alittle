@@ -155,6 +155,7 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         menu.AddItem("复制目录", bind(this.HandleNewCommonJob, this, "deepcopy_job_dialog"));
         menu.AddItem("复制文件", bind(this.HandleNewCommonJob, this, "copyfile_job_dialog"));
         menu.AddItem("发送命令", bind(this.HandleNewCommonJob, this, "sendvirtualkey_job_dialog"));
+        menu.AddItem("等待进程退出", bind(this.HandleNewCommonJob, this, "waitprocessexit_job_dialog"));
         menu.Show();
     }
 
@@ -210,6 +211,8 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         	job_item._button.text = "[复制文件] "..job_item.info.job_name..":"..job_item.info.detail.copyfile_src.."->"..job_item.info.detail.copyfile_dst;
         elseif (job_item.info.job_type == DeployServer.JobType.SENDVIRTUALKEY)
         	job_item._button.text = "[发送命令] "..job_item.info.job_name..":"..job_item.info.detail.virtualkey_exepath;
+        elseif (job_item.info.job_type == DeployServer.JobType.WAITPROCSSEXIT)
+        	job_item._button.text = "[等待进程退出] "..job_item.info.job_name;
 
         if (this._task_item.info.status == DeployServer.TaskStatus.IDLE)
             job_item._status.text = "";
@@ -297,6 +300,8 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
             ui = "copyfile_job_dialog";
         elseif (info.info.job_type == DeployServer.JobType.SENDVIRTUALKEY)
             ui = "sendvirtualkey_job_dialog";
+        elseif (info.info.job_type == DeployServer.JobType.WAITPROCSSEXIT)
+            ui = "waitprocessexit_job_dialog";
 
         if (ui != null)
         {

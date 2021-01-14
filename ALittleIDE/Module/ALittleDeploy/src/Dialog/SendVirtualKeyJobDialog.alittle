@@ -6,7 +6,7 @@ public class SendVirtualKeyJobDialog : CommonJobDialog
 	private ALittle.ImageInput _exe_path;
     private ALittle.ImageEdit _cmd_list;
 
-    private get type() : int { return DeployServer.JobType.COPYFILE; }
+    private get type() : int { return DeployServer.JobType.SENDVIRTUALKEY; }
 
     private fun ShowDetail(DeployServer.JobInfoDetail detail)
     {

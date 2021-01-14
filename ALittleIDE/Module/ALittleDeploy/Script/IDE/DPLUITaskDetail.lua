@@ -89,8 +89,8 @@ option_map = {}
 })
 ALittle.RegStruct(1232578034, "DeployServer.JobInfoDetail", {
 name = "DeployServer.JobInfoDetail", ns_name = "DeployServer", rl_name = "JobInfoDetail", hash_code = 1232578034,
-name_list = {"batch_dir","batch_cmd","batch_param","deepcopy_src","deepcopy_dst","deepcopy_ext","copyfile_src","copyfile_file","copyfile_dst","virtualkey_exepath","virtualkey_cmd"},
-type_list = {"string","string","string","string","string","string","string","List<string>","string","string","List<string>"},
+name_list = {"batch_dir","batch_cmd","batch_param","deepcopy_src","deepcopy_dst","deepcopy_ext","copyfile_src","copyfile_file","copyfile_dst","virtualkey_exepath","virtualkey_cmd","wait_p_exit_exe_path"},
+type_list = {"string","string","string","string","string","string","string","List<string>","string","string","List<string>","List<string>"},
 option_map = {}
 })
 ALittle.RegStruct(1149037254, "DeployServer.C2SUpdateTaskInfo", {
@@ -250,6 +250,7 @@ function ALittleDeploy.DPLUITaskDetail:HandleNewJobClick(event)
 	menu:AddItem("复制目录", Lua.Bind(self.HandleNewCommonJob, self, "deepcopy_job_dialog"))
 	menu:AddItem("复制文件", Lua.Bind(self.HandleNewCommonJob, self, "copyfile_job_dialog"))
 	menu:AddItem("发送命令", Lua.Bind(self.HandleNewCommonJob, self, "sendvirtualkey_job_dialog"))
+	menu:AddItem("等待进程退出", Lua.Bind(self.HandleNewCommonJob, self, "waitprocessexit_job_dialog"))
 	menu:Show()
 end
 
@@ -298,6 +299,8 @@ function ALittleDeploy.DPLUITaskDetail:RefreshJobItem(job_item)
 		job_item._button.text = "[复制文件] " .. job_item.info.job_name .. ":" .. job_item.info.detail.copyfile_src .. "->" .. job_item.info.detail.copyfile_dst
 	elseif job_item.info.job_type == 4 then
 		job_item._button.text = "[发送命令] " .. job_item.info.job_name .. ":" .. job_item.info.detail.virtualkey_exepath
+	elseif job_item.info.job_type == 5 then
+		job_item._button.text = "[等待进程退出] " .. job_item.info.job_name
 	end
 	if self._task_item.info.status == 0 then
 		job_item._status.text = ""
@@ -376,6 +379,8 @@ function ALittleDeploy.DPLUITaskDetail:HandleModifyJob(info, index)
 		ui = "copyfile_job_dialog"
 	elseif info.info.job_type == 4 then
 		ui = "sendvirtualkey_job_dialog"
+	elseif info.info.job_type == 5 then
+		ui = "waitprocessexit_job_dialog"
 	end
 	if ui ~= nil then
 		local dialog = ALittleDeploy.g_Control:CreateControl(ui)

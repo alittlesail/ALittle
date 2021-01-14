@@ -12,7 +12,7 @@ assert(ALittleDeploy.CommonJobDialog, " extends class:ALittleDeploy.CommonJobDia
 ALittleDeploy.SendVirtualKeyJobDialog = Lua.Class(ALittleDeploy.CommonJobDialog, "ALittleDeploy.SendVirtualKeyJobDialog")
 
 function ALittleDeploy.SendVirtualKeyJobDialog.__getter:type()
-	return 3
+	return 4
 end
 
 function ALittleDeploy.SendVirtualKeyJobDialog:ShowDetail(detail)

@@ -22,6 +22,7 @@ extern "C" {
 #include "Carp/carp_task_consumer_bind.hpp"
 #include "Carp/carp_surface_bind.hpp"
 #include "Carp/carp_lua_worker.hpp"
+#include "Carp/carp_process_bind.hpp"
 
 class ALittleScript : public CarpScript
 {
@@ -45,6 +46,7 @@ public:
 		CarpTaskConsumerBind::Bind(m_L);
 		CarpSurfaceBind::Bind(m_L);
 		CarpLuaWorker::Bind(m_L);
+		CarpProcessBind::Bind(m_L);
 	}
 	
 	void Shutdown()

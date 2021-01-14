@@ -52,6 +52,8 @@
     <ClInclude Include="..\..\Carp\carp_mixer.hpp" />
     <ClInclude Include="..\..\Carp\carp_mysql.hpp" />
     <ClInclude Include="..\..\Carp\carp_net_bind.hpp" />
+    <ClInclude Include="..\..\Carp\carp_process.hpp" />
+    <ClInclude Include="..\..\Carp\carp_process_bind.hpp" />
     <ClInclude Include="..\..\Carp\carp_rudp_client.hpp" />
     <ClInclude Include="..\..\Carp\carp_rudp_server.hpp" />
     <ClInclude Include="..\..\Carp\carp_rwops.hpp" />

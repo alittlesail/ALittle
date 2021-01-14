@@ -99,6 +99,7 @@ function ALittleIDE.IDEUIMainMenu:HandleGenCoreAllInOneClick()
 		ALittle.List_Push(file_list, base_path .. "Core/Time.js")
 		ALittle.List_Push(file_list, base_path .. "Core/Coroutine.js")
 		ALittle.List_Push(file_list, base_path .. "Core/Net.js")
+		ALittle.List_Push(file_list, base_path .. "Core/Worker.js")
 		for index, path in ___ipairs(file_list) do
 			all_in_one[index] = ALittle.File_ReadTextFromStdFile(path)
 			if all_in_one[index] == nil then
@@ -128,6 +129,7 @@ function ALittleIDE.IDEUIMainMenu:HandleGenCoreAllInOneClick()
 		ALittle.List_Push(file_list, base_path .. "Core/Time.lua")
 		ALittle.List_Push(file_list, base_path .. "Core/Coroutine.lua")
 		ALittle.List_Push(file_list, base_path .. "Core/Net.lua")
+		ALittle.List_Push(file_list, base_path .. "Core/Worker.lua")
 		for index, path in ___ipairs(file_list) do
 			all_in_one[index] = ALittle.File_ReadTextFromStdFile(path)
 			if all_in_one[index] == nil then
@@ -227,6 +229,7 @@ function ALittleIDE.IDEUIMainMenu:HandleGenStdAllInOneClick()
 		ALittle.List_Push(file_list, base_path .. "Utility/SafeIDCreator.lua")
 		ALittle.List_Push(file_list, base_path .. "String/String.lua")
 		ALittle.List_Push(file_list, base_path .. "File/File.lua")
+		ALittle.List_Push(file_list, base_path .. "Worker/Worker.lua")
 		ALittle.List_Push(file_list, base_path .. "Net/HttpFileReceiverTemplate.lua")
 		ALittle.List_Push(file_list, base_path .. "Net/HttpFileSenderTemplate.lua")
 		ALittle.List_Push(file_list, base_path .. "Net/HttpReceiverTemplate.lua")

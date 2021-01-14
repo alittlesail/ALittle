@@ -1,0 +1,28 @@
+
+namespace ALittleDeploy;
+
+public class KillProcessJobDialog : CommonJobDialog
+{
+    private ALittle.ImageEdit _exe_path;
+
+    private get type() : int { return DeployServer.JobType.KILLPROCESS; }
+
+    private fun ShowDetail(DeployServer.JobInfoDetail detail)
+    {
+        if (detail != null)
+        {
+            this._exe_path.text = ALittle.String_Join(detail.killprocess_exe_path, "\n");
+        }
+        else
+        {
+            this._exe_path.text = "";
+        }
+    }
+
+    private fun GetDetail() : DeployServer.JobInfoDetail
+    {
+        var detail = new DeployServer.JobInfoDetail();
+        detail.killprocess_exe_path = ALittle.String_SplitSepList(this._exe_path.text, ["\r", "\n"]);
+        return detail;
+    }
+}

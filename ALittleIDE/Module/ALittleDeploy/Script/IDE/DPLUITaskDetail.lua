@@ -89,8 +89,8 @@ option_map = {}
 })
 ALittle.RegStruct(1232578034, "DeployServer.JobInfoDetail", {
 name = "DeployServer.JobInfoDetail", ns_name = "DeployServer", rl_name = "JobInfoDetail", hash_code = 1232578034,
-name_list = {"batch_dir","batch_cmd","batch_param","deepcopy_src","deepcopy_dst","deepcopy_ext","copyfile_src","copyfile_file","copyfile_dst","virtualkey_exepath","virtualkey_cmd","wait_p_exit_exe_path","wait_p_exit_max_time","createprocess_dir","createprocess_cmd","createprocess_param"},
-type_list = {"string","string","string","string","string","string","string","List<string>","string","string","List<string>","List<string>","int","string","string","string"},
+name_list = {"batch_dir","batch_cmd","batch_param","deepcopy_src","deepcopy_dst","deepcopy_ext","copyfile_src","copyfile_file","copyfile_dst","virtualkey_exepath","virtualkey_cmd","wait_p_exit_exe_path","wait_p_exit_max_time","createprocess_dir","createprocess_cmd","createprocess_param","killprocess_exe_path"},
+type_list = {"string","string","string","string","string","string","string","List<string>","string","string","List<string>","List<string>","int","string","string","string","List<string>"},
 option_map = {}
 })
 ALittle.RegStruct(1149037254, "DeployServer.C2SUpdateTaskInfo", {
@@ -252,6 +252,7 @@ function ALittleDeploy.DPLUITaskDetail:HandleNewJobClick(event)
 	menu:AddItem("发送命令", Lua.Bind(self.HandleNewCommonJob, self, "sendvirtualkey_job_dialog"))
 	menu:AddItem("等待进程退出", Lua.Bind(self.HandleNewCommonJob, self, "waitprocessexit_job_dialog"))
 	menu:AddItem("创建进程", Lua.Bind(self.HandleNewCommonJob, self, "createprocess_job_dialog"))
+	menu:AddItem("杀死进程", Lua.Bind(self.HandleNewCommonJob, self, "killprocess_job_dialog"))
 	menu:Show()
 end
 
@@ -304,7 +305,9 @@ function ALittleDeploy.DPLUITaskDetail:RefreshJobItem(job_item)
 	elseif job_item.info.job_type == 5 then
 		job_item._button.text = "[等待进程退出] " .. job_item.info.job_name
 	elseif job_item.info.job_type == 6 then
-		job_item._button.text = "[创建进程] " .. job_item.info.job_name .. ":" .. job_item.info.detail.batch_cmd
+		job_item._button.text = "[创建进程] " .. job_item.info.job_name .. ":" .. job_item.info.detail.createprocess_cmd
+	elseif job_item.info.job_type == 7 then
+		job_item._button.text = "[杀死进程] " .. job_item.info.job_name
 	end
 	if self._task_item.info.status == 0 then
 		job_item._status.text = ""
@@ -389,6 +392,8 @@ function ALittleDeploy.DPLUITaskDetail:HandleModifyJob(info, index)
 		ui = "waitprocessexit_job_dialog"
 	elseif info.info.job_type == 6 then
 		ui = "createprocess_job_dialog"
+	elseif info.info.job_type == 7 then
+		ui = "killprocess_job_dialog"
 	end
 	if ui ~= nil then
 		local dialog = ALittleDeploy.g_Control:CreateControl(ui)

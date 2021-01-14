@@ -54,7 +54,8 @@ function ALittleDeploy.__Module_Setup(layer_group, control, module_base_path, sc
 	ALittleDeploy.g_LayerGroup:AddChild(ALittleDeploy.g_DialogLayer)
 	RequireFromPaths(script_base_path, "Data/", {})
 	RequireFromPaths(script_base_path, "Dialog/", {"CommonJobDialog.alittle", "BatchJobDialog.alittle", "WaitProcessExitJobDialog.alittle"
-		, "SendVirtualKeyJobDialog.alittle", "DeepCopyJobDialog.alittle", "CopyFileDialog.alittle"})
+		, "SendVirtualKeyJobDialog.alittle", "DeepCopyJobDialog.alittle", "CreateProcessJobDialog.alittle"
+		, "CopyFileJobDialog.alittle"})
 	RequireFromPaths(script_base_path, "IDE/", {"DPLUITaskDetail.alittle", "DPLUITaskCenter.alittle", "DPLUIMainMenu.alittle"
 		, "DPLUICenter.alittle", "DPLUIAccount.alittle", "DPLCenter.alittle"})
 	ALittleDeploy.g_DPLCenter:Setup()

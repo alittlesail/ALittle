@@ -156,6 +156,7 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         menu.AddItem("复制文件", bind(this.HandleNewCommonJob, this, "copyfile_job_dialog"));
         menu.AddItem("发送命令", bind(this.HandleNewCommonJob, this, "sendvirtualkey_job_dialog"));
         menu.AddItem("等待进程退出", bind(this.HandleNewCommonJob, this, "waitprocessexit_job_dialog"));
+        menu.AddItem("创建进程", bind(this.HandleNewCommonJob, this, "createprocess_job_dialog"));
         menu.Show();
     }
 
@@ -214,6 +215,8 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
         	job_item._button.text = "[发送命令] "..job_item.info.job_name..":"..job_item.info.detail.virtualkey_exepath;
         elseif (job_item.info.job_type == DeployServer.JobType.WAITPROCSSEXIT)
         	job_item._button.text = "[等待进程退出] "..job_item.info.job_name;
+        elseif (job_item.info.job_type == DeployServer.JobType.CREATEPROCESS)
+        	job_item._button.text = "[创建进程] "..job_item.info.job_name..":"..job_item.info.detail.batch_cmd;
 
         if (this._task_item.info.status == DeployServer.TaskStatus.IDLE)
             job_item._status.text = "";
@@ -305,6 +308,8 @@ public class DPLUITaskDetail : ALittle.DisplayLayout
             ui = "sendvirtualkey_job_dialog";
         elseif (info.info.job_type == DeployServer.JobType.WAITPROCSSEXIT)
             ui = "waitprocessexit_job_dialog";
+        elseif (info.info.job_type == DeployServer.JobType.CREATEPROCESS)
+            ui = "createprocess_job_dialog";
 
         if (ui != null)
         {

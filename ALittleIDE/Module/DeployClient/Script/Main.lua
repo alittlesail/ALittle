@@ -1,72 +1,71 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.ALittleDeploy == nil then _G.ALittleDeploy = {} end
-local ALittleDeploy = ALittleDeploy
+if _G.DeployClient == nil then _G.DeployClient = {} end
+local DeployClient = DeployClient
 local Lua = Lua
 local ALittle = ALittle
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-function ALittleDeploy.__Browser_Setup(layer_group, control, module_base_path, script_base_path)
+function DeployClient.__Browser_Setup(layer_group, control, module_base_path, script_base_path)
 	ALittle.DeleteLog(7)
 	local window_width, window_height, flag, scale = ALittle.System_CalcLandscape(1200, 600, 0x00000080 | 0x00000020)
-	ALittle.System_CreateView("ALittleDeploy", window_width, window_height, flag, scale)
+	ALittle.System_CreateView("DeployClient", window_width, window_height, flag, scale)
 	ALittle.System_SetViewIcon(module_base_path .. "Other/ic_launcher.png")
-	A_ModuleSystem:LoadModule(module_base_path, "ALittleDeploy")
+	A_ModuleSystem:LoadModule(module_base_path, "DeployClient")
 end
-ALittleDeploy.__Browser_Setup = Lua.CoWrap(ALittleDeploy.__Browser_Setup)
+DeployClient.__Browser_Setup = Lua.CoWrap(DeployClient.__Browser_Setup)
 
-function ALittleDeploy.__Browser_AddModule(module_name, layer_group, module_info)
-end
-
-function ALittleDeploy.__Browser_Shutdown()
+function DeployClient.__Browser_AddModule(module_name, layer_group, module_info)
 end
 
-ALittleDeploy.g_Control = nil
-ALittleDeploy.g_AUIPluinControl = nil
-ALittleDeploy.g_LayerGroup = nil
-ALittleDeploy.g_ModuleBasePath = nil
-ALittleDeploy.g_ScriptBasePath = nil
-ALittleDeploy.g_ModuleBasePathEx = nil
-ALittleDeploy.g_DPLConfig = nil
-ALittleDeploy.g_DPLServerConfig = nil
-ALittleDeploy.g_MainLayer = nil
-ALittleDeploy.g_DialogLayer = nil
-function ALittleDeploy.__Module_Setup(layer_group, control, module_base_path, script_base_path)
-	ALittleDeploy.g_Control = control
-	ALittleDeploy.g_LayerGroup = layer_group
-	ALittleDeploy.g_ModuleBasePath = module_base_path
-	ALittleDeploy.g_ModuleBasePathEx = ALittle.File_BaseFilePath() .. module_base_path
-	ALittleDeploy.g_ScriptBasePath = script_base_path
-	ALittleDeploy.g_AUIPluinControl = A_ModuleSystem:LoadPlugin("AUIPlugin")
-	ALittleDeploy.g_DPLConfig = ALittle.CreateConfigSystem("ALittleDeploy.cfg")
-	ALittleDeploy.g_DPLServerConfig = ALittle.CreateConfigSystem(ALittleDeploy.g_ModuleBasePath .. "/Other/Server.cfg")
+function DeployClient.__Browser_Shutdown()
+end
+
+DeployClient.g_Control = nil
+DeployClient.g_AUIPluinControl = nil
+DeployClient.g_LayerGroup = nil
+DeployClient.g_ModuleBasePath = nil
+DeployClient.g_ScriptBasePath = nil
+DeployClient.g_ModuleBasePathEx = nil
+DeployClient.g_DPLConfig = nil
+DeployClient.g_DPLServerConfig = nil
+DeployClient.g_MainLayer = nil
+DeployClient.g_DialogLayer = nil
+function DeployClient.__Module_Setup(layer_group, control, module_base_path, script_base_path)
+	DeployClient.g_Control = control
+	DeployClient.g_LayerGroup = layer_group
+	DeployClient.g_ModuleBasePath = module_base_path
+	DeployClient.g_ModuleBasePathEx = ALittle.File_BaseFilePath() .. module_base_path
+	DeployClient.g_ScriptBasePath = script_base_path
+	DeployClient.g_AUIPluinControl = A_ModuleSystem:LoadPlugin("AUIPlugin")
+	DeployClient.g_DPLConfig = ALittle.CreateConfigSystem("ALittleDeploy.cfg")
+	DeployClient.g_DPLServerConfig = ALittle.CreateConfigSystem(DeployClient.g_ModuleBasePath .. "/Other/Server.cfg")
 	ALittle.Math_RandomSeed(ALittle.Time_GetCurTime())
 	ALittle.System_SetThreadCount(5)
-	ALittleDeploy.g_MainLayer = ALittle.DisplayLayout(ALittleDeploy.g_Control)
-	ALittleDeploy.g_MainLayer.width_type = 4
-	ALittleDeploy.g_MainLayer.height_type = 4
-	ALittleDeploy.g_LayerGroup:AddChild(ALittleDeploy.g_MainLayer)
-	ALittleDeploy.g_DialogLayer = ALittle.DisplayLayout(ALittleDeploy.g_Control)
-	ALittleDeploy.g_DialogLayer.width_type = 4
-	ALittleDeploy.g_DialogLayer.height_type = 4
-	ALittleDeploy.g_LayerGroup:AddChild(ALittleDeploy.g_DialogLayer)
-	RequireFromPaths(script_base_path, "Data/", {})
+	DeployClient.g_MainLayer = ALittle.DisplayLayout(DeployClient.g_Control)
+	DeployClient.g_MainLayer.width_type = 4
+	DeployClient.g_MainLayer.height_type = 4
+	DeployClient.g_LayerGroup:AddChild(DeployClient.g_MainLayer)
+	DeployClient.g_DialogLayer = ALittle.DisplayLayout(DeployClient.g_Control)
+	DeployClient.g_DialogLayer.width_type = 4
+	DeployClient.g_DialogLayer.height_type = 4
+	DeployClient.g_LayerGroup:AddChild(DeployClient.g_DialogLayer)
 	RequireFromPaths(script_base_path, "Dialog/", {"CommonJobDialog.alittle", "BatchJobDialog.alittle", "WaitProcessExitJobDialog.alittle"
 		, "SendVirtualKeyJobDialog.alittle", "KillProcessJobDialog.alittle", "DeepCopyJobDialog.alittle"
 		, "CreateProcessJobDialog.alittle", "CopyFileJobDialog.alittle"})
 	RequireFromPaths(script_base_path, "IDE/", {"DPLUITaskDetail.alittle", "DPLUITaskCenter.alittle", "DPLUIMainMenu.alittle"
 		, "DPLUICenter.alittle", "DPLUIAccount.alittle", "DPLCenter.alittle"})
-	ALittleDeploy.g_DPLCenter:Setup()
+	DeployClient.g_DPLCenter:Setup()
 end
-ALittleDeploy.__Module_Setup = Lua.CoWrap(ALittleDeploy.__Module_Setup)
+DeployClient.__Module_Setup = Lua.CoWrap(DeployClient.__Module_Setup)
 
-function ALittleDeploy.__Module_Shutdown()
-	ALittleDeploy.g_DPLCenter:Shutdown()
+function DeployClient.__Module_Shutdown()
+	DeployClient.g_DPLCenter:Shutdown()
 end
 
-function ALittleDeploy.__Module_GetInfo(control, module_base_path, script_base_path)
+function DeployClient.__Module_GetInfo(control, module_base_path, script_base_path)
 	local info = {}
 	info.title = "ALittle部署中心"
 	info.icon = nil

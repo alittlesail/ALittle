@@ -1,21 +1,21 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.ALittleDeploy == nil then _G.ALittleDeploy = {} end
-local ALittleDeploy = ALittleDeploy
+if _G.DeployClient == nil then _G.DeployClient = {} end
+local DeployClient = DeployClient
 local Lua = Lua
 local ALittle = ALittle
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-assert(ALittleDeploy.CommonJobDialog, " extends class:ALittleDeploy.CommonJobDialog is nil")
-ALittleDeploy.KillProcessJobDialog = Lua.Class(ALittleDeploy.CommonJobDialog, "ALittleDeploy.KillProcessJobDialog")
+assert(DeployClient.CommonJobDialog, " extends class:DeployClient.CommonJobDialog is nil")
+DeployClient.KillProcessJobDialog = Lua.Class(DeployClient.CommonJobDialog, "DeployClient.KillProcessJobDialog")
 
-function ALittleDeploy.KillProcessJobDialog.__getter:type()
+function DeployClient.KillProcessJobDialog.__getter:type()
 	return 7
 end
 
-function ALittleDeploy.KillProcessJobDialog:ShowDetail(detail)
+function DeployClient.KillProcessJobDialog:ShowDetail(detail)
 	if detail ~= nil then
 		self._exe_path.text = ALittle.String_Join(detail.killprocess_exe_path, "\n")
 	else
@@ -23,7 +23,7 @@ function ALittleDeploy.KillProcessJobDialog:ShowDetail(detail)
 	end
 end
 
-function ALittleDeploy.KillProcessJobDialog:GetDetail()
+function DeployClient.KillProcessJobDialog:GetDetail()
 	local detail = {}
 	detail.killprocess_exe_path = ALittle.String_SplitSepList(self._exe_path.text, {"\r", "\n"})
 	return detail

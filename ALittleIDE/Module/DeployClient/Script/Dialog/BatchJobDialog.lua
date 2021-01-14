@@ -1,21 +1,21 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.ALittleDeploy == nil then _G.ALittleDeploy = {} end
-local ALittleDeploy = ALittleDeploy
+if _G.DeployClient == nil then _G.DeployClient = {} end
+local DeployClient = DeployClient
 local Lua = Lua
 local ALittle = ALittle
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-assert(ALittleDeploy.CommonJobDialog, " extends class:ALittleDeploy.CommonJobDialog is nil")
-ALittleDeploy.BatchJobDialog = Lua.Class(ALittleDeploy.CommonJobDialog, "ALittleDeploy.BatchJobDialog")
+assert(DeployClient.CommonJobDialog, " extends class:DeployClient.CommonJobDialog is nil")
+DeployClient.BatchJobDialog = Lua.Class(DeployClient.CommonJobDialog, "DeployClient.BatchJobDialog")
 
-function ALittleDeploy.BatchJobDialog.__getter:type()
+function DeployClient.BatchJobDialog.__getter:type()
 	return 1
 end
 
-function ALittleDeploy.BatchJobDialog:ShowDetail(detail)
+function DeployClient.BatchJobDialog:ShowDetail(detail)
 	if detail ~= nil then
 		self._dir.text = detail.batch_dir
 		self._cmd.text = detail.batch_cmd
@@ -27,7 +27,7 @@ function ALittleDeploy.BatchJobDialog:ShowDetail(detail)
 	end
 end
 
-function ALittleDeploy.BatchJobDialog:GetDetail()
+function DeployClient.BatchJobDialog:GetDetail()
 	local detail = {}
 	detail.batch_dir = self._dir.text
 	detail.batch_cmd = self._cmd.text

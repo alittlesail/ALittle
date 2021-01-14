@@ -1,7 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.ALittleDeploy == nil then _G.ALittleDeploy = {} end
-local ALittleDeploy = ALittleDeploy
+if _G.DeployClient == nil then _G.DeployClient = {} end
+local DeployClient = DeployClient
 local Lua = Lua
 local ALittle = ALittle
 local ___pairs = pairs
@@ -33,40 +33,40 @@ type_list = {"ALittle.EventDispatcher"},
 option_map = {}
 })
 
-ALittleDeploy.g_DPLWebLoginManager = nil
+DeployClient.g_DPLWebLoginManager = nil
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-ALittleDeploy.DPLUIAccount = Lua.Class(ALittle.DisplayLayout, "ALittleDeploy.DPLUIAccount")
+DeployClient.DPLUIAccount = Lua.Class(ALittle.DisplayLayout, "DeployClient.DPLUIAccount")
 
-function ALittleDeploy.DPLUIAccount:TCtor()
-	local client_ip = ALittleDeploy.g_DPLServerConfig:GetConfig("client_ip", "139.159.176.119")
-	local client_port = ALittleDeploy.g_DPLServerConfig:GetConfig("client_port", 1800)
-	ALittleDeploy.g_DPLWebLoginManager = AUIPlugin.AUIWebLoginManager()
-	ALittleDeploy.g_DPLWebLoginManager:AddEventListener(___all_struct[-262794256], self, self.HandleAccountInReconnect)
-	ALittleDeploy.g_DPLWebLoginManager:AddEventListener(___all_struct[-1848509213], self, self.HandleAccountInLogout)
-	ALittleDeploy.g_DPLWebLoginManager:AddEventListener(___all_struct[-420010531], self, self.HandleAccountInLogin)
-	ALittleDeploy.g_DPLWebLoginManager:Setup(client_ip, client_port, false, ALittleDeploy.g_DPLConfig)
+function DeployClient.DPLUIAccount:TCtor()
+	local client_ip = DeployClient.g_DPLServerConfig:GetConfig("client_ip", "139.159.176.119")
+	local client_port = DeployClient.g_DPLServerConfig:GetConfig("client_port", 1800)
+	DeployClient.g_DPLWebLoginManager = AUIPlugin.AUIWebLoginManager()
+	DeployClient.g_DPLWebLoginManager:AddEventListener(___all_struct[-262794256], self, self.HandleAccountInReconnect)
+	DeployClient.g_DPLWebLoginManager:AddEventListener(___all_struct[-1848509213], self, self.HandleAccountInLogout)
+	DeployClient.g_DPLWebLoginManager:AddEventListener(___all_struct[-420010531], self, self.HandleAccountInLogin)
+	DeployClient.g_DPLWebLoginManager:Setup(client_ip, client_port, false, DeployClient.g_DPLConfig)
 end
 
-function ALittleDeploy.DPLUIAccount:Shutdown()
-	ALittleDeploy.g_DPLWebLoginManager:Shutdown()
+function DeployClient.DPLUIAccount:Shutdown()
+	DeployClient.g_DPLWebLoginManager:Shutdown()
 end
 
-function ALittleDeploy.DPLUIAccount:HandleAccountLoginLB(event)
-	ALittleDeploy.g_DPLWebLoginManager:ShowLoginDialog()
+function DeployClient.DPLUIAccount:HandleAccountLoginLB(event)
+	DeployClient.g_DPLWebLoginManager:ShowLoginDialog()
 end
 
-function ALittleDeploy.DPLUIAccount:HandleAccountInLogin(event)
+function DeployClient.DPLUIAccount:HandleAccountInLogin(event)
 	self._account_login.visible = false
 	self._account_dropdown.visible = true
 	local data_list = {}
 	data_list[1] = "修改密码"
 	data_list[2] = "登出"
 	self._account_dropdown.data_list = data_list
-	self._account_dropdown.text = ALittleDeploy.g_DPLWebLoginManager.account_name
+	self._account_dropdown.text = DeployClient.g_DPLWebLoginManager.account_name
 	self._account_icon.x_value = self._account_dropdown.x_value + self._account_dropdown.width + 5
 end
 
-function ALittleDeploy.DPLUIAccount:HandleAccountInLogout(event)
+function DeployClient.DPLUIAccount:HandleAccountInLogout(event)
 	self._account_login.text = "请登录"
 	self._account_login.underline = true
 	self._account_login.visible = true
@@ -75,7 +75,7 @@ function ALittleDeploy.DPLUIAccount:HandleAccountInLogout(event)
 	self._account_icon.x_value = self._account_login.x_value + self._account_login.width + 5
 end
 
-function ALittleDeploy.DPLUIAccount:HandleAccountInReconnect(event)
+function DeployClient.DPLUIAccount:HandleAccountInReconnect(event)
 	self._account_login.text = "正在重连"
 	self._account_login.underline = false
 	self._account_login.visible = true
@@ -84,13 +84,13 @@ function ALittleDeploy.DPLUIAccount:HandleAccountInReconnect(event)
 	self._account_icon.x_value = self._account_login.x_value + self._account_login.width + 5
 end
 
-function ALittleDeploy.DPLUIAccount:HandleAccountDropdownChange(event)
+function DeployClient.DPLUIAccount:HandleAccountDropdownChange(event)
 	if event.target.text == "登出" then
-		ALittleDeploy.g_DPLWebLoginManager:Logout()
+		DeployClient.g_DPLWebLoginManager:Logout()
 	elseif event.target.text == "修改密码" then
-		ALittleDeploy.g_DPLWebLoginManager:ShowPasswordDialog()
+		DeployClient.g_DPLWebLoginManager:ShowPasswordDialog()
 	end
-	self._account_dropdown.text = ALittleDeploy.g_DPLWebLoginManager.account_name
+	self._account_dropdown.text = DeployClient.g_DPLWebLoginManager.account_name
 end
 
 end

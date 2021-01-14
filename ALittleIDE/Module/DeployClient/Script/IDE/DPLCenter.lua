@@ -1,35 +1,35 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.ALittleDeploy == nil then _G.ALittleDeploy = {} end
-local ALittleDeploy = ALittleDeploy
+if _G.DeployClient == nil then _G.DeployClient = {} end
+local DeployClient = DeployClient
 local Lua = Lua
 local ALittle = ALittle
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-ALittleDeploy.DPLCenter = Lua.Class(nil, "ALittleDeploy.DPLCenter")
+DeployClient.DPLCenter = Lua.Class(nil, "DeployClient.DPLCenter")
 
-function ALittleDeploy.DPLCenter:Setup()
+function DeployClient.DPLCenter:Setup()
 	local ___COROUTINE = coroutine.running()
-	ALittleDeploy.g_Control:CreateControl("dpl_main_scene", self, ALittleDeploy.g_MainLayer)
+	DeployClient.g_Control:CreateControl("dpl_main_scene", self, DeployClient.g_MainLayer)
 	A_UISystem.keydown_callback = Lua.Bind(self.HandleShortcutKey, self)
 	A_UISystem.quit_callback = Lua.Bind(self.HandleQuit, self)
 end
 
-function ALittleDeploy.DPLCenter:CreateHttpFileSender(file_path)
-	local http_ip = ALittleDeploy.g_DPLServerConfig:GetConfig("http_ip", "139.159.176.119")
-	local http_port = ALittleDeploy.g_DPLServerConfig:GetConfig("http_port", 1801)
+function DeployClient.DPLCenter:CreateHttpFileSender(file_path)
+	local http_ip = DeployClient.g_DPLServerConfig:GetConfig("http_ip", "139.159.176.119")
+	local http_port = DeployClient.g_DPLServerConfig:GetConfig("http_port", 1801)
 	return ALittle.CreateHttpFileSender(http_ip, http_port, file_path, 0)
 end
 
-function ALittleDeploy.DPLCenter:CreateHttpSender()
-	local http_ip = ALittleDeploy.g_DPLServerConfig:GetConfig("http_ip", "139.159.176.119")
-	local http_port = ALittleDeploy.g_DPLServerConfig:GetConfig("http_port", 1801)
+function DeployClient.DPLCenter:CreateHttpSender()
+	local http_ip = DeployClient.g_DPLServerConfig:GetConfig("http_ip", "139.159.176.119")
+	local http_port = DeployClient.g_DPLServerConfig:GetConfig("http_port", 1801)
 	return ALittle.CreateHttpSender(http_ip, http_port)
 end
 
-function ALittleDeploy.DPLCenter:Shutdown()
+function DeployClient.DPLCenter:Shutdown()
 	if self._account ~= nil then
 		self._account:Shutdown()
 	end
@@ -38,11 +38,11 @@ function ALittleDeploy.DPLCenter:Shutdown()
 	end
 end
 
-function ALittleDeploy.DPLCenter.__getter:center()
+function DeployClient.DPLCenter.__getter:center()
 	return self._center
 end
 
-function ALittleDeploy.DPLCenter:HandleShortcutKey(mod, sym, scancode)
+function DeployClient.DPLCenter:HandleShortcutKey(mod, sym, scancode)
 	if A_UISystem.sym_map[1073741886] then
 		return
 	end
@@ -57,15 +57,15 @@ function ALittleDeploy.DPLCenter:HandleShortcutKey(mod, sym, scancode)
 	end
 end
 
-function ALittleDeploy.DPLCenter:HandleQuit()
+function DeployClient.DPLCenter:HandleQuit()
 	self:HandleQuitImpl()
 	return false
 end
 
-function ALittleDeploy.DPLCenter:HandleQuitImpl()
+function DeployClient.DPLCenter:HandleQuitImpl()
 	ALittle.System_Exit()
 end
-ALittleDeploy.DPLCenter.HandleQuitImpl = Lua.CoWrap(ALittleDeploy.DPLCenter.HandleQuitImpl)
+DeployClient.DPLCenter.HandleQuitImpl = Lua.CoWrap(DeployClient.DPLCenter.HandleQuitImpl)
 
-ALittleDeploy.g_DPLCenter = ALittleDeploy.DPLCenter()
+DeployClient.g_DPLCenter = DeployClient.DPLCenter()
 end

@@ -1,7 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.ALittleDeploy == nil then _G.ALittleDeploy = {} end
-local ALittleDeploy = ALittleDeploy
+if _G.DeployClient == nil then _G.DeployClient = {} end
+local DeployClient = DeployClient
 local Lua = Lua
 local ALittle = ALittle
 local ___rawset = rawset
@@ -40,15 +40,15 @@ option_map = {}
 })
 
 assert(ALittle.Dialog, " extends class:ALittle.Dialog is nil")
-ALittleDeploy.CommonJobDialog = Lua.Class(ALittle.Dialog, "ALittleDeploy.CommonJobDialog")
+DeployClient.CommonJobDialog = Lua.Class(ALittle.Dialog, "DeployClient.CommonJobDialog")
 
-function ALittleDeploy.CommonJobDialog:Ctor()
+function DeployClient.CommonJobDialog:Ctor()
 	___rawset(self, "_is_create", false)
 	___rawset(self, "_task_id", 0)
 	___rawset(self, "_job_index", 0)
 end
 
-function ALittleDeploy.CommonJobDialog:Show(task_id, job_index, info)
+function DeployClient.CommonJobDialog:Show(task_id, job_index, info)
 	self._is_create = info == nil
 	self._task_id = task_id
 	self._job_index = job_index
@@ -59,27 +59,27 @@ function ALittleDeploy.CommonJobDialog:Show(task_id, job_index, info)
 		self._name.text = ""
 		self:ShowDetail(nil)
 	end
-	ALittleDeploy.g_DialogLayer:AddChild(self)
+	DeployClient.g_DialogLayer:AddChild(self)
 	self:MoveToTop()
 end
 
-function ALittleDeploy.CommonJobDialog:ShowDetail(detail)
+function DeployClient.CommonJobDialog:ShowDetail(detail)
 end
 
-function ALittleDeploy.CommonJobDialog.__getter:type()
+function DeployClient.CommonJobDialog.__getter:type()
 	return nil
 end
 
-function ALittleDeploy.CommonJobDialog:Hide()
-	ALittleDeploy.g_DialogLayer:RemoveChild(self)
+function DeployClient.CommonJobDialog:Hide()
+	DeployClient.g_DialogLayer:RemoveChild(self)
 end
 
-function ALittleDeploy.CommonJobDialog:GetDetail()
+function DeployClient.CommonJobDialog:GetDetail()
 	return nil
 end
 
-function ALittleDeploy.CommonJobDialog:HandleComfirmClick(event)
-	local msg_client = ALittleDeploy.g_DPLWebLoginManager.msg_client
+function DeployClient.CommonJobDialog:HandleComfirmClick(event)
+	local msg_client = DeployClient.g_DPLWebLoginManager.msg_client
 	if msg_client == nil or not msg_client:IsConnected() then
 		g_AUITool:ShowNotice("提示", "当前还未连接成功!")
 		return
@@ -109,9 +109,9 @@ function ALittleDeploy.CommonJobDialog:HandleComfirmClick(event)
 	end
 	self:Hide()
 end
-ALittleDeploy.CommonJobDialog.HandleComfirmClick = Lua.CoWrap(ALittleDeploy.CommonJobDialog.HandleComfirmClick)
+DeployClient.CommonJobDialog.HandleComfirmClick = Lua.CoWrap(DeployClient.CommonJobDialog.HandleComfirmClick)
 
-function ALittleDeploy.CommonJobDialog:HandleCancelClick(event)
+function DeployClient.CommonJobDialog:HandleCancelClick(event)
 	self:Hide()
 end
 

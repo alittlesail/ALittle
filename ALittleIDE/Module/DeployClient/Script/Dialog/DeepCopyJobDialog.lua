@@ -1,21 +1,21 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.ALittleDeploy == nil then _G.ALittleDeploy = {} end
-local ALittleDeploy = ALittleDeploy
+if _G.DeployClient == nil then _G.DeployClient = {} end
+local DeployClient = DeployClient
 local Lua = Lua
 local ALittle = ALittle
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-assert(ALittleDeploy.CommonJobDialog, " extends class:ALittleDeploy.CommonJobDialog is nil")
-ALittleDeploy.DeepCopyJobDialog = Lua.Class(ALittleDeploy.CommonJobDialog, "ALittleDeploy.DeepCopyJobDialog")
+assert(DeployClient.CommonJobDialog, " extends class:DeployClient.CommonJobDialog is nil")
+DeployClient.DeepCopyJobDialog = Lua.Class(DeployClient.CommonJobDialog, "DeployClient.DeepCopyJobDialog")
 
-function ALittleDeploy.DeepCopyJobDialog.__getter:type()
+function DeployClient.DeepCopyJobDialog.__getter:type()
 	return 2
 end
 
-function ALittleDeploy.DeepCopyJobDialog:ShowDetail(detail)
+function DeployClient.DeepCopyJobDialog:ShowDetail(detail)
 	if detail ~= nil then
 		self._src_dir.text = detail.deepcopy_src
 		self._dst_dir.text = detail.deepcopy_dst
@@ -27,7 +27,7 @@ function ALittleDeploy.DeepCopyJobDialog:ShowDetail(detail)
 	end
 end
 
-function ALittleDeploy.DeepCopyJobDialog:GetDetail()
+function DeployClient.DeepCopyJobDialog:GetDetail()
 	local detail = {}
 	detail.deepcopy_src = self._src_dir.text
 	detail.deepcopy_dst = self._dst_dir.text

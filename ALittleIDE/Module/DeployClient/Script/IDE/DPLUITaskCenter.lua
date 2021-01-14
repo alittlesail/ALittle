@@ -1,7 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.ALittleDeploy == nil then _G.ALittleDeploy = {} end
-local ALittleDeploy = ALittleDeploy
+if _G.DeployClient == nil then _G.DeployClient = {} end
+local DeployClient = DeployClient
 local Lua = Lua
 local ALittle = ALittle
 local ___rawset = rawset
@@ -9,12 +9,6 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
-ALittle.RegStruct(-2092771429, "ALittleDeploy.TaskItemInfo", {
-name = "ALittleDeploy.TaskItemInfo", ns_name = "ALittleDeploy", rl_name = "TaskItemInfo", hash_code = -2092771429,
-name_list = {"item","info","_button","_status","detail"},
-type_list = {"ALittle.DisplayObject","DeployServer.D_TaskInfo","ALittle.DisplayObject","ALittle.DisplayObject","ALittleDeploy.DPLUITaskDetail"},
-option_map = {}
-})
 ALittle.RegStruct(2082241964, "DeployServer.C2SStartTask", {
 name = "DeployServer.C2SStartTask", ns_name = "DeployServer", rl_name = "C2SStartTask", hash_code = 2082241964,
 name_list = {"task_id"},
@@ -171,6 +165,12 @@ name_list = {"task_id","task_name","task_desc","web_hook","create_time","status"
 type_list = {"int","string","string","List<string>","int","int","double","List<DeployServer.D_JobInfo>","List<DeployServer.D_BuildInfo>"},
 option_map = {}
 })
+ALittle.RegStruct(-369409021, "DeployClient.TaskItemInfo", {
+name = "DeployClient.TaskItemInfo", ns_name = "DeployClient", rl_name = "TaskItemInfo", hash_code = -369409021,
+name_list = {"item","info","_button","_status","detail"},
+type_list = {"ALittle.DisplayObject","DeployServer.D_TaskInfo","ALittle.DisplayObject","ALittle.DisplayObject","DeployClient.DPLUITaskDetail"},
+option_map = {}
+})
 ALittle.RegStruct(-206375730, "DeployServer.NDeleteBuild", {
 name = "DeployServer.NDeleteBuild", ns_name = "DeployServer", rl_name = "NDeleteBuild", hash_code = -206375730,
 name_list = {"task_id","build_index"},
@@ -185,30 +185,30 @@ option_map = {}
 })
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-ALittleDeploy.DPLUITaskCenter = Lua.Class(ALittle.DisplayLayout, "ALittleDeploy.DPLUITaskCenter")
+DeployClient.DPLUITaskCenter = Lua.Class(ALittle.DisplayLayout, "DeployClient.DPLUITaskCenter")
 
-function ALittleDeploy.DPLUITaskCenter:Ctor()
+function DeployClient.DPLUITaskCenter:Ctor()
 	___rawset(self, "_group", {})
 	___rawset(self, "_item_map", {})
 end
 
-function ALittleDeploy.DPLUITaskCenter:System_SetVDragCursor(event)
+function DeployClient.DPLUITaskCenter:System_SetVDragCursor(event)
 	ALittle.System_SetVDragCursor()
 end
 
-function ALittleDeploy.DPLUITaskCenter:System_SetNormalCursor(event)
+function DeployClient.DPLUITaskCenter:System_SetNormalCursor(event)
 	ALittle.System_SetNormalCursor()
 end
 
-function ALittleDeploy.DPLUITaskCenter:System_SetHDragCursor(event)
+function DeployClient.DPLUITaskCenter:System_SetHDragCursor(event)
 	ALittle.System_SetHDragCursor()
 end
 
-function ALittleDeploy.DPLUITaskCenter:System_SetHVDragCursor(event)
+function DeployClient.DPLUITaskCenter:System_SetHVDragCursor(event)
 	ALittle.System_SetHVDragCursor()
 end
 
-function ALittleDeploy.DPLUITaskCenter:HandleGrid3UpResizeDrag(event)
+function DeployClient.DPLUITaskCenter:HandleGrid3UpResizeDrag(event)
 	local up_size = self._task_grid3.up_size
 	up_size = up_size + event.delta_x
 	local max_size = self._task_grid3.width - self._task_grid3.down_size - 50
@@ -221,7 +221,7 @@ function ALittleDeploy.DPLUITaskCenter:HandleGrid3UpResizeDrag(event)
 	self._task_grid3.up_size = up_size
 end
 
-function ALittleDeploy.DPLUITaskCenter:HandleGrid3DownResizeDrag(event)
+function DeployClient.DPLUITaskCenter:HandleGrid3DownResizeDrag(event)
 	local down_size = self._task_grid3.down_size
 	down_size = down_size - event.delta_x
 	local max_size = self._task_grid3.width - self._task_grid3.down_size - 50
@@ -234,9 +234,9 @@ function ALittleDeploy.DPLUITaskCenter:HandleGrid3DownResizeDrag(event)
 	self._task_grid3.down_size = down_size
 end
 
-function ALittleDeploy.DPLUITaskCenter:AddTaskItem(info)
+function DeployClient.DPLUITaskCenter:AddTaskItem(info)
 	local task_info = {}
-	task_info.item = ALittleDeploy.g_Control:CreateControl("dpl_task_item", task_info)
+	task_info.item = DeployClient.g_Control:CreateControl("dpl_task_item", task_info)
 	task_info.info = info
 	task_info._button.text = info.task_name
 	task_info._button._user_data = task_info
@@ -252,7 +252,7 @@ function ALittleDeploy.DPLUITaskCenter:AddTaskItem(info)
 	self._item_map[info.task_id] = task_info
 end
 
-function ALittleDeploy.DPLUITaskCenter:AddJobItem(task_id, job_index, info)
+function DeployClient.DPLUITaskCenter:AddJobItem(task_id, job_index, info)
 	local task_info = self._item_map[task_id]
 	if task_info == nil then
 		return
@@ -268,7 +268,7 @@ function ALittleDeploy.DPLUITaskCenter:AddJobItem(task_id, job_index, info)
 	end
 end
 
-function ALittleDeploy.DPLUITaskCenter:AddBuildItem(task_id, info)
+function DeployClient.DPLUITaskCenter:AddBuildItem(task_id, info)
 	local task_info = self._item_map[task_id]
 	if task_info == nil then
 		return
@@ -279,7 +279,7 @@ function ALittleDeploy.DPLUITaskCenter:AddBuildItem(task_id, info)
 	end
 end
 
-function ALittleDeploy.DPLUITaskCenter:HandleItemRButtonDown(event)
+function DeployClient.DPLUITaskCenter:HandleItemRButtonDown(event)
 	local task_info = event.target._user_data
 	local menu = AUIPlugin.AUIRightMenu()
 	if task_info.info.status == 0 then
@@ -292,11 +292,11 @@ function ALittleDeploy.DPLUITaskCenter:HandleItemRButtonDown(event)
 	menu:Show()
 end
 
-function ALittleDeploy.DPLUITaskCenter:HandleItemChanged(event)
+function DeployClient.DPLUITaskCenter:HandleItemChanged(event)
 	local task_info = event.target._user_data
 	if event.target.selected then
 		if task_info.detail == nil then
-			task_info.detail = ALittleDeploy.g_Control:CreateControl("dpl_task_detail")
+			task_info.detail = DeployClient.g_Control:CreateControl("dpl_task_detail")
 			self._task_detail_container:AddChild(task_info.detail)
 			task_info.detail:Init(task_info)
 		end
@@ -308,8 +308,8 @@ function ALittleDeploy.DPLUITaskCenter:HandleItemChanged(event)
 	end
 end
 
-function ALittleDeploy.DPLUITaskCenter:HandleStartTask(task_info)
-	local msg_client = ALittleDeploy.g_DPLWebLoginManager.msg_client
+function DeployClient.DPLUITaskCenter:HandleStartTask(task_info)
+	local msg_client = DeployClient.g_DPLWebLoginManager.msg_client
 	if msg_client == nil or not msg_client:IsConnected() then
 		g_AUITool:ShowNotice("提示", "当前还未连接成功!")
 		return
@@ -321,10 +321,10 @@ function ALittleDeploy.DPLUITaskCenter:HandleStartTask(task_info)
 		g_AUITool:ShowNotice("提示", error)
 	end
 end
-ALittleDeploy.DPLUITaskCenter.HandleStartTask = Lua.CoWrap(ALittleDeploy.DPLUITaskCenter.HandleStartTask)
+DeployClient.DPLUITaskCenter.HandleStartTask = Lua.CoWrap(DeployClient.DPLUITaskCenter.HandleStartTask)
 
-function ALittleDeploy.DPLUITaskCenter:HandleCopyTask(task_info)
-	local msg_client = ALittleDeploy.g_DPLWebLoginManager.msg_client
+function DeployClient.DPLUITaskCenter:HandleCopyTask(task_info)
+	local msg_client = DeployClient.g_DPLWebLoginManager.msg_client
 	if msg_client == nil or not msg_client:IsConnected() then
 		g_AUITool:ShowNotice("提示", "当前还未连接成功!")
 		return
@@ -336,10 +336,10 @@ function ALittleDeploy.DPLUITaskCenter:HandleCopyTask(task_info)
 		g_AUITool:ShowNotice("提示", error)
 	end
 end
-ALittleDeploy.DPLUITaskCenter.HandleCopyTask = Lua.CoWrap(ALittleDeploy.DPLUITaskCenter.HandleCopyTask)
+DeployClient.DPLUITaskCenter.HandleCopyTask = Lua.CoWrap(DeployClient.DPLUITaskCenter.HandleCopyTask)
 
-function ALittleDeploy.DPLUITaskCenter:HandleDeleteTask(task_info)
-	local msg_client = ALittleDeploy.g_DPLWebLoginManager.msg_client
+function DeployClient.DPLUITaskCenter:HandleDeleteTask(task_info)
+	local msg_client = DeployClient.g_DPLWebLoginManager.msg_client
 	if msg_client == nil or not msg_client:IsConnected() then
 		g_AUITool:ShowNotice("提示", "当前还未连接成功!")
 		return
@@ -355,9 +355,9 @@ function ALittleDeploy.DPLUITaskCenter:HandleDeleteTask(task_info)
 		g_AUITool:ShowNotice("提示", error)
 	end
 end
-ALittleDeploy.DPLUITaskCenter.HandleDeleteTask = Lua.CoWrap(ALittleDeploy.DPLUITaskCenter.HandleDeleteTask)
+DeployClient.DPLUITaskCenter.HandleDeleteTask = Lua.CoWrap(DeployClient.DPLUITaskCenter.HandleDeleteTask)
 
-function ALittleDeploy.DPLUITaskCenter:RemoveTaskItem(task_id)
+function DeployClient.DPLUITaskCenter:RemoveTaskItem(task_id)
 	local task_info = self._item_map[task_id]
 	if task_info == nil then
 		return
@@ -370,7 +370,7 @@ function ALittleDeploy.DPLUITaskCenter:RemoveTaskItem(task_id)
 	end
 end
 
-function ALittleDeploy.DPLUITaskCenter:UpdateTaskItem(info)
+function DeployClient.DPLUITaskCenter:UpdateTaskItem(info)
 	local task_info = self._item_map[info.task_id]
 	if task_info == nil then
 		return
@@ -384,7 +384,7 @@ function ALittleDeploy.DPLUITaskCenter:UpdateTaskItem(info)
 	end
 end
 
-function ALittleDeploy.DPLUITaskCenter:UpdateJobItem(info)
+function DeployClient.DPLUITaskCenter:UpdateJobItem(info)
 	local task_info = self._item_map[info.task_id]
 	if task_info == nil then
 		return
@@ -399,7 +399,7 @@ function ALittleDeploy.DPLUITaskCenter:UpdateJobItem(info)
 	end
 end
 
-function ALittleDeploy.DPLUITaskCenter:RemoveJobItem(task_id, job_index)
+function DeployClient.DPLUITaskCenter:RemoveJobItem(task_id, job_index)
 	local task_info = self._item_map[task_id]
 	if task_info == nil then
 		return
@@ -410,7 +410,7 @@ function ALittleDeploy.DPLUITaskCenter:RemoveJobItem(task_id, job_index)
 	ALittle.List_Remove(task_info.info.job_list, job_index)
 end
 
-function ALittleDeploy.DPLUITaskCenter:MoveJobItem(task_id, job_index, target_index)
+function DeployClient.DPLUITaskCenter:MoveJobItem(task_id, job_index, target_index)
 	local task_info = self._item_map[task_id]
 	if task_info == nil then
 		return
@@ -428,7 +428,7 @@ function ALittleDeploy.DPLUITaskCenter:MoveJobItem(task_id, job_index, target_in
 	end
 end
 
-function ALittleDeploy.DPLUITaskCenter:RemoveBuildItem(task_id, build_index)
+function DeployClient.DPLUITaskCenter:RemoveBuildItem(task_id, build_index)
 	local task_info = self._item_map[task_id]
 	if task_info == nil then
 		return
@@ -439,13 +439,13 @@ function ALittleDeploy.DPLUITaskCenter:RemoveBuildItem(task_id, build_index)
 	ALittle.List_Remove(task_info.info.build_list, build_index)
 end
 
-function ALittleDeploy.DPLUITaskCenter:RemoveAllTaskItem()
+function DeployClient.DPLUITaskCenter:RemoveAllTaskItem()
 	self._item_map = {}
 	self._scroll_list:RemoveAllChild()
 	self._task_detail_container:RemoveAllChild()
 end
 
-function ALittleDeploy.DPLUITaskCenter:UpdateTaskStatus(info)
+function DeployClient.DPLUITaskCenter:UpdateTaskStatus(info)
 	local task_info = self._item_map[info.task_id]
 	if task_info == nil then
 		return
@@ -459,7 +459,7 @@ function ALittleDeploy.DPLUITaskCenter:UpdateTaskStatus(info)
 	end
 end
 
-function ALittleDeploy.DPLUITaskCenter:UpdateJobStatus(msg)
+function DeployClient.DPLUITaskCenter:UpdateJobStatus(msg)
 	local task_info = self._item_map[msg.task_id]
 	if task_info == nil then
 		return
@@ -475,8 +475,8 @@ function ALittleDeploy.DPLUITaskCenter:UpdateJobStatus(msg)
 	end
 end
 
-function ALittleDeploy.DPLUITaskCenter:HandleNewTaskClick(event)
-	local msg_client = ALittleDeploy.g_DPLWebLoginManager.msg_client
+function DeployClient.DPLUITaskCenter:HandleNewTaskClick(event)
+	local msg_client = DeployClient.g_DPLWebLoginManager.msg_client
 	if msg_client == nil or not msg_client:IsConnected() then
 		g_AUITool:ShowNotice("提示", "当前还未连接成功!")
 		return
@@ -493,69 +493,69 @@ function ALittleDeploy.DPLUITaskCenter:HandleNewTaskClick(event)
 		g_AUITool:ShowNotice("提示", error)
 	end
 end
-ALittleDeploy.DPLUITaskCenter.HandleNewTaskClick = Lua.CoWrap(ALittleDeploy.DPLUITaskCenter.HandleNewTaskClick)
+DeployClient.DPLUITaskCenter.HandleNewTaskClick = Lua.CoWrap(DeployClient.DPLUITaskCenter.HandleNewTaskClick)
 
-function ALittleDeploy.HandleS2CTaskList(sender, msg)
-	ALittleDeploy.g_DPLCenter.center.task_center:RemoveAllTaskItem()
+function DeployClient.HandleS2CTaskList(sender, msg)
+	DeployClient.g_DPLCenter.center.task_center:RemoveAllTaskItem()
 	for index, info in ___ipairs(msg.task_list) do
-		ALittleDeploy.g_DPLCenter.center.task_center:AddTaskItem(info)
+		DeployClient.g_DPLCenter.center.task_center:AddTaskItem(info)
 	end
 end
 
-ALittle.RegMsgCallback(-542744414, ALittleDeploy.HandleS2CTaskList)
-function ALittleDeploy.HandleS2CCreateTask(sender, msg)
-	ALittleDeploy.g_DPLCenter.center.task_center:AddTaskItem(msg.task_info)
+ALittle.RegMsgCallback(-542744414, DeployClient.HandleS2CTaskList)
+function DeployClient.HandleS2CCreateTask(sender, msg)
+	DeployClient.g_DPLCenter.center.task_center:AddTaskItem(msg.task_info)
 end
 
-ALittle.RegMsgCallback(-1243553967, ALittleDeploy.HandleS2CCreateTask)
-function ALittleDeploy.HandleNTaskStatus(sender, msg)
-	ALittleDeploy.g_DPLCenter.center.task_center:UpdateTaskStatus(msg)
+ALittle.RegMsgCallback(-1243553967, DeployClient.HandleS2CCreateTask)
+function DeployClient.HandleNTaskStatus(sender, msg)
+	DeployClient.g_DPLCenter.center.task_center:UpdateTaskStatus(msg)
 end
 
-ALittle.RegMsgCallback(816033453, ALittleDeploy.HandleNTaskStatus)
-function ALittleDeploy.HandleNDeleteTask(sender, msg)
-	ALittleDeploy.g_DPLCenter.center.task_center:RemoveTaskItem(msg.task_id)
+ALittle.RegMsgCallback(816033453, DeployClient.HandleNTaskStatus)
+function DeployClient.HandleNDeleteTask(sender, msg)
+	DeployClient.g_DPLCenter.center.task_center:RemoveTaskItem(msg.task_id)
 end
 
-ALittle.RegMsgCallback(-1164681133, ALittleDeploy.HandleNDeleteTask)
-function ALittleDeploy.HandleNUpdateTaskInfo(sender, msg)
-	ALittleDeploy.g_DPLCenter.center.task_center:UpdateTaskItem(msg)
+ALittle.RegMsgCallback(-1164681133, DeployClient.HandleNDeleteTask)
+function DeployClient.HandleNUpdateTaskInfo(sender, msg)
+	DeployClient.g_DPLCenter.center.task_center:UpdateTaskItem(msg)
 end
 
-ALittle.RegMsgCallback(-1662612614, ALittleDeploy.HandleNUpdateTaskInfo)
-function ALittleDeploy.HandleNCreateJob(sender, msg)
-	ALittleDeploy.g_DPLCenter.center.task_center:AddJobItem(msg.task_id, msg.job_index, msg.job_info)
+ALittle.RegMsgCallback(-1662612614, DeployClient.HandleNUpdateTaskInfo)
+function DeployClient.HandleNCreateJob(sender, msg)
+	DeployClient.g_DPLCenter.center.task_center:AddJobItem(msg.task_id, msg.job_index, msg.job_info)
 end
 
-ALittle.RegMsgCallback(917908039, ALittleDeploy.HandleNCreateJob)
-function ALittleDeploy.HandleNJobStatus(sender, msg)
-	ALittleDeploy.g_DPLCenter.center.task_center:UpdateJobStatus(msg)
+ALittle.RegMsgCallback(917908039, DeployClient.HandleNCreateJob)
+function DeployClient.HandleNJobStatus(sender, msg)
+	DeployClient.g_DPLCenter.center.task_center:UpdateJobStatus(msg)
 end
 
-ALittle.RegMsgCallback(1462309182, ALittleDeploy.HandleNJobStatus)
-function ALittleDeploy.HandleNModifyJob(sender, msg)
-	ALittleDeploy.g_DPLCenter.center.task_center:UpdateJobItem(msg)
+ALittle.RegMsgCallback(1462309182, DeployClient.HandleNJobStatus)
+function DeployClient.HandleNModifyJob(sender, msg)
+	DeployClient.g_DPLCenter.center.task_center:UpdateJobItem(msg)
 end
 
-ALittle.RegMsgCallback(-173628832, ALittleDeploy.HandleNModifyJob)
-function ALittleDeploy.HandleNDeleteJob(sender, msg)
-	ALittleDeploy.g_DPLCenter.center.task_center:RemoveJobItem(msg.task_id, msg.job_index)
+ALittle.RegMsgCallback(-173628832, DeployClient.HandleNModifyJob)
+function DeployClient.HandleNDeleteJob(sender, msg)
+	DeployClient.g_DPLCenter.center.task_center:RemoveJobItem(msg.task_id, msg.job_index)
 end
 
-ALittle.RegMsgCallback(-1050312971, ALittleDeploy.HandleNDeleteJob)
-function ALittleDeploy.HandleNMoveJob(sender, msg)
-	ALittleDeploy.g_DPLCenter.center.task_center:MoveJobItem(msg.task_id, msg.job_index, msg.target_index)
+ALittle.RegMsgCallback(-1050312971, DeployClient.HandleNDeleteJob)
+function DeployClient.HandleNMoveJob(sender, msg)
+	DeployClient.g_DPLCenter.center.task_center:MoveJobItem(msg.task_id, msg.job_index, msg.target_index)
 end
 
-ALittle.RegMsgCallback(-2015558870, ALittleDeploy.HandleNMoveJob)
-function ALittleDeploy.HandleNCreateBuild(sender, msg)
-	ALittleDeploy.g_DPLCenter.center.task_center:AddBuildItem(msg.task_id, msg.build_info)
+ALittle.RegMsgCallback(-2015558870, DeployClient.HandleNMoveJob)
+function DeployClient.HandleNCreateBuild(sender, msg)
+	DeployClient.g_DPLCenter.center.task_center:AddBuildItem(msg.task_id, msg.build_info)
 end
 
-ALittle.RegMsgCallback(1487624699, ALittleDeploy.HandleNCreateBuild)
-function ALittleDeploy.HandleNDeleteBuild(sender, msg)
-	ALittleDeploy.g_DPLCenter.center.task_center:RemoveBuildItem(msg.task_id, msg.build_index)
+ALittle.RegMsgCallback(1487624699, DeployClient.HandleNCreateBuild)
+function DeployClient.HandleNDeleteBuild(sender, msg)
+	DeployClient.g_DPLCenter.center.task_center:RemoveBuildItem(msg.task_id, msg.build_index)
 end
 
-ALittle.RegMsgCallback(-206375730, ALittleDeploy.HandleNDeleteBuild)
+ALittle.RegMsgCallback(-206375730, DeployClient.HandleNDeleteBuild)
 end

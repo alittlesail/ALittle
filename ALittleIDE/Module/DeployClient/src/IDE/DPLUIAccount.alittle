@@ -1,5 +1,5 @@
 
-namespace ALittleDeploy;
+namespace DeployClient;
 
 protected var g_DPLWebLoginManager:AUIPlugin.AUIWebLoginManager;
 

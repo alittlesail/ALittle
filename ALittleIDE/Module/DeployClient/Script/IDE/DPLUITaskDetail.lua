@@ -1,7 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.ALittleDeploy == nil then _G.ALittleDeploy = {} end
-local ALittleDeploy = ALittleDeploy
+if _G.DeployClient == nil then _G.DeployClient = {} end
+local DeployClient = DeployClient
 local Lua = Lua
 local ALittle = ALittle
 local ___rawset = rawset
@@ -9,6 +9,12 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
+ALittle.RegStruct(-2127611090, "DeployClient.BuildItemInfo", {
+name = "DeployClient.BuildItemInfo", ns_name = "DeployClient", rl_name = "BuildItemInfo", hash_code = -2127611090,
+name_list = {"item","info","_button","_download_button"},
+type_list = {"ALittle.DisplayObject","DeployServer.D_BuildInfo","ALittle.DisplayObject","ALittle.DisplayObject"},
+option_map = {}
+})
 ALittle.RegStruct(-2035971543, "DeployServer.D_JobInfo", {
 name = "DeployServer.D_JobInfo", ns_name = "DeployServer", rl_name = "D_JobInfo", hash_code = -2035971543,
 name_list = {"job_type","job_name","status","progress","detail"},
@@ -63,12 +69,6 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(-1417845740, "ALittleDeploy.BuildItemInfo", {
-name = "ALittleDeploy.BuildItemInfo", ns_name = "ALittleDeploy", rl_name = "BuildItemInfo", hash_code = -1417845740,
-name_list = {"item","info","_button","_download_button"},
-type_list = {"ALittle.DisplayObject","DeployServer.D_BuildInfo","ALittle.DisplayObject","ALittle.DisplayObject"},
-option_map = {}
-})
 ALittle.RegStruct(-1347278145, "ALittle.UIButtonEvent", {
 name = "ALittle.UIButtonEvent", ns_name = "ALittle", rl_name = "UIButtonEvent", hash_code = -1347278145,
 name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
@@ -117,53 +117,53 @@ name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","int","bool"},
 option_map = {}
 })
+ALittle.RegStruct(629373421, "DeployClient.JobItemInfo", {
+name = "DeployClient.JobItemInfo", ns_name = "DeployClient", rl_name = "JobItemInfo", hash_code = 629373421,
+name_list = {"item","info","_button","_status"},
+type_list = {"ALittle.DisplayObject","DeployServer.D_JobInfo","ALittle.DisplayObject","ALittle.DisplayObject"},
+option_map = {}
+})
 ALittle.RegStruct(-616678126, "DeployServer.C2SMoveJob", {
 name = "DeployServer.C2SMoveJob", ns_name = "DeployServer", rl_name = "C2SMoveJob", hash_code = -616678126,
 name_list = {"task_id","job_index","target_index"},
 type_list = {"int","int","int"},
 option_map = {}
 })
-ALittle.RegStruct(365671136, "ALittleDeploy.JobItemInfo", {
-name = "ALittleDeploy.JobItemInfo", ns_name = "ALittleDeploy", rl_name = "JobItemInfo", hash_code = 365671136,
-name_list = {"item","info","_button","_status"},
-type_list = {"ALittle.DisplayObject","DeployServer.D_JobInfo","ALittle.DisplayObject","ALittle.DisplayObject"},
-option_map = {}
-})
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-ALittleDeploy.DPLUITaskDetail = Lua.Class(ALittle.DisplayLayout, "ALittleDeploy.DPLUITaskDetail")
+DeployClient.DPLUITaskDetail = Lua.Class(ALittle.DisplayLayout, "DeployClient.DPLUITaskDetail")
 
-function ALittleDeploy.DPLUITaskDetail:Ctor()
+function DeployClient.DPLUITaskDetail:Ctor()
 	___rawset(self, "_job_group", {})
 	___rawset(self, "_build_group", {})
 end
 
-function ALittleDeploy.DPLUITaskDetail:Init(task_item)
+function DeployClient.DPLUITaskDetail:Init(task_item)
 	self._task_item = task_item
 	self:UpdateTaskInfo()
 	self:RefreshJobInfo()
 	self:RefreshBuildInfo()
 end
 
-function ALittleDeploy.DPLUITaskDetail:Show()
+function DeployClient.DPLUITaskDetail:Show()
 	self.visible = true
 	if not self._save_button.disabled then
 		self:UpdateTaskInfo()
 	end
 end
 
-function ALittleDeploy.DPLUITaskDetail:Hide()
+function DeployClient.DPLUITaskDetail:Hide()
 	self.visible = false
 end
 
-function ALittleDeploy.DPLUITaskDetail:UpdateTaskInfo()
+function DeployClient.DPLUITaskDetail:UpdateTaskInfo()
 	self._save_button.disabled = true
 	self._task_name_input.text = self._task_item.info.task_name
 	self._task_desc_input.text = self._task_item.info.task_desc
 	self._webhook_input.text = ALittle.String_Join(self._task_item.info.web_hook, "\n")
 end
 
-function ALittleDeploy.DPLUITaskDetail:UpdateJobInfo(index)
+function DeployClient.DPLUITaskDetail:UpdateJobInfo(index)
 	local job_info = self._task_item.info.job_list[index]
 	if job_info == nil then
 		return
@@ -173,7 +173,7 @@ function ALittleDeploy.DPLUITaskDetail:UpdateJobInfo(index)
 	self:RefreshJobItem(job_item)
 end
 
-function ALittleDeploy.DPLUITaskDetail:RemoveJobItem(index)
+function DeployClient.DPLUITaskDetail:RemoveJobItem(index)
 	local job_info = self._task_item.info.job_list[index]
 	if job_info == nil then
 		return
@@ -181,7 +181,7 @@ function ALittleDeploy.DPLUITaskDetail:RemoveJobItem(index)
 	self._job_list:SpliceChild(index, 1)
 end
 
-function ALittleDeploy.DPLUITaskDetail:MoveJobItem(index, target_index)
+function DeployClient.DPLUITaskDetail:MoveJobItem(index, target_index)
 	local job_info = self._task_item.info.job_list[index]
 	if job_info == nil then
 		return
@@ -189,7 +189,7 @@ function ALittleDeploy.DPLUITaskDetail:MoveJobItem(index, target_index)
 	self._job_list:SetChildIndex(self._job_list:GetChildByIndex(index), target_index)
 end
 
-function ALittleDeploy.DPLUITaskDetail:RemoveBuildItem(index)
+function DeployClient.DPLUITaskDetail:RemoveBuildItem(index)
 	local build_info = self._task_item.info.build_list[index]
 	if build_info == nil then
 		return
@@ -197,33 +197,33 @@ function ALittleDeploy.DPLUITaskDetail:RemoveBuildItem(index)
 	self._build_list:SpliceChild(index, 1)
 end
 
-function ALittleDeploy.DPLUITaskDetail:RefreshJobInfo()
+function DeployClient.DPLUITaskDetail:RefreshJobInfo()
 	self._job_list:RemoveAllChild()
 	for index, job_info in ___ipairs(self._task_item.info.job_list) do
 		self:AddJobItem(nil, job_info)
 	end
 end
 
-function ALittleDeploy.DPLUITaskDetail:RefreshBuildInfo()
+function DeployClient.DPLUITaskDetail:RefreshBuildInfo()
 	self._build_list:RemoveAllChild()
 	for index, build_info in ___ipairs(self._task_item.info.build_list) do
 		self:AddBuildItem(build_info)
 	end
 end
 
-function ALittleDeploy.DPLUITaskDetail:HandleTaskBaseChanged(event)
+function DeployClient.DPLUITaskDetail:HandleTaskBaseChanged(event)
 	self._save_button.disabled = false
 end
 
-function ALittleDeploy.DPLUITaskDetail:HandleTaskStart()
+function DeployClient.DPLUITaskDetail:HandleTaskStart()
 	for index, child in ___ipairs(self._job_list.childs) do
 		local job_item = child._user_data
 		job_item._status.text = "等待"
 	end
 end
 
-function ALittleDeploy.DPLUITaskDetail:HandleTaskSaveClick(event)
-	local msg_client = ALittleDeploy.g_DPLWebLoginManager.msg_client
+function DeployClient.DPLUITaskDetail:HandleTaskSaveClick(event)
+	local msg_client = DeployClient.g_DPLWebLoginManager.msg_client
 	if msg_client == nil or not msg_client:IsConnected() then
 		g_AUITool:ShowNotice("提示", "当前还未连接成功!")
 		return
@@ -242,9 +242,9 @@ function ALittleDeploy.DPLUITaskDetail:HandleTaskSaveClick(event)
 		g_AUITool:ShowNotice("提示", error)
 	end
 end
-ALittleDeploy.DPLUITaskDetail.HandleTaskSaveClick = Lua.CoWrap(ALittleDeploy.DPLUITaskDetail.HandleTaskSaveClick)
+DeployClient.DPLUITaskDetail.HandleTaskSaveClick = Lua.CoWrap(DeployClient.DPLUITaskDetail.HandleTaskSaveClick)
 
-function ALittleDeploy.DPLUITaskDetail:HandleNewJobClick(event)
+function DeployClient.DPLUITaskDetail:HandleNewJobClick(event)
 	local menu = AUIPlugin.AUIRightMenu()
 	menu:AddItem("批处理", Lua.Bind(self.HandleNewCommonJob, self, "batch_job_dialog"))
 	menu:AddItem("复制目录", Lua.Bind(self.HandleNewCommonJob, self, "deepcopy_job_dialog"))
@@ -256,19 +256,19 @@ function ALittleDeploy.DPLUITaskDetail:HandleNewJobClick(event)
 	menu:Show()
 end
 
-function ALittleDeploy.DPLUITaskDetail:HandleStartTaskClick(event)
-	ALittleDeploy.g_DPLCenter.center.task_center:HandleStartTask(self._task_item)
+function DeployClient.DPLUITaskDetail:HandleStartTaskClick(event)
+	DeployClient.g_DPLCenter.center.task_center:HandleStartTask(self._task_item)
 end
 
-function ALittleDeploy.DPLUITaskDetail:HandleNewCommonJob(ui)
-	local dialog = ALittleDeploy.g_Control:CreateControl(ui)
+function DeployClient.DPLUITaskDetail:HandleNewCommonJob(ui)
+	local dialog = DeployClient.g_Control:CreateControl(ui)
 	dialog:Show(self._task_item.info.task_id, nil, nil)
 end
 
-function ALittleDeploy.DPLUITaskDetail:AddJobItem(job_index, job_info)
+function DeployClient.DPLUITaskDetail:AddJobItem(job_index, job_info)
 	local job_item = {}
 	job_item.info = job_info
-	job_item.item = ALittleDeploy.g_Control:CreateControl("dpl_job_item", job_item)
+	job_item.item = DeployClient.g_Control:CreateControl("dpl_job_item", job_item)
 	job_item.item._user_data = job_item
 	job_item._button._user_data = job_item
 	job_item._button.group = self._job_group
@@ -277,10 +277,10 @@ function ALittleDeploy.DPLUITaskDetail:AddJobItem(job_index, job_info)
 	self:RefreshJobItem(job_item)
 end
 
-function ALittleDeploy.DPLUITaskDetail:AddBuildItem(build_info)
+function DeployClient.DPLUITaskDetail:AddBuildItem(build_info)
 	local build_item = {}
 	build_item.info = build_info
-	build_item.item = ALittleDeploy.g_Control:CreateControl("dpl_build_item", build_item)
+	build_item.item = DeployClient.g_Control:CreateControl("dpl_build_item", build_item)
 	build_item.item._user_data = build_item
 	build_item._button._user_data = build_item
 	build_item._button.group = self._build_group
@@ -293,7 +293,7 @@ function ALittleDeploy.DPLUITaskDetail:AddBuildItem(build_info)
 	build_item._button.text = ALittle.Time_GetCurDate(build_info.create_time)
 end
 
-function ALittleDeploy.DPLUITaskDetail:RefreshJobItem(job_item)
+function DeployClient.DPLUITaskDetail:RefreshJobItem(job_item)
 	if job_item.info.job_type == 1 then
 		job_item._button.text = "[批处理] " .. job_item.info.job_name .. ":" .. job_item.info.detail.batch_cmd
 	elseif job_item.info.job_type == 2 then
@@ -324,7 +324,7 @@ function ALittleDeploy.DPLUITaskDetail:RefreshJobItem(job_item)
 	end
 end
 
-function ALittleDeploy.DPLUITaskDetail:HandleJobRButtonDown(event)
+function DeployClient.DPLUITaskDetail:HandleJobRButtonDown(event)
 	local job_item = event.target._user_data
 	local job_index = self._job_list:GetChildIndex(job_item.item)
 	local menu = AUIPlugin.AUIRightMenu()
@@ -336,7 +336,7 @@ function ALittleDeploy.DPLUITaskDetail:HandleJobRButtonDown(event)
 	menu:Show()
 end
 
-function ALittleDeploy.DPLUITaskDetail:HandleBuildRButtonDown(event)
+function DeployClient.DPLUITaskDetail:HandleBuildRButtonDown(event)
 	local build_item = event.target._user_data
 	local build_index = self._build_list:GetChildIndex(build_item.item)
 	local menu = AUIPlugin.AUIRightMenu()
@@ -344,24 +344,24 @@ function ALittleDeploy.DPLUITaskDetail:HandleBuildRButtonDown(event)
 	menu:Show()
 end
 
-function ALittleDeploy.DPLUITaskDetail:HandlePreSeeBuild(event)
+function DeployClient.DPLUITaskDetail:HandlePreSeeBuild(event)
 	local build_item = event.target._user_data
 	local build_index = self._build_list:GetChildIndex(build_item.item)
-	ALittleDeploy.g_DPLCenter.center.task_center._build_edit.text = ""
+	DeployClient.g_DPLCenter.center.task_center._build_edit.text = ""
 	local msg = {}
 	msg.task_id = self._task_item.info.task_id
 	msg.build_index = build_index
-	local sender = ALittleDeploy.g_DPLCenter:CreateHttpSender()
+	local sender = DeployClient.g_DPLCenter:CreateHttpSender()
 	local error, rsp = ALittle.IHttpSender.Invoke("DeployServer.QPreSeeBuild", sender, msg)
 	if error ~= nil then
 		g_AUITool:ShowNotice("提示", error)
 		return
 	end
-	ALittleDeploy.g_DPLCenter.center.task_center._build_edit.text = ALittle.String_Join(rsp.log_list, "\r\n")
+	DeployClient.g_DPLCenter.center.task_center._build_edit.text = ALittle.String_Join(rsp.log_list, "\r\n")
 end
-ALittleDeploy.DPLUITaskDetail.HandlePreSeeBuild = Lua.CoWrap(ALittleDeploy.DPLUITaskDetail.HandlePreSeeBuild)
+DeployClient.DPLUITaskDetail.HandlePreSeeBuild = Lua.CoWrap(DeployClient.DPLUITaskDetail.HandlePreSeeBuild)
 
-function ALittleDeploy.DPLUITaskDetail:HandleDownloadBuild(event)
+function DeployClient.DPLUITaskDetail:HandleDownloadBuild(event)
 	if event.path == nil or event.path == "" then
 		return
 	end
@@ -370,15 +370,15 @@ function ALittleDeploy.DPLUITaskDetail:HandleDownloadBuild(event)
 	local msg = {}
 	msg.task_id = self._task_item.info.task_id
 	msg.build_index = build_index
-	local sender = ALittleDeploy.g_DPLCenter:CreateHttpFileSender(event.path .. "/" .. ALittle.Time_GetCurDate(build_item.info.create_time) .. ".log")
+	local sender = DeployClient.g_DPLCenter:CreateHttpFileSender(event.path .. "/" .. ALittle.Time_GetCurDate(build_item.info.create_time) .. ".log")
 	local error = ALittle.IHttpFileSender.InvokeDownload("DeployServer.QDownloadBuild", sender, msg)
 	if error ~= nil then
 		g_AUITool:ShowNotice("提示", error)
 	end
 end
-ALittleDeploy.DPLUITaskDetail.HandleDownloadBuild = Lua.CoWrap(ALittleDeploy.DPLUITaskDetail.HandleDownloadBuild)
+DeployClient.DPLUITaskDetail.HandleDownloadBuild = Lua.CoWrap(DeployClient.DPLUITaskDetail.HandleDownloadBuild)
 
-function ALittleDeploy.DPLUITaskDetail:HandleModifyJob(info, index)
+function DeployClient.DPLUITaskDetail:HandleModifyJob(info, index)
 	local ui = nil
 	if info.info.job_type == 1 then
 		ui = "batch_job_dialog"
@@ -396,13 +396,13 @@ function ALittleDeploy.DPLUITaskDetail:HandleModifyJob(info, index)
 		ui = "killprocess_job_dialog"
 	end
 	if ui ~= nil then
-		local dialog = ALittleDeploy.g_Control:CreateControl(ui)
+		local dialog = DeployClient.g_Control:CreateControl(ui)
 		dialog:Show(self._task_item.info.task_id, index, info.info)
 	end
 end
 
-function ALittleDeploy.DPLUITaskDetail:HandleMoveJob(info, index, new_index)
-	local msg_client = ALittleDeploy.g_DPLWebLoginManager.msg_client
+function DeployClient.DPLUITaskDetail:HandleMoveJob(info, index, new_index)
+	local msg_client = DeployClient.g_DPLWebLoginManager.msg_client
 	if msg_client == nil or not msg_client:IsConnected() then
 		g_AUITool:ShowNotice("提示", "当前还未连接成功!")
 		return
@@ -416,10 +416,10 @@ function ALittleDeploy.DPLUITaskDetail:HandleMoveJob(info, index, new_index)
 		g_AUITool:ShowNotice("提示", error)
 	end
 end
-ALittleDeploy.DPLUITaskDetail.HandleMoveJob = Lua.CoWrap(ALittleDeploy.DPLUITaskDetail.HandleMoveJob)
+DeployClient.DPLUITaskDetail.HandleMoveJob = Lua.CoWrap(DeployClient.DPLUITaskDetail.HandleMoveJob)
 
-function ALittleDeploy.DPLUITaskDetail:HandleCopyJob(info, index)
-	local msg_client = ALittleDeploy.g_DPLWebLoginManager.msg_client
+function DeployClient.DPLUITaskDetail:HandleCopyJob(info, index)
+	local msg_client = DeployClient.g_DPLWebLoginManager.msg_client
 	if msg_client == nil or not msg_client:IsConnected() then
 		g_AUITool:ShowNotice("提示", "当前还未连接成功!")
 		return
@@ -432,10 +432,10 @@ function ALittleDeploy.DPLUITaskDetail:HandleCopyJob(info, index)
 		g_AUITool:ShowNotice("提示", error)
 	end
 end
-ALittleDeploy.DPLUITaskDetail.HandleCopyJob = Lua.CoWrap(ALittleDeploy.DPLUITaskDetail.HandleCopyJob)
+DeployClient.DPLUITaskDetail.HandleCopyJob = Lua.CoWrap(DeployClient.DPLUITaskDetail.HandleCopyJob)
 
-function ALittleDeploy.DPLUITaskDetail:HandleDeleteJob(info, index)
-	local msg_client = ALittleDeploy.g_DPLWebLoginManager.msg_client
+function DeployClient.DPLUITaskDetail:HandleDeleteJob(info, index)
+	local msg_client = DeployClient.g_DPLWebLoginManager.msg_client
 	if msg_client == nil or not msg_client:IsConnected() then
 		g_AUITool:ShowNotice("提示", "当前还未连接成功!")
 		return
@@ -452,10 +452,10 @@ function ALittleDeploy.DPLUITaskDetail:HandleDeleteJob(info, index)
 		g_AUITool:ShowNotice("提示", error)
 	end
 end
-ALittleDeploy.DPLUITaskDetail.HandleDeleteJob = Lua.CoWrap(ALittleDeploy.DPLUITaskDetail.HandleDeleteJob)
+DeployClient.DPLUITaskDetail.HandleDeleteJob = Lua.CoWrap(DeployClient.DPLUITaskDetail.HandleDeleteJob)
 
-function ALittleDeploy.DPLUITaskDetail:HandleDeleteBuild(info, index)
-	local msg_client = ALittleDeploy.g_DPLWebLoginManager.msg_client
+function DeployClient.DPLUITaskDetail:HandleDeleteBuild(info, index)
+	local msg_client = DeployClient.g_DPLWebLoginManager.msg_client
 	if msg_client == nil or not msg_client:IsConnected() then
 		g_AUITool:ShowNotice("提示", "当前还未连接成功!")
 		return
@@ -472,6 +472,6 @@ function ALittleDeploy.DPLUITaskDetail:HandleDeleteBuild(info, index)
 		g_AUITool:ShowNotice("提示", error)
 	end
 end
-ALittleDeploy.DPLUITaskDetail.HandleDeleteBuild = Lua.CoWrap(ALittleDeploy.DPLUITaskDetail.HandleDeleteBuild)
+DeployClient.DPLUITaskDetail.HandleDeleteBuild = Lua.CoWrap(DeployClient.DPLUITaskDetail.HandleDeleteBuild)
 
 end

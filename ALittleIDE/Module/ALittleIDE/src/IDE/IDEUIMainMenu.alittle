@@ -196,6 +196,7 @@ protected class IDEUIMainMenu : ALittle.Linear
     		ALittle.List_Push(file_list, base_path.."Utility/SafeIDCreator.js");
     		ALittle.List_Push(file_list, base_path.."String/String.js");
     		ALittle.List_Push(file_list, base_path.."File/File.js");
+    		ALittle.List_Push(file_list, base_path.."Worker/Worker.js");
 
     		ALittle.List_Push(file_list, base_path.."Net/HttpFileReceiverTemplate.js");
     		ALittle.List_Push(file_list, base_path.."Net/HttpFileSenderTemplate.js");

@@ -1,0 +1,42 @@
+
+// 语法树的跟【Root是系统内置，必须定义Root作为语法根节点，没有定义会报错】
+Root = Expression*;
+// 行注释【LineComment是系统内置的行注释语法规则名】
+LineComment : "/" = "//.*";
+// 块注释【BlockComment是系统内置的块注释语法规则名】
+BlockComment : "/" = "/%*([^%*/]|[^%*]/|%*[^/])*%*/";
+
+// 关键字
+Key : "<" = "<[^>]*>";
+// 字符串
+String : "'" = "'([^'\\]|\\.)*'";
+// 正则表达式
+Regex : "\"" = "\"([^\"\\]|\\.)*\"";
+// 规则名称
+Id : "[_a-zA-Z]" = "[_a-zA-Z][_a-zA-Z0-9]*";
+// 数字
+Number : "[0-9]" = "[0-9]+";
+// 规则修饰
+NodeTail = '?' | '*' | '+' | '@' | '#';
+
+// 表达式
+Expression = Id@ (':'@ Regex '@'?)? Color? '='@ Node ';';
+
+// 颜色
+Color = '['@ Number ',' Number ',' Number ']';
+
+// 通用节点
+Node = List | Group;
+
+// 叶子节点
+Leaf = (Id | Key | String | Regex) NodeTail?;
+
+// 节点列表
+List = (Group | Leaf)+ Option*;
+
+// 多选一
+Option = '|'@ (Group | Leaf)+;
+
+// 括号
+Group = '('@ List ')' NodeTail?;
+

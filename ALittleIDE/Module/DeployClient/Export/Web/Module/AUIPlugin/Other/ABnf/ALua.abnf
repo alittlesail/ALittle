@@ -1,0 +1,176 @@
+
+// 语法树的跟【Root是系统内置，必须定义Root作为语法根节点，没有定义会报错】
+Root = AllExpr*;
+// 行注释【LineComment是系统内置的行注释语法规则名】
+LineComment : "-" [87,166,74] = "%-%-.*";
+// 块注释【BlockComment是系统内置的块注释语法规则名】
+BlockComment : "-" [87,166,74] = "%-%-%[%[{%-%-%]%]}";
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+// 字符串
+Text : "\""@ [214,157,133] = "\"([^\"\\]|\\.)*\"";
+// 规则名称
+Id : "[_a-zA-Z]" [218,218,218] = "[_a-zA-Z][_a-zA-Z0-9]*";
+// 整型数值
+Number : "[0-9]" [53,155,185] = "0x[0-9a-fA-F]+" | "[0-9]+(%.[0-9]+)?";
+// 空
+Nil [53,155,185] = <nil>;
+// bool
+Bool [53,155,185] = <true> | <false>;
+
+// 关键字
+LOCAL [86,156,214] = <local>;
+BREAK [216,160,223] = <break>;
+RETURN [216,160,223] = <return>;
+GOTO [216,160,223] = <goto>;
+FOR [216,160,223] = <for>;
+IN [216,160,223] = <in>;
+WHILE [216,160,223] = <while>;
+REPEAT [216,160,223] = <repeat>;
+UNTIL [216,160,223] = <until>;
+IF [216,160,223] = <if>;
+ELSEIF [216,160,223] = <elseif>;
+ELSE [216,160,223] = <else>;
+THEN [216,160,223] = <then>;
+AND [86,156,214] = <and>;
+OR [86,156,214] = <or>;
+NOT [86,156,214] = <not>;
+FUNCTION [86,156,214] = <function>;
+SELF [86,156,214] = <self>;
+
+CTRL_DO [216,160,223] = <do>;
+CTRL_END [216,160,223] = <end>;
+DEFINE_DO [86,156,214] = <do>;
+DEFINE_END [86,156,214] = <end>;
+
+
+// 函数参数部分
+MethodParamTailDec = '...';
+MethodParamOneDec = MethodParamTailDec | MethodParamNameDec;
+MethodParamNameDec = Id;
+MethodParamDec = '('@ (MethodParamOneDec (','@ MethodParamOneDec)*)? ')';
+
+// 函数名部分
+MethodNameDec [210,210,160] = Id# ('.'@ Id)* (':'@ Id)?;
+
+// 全局函数
+GlobalMethodDec = FUNCTION@ MethodNameDec MethodParamDec AllExpr* DEFINE_END;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// 表达式
+AllExpr = IfExpr |
+            ForExpr |
+            WhileExpr |
+            RepeatExpr |
+            ReturnExpr |
+            FlowExpr |
+            WrapExpr |
+            Op1Expr |
+            EmptyExpr |
+            VarAssignExpr |
+            OpAssignExpr |
+    		GotoExpr |
+    		LabelExpr |
+    		GlobalMethodDec;
+
+// 空语句
+EmptyExpr = ';';
+
+// for 流程控制
+ForExpr = FOR@ ForCondition ForBody;
+ForCondition = ForPairDec (ForStepCondition | ForInCondition);
+ForBody = CTRL_DO@ AllExpr* CTRL_END;
+
+ForStepCondition = ForStartStat ','@ ForEndStat ','@ ForStepStat;
+ForStartStat = '='@ ValueStat;
+ForEndStat = ValueStat;
+ForStepStat = ValueStat;
+
+ForInCondition = (','@ ForPairDec)* IN@ ValueStat;
+ForPairDec = VarAssignNameDec;
+
+// while 流程控制
+WhileExpr = WHILE@ ValueStat CTRL_DO@ AllExpr* CTRL_END;
+
+// do while 流程控制
+RepeatExpr = REPEAT@ AllExpr* UNTIL ValueStat;
+
+// if else 流程控制
+IfExpr = IF@ ValueStat THEN AllExpr* (ELSEIF@ ValueStat THEN AllExpr*)* (ELSE@ AllExpr*)? CTRL_END;
+
+// 表达式包装 比如 { 表达式列表 }
+WrapExpr = DEFINE_DO@ AllExpr* DEFINE_END;
+
+// 函数定义表达式
+FunctionValue = FUNCTION@ MethodParamDec AllExpr* DEFINE_END;
+
+// return
+ReturnExpr = RETURN@ ((ValueStat (','@ ValueStat)*))?;
+
+// break
+FlowExpr = BREAK@;
+
+// goto
+GotoExpr = GOTO@ Id;
+
+// label
+LabelExpr = '::'@ Id '::';
+
+// 定义语句
+VarAssignExpr = LOCAL VarAssignDec (','@ VarAssignDec)* ('='@ ValueStat (','@ ValueStat)*)?;
+VarAssignDec = VarAssignNameDec;
+VarAssignNameDec = Id;
+
+// 赋值
+OpAssign = '=' | '+=' | '-=' | '*=' | '/=' | '%=';
+OpAssignExpr = PropertyValue ((','@ PropertyValue)* OpAssign@ ValueStat)?;
+
+// 单目运算表达式
+Op1Expr = UnOp@ ValueStat;
+
+//复合值///////////////////////////////////////////////////////////////////
+ValueStat = UnOpStat | ValueOpStat;
+ValueFactorStat = WrapValueStat | ConstValue | TableValue | PropertyValue | MethodParamTailDec | FunctionValue;
+ValueOpStat = ValueFactorStat (BinOpStat)?;
+
+// 值
+WrapValueStat = '('@ ValueStat? ')';
+// 常量值
+ConstValue = Bool | Nil | Text | Number;
+// 表构造
+TableValue = '{'@ TableFieldList? '}';
+TableFieldList = TableField (',' TableField)* ','?;
+TableField = '['@ ValueStat ']' '='@ ValueStat | Id '='@ ValueStat | ValueStat;
+
+// 属性
+PropertyValue = PropertyValueFirstType PropertyValueSuffix*;
+
+PropertyValueFirstType = PropertyValueCustomType | PropertyValueSelfType;
+PropertyValueCustomType = Id@;
+PropertyValueSelfType = SELF@;
+
+PropertyValueSuffix = PropertyValueDotId | PropertyValueCallId | PropertyValueBracketValue | PropertyValueMethodCall;
+PropertyValueDotId = '.'@ PropertyValueDotIdName;
+PropertyValueDotIdName = Id#;
+PropertyValueCallId = ':'@ PropertyValueCallIdName;
+PropertyValueCallIdName [210,210,160] = Id#;
+PropertyValueBracketValue = '['@ ValueStat? ']';
+PropertyValueMethodCall = '('@ (ValueStat (','@ ValueStat)*)? ')';
+
+// Op 类型的运算，编号越大，优先级越低///////////////////////////////////////////////////
+
+// 双目运算
+BinOp = '+' | '-' | '*' | '/' | '//' | '^' | '%' | 
+		 '&' | '~' | '|' | '>>' | '<<' | '..' | 
+		 '<' | '<=' | '>' | '>=' | '==' | '~=' | 
+		 AND | OR;
+BinOpStat = BinOpSuffix BinOpSuffixEx*;
+BinOpSuffix = BinOp@ (ValueFactorStat | UnOpValue);
+BinOpSuffixEx = BinOpSuffix;
+
+// 单目运算
+UnOp = '-' | NOT | '#' | '~';
+UnOpStat = UnOpValue UnOpSuffixEx*;
+UnOpValue = UnOp@ ValueFactorStat;
+UnOpSuffixEx = BinOpSuffix;

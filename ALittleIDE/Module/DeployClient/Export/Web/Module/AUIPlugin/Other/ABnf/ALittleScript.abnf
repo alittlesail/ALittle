@@ -1,0 +1,420 @@
+/* 正则表达式使用说明
+ .        任意字符
+%a        字母
+%d        数字
+%w        字母、数字、下划线
+
+上面字符类的大写形式表示小写所代表的集合的补集。例如, '%A'非字母的字符: 
+
+特殊字符
+'%' 用作特殊字符的转义字符
+'%.' 匹配 .
+'%%' 匹配字符 '%'
+'%n' 匹配 换行
+
+用'[]'匹配字符集中的字符一次
+'[%w]' 匹配字母、数字、下划线
+'[01]' 匹配二进制数字
+'[%[%]]'匹配一对方括号
+在'[]'中使用连字符'-'
+'%d'    表示 '[0-9]'；
+'%w'    表示 '[0-9a-zA-Z_]'
+'[0-7]' 表示 '[01234567]'
+
+用'()'对匹配规则进行优先级调整
+'(-%d)*' 遇到 非横杠数字 就停止匹配
+用'!'和'()'配合使用表示非匹配，'!'符号的优先级比* + ? 要高
+'!(-%d)*' 遇到横杠数字就停止匹配
+
+在'[]'开始处使用 '^' 表示其补集：
+'[^0-7]' 匹配任何不是八进制数字的字符；
+'[^%n]' 匹配任何非换行符户的字符。
+
+用'{}'查找下一个大括号内的字符串，内部的%只会转义%,{,}
+'--[[{--]]}' 匹配以--[[开始，然后查找到--]]作为结束
+'<!--{-->}' 匹配以<!--开始，然后查找到-->作为结束
+
+模式修饰符
+  + 匹配前一字符1次或多次
+  * 匹配前一字符0次或多次,最长匹配
+  ? 匹配前一字符0次或1次
+*/
+
+/* ABnf使用说明
+Root 是根部规则，将整个文件从Root开始解析
+LineComment 是单行注释解析
+BlockComment 表示多行注释解析
+
+通用规则
+规则名 ':' 下一个字符预测的正则表达式（后面如果带上@表示一旦比配成那么一定是这个规则） 着色[R,G,B] '=' 规则内容 ';'
+
+规则内容
+<key> 使用尖括号包起来表示关键字
+'symbol' 使用单引号包起来表示普通字符串
+"[_a-zA-Z]" 使用双引号包起来表示正则表达式
+
+规则后缀
+@ 表示一旦匹配成功，那么一定是这个规则
+# 表示如果当前匹配成功之后，如果是key那么也不能算匹配成功
+? 表示有一个或者没有
+* 表示没有或者很多个
++ 表示至少有一个
+
+'(' ')' 表示提高规则优先级
+'|' 表示或者
+*/
+
+// 语法树的跟【Root是系统内置，必须定义Root作为语法根节点，没有定义会报错】
+Root = NamespaceDec?;
+// 行注释【LineComment是系统内置的行注释语法规则名】
+LineComment : "/" = "//.*";
+// 块注释【BlockComment是系统内置的块注释语法规则名】
+BlockComment : "/" = "/%*([^%*/]|[^%*]/|%*[^/])*%*/";
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+// 字符串
+Text : "\""@ = "\"([^\"\\]|\\.)*\"";
+// 规则名称
+Id : "[_a-zA-Z]" = "[_a-zA-Z][_a-zA-Z0-9]*";
+// 整型数值
+Number : "[0-9]" = "0x[0-9a-fA-F]+" | "[0-9]+(%.[0-9]+)?";
+
+//修饰符////////////////////////////////////////////////////////////////////////////////////
+// 注册修饰符，如果有这个修饰，那么就不会生成目标代码
+RegisterModifier = <register>@;
+// 访问修饰符，public表示全局可访问，private本文件，子类可访问，protected当前命名域内可访问
+AccessModifier = <public>@ | <private>@ | <protected>@;
+// 协程修饰符，用于修饰函数，async表示一个协程函数，await表示必须在协程函数里面调用
+CoroutineModifier = <async>@ | <await>@;
+
+// 协议修饰符
+ProtocolModifier = <Http> | <HttpDownload> | <HttpUpload> | <Msg> | <Worker>;
+
+// 命令修饰符，用于开发人员指令执行函数
+CommandBodyDec = '('@ Text ')';
+CommandModifier = <Cmd>@ CommandBodyDec?;
+
+// 是否可以为null，用于修饰函数形参
+NullableModifier = <Nullable>;
+
+// 语言生效修饰符，用于修饰结构体，枚举，类，类成员变量，类成员函数，类静态函数，全局函数
+// 表示修饰目标只有在规定的语言范围内生效
+LanguageNameDec = Id;
+LanguageBodyDec = '('@ (LanguageNameDec (','@ LanguageNameDec)*)? ')';
+LanguageModifier = <Language>@ LanguageBodyDec?;
+
+// 常量修饰符，用于修饰函数。表示这个函数不会对数据进行修改
+ConstModifier = <Constant>;
+
+// 原生修饰
+NativeModifier = <Native>;
+
+// 属性修饰符汇总
+AttributeModifier = '['@ (NativeModifier | LanguageModifier | ConstModifier | NullableModifier | ProtocolModifier | CommandModifier)? ']';
+// 所有修饰符汇总
+Modifier = AttributeModifier | AccessModifier | CoroutineModifier | RegisterModifier;
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+// 命名域
+NamespaceDec = Modifier* <namespace>@ NamespaceNameDec ';' NamespaceElementDec*;
+NamespaceElementDec = Modifier* (GlobalMethodDec | ClassDec | EnumDec | StructDec | UsingDec | InstanceDec | OpAssignExpr);
+NamespaceNameDec = Id;
+
+// 模板定义
+TemplateDec = '<'@ TemplatePairDec (','@ TemplatePairDec)* '>';
+TemplatePairDec = TemplateNameDec@ TemplateExtendsDec?;
+TemplateNameDec = Id;
+TemplateExtendsDec = ':'@ (AllType | TemplateExtendsClassDec | TemplateExtendsStructDec);
+TemplateExtendsClassDec = <class>;
+TemplateExtendsStructDec = <struct>;
+
+// 类定义
+ClassDec = <class>@ (ClassNameDec TemplateDec? ClassExtendsDec? ClassBodyDec?)?;
+ClassNameDec = Id#;
+ClassExtendsDec = ':'@ (NamespaceNameDec '.')? ClassNameDec;
+ClassElementDec = Modifier* (ClassCtorDec | ClassGetterDec | ClassSetterDec | ClassStaticDec | ClassMethodDec | ClassVarDec);
+ClassBodyDec = '{'@ ClassElementDec* '}';
+ClassVarValueDec = '='@ (ConstValue | OpNewStat);
+ClassVarDec = AllType@ ClassVarNameDec ClassVarValueDec? ';';
+ClassVarNameDec = Id;
+
+// 结构体定义
+StructDec = <struct>@ (StructNameDec StructExtendsDec? StructBodyDec?)?;
+StructNameDec = Id#;
+StructExtendsDec = ':'@ (NamespaceNameDec '.')? StructNameDec;
+StructBodyDec = '{'@ (StructOptionDec | StructVarDec)* '}';
+StructVarDec = AllType@ StructVarNameDec ';';
+StructVarNameDec = Id#;
+StructOptionDec = <option>@ StructOptionNameDec '='@ Text ';';
+StructOptionNameDec = Id#;
+
+// 枚举定义
+EnumDec = <enum>@ (EnumNameDec EnumBodyDec?)?;
+EnumNameDec = Id;
+EnumBodyDec = '{'@ EnumVarDec* '}';
+EnumVarDec = EnumVarNameDec@ ('='@ (Number | Text))? ';';
+EnumVarNameDec = Id;
+
+// 全局变量
+InstanceDec = VarAssignExpr;
+
+// using定义
+UsingDec = <using>@ UsingNameDec '=' AllType ';';
+UsingNameDec = Id;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// 函数参数部分
+MethodParamTailDec = '...';
+MethodParamOneDec = MethodParamTailDec | Modifier* AllType@ MethodParamNameDec;
+MethodParamNameDec = Id;
+MethodParamDec = '('@ (MethodParamOneDec (','@ MethodParamOneDec)*)? ')';
+MethodGetterParamDec = '('@ ')';
+MethodSetterParamDec = '('@ MethodParamOneDec ')';
+
+// 函数体部分
+MethodBodyDec = '{'@ AllExpr* '}';
+// 函数名部分
+MethodNameDec = Id#;
+// 函数返回值类型
+MethodReturnTailDec = '...';
+MethodReturnOneDec = MethodReturnTailDec | AllType;
+MethodReturnDec = ':'@ (MethodReturnOneDec (','@ MethodReturnOneDec)*)?;
+
+// 类构造函数定义
+ClassCtorDec = <ctor>@ (MethodParamDec MethodBodyDec?)?;
+// 类getter函数
+ClassGetterDec = <get>@ (MethodNameDec (MethodGetterParamDec (':'@ (AllType MethodBodyDec?)?)?)?)?;
+// 类setter函数
+ClassSetterDec = <set>@ (MethodNameDec (MethodSetterParamDec MethodBodyDec?)?)?;
+// 类成员函数定义
+ClassMethodDec = <fun>@ (MethodNameDec (TemplateDec? MethodParamDec MethodReturnDec? MethodBodyDec?)?)?;
+// 类静态函数定义
+ClassStaticDec = <static>@ (MethodNameDec (TemplateDec? MethodParamDec MethodReturnDec? MethodBodyDec?)?)?;
+// 全局函数
+GlobalMethodDec = <static>@ (MethodNameDec (TemplateDec? MethodParamDec MethodReturnDec? MethodBodyDec?)?)?;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// 表达式
+AllExpr = Modifier* (IfExpr |
+            ForExpr |
+            WhileExpr |
+            DoWhileExpr |
+            ReturnExpr |
+            FlowExpr |
+            ThrowExpr |
+            AssertExpr |
+            WrapExpr |
+            Op1Expr |
+            EmptyExpr |
+            VarAssignExpr |
+            OpAssignExpr);
+
+// 空语句
+EmptyExpr = ';';
+
+// for 流程控制
+ForExpr = <for>@ ForCondition (ForBody | AllExpr)?;
+ForCondition = '('@ (<var>@ ForPairDec (ForStepCondition | ForInCondition))? ')';
+ForBody = '{'@ AllExpr* '}';
+
+ForStepCondition = ForStartStat ';'@ ForEndStat ';'@ ForStepStat;
+ForStartStat = '='@ ValueStat;
+ForEndStat = ValueStat;
+ForStepStat = ValueStat;
+
+ForInCondition = (','@ ForPairDec)* <in>@ ValueStat;
+ForPairDec = VarAssignNameDec (':'@ AllType)?;
+
+// while 流程控制
+WhileExpr = <while>@ WhileCondition (WhileBody | AllExpr)?;
+WhileCondition = '('@ ValueStat? ')';
+WhileBody = '{'@ AllExpr* '}';
+
+// do while 流程控制
+DoWhileExpr = <do>@ DoWhileBody <while> DoWhileCondition ';';
+DoWhileCondition = '('@ ValueStat? ')';
+DoWhileBody = '{'@ AllExpr* '}';
+
+// if else 流程控制
+IfExpr = <if>@ IfCondition (IfBody | AllExpr)? ElseIfExpr* ElseExpr?;
+IfCondition = '('@ ValueStat? ')';
+IfBody = '{'@ AllExpr* '}';
+ElseExpr = <else>@ (ElseBody | AllExpr)?;
+ElseBody = '{'@ AllExpr* '}';
+ElseIfExpr = <elseif>@ ElseIfCondition (ElseIfBody | AllExpr)?;
+ElseIfCondition = '('@ ValueStat? ')';
+ElseIfBody = '{'@ AllExpr* '}';
+
+// 表达式包装 比如 { 表达式列表 }
+WrapExpr = '{'@ AllExpr* '}';
+
+// return
+ReturnExpr = <return>@ ((ValueStat (','@ ValueStat)*) | ReturnYield)? ';';
+ReturnYield = <yield>;
+
+// break
+FlowExpr = (<break> | <continue>)@ ';';
+
+// 定义语句
+VarAssignExpr = <var>@ VarAssignDec (','@ VarAssignDec)* ('='@ ValueStat)? ';';
+VarAssignDec = VarAssignNameDec (':'@ AllType)?;
+VarAssignNameDec = Id;
+
+// 赋值
+OpAssign = '=' | '+=' | '-=' | '*=' | '/=' | '%=';
+OpAssignExpr = PropertyValue ((','@ PropertyValue)* OpAssign@ ValueStat)? ';';
+
+// 单目运算表达式
+Op1Expr = Op1@ ValueStat ';';
+
+// throw
+ThrowExpr = <throw>@ '(' (ValueStat (','@ ValueStat)*)? ')' ';';
+
+// assert
+AssertExpr = <assert>@ '(' (ValueStat (','@ ValueStat)*)? ')' ';';
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 所有类型
+AllType = AllTypeConst? (PrimitiveType | GenericType | CustomType);
+AllTypeConst = <const>@;
+
+// 自定义类型
+CustomType = CustomTypeName CustomTypeDotId? CustomTypeTemplate?;
+CustomTypeName = Id@;
+CustomTypeDotId = '.'@ CustomTypeDotIdName;
+CustomTypeDotIdName = Id#;
+CustomTypeTemplate = '<'@ AllType (',' AllType)* '>';
+
+// 通用类型
+GenericType = GenericListType | GenericMapType | GenericFunctorType;
+GenericMapType = <Map>@ '<' (AllType (','@ AllType)?)? '>';
+GenericListType = <List>@ '<' AllType? '>';
+GenericFunctorType = <Functor>@ '<' (AllTypeConst? CoroutineModifier? '('@ GenericFunctorParamType? ')' GenericFunctorReturnType?)? '>';
+
+GenericFunctorParamOneType = GenericFunctorParamTail | AllType;
+GenericFunctorParamTail = '...';
+GenericFunctorParamType = GenericFunctorParamOneType (','@ GenericFunctorParamOneType)*;
+
+GenericFunctorReturnTail = '...';
+GenericFunctorReturnOneType = GenericFunctorReturnTail | AllType;
+GenericFunctorReturnType =  ':'@ GenericFunctorReturnOneType (','@ GenericFunctorReturnOneType)*;
+
+// 基本类型
+PrimitiveType = <bool> | <double> | <int> | <long> | <any> | <string>;
+
+//复合值///////////////////////////////////////////////////////////////////
+ValueStat = OpNewStat | OpNewListStat | BindStat | TcallStat | Op2Stat | ValueOpStat;
+ValueFactorStat = WrapValueStat | ConstValue | ReflectValue | PathsValue | PropertyValue | MethodParamTailDec | CoroutineStat;
+ValueOpStat = ValueFactorStat (Op3Stat | Op4Stat | Op5Stat | Op6Stat | Op7Stat | Op8Stat | Op9Stat | Op10Stat | Op11Stat | Op12Stat)?;
+
+// new
+OpNewStat = <new>@ (CustomType | GenericType) '(' (ValueStat (','@ ValueStat)*)? ')';
+// list 快捷表达式
+OpNewListStat = '['@ (ValueStat (','@ ValueStat)*)? ']';
+// bind
+BindStat = <bind>@ '(' (ValueStat (','@ ValueStat)*)? ')';
+// tcall
+TcallStat = <tcall>@ '(' (ValueStat (','@ ValueStat)*)? ')';
+// 值
+WrapValueStat = '('@ ValueStat? ')';
+// 常量值
+ConstValue = <true> | <false> | <null> | Text | Number;
+
+// 当前协程对象
+CoroutineStat = <co>;
+
+// 反射机制
+ReflectValue = <reflect>@ (ReflectCustomType | ReflectValueStat);
+ReflectCustomType = '<'@ CustomType? '>';
+ReflectValueStat = '('@ ValueStat? ')';
+
+// 文件宏
+PathsValue = <paths>@ '('@ Text? ')';
+
+// 属性
+PropertyValue = PropertyValueFirstType PropertyValueSuffix*;
+
+PropertyValueFirstType = PropertyValueThisType | PropertyValueCastType | PropertyValueCustomType;
+PropertyValueCastType = <cast>@ '<' AllType? '>' '(' ValueFactorStat? ')';
+PropertyValueCustomType = Id@;
+PropertyValueThisType = <this>@;
+
+PropertyValueSuffix = PropertyValueDotId | PropertyValueBracketValue | PropertyValueMethodCall;
+PropertyValueDotId = '.'@ PropertyValueDotIdName;
+PropertyValueDotIdName = Id#;
+PropertyValueBracketValue = '['@ ValueStat? ']';
+PropertyValueMethodCall = PropertyValueMethodTemplate? '('@ (ValueStat (','@ ValueStat)*)? ')';
+PropertyValueMethodTemplate = '{'@ (AllType (','@ AllType)*)? '}';
+
+// Op 类型的运算，编号越大，优先级越低///////////////////////////////////////////////////
+
+// 双目运算
+Op12 = '||';
+Op12Stat = Op12Suffix Op12SuffixEx*;
+Op12Suffix = Op12@ (ValueFactorStat | Op2Value) Op12SuffixEe*;
+Op12SuffixEe = Op3Suffix | Op4Suffix | Op5Suffix | Op6Suffix | Op7Suffix | Op8Suffix | Op9Suffix | Op10Suffix | Op11Suffix;
+Op12SuffixEx = Op12Suffix;
+
+Op11 = '&&';
+Op11Stat = Op11Suffix Op11SuffixEx*;
+Op11Suffix = Op11@ (ValueFactorStat | Op2Value) Op11SuffixEe*;
+Op11SuffixEe = Op3Suffix | Op4Suffix | Op5Suffix | Op6Suffix | Op7Suffix | Op8Suffix | Op9Suffix | Op10Suffix;
+Op11SuffixEx = Op11Suffix | Op12Suffix;
+
+Op10 = '<=' | '<' | '>=' | '>' | '==' | '!=';
+Op10Stat = Op10Suffix Op10SuffixEx*;
+Op10Suffix = Op10@ (ValueFactorStat | Op2Value) Op10SuffixEe*;
+Op10SuffixEe = Op3Suffix | Op4Suffix | Op5Suffix | Op6Suffix | Op7Suffix | Op8Suffix | Op9Suffix;
+Op10SuffixEx = Op10Suffix | Op11Suffix | Op12Suffix;
+
+Op9 = '|';
+Op9Stat = Op9Suffix Op9SuffixEx*;
+Op9Suffix = Op9@ (ValueFactorStat | Op2Value) Op9SuffixEe*;
+Op9SuffixEe = Op3Suffix | Op4Suffix | Op5Suffix | Op6Suffix | Op7Suffix | Op8Suffix;
+Op9SuffixEx = Op9Suffix | Op10Suffix | Op11Suffix | Op12Suffix;
+
+Op8 = '^';
+Op8Stat = Op8Suffix Op8SuffixEx*;
+Op8Suffix = Op8@ (ValueFactorStat | Op2Value) Op8SuffixEe*;
+Op8SuffixEe = Op3Suffix | Op4Suffix | Op5Suffix | Op6Suffix | Op7Suffix;
+Op8SuffixEx = Op8Suffix | Op9Suffix | Op10Suffix | Op11Suffix | Op12Suffix;
+
+Op7 = '&';
+Op7Stat = Op7Suffix Op7SuffixEx*;
+Op7Suffix = Op7@ (ValueFactorStat | Op2Value) Op7SuffixEe*;
+Op7SuffixEe = Op3Suffix | Op4Suffix | Op5Suffix | Op6Suffix;
+Op7SuffixEx = Op7Suffix | Op8Suffix | Op9Suffix | Op10Suffix | Op11Suffix | Op12Suffix;
+
+Op6 =  '<<-' | '->>';
+Op6Stat = Op6Suffix Op6SuffixEx*;
+Op6Suffix = Op6@ (ValueFactorStat | Op2Value) Op6SuffixEe*;
+Op6SuffixEe = Op3Suffix | Op4Suffix | Op5Suffix;
+Op6SuffixEx = Op6Suffix | Op7Suffix | Op8Suffix | Op9Suffix | Op10Suffix | Op11Suffix | Op12Suffix;
+
+Op5 = '..';
+Op5Stat = Op5Suffix Op5SuffixEx*;
+Op5Suffix = Op5@ (ValueFactorStat | Op2Value) Op5SuffixEe*;
+Op5SuffixEe = Op3Suffix | Op4Suffix;
+Op5SuffixEx = Op5Suffix | Op6Suffix | Op7Suffix | Op8Suffix | Op9Suffix | Op10Suffix | Op11Suffix | Op12Suffix;
+
+Op4 = '+' | '-';
+Op4Stat = Op4Suffix Op4SuffixEx*;
+Op4Suffix = Op4@ (ValueFactorStat | Op2Value) Op4SuffixEe*;
+Op4SuffixEe = Op3Suffix;
+Op4SuffixEx = Op4Suffix | Op5Suffix | Op6Suffix | Op7Suffix | Op8Suffix | Op9Suffix | Op10Suffix | Op11Suffix | Op12Suffix;
+
+Op3 = '*' | '/' | '%';
+Op3Stat = Op3Suffix Op3SuffixEx*;
+Op3Suffix = Op3@ (ValueFactorStat | Op2Value);
+Op3SuffixEx = Op3Suffix | Op4Suffix | Op5Suffix | Op6Suffix | Op7Suffix | Op8Suffix | Op9Suffix | Op10Suffix | Op11Suffix | Op12Suffix;
+
+// 单目运算
+Op2 = '!' | '-' | '~';
+Op2Stat = Op2Value Op2SuffixEx*;
+Op2Value = Op2@ ValueFactorStat;
+Op2SuffixEx = Op3Suffix | Op4Suffix | Op5Suffix | Op6Suffix | Op7Suffix | Op8Suffix | Op9Suffix | Op10Suffix | Op11Suffix | Op12Suffix;
+
+// 优先级1 前缀自加，前缀自减 从右到左
+Op1 = '++' | '--';

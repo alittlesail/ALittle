@@ -91,6 +91,7 @@ public:
 	const char* GetHttpServerYunIp() const;
 	const char* GetHttpServerIp() const;
 	int GetHttpServerPort() const;
+	void UseFileCache(bool value) { m_use_file_cache = value; }
 
 	// handle http message
 	void HandleHttpMessage(HttpSenderPtr sender, const std::string& msg);
@@ -117,6 +118,7 @@ private:
 		, bool succeed
 		, const std::string& reason);
 
+	bool m_use_file_cache = false;
 	std::set<HttpServerPtr> m_http_server_set;
 	std::map<int, HttpSenderWeakPtr> m_id_map_http;
 

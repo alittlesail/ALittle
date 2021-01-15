@@ -54,6 +54,7 @@ void ServerSchedule::RegisterToScript()
 		.addFunction("GetHttpServerYunIp", &ServerSchedule::GetHttpServerYunIp)
 		.addFunction("GetHttpServerIp", &ServerSchedule::GetHttpServerIp)
 		.addFunction("GetHttpServerPort", &ServerSchedule::GetHttpServerPort)
+		.addFunction("UseFileCache", &ServerSchedule::UseFileCache)
 		.addFunction("HttpClose", &ServerSchedule::HttpClose)
 		.addFunction("HttpSendString", &ServerSchedule::HttpSendString)
 		.addFunction("HttpSendFile", &ServerSchedule::HttpSendFile)
@@ -358,7 +359,7 @@ void ServerSchedule::HttpSendFile(int id, const char* file_path, int start_size)
 
 	std::string content_type = CarpHttpHelper::GetContentTypeByExt(CarpFile::GetFileExtByPath(file_path));
 	std::string show_name = CarpFile::GetFileNameByPath(file_path);
-	sender->SendFile(file_path, content_type.c_str(), false, start_size, true, show_name.c_str());
+	sender->SendFile(file_path, content_type.c_str(), false, start_size, m_use_file_cache, show_name.c_str());
 }
 
 void ServerSchedule::HttpStartReceiveFile(int id, const char* file_path, int start_size)

@@ -15,3 +15,10 @@
 /lualib/socket/x64
 /lualib/sqlite3/x64
 /lualib/tinyxml2/x64
+/bin/*.pdb
+/bin/*.ilk
+/bin/*.ipdb
+/bin/*.iobj
+/bin/ALittleClientWind.exe
+/bin/ALittleClientd.exe
+/bin/ALittleServerd.exe

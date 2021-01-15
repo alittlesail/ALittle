@@ -1,8 +1,0 @@
-
-register namespace lua;
-
-public class memory
-{
-    public static create(int size) : memory {}
-    public static free(memory m) {}
-}

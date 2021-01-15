@@ -1,1 +1,0 @@
-{"usual_vscroll_bar":{"bar_background":{"width_type":1,"width_value":22,"left_size":3,"bottom_size":12,"height_type":1,"right_size":2,"top_size":1,"texture_name":"bar_button\/vbar_button_bg.png","__class":"Grid9Image","height_value":50},"type":2,"width_value":15,"__class":"ScrollBar","bar_button":{"__extends":"usual_vbar_button","__module":"AUIPlugin"},"height_value":100}}

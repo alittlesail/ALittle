@@ -46,10 +46,6 @@
 	path = ALittleIDE/Module/ALittleIDE/Other/GameLibrary/CEngine
 	url = https://github.com/alittlesail/ALittle-CEngine.git
 	branch = master
-[submodule "ALittleIDE/Module/ALittleIDE/Other/GameLibrary/GatewayServer"]
-	path = ALittleIDE/Module/ALittleIDE/Other/GameLibrary/GatewayServer
-	url = https://github.com/alittlesail/ALittle-GatewayServer.git
-	branch = master
 [submodule "ALittleIDE/Module/AUIPlugin"]
 	path = ALittleIDE/Module/AUIPlugin
 	url = https://github.com/alittlesail/ALittle-AUIPlugin.git

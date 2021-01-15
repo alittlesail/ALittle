@@ -1,1 +1,0 @@
-{"ide_tile_tab_screen":{"__extends":"scroll_screen_no_container","__module":"AUIPlugin","__childs":[{"height_type":4,"__class":"DisplayLayout","__link":"_tile_container","__target_class":["ALittleIDE","IDETileLinearContainer"],"width_type":4},{"height_type":4,"__class":"Quad","alpha":0,"width_type":4,"__link":"_tab_rb_quad"}]}}

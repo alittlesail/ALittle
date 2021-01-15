@@ -1,1 +1,0 @@
-{"ide_control_attr_dialog":{"width_value":275,"__module":"AUIPlugin","__extends":"dialog_with_close","__childs":[{"y_value":5,"y_type":4,"x_type":3,"__class":"DisplayLayout","width_type":4,"height_value":5,"height_type":4,"width_value":10,"__link":"_attr_container"}],"height_value":639}}

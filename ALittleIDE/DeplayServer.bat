@@ -1,1 +1,0 @@
-ALittleServer.exe Module/ALittleIDE/Other/GameLibrary/Core/ Module/ALittleIDE/Other/GameLibrary/Std/ Module/ALittleIDE/Other/GameLibrary/SEngine/ DeployServer,DeployServer,Module/ALittleIDE/Other/GameLibrary/DeployServer/,Module/ALittleIDE/Other/GameLibrary/DeployServer.cfg

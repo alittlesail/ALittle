@@ -6,14 +6,6 @@
 	path = asio
 	url = https://github.com/chriskohlhoff/asio.git
 	branch = master
-[submodule "ALittleIDE/Module/ALittleIDE/Other/GameLibrary/Core"]
-	path = ALittleIDE/Module/ALittleIDE/Other/GameLibrary/Core
-	url = https://github.com/alittlesail/ALittle-Core.git
-	branch = master
-[submodule "ALittleIDE/Module/ALittleIDE/Other/GameLibrary/Std"]
-	path = ALittleIDE/Module/ALittleIDE/Other/GameLibrary/Std
-	url = https://github.com/alittlesail/ALittle-Std.git
-	branch = master
 [submodule "sokol"]
 	path = sokol
 	url = https://github.com/floooh/sokol.git
@@ -37,16 +29,4 @@
 [submodule "lua"]
 	path = lua
 	url = https://github.com/alittlesail/lua.git
-	branch = master
-[submodule "ALittleIDE/Module/ALittleIDE/Other/GameLibrary/SEngine"]
-	path = ALittleIDE/Module/ALittleIDE/Other/GameLibrary/SEngine
-	url = https://github.com/alittlesail/ALittle-SEngine.git
-	branch = master
-[submodule "ALittleIDE/Module/ALittleIDE/Other/GameLibrary/CEngine"]
-	path = ALittleIDE/Module/ALittleIDE/Other/GameLibrary/CEngine
-	url = https://github.com/alittlesail/ALittle-CEngine.git
-	branch = master
-[submodule "ALittleIDE/Module/AUIPlugin"]
-	path = ALittleIDE/Module/AUIPlugin
-	url = https://github.com/alittlesail/ALittle-AUIPlugin.git
 	branch = master

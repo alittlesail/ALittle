@@ -1,5 +1,5 @@
 
-namespace Emulator;
+namespace ProtobufEmulator;
 
 public class IDETreeEnumMapBool : IDETreeLogic
 {

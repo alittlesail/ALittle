@@ -1,38 +1,38 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.Emulator == nil then _G.Emulator = {} end
-local Emulator = Emulator
+if _G.ProtobufEmulator == nil then _G.ProtobufEmulator = {} end
+local ProtobufEmulator = ProtobufEmulator
 local Lua = Lua
 local ALittle = ALittle
 local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-function Emulator.__Browser_Setup(layer_group, control, module_base_path, script_base_path)
+function ProtobufEmulator.__Browser_Setup(layer_group, control, module_base_path, script_base_path)
 	local window_width, window_height, flag, scale = ALittle.System_CalcLandscape(1200, 600, 0x00000020)
-	ALittle.System_CreateView("Emulator", window_width, window_height, flag, scale)
+	ALittle.System_CreateView("ProtobufEmulator", window_width, window_height, flag, scale)
 	ALittle.System_SetViewIcon(module_base_path .. "Other/ic_launcher.png")
-	A_ModuleSystem:LoadModule(module_base_path, "Emulator")
+	A_ModuleSystem:LoadModule(module_base_path, "ProtobufEmulator")
 end
-Emulator.__Browser_Setup = Lua.CoWrap(Emulator.__Browser_Setup)
+ProtobufEmulator.__Browser_Setup = Lua.CoWrap(ProtobufEmulator.__Browser_Setup)
 
-function Emulator.__Browser_AddModule(module_name, layer_group, module_info)
-end
-
-function Emulator.__Browser_Shutdown()
+function ProtobufEmulator.__Browser_AddModule(module_name, layer_group, module_info)
 end
 
-Emulator.g_Control = nil
-Emulator.g_LayerGroup = nil
-Emulator.g_ModuleBasePath = nil
-Emulator.g_AUIPluinControl = nil
-Emulator.g_ADeeplearningControl = nil
-Emulator.g_VersionManager = nil
-function Emulator.__Module_Setup(layer_group, control, module_base_path, script_base_path, debug)
-	Emulator.g_Control = control
-	Emulator.g_LayerGroup = layer_group
-	Emulator.g_ModuleBasePath = module_base_path
-	Emulator.g_AUIPluinControl = A_ModuleSystem:LoadPlugin("AUIPlugin")
+function ProtobufEmulator.__Browser_Shutdown()
+end
+
+ProtobufEmulator.g_Control = nil
+ProtobufEmulator.g_LayerGroup = nil
+ProtobufEmulator.g_ModuleBasePath = nil
+ProtobufEmulator.g_AUIPluinControl = nil
+ProtobufEmulator.g_ADeeplearningControl = nil
+ProtobufEmulator.g_VersionManager = nil
+function ProtobufEmulator.__Module_Setup(layer_group, control, module_base_path, script_base_path, debug)
+	ProtobufEmulator.g_Control = control
+	ProtobufEmulator.g_LayerGroup = layer_group
+	ProtobufEmulator.g_ModuleBasePath = module_base_path
+	ProtobufEmulator.g_AUIPluinControl = A_ModuleSystem:LoadPlugin("AUIPlugin")
 	if ALittle.System_GetPlatform() == "Windows" then
 		package.cpath = package.cpath .. ";./" .. module_base_path .. "Other/?.dll"
 		require("memory")
@@ -71,19 +71,19 @@ function Emulator.__Module_Setup(layer_group, control, module_base_path, script_
 	Require(script_base_path, "GUtility")
 	Require(script_base_path, "PluginSocket")
 	g_GCenter:Setup()
-	Emulator.g_VersionManager = AUIPlugin.AUIVersionManager("139.159.176.119", 1100, "alittle", "Emulator")
+	ProtobufEmulator.g_VersionManager = AUIPlugin.AUIVersionManager("139.159.176.119", 1100, "alittle", "Emulator")
 	if A_ModuleSystem:GetDebugInfo() ~= "debug" then
-		Emulator.g_VersionManager:CheckVersionUpdate()
+		ProtobufEmulator.g_VersionManager:CheckVersionUpdate()
 	end
 end
-Emulator.__Module_Setup = Lua.CoWrap(Emulator.__Module_Setup)
+ProtobufEmulator.__Module_Setup = Lua.CoWrap(ProtobufEmulator.__Module_Setup)
 
-function Emulator.__Module_Shutdown()
-	Emulator.g_VersionManager:Shutdown()
+function ProtobufEmulator.__Module_Shutdown()
+	ProtobufEmulator.g_VersionManager:Shutdown()
 	g_GCenter:Shutdown()
 end
 
-function Emulator.__Module_GetInfo(control, module_base_path, script_base_path)
+function ProtobufEmulator.__Module_GetInfo(control, module_base_path, script_base_path)
 	local info = {}
 	info.title = "Emulator"
 	info.icon = nil

@@ -1,7 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.Emulator == nil then _G.Emulator = {} end
-local Emulator = Emulator
+if _G.ProtobufEmulator == nil then _G.ProtobufEmulator = {} end
+local ProtobufEmulator = ProtobufEmulator
 local Lua = Lua
 local ALittle = ALittle
 local ___rawset = rawset
@@ -9,10 +9,10 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-assert(Emulator.IDETree, " extends class:Emulator.IDETree is nil")
-Emulator.IDETreeRepeatedMessage = Lua.Class(Emulator.IDETree, "Emulator.IDETreeRepeatedMessage")
+assert(ProtobufEmulator.IDETree, " extends class:ProtobufEmulator.IDETree is nil")
+ProtobufEmulator.IDETreeRepeatedMessage = Lua.Class(ProtobufEmulator.IDETree, "ProtobufEmulator.IDETreeRepeatedMessage")
 
-function Emulator.IDETreeRepeatedMessage:Ctor(ctrl_sys, root, parent, detail_info)
+function ProtobufEmulator.IDETreeRepeatedMessage:Ctor(ctrl_sys, root, parent, detail_info)
 	___rawset(self, "_parent", parent)
 	___rawset(self, "_detail_info", detail_info)
 	___rawset(self, "_head", ctrl_sys:CreateControl("ide_common_tree_repeated_message", self))
@@ -26,15 +26,15 @@ function Emulator.IDETreeRepeatedMessage:Ctor(ctrl_sys, root, parent, detail_inf
 	self._delete_button.disabled = root.for_show
 end
 
-function Emulator.IDETreeRepeatedMessage:GetDetailInfo()
+function ProtobufEmulator.IDETreeRepeatedMessage:GetDetailInfo()
 	return self._detail_info
 end
 
-function Emulator.IDETreeRepeatedMessage:HandleInsertClick(event)
+function ProtobufEmulator.IDETreeRepeatedMessage:HandleInsertClick(event)
 	self._parent:CreateOneBefore(self)
 end
 
-function Emulator.IDETreeRepeatedMessage:HandleDeleteClick(event)
+function ProtobufEmulator.IDETreeRepeatedMessage:HandleDeleteClick(event)
 	self._parent:Delete(self)
 end
 

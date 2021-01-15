@@ -1,7 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.Emulator == nil then _G.Emulator = {} end
-local Emulator = Emulator
+if _G.ProtobufEmulator == nil then _G.ProtobufEmulator = {} end
+local ProtobufEmulator = ProtobufEmulator
 local Lua = Lua
 local ALittle = ALittle
 local ___rawset = rawset
@@ -9,22 +9,28 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 local ___all_struct = ALittle.GetAllStruct()
 
+ALittle.RegStruct(-2063434396, "ProtobufEmulator.LogItemUserData", {
+name = "ProtobufEmulator.LogItemUserData", ns_name = "ProtobufEmulator", rl_name = "LogItemUserData", hash_code = -2063434396,
+name_list = {"msg","info","upper_name","json_content"},
+type_list = {"lua.protobuf_message","Lua.lua_socket_schedule_message_info","string","string"},
+option_map = {}
+})
 ALittle.RegStruct(1835920059, "lua.protobuf_reflection", {
 name = "lua.protobuf_reflection", ns_name = "lua", rl_name = "protobuf_reflection", hash_code = 1835920059,
 name_list = {},
 type_list = {},
 option_map = {}
 })
+ALittle.RegStruct(1825108409, "ProtobufEmulator.RootInfo", {
+name = "ProtobufEmulator.RootInfo", ns_name = "ProtobufEmulator", rl_name = "RootInfo", hash_code = 1825108409,
+name_list = {"detail_info","for_show"},
+type_list = {"ProtobufEmulator.DetailInfo","bool"},
+option_map = {}
+})
 ALittle.RegStruct(1628431371, "Lua.lua_socket_schedule_message_info", {
 name = "Lua.lua_socket_schedule_message_info", ns_name = "Lua", rl_name = "lua_socket_schedule_message_info", hash_code = 1628431371,
 name_list = {"descriptor","full_name","name"},
 type_list = {"lua.protobuf_descriptor","string","string"},
-option_map = {}
-})
-ALittle.RegStruct(1618605759, "Emulator.DetailInfo", {
-name = "Emulator.DetailInfo", ns_name = "Emulator", rl_name = "DetailInfo", hash_code = 1618605759,
-name_list = {"tree","message","reflection","info"},
-type_list = {"Emulator.IDETreeLogic","lua.protobuf_message","lua.protobuf_reflection","Lua.lua_socket_schedule_message_info"},
 option_map = {}
 })
 ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
@@ -45,12 +51,6 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(-888044440, "Emulator.LogItemUserData", {
-name = "Emulator.LogItemUserData", ns_name = "Emulator", rl_name = "LogItemUserData", hash_code = -888044440,
-name_list = {"msg","info","upper_name","json_content"},
-type_list = {"lua.protobuf_message","Lua.lua_socket_schedule_message_info","string","string"},
-option_map = {}
-})
 ALittle.RegStruct(-641444818, "ALittle.UIRButtonDownEvent", {
 name = "ALittle.UIRButtonDownEvent", ns_name = "ALittle", rl_name = "UIRButtonDownEvent", hash_code = -641444818,
 name_list = {"target","abs_x","abs_y","rel_x","rel_y","count","is_drag"},
@@ -63,10 +63,10 @@ name_list = {},
 type_list = {},
 option_map = {}
 })
-ALittle.RegStruct(398889456, "Emulator.RootInfo", {
-name = "Emulator.RootInfo", ns_name = "Emulator", rl_name = "RootInfo", hash_code = 398889456,
-name_list = {"detail_info","for_show"},
-type_list = {"Emulator.DetailInfo","bool"},
+ALittle.RegStruct(-471265202, "ProtobufEmulator.DetailInfo", {
+name = "ProtobufEmulator.DetailInfo", ns_name = "ProtobufEmulator", rl_name = "DetailInfo", hash_code = -471265202,
+name_list = {"tree","message","reflection","info"},
+type_list = {"ProtobufEmulator.IDETreeLogic","lua.protobuf_message","lua.protobuf_reflection","Lua.lua_socket_schedule_message_info"},
 option_map = {}
 })
 ALittle.RegStruct(-297098024, "lua.protobuf_descriptor", {
@@ -76,17 +76,17 @@ type_list = {},
 option_map = {}
 })
 
-Emulator.g_GProtoCache = nil
-Emulator.LoginStatus = {
+ProtobufEmulator.g_GProtoCache = nil
+ProtobufEmulator.LoginStatus = {
 	EMULATOR_IDLE = 0,
 	EMULATOR_LOGINING = 1,
 	EMULATOR_LOGINED = 2,
 }
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-Emulator.GClient = Lua.Class(ALittle.DisplayLayout, "Emulator.GClient")
+ProtobufEmulator.GClient = Lua.Class(ALittle.DisplayLayout, "ProtobufEmulator.GClient")
 
-function Emulator.GClient:Ctor(sys_ctrl)
+function ProtobufEmulator.GClient:Ctor(sys_ctrl)
 	___rawset(self, "_proto_search_item_pool", {})
 	___rawset(self, "_proto_search_group", {})
 	___rawset(self, "_detail_tree_item_pool", {})
@@ -96,34 +96,34 @@ function Emulator.GClient:Ctor(sys_ctrl)
 	___rawset(self, "_login_status", 0)
 end
 
-function Emulator.GClient:Setup()
-	Emulator.g_GProtoCache = ALittle.CreateConfigSystem(Emulator.g_ModuleBasePath .. "/ProtoCache.cfg")
-	self._log_fliter_dialog = Emulator.g_Control:CreateControl("main_log_fliter_dialog", self)
+function ProtobufEmulator.GClient:Setup()
+	ProtobufEmulator.g_GProtoCache = ALittle.CreateConfigSystem(ProtobufEmulator.g_ModuleBasePath .. "/ProtoCache.cfg")
+	self._log_fliter_dialog = ProtobufEmulator.g_Control:CreateControl("main_log_fliter_dialog", self)
 	g_GCenter._dialog_layer:AddChild(self._log_fliter_dialog)
 	self._log_fliter_dialog.visible = false
 	self._fliter_map = {}
-	local fliter_list = Emulator.g_GConfig:GetConfig("fliter_list", {})
+	local fliter_list = ProtobufEmulator.g_GConfig:GetConfig("fliter_list", {})
 	for index, fliter in ___ipairs(fliter_list) do
 		self._fliter_map[fliter] = true
 	end
-	local login_proto = Emulator.g_GConfig:GetString("login_proto", "")
+	local login_proto = ProtobufEmulator.g_GConfig:GetString("login_proto", "")
 	local msg_info = A_LuaProtobufSchedule:GetMessageInfo(login_proto)
 	if msg_info ~= nil then
-		self._login_detail_info = Emulator.Utility_CreateTreeForEdit(msg_info)
+		self._login_detail_info = ProtobufEmulator.Utility_CreateTreeForEdit(msg_info)
 		self._login_scroll_screen.container = self._login_detail_info.tree
 	end
 	self._login_button.visible = true
 	self._logout_button.visible = false
-	self._login_ip_input.text = Emulator.g_GConfig:GetString("login_ip", "127.0.0.1")
-	local data_list = Emulator.g_GConfig:GetConfig("login_ip_list", {})
+	self._login_ip_input.text = ProtobufEmulator.g_GConfig:GetString("login_ip", "127.0.0.1")
+	local data_list = ProtobufEmulator.g_GConfig:GetConfig("login_ip_list", {})
 	if ALittle.List_Find(data_list, self._login_ip_input.text) == nil then
 		ALittle.List_Push(data_list, self._login_ip_input.text)
 	end
 	self._ip_dropdown.data_list = data_list
 	self._ip_dropdown.text = ""
-	self._login_port_input.text = ALittle.String_ToString(Emulator.g_GConfig:GetInt("login_port", 0))
-	self._right_grad3_ud.up_size = Emulator.g_GConfig:GetDouble("right_grid3_up_size", self._right_grad3_ud.up_size)
-	self._main_grid3_lr.down_size = Emulator.g_GConfig:GetDouble("main_grid3_down_size", self._main_grid3_lr.down_size)
+	self._login_port_input.text = ALittle.String_ToString(ProtobufEmulator.g_GConfig:GetInt("login_port", 0))
+	self._right_grad3_ud.up_size = ProtobufEmulator.g_GConfig:GetDouble("right_grid3_up_size", self._right_grad3_ud.up_size)
+	self._main_grid3_lr.down_size = ProtobufEmulator.g_GConfig:GetDouble("main_grid3_down_size", self._main_grid3_lr.down_size)
 	self._send_button.disabled = true
 	self._json_codeedit = AUIPlugin.AUICodeEdit.Create()
 	self._json_codeedit.editable = false
@@ -131,12 +131,12 @@ function Emulator.GClient:Setup()
 	self:RefreshProtoList()
 end
 
-function Emulator.GClient:HandleIpSelectChanged(event)
+function ProtobufEmulator.GClient:HandleIpSelectChanged(event)
 	self._login_ip_input.text = self._ip_dropdown.text
 	self._ip_dropdown.text = ""
 end
 
-function Emulator.GClient:HandleSettingChanged()
+function ProtobufEmulator.GClient:HandleSettingChanged()
 	self._protobuf_scroll_screen:RemoveAllChild()
 	self._proto_search_item_pool = {}
 	self._proto_search_group = {}
@@ -149,20 +149,20 @@ function Emulator.GClient:HandleSettingChanged()
 	self._log_scroll_screen:RemoveAllChild()
 	self:RefreshLogList()
 	self._login_detail_info = nil
-	local msg_info = A_LuaProtobufSchedule:GetMessageInfo(Emulator.g_GConfig:GetString("login_proto", ""))
+	local msg_info = A_LuaProtobufSchedule:GetMessageInfo(ProtobufEmulator.g_GConfig:GetString("login_proto", ""))
 	if msg_info ~= nil then
-		self._login_detail_info = Emulator.Utility_CreateTreeForEdit(msg_info)
+		self._login_detail_info = ProtobufEmulator.Utility_CreateTreeForEdit(msg_info)
 		self._login_scroll_screen.container = self._login_detail_info.tree
 	else
 		self._login_scroll_screen.container = nil
 	end
 end
 
-function Emulator.GClient:HandleProtoSearchClick(event)
+function ProtobufEmulator.GClient:HandleProtoSearchClick(event)
 	self:RefreshProtoList()
 end
 
-function Emulator.GClient:RefreshProtoList()
+function ProtobufEmulator.GClient:RefreshProtoList()
 	local key = self._proto_search_key.text
 	key = ALittle.String_Upper(key)
 	local key_list = ALittle.String_SplitSepList(key, {" ", "\t"})
@@ -179,7 +179,7 @@ function Emulator.GClient:RefreshProtoList()
 	for index, info in ___ipairs(list) do
 		local item = self._proto_search_item_pool[info.name]
 		if item == nil then
-			item = Emulator.g_Control:CreateControl("item_radiobutton")
+			item = ProtobufEmulator.g_Control:CreateControl("item_radiobutton")
 			item.text = info.name
 			self._proto_search_item_pool[info.name] = item
 			item.drag_trans_target = self._protobuf_scroll_screen
@@ -195,11 +195,11 @@ function Emulator.GClient:RefreshProtoList()
 	self._protobuf_scroll_screen:AdjustScrollBar()
 end
 
-function Emulator.GClient:HandleProtoItemSelected(event)
+function ProtobufEmulator.GClient:HandleProtoItemSelected(event)
 	local info = event.target._user_data
 	local detail_info = self._detail_tree_item_pool[info.full_name]
 	if detail_info == nil then
-		detail_info = Emulator.Utility_CreateTreeForEdit(info)
+		detail_info = ProtobufEmulator.Utility_CreateTreeForEdit(info)
 		if detail_info == nil then
 			return
 		end
@@ -209,7 +209,7 @@ function Emulator.GClient:HandleProtoItemSelected(event)
 	self._detail_scroll_screen:AdjustScrollBar()
 end
 
-function Emulator.GClient:HandleProtoItemRButtonDown(event)
+function ProtobufEmulator.GClient:HandleProtoItemRButtonDown(event)
 	local info = event.target._user_data
 	local menu = AUIPlugin.AUIRightMenu()
 	menu:AddItem("复制名称", Lua.Bind(ALittle.System_SetClipboardText, info.name))
@@ -218,11 +218,11 @@ function Emulator.GClient:HandleProtoItemRButtonDown(event)
 	menu:Show()
 end
 
-function Emulator.GClient:HandleLogSearchClick(event)
+function ProtobufEmulator.GClient:HandleLogSearchClick(event)
 	self:RefreshLogList()
 end
 
-function Emulator.GClient:HandleLogClearClick(event)
+function ProtobufEmulator.GClient:HandleLogClearClick(event)
 	self._log_search_key.text = ""
 	self._log_item_list = {}
 	self._log_item_count = 0
@@ -231,28 +231,28 @@ function Emulator.GClient:HandleLogClearClick(event)
 	self._json_codeedit:OnClose()
 end
 
-function Emulator.GClient:HandleLogFliterClick(event)
+function ProtobufEmulator.GClient:HandleLogFliterClick(event)
 	self._log_fliter_dialog.visible = true
-	local fliter_list = Emulator.g_GConfig:GetConfig("fliter_list", {})
+	local fliter_list = ProtobufEmulator.g_GConfig:GetConfig("fliter_list", {})
 	self._log_fliter_edit.text = ALittle.String_Join(fliter_list, "\n")
 	self._log_fliter_edit:DelayFocus()
 end
 
-function Emulator.GClient:HandleLogFliterCancelClick(event)
+function ProtobufEmulator.GClient:HandleLogFliterCancelClick(event)
 	self._log_fliter_dialog.visible = false
 end
 
-function Emulator.GClient:HandleLogFliterConfirmClick(event)
+function ProtobufEmulator.GClient:HandleLogFliterConfirmClick(event)
 	self._log_fliter_dialog.visible = false
 	local fliter_list = ALittle.String_SplitSepList(self._log_fliter_edit.text, {"\r", "\n"})
-	Emulator.g_GConfig:SetConfig("fliter_list", fliter_list)
+	ProtobufEmulator.g_GConfig:SetConfig("fliter_list", fliter_list)
 	self._fliter_map = {}
 	for index, fliter in ___ipairs(fliter_list) do
 		self._fliter_map[fliter] = true
 	end
 end
 
-function Emulator.GClient:RefreshLogList()
+function ProtobufEmulator.GClient:RefreshLogList()
 	local key = self._log_search_key.text
 	key = ALittle.String_Upper(key)
 	for index, child in ___ipairs(self._log_scroll_screen.childs) do
@@ -269,7 +269,7 @@ function Emulator.GClient:RefreshLogList()
 	self._log_scroll_screen:AdjustScrollBar()
 end
 
-function Emulator.GClient:AddLogMessage(socket, msg)
+function ProtobufEmulator.GClient:AddLogMessage(socket, msg)
 	if self._client_socket ~= socket then
 		return
 	end
@@ -292,7 +292,7 @@ function Emulator.GClient:AddLogMessage(socket, msg)
 	user_data.info = A_LuaProtobufSchedule:GetMessageInfoByMessage(msg)
 	user_data.msg = protobuf.clonemessage(msg)
 	user_data.upper_name = ALittle.String_Upper(user_data.info.name)
-	local item = Emulator.g_Control:CreateControl("item_radiobutton")
+	local item = ProtobufEmulator.g_Control:CreateControl("item_radiobutton")
 	item.text = user_data.info.name
 	item.drag_trans_target = self._log_scroll_screen
 	item._user_data = user_data
@@ -312,7 +312,7 @@ function Emulator.GClient:AddLogMessage(socket, msg)
 	end
 end
 
-function Emulator.GClient:HandleLogItemSelected(event)
+function ProtobufEmulator.GClient:HandleLogItemSelected(event)
 	self._show_search_key.text = ""
 	self._cur_item_user_data = event.target._user_data
 	if self._cur_item_user_data.json_content == nil then
@@ -322,7 +322,7 @@ function Emulator.GClient:HandleLogItemSelected(event)
 	self._json_codeedit:Load("temp.json", self._cur_item_user_data.json_content, nil)
 end
 
-function Emulator.GClient:HandleProtoLogRButtonDown(event)
+function ProtobufEmulator.GClient:HandleProtoLogRButtonDown(event)
 	local info = event.target._user_data
 	local menu = AUIPlugin.AUIRightMenu()
 	menu:AddItem("复制名称", Lua.Bind(ALittle.System_SetClipboardText, info.info.name))
@@ -331,7 +331,7 @@ function Emulator.GClient:HandleProtoLogRButtonDown(event)
 	menu:Show()
 end
 
-function Emulator.GClient:HandleShowSearchClick(event)
+function ProtobufEmulator.GClient:HandleShowSearchClick(event)
 	if self._cur_item_user_data == nil then
 		return
 	end
@@ -339,16 +339,16 @@ function Emulator.GClient:HandleShowSearchClick(event)
 	self._json_codeedit:FindNext(key)
 end
 
-function Emulator.GClient:AddFliter(full_name)
+function ProtobufEmulator.GClient:AddFliter(full_name)
 	self._fliter_map[full_name] = true
 	local list = {}
 	for name, _ in ___pairs(self._fliter_map) do
 		ALittle.List_Push(list, name)
 	end
-	Emulator.g_GConfig:SetConfig("fliter_list", list)
+	ProtobufEmulator.g_GConfig:SetConfig("fliter_list", list)
 end
 
-function Emulator.GClient:HandleClientSocketDisconnected(socket)
+function ProtobufEmulator.GClient:HandleClientSocketDisconnected(socket)
 	self._client_socket = nil
 	self._send_button.disabled = true
 	self._login_button.visible = true
@@ -365,7 +365,7 @@ function Emulator.GClient:HandleClientSocketDisconnected(socket)
 	self._login_status = 0
 end
 
-function Emulator.GClient:HandleSendClick(event)
+function ProtobufEmulator.GClient:HandleSendClick(event)
 	local tree = self._detail_scroll_screen.container
 	if tree == nil then
 		return
@@ -376,7 +376,7 @@ function Emulator.GClient:HandleSendClick(event)
 	end
 end
 
-function Emulator.GClient:HandleLoginClick(event)
+function ProtobufEmulator.GClient:HandleLoginClick(event)
 	local ip = self._login_ip_input.text
 	local port = ALittle.Math_ToInt(self._login_port_input.text)
 	if port == nil or port <= 0 then
@@ -395,13 +395,13 @@ function Emulator.GClient:HandleLoginClick(event)
 		g_AUITool:ShowNotice("提示", "当前已登录，请先断开")
 		return
 	end
-	Emulator.g_GConfig:SetConfig("login_ip", ip)
-	Emulator.g_GConfig:SetConfig("login_port", port)
-	local data_list = ALittle.List_Copy(Emulator.g_GConfig:GetConfig("login_ip_list", {}))
+	ProtobufEmulator.g_GConfig:SetConfig("login_ip", ip)
+	ProtobufEmulator.g_GConfig:SetConfig("login_port", port)
+	local data_list = ALittle.List_Copy(ProtobufEmulator.g_GConfig:GetConfig("login_ip_list", {}))
 	if ALittle.List_Find(data_list, ip) == nil then
 		ALittle.List_Push(data_list, ip)
 	end
-	Emulator.g_GConfig:SetConfig("login_ip_list", data_list)
+	ProtobufEmulator.g_GConfig:SetConfig("login_ip_list", data_list)
 	self._ip_dropdown.data_list = data_list
 	self._ip_dropdown.text = ""
 	self._login_button.visible = false
@@ -436,9 +436,9 @@ function Emulator.GClient:HandleLoginClick(event)
 		self._logout_button.visible = false
 	end
 end
-Emulator.GClient.HandleLoginClick = Lua.CoWrap(Emulator.GClient.HandleLoginClick)
+ProtobufEmulator.GClient.HandleLoginClick = Lua.CoWrap(ProtobufEmulator.GClient.HandleLoginClick)
 
-function Emulator.GClient:HandleLogoutClick(event)
+function ProtobufEmulator.GClient:HandleLogoutClick(event)
 	if self._client_socket ~= nil then
 		self._client_socket:Close()
 		self._client_socket = nil
@@ -458,31 +458,31 @@ function Emulator.GClient:HandleLogoutClick(event)
 	self._login_status = 0
 end
 
-function Emulator.GClient:HandleDragRightQuadUD(event)
+function ProtobufEmulator.GClient:HandleDragRightQuadUD(event)
 	self._right_grad3_ud.up_size = self._right_grad3_ud.up_size + (event.delta_y)
 end
 
-function Emulator.GClient:HandleDragEndRightQuadUD(event)
-	Emulator.g_GConfig:SetConfig("right_grid3_up_size", self._right_grad3_ud.up_size)
+function ProtobufEmulator.GClient:HandleDragEndRightQuadUD(event)
+	ProtobufEmulator.g_GConfig:SetConfig("right_grid3_up_size", self._right_grad3_ud.up_size)
 end
 
-function Emulator.GClient:HandleDragRightQuadLR(event)
+function ProtobufEmulator.GClient:HandleDragRightQuadLR(event)
 	self._main_grid3_lr.down_size = self._main_grid3_lr.down_size - (event.delta_x)
 end
 
-function Emulator.GClient:HandleDragEndRightQuadLR(event)
-	Emulator.g_GConfig:SetConfig("main_grid3_down_size", self._main_grid3_lr.down_size)
+function ProtobufEmulator.GClient:HandleDragEndRightQuadLR(event)
+	ProtobufEmulator.g_GConfig:SetConfig("main_grid3_down_size", self._main_grid3_lr.down_size)
 end
 
-function Emulator.GClient:HandleSetVDragCursor(event)
+function ProtobufEmulator.GClient:HandleSetVDragCursor(event)
 	ALittle.System_SetVDragCursor()
 end
 
-function Emulator.GClient:HandleSetHDragCursor(event)
+function ProtobufEmulator.GClient:HandleSetHDragCursor(event)
 	ALittle.System_SetHDragCursor()
 end
 
-function Emulator.GClient:HandleSetNormalCursor(event)
+function ProtobufEmulator.GClient:HandleSetNormalCursor(event)
 	ALittle.System_SetNormalCursor()
 end
 

@@ -1,7 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.Emulator == nil then _G.Emulator = {} end
-local Emulator = Emulator
+if _G.ProtobufEmulator == nil then _G.ProtobufEmulator = {} end
+local ProtobufEmulator = ProtobufEmulator
 local Lua = Lua
 local ALittle = ALittle
 local ___rawset = rawset
@@ -9,51 +9,51 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-Emulator.RobotStep = Lua.Class(nil, "Emulator.RobotStep")
+ProtobufEmulator.RobotStep = Lua.Class(nil, "ProtobufEmulator.RobotStep")
 
-function Emulator.RobotStep:Ctor(manager, info)
+function ProtobufEmulator.RobotStep:Ctor(manager, info)
 	___rawset(self, "_manager", manager)
 	___rawset(self, "_info", info)
 end
 
-function Emulator.RobotStep:ReceiveMessage(msg)
+function ProtobufEmulator.RobotStep:ReceiveMessage(msg)
 end
 
-function Emulator.RobotStep:GetMessage()
+function ProtobufEmulator.RobotStep:GetMessage()
 	return nil
 end
 
-function Emulator.RobotStep:Execute()
+function ProtobufEmulator.RobotStep:Execute()
 	return true
 end
 
-function Emulator.RobotStep:Trace()
+function ProtobufEmulator.RobotStep:Trace()
 	local ref = (self).__class
 	g_GCenter._grobot:AddLog(ref.__name)
 end
 
-function Emulator.RobotStep.__getter:info()
+function ProtobufEmulator.RobotStep.__getter:info()
 	return self._info
 end
 
-function Emulator.RobotStep:Clear()
+function ProtobufEmulator.RobotStep:Clear()
 end
 
-assert(Emulator.RobotStep, " extends class:Emulator.RobotStep is nil")
-Emulator.RobotStepStart = Lua.Class(Emulator.RobotStep, "Emulator.RobotStepStart")
+assert(ProtobufEmulator.RobotStep, " extends class:ProtobufEmulator.RobotStep is nil")
+ProtobufEmulator.RobotStepStart = Lua.Class(ProtobufEmulator.RobotStep, "ProtobufEmulator.RobotStepStart")
 
-function Emulator.RobotStepStart:Execute()
+function ProtobufEmulator.RobotStepStart:Execute()
 	return true
 end
 
-function Emulator.RobotStepStart:Trace()
+function ProtobufEmulator.RobotStepStart:Trace()
 	g_GCenter._grobot:AddLog("开始")
 end
 
-assert(Emulator.RobotStep, " extends class:Emulator.RobotStep is nil")
-Emulator.RobotStepReceiveMessage = Lua.Class(Emulator.RobotStep, "Emulator.RobotStepReceiveMessage")
+assert(ProtobufEmulator.RobotStep, " extends class:ProtobufEmulator.RobotStep is nil")
+ProtobufEmulator.RobotStepReceiveMessage = Lua.Class(ProtobufEmulator.RobotStep, "ProtobufEmulator.RobotStepReceiveMessage")
 
-function Emulator.RobotStepReceiveMessage:ReceiveMessage(msg)
+function ProtobufEmulator.RobotStepReceiveMessage:ReceiveMessage(msg)
 	local descriptor = protobuf.message_getdescriptor(msg)
 	if descriptor == nil then
 		return
@@ -95,39 +95,39 @@ function Emulator.RobotStepReceiveMessage:ReceiveMessage(msg)
 	self._manager:NextStep()
 end
 
-function Emulator.RobotStepReceiveMessage:Trace()
+function ProtobufEmulator.RobotStepReceiveMessage:Trace()
 	g_GCenter._grobot:AddLog("等待消息:" .. self._info.full_name)
 end
 
-function Emulator.RobotStepReceiveMessage:GetMessage()
+function ProtobufEmulator.RobotStepReceiveMessage:GetMessage()
 	return self._message
 end
 
-function Emulator.RobotStepReceiveMessage:Execute()
+function ProtobufEmulator.RobotStepReceiveMessage:Execute()
 	return false
 end
 
-assert(Emulator.RobotStep, " extends class:Emulator.RobotStep is nil")
-Emulator.RobotStepLog = Lua.Class(Emulator.RobotStep, "Emulator.RobotStepLog")
+assert(ProtobufEmulator.RobotStep, " extends class:ProtobufEmulator.RobotStep is nil")
+ProtobufEmulator.RobotStepLog = Lua.Class(ProtobufEmulator.RobotStep, "ProtobufEmulator.RobotStepLog")
 
-function Emulator.RobotStepLog:Execute()
+function ProtobufEmulator.RobotStepLog:Execute()
 	if self._info.log ~= nil then
 		g_GCenter._grobot:AddLog(self._manager.player_id .. ":" .. self._info.log)
 	end
 	return true
 end
 
-function Emulator.RobotStepLog:Trace()
+function ProtobufEmulator.RobotStepLog:Trace()
 end
 
-assert(Emulator.RobotStep, " extends class:Emulator.RobotStep is nil")
-Emulator.RobotStepSendMessage = Lua.Class(Emulator.RobotStep, "Emulator.RobotStepSendMessage")
+assert(ProtobufEmulator.RobotStep, " extends class:ProtobufEmulator.RobotStep is nil")
+ProtobufEmulator.RobotStepSendMessage = Lua.Class(ProtobufEmulator.RobotStep, "ProtobufEmulator.RobotStepSendMessage")
 
-function Emulator.RobotStepSendMessage:Ctor(manager, info)
+function ProtobufEmulator.RobotStepSendMessage:Ctor(manager, info)
 	___rawset(self, "_message", A_LuaProtobufSchedule:CreateMessageByJson(info.full_name, info.message_json))
 end
 
-function Emulator.RobotStepSendMessage:Execute()
+function ProtobufEmulator.RobotStepSendMessage:Execute()
 	if self._info.cmd_list[1] == nil then
 		self._manager.socket:SendMessage(self._message)
 		return true
@@ -194,61 +194,61 @@ function Emulator.RobotStepSendMessage:Execute()
 	return true
 end
 
-function Emulator.RobotStepSendMessage:Trace()
+function ProtobufEmulator.RobotStepSendMessage:Trace()
 	g_GCenter._grobot:AddLog("发送消息:" .. self._info.full_name)
 end
 
-function Emulator.RobotStepSendMessage:GetMessage()
+function ProtobufEmulator.RobotStepSendMessage:GetMessage()
 	return self._message
 end
 
-assert(Emulator.RobotStep, " extends class:Emulator.RobotStep is nil")
-Emulator.RobotStepDelay = Lua.Class(Emulator.RobotStep, "Emulator.RobotStepDelay")
+assert(ProtobufEmulator.RobotStep, " extends class:ProtobufEmulator.RobotStep is nil")
+ProtobufEmulator.RobotStepDelay = Lua.Class(ProtobufEmulator.RobotStep, "ProtobufEmulator.RobotStepDelay")
 
-function Emulator.RobotStepDelay:Execute()
+function ProtobufEmulator.RobotStepDelay:Execute()
 	self:Clear()
 	self._loop = ALittle.LoopTimer(Lua.Bind(self._manager.NextStep, self._manager), self._info.delay_ms)
 	self._loop:Start()
 	return false
 end
 
-function Emulator.RobotStepDelay:Trace()
+function ProtobufEmulator.RobotStepDelay:Trace()
 	g_GCenter._grobot:AddLog("延迟:" .. self._info.delay_ms)
 end
 
-function Emulator.RobotStepDelay:Clear()
+function ProtobufEmulator.RobotStepDelay:Clear()
 	if self._loop ~= nil then
 		self._loop:Stop()
 		self._loop = nil
 	end
 end
 
-Emulator.RobotStepManager = Lua.Class(nil, "Emulator.RobotStepManager")
+ProtobufEmulator.RobotStepManager = Lua.Class(nil, "ProtobufEmulator.RobotStepManager")
 
-function Emulator.RobotStepManager:Ctor(player_id, socket, file, trace)
+function ProtobufEmulator.RobotStepManager:Ctor(player_id, socket, file, trace)
 	___rawset(self, "_trace", trace)
 	___rawset(self, "_player_id", player_id)
 	___rawset(self, "_socket", socket)
 	___rawset(self, "_step_map", {})
 	___rawset(self, "_unique_map", {})
 	do
-		local step = Emulator.RobotStepStart(self, file.start_step)
+		local step = ProtobufEmulator.RobotStepStart(self, file.start_step)
 		self._step_map[file.start_step.id] = step
 		___rawset(self, "_cur_step", step)
 	end
 	for id, info in ___pairs(file.step_map) do
 		local step = nil
 		if info.type == 1 then
-			step = Emulator.RobotStepReceiveMessage(self, info)
+			step = ProtobufEmulator.RobotStepReceiveMessage(self, info)
 		elseif info.type == 2 then
-			step = Emulator.RobotStepSendMessage(self, info)
+			step = ProtobufEmulator.RobotStepSendMessage(self, info)
 		elseif info.type == 3 then
-			step = Emulator.RobotStepDelay(self, info)
+			step = ProtobufEmulator.RobotStepDelay(self, info)
 		elseif info.type == 4 then
-			step = Emulator.RobotStepStart(self, info)
+			step = ProtobufEmulator.RobotStepStart(self, info)
 			___rawset(self, "_cur_step", step)
 		elseif info.type == 5 then
-			step = Emulator.RobotStepLog(self, info)
+			step = ProtobufEmulator.RobotStepLog(self, info)
 		end
 		if step ~= nil then
 			self._step_map[id] = step
@@ -259,15 +259,15 @@ function Emulator.RobotStepManager:Ctor(player_id, socket, file, trace)
 	end
 end
 
-function Emulator.RobotStepManager.__getter:player_id()
+function ProtobufEmulator.RobotStepManager.__getter:player_id()
 	return self._player_id
 end
 
-function Emulator.RobotStepManager.__getter:trace()
+function ProtobufEmulator.RobotStepManager.__getter:trace()
 	return self._trace
 end
 
-function Emulator.RobotStepManager:GetMessage(unique_id)
+function ProtobufEmulator.RobotStepManager:GetMessage(unique_id)
 	if unique_id == nil then
 		return nil
 	end
@@ -278,11 +278,11 @@ function Emulator.RobotStepManager:GetMessage(unique_id)
 	return step:GetMessage()
 end
 
-function Emulator.RobotStepManager:Start()
+function ProtobufEmulator.RobotStepManager:Start()
 	self:NextStep()
 end
 
-function Emulator.RobotStepManager:Clear()
+function ProtobufEmulator.RobotStepManager:Clear()
 	if self._timer ~= nil then
 		self._timer:Stop()
 		self._timer = nil
@@ -293,11 +293,11 @@ function Emulator.RobotStepManager:Clear()
 	self._step_map = {}
 end
 
-function Emulator.RobotStepManager.__getter:socket()
+function ProtobufEmulator.RobotStepManager.__getter:socket()
 	return self._socket
 end
 
-function Emulator.RobotStepManager:NextStep()
+function ProtobufEmulator.RobotStepManager:NextStep()
 	if self._timer ~= nil then
 		self._timer:Stop()
 		self._timer = nil
@@ -323,7 +323,7 @@ function Emulator.RobotStepManager:NextStep()
 	self._timer:Start()
 end
 
-function Emulator.RobotStepManager:ReceiveMessage(msg)
+function ProtobufEmulator.RobotStepManager:ReceiveMessage(msg)
 	if self._cur_step == nil then
 		return
 	end

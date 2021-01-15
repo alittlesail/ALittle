@@ -1,5 +1,5 @@
 
-namespace Emulator;
+namespace ProtobufEmulator;
 
 protected enum RobotStepType
 {

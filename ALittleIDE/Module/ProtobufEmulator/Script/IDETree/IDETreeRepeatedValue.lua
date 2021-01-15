@@ -1,7 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.Emulator == nil then _G.Emulator = {} end
-local Emulator = Emulator
+if _G.ProtobufEmulator == nil then _G.ProtobufEmulator = {} end
+local ProtobufEmulator = ProtobufEmulator
 local Lua = Lua
 local ALittle = ALittle
 local ___rawset = rawset
@@ -9,10 +9,10 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-assert(Emulator.IDETreeLogic, " extends class:Emulator.IDETreeLogic is nil")
-Emulator.IDETreeRepeatedValue = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETreeRepeatedValue")
+assert(ProtobufEmulator.IDETreeLogic, " extends class:ProtobufEmulator.IDETreeLogic is nil")
+ProtobufEmulator.IDETreeRepeatedValue = Lua.Class(ProtobufEmulator.IDETreeLogic, "ProtobufEmulator.IDETreeRepeatedValue")
 
-function Emulator.IDETreeRepeatedValue:Ctor(ctrl_sys, root, parent, rflct, msg, field, index)
+function ProtobufEmulator.IDETreeRepeatedValue:Ctor(ctrl_sys, root, parent, rflct, msg, field, index)
 	___rawset(self, "_parent", parent)
 	___rawset(self, "_rflct", rflct)
 	___rawset(self, "_msg", msg)
@@ -35,7 +35,7 @@ function Emulator.IDETreeRepeatedValue:Ctor(ctrl_sys, root, parent, rflct, msg, 
 	self._delete_button.disabled = root.for_show
 end
 
-function Emulator.IDETreeRepeatedValue:RefreshValue(index)
+function ProtobufEmulator.IDETreeRepeatedValue:RefreshValue(index)
 	if self._cpp_type == 1 then
 		return protobuf.reflection_getrepeatedint32(self._rflct, self._msg, self._field, index)
 	elseif self._cpp_type == 3 then
@@ -54,7 +54,7 @@ function Emulator.IDETreeRepeatedValue:RefreshValue(index)
 	return nil
 end
 
-function Emulator.IDETreeRepeatedValue:HandleInputFocusOut(event)
+function ProtobufEmulator.IDETreeRepeatedValue:HandleInputFocusOut(event)
 	local text = self._value_input.text
 	local index = self._parent:GetChildIndex(self) - 1
 	if self._cpp_type == 1 then
@@ -77,11 +77,11 @@ function Emulator.IDETreeRepeatedValue:HandleInputFocusOut(event)
 	self:Save()
 end
 
-function Emulator.IDETreeRepeatedValue:HandleInsertClick(event)
+function ProtobufEmulator.IDETreeRepeatedValue:HandleInsertClick(event)
 	self._parent:CreateOneBefore(self)
 end
 
-function Emulator.IDETreeRepeatedValue:HandleDeleteClick(event)
+function ProtobufEmulator.IDETreeRepeatedValue:HandleDeleteClick(event)
 	self._parent:Delete(self)
 end
 

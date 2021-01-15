@@ -1,7 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.Emulator == nil then _G.Emulator = {} end
-local Emulator = Emulator
+if _G.ProtobufEmulator == nil then _G.ProtobufEmulator = {} end
+local ProtobufEmulator = ProtobufEmulator
 local Lua = Lua
 local ALittle = ALittle
 local ___rawset = rawset
@@ -22,10 +22,10 @@ type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
 
-assert(Emulator.IDETreeLogic, " extends class:Emulator.IDETreeLogic is nil")
-Emulator.IDETree = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETree")
+assert(ProtobufEmulator.IDETreeLogic, " extends class:ProtobufEmulator.IDETreeLogic is nil")
+ProtobufEmulator.IDETree = Lua.Class(ProtobufEmulator.IDETreeLogic, "ProtobufEmulator.IDETree")
 
-function Emulator.IDETree:Ctor(ctrl_sys, root)
+function ProtobufEmulator.IDETree:Ctor(ctrl_sys, root)
 	___rawset(self, "_body", ALittle.Linear(self._ctrl_sys))
 	self._body.type = 2
 	self._body.x = 8
@@ -33,7 +33,7 @@ function Emulator.IDETree:Ctor(ctrl_sys, root)
 	self._body:AddEventListener(___all_struct[-431205740], self, self.HandleChildResize)
 end
 
-function Emulator.IDETree:Init()
+function ProtobufEmulator.IDETree:Init()
 	self._body.y = self._head.height
 	self._body.width = self._head.width
 	self._item_checkbutton.selected = true
@@ -43,18 +43,18 @@ function Emulator.IDETree:Init()
 	self._upper_description = ALittle.String_Upper(self._item_title.text)
 end
 
-function Emulator.IDETree:HandleLButtonDown(event)
+function ProtobufEmulator.IDETree:HandleLButtonDown(event)
 	if event.count == 1 then
 		return
 	end
 	self.fold = not self.fold
 end
 
-function Emulator.IDETree:IsTree()
+function ProtobufEmulator.IDETree:IsTree()
 	return true
 end
 
-function Emulator.IDETree:SearchBegin()
+function ProtobufEmulator.IDETree:SearchBegin()
 	self.fold = false
 	self.light = false
 	for k, child in ___ipairs(self._body.childs) do
@@ -62,7 +62,7 @@ function Emulator.IDETree:SearchBegin()
 	end
 end
 
-function Emulator.IDETree:SearchDescription(name, list)
+function ProtobufEmulator.IDETree:SearchDescription(name, list)
 	if list == nil then
 		list = {}
 	end
@@ -75,44 +75,44 @@ function Emulator.IDETree:SearchDescription(name, list)
 	return list
 end
 
-function Emulator.IDETree:HandleChildResize(event)
+function ProtobufEmulator.IDETree:HandleChildResize(event)
 	self:DispatchEvent(___all_struct[-431205740], {})
 end
 
-function Emulator.IDETree:HandleHeadChanged(event)
+function ProtobufEmulator.IDETree:HandleHeadChanged(event)
 	self._body.visible = event.target.selected
 	self:DispatchEvent(___all_struct[-431205740], {})
 end
 
-function Emulator.IDETree:GetChildIndex(child)
+function ProtobufEmulator.IDETree:GetChildIndex(child)
 	return self._body:GetChildIndex(child)
 end
 
-function Emulator.IDETree:SetChildIndex(child, index)
+function ProtobufEmulator.IDETree:SetChildIndex(child, index)
 	return self._body:SetChildIndex(child, index)
 end
 
-function Emulator.IDETree:GetChildByIndex(index)
+function ProtobufEmulator.IDETree:GetChildByIndex(index)
 	return self._body:GetChildByIndex(index)
 end
 
-function Emulator.IDETree:GetChildIndex(child)
+function ProtobufEmulator.IDETree:GetChildIndex(child)
 	return self._body:GetChildIndex(child)
 end
 
-function Emulator.IDETree.__getter:childs()
+function ProtobufEmulator.IDETree.__getter:childs()
 	return self._body.childs
 end
 
-function Emulator.IDETree.__getter:child_count()
+function ProtobufEmulator.IDETree.__getter:child_count()
 	return self._body.child_count
 end
 
-function Emulator.IDETree:HasChild(child)
+function ProtobufEmulator.IDETree:HasChild(child)
 	return self._body:HasChild(child)
 end
 
-function Emulator.IDETree:AddChild(child, index)
+function ProtobufEmulator.IDETree:AddChild(child, index)
 	if self._body.width < child.width then
 		self._body.width = child.width
 	end
@@ -124,7 +124,7 @@ function Emulator.IDETree:AddChild(child, index)
 	return true
 end
 
-function Emulator.IDETree:RemoveChild(child)
+function ProtobufEmulator.IDETree:RemoveChild(child)
 	if self._body:RemoveChild(child) == false then
 		return false
 	end
@@ -132,12 +132,12 @@ function Emulator.IDETree:RemoveChild(child)
 	return true
 end
 
-function Emulator.IDETree:RemoveAllChild()
+function ProtobufEmulator.IDETree:RemoveAllChild()
 	self._body:RemoveAllChild()
 	self:DispatchEvent(___all_struct[-431205740], {})
 end
 
-function Emulator.IDETree.__getter:width()
+function ProtobufEmulator.IDETree.__getter:width()
 	local head_width = 0.0
 	if self._head ~= nil then
 		head_width = self._head.width
@@ -160,7 +160,7 @@ function Emulator.IDETree.__getter:width()
 	return body_width
 end
 
-function Emulator.IDETree.__getter:height()
+function ProtobufEmulator.IDETree.__getter:height()
 	local head_height = 0.0
 	if self._head ~= nil then
 		head_height = self._head.height
@@ -171,11 +171,11 @@ function Emulator.IDETree.__getter:height()
 	return head_height
 end
 
-function Emulator.IDETree.__getter:fold()
+function ProtobufEmulator.IDETree.__getter:fold()
 	return self._body.visible
 end
 
-function Emulator.IDETree.__setter:fold(value)
+function ProtobufEmulator.IDETree.__setter:fold(value)
 	if value == self._body.visible then
 		return
 	end
@@ -184,11 +184,11 @@ function Emulator.IDETree.__setter:fold(value)
 	self:DispatchEvent(___all_struct[-431205740], {})
 end
 
-function Emulator.IDETree.__getter:max_right()
+function ProtobufEmulator.IDETree.__getter:max_right()
 	return self.width
 end
 
-function Emulator.IDETree.__getter:max_bottom()
+function ProtobufEmulator.IDETree.__getter:max_bottom()
 	return self.height
 end
 

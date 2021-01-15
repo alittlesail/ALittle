@@ -1,7 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.Emulator == nil then _G.Emulator = {} end
-local Emulator = Emulator
+if _G.ProtobufEmulator == nil then _G.ProtobufEmulator = {} end
+local ProtobufEmulator = ProtobufEmulator
 local Lua = Lua
 local ALittle = ALittle
 local ___rawset = rawset
@@ -9,10 +9,10 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-assert(Emulator.IDETree, " extends class:Emulator.IDETree is nil")
-Emulator.IDETreeRepeated = Lua.Class(Emulator.IDETree, "Emulator.IDETreeRepeated")
+assert(ProtobufEmulator.IDETree, " extends class:ProtobufEmulator.IDETree is nil")
+ProtobufEmulator.IDETreeRepeated = Lua.Class(ProtobufEmulator.IDETree, "ProtobufEmulator.IDETreeRepeated")
 
-function Emulator.IDETreeRepeated:Ctor(ctrl_sys, root, field_name, rflct, msg, field)
+function ProtobufEmulator.IDETreeRepeated:Ctor(ctrl_sys, root, field_name, rflct, msg, field)
 	___rawset(self, "_rflct", rflct)
 	___rawset(self, "_msg", msg)
 	___rawset(self, "_field", field)
@@ -25,7 +25,7 @@ function Emulator.IDETreeRepeated:Ctor(ctrl_sys, root, field_name, rflct, msg, f
 		local index = 0
 		while true do
 			if not(index < value_count) then break end
-			self:AddChild(Emulator.IDETreeRepeatedBool(Emulator.g_Control, self._root, self, rflct, msg, field, index))
+			self:AddChild(ProtobufEmulator.IDETreeRepeatedBool(ProtobufEmulator.g_Control, self._root, self, rflct, msg, field, index))
 			index = index+(1)
 		end
 	elseif self._cpp_type == 1 then
@@ -33,7 +33,7 @@ function Emulator.IDETreeRepeated:Ctor(ctrl_sys, root, field_name, rflct, msg, f
 		local index = 0
 		while true do
 			if not(index < value_count) then break end
-			self:AddChild(Emulator.IDETreeRepeatedValue(Emulator.g_Control, self._root, self, rflct, msg, field, index))
+			self:AddChild(ProtobufEmulator.IDETreeRepeatedValue(ProtobufEmulator.g_Control, self._root, self, rflct, msg, field, index))
 			index = index+(1)
 		end
 	elseif self._cpp_type == 3 then
@@ -41,7 +41,7 @@ function Emulator.IDETreeRepeated:Ctor(ctrl_sys, root, field_name, rflct, msg, f
 		local index = 0
 		while true do
 			if not(index < value_count) then break end
-			self:AddChild(Emulator.IDETreeRepeatedValue(Emulator.g_Control, self._root, self, rflct, msg, field, index))
+			self:AddChild(ProtobufEmulator.IDETreeRepeatedValue(ProtobufEmulator.g_Control, self._root, self, rflct, msg, field, index))
 			index = index+(1)
 		end
 	elseif self._cpp_type == 2 then
@@ -49,7 +49,7 @@ function Emulator.IDETreeRepeated:Ctor(ctrl_sys, root, field_name, rflct, msg, f
 		local index = 0
 		while true do
 			if not(index < value_count) then break end
-			self:AddChild(Emulator.IDETreeRepeatedValue(Emulator.g_Control, self._root, self, rflct, msg, field, index))
+			self:AddChild(ProtobufEmulator.IDETreeRepeatedValue(ProtobufEmulator.g_Control, self._root, self, rflct, msg, field, index))
 			index = index+(1)
 		end
 	elseif self._cpp_type == 4 then
@@ -57,7 +57,7 @@ function Emulator.IDETreeRepeated:Ctor(ctrl_sys, root, field_name, rflct, msg, f
 		local index = 0
 		while true do
 			if not(index < value_count) then break end
-			self:AddChild(Emulator.IDETreeRepeatedValue(Emulator.g_Control, self._root, self, rflct, msg, field, index))
+			self:AddChild(ProtobufEmulator.IDETreeRepeatedValue(ProtobufEmulator.g_Control, self._root, self, rflct, msg, field, index))
 			index = index+(1)
 		end
 	elseif self._cpp_type == 5 then
@@ -65,7 +65,7 @@ function Emulator.IDETreeRepeated:Ctor(ctrl_sys, root, field_name, rflct, msg, f
 		local index = 0
 		while true do
 			if not(index < value_count) then break end
-			self:AddChild(Emulator.IDETreeRepeatedValue(Emulator.g_Control, self._root, self, rflct, msg, field, index))
+			self:AddChild(ProtobufEmulator.IDETreeRepeatedValue(ProtobufEmulator.g_Control, self._root, self, rflct, msg, field, index))
 			index = index+(1)
 		end
 	elseif self._cpp_type == 6 then
@@ -73,7 +73,7 @@ function Emulator.IDETreeRepeated:Ctor(ctrl_sys, root, field_name, rflct, msg, f
 		local index = 0
 		while true do
 			if not(index < value_count) then break end
-			self:AddChild(Emulator.IDETreeRepeatedValue(Emulator.g_Control, self._root, self, rflct, msg, field, index))
+			self:AddChild(ProtobufEmulator.IDETreeRepeatedValue(ProtobufEmulator.g_Control, self._root, self, rflct, msg, field, index))
 			index = index+(1)
 		end
 	elseif self._cpp_type == 8 then
@@ -81,7 +81,7 @@ function Emulator.IDETreeRepeated:Ctor(ctrl_sys, root, field_name, rflct, msg, f
 		local index = 0
 		while true do
 			if not(index < value_count) then break end
-			self:AddChild(Emulator.IDETreeRepeatedEnum(Emulator.g_Control, self._root, self, rflct, msg, field, index))
+			self:AddChild(ProtobufEmulator.IDETreeRepeatedEnum(ProtobufEmulator.g_Control, self._root, self, rflct, msg, field, index))
 			index = index+(1)
 		end
 	elseif self._cpp_type == 9 then
@@ -89,7 +89,7 @@ function Emulator.IDETreeRepeated:Ctor(ctrl_sys, root, field_name, rflct, msg, f
 		local index = 0
 		while true do
 			if not(index < value_count) then break end
-			self:AddChild(Emulator.IDETreeRepeatedValue(Emulator.g_Control, self._root, self, rflct, msg, field, index))
+			self:AddChild(ProtobufEmulator.IDETreeRepeatedValue(ProtobufEmulator.g_Control, self._root, self, rflct, msg, field, index))
 			index = index+(1)
 		end
 	elseif self._cpp_type == 10 then
@@ -100,7 +100,7 @@ function Emulator.IDETreeRepeated:Ctor(ctrl_sys, root, field_name, rflct, msg, f
 		while true do
 			if not(index < value_count) then break end
 			local value = protobuf.reflection_getrepeatedmessage(rflct, msg, field, index)
-			self:AddChild(Emulator.UtilityCreateTreeRepeatedMessage(self._root, self, value))
+			self:AddChild(ProtobufEmulator.UtilityCreateTreeRepeatedMessage(self._root, self, value))
 			index = index+(1)
 		end
 	end
@@ -111,53 +111,53 @@ function Emulator.IDETreeRepeated:Ctor(ctrl_sys, root, field_name, rflct, msg, f
 	self._add_button.disabled = root.for_show
 end
 
-function Emulator.IDETreeRepeated:HandleAddClick(event)
+function ProtobufEmulator.IDETreeRepeated:HandleAddClick(event)
 	self:AddLine(self.child_count)
 	self.fold = true
 	self:Save()
 end
 
-function Emulator.IDETreeRepeated:AddLine(index)
+function ProtobufEmulator.IDETreeRepeated:AddLine(index)
 	if self._cpp_type == 7 then
 		protobuf.reflection_insertrepeatedbool(self._rflct, self._msg, self._field, index, false)
-		self:AddChild(Emulator.IDETreeRepeatedBool(Emulator.g_Control, self._root, self, self._rflct, self._msg, self._field, index), index + 1)
+		self:AddChild(ProtobufEmulator.IDETreeRepeatedBool(ProtobufEmulator.g_Control, self._root, self, self._rflct, self._msg, self._field, index), index + 1)
 	elseif self._cpp_type == 1 then
 		protobuf.reflection_insertrepeatedint32(self._rflct, self._msg, self._field, index, 0)
-		self:AddChild(Emulator.IDETreeRepeatedValue(Emulator.g_Control, self._root, self, self._rflct, self._msg, self._field, index), index + 1)
+		self:AddChild(ProtobufEmulator.IDETreeRepeatedValue(ProtobufEmulator.g_Control, self._root, self, self._rflct, self._msg, self._field, index), index + 1)
 	elseif self._cpp_type == 3 then
 		protobuf.reflection_insertrepeateduint32(self._rflct, self._msg, self._field, index, 0)
-		self:AddChild(Emulator.IDETreeRepeatedValue(Emulator.g_Control, self._root, self, self._rflct, self._msg, self._field, index), index + 1)
+		self:AddChild(ProtobufEmulator.IDETreeRepeatedValue(ProtobufEmulator.g_Control, self._root, self, self._rflct, self._msg, self._field, index), index + 1)
 	elseif self._cpp_type == 2 then
 		protobuf.reflection_insertrepeatedint64(self._rflct, self._msg, self._field, index, 0)
-		self:AddChild(Emulator.IDETreeRepeatedValue(Emulator.g_Control, self._root, self, self._rflct, self._msg, self._field, index), index + 1)
+		self:AddChild(ProtobufEmulator.IDETreeRepeatedValue(ProtobufEmulator.g_Control, self._root, self, self._rflct, self._msg, self._field, index), index + 1)
 	elseif self._cpp_type == 4 then
 		protobuf.reflection_insertrepeateduint64(self._rflct, self._msg, self._field, index, 0)
-		self:AddChild(Emulator.IDETreeRepeatedValue(Emulator.g_Control, self._root, self, self._rflct, self._msg, self._field, index), index + 1)
+		self:AddChild(ProtobufEmulator.IDETreeRepeatedValue(ProtobufEmulator.g_Control, self._root, self, self._rflct, self._msg, self._field, index), index + 1)
 	elseif self._cpp_type == 5 then
 		protobuf.reflection_insertrepeateddouble(self._rflct, self._msg, self._field, index, 0)
-		self:AddChild(Emulator.IDETreeRepeatedValue(Emulator.g_Control, self._root, self, self._rflct, self._msg, self._field, index), index + 1)
+		self:AddChild(ProtobufEmulator.IDETreeRepeatedValue(ProtobufEmulator.g_Control, self._root, self, self._rflct, self._msg, self._field, index), index + 1)
 	elseif self._cpp_type == 6 then
 		protobuf.reflection_insertrepeatedfloat(self._rflct, self._msg, self._field, index, 0)
-		self:AddChild(Emulator.IDETreeRepeatedValue(Emulator.g_Control, self._root, self, self._rflct, self._msg, self._field, index), index + 1)
+		self:AddChild(ProtobufEmulator.IDETreeRepeatedValue(ProtobufEmulator.g_Control, self._root, self, self._rflct, self._msg, self._field, index), index + 1)
 	elseif self._cpp_type == 8 then
 		protobuf.reflection_insertrepeatedint32(self._rflct, self._msg, self._field, index, 0)
-		self:AddChild(Emulator.IDETreeRepeatedEnum(Emulator.g_Control, self._root, self, self._rflct, self._msg, self._field, index), index + 1)
+		self:AddChild(ProtobufEmulator.IDETreeRepeatedEnum(ProtobufEmulator.g_Control, self._root, self, self._rflct, self._msg, self._field, index), index + 1)
 	elseif self._cpp_type == 9 then
 		protobuf.reflection_insertrepeatedstring(self._rflct, self._msg, self._field, index, "")
-		self:AddChild(Emulator.IDETreeRepeatedValue(Emulator.g_Control, self._root, self, self._rflct, self._msg, self._field, index), index + 1)
+		self:AddChild(ProtobufEmulator.IDETreeRepeatedValue(ProtobufEmulator.g_Control, self._root, self, self._rflct, self._msg, self._field, index), index + 1)
 	elseif self._cpp_type == 10 then
 		local value = protobuf.reflection_insertrepeatedmessage(self._rflct, self._msg, self._field, index)
-		self:AddChild(Emulator.UtilityCreateTreeRepeatedMessage(self._root, self, value), index + 1)
+		self:AddChild(ProtobufEmulator.UtilityCreateTreeRepeatedMessage(self._root, self, value), index + 1)
 	end
 end
 
-function Emulator.IDETreeRepeated:CreateOneBefore(child)
+function ProtobufEmulator.IDETreeRepeated:CreateOneBefore(child)
 	local index = self:GetChildIndex(child) - 1
 	self:AddLine(index)
 	self:Save()
 end
 
-function Emulator.IDETreeRepeated:Delete(child)
+function ProtobufEmulator.IDETreeRepeated:Delete(child)
 	local index = self:GetChildIndex(child) - 1
 	self:RemoveChild(child)
 	if self._cpp_type == 7 then

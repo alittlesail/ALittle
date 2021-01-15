@@ -1,7 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.Emulator == nil then _G.Emulator = {} end
-local Emulator = Emulator
+if _G.ProtobufEmulator == nil then _G.ProtobufEmulator = {} end
+local ProtobufEmulator = ProtobufEmulator
 local Lua = Lua
 local ALittle = ALittle
 local ___rawset = rawset
@@ -9,10 +9,10 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-assert(Emulator.IDETreeLogic, " extends class:Emulator.IDETreeLogic is nil")
-Emulator.IDETreeRepeatedEnum = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETreeRepeatedEnum")
+assert(ProtobufEmulator.IDETreeLogic, " extends class:ProtobufEmulator.IDETreeLogic is nil")
+ProtobufEmulator.IDETreeRepeatedEnum = Lua.Class(ProtobufEmulator.IDETreeLogic, "ProtobufEmulator.IDETreeRepeatedEnum")
 
-function Emulator.IDETreeRepeatedEnum:Ctor(ctrl_sys, root, parent, rflct, msg, field, index)
+function ProtobufEmulator.IDETreeRepeatedEnum:Ctor(ctrl_sys, root, parent, rflct, msg, field, index)
 	___rawset(self, "_parent", parent)
 	___rawset(self, "_rflct", rflct)
 	___rawset(self, "_msg", msg)
@@ -52,7 +52,7 @@ function Emulator.IDETreeRepeatedEnum:Ctor(ctrl_sys, root, parent, rflct, msg, f
 	self._delete_button.disabled = root.for_show
 end
 
-function Emulator.IDETreeRepeatedEnum:HandleSelectChanegd(event)
+function ProtobufEmulator.IDETreeRepeatedEnum:HandleSelectChanegd(event)
 	local value = self._enum_value_map[event.target.text]
 	if value == nil then
 		return
@@ -62,11 +62,11 @@ function Emulator.IDETreeRepeatedEnum:HandleSelectChanegd(event)
 	self:Save()
 end
 
-function Emulator.IDETreeRepeatedEnum:HandleInsertClick(event)
+function ProtobufEmulator.IDETreeRepeatedEnum:HandleInsertClick(event)
 	self._parent:CreateOneBefore(self)
 end
 
-function Emulator.IDETreeRepeatedEnum:HandleDeleteClick(event)
+function ProtobufEmulator.IDETreeRepeatedEnum:HandleDeleteClick(event)
 	self._parent:Delete(self)
 end
 

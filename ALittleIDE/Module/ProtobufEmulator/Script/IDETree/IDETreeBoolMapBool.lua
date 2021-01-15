@@ -1,7 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.Emulator == nil then _G.Emulator = {} end
-local Emulator = Emulator
+if _G.ProtobufEmulator == nil then _G.ProtobufEmulator = {} end
+local ProtobufEmulator = ProtobufEmulator
 local Lua = Lua
 local ALittle = ALittle
 local ___rawset = rawset
@@ -9,10 +9,10 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-assert(Emulator.IDETreeLogic, " extends class:Emulator.IDETreeLogic is nil")
-Emulator.IDETreeBoolMapBool = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETreeBoolMapBool")
+assert(ProtobufEmulator.IDETreeLogic, " extends class:ProtobufEmulator.IDETreeLogic is nil")
+ProtobufEmulator.IDETreeBoolMapBool = Lua.Class(ProtobufEmulator.IDETreeLogic, "ProtobufEmulator.IDETreeBoolMapBool")
 
-function Emulator.IDETreeBoolMapBool:Ctor(ctrl_sys, root, parent, rflct, msg, key_field, value_field)
+function ProtobufEmulator.IDETreeBoolMapBool:Ctor(ctrl_sys, root, parent, rflct, msg, key_field, value_field)
 	___rawset(self, "_parent", parent)
 	___rawset(self, "_rflct", rflct)
 	___rawset(self, "_msg", msg)
@@ -48,7 +48,7 @@ function Emulator.IDETreeBoolMapBool:Ctor(ctrl_sys, root, parent, rflct, msg, ke
 	self._delete_button.disabled = root.for_show
 end
 
-function Emulator.IDETreeBoolMapBool:HandleKeySelectChanegd(event)
+function ProtobufEmulator.IDETreeBoolMapBool:HandleKeySelectChanegd(event)
 	if self._key_dropdown.text == "true" then
 		protobuf.reflection_setbool(self._rflct, self._msg, self._key_field, true)
 	else
@@ -57,7 +57,7 @@ function Emulator.IDETreeBoolMapBool:HandleKeySelectChanegd(event)
 	self:Save()
 end
 
-function Emulator.IDETreeBoolMapBool:HandleValueSelectChanegd(event)
+function ProtobufEmulator.IDETreeBoolMapBool:HandleValueSelectChanegd(event)
 	if self._value_dropdown.text == "true" then
 		protobuf.reflection_setbool(self._rflct, self._msg, self._value_field, true)
 	else
@@ -66,11 +66,11 @@ function Emulator.IDETreeBoolMapBool:HandleValueSelectChanegd(event)
 	self:Save()
 end
 
-function Emulator.IDETreeBoolMapBool:HandleInsertClick(event)
+function ProtobufEmulator.IDETreeBoolMapBool:HandleInsertClick(event)
 	self._parent:CreateOneBefore(self)
 end
 
-function Emulator.IDETreeBoolMapBool:HandleDeleteClick(event)
+function ProtobufEmulator.IDETreeBoolMapBool:HandleDeleteClick(event)
 	self._parent:Delete(self)
 end
 

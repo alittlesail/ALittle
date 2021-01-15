@@ -1,7 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.Emulator == nil then _G.Emulator = {} end
-local Emulator = Emulator
+if _G.ProtobufEmulator == nil then _G.ProtobufEmulator = {} end
+local ProtobufEmulator = ProtobufEmulator
 local Lua = Lua
 local ALittle = ALittle
 local ___rawset = rawset
@@ -9,10 +9,10 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-assert(Emulator.IDETree, " extends class:Emulator.IDETree is nil")
-Emulator.IDETreeMessage = Lua.Class(Emulator.IDETree, "Emulator.IDETreeMessage")
+assert(ProtobufEmulator.IDETree, " extends class:ProtobufEmulator.IDETree is nil")
+ProtobufEmulator.IDETreeMessage = Lua.Class(ProtobufEmulator.IDETree, "ProtobufEmulator.IDETreeMessage")
 
-function Emulator.IDETreeMessage:Ctor(ctrl_sys, root, field_name, detail_info)
+function ProtobufEmulator.IDETreeMessage:Ctor(ctrl_sys, root, field_name, detail_info)
 	___rawset(self, "_detail_info", detail_info)
 	___rawset(self, "_head", ctrl_sys:CreateControl("ide_common_tree_message", self))
 	ALittle.DisplayGroup.AddChild(self, self._head, 1)
@@ -21,7 +21,7 @@ function Emulator.IDETreeMessage:Ctor(ctrl_sys, root, field_name, detail_info)
 	self:Init()
 end
 
-function Emulator.IDETreeMessage:GetDetailInfo()
+function ProtobufEmulator.IDETreeMessage:GetDetailInfo()
 	return self._detail_info
 end
 

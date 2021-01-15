@@ -1,7 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.Emulator == nil then _G.Emulator = {} end
-local Emulator = Emulator
+if _G.ProtobufEmulator == nil then _G.ProtobufEmulator = {} end
+local ProtobufEmulator = ProtobufEmulator
 local Lua = Lua
 local ALittle = ALittle
 local ___pairs = pairs
@@ -9,9 +9,9 @@ local ___ipairs = ipairs
 
 
 assert(Lua.ISocket, " extends class:Lua.ISocket is nil")
-Emulator.PluginSocket = Lua.Class(Lua.ISocket, "Emulator.PluginSocket")
+ProtobufEmulator.PluginSocket = Lua.Class(Lua.ISocket, "ProtobufEmulator.PluginSocket")
 
-function Emulator.PluginSocket:ReadMessage()
+function ProtobufEmulator.PluginSocket:ReadMessage()
 	local ___COROUTINE = coroutine.running()
 	local func = _G["__SOCKET_ReadMessage"]
 	if func == nil then
@@ -24,7 +24,7 @@ function Emulator.PluginSocket:ReadMessage()
 	return error, msg
 end
 
-function Emulator.PluginSocket:WriteMessage(full_name, protobuf_msg)
+function ProtobufEmulator.PluginSocket:WriteMessage(full_name, protobuf_msg)
 	local func = _G["__SOCKET_WriteMessage"]
 	if func == nil then
 		return "can't find __SOCKET_WriteMessage"
@@ -40,7 +40,7 @@ function Emulator.PluginSocket:WriteMessage(full_name, protobuf_msg)
 	return nil
 end
 
-function Emulator.PluginSocket:HandleMessage(msg)
+function ProtobufEmulator.PluginSocket:HandleMessage(msg)
 	g_GCenter._gclient:AddLogMessage(self, msg)
 	g_GCenter._grobot:HandleMessage(self, msg)
 	local func = _G["__SOCKET_HandleMessage"]

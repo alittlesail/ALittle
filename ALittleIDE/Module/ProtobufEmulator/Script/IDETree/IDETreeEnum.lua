@@ -1,7 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.Emulator == nil then _G.Emulator = {} end
-local Emulator = Emulator
+if _G.ProtobufEmulator == nil then _G.ProtobufEmulator = {} end
+local ProtobufEmulator = ProtobufEmulator
 local Lua = Lua
 local ALittle = ALittle
 local ___rawset = rawset
@@ -9,10 +9,10 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-assert(Emulator.IDETreeLogic, " extends class:Emulator.IDETreeLogic is nil")
-Emulator.IDETreeEnum = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETreeEnum")
+assert(ProtobufEmulator.IDETreeLogic, " extends class:ProtobufEmulator.IDETreeLogic is nil")
+ProtobufEmulator.IDETreeEnum = Lua.Class(ProtobufEmulator.IDETreeLogic, "ProtobufEmulator.IDETreeEnum")
 
-function Emulator.IDETreeEnum:Ctor(ctrl_sys, root, field_name, rflct, msg, field)
+function ProtobufEmulator.IDETreeEnum:Ctor(ctrl_sys, root, field_name, rflct, msg, field)
 	___rawset(self, "_rflct", rflct)
 	___rawset(self, "_msg", msg)
 	___rawset(self, "_field", field)
@@ -47,7 +47,7 @@ function Emulator.IDETreeEnum:Ctor(ctrl_sys, root, field_name, rflct, msg, field
 	self._value_dropdown.disabled = root.for_show
 end
 
-function Emulator.IDETreeEnum:HandleSelectChanegd(event)
+function ProtobufEmulator.IDETreeEnum:HandleSelectChanegd(event)
 	local value = self._enum_value_map[event.target.text]
 	if value == nil then
 		return

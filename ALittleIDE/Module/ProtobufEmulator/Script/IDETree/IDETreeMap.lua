@@ -1,7 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.Emulator == nil then _G.Emulator = {} end
-local Emulator = Emulator
+if _G.ProtobufEmulator == nil then _G.ProtobufEmulator = {} end
+local ProtobufEmulator = ProtobufEmulator
 local Lua = Lua
 local ALittle = ALittle
 local ___rawset = rawset
@@ -9,10 +9,10 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-assert(Emulator.IDETree, " extends class:Emulator.IDETree is nil")
-Emulator.IDETreeMap = Lua.Class(Emulator.IDETree, "Emulator.IDETreeMap")
+assert(ProtobufEmulator.IDETree, " extends class:ProtobufEmulator.IDETree is nil")
+ProtobufEmulator.IDETreeMap = Lua.Class(ProtobufEmulator.IDETree, "ProtobufEmulator.IDETreeMap")
 
-function Emulator.IDETreeMap:Ctor(ctrl_sys, root, field_name, rflct, msg, field)
+function ProtobufEmulator.IDETreeMap:Ctor(ctrl_sys, root, field_name, rflct, msg, field)
 	___rawset(self, "_rflct", rflct)
 	___rawset(self, "_msg", msg)
 	___rawset(self, "_field", field)
@@ -37,33 +37,33 @@ function Emulator.IDETreeMap:Ctor(ctrl_sys, root, field_name, rflct, msg, field)
 		local sub_rflct = protobuf.message_getreflection(sub_msg)
 		if self._key_cpp_type == 7 then
 			if self._value_cpp_type == 7 then
-				self:AddChild(Emulator.IDETreeBoolMapBool(Emulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
+				self:AddChild(ProtobufEmulator.IDETreeBoolMapBool(ProtobufEmulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
 			elseif self._value_cpp_type == 8 then
-				self:AddChild(Emulator.IDETreeBoolMapEnum(Emulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
+				self:AddChild(ProtobufEmulator.IDETreeBoolMapEnum(ProtobufEmulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
 			elseif self._value_cpp_type == 10 then
-				self:AddChild(Emulator.UtilityCreateTreeBoolMapMessage(self._root, self, sub_msg, self._key_descriptor, self._value_descriptor))
+				self:AddChild(ProtobufEmulator.UtilityCreateTreeBoolMapMessage(self._root, self, sub_msg, self._key_descriptor, self._value_descriptor))
 			else
-				self:AddChild(Emulator.IDETreeBoolMapValue(Emulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
+				self:AddChild(ProtobufEmulator.IDETreeBoolMapValue(ProtobufEmulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
 			end
 		elseif self._key_cpp_type == 8 then
 			if self._value_cpp_type == 7 then
-				self:AddChild(Emulator.IDETreeEnumMapBool(Emulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
+				self:AddChild(ProtobufEmulator.IDETreeEnumMapBool(ProtobufEmulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
 			elseif self._value_cpp_type == 8 then
-				self:AddChild(Emulator.IDETreeEnumMapEnum(Emulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
+				self:AddChild(ProtobufEmulator.IDETreeEnumMapEnum(ProtobufEmulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
 			elseif self._value_cpp_type == 10 then
-				self:AddChild(Emulator.UtilityCreateTreeEnumMapMessage(self._root, self, sub_msg, self._key_descriptor, self._value_descriptor))
+				self:AddChild(ProtobufEmulator.UtilityCreateTreeEnumMapMessage(self._root, self, sub_msg, self._key_descriptor, self._value_descriptor))
 			else
-				self:AddChild(Emulator.IDETreeEnumMapValue(Emulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
+				self:AddChild(ProtobufEmulator.IDETreeEnumMapValue(ProtobufEmulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
 			end
 		else
 			if self._value_cpp_type == 7 then
-				self:AddChild(Emulator.IDETreeValueMapBool(Emulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
+				self:AddChild(ProtobufEmulator.IDETreeValueMapBool(ProtobufEmulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
 			elseif self._value_cpp_type == 8 then
-				self:AddChild(Emulator.IDETreeValueMapEnum(Emulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
+				self:AddChild(ProtobufEmulator.IDETreeValueMapEnum(ProtobufEmulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
 			elseif self._value_cpp_type == 10 then
-				self:AddChild(Emulator.UtilityCreateTreeValueMapMessage(self._root, self, sub_msg, self._key_descriptor, self._value_descriptor))
+				self:AddChild(ProtobufEmulator.UtilityCreateTreeValueMapMessage(self._root, self, sub_msg, self._key_descriptor, self._value_descriptor))
 			else
-				self:AddChild(Emulator.IDETreeValueMapValue(Emulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
+				self:AddChild(ProtobufEmulator.IDETreeValueMapValue(ProtobufEmulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
 			end
 		end
 		index = index+(1)
@@ -75,55 +75,55 @@ function Emulator.IDETreeMap:Ctor(ctrl_sys, root, field_name, rflct, msg, field)
 	self._add_button.disabled = root.for_show
 end
 
-function Emulator.IDETreeMap:HandleAddClick(event)
+function ProtobufEmulator.IDETreeMap:HandleAddClick(event)
 	self:AddLine(self.child_count)
 	self.fold = true
 	self:Save()
 end
 
-function Emulator.IDETreeMap:AddLine(index)
+function ProtobufEmulator.IDETreeMap:AddLine(index)
 	local sub_msg = protobuf.reflection_insertrepeatedmessage(self._rflct, self._msg, self._field, index)
 	local sub_rflct = protobuf.message_getreflection(sub_msg)
 	if self._key_cpp_type == 7 then
 		if self._value_cpp_type == 7 then
-			self:AddChild(Emulator.IDETreeBoolMapBool(Emulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
+			self:AddChild(ProtobufEmulator.IDETreeBoolMapBool(ProtobufEmulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
 		elseif self._value_cpp_type == 8 then
-			self:AddChild(Emulator.IDETreeBoolMapEnum(Emulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
+			self:AddChild(ProtobufEmulator.IDETreeBoolMapEnum(ProtobufEmulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
 		elseif self._value_cpp_type == 10 then
-			self:AddChild(Emulator.UtilityCreateTreeBoolMapMessage(self._root, self, sub_msg, self._key_descriptor, self._value_descriptor))
+			self:AddChild(ProtobufEmulator.UtilityCreateTreeBoolMapMessage(self._root, self, sub_msg, self._key_descriptor, self._value_descriptor))
 		else
-			self:AddChild(Emulator.IDETreeBoolMapValue(Emulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
+			self:AddChild(ProtobufEmulator.IDETreeBoolMapValue(ProtobufEmulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
 		end
 	elseif self._key_cpp_type == 8 then
 		if self._value_cpp_type == 7 then
-			self:AddChild(Emulator.IDETreeEnumMapBool(Emulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
+			self:AddChild(ProtobufEmulator.IDETreeEnumMapBool(ProtobufEmulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
 		elseif self._value_cpp_type == 8 then
-			self:AddChild(Emulator.IDETreeEnumMapEnum(Emulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
+			self:AddChild(ProtobufEmulator.IDETreeEnumMapEnum(ProtobufEmulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
 		elseif self._value_cpp_type == 10 then
-			self:AddChild(Emulator.UtilityCreateTreeEnumMapMessage(self._root, self, sub_msg, self._key_descriptor, self._value_descriptor))
+			self:AddChild(ProtobufEmulator.UtilityCreateTreeEnumMapMessage(self._root, self, sub_msg, self._key_descriptor, self._value_descriptor))
 		else
-			self:AddChild(Emulator.IDETreeEnumMapValue(Emulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
+			self:AddChild(ProtobufEmulator.IDETreeEnumMapValue(ProtobufEmulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
 		end
 	else
 		if self._value_cpp_type == 7 then
-			self:AddChild(Emulator.IDETreeValueMapBool(Emulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
+			self:AddChild(ProtobufEmulator.IDETreeValueMapBool(ProtobufEmulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
 		elseif self._value_cpp_type == 8 then
-			self:AddChild(Emulator.IDETreeValueMapEnum(Emulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
+			self:AddChild(ProtobufEmulator.IDETreeValueMapEnum(ProtobufEmulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
 		elseif self._value_cpp_type == 10 then
-			self:AddChild(Emulator.UtilityCreateTreeValueMapMessage(self._root, self, sub_msg, self._key_descriptor, self._value_descriptor))
+			self:AddChild(ProtobufEmulator.UtilityCreateTreeValueMapMessage(self._root, self, sub_msg, self._key_descriptor, self._value_descriptor))
 		else
-			self:AddChild(Emulator.IDETreeValueMapValue(Emulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
+			self:AddChild(ProtobufEmulator.IDETreeValueMapValue(ProtobufEmulator.g_Control, self._root, self, sub_rflct, sub_msg, self._key_descriptor, self._value_descriptor))
 		end
 	end
 end
 
-function Emulator.IDETreeMap:CreateOneBefore(child)
+function ProtobufEmulator.IDETreeMap:CreateOneBefore(child)
 	local index = self:GetChildIndex(child) - 1
 	self:AddLine(index)
 	self:Save()
 end
 
-function Emulator.IDETreeMap:Delete(child)
+function ProtobufEmulator.IDETreeMap:Delete(child)
 	local index = self:GetChildIndex(child) - 1
 	self:RemoveChild(child)
 	protobuf.reflection_removerepeatedmessage(self._rflct, self._msg, self._field, index)

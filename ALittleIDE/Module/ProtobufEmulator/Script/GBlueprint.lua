@@ -1,7 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.Emulator == nil then _G.Emulator = {} end
-local Emulator = Emulator
+if _G.ProtobufEmulator == nil then _G.ProtobufEmulator = {} end
+local ProtobufEmulator = ProtobufEmulator
 local Lua = Lua
 local ALittle = ALittle
 local ___pairs = pairs
@@ -14,28 +14,40 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(-1613357887, "Emulator.RobotStepReceiveLogInfo", {
-name = "Emulator.RobotStepReceiveLogInfo", ns_name = "Emulator", rl_name = "RobotStepReceiveLogInfo", hash_code = -1613357887,
+ALittle.RegStruct(1775093980, "ProtobufEmulator.RobotStepCmdInfo", {
+name = "ProtobufEmulator.RobotStepCmdInfo", ns_name = "ProtobufEmulator", rl_name = "RobotStepCmdInfo", hash_code = 1775093980,
+name_list = {"dst_field","src_id","src_field"},
+type_list = {"string","string","string"},
+option_map = {}
+})
+ALittle.RegStruct(-1771890064, "ProtobufEmulator.RobotStepReceiveLogInfo", {
+name = "ProtobufEmulator.RobotStepReceiveLogInfo", ns_name = "ProtobufEmulator", rl_name = "RobotStepReceiveLogInfo", hash_code = -1771890064,
 name_list = {"dst_field"},
 type_list = {"string"},
+option_map = {}
+})
+ALittle.RegStruct(-1671574251, "ProtobufEmulator.RobotStepDelayLinkInfo", {
+name = "ProtobufEmulator.RobotStepDelayLinkInfo", ns_name = "ProtobufEmulator", rl_name = "RobotStepDelayLinkInfo", hash_code = -1671574251,
+name_list = {"info","dialog","_left_step_image","_right_step_image","_unique_id_input","_line_tri","pre_link","next_link","_delay_input"},
+type_list = {"ProtobufEmulator.RobotStepInfo","ALittle.Dialog","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.Triangle","Map<int,ProtobufEmulator.RobotStepLinkInfo>","ProtobufEmulator.RobotStepLinkInfo","ALittle.DisplayObject"},
+option_map = {}
+})
+ALittle.RegStruct(1619325857, "ProtobufEmulator.RobotStepInfo", {
+name = "ProtobufEmulator.RobotStepInfo", ns_name = "ProtobufEmulator", rl_name = "RobotStepInfo", hash_code = 1619325857,
+name_list = {"x","y","unique_id","id","type","next_id","pre_type","next_type","full_name","message_json","cmd_list","receive_log_list","delay_ms","log"},
+type_list = {"double","double","string","int","int","int","int","int","string","string","List<ProtobufEmulator.RobotStepCmdInfo>","List<ProtobufEmulator.RobotStepReceiveLogInfo>","int","string"},
+option_map = {}
+})
+ALittle.RegStruct(1520301848, "ProtobufEmulator.RobotStepReceiveMessageLinkInfo", {
+name = "ProtobufEmulator.RobotStepReceiveMessageLinkInfo", ns_name = "ProtobufEmulator", rl_name = "RobotStepReceiveMessageLinkInfo", hash_code = 1520301848,
+name_list = {"info","dialog","_left_step_image","_right_step_image","_unique_id_input","_line_tri","pre_link","next_link","_full_name_input","_log_edit"},
+type_list = {"ProtobufEmulator.RobotStepInfo","ALittle.Dialog","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.Triangle","Map<int,ProtobufEmulator.RobotStepLinkInfo>","ProtobufEmulator.RobotStepLinkInfo","ALittle.DisplayObject","ProtobufEmulator.RobotStepReceiveLogEdit"},
 option_map = {}
 })
 ALittle.RegStruct(1517533145, "ALittle.DialogDragEvent", {
 name = "ALittle.DialogDragEvent", ns_name = "ALittle", rl_name = "DialogDragEvent", hash_code = 1517533145,
 name_list = {"target","delta_x","delta_y"},
 type_list = {"ALittle.DisplayObject","double","double"},
-option_map = {}
-})
-ALittle.RegStruct(1512397058, "Emulator.RobotStepReceiveLogLinkInfo", {
-name = "Emulator.RobotStepReceiveLogLinkInfo", ns_name = "Emulator", rl_name = "RobotStepReceiveLogLinkInfo", hash_code = 1512397058,
-name_list = {"item","log","_delete_button","_dst_field_input"},
-type_list = {"ALittle.DisplayObject","Emulator.RobotStepReceiveLogInfo","ALittle.DisplayObject","ALittle.DisplayObject"},
-option_map = {}
-})
-ALittle.RegStruct(1489330622, "Emulator.RobotStepCmdLinkInfo", {
-name = "Emulator.RobotStepCmdLinkInfo", ns_name = "Emulator", rl_name = "RobotStepCmdLinkInfo", hash_code = 1489330622,
-name_list = {"item","cmd","_delete_button","_dst_field_input","_src_id_input","_src_field_input"},
-type_list = {"ALittle.DisplayObject","Emulator.RobotStepCmdInfo","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject"},
 option_map = {}
 })
 ALittle.RegStruct(-1482649531, "ALittle.DialogDragEndEvent", {
@@ -50,6 +62,12 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
+ALittle.RegStruct(1362519832, "ProtobufEmulator.RobotStepCmdLinkInfo", {
+name = "ProtobufEmulator.RobotStepCmdLinkInfo", ns_name = "ProtobufEmulator", rl_name = "RobotStepCmdLinkInfo", hash_code = 1362519832,
+name_list = {"item","cmd","_delete_button","_dst_field_input","_src_id_input","_src_field_input"},
+type_list = {"ALittle.DisplayObject","ProtobufEmulator.RobotStepCmdInfo","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject"},
+option_map = {}
+})
 ALittle.RegStruct(1337289812, "ALittle.UIButtonDragEvent", {
 name = "ALittle.UIButtonDragEvent", ns_name = "ALittle", rl_name = "UIButtonDragEvent", hash_code = 1337289812,
 name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
@@ -62,16 +80,16 @@ name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
 option_map = {}
 })
-ALittle.RegStruct(1161411352, "Emulator.RobotStepLinkInfo", {
-name = "Emulator.RobotStepLinkInfo", ns_name = "Emulator", rl_name = "RobotStepLinkInfo", hash_code = 1161411352,
+ALittle.RegStruct(1142345218, "ProtobufEmulator.RobotStepLinkInfo", {
+name = "ProtobufEmulator.RobotStepLinkInfo", ns_name = "ProtobufEmulator", rl_name = "RobotStepLinkInfo", hash_code = 1142345218,
 name_list = {"info","dialog","_left_step_image","_right_step_image","_unique_id_input","_line_tri","pre_link","next_link"},
-type_list = {"Emulator.RobotStepInfo","ALittle.Dialog","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.Triangle","Map<int,Emulator.RobotStepLinkInfo>","Emulator.RobotStepLinkInfo"},
+type_list = {"ProtobufEmulator.RobotStepInfo","ALittle.Dialog","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.Triangle","Map<int,ProtobufEmulator.RobotStepLinkInfo>","ProtobufEmulator.RobotStepLinkInfo"},
 option_map = {}
 })
-ALittle.RegStruct(1122498850, "Emulator.RobotStepLogLinkInfo", {
-name = "Emulator.RobotStepLogLinkInfo", ns_name = "Emulator", rl_name = "RobotStepLogLinkInfo", hash_code = 1122498850,
-name_list = {"info","dialog","_left_step_image","_right_step_image","_unique_id_input","_line_tri","pre_link","next_link","_log_input"},
-type_list = {"Emulator.RobotStepInfo","ALittle.Dialog","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.Triangle","Map<int,Emulator.RobotStepLinkInfo>","Emulator.RobotStepLinkInfo","ALittle.DisplayObject"},
+ALittle.RegStruct(1008398845, "ProtobufEmulator.RobotStepFile", {
+name = "ProtobufEmulator.RobotStepFile", ns_name = "ProtobufEmulator", rl_name = "RobotStepFile", hash_code = 1008398845,
+name_list = {"max_id","step_map","start_step"},
+type_list = {"int","Map<int,ProtobufEmulator.RobotStepInfo>","ProtobufEmulator.RobotStepInfo"},
 option_map = {}
 })
 ALittle.RegStruct(958494922, "ALittle.UIChangedEvent", {
@@ -86,16 +104,16 @@ name_list = {},
 type_list = {},
 option_map = {}
 })
-ALittle.RegStruct(-491178481, "Emulator.RobotStepFile", {
-name = "Emulator.RobotStepFile", ns_name = "Emulator", rl_name = "RobotStepFile", hash_code = -491178481,
-name_list = {"max_id","step_map","start_step"},
-type_list = {"int","Map<int,Emulator.RobotStepInfo>","Emulator.RobotStepInfo"},
+ALittle.RegStruct(512784722, "ProtobufEmulator.RobotStepSendMessageLinkInfo", {
+name = "ProtobufEmulator.RobotStepSendMessageLinkInfo", ns_name = "ProtobufEmulator", rl_name = "RobotStepSendMessageLinkInfo", hash_code = 512784722,
+name_list = {"info","dialog","_left_step_image","_right_step_image","_unique_id_input","_line_tri","pre_link","next_link","_full_name_input","_message_edit_btn","_cmd_edit","message"},
+type_list = {"ProtobufEmulator.RobotStepInfo","ALittle.Dialog","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.Triangle","Map<int,ProtobufEmulator.RobotStepLinkInfo>","ProtobufEmulator.RobotStepLinkInfo","ALittle.DisplayObject","ALittle.DisplayObject","ProtobufEmulator.RobotStepCmdEdit","lua.protobuf_message"},
 option_map = {}
 })
-ALittle.RegStruct(465286149, "Emulator.RobotStepCmdInfo", {
-name = "Emulator.RobotStepCmdInfo", ns_name = "Emulator", rl_name = "RobotStepCmdInfo", hash_code = 465286149,
-name_list = {"dst_field","src_id","src_field"},
-type_list = {"string","string","string"},
+ALittle.RegStruct(482157642, "ProtobufEmulator.RobotStepLogLinkInfo", {
+name = "ProtobufEmulator.RobotStepLogLinkInfo", ns_name = "ProtobufEmulator", rl_name = "RobotStepLogLinkInfo", hash_code = 482157642,
+name_list = {"info","dialog","_left_step_image","_right_step_image","_unique_id_input","_line_tri","pre_link","next_link","_log_input"},
+type_list = {"ProtobufEmulator.RobotStepInfo","ALittle.Dialog","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.Triangle","Map<int,ProtobufEmulator.RobotStepLinkInfo>","ProtobufEmulator.RobotStepLinkInfo","ALittle.DisplayObject"},
 option_map = {}
 })
 ALittle.RegStruct(-449066808, "ALittle.UIClickEvent", {
@@ -110,22 +128,10 @@ name_list = {"target"},
 type_list = {"ALittle.DisplayObject"},
 option_map = {}
 })
-ALittle.RegStruct(-312899494, "Emulator.RobotStepReceiveMessageLinkInfo", {
-name = "Emulator.RobotStepReceiveMessageLinkInfo", ns_name = "Emulator", rl_name = "RobotStepReceiveMessageLinkInfo", hash_code = -312899494,
-name_list = {"info","dialog","_left_step_image","_right_step_image","_unique_id_input","_line_tri","pre_link","next_link","_full_name_input","_log_edit"},
-type_list = {"Emulator.RobotStepInfo","ALittle.Dialog","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.Triangle","Map<int,Emulator.RobotStepLinkInfo>","Emulator.RobotStepLinkInfo","ALittle.DisplayObject","Emulator.RobotStepReceiveLogEdit"},
-option_map = {}
-})
-ALittle.RegStruct(210013886, "Emulator.RobotStepInfo", {
-name = "Emulator.RobotStepInfo", ns_name = "Emulator", rl_name = "RobotStepInfo", hash_code = 210013886,
-name_list = {"x","y","unique_id","id","type","next_id","pre_type","next_type","full_name","message_json","cmd_list","receive_log_list","delay_ms","log"},
-type_list = {"double","double","string","int","int","int","int","int","string","string","List<Emulator.RobotStepCmdInfo>","List<Emulator.RobotStepReceiveLogInfo>","int","string"},
-option_map = {}
-})
-ALittle.RegStruct(162621669, "Emulator.RobotStepDelayLinkInfo", {
-name = "Emulator.RobotStepDelayLinkInfo", ns_name = "Emulator", rl_name = "RobotStepDelayLinkInfo", hash_code = 162621669,
-name_list = {"info","dialog","_left_step_image","_right_step_image","_unique_id_input","_line_tri","pre_link","next_link","_delay_input"},
-type_list = {"Emulator.RobotStepInfo","ALittle.Dialog","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.Triangle","Map<int,Emulator.RobotStepLinkInfo>","Emulator.RobotStepLinkInfo","ALittle.DisplayObject"},
+ALittle.RegStruct(263101168, "ProtobufEmulator.RobotStepReceiveLogLinkInfo", {
+name = "ProtobufEmulator.RobotStepReceiveLogLinkInfo", ns_name = "ProtobufEmulator", rl_name = "RobotStepReceiveLogLinkInfo", hash_code = 263101168,
+name_list = {"item","log","_delete_button","_dst_field_input"},
+type_list = {"ALittle.DisplayObject","ProtobufEmulator.RobotStepReceiveLogInfo","ALittle.DisplayObject","ALittle.DisplayObject"},
 option_map = {}
 })
 ALittle.RegStruct(150587926, "ALittle.UIButtonDragEndEvent", {
@@ -134,14 +140,8 @@ name_list = {"target","rel_x","rel_y","delta_x","delta_y","abs_x","abs_y"},
 type_list = {"ALittle.DisplayObject","double","double","double","double","double","double"},
 option_map = {}
 })
-ALittle.RegStruct(-81484788, "Emulator.RobotStepSendMessageLinkInfo", {
-name = "Emulator.RobotStepSendMessageLinkInfo", ns_name = "Emulator", rl_name = "RobotStepSendMessageLinkInfo", hash_code = -81484788,
-name_list = {"info","dialog","_left_step_image","_right_step_image","_unique_id_input","_line_tri","pre_link","next_link","_full_name_input","_message_edit_btn","_cmd_edit","message"},
-type_list = {"Emulator.RobotStepInfo","ALittle.Dialog","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.DisplayObject","ALittle.Triangle","Map<int,Emulator.RobotStepLinkInfo>","Emulator.RobotStepLinkInfo","ALittle.DisplayObject","ALittle.DisplayObject","Emulator.RobotStepCmdEdit","lua.protobuf_message"},
-option_map = {}
-})
 
-Emulator.RobotStepType = {
+ProtobufEmulator.RobotStepType = {
 	RST_RECEIVE_MESSAGE = 1,
 	RST_SEND_MESSAGE = 2,
 	RST_DELAY = 3,
@@ -149,19 +149,19 @@ Emulator.RobotStepType = {
 	RST_LOG = 5,
 }
 
-Emulator.RobotStepLineType = {
+ProtobufEmulator.RobotStepLineType = {
 	RSLT_LEFT = 1,
 	RSLT_RIGHT = 2,
 }
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-Emulator.RobotStepCmdEdit = Lua.Class(ALittle.DisplayLayout, "Emulator.RobotStepCmdEdit")
+ProtobufEmulator.RobotStepCmdEdit = Lua.Class(ALittle.DisplayLayout, "ProtobufEmulator.RobotStepCmdEdit")
 
-function Emulator.RobotStepCmdEdit:TCtor()
+function ProtobufEmulator.RobotStepCmdEdit:TCtor()
 	self._add_cmd_btn:AddEventListener(___all_struct[-449066808], self, self.HandleAddClick)
 end
 
-function Emulator.RobotStepCmdEdit:Init(cmd_list)
+function ProtobufEmulator.RobotStepCmdEdit:Init(cmd_list)
 	self._cmd_list = cmd_list
 	for index, cmd in ___ipairs(cmd_list) do
 		self:CreateCmdItem(cmd)
@@ -169,22 +169,22 @@ function Emulator.RobotStepCmdEdit:Init(cmd_list)
 	self:UpdateHeight()
 end
 
-function Emulator.RobotStepCmdEdit:HandleDstFieldChanged(event)
+function ProtobufEmulator.RobotStepCmdEdit:HandleDstFieldChanged(event)
 	event.target._user_data.dst_field = event.target.text
 	g_GCenter._grobot._gblueprint:Save(false)
 end
 
-function Emulator.RobotStepCmdEdit:HandleSrcIdChanged(event)
+function ProtobufEmulator.RobotStepCmdEdit:HandleSrcIdChanged(event)
 	event.target._user_data.src_id = event.target.text
 	g_GCenter._grobot._gblueprint:Save(false)
 end
 
-function Emulator.RobotStepCmdEdit:HandleSrcFieldChanged(event)
+function ProtobufEmulator.RobotStepCmdEdit:HandleSrcFieldChanged(event)
 	event.target._user_data.src_field = event.target.text
 	g_GCenter._grobot._gblueprint:Save(false)
 end
 
-function Emulator.RobotStepCmdEdit:UpdateHeight()
+function ProtobufEmulator.RobotStepCmdEdit:UpdateHeight()
 	local src_y = self._cmd_screen.y
 	if self._cmd_screen.child_count == 0 then
 		self._cmd_screen.height = 0
@@ -197,7 +197,7 @@ function Emulator.RobotStepCmdEdit:UpdateHeight()
 	self:DispatchEvent(___all_struct[-431205740], {})
 end
 
-function Emulator.RobotStepCmdEdit:HandleDeleteClick(event)
+function ProtobufEmulator.RobotStepCmdEdit:HandleDeleteClick(event)
 	local link_info = event.target._user_data
 	self._cmd_screen:RemoveChild(link_info.item)
 	self:UpdateHeight()
@@ -208,7 +208,7 @@ function Emulator.RobotStepCmdEdit:HandleDeleteClick(event)
 	g_GCenter._grobot._gblueprint:Save(false)
 end
 
-function Emulator.RobotStepCmdEdit:HandleAddClick(event)
+function ProtobufEmulator.RobotStepCmdEdit:HandleAddClick(event)
 	local cmd = {}
 	self:CreateCmdItem(cmd)
 	ALittle.List_Push(self._cmd_list, cmd)
@@ -216,7 +216,7 @@ function Emulator.RobotStepCmdEdit:HandleAddClick(event)
 	g_GCenter._grobot._gblueprint:Save(false)
 end
 
-function Emulator.RobotStepCmdEdit:CreateCmdItem(cmd)
+function ProtobufEmulator.RobotStepCmdEdit:CreateCmdItem(cmd)
 	if cmd.dst_field == nil then
 		cmd.dst_field = ""
 	end
@@ -227,7 +227,7 @@ function Emulator.RobotStepCmdEdit:CreateCmdItem(cmd)
 		cmd.src_field = ""
 	end
 	local link_info = {}
-	local item = Emulator.g_Control:CreateControl("robot_step_cmd_item", link_info)
+	local item = ProtobufEmulator.g_Control:CreateControl("robot_step_cmd_item", link_info)
 	link_info._delete_button:AddEventListener(___all_struct[-449066808], self, self.HandleDeleteClick)
 	link_info._dst_field_input.text = cmd.dst_field
 	link_info._dst_field_input:AddEventListener(___all_struct[958494922], self, self.HandleDstFieldChanged)
@@ -245,13 +245,13 @@ function Emulator.RobotStepCmdEdit:CreateCmdItem(cmd)
 end
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-Emulator.RobotStepReceiveLogEdit = Lua.Class(ALittle.DisplayLayout, "Emulator.RobotStepReceiveLogEdit")
+ProtobufEmulator.RobotStepReceiveLogEdit = Lua.Class(ALittle.DisplayLayout, "ProtobufEmulator.RobotStepReceiveLogEdit")
 
-function Emulator.RobotStepReceiveLogEdit:TCtor()
+function ProtobufEmulator.RobotStepReceiveLogEdit:TCtor()
 	self._add_cmd_btn:AddEventListener(___all_struct[-449066808], self, self.HandleAddClick)
 end
 
-function Emulator.RobotStepReceiveLogEdit:Init(log_list)
+function ProtobufEmulator.RobotStepReceiveLogEdit:Init(log_list)
 	self._log_list = log_list
 	for index, log in ___ipairs(log_list) do
 		self:CreateLogItem(log)
@@ -259,12 +259,12 @@ function Emulator.RobotStepReceiveLogEdit:Init(log_list)
 	self:UpdateHeight()
 end
 
-function Emulator.RobotStepReceiveLogEdit:HandleDstFieldChanged(event)
+function ProtobufEmulator.RobotStepReceiveLogEdit:HandleDstFieldChanged(event)
 	event.target._user_data.dst_field = event.target.text
 	g_GCenter._grobot._gblueprint:Save(false)
 end
 
-function Emulator.RobotStepReceiveLogEdit:UpdateHeight()
+function ProtobufEmulator.RobotStepReceiveLogEdit:UpdateHeight()
 	local src_y = self._log_screen.y
 	if self._log_screen.child_count == 0 then
 		self._log_screen.height = 0
@@ -277,7 +277,7 @@ function Emulator.RobotStepReceiveLogEdit:UpdateHeight()
 	self:DispatchEvent(___all_struct[-431205740], {})
 end
 
-function Emulator.RobotStepReceiveLogEdit:HandleDeleteClick(event)
+function ProtobufEmulator.RobotStepReceiveLogEdit:HandleDeleteClick(event)
 	local link_info = event.target._user_data
 	self._log_screen:RemoveChild(link_info.item)
 	self:UpdateHeight()
@@ -288,7 +288,7 @@ function Emulator.RobotStepReceiveLogEdit:HandleDeleteClick(event)
 	g_GCenter._grobot._gblueprint:Save(false)
 end
 
-function Emulator.RobotStepReceiveLogEdit:HandleAddClick(event)
+function ProtobufEmulator.RobotStepReceiveLogEdit:HandleAddClick(event)
 	local log = {}
 	self:CreateLogItem(log)
 	ALittle.List_Push(self._log_list, log)
@@ -296,12 +296,12 @@ function Emulator.RobotStepReceiveLogEdit:HandleAddClick(event)
 	g_GCenter._grobot._gblueprint:Save(false)
 end
 
-function Emulator.RobotStepReceiveLogEdit:CreateLogItem(log)
+function ProtobufEmulator.RobotStepReceiveLogEdit:CreateLogItem(log)
 	if log.dst_field == nil then
 		log.dst_field = ""
 	end
 	local link_info = {}
-	local item = Emulator.g_Control:CreateControl("robot_step_receive_log_item", link_info)
+	local item = ProtobufEmulator.g_Control:CreateControl("robot_step_receive_log_item", link_info)
 	link_info._delete_button:AddEventListener(___all_struct[-449066808], self, self.HandleDeleteClick)
 	link_info._dst_field_input.text = log.dst_field
 	link_info._dst_field_input:AddEventListener(___all_struct[958494922], self, self.HandleDstFieldChanged)
@@ -313,10 +313,10 @@ function Emulator.RobotStepReceiveLogEdit:CreateLogItem(log)
 end
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-Emulator.GBlueprint = Lua.Class(ALittle.DisplayLayout, "Emulator.GBlueprint")
+ProtobufEmulator.GBlueprint = Lua.Class(ALittle.DisplayLayout, "ProtobufEmulator.GBlueprint")
 
-function Emulator.GBlueprint:Setup()
-	self._message_edit_dialog = Emulator.g_Control:CreateControl("robot_step_message_edit_dialog", self)
+function ProtobufEmulator.GBlueprint:Setup()
+	self._message_edit_dialog = ProtobufEmulator.g_Control:CreateControl("robot_step_message_edit_dialog", self)
 	A_LayerManager:AddToModal(self._message_edit_dialog)
 	self._message_edit_dialog.close_callback = Lua.Bind(self.HandleMessageEditDialogClose, self)
 	self._robot_step_send_node:AddEventListener(___all_struct[1301789264], self, self.HandleNodeDragBegin)
@@ -332,17 +332,17 @@ function Emulator.GBlueprint:Setup()
 	self._robot_step_log_node:AddEventListener(___all_struct[1337289812], self, self.HandleNodeDrag)
 	self._robot_step_log_node:AddEventListener(___all_struct[150587926], self, self.HandleNodeDragEnd)
 	self.visible = false
-	self._detail_dialog_layer = ALittle.DisplayGroup(Emulator.g_Control)
-	self._detail_line_layer = ALittle.DisplayGroup(Emulator.g_Control)
+	self._detail_dialog_layer = ALittle.DisplayGroup(ProtobufEmulator.g_Control)
+	self._detail_line_layer = ALittle.DisplayGroup(ProtobufEmulator.g_Control)
 	self._detail_scroll_screen:AddChild(self._detail_dialog_layer)
 	self._detail_scroll_screen:AddChild(self._detail_line_layer)
 end
 
-function Emulator.GBlueprint.__getter:step_file()
+function ProtobufEmulator.GBlueprint.__getter:step_file()
 	return self._step_file
 end
 
-function Emulator.GBlueprint:Clear()
+function ProtobufEmulator.GBlueprint:Clear()
 	self._file_path = nil
 	self._save = true
 	self._file_title.text = ""
@@ -353,11 +353,11 @@ function Emulator.GBlueprint:Clear()
 	self._detail_line_layer:RemoveAllChild()
 end
 
-function Emulator.GBlueprint:CreateRobotManager(player_id, socket, trace)
-	return Emulator.RobotStepManager(player_id, socket, self._step_file, trace)
+function ProtobufEmulator.GBlueprint:CreateRobotManager(player_id, socket, trace)
+	return ProtobufEmulator.RobotStepManager(player_id, socket, self._step_file, trace)
 end
 
-function Emulator.GBlueprint:HandleNodeDragBegin(event)
+function ProtobufEmulator.GBlueprint:HandleNodeDragBegin(event)
 	self._cur_node_ui = nil
 	A_LayerManager:RemoveFromTip(self._cur_drag_image)
 	self._cur_drag_image = nil
@@ -377,8 +377,8 @@ function Emulator.GBlueprint:HandleNodeDragBegin(event)
 	if self._cur_node_ui == nil then
 		return
 	end
-	local dialog = Emulator.g_Control:CreateControl(self._cur_node_ui)
-	local effect = ALittle.EffectImage(Emulator.g_Control)
+	local dialog = ProtobufEmulator.g_Control:CreateControl(self._cur_node_ui)
+	local effect = ALittle.EffectImage(ProtobufEmulator.g_Control)
 	effect:Action(dialog)
 	self._cur_drag_image = effect
 	A_LayerManager:AddToTip(self._cur_drag_image)
@@ -387,7 +387,7 @@ function Emulator.GBlueprint:HandleNodeDragBegin(event)
 	self._cur_drag_image.alpha = 0.5
 end
 
-function Emulator.GBlueprint:HandleNodeDrag(event)
+function ProtobufEmulator.GBlueprint:HandleNodeDrag(event)
 	if self._cur_drag_image == nil then
 		return
 	end
@@ -395,7 +395,7 @@ function Emulator.GBlueprint:HandleNodeDrag(event)
 	self._cur_drag_image.y = A_UISystem.mouse_y - self._cur_drag_image.height / 2
 end
 
-function Emulator.GBlueprint:HandleNodeDragEnd(event)
+function ProtobufEmulator.GBlueprint:HandleNodeDragEnd(event)
 	if self._cur_node_ui == nil then
 		return
 	end
@@ -423,7 +423,7 @@ function Emulator.GBlueprint:HandleNodeDragEnd(event)
 	self._cur_drag_image = nil
 end
 
-function Emulator.GBlueprint:Save(value)
+function ProtobufEmulator.GBlueprint:Save(value)
 	if self._file_path == nil then
 		return
 	end
@@ -439,7 +439,7 @@ function Emulator.GBlueprint:Save(value)
 	ALittle.File_SaveFile(self._file_path, ajson.encode(self._step_file), -1)
 end
 
-function Emulator.GBlueprint:HandleCreateRobotStepLog(x, y)
+function ProtobufEmulator.GBlueprint:HandleCreateRobotStepLog(x, y)
 	local info = {}
 	self._step_file.max_id = self._step_file.max_id + (1)
 	info.id = self._step_file.max_id
@@ -451,7 +451,7 @@ function Emulator.GBlueprint:HandleCreateRobotStepLog(x, y)
 	self:Save(false)
 end
 
-function Emulator.GBlueprint:HandleCreateRobotStepSendMessage(x, y)
+function ProtobufEmulator.GBlueprint:HandleCreateRobotStepSendMessage(x, y)
 	local info = {}
 	self._step_file.max_id = self._step_file.max_id + (1)
 	info.id = self._step_file.max_id
@@ -465,7 +465,7 @@ function Emulator.GBlueprint:HandleCreateRobotStepSendMessage(x, y)
 	self:Save(false)
 end
 
-function Emulator.GBlueprint:HandleRobotStepSendMessageChanged(event)
+function ProtobufEmulator.GBlueprint:HandleRobotStepSendMessageChanged(event)
 	local link_info = event.target._user_data
 	link_info.info.full_name = link_info._full_name_input.text
 	link_info.message = A_LuaProtobufSchedule:CreateMessage(link_info.info.full_name)
@@ -478,7 +478,7 @@ function Emulator.GBlueprint:HandleRobotStepSendMessageChanged(event)
 	self:Save(false)
 end
 
-function Emulator.GBlueprint:HandleRobotStepSendMessageEditClick(event)
+function ProtobufEmulator.GBlueprint:HandleRobotStepSendMessageEditClick(event)
 	local link_info = event.target._user_data
 	if link_info.message == nil then
 		g_AUITool:ShowNotice("提示", "消息不存在无法编辑")
@@ -486,7 +486,7 @@ function Emulator.GBlueprint:HandleRobotStepSendMessageEditClick(event)
 	end
 	local root = {}
 	root.for_show = false
-	local tree = Emulator.UtilityCreateTreeMessage(root, link_info.message, "")
+	local tree = ProtobufEmulator.UtilityCreateTreeMessage(root, link_info.message, "")
 	tree.fold = true
 	root.detail_info = tree:GetDetailInfo()
 	if root.detail_info == nil then
@@ -498,17 +498,17 @@ function Emulator.GBlueprint:HandleRobotStepSendMessageEditClick(event)
 	self:Save(false)
 end
 
-function Emulator.GBlueprint:HandleRobotStepCmdEditResize(event)
+function ProtobufEmulator.GBlueprint:HandleRobotStepCmdEditResize(event)
 	local link_info = event.target._user_data
 	link_info.dialog.height = link_info._cmd_edit.y + link_info._cmd_edit.height + 5 + link_info.dialog.head_size
 end
 
-function Emulator.GBlueprint:HandleRobotStepReceiveLogEditResize(event)
+function ProtobufEmulator.GBlueprint:HandleRobotStepReceiveLogEditResize(event)
 	local link_info = event.target._user_data
 	link_info.dialog.height = link_info._log_edit.y + link_info._log_edit.height + 5 + link_info.dialog.head_size
 end
 
-function Emulator.GBlueprint:HandleCreateRobotStepReceiveMessage(x, y)
+function ProtobufEmulator.GBlueprint:HandleCreateRobotStepReceiveMessage(x, y)
 	local info = {}
 	self._step_file.max_id = self._step_file.max_id + (1)
 	info.id = self._step_file.max_id
@@ -521,7 +521,7 @@ function Emulator.GBlueprint:HandleCreateRobotStepReceiveMessage(x, y)
 	self:Save(false)
 end
 
-function Emulator.GBlueprint:HandleRobotStepReceiveMessageChanged(event)
+function ProtobufEmulator.GBlueprint:HandleRobotStepReceiveMessageChanged(event)
 	local link_info = event.target._user_data
 	link_info.info.full_name = link_info._full_name_input.text
 	if A_LuaProtobufSchedule:GetMessageInfo(link_info.info.full_name) == nil then
@@ -532,7 +532,7 @@ function Emulator.GBlueprint:HandleRobotStepReceiveMessageChanged(event)
 	self:Save(false)
 end
 
-function Emulator.GBlueprint:HandleCreateRobotStepDelay(x, y)
+function ProtobufEmulator.GBlueprint:HandleCreateRobotStepDelay(x, y)
 	local info = {}
 	self._step_file.max_id = self._step_file.max_id + (1)
 	info.id = self._step_file.max_id
@@ -546,7 +546,7 @@ function Emulator.GBlueprint:HandleCreateRobotStepDelay(x, y)
 	self:Save(false)
 end
 
-function Emulator.GBlueprint:HandleRobotStepDelayChanged(event)
+function ProtobufEmulator.GBlueprint:HandleRobotStepDelayChanged(event)
 	local link_info = event.target._user_data
 	link_info.info.delay_ms = ALittle.Math_ToInt(link_info._delay_input.text)
 	if link_info.info.delay_ms == nil or link_info.info.delay_ms < 0 then
@@ -556,7 +556,7 @@ function Emulator.GBlueprint:HandleRobotStepDelayChanged(event)
 	self:Save(false)
 end
 
-function Emulator.GBlueprint:HandleRobotStepLogChanged(event)
+function ProtobufEmulator.GBlueprint:HandleRobotStepLogChanged(event)
 	local link_info = event.target._user_data
 	link_info.info.log = link_info._log_input.text
 	if link_info.info.log == "" then
@@ -565,7 +565,7 @@ function Emulator.GBlueprint:HandleRobotStepLogChanged(event)
 	self:Save(false)
 end
 
-function Emulator.GBlueprint:HandleRobotStepUniqueIdChanged(event)
+function ProtobufEmulator.GBlueprint:HandleRobotStepUniqueIdChanged(event)
 	local link_info = event.target._user_data
 	link_info.info.unique_id = link_info._unique_id_input.text
 	if link_info.info.unique_id == "" then
@@ -574,7 +574,7 @@ function Emulator.GBlueprint:HandleRobotStepUniqueIdChanged(event)
 	self:Save(false)
 end
 
-function Emulator.GBlueprint:HandleRobotStepQuadRButtonDown(event)
+function ProtobufEmulator.GBlueprint:HandleRobotStepQuadRButtonDown(event)
 	if self._file_path == nil then
 		return
 	end
@@ -594,7 +594,7 @@ function Emulator.GBlueprint:HandleRobotStepQuadRButtonDown(event)
 	menu:Show()
 end
 
-function Emulator.GBlueprint:HandleRobotStepLineDragBegin(event)
+function ProtobufEmulator.GBlueprint:HandleRobotStepLineDragBegin(event)
 	local link_info = event.target._user_data
 	local type = nil
 	if link_info._left_step_image == event.target then
@@ -622,7 +622,7 @@ function Emulator.GBlueprint:HandleRobotStepLineDragBegin(event)
 	end
 	self:Save(false)
 	local pre_image = event.target
-	local tri = Emulator.g_Control:CreateControl("robot_step_triangle")
+	local tri = ProtobufEmulator.g_Control:CreateControl("robot_step_triangle")
 	tri.disabled = true
 	link_info.info.pre_type = type
 	local pre_x, pre_y = pre_image:LocalToGlobal(self._detail_scroll_screen.container)
@@ -633,7 +633,7 @@ function Emulator.GBlueprint:HandleRobotStepLineDragBegin(event)
 	self._cur_line = tri
 end
 
-function Emulator.GBlueprint:SetLinePosition(tri, pre_x, pre_y, next_x, next_y, r)
+function ProtobufEmulator.GBlueprint:SetLinePosition(tri, pre_x, pre_y, next_x, next_y, r)
 	local vx3 = next_x - pre_x
 	local vy3 = next_y - pre_y
 	local vx = 0.0
@@ -664,7 +664,7 @@ function Emulator.GBlueprint:SetLinePosition(tri, pre_x, pre_y, next_x, next_y, 
 	tri.y3 = next_y
 end
 
-function Emulator.GBlueprint:HandleRobotStepLineDrag(event)
+function ProtobufEmulator.GBlueprint:HandleRobotStepLineDrag(event)
 	if self._cur_line == nil then
 		return
 	end
@@ -676,7 +676,7 @@ function Emulator.GBlueprint:HandleRobotStepLineDrag(event)
 	self:SetLinePosition(self._cur_line, pre_x + pre_image.width / 2, pre_y + pre_image.height / 2, cur_x, cur_y, pre_image.width / 2)
 end
 
-function Emulator.GBlueprint:HandleRobotStepLineDragEnd(event)
+function ProtobufEmulator.GBlueprint:HandleRobotStepLineDragEnd(event)
 	if self._cur_line == nil then
 		return
 	end
@@ -711,7 +711,7 @@ function Emulator.GBlueprint:HandleRobotStepLineDragEnd(event)
 	self:CreateRobotStepLine(link_info.info)
 end
 
-function Emulator.GBlueprint:UpdateRobotStepDialogPosition(link_info, x, y)
+function ProtobufEmulator.GBlueprint:UpdateRobotStepDialogPosition(link_info, x, y)
 	link_info.info.x = x
 	link_info.info.y = y
 	if link_info._line_tri ~= nil then
@@ -763,17 +763,17 @@ function Emulator.GBlueprint:UpdateRobotStepDialogPosition(link_info, x, y)
 	self:Save(false)
 end
 
-function Emulator.GBlueprint:HandleRobotStepDragBegin(event)
+function ProtobufEmulator.GBlueprint:HandleRobotStepDragBegin(event)
 	local link_info = event.target._user_data
 	link_info.dialog:MoveToTop()
 end
 
-function Emulator.GBlueprint:HandleRobotStepDrag(event)
+function ProtobufEmulator.GBlueprint:HandleRobotStepDrag(event)
 	local link_info = event.target._user_data
 	self:UpdateRobotStepDialogPosition(link_info, event.target.x, event.target.y)
 end
 
-function Emulator.GBlueprint:HandleRobotStepDragEnd(event)
+function ProtobufEmulator.GBlueprint:HandleRobotStepDragEnd(event)
 	local link_info = event.target._user_data
 	if event.target.x < 0 then
 		event.target.x = 0
@@ -785,12 +785,12 @@ function Emulator.GBlueprint:HandleRobotStepDragEnd(event)
 	self._detail_scroll_screen:AdjustScrollBar()
 end
 
-function Emulator.GBlueprint:HandleRobotStepDelete(dialog)
+function ProtobufEmulator.GBlueprint:HandleRobotStepDelete(dialog)
 	self:AskRobotStepDelete(dialog)
 	return false
 end
 
-function Emulator.GBlueprint:AskRobotStepDelete(dialog)
+function ProtobufEmulator.GBlueprint:AskRobotStepDelete(dialog)
 	local result = g_AUITool:DeleteNotice("删除", "确定删除当前步骤吗?")
 	if result ~= "YES" then
 		return
@@ -821,9 +821,9 @@ function Emulator.GBlueprint:AskRobotStepDelete(dialog)
 	self._link_map[link_info.info.id] = nil
 	self:Save(false)
 end
-Emulator.GBlueprint.AskRobotStepDelete = Lua.CoWrap(Emulator.GBlueprint.AskRobotStepDelete)
+ProtobufEmulator.GBlueprint.AskRobotStepDelete = Lua.CoWrap(ProtobufEmulator.GBlueprint.AskRobotStepDelete)
 
-function Emulator.GBlueprint:HandleMessageEditDialogClose()
+function ProtobufEmulator.GBlueprint:HandleMessageEditDialogClose()
 	local link_info = self._message_edit_dialog._user_data
 	if link_info.message ~= nil then
 		link_info.info.message_json = protobuf.message_jsonencode(link_info.message, true, false)
@@ -831,7 +831,7 @@ function Emulator.GBlueprint:HandleMessageEditDialogClose()
 	return true
 end
 
-function Emulator.GBlueprint:HandleFileTreeDeleteDir(event)
+function ProtobufEmulator.GBlueprint:HandleFileTreeDeleteDir(event)
 	if self._file_path == nil then
 		return
 	end
@@ -842,7 +842,7 @@ function Emulator.GBlueprint:HandleFileTreeDeleteDir(event)
 	self.visible = false
 end
 
-function Emulator.GBlueprint:HandleFileTreeDeleteFile(event)
+function ProtobufEmulator.GBlueprint:HandleFileTreeDeleteFile(event)
 	if event.path ~= self._file_path then
 		return
 	end
@@ -851,7 +851,7 @@ function Emulator.GBlueprint:HandleFileTreeDeleteFile(event)
 	self.visible = false
 end
 
-function Emulator.GBlueprint:HandleFileTreeSelectFile(event)
+function ProtobufEmulator.GBlueprint:HandleFileTreeSelectFile(event)
 	if event.info.path == self._file_path then
 		return
 	end
@@ -900,7 +900,7 @@ function Emulator.GBlueprint:HandleFileTreeSelectFile(event)
 	self._detail_scroll_screen:AdjustScrollBar()
 end
 
-function Emulator.GBlueprint:CreateRobotStepDialog(info)
+function ProtobufEmulator.GBlueprint:CreateRobotStepDialog(info)
 	if info.type == 4 then
 		local link_info = {}
 		local dialog = self:CreateCommonDialog("robot_step_start", link_info, info)
@@ -951,7 +951,7 @@ function Emulator.GBlueprint:CreateRobotStepDialog(info)
 	end
 end
 
-function Emulator.GBlueprint:CreateRobotStepLine(info)
+function ProtobufEmulator.GBlueprint:CreateRobotStepLine(info)
 	if info.next_id == nil then
 		return
 	end
@@ -969,7 +969,7 @@ function Emulator.GBlueprint:CreateRobotStepLine(info)
 	if next_link.pre_link ~= nil and next_link.pre_link[link_info.info.id] ~= nil then
 		return
 	end
-	local tri = Emulator.g_Control:CreateControl("robot_step_triangle")
+	local tri = ProtobufEmulator.g_Control:CreateControl("robot_step_triangle")
 	tri.disabled = true
 	tri._user_data = next_link
 	link_info._line_tri = tri
@@ -1000,14 +1000,14 @@ function Emulator.GBlueprint:CreateRobotStepLine(info)
 	self._detail_line_layer:AddChild(tri)
 end
 
-function Emulator.GBlueprint:CreateCommonDialog(ui, link_info, info)
+function ProtobufEmulator.GBlueprint:CreateCommonDialog(ui, link_info, info)
 	if info.cmd_list == nil then
 		info.cmd_list = {}
 	end
 	if info.receive_log_list == nil then
 		info.receive_log_list = {}
 	end
-	local dialog = Emulator.g_Control:CreateControl(ui, link_info)
+	local dialog = ProtobufEmulator.g_Control:CreateControl(ui, link_info)
 	dialog._user_data = link_info
 	link_info.dialog = dialog
 	link_info.info = info
@@ -1037,7 +1037,7 @@ function Emulator.GBlueprint:CreateCommonDialog(ui, link_info, info)
 	return dialog
 end
 
-function Emulator.GBlueprint:HandleSettingChanged()
+function ProtobufEmulator.GBlueprint:HandleSettingChanged()
 	self._link_map = {}
 	self._file_title.text = ""
 	self._file_path = nil

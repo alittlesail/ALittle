@@ -1,7 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.Emulator == nil then _G.Emulator = {} end
-local Emulator = Emulator
+if _G.ProtobufEmulator == nil then _G.ProtobufEmulator = {} end
+local ProtobufEmulator = ProtobufEmulator
 local Lua = Lua
 local ALittle = ALittle
 local ___rawset = rawset
@@ -9,10 +9,10 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-assert(Emulator.IDETreeLogic, " extends class:Emulator.IDETreeLogic is nil")
-Emulator.IDETreeRepeatedBool = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETreeRepeatedBool")
+assert(ProtobufEmulator.IDETreeLogic, " extends class:ProtobufEmulator.IDETreeLogic is nil")
+ProtobufEmulator.IDETreeRepeatedBool = Lua.Class(ProtobufEmulator.IDETreeLogic, "ProtobufEmulator.IDETreeRepeatedBool")
 
-function Emulator.IDETreeRepeatedBool:Ctor(ctrl_sys, root, parent, rflct, msg, field, index)
+function ProtobufEmulator.IDETreeRepeatedBool:Ctor(ctrl_sys, root, parent, rflct, msg, field, index)
 	___rawset(self, "_parent", parent)
 	___rawset(self, "_rflct", rflct)
 	___rawset(self, "_msg", msg)
@@ -38,7 +38,7 @@ function Emulator.IDETreeRepeatedBool:Ctor(ctrl_sys, root, parent, rflct, msg, f
 	self._delete_button.disabled = root.for_show
 end
 
-function Emulator.IDETreeRepeatedBool:HandleSelectChanegd(event)
+function ProtobufEmulator.IDETreeRepeatedBool:HandleSelectChanegd(event)
 	local index = self._parent:GetChildIndex(self) - 1
 	if self._value_dropdown.text == "true" then
 		protobuf.reflection_setrepeatedbool(self._rflct, self._msg, self._field, index, true)
@@ -48,11 +48,11 @@ function Emulator.IDETreeRepeatedBool:HandleSelectChanegd(event)
 	self:Save()
 end
 
-function Emulator.IDETreeRepeatedBool:HandleInsertClick(event)
+function ProtobufEmulator.IDETreeRepeatedBool:HandleInsertClick(event)
 	self._parent:CreateOneBefore(self)
 end
 
-function Emulator.IDETreeRepeatedBool:HandleDeleteClick(event)
+function ProtobufEmulator.IDETreeRepeatedBool:HandleDeleteClick(event)
 	self._parent:Delete(self)
 end
 

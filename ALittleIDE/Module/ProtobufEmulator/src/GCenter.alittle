@@ -1,4 +1,5 @@
-namespace Emulator;
+
+namespace ProtobufEmulator;
 
 protected var g_GConfig:ALittle.IJsonConfig;
 

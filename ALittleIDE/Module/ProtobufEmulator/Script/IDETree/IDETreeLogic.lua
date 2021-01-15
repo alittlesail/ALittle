@@ -1,7 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.Emulator == nil then _G.Emulator = {} end
-local Emulator = Emulator
+if _G.ProtobufEmulator == nil then _G.ProtobufEmulator = {} end
+local ProtobufEmulator = ProtobufEmulator
 local Lua = Lua
 local ALittle = ALittle
 local ___rawset = rawset
@@ -10,44 +10,44 @@ local ___ipairs = ipairs
 
 
 assert(ALittle.DisplayLayout, " extends class:ALittle.DisplayLayout is nil")
-Emulator.IDETreeLogic = Lua.Class(ALittle.DisplayLayout, "Emulator.IDETreeLogic")
+ProtobufEmulator.IDETreeLogic = Lua.Class(ALittle.DisplayLayout, "ProtobufEmulator.IDETreeLogic")
 
-function Emulator.IDETreeLogic:Ctor(ctrl_sys, root)
+function ProtobufEmulator.IDETreeLogic:Ctor(ctrl_sys, root)
 	___rawset(self, "_root", root)
 end
 
-function Emulator.IDETreeLogic:Init()
+function ProtobufEmulator.IDETreeLogic:Init()
 	self._upper_description = ALittle.String_Upper(self._item_title.text)
 end
 
-function Emulator.IDETreeLogic:IsTree()
+function ProtobufEmulator.IDETreeLogic:IsTree()
 	return false
 end
 
-function Emulator.IDETreeLogic.__getter:title()
+function ProtobufEmulator.IDETreeLogic.__getter:title()
 	return self._item_title.text
 end
 
-function Emulator.IDETreeLogic.__setter:fold(value)
+function ProtobufEmulator.IDETreeLogic.__setter:fold(value)
 end
 
-function Emulator.IDETreeLogic.__getter:fold()
+function ProtobufEmulator.IDETreeLogic.__getter:fold()
 	return false
 end
 
-function Emulator.IDETreeLogic.__setter:light(value)
+function ProtobufEmulator.IDETreeLogic.__setter:light(value)
 	self._light.visible = value
 end
 
-function Emulator.IDETreeLogic.__getter:light()
+function ProtobufEmulator.IDETreeLogic.__getter:light()
 	return self._light.visible
 end
 
-function Emulator.IDETreeLogic:SearchBegin()
+function ProtobufEmulator.IDETreeLogic:SearchBegin()
 	self.light = false
 end
 
-function Emulator.IDETreeLogic:SearchEnd(list)
+function ProtobufEmulator.IDETreeLogic:SearchEnd(list)
 	for index, parent in ___ipairs(list) do
 		parent.light = true
 		if parent ~= self then
@@ -63,7 +63,7 @@ function Emulator.IDETreeLogic:SearchEnd(list)
 	end
 end
 
-function Emulator.IDETreeLogic:SearchDescription(name, list)
+function ProtobufEmulator.IDETreeLogic:SearchDescription(name, list)
 	if list == nil then
 		list = {}
 	end
@@ -74,12 +74,12 @@ function Emulator.IDETreeLogic:SearchDescription(name, list)
 	return list
 end
 
-function Emulator.IDETreeLogic:Save()
+function ProtobufEmulator.IDETreeLogic:Save()
 	local content = protobuf.message_jsonencode(self._root.detail_info.message, false, false)
 	if content == nil then
 		return
 	end
-	Emulator.g_GProtoCache:SetConfig(self._root.detail_info.info.full_name, content)
+	ProtobufEmulator.g_GProtoCache:SetConfig(self._root.detail_info.info.full_name, content)
 end
 
 end

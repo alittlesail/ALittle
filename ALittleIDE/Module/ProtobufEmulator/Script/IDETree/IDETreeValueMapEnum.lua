@@ -1,7 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.Emulator == nil then _G.Emulator = {} end
-local Emulator = Emulator
+if _G.ProtobufEmulator == nil then _G.ProtobufEmulator = {} end
+local ProtobufEmulator = ProtobufEmulator
 local Lua = Lua
 local ALittle = ALittle
 local ___rawset = rawset
@@ -9,10 +9,10 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-assert(Emulator.IDETreeLogic, " extends class:Emulator.IDETreeLogic is nil")
-Emulator.IDETreeValueMapEnum = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETreeValueMapEnum")
+assert(ProtobufEmulator.IDETreeLogic, " extends class:ProtobufEmulator.IDETreeLogic is nil")
+ProtobufEmulator.IDETreeValueMapEnum = Lua.Class(ProtobufEmulator.IDETreeLogic, "ProtobufEmulator.IDETreeValueMapEnum")
 
-function Emulator.IDETreeValueMapEnum:Ctor(ctrl_sys, root, parent, rflct, msg, key_field, value_field)
+function ProtobufEmulator.IDETreeValueMapEnum:Ctor(ctrl_sys, root, parent, rflct, msg, key_field, value_field)
 	___rawset(self, "_parent", parent)
 	___rawset(self, "_rflct", rflct)
 	___rawset(self, "_msg", msg)
@@ -59,7 +59,7 @@ function Emulator.IDETreeValueMapEnum:Ctor(ctrl_sys, root, parent, rflct, msg, k
 	self._delete_button.disabled = root.for_show
 end
 
-function Emulator.IDETreeValueMapEnum:RefreshValue()
+function ProtobufEmulator.IDETreeValueMapEnum:RefreshValue()
 	if self._key_cpp_type == 1 then
 		return protobuf.reflection_getint32(self._rflct, self._msg, self._key_field)
 	elseif self._key_cpp_type == 3 then
@@ -78,7 +78,7 @@ function Emulator.IDETreeValueMapEnum:RefreshValue()
 	return nil
 end
 
-function Emulator.IDETreeValueMapEnum:HandleKeyInputFocusOut(event)
+function ProtobufEmulator.IDETreeValueMapEnum:HandleKeyInputFocusOut(event)
 	local text = self._key_input.text
 	if self._key_cpp_type == 1 then
 		protobuf.reflection_setint32(self._rflct, self._msg, self._key_field, ALittle.Math_ToIntOrZero(text))
@@ -100,7 +100,7 @@ function Emulator.IDETreeValueMapEnum:HandleKeyInputFocusOut(event)
 	self:Save()
 end
 
-function Emulator.IDETreeValueMapEnum:HandleValueSelectChanegd(event)
+function ProtobufEmulator.IDETreeValueMapEnum:HandleValueSelectChanegd(event)
 	local value = self._enum_value_map[event.target.text]
 	if value == nil then
 		return
@@ -110,11 +110,11 @@ function Emulator.IDETreeValueMapEnum:HandleValueSelectChanegd(event)
 	self:Save()
 end
 
-function Emulator.IDETreeValueMapEnum:HandleInsertClick(event)
+function ProtobufEmulator.IDETreeValueMapEnum:HandleInsertClick(event)
 	self._parent:CreateOneBefore(self)
 end
 
-function Emulator.IDETreeValueMapEnum:HandleDeleteClick(event)
+function ProtobufEmulator.IDETreeValueMapEnum:HandleDeleteClick(event)
 	self._parent:Delete(self)
 end
 

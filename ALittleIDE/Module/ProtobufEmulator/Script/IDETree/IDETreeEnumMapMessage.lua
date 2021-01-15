@@ -1,7 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.Emulator == nil then _G.Emulator = {} end
-local Emulator = Emulator
+if _G.ProtobufEmulator == nil then _G.ProtobufEmulator = {} end
+local ProtobufEmulator = ProtobufEmulator
 local Lua = Lua
 local ALittle = ALittle
 local ___rawset = rawset
@@ -9,10 +9,10 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-assert(Emulator.IDETree, " extends class:Emulator.IDETree is nil")
-Emulator.IDETreeEnumMapMessage = Lua.Class(Emulator.IDETree, "Emulator.IDETreeEnumMapMessage")
+assert(ProtobufEmulator.IDETree, " extends class:ProtobufEmulator.IDETree is nil")
+ProtobufEmulator.IDETreeEnumMapMessage = Lua.Class(ProtobufEmulator.IDETree, "ProtobufEmulator.IDETreeEnumMapMessage")
 
-function Emulator.IDETreeEnumMapMessage:Ctor(ctrl_sys, root, parent, rflct, msg, key_field, detail_info)
+function ProtobufEmulator.IDETreeEnumMapMessage:Ctor(ctrl_sys, root, parent, rflct, msg, key_field, detail_info)
 	___rawset(self, "_detail_info", detail_info)
 	___rawset(self, "_parent", parent)
 	___rawset(self, "_rflct", rflct)
@@ -51,11 +51,11 @@ function Emulator.IDETreeEnumMapMessage:Ctor(ctrl_sys, root, parent, rflct, msg,
 	self._delete_button.disabled = root.for_show
 end
 
-function Emulator.IDETreeEnumMapMessage:GetDetailInfo()
+function ProtobufEmulator.IDETreeEnumMapMessage:GetDetailInfo()
 	return self._detail_info
 end
 
-function Emulator.IDETreeEnumMapMessage:HandleKeySelectChanegd(event)
+function ProtobufEmulator.IDETreeEnumMapMessage:HandleKeySelectChanegd(event)
 	local value = self._enum_value_map[event.target.text]
 	if value == nil then
 		return
@@ -64,11 +64,11 @@ function Emulator.IDETreeEnumMapMessage:HandleKeySelectChanegd(event)
 	self:Save()
 end
 
-function Emulator.IDETreeEnumMapMessage:HandleInsertClick(event)
+function ProtobufEmulator.IDETreeEnumMapMessage:HandleInsertClick(event)
 	self._parent:CreateOneBefore(self)
 end
 
-function Emulator.IDETreeEnumMapMessage:HandleDeleteClick(event)
+function ProtobufEmulator.IDETreeEnumMapMessage:HandleDeleteClick(event)
 	self._parent:Delete(self)
 end
 

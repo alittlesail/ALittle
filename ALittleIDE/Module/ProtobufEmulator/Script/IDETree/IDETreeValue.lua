@@ -1,7 +1,7 @@
 -- ALittle Generate Lua And Do Not Edit This Line!
 do
-if _G.Emulator == nil then _G.Emulator = {} end
-local Emulator = Emulator
+if _G.ProtobufEmulator == nil then _G.ProtobufEmulator = {} end
+local ProtobufEmulator = ProtobufEmulator
 local Lua = Lua
 local ALittle = ALittle
 local ___rawset = rawset
@@ -9,10 +9,10 @@ local ___pairs = pairs
 local ___ipairs = ipairs
 
 
-assert(Emulator.IDETreeLogic, " extends class:Emulator.IDETreeLogic is nil")
-Emulator.IDETreeValue = Lua.Class(Emulator.IDETreeLogic, "Emulator.IDETreeValue")
+assert(ProtobufEmulator.IDETreeLogic, " extends class:ProtobufEmulator.IDETreeLogic is nil")
+ProtobufEmulator.IDETreeValue = Lua.Class(ProtobufEmulator.IDETreeLogic, "ProtobufEmulator.IDETreeValue")
 
-function Emulator.IDETreeValue:Ctor(ctrl_sys, root, field_name, rflct, msg, field)
+function ProtobufEmulator.IDETreeValue:Ctor(ctrl_sys, root, field_name, rflct, msg, field)
 	___rawset(self, "_rflct", rflct)
 	___rawset(self, "_msg", msg)
 	___rawset(self, "_field", field)
@@ -30,7 +30,7 @@ function Emulator.IDETreeValue:Ctor(ctrl_sys, root, field_name, rflct, msg, fiel
 	self._value_input.editable = not root.for_show
 end
 
-function Emulator.IDETreeValue:RefreshValue()
+function ProtobufEmulator.IDETreeValue:RefreshValue()
 	if self._cpp_type == 1 then
 		return protobuf.reflection_getint32(self._rflct, self._msg, self._field)
 	elseif self._cpp_type == 3 then
@@ -49,7 +49,7 @@ function Emulator.IDETreeValue:RefreshValue()
 	return nil
 end
 
-function Emulator.IDETreeValue:HandleInputFocusOut(event)
+function ProtobufEmulator.IDETreeValue:HandleInputFocusOut(event)
 	local text = self._value_input.text
 	if self._cpp_type == 1 then
 		protobuf.reflection_setint32(self._rflct, self._msg, self._field, ALittle.Math_ToIntOrZero(text))

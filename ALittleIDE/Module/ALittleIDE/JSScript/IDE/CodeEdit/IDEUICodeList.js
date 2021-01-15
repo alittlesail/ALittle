@@ -148,6 +148,30 @@ ALittleIDE.IDEUICodeList = JavaScript.Class(ALittle.DisplayLayout, {
 		this._code_scroll_screen.AddChild(tree);
 		return true;
 	},
+	AddServer : function(name) {
+		let file_map = ALittle.File_GetNameListByDir(ALittle.File_BaseFilePath() + "Server");
+		let attr = file_map[name];
+		if (attr === undefined || !attr.directory) {
+			return false;
+		}
+		let module_map = ALittleIDE.g_IDEProject.project.config.GetConfig("code_module", {});
+		let module_info = {};
+		module_info.module_name = name;
+		module_info.root_path = ALittle.File_BaseFilePath() + "Server/" + name + "/src";
+		module_map[name] = module_info;
+		ALittleIDE.g_IDEProject.project.config.SetConfig("code_module", module_map);
+		let info = {};
+		info.module_name = name;
+		info.name = "src";
+		info.path = ALittle.File_BaseFilePath() + "Server/" + name + "/src";
+		info.module_path = ALittle.File_BaseFilePath() + "Server/" + name + "/";
+		info.group = this._group;
+		info.root = true;
+		info.project = ALittleIDE.g_IDEProject.project.code;
+		let tree = ALittle.NewObject(ALittleIDE.IDECodeTree, ALittleIDE.g_Control, info);
+		this._code_scroll_screen.AddChild(tree);
+		return true;
+	},
 	OpenByFullPath : function(full_path, line_start, char_start, line_end, char_end) {
 		if (full_path === undefined || full_path === "") {
 			return undefined;

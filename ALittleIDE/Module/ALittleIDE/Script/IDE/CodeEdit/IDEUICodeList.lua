@@ -88,15 +88,14 @@ function ALittleIDE.IDEUICodeList:HandleProjectClose(event)
 	self._jump_list = {}
 end
 
+function ALittleIDE.IDEUICodeList.CodeModuleInfoSort(a, b)
+	return a.module_name < b.module_name
+end
+
 function ALittleIDE.IDEUICodeList:HandleProjectOpen(event)
 	self._jump_count = 0
 	self._jump_index = 0
 	self._jump_list = {}
-	local module_map = ALittleIDE.g_IDEProject.project.config:GetConfig("code_module", {})
-	module_map["Core"] = nil
-	module_map["Std"] = nil
-	module_map["CEngine"] = nil
-	module_map[event.name] = nil
 	local info = {}
 	info.module_name = event.name
 	info.name = "src"
@@ -106,7 +105,7 @@ function ALittleIDE.IDEUICodeList:HandleProjectOpen(event)
 	info.root = true
 	info.project = ALittleIDE.g_IDEProject.project.code
 	self._code_scroll_screen:AddChild(ALittleIDE.IDECodeTree(ALittleIDE.g_Control, info))
-	local std_list = {"Core", "Std", "CEngine"}
+	local std_list = {"Core", "Std", "CEngine", "SEngine"}
 	for index, name in ___ipairs(std_list) do
 		info = {}
 		info.module_name = name
@@ -119,7 +118,14 @@ function ALittleIDE.IDEUICodeList:HandleProjectOpen(event)
 		local tree = ALittleIDE.IDECodeTree(ALittleIDE.g_Control, info)
 		self._code_scroll_screen:AddChild(tree)
 	end
-	for index, module in ___pairs(module_map) do
+	local client_module_list = ALittleIDE.g_IDEProject.project.config:GetConfig("client_module", {})
+	ALittle.List_Sort(client_module_list, ALittleIDE.IDEUICodeList.CodeModuleInfoSort)
+	local server_module_list = ALittleIDE.g_IDEProject.project.config:GetConfig("server_module", {})
+	ALittle.List_Sort(server_module_list, ALittleIDE.IDEUICodeList.CodeModuleInfoSort)
+	local module_list = {}
+	ALittle.List_PushList(module_list, client_module_list)
+	ALittle.List_PushList(module_list, server_module_list)
+	for index, module in ___ipairs(module_list) do
 		info = {}
 		info.module_name = module.module_name
 		info.name = ALittle.File_GetFileNameByPath(module.root_path)
@@ -131,31 +137,6 @@ function ALittleIDE.IDEUICodeList:HandleProjectOpen(event)
 		local tree = ALittleIDE.IDECodeTree(ALittleIDE.g_Control, info)
 		self._code_scroll_screen:AddChild(tree)
 	end
-end
-
-function ALittleIDE.IDEUICodeList:AddLibrary(name)
-	local file_map = ALittle.File_GetNameListByDir(ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary")
-	local attr = file_map[name]
-	if attr == nil or not attr.directory then
-		return false
-	end
-	local module_map = ALittleIDE.g_IDEProject.project.config:GetConfig("code_module", {})
-	local module_info = {}
-	module_info.module_name = name
-	module_info.root_path = ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/" .. name .. "/src"
-	module_map[name] = module_info
-	ALittleIDE.g_IDEProject.project.config:SetConfig("code_module", module_map)
-	local info = {}
-	info.module_name = name
-	info.name = "src"
-	info.path = ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/" .. name .. "/src"
-	info.module_path = ALittle.File_BaseFilePath() .. "Module/ALittleIDE/Other/GameLibrary/" .. name .. "/"
-	info.group = self._group
-	info.root = true
-	info.project = ALittleIDE.g_IDEProject.project.code
-	local tree = ALittleIDE.IDECodeTree(ALittleIDE.g_Control, info)
-	self._code_scroll_screen:AddChild(tree)
-	return true
 end
 
 function ALittleIDE.IDEUICodeList:OpenByFullPath(full_path, line_start, char_start, line_end, char_end)
@@ -195,17 +176,22 @@ function ALittleIDE.IDEUICodeList:GetCodeTree(full_path)
 end
 
 function ALittleIDE.IDEUICodeList:AddModule(name)
-	for index, tree in ___ipairs(self._code_scroll_screen.childs) do
-		if tree.user_info.module_name == name then
-			return
+	local file_map = ALittle.File_GetNameListByDir(ALittle.File_BaseFilePath() .. "Module")
+	local attr = file_map[name]
+	if attr == nil or not attr.directory then
+		return false
+	end
+	local module_list = ALittleIDE.g_IDEProject.project.config:GetConfig("client_module", {})
+	for index, module in ___ipairs(module_list) do
+		if module.module_name == name then
+			return true
 		end
 	end
-	local module_map = ALittleIDE.g_IDEProject.project.config:GetConfig("code_module", {})
 	local module_info = {}
 	module_info.module_name = name
 	module_info.root_path = ALittle.File_BaseFilePath() .. "Module/" .. name .. "/src"
-	module_map[name] = module_info
-	ALittleIDE.g_IDEProject.project.config:SetConfig("code_module", module_map)
+	ALittle.List_Push(module_list, module_info)
+	ALittleIDE.g_IDEProject.project.config:SetConfig("client_module", module_list)
 	local info = {}
 	info.module_name = name
 	info.name = ALittle.File_GetFileNameByPath(module_info.root_path)
@@ -216,6 +202,37 @@ function ALittleIDE.IDEUICodeList:AddModule(name)
 	info.project = ALittleIDE.g_IDEProject.project.code
 	local tree = ALittleIDE.IDECodeTree(ALittleIDE.g_Control, info)
 	self._code_scroll_screen:AddChild(tree)
+	return true
+end
+
+function ALittleIDE.IDEUICodeList:AddServer(name)
+	local file_map = ALittle.File_GetNameListByDir(ALittle.File_BaseFilePath() .. "Server")
+	local attr = file_map[name]
+	if attr == nil or not attr.directory then
+		return false
+	end
+	local module_list = ALittleIDE.g_IDEProject.project.config:GetConfig("server_module", {})
+	for index, module in ___ipairs(module_list) do
+		if module.module_name == name then
+			return true
+		end
+	end
+	local module_info = {}
+	module_info.module_name = name
+	module_info.root_path = ALittle.File_BaseFilePath() .. "Server/" .. name .. "/src"
+	ALittle.List_Push(module_list, module_info)
+	ALittleIDE.g_IDEProject.project.config:SetConfig("server_module", module_list)
+	local info = {}
+	info.module_name = name
+	info.name = "src"
+	info.path = ALittle.File_BaseFilePath() .. "Server/" .. name .. "/src"
+	info.module_path = ALittle.File_BaseFilePath() .. "Server/" .. name .. "/"
+	info.group = self._group
+	info.root = true
+	info.project = ALittleIDE.g_IDEProject.project.code
+	local tree = ALittleIDE.IDECodeTree(ALittleIDE.g_Control, info)
+	self._code_scroll_screen:AddChild(tree)
+	return true
 end
 
 function ALittleIDE.IDEUICodeList:ShowTreeItemFocus(target)

@@ -93,7 +93,7 @@ function ALittleIDE.IDECodeTree:HandleRButtonDown(event)
 	end
 	if self._user_info.root then
 		menu:AddItem("添加模块", Lua.Bind(self.HandleAddModule, self))
-		menu:AddItem("添加库", Lua.Bind(self.HandleAddLibrary, self))
+		menu:AddItem("添加服务", Lua.Bind(self.HandleAddServer, self))
 	end
 	local can_remove = self._user_info.root and self._user_info.module_name ~= "Std" and self._user_info.module_name ~= "Core" and self._user_info.module_name ~= "CEngine" and self._user_info.module_name ~= ALittleIDE.g_IDEProject.project.name
 	if can_remove then
@@ -139,15 +139,15 @@ function ALittleIDE.IDECodeTree:HandleAddModule()
 end
 ALittleIDE.IDECodeTree.HandleAddModule = Lua.CoWrap(ALittleIDE.IDECodeTree.HandleAddModule)
 
-function ALittleIDE.IDECodeTree:HandleAddLibrary()
+function ALittleIDE.IDECodeTree:HandleAddServer()
 	local x, y = self._head:LocalToGlobal()
 	local name = g_AUITool:ShowRename("", x, y + self._head.height, 200)
 	if name == nil or name == "" then
 		return
 	end
-	ALittleIDE.g_IDECenter.center.code_list:AddLibrary(name)
+	ALittleIDE.g_IDECenter.center.code_list:AddServer(name)
 end
-ALittleIDE.IDECodeTree.HandleAddLibrary = Lua.CoWrap(ALittleIDE.IDECodeTree.HandleAddLibrary)
+ALittleIDE.IDECodeTree.HandleAddServer = Lua.CoWrap(ALittleIDE.IDECodeTree.HandleAddServer)
 
 function ALittleIDE.IDECodeTree:HandleDeleteDir()
 	local file_name = ALittle.File_GetFileNameByPath(self._user_info.path)

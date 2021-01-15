@@ -1,0 +1,17 @@
+/ALittle/.vs
+/ALittle/temp
+/ALittle/*.dat
+/lualib/x64
+/lualib/.vs
+/lualib/abnf/x64
+/lualib/ajson/x64
+/lualib/alanguage/x64
+/lualib/alittlescript/x64
+/lualib/carp/x64
+/lualib/cjson/x64
+/lualib/deeplearning/x64
+/lualib/memory/x64
+/lualib/protobuf/x64
+/lualib/socket/x64
+/lualib/sqlite3/x64
+/lualib/tinyxml2/x64

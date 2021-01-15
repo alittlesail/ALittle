@@ -38,12 +38,6 @@ name_list : ["target","is_drag","count"],
 type_list : ["ALittle.DisplayObject","bool","int"],
 option_map : {}
 })
-ALittle.RegStruct(-431205740, "ALittle.UIResizeEvent", {
-name : "ALittle.UIResizeEvent", ns_name : "ALittle", rl_name : "UIResizeEvent", hash_code : -431205740,
-name_list : ["target"],
-type_list : ["ALittle.DisplayObject"],
-option_map : {}
-})
 
 if (ALittleIDE.IDECodeTreeLogic === undefined) throw new Error(" extends class:ALittleIDE.IDECodeTreeLogic is undefined");
 ALittleIDE.IDECodeTreeItem = JavaScript.Class(ALittleIDE.IDECodeTreeLogic, {
@@ -110,11 +104,7 @@ ALittleIDE.IDECodeTreeItem = JavaScript.Class(ALittleIDE.IDECodeTreeLogic, {
 		}
 		this.OnDelete();
 		ALittle.File_DeleteFile(this._user_info.path);
-		let parent = this.parent;
 		this.RemoveFromParent();
-		if (parent !== undefined) {
-			parent.DispatchEvent(___all_struct.get(-431205740), {});
-		}
 		ALittleIDE.g_IDECenter.center.content_edit.CloseTabByName(ALittleIDE.IDECodeTabChild, this._user_info.name);
 	},
 	HandleCutFile : function() {

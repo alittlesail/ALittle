@@ -4,7 +4,7 @@ if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
 
 ALittleIDE.__Browser_Setup = async function(layer_group, control, module_base_path, script_base_path) {
 	ALittle.DeleteLog(7);
-	let [window_width, window_height, flag, scale] = ALittle.System_CalcLandscape(1200, 600, 0x00000080 | 0x00000020);
+	let [window_width, window_height, flag, scale] = ALittle.System_CalcLandscape(1200, 600, (0x00000080 | 0x00000020));
 	ALittle.System_CreateView("ALittleIDE", window_width, window_height, flag, scale);
 	ALittle.System_SetViewIcon(module_base_path + "Other/ic_launcher.png");
 	await A_ModuleSystem.LoadModule(module_base_path, "ALittleIDE");
@@ -45,7 +45,7 @@ ALittleIDE.__Module_Setup = async function(layer_group, control, module_base_pat
 	ALittleIDE.g_DialogLayer.width_type = 4;
 	ALittleIDE.g_DialogLayer.height_type = 4;
 	ALittleIDE.g_LayerGroup.AddChild(ALittleIDE.g_DialogLayer);
-	await RequireFromPaths(ALittleIDE.g_ScriptBasePath, "Data/", ["IDEUIManager.alittle", "IDEProject.alittle", "IDEEnum.alittle"]);
+	await RequireFromPaths(script_base_path, "Data/", ["IDEUIManager.alittle", "IDEProject.alittle", "IDEEnum.alittle"]);
 	await RequireFromPaths(script_base_path, "Dialog/", ["IDEVersionList.alittle", "IDEProjectSettingDialog.alittle", "IDEProjectOpenDialog.alittle"
 		, "IDEProjectNewDialog.alittle", "IDEProjectFindFileDialog.alittle", "IDEProjectExportDialog.alittle"
 		, "IDEImageSelectDialog.alittle", "IDEExport.alittle"]);

@@ -70,6 +70,7 @@ ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 			ALittle.List_Push(file_list, base_path + "Core/Time.js");
 			ALittle.List_Push(file_list, base_path + "Core/Coroutine.js");
 			ALittle.List_Push(file_list, base_path + "Core/Net.js");
+			ALittle.List_Push(file_list, base_path + "Core/Worker.js");
 			let ___OBJECT_2 = file_list;
 			for (let index = 1; index <= ___OBJECT_2.length; ++index) {
 				let path = ___OBJECT_2[index - 1];
@@ -102,6 +103,7 @@ ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 			ALittle.List_Push(file_list, base_path + "Core/Time.lua");
 			ALittle.List_Push(file_list, base_path + "Core/Coroutine.lua");
 			ALittle.List_Push(file_list, base_path + "Core/Net.lua");
+			ALittle.List_Push(file_list, base_path + "Core/Worker.lua");
 			let ___OBJECT_3 = file_list;
 			for (let index = 1; index <= ___OBJECT_3.length; ++index) {
 				let path = ___OBJECT_3[index - 1];
@@ -206,6 +208,7 @@ ALittleIDE.IDEUIMainMenu = JavaScript.Class(ALittle.Linear, {
 			ALittle.List_Push(file_list, base_path + "Utility/SafeIDCreator.lua");
 			ALittle.List_Push(file_list, base_path + "String/String.lua");
 			ALittle.List_Push(file_list, base_path + "File/File.lua");
+			ALittle.List_Push(file_list, base_path + "Worker/Worker.lua");
 			ALittle.List_Push(file_list, base_path + "Net/HttpFileReceiverTemplate.lua");
 			ALittle.List_Push(file_list, base_path + "Net/HttpFileSenderTemplate.lua");
 			ALittle.List_Push(file_list, base_path + "Net/HttpReceiverTemplate.lua");

@@ -1014,13 +1014,13 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 	HandleKeyDown : function(event) {
 		let is_change = false;
 		if (event.sym === 1073741904) {
-			if (event.mod & 0x0003 === 0) {
+			if ((event.mod & 0x0003) === 0) {
 				if (this._select_cursor.line_start !== undefined) {
 					let [it_line, it_char] = this._select_cursor.GetLineCharCloseToHome();
 					this._cursor.SetLineChar(it_line, it_char);
 					this._select_cursor.Hide();
 				} else {
-					this._cursor.OffsetLeft(event.mod & 0x00c0 !== 0);
+					this._cursor.OffsetLeft((event.mod & 0x00c0) !== 0);
 				}
 				this._cursor.AdjustShowCursor();
 				this._complete_screen.TryHide();
@@ -1029,9 +1029,9 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 				if (this._select_cursor.line_start === undefined) {
 					this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
 				}
-				this._cursor.OffsetLeft(event.mod & 0x00c0 !== 0);
+				this._cursor.OffsetLeft((event.mod & 0x00c0) !== 0);
 				if (this._cursor.line === this._select_cursor.line_start && this._cursor.char === this._select_cursor.char_start) {
-					this._cursor.OffsetLeft(event.mod & 0x00c0 !== 0);
+					this._cursor.OffsetLeft((event.mod & 0x00c0) !== 0);
 				}
 				this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);
 				this._complete_screen.Hide();
@@ -1042,7 +1042,7 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			if (this._complete_screen.IsShow()) {
 				this._complete_screen.SelectUp();
 			} else {
-				if (event.mod & 0x0003 === 0) {
+				if ((event.mod & 0x0003) === 0) {
 					if (this._select_cursor.line_start !== undefined) {
 						let [it_line, it_char] = this._select_cursor.GetLineCharCloseToHome();
 						this._cursor.SetLineChar(it_line, it_char);
@@ -1073,7 +1073,7 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			if (this._complete_screen.IsShow()) {
 				this._complete_screen.SelectDown();
 			} else {
-				if (event.mod & 0x0003 === 0) {
+				if ((event.mod & 0x0003) === 0) {
 					if (this._select_cursor.line_start !== undefined) {
 						let [it_line, it_char] = this._select_cursor.GetLineCharCloseToEnd();
 						this._cursor.SetLineChar(it_line, it_char);
@@ -1101,13 +1101,13 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			}
 			event.handled = true;
 		} else if (event.sym === 1073741903) {
-			if (event.mod & 0x0003 === 0) {
+			if ((event.mod & 0x0003) === 0) {
 				if (this._select_cursor.line_start !== undefined) {
 					let [it_line, it_char] = this._select_cursor.GetLineCharCloseToEnd();
 					this._cursor.SetLineChar(it_line, it_char);
 					this._select_cursor.Hide();
 				} else {
-					this._cursor.OffsetRight(event.mod & 0x00c0 !== 0);
+					this._cursor.OffsetRight((event.mod & 0x00c0) !== 0);
 				}
 				this._cursor.AdjustShowCursor();
 				this._complete_screen.TryHide();
@@ -1116,9 +1116,9 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 				if (this._select_cursor.line_start === undefined) {
 					this._select_cursor.StartLineChar(this._cursor.line, this._cursor.char);
 				}
-				this._cursor.OffsetRight(event.mod & 0x00c0 !== 0);
+				this._cursor.OffsetRight((event.mod & 0x00c0) !== 0);
 				if (this._cursor.line === this._select_cursor.line_start && this._cursor.char === this._select_cursor.char_start) {
-					this._cursor.OffsetRight(event.mod & 0x00c0 !== 0);
+					this._cursor.OffsetRight((event.mod & 0x00c0) !== 0);
 				}
 				this._select_cursor.UpdateLineChar(this._cursor.line, this._cursor.char);
 				this._complete_screen.Hide();
@@ -1155,7 +1155,7 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 				event.handled = true;
 			}
 		} else if (event.sym === 1073741898) {
-			if (event.mod & 0x0003 === 0) {
+			if ((event.mod & 0x0003) === 0) {
 				if (this._select_cursor.line_start !== undefined) {
 					let [it_line, it_char] = this._select_cursor.GetLineCharCloseToHome();
 					this._cursor.SetLineChar(it_line, it_char);
@@ -1176,7 +1176,7 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 			}
 			event.handled = true;
 		} else if (event.sym === 1073741901) {
-			if (event.mod & 0x0003 === 0) {
+			if ((event.mod & 0x0003) === 0) {
 				if (this._select_cursor.line_start !== undefined) {
 					let [it_line, it_char] = this._select_cursor.GetLineCharCloseToEnd();
 					this._cursor.SetLineChar(it_line, it_char);
@@ -1227,7 +1227,7 @@ AUIPlugin.AUICodeEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		} else if (event.sym === 9) {
 			if (this._editable) {
 				if (this._select_cursor.line_start !== this._select_cursor.line_end) {
-					if (event.mod & 0x0003 !== 0) {
+					if ((event.mod & 0x0003) !== 0) {
 						is_change = this.MultiTabDelete(true);
 					} else {
 						is_change = this.MultiTabInsert(true);

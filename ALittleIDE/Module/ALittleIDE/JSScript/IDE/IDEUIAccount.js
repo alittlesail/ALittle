@@ -37,7 +37,7 @@ ALittleIDE.IDEUIAccount = JavaScript.Class(ALittle.DisplayLayout, {
 		ALittleIDE.g_IDEWebLoginManager.AddEventListener(___all_struct.get(-262794256), this, this.HandleAccountInReconnect);
 		ALittleIDE.g_IDEWebLoginManager.AddEventListener(___all_struct.get(-1848509213), this, this.HandleAccountInLogout);
 		ALittleIDE.g_IDEWebLoginManager.AddEventListener(___all_struct.get(-420010531), this, this.HandleAccountInLogin);
-		ALittleIDE.g_IDEWebLoginManager.Setup(logingate_ip, logingate_port, ALittleIDE.g_IDEConfig);
+		ALittleIDE.g_IDEWebLoginManager.Setup(logingate_ip, logingate_port, true, ALittleIDE.g_IDEConfig);
 	},
 	Shutdown : function() {
 		ALittleIDE.g_IDEWebLoginManager.Shutdown();

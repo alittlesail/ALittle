@@ -138,11 +138,7 @@ ALittleIDE.IDECodeTree = JavaScript.Class(ALittleIDE.IDECodeTreeLogic, {
 		}
 		this.OnDelete();
 		ALittle.File_DeleteDeepDir(this._user_info.path);
-		let parent = this.parent;
 		this.RemoveFromParent();
-		if (parent !== undefined) {
-			parent.DispatchEvent(___all_struct.get(-431205740), {});
-		}
 	},
 	HandleRemoveModule : async function() {
 		let file_name = ALittle.File_GetFileNameByPath(this._user_info.path);

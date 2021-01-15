@@ -1,6 +1,19 @@
 {
 if (typeof ALittleIDE === "undefined") window.ALittleIDE = {};
+let ___all_struct = ALittle.GetAllStruct();
 
+ALittle.RegStruct(2024735182, "ALittle.UITabKeyEvent", {
+name : "ALittle.UITabKeyEvent", ns_name : "ALittle", rl_name : "UITabKeyEvent", hash_code : 2024735182,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
+ALittle.RegStruct(-1479093282, "ALittle.UIEvent", {
+name : "ALittle.UIEvent", ns_name : "ALittle", rl_name : "UIEvent", hash_code : -1479093282,
+name_list : ["target"],
+type_list : ["ALittle.DisplayObject"],
+option_map : {}
+})
 
 if (ALittle.DisplayLayout === undefined) throw new Error(" extends class:ALittle.DisplayLayout is undefined");
 ALittleIDE.IDEAttrEventItem = JavaScript.Class(ALittle.DisplayLayout, {
@@ -8,6 +21,10 @@ ALittleIDE.IDEAttrEventItem = JavaScript.Class(ALittle.DisplayLayout, {
 		this._dialog = dialog;
 		this._name.text = name;
 		this._handle.text = handle;
+		this._name.AddEventListener(___all_struct.get(2024735182), this, this.HandleTabKey);
+	},
+	HandleTabKey : function(event) {
+		this._handle.focus = true;
 	},
 	HandleDeleteClick : function(event) {
 		this._dialog.DeleteItem(this);

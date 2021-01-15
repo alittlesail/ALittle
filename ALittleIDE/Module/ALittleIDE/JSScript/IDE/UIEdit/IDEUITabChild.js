@@ -345,7 +345,10 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 			return;
 		}
 		if (count === 1) {
-			let parent = first_target.logic_parent;
+			let parent = ALittle.Cast(ALittleIDE.IDEUITreeLogic, ALittle.DisplayGroup, first_target.logic_parent);
+			if (parent === undefined) {
+				return;
+			}
 			let parent_object = parent.user_info.object;
 			let drag_x = 0.0;
 			let drag_y = 0.0;
@@ -601,14 +604,18 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 		let has_target = false;
 		for (let [tree_target, handle_info] of this._tab_quad_map) {
 			if (handle_info === undefined) continue;
-			common_parent = tree_target.logic_parent;
+			common_parent = ALittle.Cast(ALittleIDE.IDEUITreeLogic, ALittle.DisplayGroup, tree_target.logic_parent);
 			has_target = true;
 			break;
 		}
 		if (has_target && common_parent !== target.logic_parent) {
 			let parent = target.logic_parent;
 			while (parent !== undefined && common_parent !== parent) {
-				target = parent;
+				target = ALittle.Cast(ALittleIDE.IDEUITreeLogic, ALittle.DisplayGroup, parent);
+				if (target === undefined) {
+					parent = undefined;
+					break;
+				}
 				parent = parent.logic_parent;
 			}
 			if (parent === undefined) {
@@ -1157,7 +1164,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 	HandleHandleSizeQuadDragBegin : function(event) {
 		let target_handle_info = event.target._user_data;
 		let target = target_handle_info.target;
-		let parent = target.logic_parent;
+		let parent = ALittle.Cast(ALittleIDE.IDEUITreeLogic, ALittle.DisplayGroup, target.logic_parent);
 		if (parent !== undefined && ALittleIDE.g_IDEEnum.can_move_child_map[parent.user_info.default.__class] === undefined) {
 			return;
 		}
@@ -1172,7 +1179,7 @@ ALittleIDE.IDEUITabChild = JavaScript.Class(ALittleIDE.IDETabChild, {
 	HandleHandleSizeQuadDrag : function(event) {
 		let handle_info = event.target._user_data;
 		let target = handle_info.target;
-		let parent = target.logic_parent;
+		let parent = ALittle.Cast(ALittleIDE.IDEUITreeLogic, ALittle.DisplayGroup, target.logic_parent);
 		if (parent !== undefined && ALittleIDE.g_IDEEnum.can_move_child_map[parent.user_info.default.__class] === undefined) {
 			return;
 		}

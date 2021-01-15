@@ -1209,7 +1209,8 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp9Stat(std::shared_p
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
-    content = value_functor_result + " " + suffix_result;
+    // 因为JavaScript的|运算符优先级比较低，这里加一个括号
+    content = "(" + value_functor_result + " " + suffix_result + ")";
     if (suffix_content_list.size() > 0) content += " " + ABnfFactory::Join(suffix_content_list, " ");
     return nullptr;
 }
@@ -1308,7 +1309,8 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp8Stat(std::shared_p
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
-    content = value_functor_result + " " + suffix_result;
+    // 因为JavaScript的^运算符优先级比较低，这里加一个括号
+    content = "(" + value_functor_result + " " + suffix_result + ")";
     if (suffix_content_list.size() > 0) content += " " + ABnfFactory::Join(suffix_content_list, " ");
     return nullptr;
 }
@@ -1407,7 +1409,8 @@ ABnfGuessError ALittleScriptTranslationJavaScript::GenerateOp7Stat(std::shared_p
         if (error) return error;
         suffix_content_list.push_back(sub_content);
     }
-    content = value_functor_result + " " + suffix_result;
+    // 因为JavaScript的&运算符优先级比较低，这里加一个括号
+    content = "(" + value_functor_result + " " + suffix_result + ")";
     if (suffix_content_list.size() > 0) content += " " + ABnfFactory::Join(suffix_content_list, " ");
     return nullptr;
 }

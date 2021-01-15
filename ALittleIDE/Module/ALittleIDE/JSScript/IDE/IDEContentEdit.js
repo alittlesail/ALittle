@@ -286,9 +286,9 @@ ALittleIDE.IDEContentEdit = JavaScript.Class(ALittle.DisplayLayout, {
 		let menu = ALittle.NewObject(AUIPlugin.AUIRightMenu);
 		menu.AddItem("保存", tab_child.Save.bind(tab_child));
 		tab_child.OnTabRightMenu(menu);
-		menu.AddItem("关闭自己", ALittleIDE.g_IDECenter.center.content_edit.CloseTabWithAsk.bind(ALittleIDE.g_IDECenter.center.content_edit, tab_child.tab_body));
-		menu.AddItem("关闭左侧", ALittleIDE.g_IDECenter.center.content_edit.CloseLeftTab.bind(ALittleIDE.g_IDECenter.center.content_edit, tab_child.tab_body));
-		menu.AddItem("关闭右侧", ALittleIDE.g_IDECenter.center.content_edit.CloseRightTab.bind(ALittleIDE.g_IDECenter.center.content_edit, tab_child.tab_body));
+		menu.AddItem("关闭自己", this.CloseTabWithAsk.bind(this, tab_child.tab_body));
+		menu.AddItem("关闭左侧", this.CloseLeftTab.bind(this, tab_child.tab_body));
+		menu.AddItem("关闭右侧", this.CloseRightTab.bind(this, tab_child.tab_body));
 		menu.Show();
 	},
 	HandleMainTabKeyDown : async function(event) {

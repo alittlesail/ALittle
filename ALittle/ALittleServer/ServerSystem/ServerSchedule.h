@@ -48,6 +48,15 @@ public:
 	ScriptSystem& GetScriptSystem() { return m_script_system; }
 	const std::string& GetModuleTitle() const { return m_module_title; }
 
+public:
+	void UseFileCache(bool value) { m_use_file_cache = value; }
+	void SetFileCacheMaxSize(int max_size) { m_file_cache.SetMaxSize(max_size); }
+	void SetFileCacheClearAll() { m_file_cache.ClearAll(); }
+	void SetFileCacheClearByMaxSize(int max_size) { m_file_cache.ClearByMaxSize(max_size); }
+	void SetFileCacheClearByFilePath(const char* file_path) { m_file_cache.ClearByPath(file_path); }
+	void SetFileCacheClearBySize(int size) { m_file_cache.ClearBySize(size); }
+	void SetFileCacheClearByTime(int time) { m_file_cache.ClearByTime(time); }
+
 private:
 	void Update(time_t cur_time);
 
@@ -62,6 +71,7 @@ private:
 	std::string m_string;
 
 private:
+	bool m_use_file_cache = false;
 	CarpFileCacheGroup m_file_cache;
 	ScriptSystem m_script_system;
 	MysqlSystem m_mysql_system;
@@ -91,7 +101,6 @@ public:
 	const char* GetHttpServerYunIp() const;
 	const char* GetHttpServerIp() const;
 	int GetHttpServerPort() const;
-	void UseFileCache(bool value) { m_use_file_cache = value; }
 
 	// handle http message
 	void HandleHttpMessage(HttpSenderPtr sender, const std::string& msg);
@@ -118,7 +127,6 @@ private:
 		, bool succeed
 		, const std::string& reason);
 
-	bool m_use_file_cache = false;
 	std::set<HttpServerPtr> m_http_server_set;
 	std::map<int, HttpSenderWeakPtr> m_id_map_http;
 

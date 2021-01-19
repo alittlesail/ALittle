@@ -256,12 +256,13 @@ void ServerSchedule::HandleHttpMessage(HttpSenderPtr sender, const std::string& 
 	m_id_map_http[id] = sender;
 	sender->m_id = id;
 
+	std::string url;
 	std::string method;
 	std::string path;
 	std::string param;
 	std::string content_type;
 	std::string content;
-	if (!CarpHttpHelper::AnalysisRequest(msg, method, path, &param, &content_type, &content))
+	if (!CarpHttpHelper::AnalysisRequest(msg, url, method, path, &param, &content_type, &content))
 	{
 		CARP_WARN("error request:\n" << msg);
 		sender->Close();
@@ -271,17 +272,18 @@ void ServerSchedule::HandleHttpMessage(HttpSenderPtr sender, const std::string& 
 	if (path.size() && path[0] == '/')
 		path = path.substr(1);
 
-	m_script_system.Invoke("__ALITTLEAPI_HttpTask", id, path.c_str(), param.c_str(), content.c_str());
+	m_script_system.Invoke("__ALITTLEAPI_HttpTask", id, url.c_str(), path.c_str(), param.c_str(), content.c_str());
 }
 
 bool ServerSchedule::HandleHttpFileMessage(HttpSenderPtr sender, const std::string& msg)
 {
+	std::string url;
 	std::string method;
 	std::string path;
 	std::string param;
 	std::string content_type;
 	std::string content;
-	if (!CarpHttpHelper::AnalysisRequest(msg, method, path, &param, &content_type, &content))
+	if (!CarpHttpHelper::AnalysisRequest(msg, url, method, path, &param, &content_type, &content))
 	{
 		CARP_WARN("error request:\n" << msg);
 		return false;

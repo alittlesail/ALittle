@@ -16,6 +16,7 @@
 extern "C" {
 #include "lualib/ajson/lua_ajson.h"
 #include "lualib/cjson/lua_cjson.h"
+#include "lualib/tinyxml2/tinyxml2lib.h"
 #include "lualib/sqlite3/lsqlite3.h"
 }
 
@@ -28,6 +29,7 @@ void ScriptSystem::Setup()
 
 	luaopen_cjson(m_L); lua_settop(m_L, 0);
 	luaopen_ajson(m_L); lua_settop(m_L, 0);
+	luaopen_tinyxml2(m_L); lua_settop(m_L, 0);
 	luaopen_sqlite3(m_L); lua_settop(m_L, 0);
 	
 	CarpMessageBind::Bind(m_L);

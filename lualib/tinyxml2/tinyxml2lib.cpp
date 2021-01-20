@@ -3,7 +3,7 @@ extern "C" {
 #include "tinyxml2lib.h"
 }
 #include "tinyxml2.h"
-#include "carp_lua.hpp"
+#include "Carp/carp_lua.hpp"
 
 int luaopen_tinyxml2(lua_State* l_state) {
 	luabridge::getGlobalNamespace(l_state)

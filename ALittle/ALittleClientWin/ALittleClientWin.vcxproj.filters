@@ -23,6 +23,12 @@
     <ClCompile Include="..\..\kcp\ikcp.c">
       <Filter>kcp</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\lualib\tinyxml2\tinyxml2.cpp">
+      <Filter>lualib\tinyxml2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\tinyxml2\tinyxml2lib.cpp">
+      <Filter>lualib\tinyxml2</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="lualib">
@@ -39,6 +45,9 @@
     </Filter>
     <Filter Include="kcp">
       <UniqueIdentifier>{649afd95-beef-458f-aca7-e9f9a9fdb33a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lualib\tinyxml2">
+      <UniqueIdentifier>{ba20e9a7-65da-4c9c-9f99-2fc9a11f4e22}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -65,6 +74,12 @@
     </ClInclude>
     <ClInclude Include="..\..\kcp\ikcp.h">
       <Filter>kcp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\tinyxml2\tinyxml2lib.h">
+      <Filter>lualib\tinyxml2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\tinyxml2\tinyxml2.h">
+      <Filter>lualib\tinyxml2</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

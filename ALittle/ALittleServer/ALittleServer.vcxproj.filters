@@ -68,6 +68,12 @@
     <ClCompile Include="..\..\kcp\ikcp.c">
       <Filter>kcp</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\lualib\tinyxml2\tinyxml2lib.cpp">
+      <Filter>ScriptSystem\tinyxml2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lualib\tinyxml2\tinyxml2.cpp">
+      <Filter>ScriptSystem\tinyxml2</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="HttpSystem">
@@ -96,6 +102,9 @@
     </Filter>
     <Filter Include="kcp">
       <UniqueIdentifier>{97068cf1-f8d1-4cce-8bac-0c5c0910d715}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScriptSystem\tinyxml2">
+      <UniqueIdentifier>{45927282-7acc-4afc-b179-8aacf95fbcba}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -173,6 +182,12 @@
     </ClInclude>
     <ClInclude Include="..\..\kcp\ikcp.h">
       <Filter>kcp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\tinyxml2\tinyxml2lib.h">
+      <Filter>ScriptSystem\tinyxml2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lualib\tinyxml2\tinyxml2.h">
+      <Filter>ScriptSystem\tinyxml2</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -697,6 +697,9 @@ public:
     XMLElement* ToElementForLua() {
         return ToElement();
     }
+    XMLElement* FindElementForLua(const char* name) {
+        return FirstChildElement(name);
+    }
 	
     /// Safely cast to Text, or null.
     virtual XMLText*		ToText()		{

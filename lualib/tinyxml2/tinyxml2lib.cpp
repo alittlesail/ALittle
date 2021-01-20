@@ -17,6 +17,7 @@ int luaopen_tinyxml2(lua_State* l_state) {
 		.beginClass<tinyxml2::XMLNode>("XMLNode")
 		.addFunction("GetDocument", &tinyxml2::XMLNode::GetDocumentForLua)
 		.addFunction("ToElement", &tinyxml2::XMLNode::ToElementForLua)
+		.addFunction("FindElement", &tinyxml2::XMLNode::FindElementForLua)
 		.addFunction("ToText", &tinyxml2::XMLNode::ToTextForLua)
 		.addFunction("ToComment", &tinyxml2::XMLNode::ToCommentForLua)
 		.addFunction("ToDocument", &tinyxml2::XMLNode::ToDocumentForLua)

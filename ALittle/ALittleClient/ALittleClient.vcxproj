@@ -39,6 +39,7 @@
     <ClInclude Include="..\..\Carp\carp_file_cache.hpp" />
     <ClInclude Include="..\..\Carp\carp_font.hpp" />
     <ClInclude Include="..\..\Carp\carp_http.hpp" />
+    <ClInclude Include="..\..\Carp\carp_square_jps.hpp" />
     <ClInclude Include="..\..\Carp\carp_log.hpp" />
     <ClInclude Include="..\..\Carp\carp_log_bind.hpp" />
     <ClInclude Include="..\..\Carp\carp_lua.hpp" />
@@ -63,6 +64,7 @@
     <ClInclude Include="..\..\Carp\carp_safe_id_creator.hpp" />
     <ClInclude Include="..\..\Carp\carp_schedule.hpp" />
     <ClInclude Include="..\..\Carp\carp_script.hpp" />
+    <ClInclude Include="..\..\Carp\carp_square_jps_bind.hpp" />
     <ClInclude Include="..\..\Carp\carp_string.hpp" />
     <ClInclude Include="..\..\Carp\carp_string_bind.hpp" />
     <ClInclude Include="..\..\Carp\carp_surface.hpp" />

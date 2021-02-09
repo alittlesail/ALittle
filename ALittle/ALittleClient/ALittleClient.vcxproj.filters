@@ -303,5 +303,11 @@
     <ClInclude Include="..\..\lualib\tinyxml2\tinyxml2.h">
       <Filter>lualib\tinyxml2</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_square_jps.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_square_jps_bind.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

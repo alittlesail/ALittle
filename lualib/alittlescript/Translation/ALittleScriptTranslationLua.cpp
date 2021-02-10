@@ -2443,7 +2443,13 @@ ABnfGuessError ALittleScriptTranslationLua::GeneratePropertyValue(std::shared_pt
                         if (guess_class->namespace_name == "lua")
                             param_list.push_back(guess_class->class_name);
                         else
-                            param_list.push_back(guess_class->GetValue());
+                        {
+                            auto param_value = guess_class->GetValue();
+                            auto template_pos = param_value.find('<');
+                            if (template_pos != std::string::npos)
+                                param_value = param_value.substr(0, template_pos) + ".__child[\"" + param_value + "\"]";
+                            param_list.push_back(param_value);
+                        }
                     }
                     else if (std::dynamic_pointer_cast<ALittleScriptGuessStruct>(guess))
                     {

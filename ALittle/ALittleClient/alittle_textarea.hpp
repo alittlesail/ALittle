@@ -26,6 +26,7 @@ public:
 			.addFunction("SetAngle", &ALittleTextArea::SetAngle)
 			.addFunction("SetX", &ALittleTextArea::SetX)
 			.addFunction("SetY", &ALittleTextArea::SetY)
+			.addFunction("SetZ", &ALittleTextArea::SetZ)
 			.addFunction("SetWidth", &ALittleTextArea::SetWidth)
 			.addFunction("SetHeight", &ALittleTextArea::SetHeight)
 			.addFunction("SetRed", &ALittleTextArea::SetRed)
@@ -50,6 +51,7 @@ public:
 
 	void SetX(float x) override { ALittleImage::SetX(x); }
 	void SetY(float y) override { ALittleImage::SetY(y); }
+	void SetZ(float z) override { ALittleImage::SetZ(z); }
 
 	void SetWidth(float width) override { ALittleImage::SetWidth(width); }
 	void SetHeight(float height) override { ALittleImage::SetHeight(height); }

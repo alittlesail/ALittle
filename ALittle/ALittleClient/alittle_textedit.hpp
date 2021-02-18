@@ -35,6 +35,7 @@ public:
 			.addFunction("SetAngle", &ALittleTextEdit::SetAngle)
 			.addFunction("SetX", &ALittleTextEdit::SetX)
 			.addFunction("SetY", &ALittleTextEdit::SetY)
+			.addFunction("SetZ", &ALittleTextEdit::SetZ)
 			.addFunction("SetWidth", &ALittleTextEdit::SetWidth)
 			.addFunction("SetHeight", &ALittleTextEdit::SetHeight)
 			.addFunction("SetRed", &ALittleTextEdit::SetRed)
@@ -87,6 +88,7 @@ public:
 
 	void SetX(float x) override { ALittleImage::SetX(x); }
 	void SetY(float y) override { ALittleImage::SetY(y); }
+	void SetZ(float z) override { ALittleImage::SetZ(z); }
 
 	void SetAngle(float angle) override { ALittleImage::SetAngle(angle); }
 

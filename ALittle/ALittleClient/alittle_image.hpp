@@ -23,6 +23,7 @@ public:
 			.addFunction("SetFlip", &ALittleImage::SetFlip)
 			.addFunction("SetX", &ALittleImage::SetX)
 			.addFunction("SetY", &ALittleImage::SetY)
+			.addFunction("SetZ", &ALittleImage::SetZ)
 			.addFunction("SetWidth", &ALittleImage::SetWidth)
 			.addFunction("SetHeight", &ALittleImage::SetHeight)
 			.addFunction("SetRed", &ALittleImage::SetRed)
@@ -40,6 +41,7 @@ public:
 
 	void SetX(float x) override { ALittleDisplayObject::SetX(x); }
 	void SetY(float y) override { ALittleDisplayObject::SetY(y); }
+	void SetZ(float z) override { ALittleDisplayObject::SetZ(z); }
 
 	void SetWidth(float width) override { ALittleDisplayObject::SetWidth(width); }
 	void SetHeight(float height) override { ALittleDisplayObject::SetHeight(height); }

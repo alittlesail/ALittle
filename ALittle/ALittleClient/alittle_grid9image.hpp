@@ -27,6 +27,7 @@ public:
 			.addConstructor<void(*)()>()
 			.addFunction("SetX", &ALittleGrid9Image::SetX)
 			.addFunction("SetY", &ALittleGrid9Image::SetY)
+			.addFunction("SetZ", &ALittleGrid9Image::SetZ)
 			.addFunction("SetWidth", &ALittleGrid9Image::SetWidth)
 			.addFunction("SetHeight", &ALittleGrid9Image::SetHeight)
 			.addFunction("SetRed", &ALittleGrid9Image::SetRed)
@@ -54,6 +55,7 @@ public:
 
 	void SetX(float x) override { ALittleDisplayObjects::SetX(x); }
 	void SetY(float y) override { ALittleDisplayObjects::SetY(y); }
+	void SetZ(float z) override { ALittleDisplayObjects::SetZ(z); }
 
 	void SetWidth(float width) override { ALittleDisplayObjects::SetWidth(width); }
 	void SetHeight(float height) override { ALittleDisplayObjects::SetHeight(height); }

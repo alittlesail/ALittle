@@ -42,6 +42,8 @@ public:
 	virtual int GetX() const { return static_cast<int>(m_pos.x); }
 	virtual void SetY(float y) { m_pos.y = static_cast<float>(floor(y)); m_self_matrix_dirty = true; }
 	virtual int GetY() const { return static_cast<int>(m_pos.y); }
+	virtual void SetZ(float z) { if (m_z == z) return; m_z = z; if (m_parent_node != nullptr) m_parent_node->SetSortDirty(); }
+	virtual float GetZ() const { return m_z; }
 
 public:
 	virtual void SetWidth(float width) { m_size.x = static_cast<float>(floor(width)); m_self_matrix_dirty = true; }
@@ -105,6 +107,7 @@ public:
 
 	virtual void UpdateTextureCoord() {}
 	virtual void UpdateVertexCoord() {}
+	virtual void SetSortDirty() { }
 
 protected:
 	bool m_visible = true;
@@ -117,6 +120,7 @@ protected:
 	CarpVector2D m_size;
 	CarpVector2D m_center;
 	float m_angle = 0.0f;
+	float m_z = 0.0f;
 
 protected:
 	CarpMatrix2D m_self_matrix;
@@ -128,6 +132,7 @@ protected:
 public:
 	ALittleDisplayObject* m_front_node = nullptr;
 	ALittleDisplayObject* m_back_node = nullptr;
+	ALittleDisplayObject* m_parent_node = nullptr;
 };
 
 #endif

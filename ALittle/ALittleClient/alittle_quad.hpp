@@ -28,6 +28,7 @@ public:
 			.addConstructor<void(*)()>()
 			.addFunction("SetX", &ALittleQuad::SetX)
 			.addFunction("SetY", &ALittleQuad::SetY)
+			.addFunction("SetZ", &ALittleQuad::SetZ)
 			.addFunction("SetWidth", &ALittleQuad::SetWidth)
 			.addFunction("SetHeight", &ALittleQuad::SetHeight)
 			.addFunction("SetScaleX", &ALittleQuad::SetScaleX)
@@ -46,6 +47,7 @@ public:
 
 	void SetX(float x) override { ALittleImage::SetX(x); }
 	void SetY(float y) override { ALittleImage::SetY(y); }
+	void SetZ(float z) override { ALittleImage::SetZ(z); }
 
 	void SetWidth(float width) override { ALittleImage::SetWidth(width); }
 	void SetHeight(float height) override { ALittleImage::SetHeight(height); }

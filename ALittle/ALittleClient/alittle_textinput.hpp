@@ -30,6 +30,7 @@ public:
 			.addFunction("SetAngle", &ALittleTextInput::SetAngle)
 			.addFunction("SetX", &ALittleTextInput::SetX)
 			.addFunction("SetY", &ALittleTextInput::SetY)
+			.addFunction("SetZ", &ALittleTextInput::SetZ)
 			.addFunction("SetWidth", &ALittleTextInput::SetWidth)
 			.addFunction("SetHeight", &ALittleTextInput::SetHeight)
 			.addFunction("SetRed", &ALittleTextInput::SetRed)
@@ -77,6 +78,7 @@ public:
 
 	void SetX(float x) override { ALittleImage::SetX(x); }
 	void SetY(float y) override { ALittleImage::SetY(y); }
+	void SetZ(float z) override { ALittleImage::SetZ(z); }
 
 	void SetAngle(float angle) override { ALittleImage::SetAngle(angle); }
 

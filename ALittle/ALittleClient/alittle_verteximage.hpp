@@ -22,6 +22,7 @@ public:
 			.addFunction("SetAngle", &ALittleVertexImage::SetAngle)
 			.addFunction("SetX", &ALittleVertexImage::SetX)
 			.addFunction("SetY", &ALittleVertexImage::SetY)
+			.addFunction("SetZ", &ALittleVertexImage::SetZ)
 			.addFunction("SetWidth", &ALittleVertexImage::SetWidth)
 			.addFunction("SetHeight", &ALittleVertexImage::SetHeight)
 			.addFunction("SetRed", &ALittleVertexImage::SetRed)
@@ -40,6 +41,7 @@ public:
 
 	void SetX(float x) override { ALittleDisplayObject::SetX(x); }
 	void SetY(float y) override { ALittleDisplayObject::SetY(y); }
+	void SetZ(float z) override { ALittleDisplayObject::SetZ(z); }
 
 	void SetWidth(float width) override { ALittleDisplayObject::SetWidth(width); }
 	void SetHeight(float height) override { ALittleDisplayObject::SetHeight(height); }

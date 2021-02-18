@@ -22,6 +22,7 @@ public:
 			.addFunction("SetAngle", &ALittleDisplayObjects::SetAngle)
 			.addFunction("SetX", &ALittleDisplayObjects::SetX)
 			.addFunction("SetY", &ALittleDisplayObjects::SetY)
+			.addFunction("SetZ", &ALittleDisplayObjects::SetZ)
 			.addFunction("SetWidth", &ALittleDisplayObjects::SetWidth)
 			.addFunction("SetHeight", &ALittleDisplayObjects::SetHeight)
 			.addFunction("SetRed", &ALittleDisplayObjects::SetRed)
@@ -33,6 +34,7 @@ public:
 			.addFunction("AddChildBefore", &ALittleDisplayObjects::AddChildBefore)
 			.addFunction("RemoveChild", &ALittleDisplayObjects::RemoveChild)
 			.addFunction("RemoveAllChild", &ALittleDisplayObjects::RemoveAllChild)
+			.addFunction("SetSortChild", &ALittleDisplayObjects::SetSortChild)
 			.addFunction("SetVisible", &ALittleDisplayObjects::SetVisible)
 			.addFunction("SetClip", &ALittleDisplayObjects::SetClip)
 			.endClass();
@@ -40,6 +42,7 @@ public:
 
 	void SetX(float x) override { ALittleDisplayObject::SetX(x); }
 	void SetY(float y) override { ALittleDisplayObject::SetY(y); }
+	void SetZ(float z) override { ALittleDisplayObject::SetZ(z); }
 
 	void SetWidth(float width) override { ALittleDisplayObject::SetWidth(width); }
 	void SetHeight(float height) override { ALittleDisplayObject::SetHeight(height); }
@@ -61,11 +64,15 @@ public:
 	void SetClip(bool clip) override { ALittleDisplayObject::SetClip(clip); }
 
 public:
+	virtual void SetSortDirty() override { m_sort_dirty = true; }
+	virtual void SetSortChild(bool value) { m_sort_child = value; if (m_sort_child) m_sort_dirty = true; }
+
 	virtual void AddChild(ALittleDisplayObject* object)
 	{
 		if (object == nullptr) return;
 		object->SetSelfMatrixDirty();
 		SetSelfMatrixDirty();
+		SetSortDirty();
 
 		if (m_head_node == nullptr)
 		{
@@ -83,6 +90,7 @@ public:
 		if (target_object == nullptr) return;
 		target_object->SetSelfMatrixDirty();
 		SetSelfMatrixDirty();
+		SetSortDirty();
 
 		if (m_head_node == nullptr)
 		{
@@ -108,6 +116,7 @@ public:
 		if (target_object == nullptr) return;
 		target_object->SetSelfMatrixDirty();
 		SetSelfMatrixDirty();
+		SetSortDirty();
 
 		if (m_head_node == nullptr)
 		{
@@ -133,6 +142,7 @@ public:
 		if (object == nullptr) return;
 		object->SetSelfMatrixDirty();
 		SetSelfMatrixDirty();
+		SetSortDirty();
 
 		ALittleDisplayObject* front_node = object->m_front_node;
 		object->m_front_node = nullptr;
@@ -153,6 +163,7 @@ public:
 	virtual void RemoveAllChild()
 	{
 		SetSelfMatrixDirty();
+		SetSortDirty();
 		ALittleDisplayObject* node = m_head_node;
 		while (node)
 		{
@@ -177,18 +188,51 @@ public:
 		const bool global_changed = UpdateGlobalMatrix2D(parent, parent_changed);
 		UpdateVertexCoord();
 		UpdateTextureCoord();
+		RenderImpl(global_changed);
+	}
 
-		ALittleDisplayObject* node = m_head_node;
-		while (node)
+protected:
+	void RenderImpl(bool global_changed)
+	{
+		if (!m_sort_child)
 		{
-			node->Render(m_global_matrix, global_changed);
-			node = node->m_back_node;
+			ALittleDisplayObject* node = m_head_node;
+			while (node)
+			{
+				node->Render(m_global_matrix, global_changed);
+				node = node->m_back_node;
+			}
+		}
+		else
+		{
+			if (m_sort_dirty)
+			{
+				m_sort_dirty = false;
+				m_sort_list.resize(0);
+
+				ALittleDisplayObject* node = m_head_node;
+				while (node)
+				{
+					m_sort_list.push_back(node);
+					node = node->m_back_node;
+				}
+
+				std::sort(m_sort_list.begin(), m_sort_list.end(), [](const ALittleDisplayObject* a, const ALittleDisplayObject* b) -> bool { return a->GetZ() < b->GetZ(); });
+			}
+
+			for (auto& node : m_sort_list)
+				node->Render(m_global_matrix, global_changed);
 		}
 	}
 
 protected:
 	ALittleDisplayObject* m_head_node = nullptr;
 	ALittleDisplayObject* m_tail_node = nullptr;
+
+	std::vector<ALittleDisplayObject*> m_sort_list;
+
+	bool m_sort_dirty = false;
+	bool m_sort_child = false;
 };
 
 #endif

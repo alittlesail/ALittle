@@ -26,6 +26,7 @@ public:
 			.addFunction("SetAngle", &ALittleDisplayView::SetAngle)
 			.addFunction("SetX", &ALittleDisplayView::SetX)
 			.addFunction("SetY", &ALittleDisplayView::SetY)
+			.addFunction("SetZ", &ALittleDisplayView::SetZ)
 			.addFunction("SetWidth", &ALittleDisplayView::SetWidth)
 			.addFunction("SetHeight", &ALittleDisplayView::SetHeight)
 			.addFunction("SetRed", &ALittleDisplayView::SetRed)
@@ -37,6 +38,7 @@ public:
 			.addFunction("AddChildBefore", &ALittleDisplayView::AddChildBefore)
 			.addFunction("RemoveChild", &ALittleDisplayView::RemoveChild)
 			.addFunction("RemoveAllChild", &ALittleDisplayView::RemoveAllChild)
+			.addFunction("SetSortChild", &ALittleDisplayView::SetSortChild)
 			.addFunction("SetVisible", &ALittleDisplayView::SetVisible)
 			.addFunction("SetClip", &ALittleDisplayView::SetClip)
 			.endClass();
@@ -44,6 +46,7 @@ public:
 
 	void SetX(float x) override { ALittleDisplayObjects::SetX(x); }
 	void SetY(float y) override { ALittleDisplayObjects::SetY(y); }
+	void SetZ(float z) override { ALittleDisplayObjects::SetZ(z); }
 
 	void SetWidth(float width) override { ALittleDisplayObjects::SetWidth(width); }
 	void SetHeight(float height) override { ALittleDisplayObjects::SetHeight(height); }
@@ -69,6 +72,7 @@ public:
 	void AddChildBefore(ALittleDisplayObject* back_object, ALittleDisplayObject* target_object) override { ALittleDisplayObjects::AddChildBefore(back_object, target_object); }
 	void RemoveChild(ALittleDisplayObject* object) override { ALittleDisplayObjects::RemoveChild(object); }
 	void RemoveAllChild() override { ALittleDisplayObjects::RemoveAllChild(); }
+	void SetSortChild(bool value) override { ALittleDisplayObjects::SetSortChild(value); }
 
 public:
 	void Render(const CarpMatrix2D& parent, bool parent_changed) override
@@ -125,13 +129,7 @@ public:
 			// must flush
 			s_alittle_render.FlushRender();
 			SDL_RenderSetClipRect(s_alittle_render.GetRender(), &new_info.rect);
-
-			ALittleDisplayObject* node = m_head_node;
-			while (node)
-			{
-				node->Render(m_global_matrix, global_changed);
-				node = node->m_back_node;
-			}
+			RenderImpl(global_changed);
 		}
 
 		s_scissor_stack.pop_back();

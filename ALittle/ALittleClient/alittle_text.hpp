@@ -63,7 +63,6 @@ public:
 			.addFunction("SetUnderline", &ALittleText::SetUnderline)
 			.addFunction("SetItalic", &ALittleText::SetItalic)
 			.addFunction("SetClip", &ALittleText::SetClip)
-			.addFunction("SetFlip", &ALittleText::SetFlip)
 			.addFunction("GetFontHeight", &ALittleText::GetFontHeight)
 			.addFunction("CutTextByWidth", &ALittleText::CutTextByWidth)
 			.addFunction("CalcTextWidth", &ALittleText::CalcTextWidth)
@@ -97,8 +96,6 @@ public:
 
 	void SetVisible(bool visible) override { ALittleImage::SetVisible(visible); }
 	void SetClip(bool clip) override { ALittleImage::SetClip(clip); }
-
-	void SetFlip(int flip) override { ALittleImage::SetFlip(flip); }
 
 public:
 	unsigned int GetRealWidth()

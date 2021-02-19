@@ -20,7 +20,6 @@ public:
 			.addFunction("SetCenterX", &ALittleImage::SetCenterX)
 			.addFunction("SetCenterY", &ALittleImage::SetCenterY)
 			.addFunction("SetAngle", &ALittleImage::SetAngle)
-			.addFunction("SetFlip", &ALittleImage::SetFlip)
 			.addFunction("SetX", &ALittleImage::SetX)
 			.addFunction("SetY", &ALittleImage::SetY)
 			.addFunction("SetZ", &ALittleImage::SetZ)
@@ -84,12 +83,6 @@ public:
 
 		m_texture_dirty = true;
 	}
-	virtual void SetFlip(int flip)
-	{
-		if (m_flip == flip) return;
-		m_flip = flip;
-		m_texture_dirty = true;
-	}
 
 protected:
 	void UpdateTextureCoord() override
@@ -97,16 +90,10 @@ protected:
 		if (!m_texture_dirty) return;
 		m_texture_dirty = false;
 
-		const float left = (m_flip & SDL_FLIP_HORIZONTAL) == 0 ? m_tex_left : m_tex_right;
-		const float right = (m_flip & SDL_FLIP_HORIZONTAL) == 0 ? m_tex_right : m_tex_left;
-
-		const float top = (m_flip & SDL_FLIP_VERTICAL) == 0 ? m_tex_top : m_tex_bottom;
-		const float bottom = (m_flip & SDL_FLIP_VERTICAL) == 0 ? m_tex_bottom : m_tex_top;
-
-		m_texture_coord[0] = left; m_texture_coord[1] = top;
-		m_texture_coord[2] = right; m_texture_coord[3] = top;
-		m_texture_coord[4] = right; m_texture_coord[5] = bottom;
-		m_texture_coord[6] = left; m_texture_coord[7] = bottom;
+		m_texture_coord[0] = m_tex_left; m_texture_coord[1] = m_tex_top;
+		m_texture_coord[2] = m_tex_right; m_texture_coord[3] = m_tex_top;
+		m_texture_coord[4] = m_tex_right; m_texture_coord[5] = m_tex_bottom;
+		m_texture_coord[6] = m_tex_left; m_texture_coord[7] = m_tex_bottom;
 	}
 	
 	void UpdateVertexCoord() override
@@ -146,7 +133,6 @@ public:
 
 protected:
 	ALittleTexture* m_texture = nullptr;
-	int m_flip = SDL_FLIP_NONE;
 
 protected:
 	float m_tex_top = 0.0f, m_tex_bottom = 1.0f, m_tex_left = 0.0f, m_tex_right = 1.0f;

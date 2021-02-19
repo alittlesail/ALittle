@@ -44,7 +44,6 @@ public:
 			.addFunction("SetCenterX", &ALittleGrid9Image::SetCenterX)
 			.addFunction("SetCenterY", &ALittleGrid9Image::SetCenterY)
 			.addFunction("SetAngle", &ALittleGrid9Image::SetAngle)
-			.addFunction("SetFlip", &ALittleGrid9Image::SetFlip)
 			.addFunction("SetTopSize", &ALittleGrid9Image::SetTopSize)
 			.addFunction("SetBottomSize", &ALittleGrid9Image::SetBottomSize)
 			.addFunction("SetLeftSize", &ALittleGrid9Image::SetLeftSize)
@@ -140,13 +139,6 @@ public:
 		m_texture_dirty = true;
 	}
 
-	void SetFlip(int flip)
-	{
-		if (m_flip == flip) return;
-		m_flip = flip;
-		m_texture_dirty = true;
-	}
-
 public:
 	void UpdateTextureCoord() override
 	{
@@ -165,17 +157,7 @@ public:
 		const float logic_bottom = m_logic_bottom / static_cast<float>(tex_height);
 
 		float tex_x[4] = { m_tex_left, m_tex_left + logic_left, m_tex_right - logic_right, m_tex_right };
-		if (m_flip & SDL_FLIP_HORIZONTAL)
-		{
-			float temp = tex_x[0]; tex_x[0] = tex_x[3]; tex_x[3] = temp;
-			temp = tex_x[1]; tex_x[1] = tex_x[2]; tex_x[2] = temp;
-		}
 		float tex_y[4] = { m_tex_top, m_tex_top + logic_top, m_tex_bottom - logic_bottom, m_tex_bottom };
-		if (m_flip & SDL_FLIP_VERTICAL)
-		{
-			float temp = tex_y[0]; tex_y[0] = tex_y[3]; tex_y[3] = temp;
-			temp = tex_y[1]; tex_y[1] = tex_y[2]; tex_y[2] = temp;
-		}
 
 		for (int i = 0; i < 3; ++i)
 			for (int j = 0; j < 3; ++j)
@@ -186,13 +168,8 @@ public:
 		if (!m_vertex_dirty) return;
 		m_vertex_dirty = false;
 
-		const int logic_left = (m_flip & SDL_FLIP_HORIZONTAL) == 0 ? m_logic_left : m_logic_right;
-		const int logic_right = (m_flip & SDL_FLIP_HORIZONTAL) == 0 ? m_logic_right : m_logic_left;
-		const int logic_top = (m_flip & SDL_FLIP_VERTICAL) == 0 ? m_logic_top : m_logic_bottom;
-		const int logic_bottom = (m_flip & SDL_FLIP_VERTICAL) == 0 ? m_logic_bottom : m_logic_top;
-
-		int dest_h[3] = { logic_top, static_cast<int>(m_size.y) - logic_top - logic_bottom, logic_bottom };
-		int dest_w[3] = { logic_left, static_cast<int>(m_size.x) - logic_left - logic_right, logic_right };
+		int dest_h[3] = { m_logic_top, static_cast<int>(m_size.y) - m_logic_top - m_logic_bottom, m_logic_bottom };
+		int dest_w[3] = { m_logic_left, static_cast<int>(m_size.x) - m_logic_left - m_logic_right, m_logic_right };
 
 		if (dest_h[1] < 0 && dest_h[0] + dest_h[2] > 0)
 		{
@@ -226,7 +203,6 @@ public:
 private:
 	ALittleTexture* m_texture = nullptr;
 	ALittleImage m_image[3][3];
-	int m_flip = SDL_FLIP_NONE;
 
 private:
 	float m_tex_top = 0.0f, m_tex_bottom = 1.0f, m_tex_left = 0.0f, m_tex_right = 1.0f;

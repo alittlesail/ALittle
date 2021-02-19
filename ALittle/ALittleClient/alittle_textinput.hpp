@@ -64,7 +64,6 @@ public:
 			.addFunction("SetItalic", &ALittleTextInput::SetItalic)
 			.addFunction("SetPasswordMode", &ALittleTextInput::SetPasswordMode)
 			.addFunction("SetClip", &ALittleTextInput::SetClip)
-			.addFunction("SetFlip", &ALittleTextInput::SetFlip)
 			.addFunction("GetSelectText", &ALittleTextInput::GetSelectText)
 			.addFunction("DeleteSelectText", &ALittleTextInput::DeleteSelectText)
 			.addFunction("DragCursorBegin", &ALittleTextInput::DragCursorBegin)
@@ -95,8 +94,6 @@ public:
 
 	void SetVisible(bool visible) override { ALittleImage::SetVisible(visible); }
 	void SetClip(bool clip) override { ALittleImage::SetClip(clip); }
-
-	void SetFlip(int flip) override { ALittleImage::SetFlip(flip); }
 
 public:
 	void SetWidth(float width) override

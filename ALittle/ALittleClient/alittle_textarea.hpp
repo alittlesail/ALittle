@@ -42,7 +42,6 @@ public:
 			.addFunction("SetUnderline", &ALittleTextArea::SetUnderline)
 			.addFunction("SetItalic", &ALittleTextArea::SetItalic)
 			.addFunction("SetClip", &ALittleTextArea::SetClip)
-			.addFunction("SetFlip", &ALittleTextArea::SetFlip)
 			.addFunction("SetHAlign", &ALittleTextArea::SetHAlign)
 			.addFunction("SetVAlign", &ALittleTextArea::SetVAlign)
 			.addFunction("NeedDraw", &ALittleTextArea::NeedDraw)
@@ -71,8 +70,6 @@ public:
 
 	void SetVisible(bool visible) override { ALittleImage::SetVisible(visible); }
 	void SetClip(bool clip) override { ALittleImage::SetClip(clip); }
-
-	void SetFlip(int flip) override { ALittleImage::SetFlip(flip); }
 
 public:
 	void SetBold(bool bold)

@@ -70,7 +70,6 @@ public:
 			.addFunction("SetUnderline", &ALittleTextEdit::SetUnderline)
 			.addFunction("SetItalic", &ALittleTextEdit::SetItalic)
 			.addFunction("SetClip", &ALittleTextEdit::SetClip)
-			.addFunction("SetFlip", &ALittleTextEdit::SetFlip)
 			.addFunction("GetSelectText", &ALittleTextEdit::GetSelectText)
 			.addFunction("DeleteSelectText", &ALittleTextEdit::DeleteSelectText)
 			.addFunction("DragCursorBegin", &ALittleTextEdit::DragCursorBegin)
@@ -105,8 +104,6 @@ public:
 
 	void SetVisible(bool visible) override { ALittleImage::SetVisible(visible); }
 	void SetClip(bool clip) override { ALittleImage::SetClip(clip); }
-
-	void SetFlip(int flip) override { ALittleImage::SetFlip(flip); }
 
 public:
 	void SetWidth(float width) override

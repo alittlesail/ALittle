@@ -36,7 +36,6 @@ public:
 			.addFunction("SetCenterX", &ALittleSprite::SetCenterX)
 			.addFunction("SetCenterY", &ALittleSprite::SetCenterY)
 			.addFunction("SetAngle", &ALittleSprite::SetAngle)
-			.addFunction("SetFlip", &ALittleSprite::SetFlip)
 			.addFunction("SetRowColCount", &ALittleSprite::SetRowColCount)
 			.addFunction("SetRowColIndex", &ALittleSprite::SetRowColIndex)
 			.endClass();
@@ -68,7 +67,6 @@ public:
 	void SetTexture(ALittleTexture* texture) override { ALittleImage::SetTexture(texture); }
 	void ClearTexture() override { ALittleImage::ClearTexture(); }
 	void SetTextureCoord(float top, float bottom, float left, float right) override { ALittleImage::SetTextureCoord(top, bottom, left, right); }
-	void SetFlip(int flip) override { ALittleImage::SetFlip(flip); }
 
 public:
 	void SetRowColCount(int row, int col)
@@ -121,15 +119,10 @@ public:
 		float tex_top_tmp = (tex_top + cell_height * row_index) / static_cast<float>(tex_height);
 		float tex_bottom_tmp = (tex_top + cell_height * row_index + cell_height) / static_cast<float>(tex_height);
 
-		const float left = (m_flip & SDL_FLIP_HORIZONTAL) == 0 ? tex_left_tmp : tex_right_tmp;
-		const float right = (m_flip & SDL_FLIP_HORIZONTAL) == 0 ? tex_right_tmp : tex_left_tmp;
-		const float top = (m_flip & SDL_FLIP_VERTICAL) == 0 ? tex_top_tmp : tex_bottom_tmp;
-		const float bottom = (m_flip & SDL_FLIP_VERTICAL) == 0 ? tex_bottom_tmp : tex_top_tmp;
-
-		m_texture_coord[0] = left; m_texture_coord[1] = top;
-		m_texture_coord[2] = right; m_texture_coord[3] = top;
-		m_texture_coord[4] = right; m_texture_coord[5] = bottom;
-		m_texture_coord[6] = left; m_texture_coord[7] = bottom;
+		m_texture_coord[0] = tex_left_tmp; m_texture_coord[1] = tex_top_tmp;
+		m_texture_coord[2] = tex_right_tmp; m_texture_coord[3] = tex_top_tmp;
+		m_texture_coord[4] = tex_right_tmp; m_texture_coord[5] = tex_bottom_tmp;
+		m_texture_coord[6] = tex_left_tmp; m_texture_coord[7] = tex_bottom_tmp;
 	}
 
 private:

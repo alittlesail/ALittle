@@ -38,6 +38,8 @@ public:
 	void HandleConsoleExit();
 	// 执行help
 	void HandleConsoleHelp();
+	// 执行restart
+	void HandleConsoleRestart();
 
 private:
 	// 支线程函数
@@ -45,6 +47,7 @@ private:
 
 private:
 	std::map<std::thread*, ServerSchedule*> m_map;
+	bool m_restart = false;
 	
 private:
 	ServerSystem() {}

@@ -366,7 +366,7 @@ public:
 
 #ifdef _WIN32
 		s_carp_console.Setup("ALittleClient", std::bind(ALittleSchedule::PushConsoleEvent, std::placeholders::_1, std::placeholders::_2)
-			, std::bind(&ALittleSchedule::Exit, this), ALittleSchedule::PushConsoleHelp);
+			, std::bind(&ALittleSchedule::Exit, this), ALittleSchedule::PushConsoleHelp, std::bind(&ALittleSchedule::Restart, this));
 #endif
 
 		// print current platform

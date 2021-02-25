@@ -57,7 +57,9 @@ void ServerSystem::Setup(const std::map<std::string, ModuleInfo>& modules)
 	
 #ifdef _WIN32
 	s_carp_console.Setup(module_name, std::bind(&ServerSystem::HandleConsoleCmd, this, std::placeholders::_1, std::placeholders::_2)
-		, std::bind(&ServerSystem::HandleConsoleExit, this), std::bind(&ServerSystem::HandleConsoleHelp, this));
+		, std::bind(&ServerSystem::HandleConsoleExit, this)
+		, std::bind(&ServerSystem::HandleConsoleHelp, this)
+		, std::bind(&ServerSystem::HandleConsoleRestart, this));
 	// disabled the close button
 	DeleteMenu(GetSystemMenu(GetConsoleWindow(), FALSE), SC_CLOSE, MF_BYCOMMAND);
 	DrawMenuBar(GetConsoleWindow());
@@ -89,25 +91,31 @@ void ServerSystem::Shutdown()
 void ServerSystem::Start(const std::string& core_path, const std::string& std_path, const std::string& sengine_path
 	, const std::map<std::string, ModuleInfo>& modules)
 {
-	for (auto it = modules.begin(); it != modules.end(); ++it)
+	while (true)
 	{
-		ServerSchedule* schedule = new ServerSchedule(core_path, std_path, sengine_path, it->first, it->second.module_name, it->second.module_path, it->second.config_path);
-		std::thread* thread = new std::thread(ServerSystem::ScheduleRun, schedule);
-		m_map[thread] = schedule;
-	}
+		for (auto it = modules.begin(); it != modules.end(); ++it)
+		{
+			ServerSchedule* schedule = new ServerSchedule(core_path, std_path, sengine_path, it->first, it->second.module_name, it->second.module_path, it->second.config_path);
+			std::thread* thread = new std::thread(ServerSystem::ScheduleRun, schedule);
+			m_map[thread] = schedule;
+		}
 
-	for (auto it = m_map.begin(); it != m_map.end(); ++it)
-	{
-		it->first->join();
-	}
+		for (auto it = m_map.begin(); it != m_map.end(); ++it)
+		{
+			it->first->join();
+		}
 
-	for (auto it = m_map.begin(); it != m_map.end(); ++it)
-	{
-		delete it->second;
-		delete it->first;
-	}
+		for (auto it = m_map.begin(); it != m_map.end(); ++it)
+		{
+			delete it->second;
+			delete it->first;
+		}
 
-	m_map.clear();
+		m_map.clear();
+
+		if (!m_restart) break;
+		m_restart = false;
+	}
 }
 
 void ServerSystem::Close()
@@ -133,6 +141,7 @@ void ServerSystem::HandleConsoleCmd(const std::string& module_title, const std::
 
 void ServerSystem::HandleConsoleExit()
 {
+	m_restart = false;
 	Close();
 }
 
@@ -142,6 +151,12 @@ void ServerSystem::HandleConsoleHelp()
 	for (auto it = m_map.begin(); it != m_map.end(); ++it)
 		name_list.push_back(it->second->GetModuleTitle());
 	CARP_INFO(u8"Ä£¿éÁÐ±í:" << CarpString::Join(name_list, " "));
+}
+
+void ServerSystem::HandleConsoleRestart()
+{
+	m_restart = true;
+	Close();
 }
 
 int ServerSystem::ScheduleRun(ServerSchedule* self)

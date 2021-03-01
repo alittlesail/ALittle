@@ -151,7 +151,7 @@ private:
 	void ConnectRouteTransCallback(const std::string* reason, int message_id, void* memory, int memroy_size
 									, ConnectEndpointWeakPtr src_endpoint, int rpc_id, CONNECT_KEY connect_key);
 	
-	std::map<unsigned int, SessionConnectionPtr> m_connect_route_map;	// 当前所有会话连接信息
+	std::map<CONNECT_KEY, SessionConnectionPtr> m_connect_route_map;	// 当前所有会话连接信息
 
 	void ConnectRouteSearchRouteCallback(const std::string* reason, const std::list<ROUTE_ID>& route_id_list
 										, SessionConnection::ConnectRouteCallback callback);

@@ -165,14 +165,14 @@ private:
 	std::map<CarpRudpReceiverPtr, int> m_rudp_map_id;
 
 private:
-	void StartRouteSystem(int route_type, int route_num);
+	void StartRouteSystem(ROUTE_TYPE route_type, ROUTE_NUM route_num);
 	int GetRouteType() const;
 	int GetRouteNum() const;
 	int GetRouteId() const;
 	bool CreateConnectServer(const char* yun_ip, const char* ip, int port);
 	bool CreateConnectClient(const char* ip, int port);
-	void ConnectSession(int route_type, int route_num);
-	int CalcConnectKey(int src_route_type, int src_route_num, int dst_route_type, int dst_route_num);
+	void ConnectSession(ROUTE_TYPE route_type, ROUTE_NUM route_num);
+	CONNECT_KEY CalcConnectKey(ROUTE_TYPE src_route_type, ROUTE_NUM src_route_num, ROUTE_TYPE dst_route_type, ROUTE_NUM dst_route_num);
 
 public:
 	// handle session connected or disconnected

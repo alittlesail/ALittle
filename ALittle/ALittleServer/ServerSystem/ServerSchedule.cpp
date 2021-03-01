@@ -585,7 +585,7 @@ void ServerSchedule::HandleRudpMessage(CarpRudpReceiverPtr sender, int message_s
 	m_script_system.Invoke("__ALITTLEAPI_ClientMessage", it->second, message_id, message_rpcid, &m_read_factory);
 }
 	
-void ServerSchedule::StartRouteSystem(int route_type, int route_num)
+void ServerSchedule::StartRouteSystem(ROUTE_TYPE route_type, ROUTE_NUM route_num)
 {
 	if (m_route_system != nullptr)
 	{
@@ -593,8 +593,7 @@ void ServerSchedule::StartRouteSystem(int route_type, int route_num)
 		return;
 	}
 
-	ROUTE_ID route_id = RouteIdDefine::CalcRouteId(static_cast<unsigned char>(route_type)
-		, static_cast<unsigned char>(route_num));
+	ROUTE_ID route_id = RouteIdDefine::CalcRouteId(route_type, route_num);
 	m_route_system = new RouteSystem();
 	m_route_system->Start(route_id, 30, 5, this);
 }
@@ -661,7 +660,7 @@ bool ServerSchedule::CreateConnectClient(const char* ip, int port)
 	return m_route_system->CreateConnectClient(ip_str, port);
 }
 
-void ServerSchedule::ConnectSession(int route_type, int route_num)
+void ServerSchedule::ConnectSession(ROUTE_TYPE route_type, ROUTE_NUM route_num)
 {
 	if (m_route_system == nullptr)
 	{
@@ -670,7 +669,7 @@ void ServerSchedule::ConnectSession(int route_type, int route_num)
 		return;
 	}
 
-	ROUTE_ID route_id = RouteIdDefine::CalcRouteId(static_cast<unsigned char>(route_type), static_cast<unsigned char>(route_num));
+	ROUTE_ID route_id = RouteIdDefine::CalcRouteId(route_type, route_num);
 	m_route_system->ConnectRoute(route_id, [this, route_type, route_num](const std::string* reason, SessionConnectionPtr session)
 		{
 			if (reason != nullptr)
@@ -682,7 +681,7 @@ void ServerSchedule::ConnectSession(int route_type, int route_num)
 		});
 }
 
-int ServerSchedule::CalcConnectKey(int src_route_type, int src_route_num, int dst_route_type, int dst_route_num)
+CONNECT_KEY ServerSchedule::CalcConnectKey(ROUTE_TYPE src_route_type, ROUTE_NUM src_route_num, ROUTE_TYPE dst_route_type, ROUTE_NUM dst_route_num)
 {
 	return RouteIdDefine::CalcConnectKey(RouteIdDefine::CalcRouteId(src_route_type, src_route_num), RouteIdDefine::CalcRouteId(dst_route_type, dst_route_num));
 }

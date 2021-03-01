@@ -4,52 +4,49 @@
 
 #include <string>
 
-typedef unsigned char ROUTE_TYPE;
-typedef unsigned char ROUTE_NUM;
-typedef unsigned short ROUTE_ID;
-typedef unsigned int CONNECT_KEY;
-
-// t：路由类型，n：在t类型下的编号
-#define CALC_ROUTE_ID(t, n) ((t << 8) | n)
+typedef unsigned short ROUTE_TYPE;
+typedef unsigned short ROUTE_NUM;
+typedef unsigned int ROUTE_ID;
+typedef unsigned long long CONNECT_KEY;
 
 class RouteIdDefine
 {
 public:
 	// src_route_id：路由ID开始端，dst_route_id：路由ID结束端
-	inline static unsigned int CalcConnectKey(unsigned short src_route_id, unsigned short dst_route_id)
+	inline static CONNECT_KEY CalcConnectKey(ROUTE_ID src_route_id, ROUTE_ID dst_route_id)
 	{
-		return (((unsigned int)src_route_id) << 16) | dst_route_id;
+		return (static_cast<CONNECT_KEY>(src_route_id) << (sizeof(ROUTE_ID) * 8)) | dst_route_id;
 	}
 	// route_id：路由ID
-	inline static unsigned char CalcRouteType(unsigned short route_id)
+	inline static ROUTE_TYPE CalcRouteType(ROUTE_ID route_id)
 	{
-		return route_id >> 8;
+		return static_cast<ROUTE_TYPE>(route_id >> (sizeof(ROUTE_NUM) * 8));
 	}
 	// route_id：路由编号
-	inline static unsigned char CalcRouteNum(unsigned short route_id)
+	inline static ROUTE_NUM CalcRouteNum(ROUTE_ID route_id)
 	{
-		return route_id & 0x00FF;
+		return static_cast<ROUTE_NUM>(route_id & static_cast<ROUTE_ID>(static_cast<ROUTE_NUM>(-1)));
 	}
 	// route_type：路由类型
 	// route_num：路由编号
-	inline static unsigned short CalcRouteId(unsigned char route_type, unsigned char route_num)
+	inline static ROUTE_ID CalcRouteId(ROUTE_TYPE route_type, ROUTE_NUM route_num)
 	{
-		return (((short)route_type) << 8) | route_num;
+		return (static_cast<ROUTE_ID>(route_type) << (sizeof(ROUTE_NUM) * 8)) | route_num;
 	}
 
 	// 计算路由信息
-	inline static std::string CalcRouteName(unsigned short route_id)
+	inline static std::string CalcRouteName(ROUTE_ID route_id)
 	{
-		unsigned short route_type = CalcRouteType(route_id);
-		unsigned short route_num = CalcRouteNum(route_id);
+		const ROUTE_TYPE route_type = CalcRouteType(route_id);
+		const ROUTE_NUM route_num = CalcRouteNum(route_id);
 		return std::to_string(route_type) + "_" + std::to_string(route_num);
 	}
 
 	// 计算连接信息
-	inline static std::string CalcConnectName(unsigned int connect_key)
+	inline static std::string CalcConnectName(CONNECT_KEY connect_key)
 	{
-		unsigned int src_route_id = connect_key >> 16;
-		unsigned int dst_route_id = connect_key & 0x0000ffff;
+		const ROUTE_ID src_route_id = connect_key >> (sizeof(ROUTE_ID) * 8);
+		const ROUTE_ID dst_route_id = static_cast<ROUTE_ID>(connect_key & static_cast<CONNECT_KEY>(static_cast<ROUTE_ID>(-1)));
 		return CalcRouteName(src_route_id) + "->" + CalcRouteName(dst_route_id);
 	}
 

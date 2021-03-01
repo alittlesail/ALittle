@@ -97,7 +97,7 @@ bool RouteSystem::AddConnectEndpoint(ConnectEndpointPtr endpoint, ROUTE_ID targe
 	if (it != m_endpoint_map.end()) return it->second == endpoint;
 
 	// 打印一下，表示有新的连接点
-	CARP_INFO("RouteSystem::AddConnectEndpoint route_id:" << ROUTE2S(target_route_id));
+	CARP_INFO("cur_route_id:" << ROUTE2S(m_route_id) << " RouteSystem::AddConnectEndpoint route_id:" << ROUTE2S(target_route_id));
 	endpoint->m_target_route_id = target_route_id;
 	m_endpoint_map[target_route_id] = endpoint;
 

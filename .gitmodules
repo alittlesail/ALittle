@@ -30,3 +30,11 @@
 	path = lua
 	url = https://github.com/alittlesail/lua.git
 	branch = master
+[submodule "sdk"]
+	path = sdk
+	url = https://github.com/ireader/sdk.git
+	branch = master
+[submodule "media-server"]
+	path = media-server
+	url = https://github.com/ireader/media-server.git
+	branch = master

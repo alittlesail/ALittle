@@ -15,6 +15,8 @@
 /lualib/socket/x64
 /lualib/sqlite3/x64
 /lualib/tinyxml2/x64
+/lualib/sip/x64
+/lualib/rtp/x64
 /bin/*.pdb
 /bin/*.ilk
 /bin/*.ipdb

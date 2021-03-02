@@ -26,7 +26,7 @@ static struct luaL_Reg rtplib[] = {
     {NULL, NULL}
 };
 
-int luaopen_memory(lua_State* L) {
+int luaopen_rtp(lua_State* L) {
     lua_newtable(L);
     luaL_setfuncs(L, rtplib, 0);
     set_info(L);

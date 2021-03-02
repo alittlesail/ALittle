@@ -26,7 +26,7 @@ static struct luaL_Reg siplib[] = {
     {NULL, NULL}
 };
 
-int luaopen_memory(lua_State* L) {
+int luaopen_sip(lua_State* L) {
     lua_newtable(L);
     luaL_setfuncs(L, siplib, 0);
     set_info(L);

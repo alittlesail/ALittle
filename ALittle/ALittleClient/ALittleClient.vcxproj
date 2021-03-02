@@ -76,6 +76,7 @@
     <ClInclude Include="..\..\Carp\carp_time.hpp" />
     <ClInclude Include="..\..\Carp\carp_timer.hpp" />
     <ClInclude Include="..\..\Carp\carp_timer_bind.hpp" />
+    <ClInclude Include="..\..\Carp\carp_udp_server.hpp" />
     <ClInclude Include="..\..\kcp\ikcp.h" />
     <ClInclude Include="..\..\lualib\ajson\lua_ajson.h" />
     <ClInclude Include="..\..\lualib\cjson\fpconv.h" />

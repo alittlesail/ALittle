@@ -53,7 +53,7 @@ void ServerSystem::Setup(const std::map<std::string, ModuleInfo>& modules)
 
 	// set prename of log file from config
 	CarpFile::CreateDeepFolder("Log");
-	s_carp_log.Setup("Log/", module_name);
+	s_carp_log.Setup("Log/", module_name, true);
 	
 #ifdef _WIN32
 	s_carp_console.Setup(module_name, std::bind(&ServerSystem::HandleConsoleCmd, this, std::placeholders::_1, std::placeholders::_2)

@@ -29,7 +29,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyxml2", "tinyxml2\tinyxm
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sip", "sip\sip.vcxproj", "{07590537-5786-42BC-9C59-570C268A6D82}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sip", "rtp\rtp.vcxproj", "{C6FE206F-D0DB-446D-941A-5D5DCC005AB6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rtp", "rtp\rtp.vcxproj", "{C6FE206F-D0DB-446D-941A-5D5DCC005AB6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

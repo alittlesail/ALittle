@@ -19,10 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="rtplib.c" />
+    <ClCompile Include="rtplib.cpp" />
+    <ClCompile Include="RtpSchedule.cpp" />
+    <ClCompile Include="RtpTransfer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rtplib.h" />
+    <ClInclude Include="RtpSchedule.h" />
+    <ClInclude Include="RtpTransfer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -113,7 +117,7 @@
       <PreprocessorDefinitions>_DEBUG;THIRDPARTY_EXPORTS;_WINDOWS;_USRDLL;LUA_BUILD_AS_DLL;LUA_LIB;ASIO_STANDALONE;_WIN32_WINNT=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\lua\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\lua\;$(SolutionDir)..\carp\;$(SolutionDir)..\asio\asio\include\;$(SolutionDir)..\pjproject\pjmedia\include\;$(SolutionDir)..\pjproject\pjlib\include\;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)..\lualib\rtp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -153,7 +157,7 @@
       <PreprocessorDefinitions>NDEBUG;THIRDPARTY_EXPORTS;_WINDOWS;_USRDLL;LUA_BUILD_AS_DLL;LUA_LIB;ASIO_STANDALONE;_WIN32_WINNT=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\lua\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\lua\;$(SolutionDir)..\carp\;$(SolutionDir)..\asio\asio\include\;$(SolutionDir)..\pjproject\pjmedia\include\;$(SolutionDir)..\pjproject\pjlib\include\;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)..\lualib\rtp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -161,8 +165,9 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\ALittle\lib\lua\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\ALittle\lib\lua\;$(SolutionDir)rtp\lib\pjproject\;$(SolutionDir)..\ALittle\lib\tcmalloc\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>lua.lib;libtcmalloc_minimal.lib;pjmedia-x86_64-x64-vc14-Release.lib;pjlib-x86_64-x64-vc14-Release.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

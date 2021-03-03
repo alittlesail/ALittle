@@ -30,3 +30,6 @@
 	path = lua
 	url = https://github.com/alittlesail/lua.git
 	branch = master
+[submodule "pjproject"]
+	path = pjproject
+	url = https://github.com/pjsip/pjproject.git

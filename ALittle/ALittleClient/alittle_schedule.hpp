@@ -353,7 +353,7 @@ public:
 
 #ifndef __EMSCRIPTEN__
 		CarpFile::CreateDeepFolder(CarpRWops::ExternalFilePath() + "Log");
-		s_carp_log.Setup(CarpRWops::ExternalFilePath() + "Log/", "ALittleClient");
+		s_carp_log.Setup(CarpRWops::ExternalFilePath() + "Log/", "ALittleClient", true);
 #endif
 		// init SDL
 		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_AUDIO) == -1)

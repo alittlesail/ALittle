@@ -19,9 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="siplib.c" />
+    <ClCompile Include="RtpManager.cpp" />
+    <ClCompile Include="SipManager.cpp" />
+    <ClCompile Include="SipSchedule.cpp" />
+    <ClCompile Include="siplib.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="RtpManager.h" />
+    <ClInclude Include="SipManager.h" />
+    <ClInclude Include="SipSchedule.h" />
     <ClInclude Include="siplib.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -153,7 +159,7 @@
       <PreprocessorDefinitions>NDEBUG;THIRDPARTY_EXPORTS;_WINDOWS;_USRDLL;LUA_BUILD_AS_DLL;LUA_LIB;ASIO_STANDALONE;_WIN32_WINNT=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\lua\;$(SolutionDir)..\carp\;$(SolutionDir)..\asio\asio\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\lua\;$(SolutionDir)..\carp\;$(SolutionDir)..\asio\asio\include\;$(SolutionDir)..\pjproject\pjmedia\include\;$(SolutionDir)..\pjproject\pjlib\include\;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)..\lualib\rtp\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

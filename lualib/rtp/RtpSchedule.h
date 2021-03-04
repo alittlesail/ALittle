@@ -35,6 +35,7 @@ public:
 	}
 
     void ReleaseRtpForLua(int first_port) { Execute(std::bind(&RtpSchedule::ReleaseRtp, this, first_port)); }
+    void ReleaseAllRtpForLua() { Execute(std::bind(&RtpSchedule::ReleaseAllRtp, this)); }
     void SetRemoteRtpForLua(int first_port, const char* target_remote_rtp_ip, int target_remote_rtp_port) { Execute(std::bind(&RtpSchedule::SetRemoteRtp, this, first_port, std::string(target_remote_rtp_ip), target_remote_rtp_port)); }
     void SetInnerRtpForLua(int first_port, const char* inner_rtp_ip, int inner_rtp_port) { Execute(std::bind(&RtpSchedule::SetInnerRtp, this, first_port, std::string(inner_rtp_ip), inner_rtp_port)); }
     void TransClientForLua(int first_port, int client_id) { Execute(std::bind(&RtpSchedule::TransClient, this, first_port, client_id)); }
@@ -73,6 +74,7 @@ public:
 public:
     // 释放rtp
     void ReleaseRtp(int first_port);
+    void ReleaseAllRtp();
 
     // 开始使用rtp
     void UseRtp(int first_port

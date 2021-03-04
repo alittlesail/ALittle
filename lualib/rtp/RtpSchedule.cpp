@@ -31,12 +31,26 @@ void RtpSchedule::ReleaseRtp(int first_port)
     CARP_INFO("use count:" << m_use_map_rtp.size());
 }
 
+void RtpSchedule::ReleaseAllRtp()
+{
+	for (auto& pair : m_use_map_rtp)
+	{
+		pair.second->Stop();
+		pair.second->UpdateIdleTime();
+		m_release_map_rtp[pair.first] = pair.second;
+	}
+	m_use_map_rtp.clear();
+
+	CARP_INFO("release count:" << m_release_map_rtp.size());
+	CARP_INFO("use count:" << m_use_map_rtp.size());
+}
+
 void RtpSchedule::UseRtp(int first_port
-	, const std::vector<std::string>& client_rtp_ip_list, int client_rtp_port
-    , const std::string& remote_rtp_ip, int remote_rtp_port
-	, const std::string& inner_rtp_ip, int inner_rtp_port
-    , const std::string& target_remote_rtp_ip, int target_remote_rtp_port
-	, const std::string& call_id, int client_id, unsigned int ssrc)
+                         , const std::vector<std::string>& client_rtp_ip_list, int client_rtp_port
+                         , const std::string& remote_rtp_ip, int remote_rtp_port
+                         , const std::string& inner_rtp_ip, int inner_rtp_port
+                         , const std::string& target_remote_rtp_ip, int target_remote_rtp_port
+                         , const std::string& call_id, int client_id, unsigned int ssrc)
 {
 	RtpTransferPtr rtp;
 	const auto release_it = m_release_map_rtp.find(first_port);

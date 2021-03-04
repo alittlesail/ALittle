@@ -44,7 +44,10 @@ public:
 	// 设置和线路方互发RTP包的ip和端口
 	void SetRemoteRtp(const std::string& rtp_ip, unsigned int rtp_port);
 
+	// 转移到客户端
 	bool ChangeClient(unsigned int client_id);
+
+	// 关闭rtp
 	void Close();
 
 public:
@@ -89,6 +92,7 @@ private:
 	time_t m_last_receive_time = 0;	// 最后收到客户端数据包的时间
 
 private:
+	// rtp数据包处理
 	static void HandleRemoteRtp(CarpUdpServer::HandleInfo& info, RtpTransferWeakPtr self);
 	static void HandleClientRtp(CarpUdpServer::HandleInfo& info, RtpTransferWeakPtr self, CarpUdpServerWeakPtr real_udp);
 	static void HandleInnerRtp(CarpUdpServer::HandleInfo& info, RtpTransferWeakPtr self);

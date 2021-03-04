@@ -176,7 +176,7 @@ void RtpTransfer::HandleRemoteRtp(CarpUdpServer::HandleInfo& info, RtpTransferWe
 		const pjmedia_rtp_hdr* hdr = nullptr;
 		const void* rtp_memory = nullptr;
 		unsigned int last_len = 0;
-		const auto ret = pjmedia_rtp_decode_rtp(nullptr, info.memory, info.memory_size, &hdr, &rtp_memory, &last_len);
+		const auto ret = pjmedia_rtp_decode_rtp(nullptr, info.memory, static_cast<int>(info.memory_size), &hdr, &rtp_memory, &last_len);
 		if (ret != PJ_SUCCESS)
 		{
 			CARP_ERROR("pjmedia_rtp_decode_rtp failed!");

@@ -1,9 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="siplib.c" />
+    <ClInclude Include="siplib.h" />
+    <ClInclude Include="SipSchedule.h" />
+    <ClInclude Include="RtpManager.h" />
+    <ClInclude Include="SipManager.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="siplib.h" />
+    <ClCompile Include="siplib.cpp" />
+    <ClCompile Include="SipSchedule.cpp" />
+    <ClCompile Include="RtpManager.cpp" />
+    <ClCompile Include="SipManager.cpp" />
   </ItemGroup>
 </Project>

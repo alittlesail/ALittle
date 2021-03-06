@@ -50,12 +50,12 @@ public:
         std::vector<std::string> client_rtp_ip_list;
         CarpString::Split(client_rtp_ip_string, ";", client_rtp_ip_list);
         int client_rtp_port = static_cast<int>(luaL_checkinteger(L, index++));
-        const char* remote_rtp_ip = luaL_checkstring(L, index++);
-        int remote_rtp_port = static_cast<int>(luaL_checkinteger(L, index++));
+        const char* self_rtp_ip = luaL_checkstring(L, index++);
+        int self_rtp_port = static_cast<int>(luaL_checkinteger(L, index++));
         const char* inner_rtp_ip = luaL_checkstring(L, index++);
         int inner_rtp_port = static_cast<int>(luaL_checkinteger(L, index++));
-        const char* target_remote_rtp_ip = luaL_checkstring(L, index++);
-        int target_remote_rtp_port = static_cast<int>(luaL_checkinteger(L, index++));
+        const char* remote_rtp_ip = luaL_checkstring(L, index++);
+        int remote_rtp_port = static_cast<int>(luaL_checkinteger(L, index++));
         const char* call_id = luaL_checkstring(L, index++);
         int client_id = static_cast<int>(luaL_checkinteger(L, index++));
         unsigned int ssrc = static_cast<int>(luaL_checkinteger(L, index++));
@@ -63,10 +63,10 @@ public:
         // 执行
         Execute(std::bind(&RtpSchedule::UseRtp, this, first_port
             , client_rtp_ip_list, client_rtp_port
-            , remote_rtp_ip, remote_rtp_port
-            , inner_rtp_ip, inner_rtp_port
-            , target_remote_rtp_ip, target_remote_rtp_port
-            , call_id, client_id, ssrc));
+            , std::string(self_rtp_ip), self_rtp_port
+            , std::string(inner_rtp_ip), inner_rtp_port
+            , std::string(remote_rtp_ip), remote_rtp_port
+            , std::string(call_id), client_id, ssrc));
 
         return 0;
 	}
@@ -79,13 +79,13 @@ public:
     // 开始使用rtp
     void UseRtp(int first_port
         , const std::vector<std::string>& client_rtp_ip_list, int client_rtp_port
-        , const std::string& remote_rtp_ip, int remote_rtp_port
+        , const std::string& self_rtp_ip, int self_rtp_port
         , const std::string& inner_rtp_ip, int inner_rtp_port
-        , const std::string& target_remote_rtp_ip, int target_remote_rtp_port
+        , const std::string& remote_rtp_ip, int remote_rtp_port
         , const std::string& call_id, int client_id, unsigned int ssrc);
 
     // 设置线路的rtp
-    void SetRemoteRtp(int first_port, const std::string& target_remote_rtp_ip, int target_remote_rtp_port);
+    void SetRemoteRtp(int first_port, const std::string& remote_rtp_ip, int remote_rtp_port);
 
     // 设置内部转接rtp
     void SetInnerRtp(int first_port, const std::string& inner_rtp_ip, int inner_rtp_port);

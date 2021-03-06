@@ -3,13 +3,9 @@
   <ItemGroup>
     <ClInclude Include="siplib.h" />
     <ClInclude Include="SipSchedule.h" />
-    <ClInclude Include="RtpManager.h" />
-    <ClInclude Include="SipManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="siplib.cpp" />
     <ClCompile Include="SipSchedule.cpp" />
-    <ClCompile Include="RtpManager.cpp" />
-    <ClCompile Include="SipManager.cpp" />
   </ItemGroup>
 </Project>

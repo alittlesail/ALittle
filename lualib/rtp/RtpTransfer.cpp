@@ -8,14 +8,14 @@
 
 bool RtpTransfer::Create(RtpSchedule* schedule
 	, const std::vector<std::string>& client_rtp_ip_list, unsigned client_rtp_port
-	, const std::string& remote_rtp_ip, unsigned remote_rtp_port
+	, const std::string& self_rtp_ip, unsigned self_rtp_port
 	, const std::string& inner_rtp_ip, unsigned inner_rtp_port)
 {
 	// 获取弱引用
     RtpTransferWeakPtr self_weak_ptr = this->shared_from_this();
 
 	// 如果已经创建了，那么就直接返回true
-	if (m_udp_remote_rtp)
+	if (m_udp_self_rtp)
 	{
 		for (const auto& ip : client_rtp_ip_list)
 		{
@@ -46,9 +46,9 @@ bool RtpTransfer::Create(RtpSchedule* schedule
 	}
 
 	// 创建线路rtp
-	m_udp_remote_rtp = std::make_shared<CarpUdpServer>(schedule->GetIOService());
-	m_udp_remote_rtp->RegisterUdpHandle(std::bind(HandleRemoteRtp, std::placeholders::_1, self_weak_ptr));
-	if (!m_udp_remote_rtp->Start(remote_rtp_ip, remote_rtp_port))
+	m_udp_self_rtp = std::make_shared<CarpUdpServer>(schedule->GetIOService());
+	m_udp_self_rtp->RegisterUdpHandle(std::bind(HandleRemoteRtp, std::placeholders::_1, self_weak_ptr));
+	if (!m_udp_self_rtp->Start(self_rtp_ip, self_rtp_port))
 	{
 		Close();
 		return false;
@@ -66,8 +66,8 @@ bool RtpTransfer::Create(RtpSchedule* schedule
 	// 保存相关数据
 	m_udp_client_rtp = CarpUdpServerPtr();
 	m_client_rtp_port = client_rtp_port;
-	m_remote_rtp_ip = remote_rtp_ip;
-	m_remote_rtp_port = remote_rtp_port;
+	m_self_rtp_ip = self_rtp_ip;
+	m_self_rtp_port = self_rtp_port;
 	m_inner_rtp_port = inner_rtp_port;
 
 	return true;
@@ -78,14 +78,14 @@ bool RtpTransfer::Start(const std::string& call_id, unsigned int client_id, unsi
 	// 打印正在使用的警告
 	if (m_in_using) CARP_ERROR("m_call_id(" << m_call_id << "), m_client_rtp_port(" << m_client_rtp_port << "), already in used!");
 	// 如果没有创建直接返回false
-	if (!m_udp_remote_rtp) return false;
+	if (!m_udp_self_rtp) return false;
 	// 标记为正在使用
 	m_in_using = true;
 
 	// 打印日志
 	CARP_INFO("RtpTransfer Start: call_id:" << call_id
 		<< ", client_rtp_port:" << m_client_rtp_port
-		<< ", remote_rtp_port:" << m_remote_rtp_port);
+		<< ", self_rtp_port:" << m_self_rtp_port);
 
 	// 初始化相关数据
 	m_udp_client_rtp = CarpUdpServerPtr();
@@ -103,10 +103,13 @@ void RtpTransfer::Stop()
 	// 打印日志
 	CARP_INFO("RtpTransfer Stop: call_id:" << m_call_id
 		<< ", client_rtp_port:" << m_client_rtp_port
-		<< ", remote_rtp_port:" << m_remote_rtp_port);
+		<< ", self_rtp_port:" << m_self_rtp_port);
 
 	// 标记为不在使用
 	m_in_using = false;
+
+	// 更新空闲时间
+	m_idle_time = time(nullptr);
 }
 
 void RtpTransfer::SetInnerRtp(const std::string& rtp_ip, unsigned int rtp_port)
@@ -118,7 +121,7 @@ void RtpTransfer::SetInnerRtp(const std::string& rtp_ip, unsigned int rtp_port)
 
 bool RtpTransfer::ChangeClient(unsigned int client_id)
 {
-	if (!m_udp_remote_rtp) return false;
+	if (!m_udp_self_rtp) return false;
 	m_client_id = client_id;
 	m_has_client_rtp_endpoint = false;
 	m_udp_client_rtp = CarpUdpServerPtr();
@@ -137,15 +140,10 @@ void RtpTransfer::Close()
 	for (auto& pair : m_udp_client_rtp_map)
 		pair.second->Close();
 	m_udp_client_rtp_map.clear();
-	if (m_udp_remote_rtp) m_udp_remote_rtp->Close();
-	m_udp_remote_rtp = CarpUdpServerPtr();
+	if (m_udp_self_rtp) m_udp_self_rtp->Close();
+	m_udp_self_rtp = CarpUdpServerPtr();
 	if (m_udp_inner_rtp) m_udp_inner_rtp->Close();
 	m_udp_inner_rtp = CarpUdpServerPtr();
-}
-
-void RtpTransfer::UpdateIdleTime()
-{
-	m_idle_time = time(0);
 }
 
 void RtpTransfer::HandleRemoteRtp(CarpUdpServer::HandleInfo& info, RtpTransferWeakPtr self)
@@ -333,7 +331,7 @@ void RtpTransfer::HandleClientRtp(CarpUdpServer::HandleInfo& info, RtpTransferWe
 		memcpy(new_memory, &rtp_hdr, hdr_len);
 		memcpy(new_memory + hdr_len, rtp_memory, check_len);
 		// 发送
-		self_ptr->m_udp_remote_rtp->Send(new_memory, new_size, self_ptr->m_remote_rtp_endpoint);
+		self_ptr->m_udp_self_rtp->Send(new_memory, new_size, self_ptr->m_remote_rtp_endpoint);
 	}
 	else if (data_type == 't')
 	{
@@ -429,7 +427,7 @@ void RtpTransfer::HandleClientRtp(CarpUdpServer::HandleInfo& info, RtpTransferWe
 		memcpy(new_memory, &rtp_hdr, hdr_len);
 		memcpy(new_memory + hdr_len, rtp_info, sizeof(rtp_info));
 		// 发送
-		self_ptr->m_udp_remote_rtp->Send(new_memory, new_size, self_ptr->m_remote_rtp_endpoint);
+		self_ptr->m_udp_self_rtp->Send(new_memory, new_size, self_ptr->m_remote_rtp_endpoint);
 	}
 }
 
@@ -445,5 +443,5 @@ void RtpTransfer::HandleInnerRtp(CarpUdpServer::HandleInfo& info, RtpTransferWea
 	// 转发给线路
 	void* new_memory = malloc(info.memory_size);
 	memcpy(new_memory, info.memory, info.memory_size);
-	self_ptr->m_udp_remote_rtp->Send(new_memory, info.memory_size, self_ptr->m_remote_rtp_endpoint);
+	self_ptr->m_udp_self_rtp->Send(new_memory, info.memory_size, self_ptr->m_remote_rtp_endpoint);
 }

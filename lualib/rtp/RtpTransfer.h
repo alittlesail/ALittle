@@ -26,11 +26,11 @@ public:
 	// client_rtp_ip_list 表示要使用的ip，用于和客户端互发媒体包。
 	//						因为客户端的网络可能是不同运营商，运营商之前会互相拦截数据包
 	//						所以这里可以开多个不同的运营商ip，来兼容客户端不同的网络
-	// remote_rtp_ip 表示要使用的ip，用于和线路方互发RTP包
+	// self_rtp_ip 表示要使用的ip，用于和线路方互发RTP包
 	// inner_rtp_ip 表示要使用的ip，用于内部rtp服务器转发媒体包，用于转接的场景
 	bool Create(RtpSchedule* schedule
 		, const std::vector<std::string>& client_rtp_ip_list, unsigned int client_rtp_port
-		, const std::string& remote_rtp_ip, unsigned int remote_rtp_port
+		, const std::string& self_rtp_ip, unsigned int self_rtp_port
 		, const std::string& inner_rtp_ip, unsigned int inner_rtp_port);
 
 	// 启动一个电话媒体包
@@ -51,7 +51,6 @@ public:
 	void Close();
 
 public:
-	void UpdateIdleTime();
 	time_t GetIdleTime() const { return m_idle_time; }
 
 private:
@@ -70,9 +69,9 @@ private:
 	asio::ip::udp::endpoint m_client_rtp_endpoint;
 
 	// 与线路方互发rtp的udp
-	CarpUdpServerPtr m_udp_remote_rtp;
-	std::string m_remote_rtp_ip;
-	unsigned int m_remote_rtp_port = 0;
+	CarpUdpServerPtr m_udp_self_rtp;
+	std::string m_self_rtp_ip;
+	unsigned int m_self_rtp_port = 0;
 	bool m_has_remote_rtp_endpoint = false;	// phone system talk
 	asio::ip::udp::endpoint m_remote_rtp_endpoint;
 

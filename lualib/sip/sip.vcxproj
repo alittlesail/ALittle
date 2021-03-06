@@ -19,14 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="RtpManager.cpp" />
-    <ClCompile Include="SipManager.cpp" />
     <ClCompile Include="SipSchedule.cpp" />
     <ClCompile Include="siplib.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="RtpManager.h" />
-    <ClInclude Include="SipManager.h" />
     <ClInclude Include="SipSchedule.h" />
     <ClInclude Include="siplib.h" />
   </ItemGroup>

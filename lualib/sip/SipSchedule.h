@@ -7,6 +7,12 @@
 #include "carp_string.hpp"
 #include "carp_log.hpp"
 #include "carp_udp_server.hpp"
+#include "carp_timer.hpp"
+
+extern "C" {
+#include "sip-agent.h"
+#include "sip-timer.h"
+}
 
 class SipSchedule : public CarpSchedule
 {
@@ -32,10 +38,25 @@ public:
 	}
 
 public:
+	SipSchedule();
+
+public:
 	// 启动SIP
     bool Start(const char* self_sip_ip, unsigned int self_sip_port, const char* remote_sip_ip, unsigned int remote_sip_port);
 	// 关闭
     void Close();
+	// 发送数据包
+	void Send(void* memory, size_t size) { m_udp_self_sip->Send(memory, size, m_remote_sip_endpoint); }
+
+public:
+	struct TimerNode
+	{
+		int timer_id = 0;
+		sip_timer_handle handle = nullptr;
+		void* usrptr = nullptr;
+	};
+	int AddTimer(int timeout, sip_timer_handle handle, void* usrptr);
+	void RemoveTimer(int id);
 
 public:
 	// 注册号码
@@ -60,6 +81,13 @@ private:
 private:
 	std::mutex m_mutex;
 	std::list<std::function<int(lua_State*)>> m_event;
+
+private:
+	CarpTimer m_timer;
+	std::unordered_map<int, TimerNode> m_timer_map;
+
+private:
+	sip_agent_t* m_agent = nullptr;
 };
 
 #endif

@@ -3,8 +3,10 @@
 #include "RtpSchedule.h"
 
 #include "carp_log.hpp"
-
-#include "pjmedia/rtp.h"
+extern "C" {
+#include "rtp-packet.h"
+#include "rtp-internal.h"
+}
 
 bool RtpTransfer::Create(RtpSchedule* schedule
 	, const std::vector<std::string>& client_rtp_ip_list, unsigned client_rtp_port
@@ -171,36 +173,35 @@ void RtpTransfer::HandleRemoteRtp(CarpUdpServer::HandleInfo& info, RtpTransferWe
 	if (self_ptr->m_has_client_rtp_endpoint)
 	{
 		// 解包
-		const pjmedia_rtp_hdr* hdr = nullptr;
-		const void* rtp_memory = nullptr;
-		unsigned int last_len = 0;
-		const auto ret = pjmedia_rtp_decode_rtp(nullptr, info.memory, static_cast<int>(info.memory_size), &hdr, &rtp_memory, &last_len);
-		if (ret != PJ_SUCCESS)
+		rtp_packet_t pocket = {0};
+		const auto ret = rtp_packet_deserialize(&pocket, info.memory, static_cast<int>(info.memory_size));
+		if (ret != 0)
 		{
-			CARP_ERROR("pjmedia_rtp_decode_rtp failed!");
+			CARP_ERROR("rtp_packet_deserialize failed!");
 			return;
 		}
 
-		// 获取数据，把大端转为小端
-		unsigned char payload_type = hdr->pt;
-		int sequence_number = pj_ntohs(hdr->seq);
-		unsigned int timestamp = pj_ntohl(hdr->ts);
+		CARP_RTP_CMD_TYPE cmd_type = 'd'; // rtp 媒体数据
+		CARP_RTP_PAYLOAD_TYPE payload_type = pocket.rtp.pt;
+		CARP_RTP_SEQUENCE_NUMBER sequence_number = pocket.rtp.seq;
+		CARP_RTP_TIMESTAMP timestamp = pocket.rtp.timestamp;
 
-		// 创建客户端的rtp包
-		const size_t new_memory_size = sizeof(unsigned int) + sizeof(char) + last_len + sizeof(char) + sizeof(int) + sizeof(int);
+		// 创建客户端的rtp包。client_id,
+		const size_t new_memory_size = sizeof(CARP_RTP_CLIENT_ID)
+			+ sizeof(CARP_RTP_CMD_TYPE)
+			+ sizeof(CARP_RTP_PAYLOAD_TYPE)
+			+ sizeof(CARP_RTP_SEQUENCE_NUMBER)
+			+ sizeof(CARP_RTP_TIMESTAMP)
+			+ pocket.payloadlen;
+
 		char* new_memory = static_cast<char*>(malloc(new_memory_size));
 		char* body_memory = new_memory;
-		memcpy(body_memory, &(self_ptr->m_client_id), sizeof(unsigned int));
-		body_memory += 4;
-		*body_memory = 'd'; // rtp 媒体数据
-		body_memory += 1;
-		memcpy(body_memory, &payload_type, sizeof(char));
-		body_memory += sizeof(char);
-		memcpy(body_memory, &sequence_number, sizeof(int));
-		body_memory += sizeof(int);
-		memcpy(body_memory, &timestamp, sizeof(int));
-		body_memory += sizeof(int);
-		memcpy(body_memory, rtp_memory, last_len);
+		memcpy(body_memory, &(self_ptr->m_client_id), sizeof(CARP_RTP_CLIENT_ID)); body_memory += sizeof(CARP_RTP_CLIENT_ID);
+		memcpy(body_memory, &cmd_type, sizeof(CARP_RTP_CMD_TYPE)); body_memory += sizeof(CARP_RTP_CMD_TYPE);
+		memcpy(body_memory, &payload_type, sizeof(CARP_RTP_PAYLOAD_TYPE)); body_memory += sizeof(CARP_RTP_PAYLOAD_TYPE);
+		memcpy(body_memory, &sequence_number, sizeof(CARP_RTP_SEQUENCE_NUMBER)); body_memory += sizeof(CARP_RTP_SEQUENCE_NUMBER);
+		memcpy(body_memory, &timestamp, sizeof(CARP_RTP_TIMESTAMP)); body_memory += sizeof(CARP_RTP_TIMESTAMP);
+		memcpy(body_memory, pocket.payload, pocket.payloadlen);
 		self_ptr->m_udp_client_rtp->Send(new_memory, new_memory_size, self_ptr->m_client_rtp_endpoint);
 	}
 }
@@ -218,27 +219,27 @@ void RtpTransfer::HandleClientRtp(CarpUdpServer::HandleInfo& info, RtpTransferWe
 	const char* rtp_memory = info.memory;
 	size_t check_len = info.memory_size;
 
-	if (check_len < sizeof(unsigned int))
+	if (check_len < sizeof(CARP_RTP_CLIENT_ID))
 	{
 		CARP_ERROR("rtp package len error1:" << check_len);
 		return;
 	}
-	unsigned int client_id;
+	CARP_RTP_CLIENT_ID client_id;
 	memcpy(&client_id, rtp_memory, sizeof(client_id));
 	rtp_memory += sizeof(client_id);
 	check_len -= sizeof(client_id);
 
-	if (check_len < sizeof(unsigned char))
+	if (check_len < sizeof(CARP_RTP_CMD_TYPE))
 	{
 		CARP_ERROR("rtp package len error2:" << check_len);
 		return;
 	}
-	char data_type = *rtp_memory;
-	rtp_memory += 1;
-	check_len -= 1;
+	CARP_RTP_CMD_TYPE cmd_type = *rtp_memory;
+	rtp_memory += sizeof(cmd_type);
+	check_len -= sizeof(cmd_type);
 
 	// 处理rtp媒体包
-	if (data_type == 'd')
+	if (cmd_type == 'd')
 	{
 		// 设置客户端
 		if (self_ptr->m_has_client_rtp_endpoint == false && self_ptr->m_client_id == client_id)
@@ -256,16 +257,15 @@ void RtpTransfer::HandleClientRtp(CarpUdpServer::HandleInfo& info, RtpTransferWe
 		{
 			self_ptr->m_last_receive_time = cur_time;
 
+			const CARP_RTP_CMD_TYPE e_cmd_type = 'e'; // 控制信息
+
 			// 发送反馈包
-			size_t memory_size = sizeof(unsigned int) + sizeof(unsigned char) + sizeof(unsigned int);
+			size_t memory_size = sizeof(CARP_RTP_CLIENT_ID) + sizeof(CARP_RTP_CMD_TYPE) + sizeof(CARP_RTP_TIMESTAMP);
 			char* memory = static_cast<char*>(malloc(memory_size));
 			char* new_memory = memory;
-			memcpy(new_memory, &(self_ptr->m_client_id), sizeof(unsigned int));
-			new_memory += 4;
-			*new_memory = 'e'; // 控制信息
-			new_memory += 1;
-			memcpy(new_memory, &cur_time, sizeof(cur_time));
-			new_memory += sizeof(cur_time);
+			memcpy(new_memory, &(self_ptr->m_client_id), sizeof(CARP_RTP_CLIENT_ID)); new_memory += sizeof(CARP_RTP_CLIENT_ID);
+			memcpy(new_memory, &e_cmd_type, sizeof(e_cmd_type)); new_memory += sizeof(e_cmd_type);
+			memcpy(new_memory, &cur_time, sizeof(cur_time)); new_memory += sizeof(cur_time);
 			self_ptr->m_udp_client_rtp->Send(memory, memory_size, self_ptr->m_client_rtp_endpoint);
 		}
 
@@ -273,35 +273,34 @@ void RtpTransfer::HandleClientRtp(CarpUdpServer::HandleInfo& info, RtpTransferWe
 		if (self_ptr->m_has_remote_rtp_endpoint == false) return;
 
 		// get payload type
-		if (check_len < sizeof(unsigned char))
+		if (check_len < sizeof(CARP_RTP_PAYLOAD_TYPE))
 		{
 			CARP_ERROR("rtp package len error3:" << check_len);
 			return;
 		}
-		unsigned char payload_type = 0;
+		CARP_RTP_PAYLOAD_TYPE payload_type = 0;
 		memcpy(&payload_type, rtp_memory, sizeof(payload_type));
 		rtp_memory += sizeof(payload_type);
 		check_len -= sizeof(payload_type);
 
 		// get sequence number
-		if (check_len < sizeof(unsigned int))
+		if (check_len < sizeof(CARP_RTP_SEQUENCE_NUMBER))
 		{
 			CARP_ERROR("rtp package len error4:" << check_len);
 			return;
 		}
-		unsigned int sequence_number = 0;
+		CARP_RTP_SEQUENCE_NUMBER sequence_number = 0;
 		memcpy(&sequence_number, rtp_memory, sizeof(sequence_number));
 		rtp_memory += sizeof(sequence_number);
 		check_len -= sizeof(sequence_number);
-		const unsigned short sequence = static_cast<unsigned short>(sequence_number);
 
 		// get timestamp
-		if (check_len < sizeof(unsigned int))
+		if (check_len < sizeof(CARP_RTP_TIMESTAMP))
 		{
 			CARP_ERROR("rtp package len error5:" << check_len);
 			return;
 		}
-		unsigned int timestamp = 0;
+		CARP_RTP_TIMESTAMP timestamp = 0;
 		memcpy(&timestamp, rtp_memory, sizeof(timestamp));
 		rtp_memory += sizeof(timestamp);
 		check_len -= sizeof(timestamp);
@@ -313,121 +312,37 @@ void RtpTransfer::HandleClientRtp(CarpUdpServer::HandleInfo& info, RtpTransferWe
 			return;
 		}
 
-		pjmedia_rtp_hdr rtp_hdr;
-		rtp_hdr.cc = 0;
-		rtp_hdr.x = 0;
-		rtp_hdr.p = 0;
-		rtp_hdr.v = 2;
-		rtp_hdr.pt = payload_type;
-		rtp_hdr.m = 0;
-		rtp_hdr.seq = pj_htons(sequence);
-		rtp_hdr.ts = pj_htonl(timestamp);
-		rtp_hdr.ssrc = pj_htonl(self_ptr->m_ssrc);
-		const size_t hdr_len = sizeof(pjmedia_rtp_hdr);
+		if (self_ptr->m_rtp_buffer.size() < RTP_FIXED_HEADER + check_len)
+			self_ptr->m_rtp_buffer.resize(RTP_FIXED_HEADER + check_len, 0);
 
-		// 申请并复制内存
-		size_t new_size = hdr_len + check_len;
-		char* new_memory = static_cast<char*>(malloc(new_size));
-		memcpy(new_memory, &rtp_hdr, hdr_len);
-		memcpy(new_memory + hdr_len, rtp_memory, check_len);
+		rtp_packet_t pocket = { 0 };
+		pocket.payload = rtp_memory;
+		pocket.payloadlen = static_cast<int>(check_len);
+		pocket.rtp.v = RTP_VERSION;
+		pocket.rtp.pt = payload_type;
+		pocket.rtp.seq = sequence_number;
+		pocket.rtp.timestamp = timestamp;
+		pocket.rtp.ssrc = self_ptr->m_ssrc;
+
+		int pocket_size = 0;
+		while (true)
+		{
+			pocket_size = rtp_packet_serialize(&pocket, self_ptr->m_rtp_buffer.data(), static_cast<int>(self_ptr->m_rtp_buffer.size()));
+			if (pocket_size > 0) break;
+
+			if (self_ptr->m_rtp_buffer.size() > self_ptr->m_udp_self_rtp->GetBufferSize())
+			{
+				CARP_ERROR("rtp_packet_serialize failed check_len:" << check_len);
+				return;
+			}
+
+			self_ptr->m_rtp_buffer.resize(self_ptr->m_rtp_buffer.size() * 2, 0);
+		}
+
 		// 发送
-		self_ptr->m_udp_self_rtp->Send(new_memory, new_size, self_ptr->m_remote_rtp_endpoint);
-	}
-	else if (data_type == 't')
-	{
-		if (self_ptr->m_has_client_rtp_endpoint == false && self_ptr->m_client_id == client_id)
-		{
-			self_ptr->m_client_rtp_endpoint = info.end_point;
-			self_ptr->m_has_client_rtp_endpoint = true;
-			self_ptr->m_udp_client_rtp = real_udp.lock();
-			CARP_INFO("!!!!!!!!!!!!!!!!!carp rtcp!!!!!!!!!!!!!!!!");
-		}
-
-		// get dtmf event
-		if (check_len < sizeof(unsigned char))
-		{
-			CARP_ERROR("rtp package len error4:" << check_len);
-			return;
-		}
-		unsigned char dtmf_event = 0;
-		memcpy(&dtmf_event, rtp_memory, sizeof(dtmf_event));
-		rtp_memory += sizeof(dtmf_event);
-		check_len -= sizeof(dtmf_event);
-
-		// get dtmf end
-		if (check_len < sizeof(unsigned char))
-		{
-			CARP_ERROR("rtp package len error5:" << check_len);
-			return;
-		}
-		unsigned char dtmf_end = 0;
-		memcpy(&dtmf_end, rtp_memory, sizeof(dtmf_end));
-		rtp_memory += sizeof(dtmf_end);
-		check_len -= sizeof(dtmf_end);
-
-		if (dtmf_end) dtmf_end = 0x8a;
-		else dtmf_end = 0x0a;
-
-		// get sequence_number
-		if (check_len < sizeof(int))
-		{
-			CARP_ERROR("rtp package len error6:" << check_len);
-			return;
-		}
-		unsigned int sequence_number = 0;
-		memcpy(&sequence_number, rtp_memory, sizeof(sequence_number));
-		rtp_memory += sizeof(sequence_number);
-		check_len -= sizeof(sequence_number);
-		const unsigned short sequence = static_cast<unsigned short>(sequence_number);
-
-		// get timestamp
-		if (check_len < sizeof(int))
-		{
-			CARP_ERROR("rtp package len error7:" << check_len);
-			return;
-		}
-		unsigned int timestamp = 0;
-		memcpy(&timestamp, rtp_memory, sizeof(timestamp));
-		rtp_memory += sizeof(timestamp);
-		check_len -= sizeof(timestamp);
-
-		// get duration
-		if (check_len < sizeof(unsigned short))
-		{
-			CARP_ERROR("rtp package len error8:" << check_len);
-			return;
-		}
-		unsigned short duration = 0;
-		memcpy(&duration, rtp_memory, sizeof(duration));
-		rtp_memory += sizeof(duration);
-		check_len -= sizeof(duration);
-
-		// 填充dtmf数据
-		unsigned char rtp_info[4];
-		rtp_info[0] = dtmf_event;
-		rtp_info[1] = dtmf_end;
-		duration = pj_ntohs(duration);
-		memcpy(rtp_info + 2, &duration, sizeof(duration));
-
-		pjmedia_rtp_hdr rtp_hdr;
-		rtp_hdr.cc = 0;
-		rtp_hdr.x = 0;
-		rtp_hdr.p = 0;
-		rtp_hdr.v = 2;
-		rtp_hdr.pt = 101;
-		rtp_hdr.m = 0;
-		rtp_hdr.seq = pj_htons(sequence);
-		rtp_hdr.ts = pj_htonl(timestamp);
-		rtp_hdr.ssrc = pj_htonl(self_ptr->m_ssrc);
-		const size_t hdr_len = sizeof(pjmedia_rtp_hdr);
-
-		// 申请并复制内存
-		size_t new_size = hdr_len + sizeof(rtp_info);
-		char* new_memory = static_cast<char*>(malloc(new_size));
-		memcpy(new_memory, &rtp_hdr, hdr_len);
-		memcpy(new_memory + hdr_len, rtp_info, sizeof(rtp_info));
-		// 发送
-		self_ptr->m_udp_self_rtp->Send(new_memory, new_size, self_ptr->m_remote_rtp_endpoint);
+		void* new_memory = malloc(pocket_size);
+		memcpy(new_memory, self_ptr->m_rtp_buffer.data(), pocket_size);
+		self_ptr->m_udp_self_rtp->Send(new_memory, pocket_size, self_ptr->m_remote_rtp_endpoint);
 	}
 }
 

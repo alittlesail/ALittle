@@ -9,6 +9,12 @@
 
 #include "carp_udp_server.hpp"
 
+typedef unsigned int CARP_RTP_CLIENT_ID;
+typedef unsigned char CARP_RTP_CMD_TYPE;
+typedef unsigned char CARP_RTP_PAYLOAD_TYPE;
+typedef unsigned short CARP_RTP_SEQUENCE_NUMBER;
+typedef unsigned int CARP_RTP_TIMESTAMP;
+
 class RtpSchedule;
 
 class RtpTransfer;
@@ -84,11 +90,12 @@ private:
 	// 与线路方识别媒体包的序列号
 	unsigned int m_ssrc = 0;
 	// 与客户端识别媒体包的序列号
-	unsigned int m_client_id = 0;
+	CARP_RTP_CLIENT_ID m_client_id = 0;
 
 private:
 	std::string m_call_id;		// SIP呼叫ID
 	time_t m_last_receive_time = 0;	// 最后收到客户端数据包的时间
+	std::vector<unsigned char> m_rtp_buffer; // 用于发送rtp的缓冲区
 
 private:
 	// rtp数据包处理

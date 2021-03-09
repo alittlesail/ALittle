@@ -18,6 +18,8 @@ public:
 			.beginNamespace("rtp")
 			.beginClass<RtpSchedule>("RtpSchedule")
 			.addConstructor<void(*)()>()
+            .addFunction("Start", &RtpSchedule::Start)
+            .addFunction("Close", &RtpSchedule::Close)
 			.addFunction("ReleaseRtp", &RtpSchedule::ReleaseRtpForLua)
             .addFunction("SetRemoteRtp", &RtpSchedule::SetRemoteRtpForLua)
             .addFunction("SetInnerRtp", &RtpSchedule::SetInnerRtpForLua)
@@ -34,6 +36,8 @@ public:
         s_carp_log.Setup(log_path, log_name, false);
 	}
 
+    void Start() { Run(true); }
+    void Close() { ReleaseAllRtp(); Exit(); }
     void ReleaseRtpForLua(int first_port) { Execute(std::bind(&RtpSchedule::ReleaseRtp, this, first_port)); }
     void ReleaseAllRtpForLua() { Execute(std::bind(&RtpSchedule::ReleaseAllRtp, this)); }
     void SetRemoteRtpForLua(int first_port, const char* target_remote_rtp_ip, int target_remote_rtp_port) { Execute(std::bind(&RtpSchedule::SetRemoteRtp, this, first_port, std::string(target_remote_rtp_ip), target_remote_rtp_port)); }

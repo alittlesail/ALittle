@@ -10,6 +10,7 @@
 #include "Carp/carp_rudp_server.hpp"
 #include "Carp/carp_safe_id_creator.hpp"
 #include "Carp/carp_file_cache.hpp"
+#include "Carp/carp_rtp_server.hpp"
 
 #include "../HttpSystem/HttpServer.h"
 #include "../RouteSystem/RouteSystem.h"
@@ -48,15 +49,6 @@ public:
 	ScriptSystem& GetScriptSystem() { return m_script_system; }
 	const std::string& GetModuleTitle() const { return m_module_title; }
 
-public:
-	void UseFileCache(bool value) { m_use_file_cache = value; }
-	void SetFileCacheMaxSize(int max_size) { m_file_cache.SetMaxSize(max_size); }
-	void SetFileCacheClearAll() { m_file_cache.ClearAll(); }
-	void SetFileCacheClearByMaxSize(int max_size) { m_file_cache.ClearByMaxSize(max_size); }
-	void SetFileCacheClearByFilePath(const char* file_path) { m_file_cache.ClearByPath(file_path); }
-	void SetFileCacheClearBySize(int size) { m_file_cache.ClearBySize(size); }
-	void SetFileCacheClearByTime(int time) { m_file_cache.ClearByTime(time); }
-
 private:
 	void Update(time_t cur_time);
 
@@ -71,17 +63,27 @@ private:
 	std::string m_string;
 
 private:
-	bool m_use_file_cache = false;
-	CarpFileCacheGroup m_file_cache;
 	ScriptSystem m_script_system;
-	MysqlSystem m_mysql_system;
 	CarpSafeIDCreator<int> m_id_creator;
-
-private:
 	time_t m_current_time;
 	AsioTimerPtr m_timer;
 	CarpMessageReadFactory m_read_factory;
 
+	//FileCache//////////////////////////////////////////////////////////////////////////////////
+public:
+	void UseFileCache(bool value) { m_use_file_cache = value; }
+	void SetFileCacheMaxSize(int max_size) { m_file_cache.SetMaxSize(max_size); }
+	void SetFileCacheClearAll() { m_file_cache.ClearAll(); }
+	void SetFileCacheClearByMaxSize(int max_size) { m_file_cache.ClearByMaxSize(max_size); }
+	void SetFileCacheClearByFilePath(const char* file_path) { m_file_cache.ClearByPath(file_path); }
+	void SetFileCacheClearBySize(int size) { m_file_cache.ClearBySize(size); }
+	void SetFileCacheClearByTime(int time) { m_file_cache.ClearByTime(time); }
+
+private:
+	bool m_use_file_cache = false;
+	CarpFileCacheGroup m_file_cache;
+
+	//Mysql//////////////////////////////////////////////////////////////////////////////////
 public:
 	void StartMysqlQuery(int thread_count
 		, const char* ip
@@ -96,6 +98,10 @@ public:
 	void HandleMysqlQuery(int query_id, bool result, std::string reason);
 	void HandleMysqlEmpty(int query_id, bool result, std::string reason);
 
+private:
+	MysqlSystem m_mysql_system;
+
+	//HttpServer//////////////////////////////////////////////////////////////////////////////////
 public:
 	bool CreateHttpServer(const char* yun_ip, const char* ip, int port, bool is_ssl);
 	const char* GetHttpServerYunIp() const;
@@ -130,6 +136,7 @@ private:
 	std::set<HttpServerPtr> m_http_server_set;
 	std::map<int, HttpSenderWeakPtr> m_id_map_http;
 
+	//ClientServer//////////////////////////////////////////////////////////////////////////////////
 public:
 	bool CreateClientServer(const char* yun_ip, const char* ip, int port, bool rudp);
 	const char* GetClientServerYunIp() const;
@@ -164,6 +171,40 @@ private:
 	std::map<int, CarpRudpReceiverPtr> m_id_map_rudp;
 	std::map<CarpRudpReceiverPtr, int> m_rudp_map_id;
 
+	//RtpServer//////////////////////////////////////////////////////////////////////////////////
+public:
+	// 释放rtp
+	void ReleaseRtp(int first_port);
+	void ReleaseAllRtp();
+
+    int UseRtpForLua(lua_State* L);
+	// 开始使用rtp
+	bool UseRtp(int first_port
+		, const std::vector<std::string>& client_rtp_ip_list, int client_rtp_port
+		, const std::string& self_rtp_ip, int self_rtp_port
+		, const std::string& inner_rtp_ip, int inner_rtp_port
+		, const std::string& remote_rtp_ip, int remote_rtp_port
+		, const std::string& call_id, int client_id, unsigned int ssrc);
+
+	// 设置线路的rtp
+	void SetRemoteRtp(int first_port, const std::string& remote_rtp_ip, int remote_rtp_port);
+
+	// 设置内部转接rtp
+	void SetInnerRtp(int first_port, const std::string& inner_rtp_ip, int inner_rtp_port);
+
+	// 转接到客户端
+	void TransClient(int first_port, int client_id);
+
+	// 清理空闲的rtp
+	void ClearIdleRtp(int idle_delta_time);
+
+private:
+	// 所有的rtp
+	std::map<int, CarpRtpServerPtr> m_use_map_rtp;
+	// 等待释放的rtp
+	std::map<int, CarpRtpServerPtr> m_release_map_rtp;
+
+	//RouteSystem//////////////////////////////////////////////////////////////////////////////////
 private:
 	void StartRouteSystem(ROUTE_TYPE route_type, ROUTE_NUM route_num);
 	int GetRouteType() const;

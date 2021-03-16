@@ -44,6 +44,7 @@ void ServerSchedule::RegisterToScript()
 	// register script system
 	luabridge::getGlobalNamespace(L)
         .beginClass<ServerSchedule>("__CPPAPIServerSchedule")
+
 		.addFunction("UseFileCache", &ServerSchedule::UseFileCache)
 		.addFunction("SetFileCacheMaxSize", &ServerSchedule::SetFileCacheMaxSize)
 		.addFunction("SetFileCacheClearAll", &ServerSchedule::SetFileCacheClearAll)
@@ -51,10 +52,12 @@ void ServerSchedule::RegisterToScript()
 		.addFunction("SetFileCacheClearByFilePath", &ServerSchedule::SetFileCacheClearByFilePath)
 		.addFunction("SetFileCacheClearBySize", &ServerSchedule::SetFileCacheClearBySize)
 		.addFunction("SetFileCacheClearByTime", &ServerSchedule::SetFileCacheClearByTime)
+
         .addFunction("StartMysqlQuery", &ServerSchedule::StartMysqlQuery)
         .addFunction("AddMysqlStatement", &ServerSchedule::AddMysqlStatement)
         .addFunction("AddMysqlNormal", &ServerSchedule::AddMysqlNormal)
 		.addFunction("AddMysqlEmpty", &ServerSchedule::AddMysqlEmpty)
+
 		.addFunction("HttpGet", &ServerSchedule::HttpGet)
 		.addFunction("HttpPost", &ServerSchedule::HttpPost)
 		.addFunction("CreateHttpServer", &ServerSchedule::CreateHttpServer)
@@ -65,12 +68,22 @@ void ServerSchedule::RegisterToScript()
 		.addFunction("HttpSendString", &ServerSchedule::HttpSendString)
 		.addFunction("HttpSendFile", &ServerSchedule::HttpSendFile)
 		.addFunction("HttpStartReceiveFile", &ServerSchedule::HttpStartReceiveFile)
+
 		.addFunction("CreateClientServer", &ServerSchedule::CreateClientServer)
 		.addFunction("GetClientServerYunIp", &ServerSchedule::GetClientServerYunIp)
 		.addFunction("GetClientServerIp", &ServerSchedule::GetClientServerIp)
 		.addFunction("GetClientServerPort", &ServerSchedule::GetClientServerPort)
 		.addFunction("ClientClose", &ServerSchedule::ClientClose)
 		.addFunction("ClientSend", &ServerSchedule::ClientSend)
+
+	    .addFunction("ReleaseRtp", &ServerSchedule::ReleaseRtp)
+		.addFunction("ReleaseAllRtp", &ServerSchedule::ReleaseAllRtp)
+		.addCFunction("UseRtp", &ServerSchedule::UseRtpForLua)
+		.addFunction("SetRemoteRtp", &ServerSchedule::SetRemoteRtp)
+		.addFunction("SetInnerRtp", &ServerSchedule::SetInnerRtp)
+		.addFunction("TransClient", &ServerSchedule::TransClient)
+		.addFunction("ClearIdleRtp", &ServerSchedule::ClearIdleRtp)
+
 		.addFunction("StartRouteSystem", &ServerSchedule::StartRouteSystem)
 		.addFunction("GetRouteType", &ServerSchedule::GetRouteType)
 		.addFunction("GetRouteNum", &ServerSchedule::GetRouteNum)
@@ -163,6 +176,11 @@ int ServerSchedule::Start()
 		delete m_route_system;
 		m_route_system = nullptr;
 	}
+
+	for (auto& pair : m_use_map_rtp)
+		pair.second->Stop();
+	m_use_map_rtp.clear();
+	m_release_map_rtp.clear();
 
 	return 0;
 }
@@ -584,7 +602,155 @@ void ServerSchedule::HandleRudpMessage(CarpRudpReceiverPtr sender, int message_s
 
 	m_script_system.Invoke("__ALITTLEAPI_ClientMessage", it->second, message_id, message_rpcid, &m_read_factory);
 }
+
+void ServerSchedule::ReleaseRtp(int first_port)
+{
+	auto use_it = m_use_map_rtp.find(first_port);
+	if (use_it == m_use_map_rtp.end()) return;
+
+	use_it->second->Stop();
+	m_release_map_rtp[first_port] = use_it->second;
+	m_use_map_rtp.erase(use_it);
+
+	CARP_INFO("release count:" << m_release_map_rtp.size());
+	CARP_INFO("use count:" << m_use_map_rtp.size());
+}
+
+void ServerSchedule::ReleaseAllRtp()
+{
+	for (auto& pair : m_use_map_rtp)
+	{
+		pair.second->Stop();
+		m_release_map_rtp[pair.first] = pair.second;
+	}
+	m_use_map_rtp.clear();
+
+	CARP_INFO("release count:" << m_release_map_rtp.size());
+	CARP_INFO("use count:" << m_use_map_rtp.size());
+}
+
+int ServerSchedule::UseRtpForLua(lua_State* L)
+{
+    // 读取参数
+    int index = 2;
+    const int first_port = static_cast<int>(luaL_checkinteger(L, index++));
+    const char* client_rtp_ip_string = luaL_checkstring(L, index++);
+    std::vector<std::string> client_rtp_ip_list;
+    CarpString::Split(client_rtp_ip_string, ";", client_rtp_ip_list);
+	const int client_rtp_port = static_cast<int>(luaL_checkinteger(L, index++));
+    const char* self_rtp_ip = luaL_checkstring(L, index++);
+	const int self_rtp_port = static_cast<int>(luaL_checkinteger(L, index++));
+    const char* inner_rtp_ip = luaL_checkstring(L, index++);
+	const int inner_rtp_port = static_cast<int>(luaL_checkinteger(L, index++));
+    const char* remote_rtp_ip = luaL_checkstring(L, index++);
+	const int remote_rtp_port = static_cast<int>(luaL_checkinteger(L, index++));
+    const char* call_id = luaL_checkstring(L, index++);
+	const int client_id = static_cast<int>(luaL_checkinteger(L, index++));
+	const unsigned int ssrc = static_cast<int>(luaL_checkinteger(L, index++));
+
+    // 执行
+    UseRtp(first_port
+           , client_rtp_ip_list, client_rtp_port
+           , self_rtp_ip, self_rtp_port
+           , inner_rtp_ip, inner_rtp_port
+           , remote_rtp_ip, remote_rtp_port
+           , call_id, client_id, ssrc);
+
+    return 0;
+}
+
+bool ServerSchedule::UseRtp(int first_port
+                            , const std::vector<std::string>& client_rtp_ip_list, int client_rtp_port
+                            , const std::string& self_rtp_ip, int self_rtp_port
+                            , const std::string& inner_rtp_ip, int inner_rtp_port
+                            , const std::string& remote_rtp_ip, int remote_rtp_port
+                            , const std::string& call_id, int client_id, unsigned int ssrc)
+{
+	CarpRtpServerPtr rtp;
+	const auto release_it = m_release_map_rtp.find(first_port);
+	if (release_it != m_release_map_rtp.end())
+	{
+		rtp = release_it->second;
+		m_release_map_rtp.erase(release_it);
+	}
+	else
+	{
+		rtp = std::make_shared<CarpRtpServer>();
+	}
 	
+	// 创建rtp
+	if (!rtp->Create(client_rtp_ip_list, client_rtp_port
+		, self_rtp_ip, self_rtp_port
+		, inner_rtp_ip, inner_rtp_port, this))
+		return false;
+
+	m_use_map_rtp[first_port] = rtp;
+	// 开始使用rtp
+	rtp->Start(call_id, client_id, ssrc);
+
+	// 如果线路的rtp已知道，那么就直接设置进去
+	if (!remote_rtp_ip.empty()) rtp->SetRemoteRtp(remote_rtp_ip, remote_rtp_port);
+
+	// 打印信息
+	CARP_INFO("release count:" << m_release_map_rtp.size());
+	CARP_INFO("use count:" << m_use_map_rtp.size());
+
+	return true;
+}
+
+void ServerSchedule::SetRemoteRtp(int first_port, const std::string& remote_rtp_ip, int remote_rtp_port)
+{
+	if (remote_rtp_ip.empty()) return;
+
+	auto use_it = m_use_map_rtp.find(first_port);
+	if (use_it == m_use_map_rtp.end()) return;
+
+	use_it->second->SetRemoteRtp(remote_rtp_ip, remote_rtp_port);
+}
+
+void ServerSchedule::SetInnerRtp(int first_port, const std::string& inner_rtp_ip, int inner_rtp_port)
+{
+	auto use_it = m_use_map_rtp.find(first_port);
+	if (use_it == m_use_map_rtp.end()) return;
+
+	use_it->second->SetInnerRtp(inner_rtp_ip, inner_rtp_port);
+}
+
+void ServerSchedule::TransClient(int first_port, int client_id)
+{
+	auto use_it = m_use_map_rtp.find(first_port);
+	if (use_it == m_use_map_rtp.end()) return;
+
+	use_it->second->ChangeClient(client_id);
+}
+
+void ServerSchedule::ClearIdleRtp(int idle_delta_time)
+{
+	const time_t cur_time = time(nullptr);
+
+	bool has_close = false;
+	for (auto release_it = m_release_map_rtp.begin(); release_it != m_release_map_rtp.end();)
+	{
+		if (cur_time - release_it->second->GetIdleTime() > idle_delta_time)
+		{
+			release_it->second->Close();
+			release_it = m_release_map_rtp.erase(release_it);
+
+			has_close = true;
+		}
+		else
+		{
+			++release_it;
+		}
+	}
+
+	if (has_close)
+	{
+		CARP_INFO("release count:" << m_release_map_rtp.size());
+		CARP_INFO("use count:" << m_use_map_rtp.size());
+	}
+}
+
 void ServerSchedule::StartRouteSystem(ROUTE_TYPE route_type, ROUTE_NUM route_num)
 {
 	if (m_route_system != nullptr)

@@ -47,6 +47,30 @@ static int protobuflib_importer_import(lua_State* L)
     return 1;
 }
 
+static int protobuflib_importer_error_count(lua_State* L)
+{
+    void** c = (void**)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "importer object is null");
+    const int count = protobuf_importer_error_count(*c);
+    lua_pushinteger(L, count);
+    return 1;
+}
+
+static int protobuflib_importer_error_info(lua_State* L)
+{
+    void** c = (void**)lua_touserdata(L, 1);
+    luaL_argcheck(L, c != 0, 1, "importer object is null");
+    const int index = (int)luaL_checkinteger(L, 2);
+    const char* error = protobuf_importer_error_info(*c, index);
+    if (NULL == error) {
+        lua_pushnil(L);
+    }
+    else {
+        lua_pushstring(L, error);
+    }
+    return 1;
+}
+
 static int protobuflib_importer_getpool(lua_State* L) {
     void** c = (void**)lua_touserdata(L, 1);
     luaL_argcheck(L, c != 0, 1, "importer object is null");
@@ -1343,6 +1367,8 @@ static struct luaL_Reg protobuflib[] = {
     {"createimporter", protobuflib_createimporter},
     {"importer_import", protobuflib_importer_import},
     {"importer_getpool", protobuflib_importer_getpool},
+    {"importer_error_count", protobuflib_importer_error_count},
+    {"importer_error_info", protobuflib_importer_error_info},
 
     {"descriptorpool_findmessagetypebyname", protobuflib_descriptorpool_findmessagetypebyname},
     {"descriptorpool_findfieldbyname", protobuflib_descriptorpool_findfieldbyname},

@@ -13,7 +13,12 @@ class MultiFileErrorCollector : public google::protobuf::compiler::MultiFileErro
 public:
     void AddError(const std::string& filename, int line, int column,
                   const std::string& message) {
+        std::string error = "file: " + filename + ", line:" + std::to_string(line) + ", column:" + std::to_string(column) + " message:" + message;
+        m_error_list.emplace_back(error);
     }
+
+public:
+    std::vector<std::string> m_error_list;
 };
 
 void protobuf_shutdown() {
@@ -47,6 +52,19 @@ void* protobuf_importer_import(void* c, const char* path) {
 void* protobuf_importer_getpool(void* c) {
     importer* m = (importer*)c;
     return (void*)((google::protobuf::compiler::Importer*)m->importer)->pool();
+}
+
+int protobuf_importer_error_count(void* c) {
+    importer* m = (importer*)c;
+    MultiFileErrorCollector* error_collector = (MultiFileErrorCollector*)m->error_collector;
+    return (int)error_collector->m_error_list.size();
+}
+
+const char* protobuf_importer_error_info(void* c, int index) {
+    importer* m = (importer*)c;
+    MultiFileErrorCollector* error_collector = (MultiFileErrorCollector*)m->error_collector;
+    if (index < 0 || index >= (int)error_collector->m_error_list.size()) return nullptr;
+    return error_collector->m_error_list[index].c_str();
 }
 
 void* protobuf_descriptorpool_findmessagetypebyname(void* pool, const char* name) {

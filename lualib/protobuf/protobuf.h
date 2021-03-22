@@ -16,6 +16,8 @@ void* protobuf_createimporter(const char* path);
 void protobuf_freeimporter(void* c);
 void* protobuf_importer_import(void* c, const char* path);
 void* protobuf_importer_getpool(void* c);
+int protobuf_importer_error_count(void* c);
+const char* protobuf_importer_error_info(void* c, int index);
 
 // descripor pool
 void* protobuf_descriptorpool_findmessagetypebyname(void* pool, const char* name);

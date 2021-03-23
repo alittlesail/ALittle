@@ -483,11 +483,11 @@ public:
 		}
 
 		std::vector<std::string> atlas_list;
-		CarpString::Split(m_atlas_info, ";", atlas_list);
+		CarpString::Split(m_atlas_info, ";", false, atlas_list);
 		for (unsigned int i = 0; i < atlas_list.size(); ++i)
 		{
 			std::vector<std::string> atlas_info;
-			CarpString::Split(atlas_list[i], ",", atlas_info);
+			CarpString::Split(atlas_list[i], ",", false, atlas_info);
 			if (atlas_info.size() < 1) continue;
 			std::string file_path = atlas_info[0];
 			if (atlas_info.size() < 2) continue;

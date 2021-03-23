@@ -11,6 +11,7 @@
 #include "Carp/carp_safe_id_creator.hpp"
 #include "Carp/carp_file_cache.hpp"
 #include "Carp/carp_rtp_server.hpp"
+#include "Carp/carp_sip_server.hpp"
 
 #include "../HttpSystem/HttpServer.h"
 #include "../RouteSystem/RouteSystem.h"
@@ -203,6 +204,24 @@ private:
 	std::map<int, CarpRtpServerPtr> m_use_map_rtp;
 	// µÈ´ýÊÍ·ÅµÄrtp
 	std::map<int, CarpRtpServerPtr> m_release_map_rtp;
+
+    //SipServer//////////////////////////////////////////////////////////////////////////////////
+public:
+	bool StartSip(const char* self_sip_ip, unsigned int self_sip_port
+		, const char* remote_sip_ip, unsigned int remote_sip_port
+		, const char* register_uri, unsigned int register_expires);
+	void CloseSip();
+
+public:
+	void RegisterSipAccount(const char* nickname, const char* account, const char* password);
+	void ClearSipAccount();
+
+private:
+	void HandleSipLog(const std::string& type, const std::string& call_id, const std::string& info);
+	void HandleRegisterSucceed(const std::string& nickname);
+
+private:
+	CarpSipServerPtr m_sip_server;
 
 	//RouteSystem//////////////////////////////////////////////////////////////////////////////////
 private:

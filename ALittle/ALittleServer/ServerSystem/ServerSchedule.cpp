@@ -84,6 +84,11 @@ void ServerSchedule::RegisterToScript()
 		.addFunction("TransClient", &ServerSchedule::TransClient)
 		.addFunction("ClearIdleRtp", &ServerSchedule::ClearIdleRtp)
 
+		.addFunction("StartSip", &ServerSchedule::StartSip)
+		.addFunction("CloseSip", &ServerSchedule::CloseSip)
+		.addFunction("RegisterSipAccount", &ServerSchedule::RegisterSipAccount)
+		.addFunction("ClearSipAccount", &ServerSchedule::ClearSipAccount)
+
 		.addFunction("StartRouteSystem", &ServerSchedule::StartRouteSystem)
 		.addFunction("GetRouteType", &ServerSchedule::GetRouteType)
 		.addFunction("GetRouteNum", &ServerSchedule::GetRouteNum)
@@ -181,6 +186,12 @@ int ServerSchedule::Start()
 		pair.second->Stop();
 	m_use_map_rtp.clear();
 	m_release_map_rtp.clear();
+
+	if (m_sip_server)
+	{
+		m_sip_server->Close();
+		m_sip_server = nullptr;
+	}
 
 	return 0;
 }
@@ -636,7 +647,7 @@ int ServerSchedule::UseRtpForLua(lua_State* L)
     const int first_port = static_cast<int>(luaL_checkinteger(L, index++));
     const char* client_rtp_ip_string = luaL_checkstring(L, index++);
     std::vector<std::string> client_rtp_ip_list;
-    CarpString::Split(client_rtp_ip_string, ";", client_rtp_ip_list);
+    CarpString::Split(client_rtp_ip_string, ";", false, client_rtp_ip_list);
 	const int client_rtp_port = static_cast<int>(luaL_checkinteger(L, index++));
     const char* self_rtp_ip = luaL_checkstring(L, index++);
 	const int self_rtp_port = static_cast<int>(luaL_checkinteger(L, index++));
@@ -749,6 +760,57 @@ void ServerSchedule::ClearIdleRtp(int idle_delta_time)
 		CARP_INFO("release count:" << m_release_map_rtp.size());
 		CARP_INFO("use count:" << m_use_map_rtp.size());
 	}
+}
+
+bool ServerSchedule::StartSip(const char* self_sip_ip, unsigned int self_sip_port
+	, const char* remote_sip_ip, unsigned int remote_sip_port
+	, const char* register_uri, unsigned int register_expires)
+{
+	if (m_sip_server)
+	{
+		m_sip_server->Close();
+		m_sip_server = nullptr;
+	}
+
+	m_sip_server = std::make_shared<CarpSipServer>();
+
+	return m_sip_server->Start(self_sip_ip, self_sip_port
+		, remote_sip_ip, remote_sip_port
+		, register_uri, register_expires
+	    , this
+		, std::bind(&ServerSchedule::HandleSipLog, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
+		, std::bind(&ServerSchedule::HandleRegisterSucceed, this, std::placeholders::_1));
+}
+
+void ServerSchedule::CloseSip()
+{
+	if (m_sip_server)
+	{
+		m_sip_server->Close();
+		m_sip_server = nullptr;
+	}
+}
+
+void ServerSchedule::RegisterSipAccount(const char* nickname, const char* account, const char* password)
+{
+	if (!m_sip_server) return;
+	m_sip_server->RegisterAccount(nickname, account, password);
+}
+
+void ServerSchedule::ClearSipAccount()
+{
+	if (!m_sip_server) return;
+	m_sip_server->ClearAccount();
+}
+
+void ServerSchedule::HandleSipLog(const std::string& type, const std::string& call_id, const std::string& info)
+{
+	m_script_system.Invoke("__ALITTLEAPI_SipLog", type.c_str(), call_id.c_str(), info.c_str());
+}
+
+void ServerSchedule::HandleRegisterSucceed(const std::string& nickname)
+{
+	m_script_system.Invoke("__ALITTLEAPI_RegisterSucceed", nickname.c_str());
 }
 
 void ServerSchedule::StartRouteSystem(ROUTE_TYPE route_type, ROUTE_NUM route_num)

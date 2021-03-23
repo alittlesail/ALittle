@@ -25,11 +25,11 @@ int main(int argc, char* argv[])
 	std::map<std::string, ALittle::ModuleInfo> module_map;
 
 	std::vector<std::string> module_split;
-	CarpString::Split(argv[4], ";", module_split);
+	CarpString::Split(argv[4], ";", false,module_split);
 	for (auto& module : module_split)
 	{
 		std::vector<std::string> info_split;
-		CarpString::Split(module, ",", info_split);
+		CarpString::Split(module, ",", false, info_split);
 		if (info_split.size() < 2 || info_split.size() > 4)
 		{
 			CARP_WARN(u8"错误的格式:" << module);

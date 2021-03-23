@@ -791,10 +791,10 @@ void ServerSchedule::CloseSip()
 	}
 }
 
-void ServerSchedule::RegisterSipAccount(const char* nickname, const char* account, const char* password)
+void ServerSchedule::RegisterSipAccount(const char* account, const char* password)
 {
 	if (!m_sip_server) return;
-	m_sip_server->RegisterAccount(nickname, account, password);
+	m_sip_server->RegisterAccount(account, password);
 }
 
 void ServerSchedule::ClearSipAccount()

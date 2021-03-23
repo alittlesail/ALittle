@@ -213,7 +213,7 @@ public:
 	void CloseSip();
 
 public:
-	void RegisterSipAccount(const char* nickname, const char* account, const char* password);
+	void RegisterSipAccount(const char* account, const char* password);
 	void ClearSipAccount();
 
 private:

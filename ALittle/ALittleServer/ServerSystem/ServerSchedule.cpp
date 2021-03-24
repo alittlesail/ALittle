@@ -84,10 +84,9 @@ void ServerSchedule::RegisterToScript()
 		.addFunction("TransClient", &ServerSchedule::TransClient)
 		.addFunction("ClearIdleRtp", &ServerSchedule::ClearIdleRtp)
 
-		.addFunction("StartSip", &ServerSchedule::StartSip)
-		.addFunction("CloseSip", &ServerSchedule::CloseSip)
-		.addFunction("RegisterSipAccount", &ServerSchedule::RegisterSipAccount)
-		.addFunction("ClearSipAccount", &ServerSchedule::ClearSipAccount)
+		.addFunction("CreateUdpServer", &ServerSchedule::CreateUdpServer)
+		.addFunction("CloseUdpServer", &ServerSchedule::CloseUdpServer)
+		.addFunction("SendUdpMessage", &ServerSchedule::SendUdpMessage)
 
 		.addFunction("StartRouteSystem", &ServerSchedule::StartRouteSystem)
 		.addFunction("GetRouteType", &ServerSchedule::GetRouteType)
@@ -187,11 +186,12 @@ int ServerSchedule::Start()
 	m_use_map_rtp.clear();
 	m_release_map_rtp.clear();
 
-	if (m_sip_server)
+	for (auto& pair : m_udp_server_map)
 	{
-		m_sip_server->Close();
-		m_sip_server = nullptr;
+		for (auto& sub_pair : pair.second)
+		    sub_pair.second->Close();
 	}
+	m_udp_server_map.clear();
 
 	return 0;
 }
@@ -762,55 +762,76 @@ void ServerSchedule::ClearIdleRtp(int idle_delta_time)
 	}
 }
 
-bool ServerSchedule::StartSip(const char* self_sip_ip, unsigned int self_sip_port
-	, const char* remote_sip_ip, unsigned int remote_sip_port
-	, const char* register_uri, unsigned int register_expires)
+bool ServerSchedule::CreateUdpServer(const char* ip, int port)
 {
-	if (m_sip_server)
+	if (ip == nullptr) return false;
+
+	const auto ip_it = m_udp_server_map.find(ip);
+	if (ip_it != m_udp_server_map.end())
 	{
-		m_sip_server->Close();
-		m_sip_server = nullptr;
+		const auto port_it = ip_it->second.find(port);
+		if (port_it != ip_it->second.end()) return true;
 	}
 
-	m_sip_server = std::make_shared<CarpSipServer>();
+	auto server = std::make_shared<CarpUdpServer>(GetIOService());
+	server->RegisterUdpHandle(std::bind(&ServerSchedule::HandleUdpMessage, this, std::placeholders::_1, std::string(ip), port));
+	if (!server->Start(ip, port)) return false;
 
-	return m_sip_server->Start(self_sip_ip, self_sip_port
-		, remote_sip_ip, remote_sip_port
-		, register_uri, register_expires
-	    , this
-		, std::bind(&ServerSchedule::HandleSipLog, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)
-		, std::bind(&ServerSchedule::HandleRegisterSucceed, this, std::placeholders::_1));
+	m_udp_server_map[ip][port] = server;
+	return true;
 }
 
-void ServerSchedule::CloseSip()
+void ServerSchedule::CloseUdpServer(const char* ip, int port)
 {
-	if (m_sip_server)
+	if (ip == nullptr) return;
+
+	const auto ip_it = m_udp_server_map.find(ip);
+	if (ip_it == m_udp_server_map.end()) return;
+
+	const auto port_it = ip_it->second.find(port);
+	if (port_it == ip_it->second.end()) return;
+
+	port_it->second->Close();
+	ip_it->second.erase(port_it);
+	if (ip_it->second.empty()) m_udp_server_map.erase(ip_it);
+}
+
+void ServerSchedule::SendUdpMessage(const char* self_ip, int self_port, const char* remote_ip, int remote_port, const char* message)
+{
+	if (self_ip == nullptr || remote_ip == nullptr || message == nullptr) return;
+
+	const auto ip_it = m_udp_server_map.find(self_ip);
+	if (ip_it == m_udp_server_map.end()) return;
+
+	const auto port_it = ip_it->second.find(self_port);
+	if (port_it == ip_it->second.end()) return;
+
+	const auto e_ip_it = m_udp_endpoint_map.find(remote_ip);
+	if (e_ip_it != m_udp_endpoint_map.end())
 	{
-		m_sip_server->Close();
-		m_sip_server = nullptr;
+		const auto e_port_it = e_ip_it->second.find(remote_port);
+		if (e_port_it != e_ip_it->second.end())
+		{
+			port_it->second->Send(message, e_port_it->second);
+			return;
+		}
 	}
+
+	size_t count = 0;
+	for (auto& ip_pair : m_udp_endpoint_map)
+	{
+		for (auto& port_pair : ip_pair.second)
+			count += port_pair.second.size();
+	}
+	if (count >= 10240) m_udp_endpoint_map.clear();
+
+	asio::ip::udp::endpoint& endpoint = m_udp_endpoint_map[remote_ip][remote_port] = asio::ip::udp::endpoint(asio::ip::address::from_string(remote_ip), remote_port);
+	port_it->second->Send(message, endpoint);
 }
 
-void ServerSchedule::RegisterSipAccount(const char* account, const char* password)
+void ServerSchedule::HandleUdpMessage(CarpUdpServer::HandleInfo& info, const std::string& self_ip, int self_port)
 {
-	if (!m_sip_server) return;
-	m_sip_server->RegisterAccount(account, password);
-}
-
-void ServerSchedule::ClearSipAccount()
-{
-	if (!m_sip_server) return;
-	m_sip_server->ClearAccount();
-}
-
-void ServerSchedule::HandleSipLog(const std::string& type, const std::string& call_id, const std::string& info)
-{
-	m_script_system.Invoke("__ALITTLEAPI_SipLog", type.c_str(), call_id.c_str(), info.c_str());
-}
-
-void ServerSchedule::HandleRegisterSucceed(const std::string& nickname)
-{
-	m_script_system.Invoke("__ALITTLEAPI_RegisterSucceed", nickname.c_str());
+	m_script_system.Invoke("__ALITTLEAPI_HandleUdpMessage", self_ip.c_str(), self_port, info.end_point.address().to_string().c_str(), info.end_point.port(), info.memory);
 }
 
 void ServerSchedule::StartRouteSystem(ROUTE_TYPE route_type, ROUTE_NUM route_num)

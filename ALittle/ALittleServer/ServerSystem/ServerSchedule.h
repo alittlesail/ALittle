@@ -11,7 +11,7 @@
 #include "Carp/carp_safe_id_creator.hpp"
 #include "Carp/carp_file_cache.hpp"
 #include "Carp/carp_rtp_server.hpp"
-#include "Carp/carp_sip_server.hpp"
+#include "Carp/carp_udp_server.hpp"
 
 #include "../HttpSystem/HttpServer.h"
 #include "../RouteSystem/RouteSystem.h"
@@ -207,21 +207,20 @@ private:
 
     //SipServer//////////////////////////////////////////////////////////////////////////////////
 public:
-	bool StartSip(const char* self_sip_ip, unsigned int self_sip_port
-		, const char* remote_sip_ip, unsigned int remote_sip_port
-		, const char* register_uri, unsigned int register_expires);
-	void CloseSip();
-
-public:
-	void RegisterSipAccount(const char* account, const char* password);
-	void ClearSipAccount();
+	// 启动Udp服务器
+	bool CreateUdpServer(const char* ip, int port);
+	// 关闭Udp服务器
+	void CloseUdpServer(const char* ip, int port);
+	// 发送消息
+	void SendUdpMessage(const char* self_ip, int self_port, const char* remote_ip, int remote_port, const char* message);
 
 private:
-	void HandleSipLog(const std::string& type, const std::string& call_id, const std::string& info);
-	void HandleRegisterSucceed(const std::string& nickname);
+	void HandleUdpMessage(CarpUdpServer::HandleInfo& info, const std::string& self_ip, int self_port);
 
 private:
-	CarpSipServerPtr m_sip_server;
+	// UDP服务器
+	std::map<std::string, std::map<int, CarpUdpServerPtr>> m_udp_server_map;
+	std::map<std::string, std::map<int, asio::ip::udp::endpoint>> m_udp_endpoint_map;
 
 	//RouteSystem//////////////////////////////////////////////////////////////////////////////////
 private:

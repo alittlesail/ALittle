@@ -35,6 +35,7 @@ public:
 
 private:
 	void RegisterToScript();
+	CarpSchedule* GetCarpSchedule() { return this; }
 
 public:
 	int Start();

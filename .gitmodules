@@ -26,7 +26,3 @@
 	path = SDL
 	url = https://github.com/alittlesail/SDL.git
 	branch = master
-[submodule "lua"]
-	path = lua
-	url = https://github.com/lua/lua.git
-	branch = master

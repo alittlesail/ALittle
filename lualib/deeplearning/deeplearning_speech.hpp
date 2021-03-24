@@ -86,7 +86,7 @@ public:
 					back.mfccs.push_back(static_cast<float>(value));
 
 			std::vector<std::string> phoneme_list;
-			CarpString::Split(back.phoneme_word, " ", phoneme_list);
+			CarpString::Split(back.phoneme_word, " ", true, phoneme_list);
 			for (auto& value : phoneme_list) word_set.insert(value);
 
 			++cur_count;
@@ -163,7 +163,7 @@ public:
 		right = m_data.data_list[index].phoneme_word == pred;
 
 		std::vector<std::string> word_list;
-		CarpString::Split(m_data.data_list[index].phoneme_word, " ", word_list);
+		CarpString::Split(m_data.data_list[index].phoneme_word, " ", true, word_list);
 		std::vector<int> phoneme_list;
 		for (auto& word : word_list)
 		{

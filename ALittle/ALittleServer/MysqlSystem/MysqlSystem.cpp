@@ -61,24 +61,25 @@ void MysqlThread::AddTask(int query_id, ServerSchedule* schedule)
 
 void MysqlThread::Execute(MysqlTask& info)
 {
-    bool result = false;
-    std::string reason;
     if (info.empty)
     {
-        result = true;
+        std::string reason;
+        bool result = true;
 		info.schedule->Execute(std::bind(&ServerSchedule::HandleMysqlEmpty, info.schedule, info.query_id, result, reason));
     }
     else if (info.query != nullptr)
     {
+        std::string reason;
         info.query->SetConnection(m_conn);
-        result = info.query->Execute(reason);
+        bool result = info.query->Execute(reason);
+        info.schedule->Execute(std::bind(&ServerSchedule::HandleMysqlQuery, info.schedule, info.query_id, result, reason));
     }
     else
     {
-        result = m_conn->ExecuteQuery(info.sql.c_str(), reason);
+        std::string reason;
+        bool result = m_conn->ExecuteQuery(info.sql.c_str(), reason);
+        info.schedule->Execute(std::bind(&ServerSchedule::HandleMysqlQuery, info.schedule, info.query_id, result, reason));
     }
-
-    info.schedule->Execute(std::bind(&ServerSchedule::HandleMysqlQuery, info.schedule, info.query_id, result, reason));
 }
 
 MysqlSystem::MysqlSystem()

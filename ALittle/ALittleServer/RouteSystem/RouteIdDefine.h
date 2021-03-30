@@ -39,7 +39,27 @@ public:
 	{
 		const ROUTE_TYPE route_type = CalcRouteType(route_id);
 		const ROUTE_NUM route_num = CalcRouteNum(route_id);
-		return std::to_string(route_type) + "_" + std::to_string(route_num);
+		
+		// 与RouteSystem.alittle的RouteType同步
+		std::string route_name = std::to_string(route_type);
+		switch (route_type)
+		{
+		case 1: route_name = "GATEWAY"; break;
+		case 2: route_name = "DATA"; break;
+		case 3: route_name = "VERSION"; break;
+		case 4: route_name = "OPS"; break;
+		case 5: route_name = "LOG"; break;
+		case 6: route_name = "FILE"; break;
+		case 7: route_name = "GAME"; break;
+		case 8: route_name = "WEB"; break;
+		case 9: route_name = "DEPLOY"; break;
+		case 10: route_name = "MAP"; break;
+		case 11: route_name = "CALL_CENTER"; break;
+		case 12: route_name = "CALL_INTERFACE"; break;
+		case 13: route_name = "CALL_SIP"; break;
+		case 14: route_name = "CALL_RTP"; break;
+		}
+		return route_name + "_" + std::to_string(route_num);
 	}
 
 	// 计算连接信息

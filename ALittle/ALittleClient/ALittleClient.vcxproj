@@ -40,7 +40,6 @@
     <ClInclude Include="..\..\Carp\carp_font.hpp" />
     <ClInclude Include="..\..\Carp\carp_http.hpp" />
     <ClInclude Include="..\..\Carp\carp_rtp_server.hpp" />
-    <ClInclude Include="..\..\Carp\carp_sip_server.hpp" />
     <ClInclude Include="..\..\Carp\carp_square_jps.hpp" />
     <ClInclude Include="..\..\Carp\carp_log.hpp" />
     <ClInclude Include="..\..\Carp\carp_log_bind.hpp" />
@@ -167,7 +166,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRTDBG_MAP_ALLOC;_CRTDBG_MAP_ALLOC_NEW;_WIN32_WINNT=0x0601;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\lua;$(SolutionDir)..\SDL\include;$(SolutionDir)..\LuaBridge\Source;$(SolutionDir)..\asio\asio\include;$(SolutionDir)..\osip\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\lua;$(SolutionDir)..\SDL\include;$(SolutionDir)..\LuaBridge\Source;$(SolutionDir)..\asio\asio\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -187,7 +186,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;_WIN32_WINNT=0x0601;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\SDL\include;$(SolutionDir)..\lua;$(SolutionDir)..\LuaBridge\Source;$(SolutionDir)..\asio\asio\include;$(SolutionDir)..\osip\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\SDL\include;$(SolutionDir)..\lua;$(SolutionDir)..\LuaBridge\Source;$(SolutionDir)..\asio\asio\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

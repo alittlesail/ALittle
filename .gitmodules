@@ -29,6 +29,3 @@
 [submodule "lua"]
 	path = lua
 	url = https://github.com/lua/lua.git
-[submodule "osip"]
-	path = osip
-	url = git://git.savannah.gnu.org/osip.git

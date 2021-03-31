@@ -315,8 +315,5 @@
     <ClInclude Include="..\..\Carp\carp_rtp_server.hpp">
       <Filter>Carp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Carp\carp_sip_server.hpp">
-      <Filter>Carp</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

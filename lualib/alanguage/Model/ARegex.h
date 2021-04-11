@@ -6,14 +6,14 @@
 #include <vector>
 #include <unordered_set>
 
-enum class ARegexType
+enum class ARegexNodeType
 {
-    T_NONE,            // 无效枚举
-    T_CHAR,            // 一个字符
-	T_FIND_STRING,       // 查找字符串
-    T_CHARSET,         // 字符集合
-    T_LIST,           // 子节点列表 逐个匹配
-    T_OPTION,           // 子节点列表 分支匹配
+    NT_NONE,            // 无效枚举
+    NT_CHAR,            // 一个字符
+    NT_FIND_STRING,     // 查找字符串
+    NT_CHARSET,         // 字符集合
+    NT_LIST,            // 子节点列表 逐个匹配
+    NT_OPTION,          // 子节点列表 分支匹配
 };
 
 enum class ARegexRepeatType
@@ -27,40 +27,43 @@ enum class ARegexRepeatType
 
 enum class ARegexCharSetType
 {
-    CST_CUSTOM, // 自定义，读取char_set
-    CST_A,      // 字母
-    CST_D,      // 数字
-    CST_W,      // 字母数字下划线
-    CST_DOT,      // 除了\n以外的字符
-    CST_ALL,      // 全部字符
+    CST_CUSTOM,         // 自定义，读取char_set
+    CST_A,              // 字母
+    CST_D,              // 数字
+    CST_W,              // 字母数字下划线
+    CST_DOT,            // 除了\n以外的字符
+    CST_ALL,            // 全部字符
 };
 
 enum class ARegexNegateType
 {
-    NNT_NONE,		    // 未设置，并可以当NNT_ONE处理
+    NNT_NONE,		    // 未设置，并可以当NNT_FALSE处理
     NNT_FALSE,	        // 没有取反
     NNT_TRUE,	        // 有取反
 };
 
 struct ARegexNode
 {
-    ARegexType type = ARegexType::T_NONE;        // 节点类型
-
-    // CHAR
-    char value = 0;     // 字符内容
-
-	// T_FIND_STRING
-    std::string find;   // 要查找的字符串
-
-    // CHARSET
-    std::unordered_set<char> char_set;// 字符集合
-    ARegexCharSetType char_set_type = ARegexCharSetType::CST_CUSTOM;
-    ARegexNegateType negate = ARegexNegateType::NNT_NONE;   // 是否有取反
-
-    // GROUP
-    std::vector<ARegexNode> childs; // 子节点
-
+    // 节点类型
+    ARegexNodeType type = ARegexNodeType::NT_NONE;
+    // 重复匹配规则
     ARegexRepeatType repeat = ARegexRepeatType::NRT_NONE;
+    // 匹配结果取反
+    ARegexNegateType negate = ARegexNegateType::NNT_NONE;
+
+    // 当type为NT_CHAR时，表示要匹配的字符
+    char value = 0;
+
+    // 当type为NT_FIND_STRING时，表示要查找的字符串
+    std::string find;
+
+    // 当type为NT_CHARSET时，表示要匹配字符集合
+    ARegexCharSetType char_set_type = ARegexCharSetType::CST_CUSTOM;
+    // 当char_set_type为ARegexCharSetType::CST_CUSTOM时，表示字符集合
+    std::unordered_set<char> char_set;
+
+    // 当type为NT_LIST或者NT_OPTION时，表示子节点
+    std::vector<ARegexNode> childs;
 };
 
 class ARegex

@@ -52,7 +52,6 @@ private:
 		s_carp_task_consumer.SetThreadCount(1);
 		s_alittle_render.Setup();			// render system
 		s_alittle_display.Setup();
-		s_alittle_audio.Setup();			// audio system
 		s_alittle_script.Setup();			// script system
 		s_carp_schedule.Run(true);
 

@@ -15,10 +15,16 @@ extern ALittleAudio s_alittle_audio;
 class ALittleAudio
 {
 public:
-	void Setup()
+	ALittleAudio()
 	{
 		m_channel_list.resize(CARP_MIXER_CHANNELS);
 	}
+
+	void Setup(int sample_rate, int channels)
+	{
+		s_carp_mixer.Setup(sample_rate, channels);
+	}
+
 	void Shutdown()
 	{
 		// 释放音效
@@ -34,8 +40,10 @@ public:
 		}
 		// 释放缓存
 		for (auto it = m_cache_map.begin(); it != m_cache_map.end(); ++it)
+		{
 			s_carp_mixer.FreeChunk(it->second);
-		m_cache_map.clear();
+			it->second = nullptr;
+		}
 
 		// 关闭音效系统
 		s_carp_mixer.Shutdown();
@@ -43,7 +51,7 @@ public:
 
 public:
 	// 请使用最新版本的ogg音频转换器（比如https://convertio.co/），否则会播放失败
-	int StartChunk(const char* file_path, int loop)
+	int StartChannel(const char* file_path, int loop)
 	{
 		if (file_path == nullptr)
 		{
@@ -54,7 +62,7 @@ public:
 		CarpMixerChunk* chunk = nullptr;
 
 		// 先从缓存里面查找
-		MixChunkCache::iterator cache_it = m_cache_map.find(file_path);
+		auto cache_it = m_cache_map.find(file_path);
 		if (cache_it != m_cache_map.end()) chunk = cache_it->second;
 
 		// 如果缓存没有，那么加载音效
@@ -95,22 +103,48 @@ public:
 		return channel;
 	}
 
-	bool StopChunk(int channel)
+	bool StopChannel(int channel)
 	{
 		s_carp_mixer.StopChannel(channel);
 		ClearChannel(channel);
 		return true;
 	}
 	
-	bool SetChunkVolume(int channel, float volume) const
+	bool SetChannelVolume(int channel, float volume) const
 	{
 		if (volume < 0.0f) volume = 0.0f;
 		else if (volume > 1.0f) volume = 1.0f;
-		s_carp_mixer.SetVolume(channel, volume);
+		s_carp_mixer.SetChannelVolume(channel, volume);
 		return true;
 	}
 	
-	float GetChunkVolume(int channel) const { return s_carp_mixer.GetVolume(channel); }
+	float GetChannelVolume(int channel) const { return s_carp_mixer.GetChannelVolume(channel); }
+
+public:
+	bool StartStream(int sample_rate, int channels)
+	{
+		return s_carp_mixer.StartStream(sample_rate, channels);
+	}
+
+	bool PushStreamSample(short left_sample, short right_sample)
+	{
+		return s_carp_mixer.PushStreamSample(left_sample, right_sample);
+	}
+
+	void SetStreamVolume(float volume)
+	{
+		s_carp_mixer.SetStreamVolume(volume);
+	}
+
+	float GetStreamVolume() const
+	{
+		return s_carp_mixer.GetStreamVolume();
+	}
+
+	void StopStream()
+	{
+		s_carp_mixer.StopStream();
+	}
 
 public:
 	void AddChunkCache(const char* file_path)
@@ -148,12 +182,18 @@ public:
 	{
 		luabridge::getGlobalNamespace(l_state)
 			.beginClass<ALittleAudio>("__CPPAPIAudioSystem")
+			.addFunction("Setup", &ALittleAudio::Setup)
 			.addFunction("AddChunkCache", &ALittleAudio::AddChunkCache)
 			.addFunction("RemoveChunkCache", &ALittleAudio::RemoveChunkCache)
-			.addFunction("StartChunk", &ALittleAudio::StartChunk)
-			.addFunction("StopChunk", &ALittleAudio::StopChunk)
-			.addFunction("SetChunkVolume", &ALittleAudio::SetChunkVolume)
-			.addFunction("GetChunkVolume", &ALittleAudio::GetChunkVolume)
+			.addFunction("StartChannel", &ALittleAudio::StartChannel)
+			.addFunction("StopChannel", &ALittleAudio::StopChannel)
+			.addFunction("SetChannelVolume", &ALittleAudio::SetChannelVolume)
+			.addFunction("GetChannelVolume", &ALittleAudio::GetChannelVolume)
+			.addFunction("StartStream", &ALittleAudio::StartStream)
+			.addFunction("StopStream", &ALittleAudio::StopStream)
+			.addFunction("PushStreamSample", &ALittleAudio::PushStreamSample)
+			.addFunction("SetStreamVolume", &ALittleAudio::SetStreamVolume)
+			.addFunction("GetStreamVolume", &ALittleAudio::GetStreamVolume)
 			.endClass();
 
 		luabridge::setGlobal(l_state, this, "__CPPAPI_AudioSystem");
@@ -165,7 +205,7 @@ private:
 		s_carp_task_consumer.PushEvent([channel]()
 		{
 			s_alittle_audio.ClearChannel(channel);
-			s_alittle_script.Invoke("__ALITTLEAPI_AudioChunkStoppedEvent", channel);
+			s_alittle_script.Invoke("__ALITTLEAPI_AudioChannelStoppedEvent", channel);
 		});
 	}
 

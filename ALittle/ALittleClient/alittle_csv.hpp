@@ -3,6 +3,7 @@
 
 #include "Carp/carp_csv.hpp"
 #include "Carp/carp_task_consumer.hpp"
+#include "Carp/carp_event_consumer.hpp"
 #include "Carp/carp_rwops_bind.hpp"
 #include "alittle_script.hpp"
 
@@ -76,17 +77,17 @@ public:
 		auto* file = new ALittleCsvFile();
 		if (file->Load(m_file_path.c_str(), m_only_assets))
 		{
-			s_carp_task_consumer.PushEvent([this, file]() { s_alittle_script.Invoke("__ALITTLEAPI_CsvFileLoadSucceed", this, file); });
+			s_carp_event_consumer.PushEvent([this, file]() { s_alittle_script.Invoke("__ALITTLEAPI_CsvFileLoadSucceed", this, file); });
 		}
 		else
 		{
 			delete file;
-			s_carp_task_consumer.PushEvent([this, file]() { s_alittle_script.Invoke("__ALITTLEAPI_CsvFileLoadFailed", this); });
+			s_carp_event_consumer.PushEvent([this, file]() { s_alittle_script.Invoke("__ALITTLEAPI_CsvFileLoadFailed", this); });
 		}
 	}
 	void Abandon() override
 	{
-		s_carp_task_consumer.PushEvent([this]() { s_alittle_script.Invoke("__ALITTLEAPI_CsvFileLoadFailed", this); });
+		s_carp_event_consumer.PushEvent([this]() { s_alittle_script.Invoke("__ALITTLEAPI_CsvFileLoadFailed", this); });
 	}
 
 private:

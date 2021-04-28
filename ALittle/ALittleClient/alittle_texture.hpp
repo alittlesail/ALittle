@@ -509,7 +509,7 @@ public:
 			{
 				if (surface) CarpSurfaceBind::FreeCarpSurface(surface);
 				CARP_ERROR("LocalFile load failed, " << file_path);
-				s_carp_task_consumer.PushEvent([this]() { s_alittle_script.Invoke("__ALITTLEAPI_TextureLoadFailed", this); });
+				s_carp_event_consumer.PushEvent([this]() { s_alittle_script.Invoke("__ALITTLEAPI_TextureLoadFailed", this); });
 				return;
 			}
 			if (m_crypt_mode) file.Decrypt(0);
@@ -520,7 +520,7 @@ public:
 			{
 				if (surface) CarpSurfaceBind::FreeCarpSurface(surface);
 				CARP_ERROR("LoadImageFromMemory failed:" << file_path);
-				s_carp_task_consumer.PushEvent([this]() { s_alittle_script.Invoke("__ALITTLEAPI_TextureLoadFailed", this); });
+				s_carp_event_consumer.PushEvent([this]() { s_alittle_script.Invoke("__ALITTLEAPI_TextureLoadFailed", this); });
 				return;
 			}
 			
@@ -571,7 +571,7 @@ public:
 			CarpSurfaceBind::FreeCarpSurface(child_surface);
 		}
 		
-		s_carp_task_consumer.PushEvent([this, surface]()
+		s_carp_event_consumer.PushEvent([this, surface]()
 		{
 			ALittleSurfaceTexture* texture = new ALittleSurfaceTexture(surface, ALittleTextureRenderMode::ATRM_LINEAR);
 			texture->GenerateImpl();
@@ -580,7 +580,7 @@ public:
 	}
 	void Abandon() override
 	{
-		s_carp_task_consumer.PushEvent([this]() { s_alittle_script.Invoke("__ALITTLEAPI_TextureLoadFailed", this); });
+		s_carp_event_consumer.PushEvent([this]() { s_alittle_script.Invoke("__ALITTLEAPI_TextureLoadFailed", this); });
 	}
 
 private:
@@ -630,7 +630,7 @@ public:
 		if (!local_file.Load(false))
 		{
 			CARP_ERROR("LocalFile load failed, " << m_file_path);
-			s_carp_task_consumer.PushEvent([this]() { s_alittle_script.Invoke("__ALITTLEAPI_TextureCutLoadFailed", this); });
+			s_carp_event_consumer.PushEvent([this]() { s_alittle_script.Invoke("__ALITTLEAPI_TextureCutLoadFailed", this); });
 			return;
 		}
 
@@ -639,7 +639,7 @@ public:
 		if (!surface)
 		{
 			CARP_ERROR("LoadImageFromMemory failed:" << m_file_path);
-			s_carp_task_consumer.PushEvent([this]() { s_alittle_script.Invoke("__ALITTLEAPI_TextureCutLoadFailed", this); });
+			s_carp_event_consumer.PushEvent([this]() { s_alittle_script.Invoke("__ALITTLEAPI_TextureCutLoadFailed", this); });
 			return;
 		}
 
@@ -662,7 +662,7 @@ public:
 			surface = new_surface;
 		}
 
-		s_carp_task_consumer.PushEvent([this, surface]()
+		s_carp_event_consumer.PushEvent([this, surface]()
 		{
 			ALittleTexture* texture = new ALittleSurfaceTexture(surface, ALittleTextureRenderMode::ATRM_LINEAR);
 			s_alittle_script.Invoke("__ALITTLEAPI_TextureCutLoadSucceed", this, texture);
@@ -671,7 +671,7 @@ public:
 	
 	void Abandon() override
 	{
-		s_carp_task_consumer.PushEvent([this]() { s_alittle_script.Invoke("__ALITTLEAPI_TextureCutLoadFailed", this); });
+		s_carp_event_consumer.PushEvent([this]() { s_alittle_script.Invoke("__ALITTLEAPI_TextureCutLoadFailed", this); });
 	}
 
 private:

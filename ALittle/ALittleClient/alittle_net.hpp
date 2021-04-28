@@ -50,10 +50,10 @@ public:
 					if (result)
 					{
 						m_response = body;
-						s_carp_task_consumer.PushEvent([id]() { s_alittle_script.Invoke("__ALITTLEAPI_HttpClientSucceed", id); });
+						s_carp_event_consumer.PushEvent([id]() { s_alittle_script.Invoke("__ALITTLEAPI_HttpClientSucceed", id); });
 					}
 					else
-						s_carp_task_consumer.PushEvent([id, error]() { s_alittle_script.Invoke("__ALITTLEAPI_HttpClientFailed", id, error.c_str()); });
+						s_carp_event_consumer.PushEvent([id, error]() { s_alittle_script.Invoke("__ALITTLEAPI_HttpClientFailed", id, error.c_str()); });
 				}
 			, nullptr, &s_carp_schedule.GetIOService(), "", 0, "");
 		}
@@ -144,15 +144,15 @@ public:
 				, [this, id](bool result, const std::string& head, const std::string& body, const std::string& error)
 				{
 					if (result)
-						s_carp_task_consumer.PushEvent([id]() { s_alittle_script.Invoke("__ALITTLEAPI_HttpFileSucceed", id); });
+						s_carp_event_consumer.PushEvent([id]() { s_alittle_script.Invoke("__ALITTLEAPI_HttpFileSucceed", id); });
 					else
-						s_carp_task_consumer.PushEvent([id, error]() { s_alittle_script.Invoke("__ALITTLEAPI_HttpFileFailed", id, error.c_str()); });
+						s_carp_event_consumer.PushEvent([id, error]() { s_alittle_script.Invoke("__ALITTLEAPI_HttpFileFailed", id, error.c_str()); });
 				}
 				, [this, id](int total_size, int cur_size)
 				{
 					m_total_size = total_size;
 					m_cur_size = cur_size;
-					s_carp_task_consumer.PushEvent([id, total_size, cur_size]() { s_alittle_script.Invoke("__ALITTLEAPI_HttpFileProcess", id, cur_size, total_size); });
+					s_carp_event_consumer.PushEvent([id, total_size, cur_size]() { s_alittle_script.Invoke("__ALITTLEAPI_HttpFileProcess", id, cur_size, total_size); });
 				}, &s_carp_schedule.GetIOService(), m_file_path, m_start_size, "");
 		}
 		else if (m_upload_client)
@@ -163,15 +163,15 @@ public:
 				, [this, id](bool result, const std::string& head, const std::string& body, const std::string& error)
 				{
 					if (result)
-						s_carp_task_consumer.PushEvent([id]() { s_alittle_script.Invoke("__ALITTLEAPI_HttpFileSucceed", id); });
+						s_carp_event_consumer.PushEvent([id]() { s_alittle_script.Invoke("__ALITTLEAPI_HttpFileSucceed", id); });
 					else
-						s_carp_task_consumer.PushEvent([id, error]() { s_alittle_script.Invoke("__ALITTLEAPI_HttpFileFailed", id, error.c_str()); });
+						s_carp_event_consumer.PushEvent([id, error]() { s_alittle_script.Invoke("__ALITTLEAPI_HttpFileFailed", id, error.c_str()); });
 				}
 				, [this, id](int total_size, int cur_size)
 				{
 					m_total_size = total_size;
 					m_cur_size = cur_size;
-					s_carp_task_consumer.PushEvent([id, total_size, cur_size]() { s_alittle_script.Invoke("__ALITTLEAPI_HttpFileProcess", id, cur_size, total_size); });
+					s_carp_event_consumer.PushEvent([id, total_size, cur_size]() { s_alittle_script.Invoke("__ALITTLEAPI_HttpFileProcess", id, cur_size, total_size); });
 				}, &s_carp_schedule.GetIOService(), "");
 		}
 	}
@@ -295,7 +295,7 @@ private:
 	void HandleConnectFailed()
 	{
 		int id = m_id;
-		s_carp_task_consumer.PushEvent([this, id]()
+		s_carp_event_consumer.PushEvent([this, id]()
 		{
 			// 检查是否被析构了
 			if (s_alittle_net_id_set.find(id) == s_alittle_net_id_set.end()) return;
@@ -313,7 +313,7 @@ private:
 	void HandleConnectSucceed()
 	{
 		int id = m_id;
-		s_carp_task_consumer.PushEvent([this, id]()
+		s_carp_event_consumer.PushEvent([this, id]()
 		{
 			// 检查是否被析构了
 			if (s_alittle_net_id_set.find(id) == s_alittle_net_id_set.end()) return;
@@ -327,7 +327,7 @@ private:
 	void HandleDisconnected()
 	{
 		int id = m_id;
-		s_carp_task_consumer.PushEvent([this, id]()
+		s_carp_event_consumer.PushEvent([this, id]()
 		{
 			// 检查是否被析构了
 			if (s_alittle_net_id_set.find(id) == s_alittle_net_id_set.end()) return;
@@ -344,7 +344,7 @@ private:
 	void HandleMessage(void* message, int size)
 	{
 		int id = m_id;
-		s_carp_task_consumer.PushEvent([this, id, message]()
+		s_carp_event_consumer.PushEvent([this, id, message]()
 		{
 			// 检查是否被析构了
 			if (s_alittle_net_id_set.find(id) != s_alittle_net_id_set.end())

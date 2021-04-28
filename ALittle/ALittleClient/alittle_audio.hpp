@@ -202,7 +202,7 @@ public:
 private:
 	static void HandleChunkStoppedCallback(int channel)
 	{
-		s_carp_task_consumer.PushEvent([channel]()
+		s_carp_event_consumer.PushEvent([channel]()
 		{
 			s_alittle_audio.ClearChannel(channel);
 			s_alittle_script.Invoke("__ALITTLEAPI_AudioChannelStoppedEvent", channel);

@@ -116,7 +116,7 @@ private:
 
 	static void PushConsoleEvent(const std::string& module, const std::string& cmd)
 	{
-		s_carp_task_consumer.PushEvent([module, cmd]()
+		s_carp_event_consumer.PushEvent([module, cmd]()
 		{
 			if (module == "Client")
 			{
@@ -305,7 +305,7 @@ private:
 	{
 		// get current time
 		m_current_time = SDL_GetTicks();
-		s_carp_task_consumer.HandleEvent();
+		s_carp_event_consumer.HandleEvent();
 #ifdef __EMSCRIPTEN__
 		s_carp_schedule.PollOne();
 #endif

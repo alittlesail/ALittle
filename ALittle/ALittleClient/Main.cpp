@@ -56,6 +56,8 @@ int main(int argc, char* argv[])
 #include "Carp/carp_log.hpp"
 #define CARP_TASK_CONSUMER_IMPL
 #include "Carp/carp_task_consumer.hpp"
+#define CARP_EVENT_CONSUMER_IMPL
+#include "Carp/carp_event_consumer.hpp"
 #define CARP_SCHEDULE_IMPL
 #include "Carp/carp_schedule.hpp"
 #define CARP_SURFACE_IMPL

@@ -1,5 +1,7 @@
 #include "ALittleScriptTranslationLua.h"
 
+
+#include "../../../Carp/carp_string.hpp"
 #include "../../alanguage/Index/ABnfFactory.h"
 
 #include "../Generate/ALittleScriptKeyElement.h"
@@ -1839,22 +1841,28 @@ ABnfGuessError ALittleScriptTranslationLua::GeneratePathsValue(std::shared_ptr<A
     ALittleScriptUtility::TrimLeft(path);
     ALittleScriptUtility::TrimRight(path);
     if (!ALittleScriptUtility::IsDirExist(paths_value->GetModulePath() + path)) return ABnfGuessError(paths_value, u8"路径不存在:" + path);
-    std::vector<std::string> path_list;
+    std::map<std::string, RelayInfo> rely_map;
 
     auto* index = dynamic_cast<ALittleScriptIndex*>(paths_value->GetFile()->GetProject());
     if (index == nullptr) return ABnfGuessError(paths_value, u8"不在工程内");
     std::string error;
-    if (!index->GetDeepFilePaths(paths_value->GetFile()->GetProject(), paths_value->GetModulePath() + path, u8"", path_list, error)) return ABnfGuessError(paths_value, error);
+    if (!index->GetDeepFilePaths(paths_value->GetFile()->GetProject(), paths_value->GetModulePath() + path, u8"", rely_map, error)) return ABnfGuessError(paths_value, error);
 
+    size_t i = 0;
     content = "{";
-    for (size_t i = 0; i < path_list.size(); ++i)
+    for (auto& pair : rely_map)
     {
-        if (i != 0)
-        {
-            if (i % 3 == 0) content += "\n" + pre_tab + "\t";
-            content += ", ";
-        }
-        content += "\"" + path_list[i] + "\"";
+        std::vector<std::string> use_list;
+        use_list.push_back("\"" + pair.second.rel_path + "\"");
+        for (const auto& rely_info : pair.second.use_set)
+            use_list.push_back("\"" + rely_info->rel_path + "\"");
+
+        content += "{";
+        content += CarpString::Join(use_list, ",");
+        content += "}";
+
+        ++i;
+        if (i < rely_map.size()) content += "\n" + pre_tab + "\t,";
     }
     content += "}";
     return nullptr;

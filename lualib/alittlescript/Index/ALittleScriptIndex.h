@@ -2,6 +2,7 @@
 #ifndef _ALITTLE_ALITTLESCRIPTINDEX_H_
 #define _ALITTLE_ALITTLESCRIPTINDEX_H_
 
+#include <map>
 #include <unordered_map>
 #include <set>
 #include <memory>
@@ -30,8 +31,8 @@ struct RelayInfo
     std::set<RelayInfo*> be_used_set; // 被依赖集合
     std::set<RelayInfo*> use_set;    // 依赖集合
 
-    std::string path;
-    std::set<std::string> relay_set;
+    std::set<std::string> rely_set; // 依赖的相对路径
+    std::string full_path;
     std::string rel_path;
 };
 
@@ -56,6 +57,8 @@ public:
     std::unordered_map<std::string, std::shared_ptr<ABnfGuess>> sPrimitiveGuessMap;
 
     std::vector<std::shared_ptr<ABnfGuess>> sConstNullGuess;
+    std::shared_ptr<ABnfGuess> sStringListGuess;
+    std::shared_ptr<ABnfGuess> sStringListListGuess; // 二维数组，数组元素为字符串
 
     // 控制语句
     std::set<std::string> sCtrlKeyWord;
@@ -106,7 +109,10 @@ public:
 
 public:
     // 删除文件夹
-    static bool GetDeepFilePaths(ABnfProject* project, const std::string& cur_path, const std::string& parent_path, std::vector<std::string>& result, std::string& error);
+    static bool GetDeepFilePaths(ABnfProject* project, const std::string& cur_path, const std::string& parent_path, std::map<std::string, RelayInfo>& rely_map, std::string& error);
+
+    // 删除文件夹
+    static bool GetDeepFilePathsImpl(ABnfProject* project, const std::string& cur_path, const std::string& parent_path, std::map<std::string, RelayInfo>& rely_map, std::string& error);
     
     // 查找定义依赖
     static ABnfGuessError FindDefineRelay(ABnfProject* project, const std::string& file_path, std::set<std::string>& result);

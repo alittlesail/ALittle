@@ -39,8 +39,7 @@
 #include "../Guess/ALittleScriptGuessClass.h"
 #include "../Guess/ALittleScriptGuessPrimitive.h"
 #include "../Guess/ALittleScriptGuessConst.h"
-
-#include <algorithm>
+#include "../Guess/ALittleScriptGuessList.h"
 
 ALittleScriptStatic& ALittleScriptStatic::Inst()
 {
@@ -65,6 +64,11 @@ ALittleScriptStatic::ALittleScriptStatic()
     tmp.resize(0); sConstBoolGuess = std::make_shared<ALittleScriptGuessBool>(true); tmp.push_back(sConstBoolGuess); sPrimitiveGuessListMap[sConstBoolGuess->GetValue()] = tmp; sPrimitiveGuessMap[sConstBoolGuess->GetValue()] = sConstBoolGuess;
     tmp.resize(0); sConstLongGuess = std::make_shared<ALittleScriptGuessLong>(true); tmp.push_back(sConstLongGuess); sPrimitiveGuessListMap[sConstLongGuess->GetValue()] = tmp; sPrimitiveGuessMap[sConstLongGuess->GetValue()] = sConstLongGuess;
     tmp.resize(0); sConstAnyGuess = std::make_shared<ALittleScriptGuessAny>(true); tmp.push_back(sConstAnyGuess); sPrimitiveGuessListMap[sConstAnyGuess->GetValue()] = tmp; sPrimitiveGuessMap[sConstAnyGuess->GetValue()] = sConstAnyGuess;
+
+    sStringListGuess = std::make_shared<ALittleScriptGuessList>(sStringGuess, false, false);
+    sStringListGuess->UpdateValue();
+    sStringListListGuess = std::make_shared<ALittleScriptGuessList>(sStringListGuess, false, false);
+    sStringListListGuess->UpdateValue();
 
     // null常量
     sConstNullGuess.push_back(std::make_shared<ALittleScriptGuessConst>("null"));
@@ -129,93 +133,56 @@ void ALittleScriptIndex::AddGuessError(const std::shared_ptr<ABnfElement>& eleme
     if (it != m_guess_type_map.end()) it->second.erase(element);
 }
 
-// 删除文件夹
-bool ALittleScriptIndex::GetDeepFilePaths(ABnfProject* project, const std::string& cur_path, const std::string& parent_path, std::vector<std::string>& result, std::string& error)
+bool ALittleScriptIndex::GetDeepFilePaths(ABnfProject* project, const std::string& cur_path, const std::string& parent_path, std::map<std::string, RelayInfo>& rely_map, std::string& error)
 {
-    if (project == nullptr) return true;
-    if (!ALittleScriptUtility::IsDirExist(cur_path)) return true;
-
-    // 初始化依赖信息
-    std::unordered_map<std::string, RelayInfo> relay_map;
-
-    std::vector<std::string> file_list;
-    std::vector<std::string> dir_list;
-    ALittleScriptUtility::GetNameListInFolder(cur_path, file_list, dir_list);
-    for (auto& file : file_list)
-    {
-        auto full_path = cur_path + "/" + file;
-
-        auto* abnf_file = project->GetFile(full_path);
-        if (abnf_file == nullptr || ALittleScriptUtility::IsRegister(abnf_file)) continue;
-
-        auto& relay_info = relay_map[full_path];
-        std::set<std::string> relay_set;
-        FindDefineRelay(project, full_path, relay_info.relay_set);
-        relay_info.path = full_path;
-        relay_info.rel_path = parent_path + file;
-    }
+    if (!GetDeepFilePathsImpl(project, cur_path, parent_path, rely_map, error)) return false;
 
     // 形成通路
-    for (auto& pair : relay_map)
+    for (auto& pair : rely_map)
     {
-        for (const auto& child_path : pair.second.relay_set)
+        for (const auto& child_path : pair.second.rely_set)
         {
-            auto it = relay_map.find(child_path);
-            if (it == relay_map.end()) continue;
+            auto it = rely_map.find(child_path);
+            if (it == rely_map.end()) continue;
 
             it->second.be_used_set.insert(&pair.second);
             pair.second.use_set.insert(&it->second);
         }
     }
 
-    // 都放进列表中，并排序
-    std::vector<RelayInfo*> info_list;
-    for (auto& pair : relay_map)
-        info_list.push_back(&pair.second);
-    std::sort(info_list.begin(), info_list.end(), [](RelayInfo* a, RelayInfo* b)->bool { return a->path > b->path; });
-    
-    // 遍历列表
-    while (!info_list.empty())
-    {
-        // 用于接收未处理的列表
-        std::vector<RelayInfo*> new_info_list;
-        // 遍历列表进行处理
-        for (auto* relay_info : info_list)
-        {
-            // 如果已经没有依赖了，那么就添加进result，然后解除依赖关系
-            if (relay_info->use_set.empty())
-            {
-                result.push_back(relay_info->rel_path);
-                for (auto* be_used_info : relay_info->be_used_set)
-                    be_used_info->use_set.erase(relay_info);
-                relay_info->be_used_set.clear();
-            }
-            else {
-                new_info_list.push_back(relay_info);
-            }
-        }
-        // 如果一轮下来没有减少，那么就抛异常
-        if (new_info_list.size() == info_list.size())
-        {
-            std::string content;
-            for (auto* relayInfo : new_info_list)
-            {
-                content += relayInfo->rel_path + " -> ";
-                for (auto* use_info : relayInfo->use_set)
-                    content += use_info->rel_path;
-                content += ";";
-            }
-            error = u8"出现循环引用 " + content;
-            return false;
-        }
+    return true;
+}
 
-        // 把收集的列表复制给info_list，进行下一轮循环
-        info_list = new_info_list;
+bool ALittleScriptIndex::GetDeepFilePathsImpl(ABnfProject* project, const std::string& cur_path, const std::string& parent_path, std::map<std::string, RelayInfo>& rely_map, std::string& error)
+{
+    if (project == nullptr) return true;
+    if (!ALittleScriptUtility::IsDirExist(cur_path)) return true;
+
+    std::vector<std::string> file_list;
+    std::vector<std::string> dir_list;
+    ALittleScriptUtility::GetNameListInFolder(cur_path, file_list, dir_list);
+    for (auto& file : file_list)
+    {
+        auto full_path = cur_path;
+        full_path += "/";
+        full_path += file;
+
+        auto* abnf_file = project->GetFile(full_path);
+        if (abnf_file == nullptr || ALittleScriptUtility::IsRegister(abnf_file)) continue;
+
+        auto& relay_info = rely_map[full_path];
+        FindDefineRelay(project, full_path, relay_info.rely_set);
+        relay_info.full_path = full_path;
+        relay_info.rel_path = parent_path + ALittleScriptUtility::ChangeFileExtByPath(file, "");
     }
 
     for (auto& file : dir_list)
     {
-        if (!GetDeepFilePaths(project, cur_path + "/" + file, parent_path + file + "/", result, error))
+        auto full_path = cur_path;
+        full_path += "/";
+        full_path += file;
+
+        if (!GetDeepFilePaths(project, full_path, parent_path + file + "/", rely_map, error))
             return false;
     }
     

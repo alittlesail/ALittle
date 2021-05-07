@@ -174,8 +174,13 @@ bool ALittleScriptUtility::IsFileExist(const std::string& path)
 std::string ALittleScriptUtility::ChangeFileExtByPath(const std::string& file_path, const std::string& ext)
 {
     std::string::size_type pos = file_path.find_last_of('.');
-    if (pos == std::string::npos) return file_path + "." + ext;
+    if (pos == std::string::npos)
+    {
+        if (ext.empty()) return file_path;
+        return file_path + "." + ext;
+    }
 
+    if (ext.empty()) return file_path.substr(0, pos);
     return file_path.substr(0, pos) + "." + ext;
 }
 

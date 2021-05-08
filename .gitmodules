@@ -29,3 +29,6 @@
 [submodule "lua"]
 	path = lua
 	url = https://github.com/lua/lua.git
+[submodule "ravi"]
+	path = ravi
+	url = https://github.com/dibyendumajumdar/ravi.git

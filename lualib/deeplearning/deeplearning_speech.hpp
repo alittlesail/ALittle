@@ -7,13 +7,9 @@
 #include "Carp/carp_string.hpp"
 #include "other/mfcc.h"
 
-#define _MFCCData 0
-#define _SpeechData 0
-#define _SpeechWordData 0
-
-CARP_MESSAGE_MACRO(MFCCData, std::vector<float>, mfccs, size_t, count, std::string, sentence, std::string, phoneme_word, std::string, phoneme_vowel);
-CARP_MESSAGE_MACRO(SpeechData, std::vector<MFCCData>, data_list);
-CARP_MESSAGE_MACRO(SpeechWordData, std::vector<std::string>, word_list);
+CARP_MESSAGE_MACRO(MFCCData, 0, std::vector<float>, mfccs, size_t, count, std::string, sentence, std::string, phoneme_word, std::string, phoneme_vowel);
+CARP_MESSAGE_MACRO(SpeechData, 0, std::vector<MFCCData>, data_list);
+CARP_MESSAGE_MACRO(SpeechWordData, 0, std::vector<std::string>, word_list);
 
 class DeeplearningSpeechModel : public DeeplearningModel
 {

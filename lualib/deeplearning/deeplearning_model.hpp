@@ -4,7 +4,7 @@
 #include <random>
 #include <vector>
 
-#include "carp_task_consumer.hpp"
+#include "carp_event_consumer.hpp"
 
 class DeeplearningModel : public torch::nn::Module
 {
@@ -157,7 +157,7 @@ private:
 private:
 	std::thread* m_thread = nullptr;
 	volatile bool m_run = false;	// 支线程是否正在执行
-	CarpTaskConsumer m_consumer;
+	CarpEventConsumer m_consumer;
 };
 
 #endif

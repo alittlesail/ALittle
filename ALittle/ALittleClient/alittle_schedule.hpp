@@ -27,9 +27,7 @@
 #include "Carp/carp_task_consumer.hpp"
 #include "Carp/carp_lua_debug.hpp"
 #include "Carp/carp_lua_profiler.hpp"
-#ifndef USE_RAVI
 #include "Carp/carp_lua_decompile.hpp"
-#endif
 
 #ifdef __EMSCRIPTEN__
 #include "emscripten.h"
@@ -83,9 +81,7 @@ private:
 		s_alittle_lua_debug_server.Bind(s_alittle_script.GetLuaState());
 		CarpLuaDebugClient::Bind(s_alittle_script.GetLuaState());
 		s_alittle_lua_profiler.Bind(s_alittle_script.GetLuaState());
-#ifndef USE_RAVI
 		CarpLuaDecompile::Bind(s_alittle_script.GetLuaState());
-#endif
 		
 		// load engine
 		CARP_INFO("==>ScheduleSystem Lua Init Begin<==");

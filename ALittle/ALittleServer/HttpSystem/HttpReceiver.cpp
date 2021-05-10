@@ -70,7 +70,7 @@ void HttpReceiver::HandleRead(const asio::error_code& ec, std::size_t actual_siz
 	m_receive_time = CarpTime::GetCurTime();
 
 	// store current size
-	int current_size = (int)m_http_head.size();
+	int current_size = static_cast<int>(m_http_head.size());
 	// add to buffer
 	m_http_head.append(m_http_buffer, actual_size);
 
@@ -83,7 +83,7 @@ void HttpReceiver::HandleRead(const asio::error_code& ec, std::size_t actual_siz
 	}
 
 	// set start point to find
-	int find_start_pos = current_size - (int)strlen("\r\n\r\n");
+	int find_start_pos = current_size - static_cast<int>(strlen("\r\n\r\n"));
 	if (find_start_pos < 0) find_start_pos = 0;
 
 	// find \r\n\r\n
@@ -91,14 +91,14 @@ void HttpReceiver::HandleRead(const asio::error_code& ec, std::size_t actual_siz
 	if (find_pos != std::string::npos)
 	{
 		// the end position of \r\n\r\n in m_http_head
-		int head_size = (int)find_pos + (int)strlen("\r\n\r\n");
+		int head_size = static_cast<int>(find_pos) + static_cast<int>(strlen("\r\n\r\n"));
 		// resize http size, delete other data
 		m_http_head.resize(head_size);
 
 		// pos content is then count of bytes after current size
 		int receive_size = head_size - current_size;
 		// calc content size
-		int last_size = (int)actual_size - receive_size;
+		int last_size = static_cast<int>(actual_size) - receive_size;
 
 		// handle GET
 		if (m_http_head.substr(0, 3) == "GET")
@@ -129,7 +129,7 @@ void HttpReceiver::HandleRead(const asio::error_code& ec, std::size_t actual_siz
 			}
 
 			// get content type from head
-			std::string content_type = "";
+			std::string content_type;
 			if (!CarpHttpHelper::CalcContentTypeFromHttp(m_http_head, content_type))
 			{
 				CARP_ERROR("can't find Content-Type: in http head:" << m_http_head);
@@ -173,7 +173,7 @@ void HttpReceiver::HandleRead(const asio::error_code& ec, std::size_t actual_siz
 				}
 				boundary_pos += strlen("boundary=");
 				// dec boundary size at last line, \r\n--boundary--\r\n
-				m_receive_size -= (int)content_type.size() - (int)boundary_pos + 8;
+				m_receive_size -= static_cast<int>(content_type.size()) - static_cast<int>(boundary_pos) + 8;
 
 				// ready to read boundary
 				m_boundary_or_file = true;
@@ -271,7 +271,7 @@ void HttpReceiver::HandleReadFile(const asio::error_code& ec, std::size_t actual
 		if (m_boundary_or_file)
 		{
 			// store current size
-			int current_size = (int)m_boundary_temp.size();
+			int current_size = static_cast<int>(m_boundary_temp.size());
 			// add to buffer
 			m_boundary_temp.append(m_http_buffer, actual_size);
 
@@ -286,20 +286,20 @@ void HttpReceiver::HandleReadFile(const asio::error_code& ec, std::size_t actual
 			}
 
 			// set start point to find
-			int find_start_pos = current_size - (int)strlen("\r\n\r\n");
+			int find_start_pos = current_size - static_cast<int>(strlen("\r\n\r\n"));
 			if (find_start_pos < 0) find_start_pos = 0;
 
 			// find \r\n\r\n
-			std::string::size_type find_pos = m_boundary_temp.find("\r\n\r\n", find_start_pos);
+			const auto find_pos = m_boundary_temp.find("\r\n\r\n", find_start_pos);
 			if (find_pos != std::string::npos)
 			{
 				// the end position of \r\n\r\n in m_boundary_temp
-				int head_size = (int)find_pos + (int)strlen("\r\n\r\n");
+				const int head_size = static_cast<int>(find_pos) + static_cast<int>(strlen("\r\n\r\n"));
 
 				// pos content is then count of bytes after current size
-				int receive_size = head_size - current_size;
+				const int receive_size = head_size - current_size;
 				// calc content size
-				int last_size = (int)actual_size - receive_size;
+				const int last_size = static_cast<int>(actual_size) - receive_size;
 
 				// dec receive_size
 				m_receive_size -= receive_size;
@@ -314,8 +314,7 @@ void HttpReceiver::HandleReadFile(const asio::error_code& ec, std::size_t actual
 						m_http_buffer[i] = m_http_buffer[receive_size + i];
 
 					// handle file
-					asio::error_code ec;
-					HandleReadFile(ec, last_size);
+					HandleReadFile(asio::error_code(), last_size);
 					return;
 				}
 			}
@@ -323,13 +322,13 @@ void HttpReceiver::HandleReadFile(const asio::error_code& ec, std::size_t actual
 		else
 		{
 			// write to file
-			if (m_receive_size < (int)actual_size)
+			if (m_receive_size < static_cast<int>(actual_size))
 				m_file.write(m_http_buffer, m_receive_size);
 			else
 				m_file.write(m_http_buffer, actual_size);
 
 			// dec content size that is received now
-			m_receive_size -= (int)actual_size;
+			m_receive_size -= static_cast<int>(actual_size);
 
 			// check is receive completed
 			if (m_receive_size <= 0)
@@ -376,7 +375,7 @@ void HttpReceiver::HandleReadPost(const asio::error_code& ec, std::size_t actual
 	m_http_head.append(m_http_buffer, actual_size);
 
 	// dec content size that is received now
-	m_receive_size -= (int)actual_size;
+	m_receive_size -= static_cast<int>(actual_size);
 
 	// check is completed
 	if (m_receive_size <= 0)

@@ -42,7 +42,7 @@ bool HttpServer::Start(const std::string& yun_ip, const std::string& ip, unsigne
 	{
 		if (is_ssl)
 		{
-			if (server_pem_path.size())
+			if (!server_pem_path.empty())
 				m_pem_password = pem_password;
 			else
 				m_pem_password = "test";
@@ -51,7 +51,7 @@ bool HttpServer::Start(const std::string& yun_ip, const std::string& ip, unsigne
 			m_context.set_password_callback(std::bind(&HttpServer::GetPemPassword, this->shared_from_this()));
 
 			// if pem_path is empty
-			if (server_pem_path.size())
+			if (!server_pem_path.empty())
 			{
 				// init context
 				m_context.use_certificate_chain_file(server_pem_path);
@@ -124,12 +124,15 @@ bool HttpServer::Start(const std::string& yun_ip, const std::string& ip, unsigne
 		}
 
 		// create acceptor
-		if (ip.size())
-			m_acceptor = AcceptorPtr(new asio::ip::tcp::acceptor(schedule->GetIOService()
-			, asio::ip::tcp::endpoint(asio::ip::address_v4::from_string(ip), port), false));
+		if (!ip.empty())
+			m_acceptor = std::make_shared<asio::ip::tcp::acceptor>(schedule->GetIOService()
+                                                                   , asio::ip::tcp::endpoint(
+                                                                       asio::ip::address_v4::from_string(ip), port),
+                                                                   false);
 		else
-			m_acceptor = AcceptorPtr(new asio::ip::tcp::acceptor(schedule->GetIOService()
-			, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port), false));
+			m_acceptor = std::make_shared<asio::ip::tcp::acceptor>(schedule->GetIOService()
+                                                                   , asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port),
+                                                                   false);
 	}
 	catch (asio::error_code& ec)
 	{
@@ -146,8 +149,9 @@ bool HttpServer::Start(const std::string& yun_ip, const std::string& ip, unsigne
 	m_is_ssl = is_ssl;
 
 	// start timer for heartbeat
-	m_heartbeat_timer = AsioTimerPtr(new AsioTimer(m_schedule->GetIOService(), std::chrono::seconds(m_heartbeat_interval)));
-	m_heartbeat_timer->async_wait(std::bind(&HttpServer::ServerSendHeatbeat, this->shared_from_this(), std::placeholders::_1));
+	m_heartbeat_timer = std::make_shared<AsioTimer>(m_schedule->GetIOService(),
+                                                    std::chrono::seconds(m_heartbeat_interval));
+	m_heartbeat_timer->async_wait(std::bind(&HttpServer::ServerSendHeartbeat, this->shared_from_this(), std::placeholders::_1));
 
 	// start to accept next connect
 	NextAccept(0);
@@ -174,8 +178,8 @@ void HttpServer::Close()
 
 	// clear all sockets
 	asio::error_code ec;
-	SocketReceiverMap::iterator receiver_it, receiver_end = m_receiver_socket_map.end();
-	for (receiver_it = m_receiver_socket_map.begin(); receiver_it != receiver_end; ++receiver_it)
+	const auto receiver_end = m_receiver_socket_map.end();
+	for (auto receiver_it = m_receiver_socket_map.begin(); receiver_it != receiver_end; ++receiver_it)
 		CARPHTTPSOCKET_Close(receiver_it->first);
 
 	m_receiver_socket_map.clear();
@@ -193,7 +197,7 @@ void HttpServer::CloseClient(CarpHttpSocketPtr socket)
 	// remove receiver
 	m_receiver_socket_map.erase(socket);
 	// remove sender
-	SocketSenderMap::iterator it = m_sender_socket_map.find(socket);
+	const auto it = m_sender_socket_map.find(socket);
 	if (it != m_sender_socket_map.end())
 	{
 		it->second->m_is_removed = true;
@@ -205,7 +209,7 @@ void HttpServer::CloseClient(CarpHttpSocketPtr socket)
 void HttpServer::ExecuteRemoveCallBack(CarpHttpSocketPtr socket)
 {
 	// if socket is not exist, than is close by self, no need to invoke callback
-	SocketSenderMap::iterator it = m_sender_socket_map.find(socket);
+	const auto it = m_sender_socket_map.find(socket);
 	if (it == m_sender_socket_map.end()) return;
 
 	// invoke callback
@@ -221,7 +225,7 @@ void HttpServer::NextAccept(int error_count)
 	if (!m_acceptor) return;
 
 	// create socket
-	CarpHttpSocketPtr socket = CarpHttpSocketPtr(new CarpHttpSocket(m_is_ssl, &m_schedule->GetIOService(), &m_context));
+	CarpHttpSocketPtr socket = std::make_shared<CarpHttpSocket>(m_is_ssl, &m_schedule->GetIOService(), &m_context);
 	
 	// bind callback
 	CARPHTTPSOCKET_AsyncAccept(socket, m_acceptor, std::bind(&HttpServer::HandleAccept, this->shared_from_this(), socket, std::placeholders::_1, error_count));
@@ -260,12 +264,12 @@ void HttpServer::HandleHandShake(CarpHttpSocketPtr socket, const asio::error_cod
 	}
 
 	// create receiver
-	HttpReceiverPtr receiver = HttpReceiverPtr(new HttpReceiver(socket, this->shared_from_this()));
+	auto receiver = std::make_shared<HttpReceiver>(socket, this->shared_from_this());
 	// save receiver
 	m_receiver_socket_map[socket] = receiver;
 
 	// create sender
-	HttpSenderPtr sender = HttpSenderPtr(new HttpSender(socket, this->shared_from_this(), m_schedule));
+	auto sender = std::make_shared<HttpSender>(socket, this->shared_from_this(), m_schedule);
 	// save sender
 	m_sender_socket_map[socket] = sender;
 
@@ -284,33 +288,33 @@ HttpServer::SocketSenderMap& HttpServer::GetAllSender()
 	return m_sender_socket_map;
 }
 
-void HttpServer::ServerSendHeatbeat(const asio::error_code& ec)
+void HttpServer::ServerSendHeartbeat(const asio::error_code& ec)
 {
 	{
 		std::list<HttpSenderPtr> sender_list;
-		SocketSenderMap::iterator map_it, map_end = m_sender_socket_map.end();
-		for (map_it = m_sender_socket_map.begin(); map_it != map_end; ++map_it)
+		const auto map_end = m_sender_socket_map.end();
+		for (auto map_it = m_sender_socket_map.begin(); map_it != map_end; ++map_it)
 			sender_list.push_back(map_it->second);
 
-		std::list<HttpSenderPtr>::iterator list_it, list_end = sender_list.end();
-		for (list_it = sender_list.begin(); list_it != list_end; ++list_it)
+		const auto list_end = sender_list.end();
+		for (auto list_it = sender_list.begin(); list_it != list_end; ++list_it)
 			(*list_it)->Heartbeat(m_heartbeat_interval);
 	}
 
 	{
 		std::list<HttpReceiverPtr> receiver_list;
-		SocketReceiverMap::iterator map_it, map_end = m_receiver_socket_map.end();
-		for (map_it = m_receiver_socket_map.begin(); map_it != map_end; ++map_it)
+		const auto map_end = m_receiver_socket_map.end();
+		for (auto map_it = m_receiver_socket_map.begin(); map_it != map_end; ++map_it)
 			receiver_list.push_back(map_it->second);
 
-		std::list<HttpReceiverPtr>::iterator list_it, list_end = receiver_list.end();
-		for (list_it = receiver_list.begin(); list_it != list_end; ++list_it)
+		const auto list_end = receiver_list.end();
+		for (auto list_it = receiver_list.begin(); list_it != list_end; ++list_it)
 			(*list_it)->Heartbeat(m_heartbeat_interval);
 	}
 
 	if (!m_heartbeat_timer) return;
 	m_heartbeat_timer->expires_at(std::chrono::system_clock::now() + std::chrono::seconds(m_heartbeat_interval));
-	m_heartbeat_timer->async_wait(std::bind(&HttpServer::ServerSendHeatbeat, this->shared_from_this(), std::placeholders::_1));
+	m_heartbeat_timer->async_wait(std::bind(&HttpServer::ServerSendHeartbeat, this->shared_from_this(), std::placeholders::_1));
 }
 
 void HttpServer::HandleHttpMessage(HttpSenderPtr sender, const std::string& msg)

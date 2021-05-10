@@ -49,7 +49,7 @@ public:
 	/* start server
 	 * @param ip: local ip dress
 	 * @param port: port
-	 * @param heartbeat: invertal to check dead socket
+	 * @param heartbeat: interval to check dead socket
 	 * @param is_ssl: is ssl
 	 * @param server_pem_path: pem
 	 * @param private_key_path: pem
@@ -115,7 +115,7 @@ private:
 	int m_heartbeat_interval;
 	AsioTimerPtr m_heartbeat_timer;
 
-	void ServerSendHeatbeat(const asio::error_code& ec);
+	void ServerSendHeartbeat(const asio::error_code& ec);
 
 private:
 	// handle http message

@@ -7,13 +7,12 @@
 #include <string>
 
 #include "Carp/carp_connect_server.hpp"
+#include "Carp/carp_http_server.hpp"
 #include "Carp/carp_rudp_server.hpp"
 #include "Carp/carp_safe_id_creator.hpp"
-#include "Carp/carp_file_cache.hpp"
 #include "Carp/carp_rtp_server.hpp"
 #include "Carp/carp_udp_server.hpp"
 
-#include "../HttpSystem/HttpServer.h"
 #include "../RouteSystem/RouteSystem.h"
 #include "../MysqlSystem/MysqlSystem.h"
 #include "../ScriptSystem/ScriptSystem.h"
@@ -44,10 +43,6 @@ public:
 	void HandleConsoleCmd(std::string cmd);
 
 public:
-	/* get io service
-		* @return io service
-		*/
-	CarpFileCacheGroup& GetFileCacheGroup() { return m_file_cache; }
 	ScriptSystem& GetScriptSystem() { return m_script_system; }
 	const std::string& GetModuleTitle() const { return m_module_title; }
 
@@ -70,20 +65,6 @@ private:
 	time_t m_current_time;
 	AsioTimerPtr m_timer;
 	CarpMessageReadFactory m_read_factory;
-
-	//FileCache//////////////////////////////////////////////////////////////////////////////////
-public:
-	void UseFileCache(bool value) { m_use_file_cache = value; }
-	void SetFileCacheMaxSize(int max_size) { m_file_cache.SetMaxSize(max_size); }
-	void SetFileCacheClearAll() { m_file_cache.ClearAll(); }
-	void SetFileCacheClearByMaxSize(int max_size) { m_file_cache.ClearByMaxSize(max_size); }
-	void SetFileCacheClearByFilePath(const char* file_path) { m_file_cache.ClearByPath(file_path); }
-	void SetFileCacheClearBySize(int size) { m_file_cache.ClearBySize(size); }
-	void SetFileCacheClearByTime(int time) { m_file_cache.ClearByTime(time); }
-
-private:
-	bool m_use_file_cache = false;
-	CarpFileCacheGroup m_file_cache;
 
 	//Mysql//////////////////////////////////////////////////////////////////////////////////
 public:
@@ -111,11 +92,11 @@ public:
 	int GetHttpServerPort() const;
 
 	// handle http message
-	void HandleHttpMessage(HttpSenderPtr sender, const std::string& msg);
+	void HandleHttpMessage(CarpHttpSenderPtr sender, const std::string& msg);
 	// handle http file message
-	bool HandleHttpFileMessage(HttpSenderPtr sender, const std::string& msg);
+	bool HandleHttpFileMessage(CarpHttpSenderPtr sender, const std::string& msg);
 	// handle http file completed message
-	void HandleHttpFileCompletedMessage(HttpSenderPtr sender
+	void HandleHttpFileCompletedMessage(CarpHttpSenderPtr sender
 		, const std::string& file_path
 		, bool succeed
 		, const std::string& reason);
@@ -130,13 +111,13 @@ private:
 	void HttpStartReceiveFile(int id, const char* file_path, int start_size);
 
 	// handle http file completed message
-	void HandleHttpFileCompletedMessageImpl(HttpSenderPtr sender
+	void HandleHttpFileCompletedMessageImpl(CarpHttpSenderPtr sender
 		, const std::string& file_path
 		, bool succeed
 		, const std::string& reason);
 
-	std::set<HttpServerPtr> m_http_server_set;
-	std::map<int, HttpSenderWeakPtr> m_id_map_http;
+	std::set<CarpHttpServerPtr> m_http_server_set;
+	std::map<int, CarpHttpSenderWeakPtr> m_id_map_http;
 
 	//ClientServer//////////////////////////////////////////////////////////////////////////////////
 public:

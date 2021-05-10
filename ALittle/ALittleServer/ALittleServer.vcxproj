@@ -20,9 +20,6 @@
     <ClCompile Include="..\..\lualib\sqlite3\sqlite3.c" />
     <ClCompile Include="..\..\lualib\tinyxml2\tinyxml2.cpp" />
     <ClCompile Include="..\..\lualib\tinyxml2\tinyxml2lib.cpp" />
-    <ClCompile Include="HttpSystem\HttpReceiver.cpp" />
-    <ClCompile Include="HttpSystem\HttpSender.cpp" />
-    <ClCompile Include="HttpSystem\HttpServer.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MysqlSystem\MysqlSystem.cpp" />
     <ClCompile Include="RouteSystem\ConnectClient.cpp" />
@@ -48,9 +45,6 @@
     <ClInclude Include="..\..\lualib\sqlite3\sqlite3ext.h" />
     <ClInclude Include="..\..\lualib\tinyxml2\tinyxml2.h" />
     <ClInclude Include="..\..\lualib\tinyxml2\tinyxml2lib.h" />
-    <ClInclude Include="HttpSystem\HttpReceiver.h" />
-    <ClInclude Include="HttpSystem\HttpSender.h" />
-    <ClInclude Include="HttpSystem\HttpServer.h" />
     <ClInclude Include="MysqlSystem\MysqlSystem.h" />
     <ClInclude Include="RouteSystem\ConnectClient.h" />
     <ClInclude Include="RouteSystem\ConnectEndpoint.h" />

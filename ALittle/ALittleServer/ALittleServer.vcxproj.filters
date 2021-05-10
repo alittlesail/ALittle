@@ -2,15 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="HttpSystem\HttpReceiver.cpp">
-      <Filter>HttpSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="HttpSystem\HttpSender.cpp">
-      <Filter>HttpSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="HttpSystem\HttpServer.cpp">
-      <Filter>HttpSystem</Filter>
-    </ClCompile>
     <ClCompile Include="MysqlSystem\MysqlSystem.cpp">
       <Filter>MysqlSystem</Filter>
     </ClCompile>
@@ -76,9 +67,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="HttpSystem">
-      <UniqueIdentifier>{b8fb86c5-6e59-4fdc-b428-4488d04a6ddc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="MysqlSystem">
       <UniqueIdentifier>{be0588c1-808d-40e5-a78c-a87582a44c7c}</UniqueIdentifier>
     </Filter>
@@ -108,15 +96,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="HttpSystem\HttpServer.h">
-      <Filter>HttpSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="HttpSystem\HttpReceiver.h">
-      <Filter>HttpSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="HttpSystem\HttpSender.h">
-      <Filter>HttpSystem</Filter>
-    </ClInclude>
     <ClInclude Include="MysqlSystem\MysqlSystem.h">
       <Filter>MysqlSystem</Filter>
     </ClInclude>

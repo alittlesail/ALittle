@@ -4,9 +4,6 @@
 #include "ServerSchedule.h"
 #include "ServerSystem.h"
 
-#include "../HttpSystem/HttpServer.h"
-#include "../HttpSystem/HttpSender.h"
-
 #include "Carp/carp_mysql.hpp"
 #include "Carp/carp_file.hpp"
 #include "Carp/carp_http_client.hpp"
@@ -44,14 +41,6 @@ void ServerSchedule::RegisterToScript()
 	// register script system
 	luabridge::getGlobalNamespace(L)
         .beginClass<ServerSchedule>("__CPPAPIServerSchedule")
-
-		.addFunction("UseFileCache", &ServerSchedule::UseFileCache)
-		.addFunction("SetFileCacheMaxSize", &ServerSchedule::SetFileCacheMaxSize)
-		.addFunction("SetFileCacheClearAll", &ServerSchedule::SetFileCacheClearAll)
-		.addFunction("SetFileCacheClearByMaxSize", &ServerSchedule::SetFileCacheClearByMaxSize)
-		.addFunction("SetFileCacheClearByFilePath", &ServerSchedule::SetFileCacheClearByFilePath)
-		.addFunction("SetFileCacheClearBySize", &ServerSchedule::SetFileCacheClearBySize)
-		.addFunction("SetFileCacheClearByTime", &ServerSchedule::SetFileCacheClearByTime)
 
         .addFunction("StartMysqlQuery", &ServerSchedule::StartMysqlQuery)
         .addFunction("AddMysqlStatement", &ServerSchedule::AddMysqlStatement)
@@ -153,7 +142,6 @@ int ServerSchedule::Start()
 	m_script_system.Invoke("__ALITTLEAPI_ShutdownMainModule", m_module_name.c_str());
 
 	m_script_system.Release();
-	m_file_cache.ClearAll();
 
 	for (auto it = m_http_server_set.begin(); it != m_http_server_set.end(); ++it)
 		(*it)->Close();
@@ -247,8 +235,13 @@ bool ServerSchedule::CreateHttpServer(const char* yun_ip, const char* ip, int po
 	std::string ip_str;
 	if (ip != nullptr) ip_str = ip;
 
-	auto server = std::make_shared<HttpServer>();
-	const bool result = server->Start(yun_ip_str, ip_str, port, 30, is_ssl, this, "", "", "");
+	auto server = std::make_shared<CarpHttpServer>();
+	const bool result = server->Start(yun_ip_str, ip_str, port, 30, is_ssl
+		, &GetIOService()
+		, std::bind(&ServerSchedule::HandleHttpMessage, this, std::placeholders::_1, std::placeholders::_2)
+		, std::bind(&ServerSchedule::HandleHttpFileMessage, this, std::placeholders::_1, std::placeholders::_2)
+		, std::bind(&ServerSchedule::HandleHttpFileCompletedMessage, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4)
+		, "", "", "");
 	if (!result) return false;
 
 	m_http_server_set.insert(server);
@@ -259,7 +252,7 @@ const char* ServerSchedule::GetHttpServerYunIp() const
 {
 	if (m_http_server_set.empty()) return nullptr;
 
-	auto it = m_http_server_set.begin();
+	const auto it = m_http_server_set.begin();
 	return (*it)->GetYunIp().c_str();
 }
 
@@ -267,7 +260,7 @@ const char* ServerSchedule::GetHttpServerIp() const
 {
 	if (m_http_server_set.empty()) return nullptr;
 
-	auto it = m_http_server_set.begin();
+	const auto it = m_http_server_set.begin();
 	return (*it)->GetIp().c_str();
 }
 
@@ -279,7 +272,7 @@ int ServerSchedule::GetHttpServerPort() const
 	return (*it)->GetPort();
 }
 
-void ServerSchedule::HandleHttpMessage(HttpSenderPtr sender, const std::string& msg)
+void ServerSchedule::HandleHttpMessage(CarpHttpSenderPtr sender, const std::string& msg)
 {
 	const int id = m_id_creator.CreateID();
 	m_id_map_http[id] = sender;
@@ -304,7 +297,7 @@ void ServerSchedule::HandleHttpMessage(HttpSenderPtr sender, const std::string& 
 	m_script_system.Invoke("__ALITTLEAPI_HttpTask", id, url.c_str(), path.c_str(), param.c_str(), content.c_str());
 }
 
-bool ServerSchedule::HandleHttpFileMessage(HttpSenderPtr sender, const std::string& msg)
+bool ServerSchedule::HandleHttpFileMessage(CarpHttpSenderPtr sender, const std::string& msg)
 {
 	std::string url;
 	std::string method;
@@ -361,7 +354,7 @@ void ServerSchedule::HttpClose(int id)
 	if (it == m_id_map_http.end())
 		return;
 
-	HttpSenderPtr sender = it->second.lock();
+	CarpHttpSenderPtr sender = it->second.lock();
 	m_id_creator.ReleaseID(id);
 	m_id_map_http.erase(it);
 	if (!sender) return;
@@ -375,7 +368,7 @@ void ServerSchedule::HttpSendString(int id, const char* content)
 	if (it == m_id_map_http.end())
 		return;
 
-	HttpSenderPtr sender = it->second.lock();
+	CarpHttpSenderPtr sender = it->second.lock();
 	m_id_creator.ReleaseID(id);
 	m_id_map_http.erase(it);
 	if (!sender) return;
@@ -389,14 +382,14 @@ void ServerSchedule::HttpSendFile(int id, const char* file_path, int start_size)
 	if (it == m_id_map_http.end())
 		return;
 
-	HttpSenderPtr sender = it->second.lock();
+	CarpHttpSenderPtr sender = it->second.lock();
 	m_id_creator.ReleaseID(id);
 	m_id_map_http.erase(it);
 	if (!sender) return;
 
-	std::string content_type = CarpHttp::GetContentTypeByExt(CarpFile::GetFileExtByPath(file_path));
-	std::string show_name = CarpFile::GetFileNameByPath(file_path);
-	sender->SendFile(file_path, content_type.c_str(), false, start_size, m_use_file_cache, show_name.c_str());
+	const std::string content_type = CarpHttp::GetContentTypeByExt(CarpFile::GetFileExtByPath(file_path));
+	const std::string show_name = CarpFile::GetFileNameByPath(file_path);
+	sender->SendFile(file_path, content_type.c_str(), false, start_size, show_name.c_str());
 }
 
 void ServerSchedule::HttpStartReceiveFile(int id, const char* file_path, int start_size)
@@ -404,7 +397,7 @@ void ServerSchedule::HttpStartReceiveFile(int id, const char* file_path, int sta
 	auto it = m_id_map_http.find(id);
 	if (it == m_id_map_http.end()) return;
 
-	HttpSenderPtr sender = it->second.lock();
+	CarpHttpSenderPtr sender = it->second.lock();
 	if (!sender)
 	{
 		HandleHttpFileCompletedMessage(sender, std::string(file_path), false, std::string(u8"Http请求方已经断开"));
@@ -418,13 +411,13 @@ void ServerSchedule::HttpStartReceiveFile(int id, const char* file_path, int sta
 	}
 }
 
-void ServerSchedule::HandleHttpFileCompletedMessage(HttpSenderPtr sender, const std::string& file_path, bool succeed, const std::string& reason)
+void ServerSchedule::HandleHttpFileCompletedMessage(CarpHttpSenderPtr sender, const std::string& file_path, bool succeed, const std::string& reason)
 {
 	// 这里保证lua协程执行有严格的顺序
 	GetIOService().post(std::bind(&ServerSchedule::HandleHttpFileCompletedMessageImpl, this, sender, std::string(file_path), succeed, reason));
 }
 
-void ServerSchedule::HandleHttpFileCompletedMessageImpl(HttpSenderPtr sender, const std::string& file_path, bool succeed, const std::string& reason)
+void ServerSchedule::HandleHttpFileCompletedMessageImpl(CarpHttpSenderPtr sender, const std::string& file_path, bool succeed, const std::string& reason)
 {
 	int id = sender->m_id;
 
@@ -464,7 +457,7 @@ const char* ServerSchedule::GetClientServerYunIp() const
 {
 	if (!m_client_server_set.empty())
 	{
-		auto it = m_client_server_set.begin();
+		const auto it = m_client_server_set.begin();
 		return (*it)->GetYunIp().c_str();
 	}
 
@@ -481,7 +474,7 @@ const char* ServerSchedule::GetClientServerIp() const
 {
 	if (m_client_server_set.empty()) return nullptr;
 
-	auto it = m_client_server_set.begin();
+	const auto it = m_client_server_set.begin();
 	return (*it)->GetIp().c_str();
 }
 
@@ -489,13 +482,13 @@ int ServerSchedule::GetClientServerPort() const
 {
 	if (!m_client_server_set.empty())
 	{
-		auto it = m_client_server_set.begin();
+		const auto it = m_client_server_set.begin();
 		return (*it)->GetPort();
 	}
 
 	if (!m_rudp_server_set.empty())
 	{
-		auto it = m_rudp_server_set.begin();
+		const auto it = m_rudp_server_set.begin();
 		return (*it)->GetPort();
 	}
 
@@ -504,7 +497,7 @@ int ServerSchedule::GetClientServerPort() const
 
 void ServerSchedule::HandleClientConnect(CarpConnectReceiverPtr sender)
 {
-	int id = m_id_creator.CreateID();
+	const int id = m_id_creator.CreateID();
 	m_id_map_client[id] = sender;
 	m_client_map_id[sender] = id;
 
@@ -513,9 +506,9 @@ void ServerSchedule::HandleClientConnect(CarpConnectReceiverPtr sender)
 
 void ServerSchedule::HandleClientDisconnect(CarpConnectReceiverPtr sender)
 {
-	auto it = m_client_map_id.find(sender);
+	const auto it = m_client_map_id.find(sender);
 	if (it == m_client_map_id.end()) return;
-	int id = it->second;
+	const int id = it->second;
 	m_client_map_id.erase(it);
 
 	m_id_map_client.erase(id);
@@ -526,7 +519,7 @@ void ServerSchedule::HandleClientDisconnect(CarpConnectReceiverPtr sender)
 
 void ServerSchedule::HandleClientMessage(CarpConnectReceiverPtr sender, int message_size, int message_id, int message_rpcid, void* memory)
 {
-	auto it = m_client_map_id.find(sender);
+	const auto it = m_client_map_id.find(sender);
 	if (it == m_client_map_id.end()) return;
 
 	m_read_factory.Deserialize(memory, message_size);
@@ -591,9 +584,9 @@ void ServerSchedule::HandleRudpConnect(CarpRudpReceiverPtr sender)
 
 void ServerSchedule::HandleRudpDisconnect(CarpRudpReceiverPtr sender)
 {
-	auto it = m_rudp_map_id.find(sender);
+	const auto it = m_rudp_map_id.find(sender);
 	if (it == m_rudp_map_id.end()) return;
-	int id = it->second;
+	const int id = it->second;
 	m_rudp_map_id.erase(it);
 
 	m_id_map_rudp.erase(id);
@@ -842,7 +835,7 @@ void ServerSchedule::StartRouteSystem(ROUTE_TYPE route_type, ROUTE_NUM route_num
 		return;
 	}
 
-	ROUTE_ID route_id = RouteIdDefine::CalcRouteId(route_type, route_num);
+	const ROUTE_ID route_id = RouteIdDefine::CalcRouteId(route_type, route_num);
 	m_route_system = new RouteSystem();
 	m_route_system->Start(route_id, 30, 5, this);
 }

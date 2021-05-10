@@ -223,9 +223,9 @@ void HttpSender::SendFile(const char* path, const char* content_type, bool for_d
 	{
 		m_http_content += "Content-Disposition: attachment;filename=";
 		if (show_name && strlen(show_name) > 0)
-			m_http_content += CarpHttpHelper::UrlEncode(show_name);
+			m_http_content += CarpHttp::UrlEncode(show_name);
 		else
-			m_http_content += CarpHttpHelper::UrlEncode(CarpFile::GetFileNameByPath(path));
+			m_http_content += CarpHttp::UrlEncode(CarpFile::GetFileNameByPath(path));
 		m_http_content += "\r\n";
 	}
 	if (content_type == 0 || content_type[0] == 0)

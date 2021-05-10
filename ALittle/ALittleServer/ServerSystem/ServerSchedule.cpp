@@ -9,7 +9,7 @@
 
 #include "Carp/carp_mysql.hpp"
 #include "Carp/carp_file.hpp"
-#include "Carp/carp_http.hpp"
+#include "Carp/carp_http_client.hpp"
 
 namespace ALittle
 {
@@ -291,7 +291,7 @@ void ServerSchedule::HandleHttpMessage(HttpSenderPtr sender, const std::string& 
 	std::string param;
 	std::string content_type;
 	std::string content;
-	if (!CarpHttpHelper::AnalysisRequest(msg, url, method, path, &param, &content_type, &content))
+	if (!CarpHttp::AnalysisRequest(msg, url, method, path, &param, &content_type, &content))
 	{
 		CARP_WARN("error request:\n" << msg);
 		sender->Close();
@@ -312,7 +312,7 @@ bool ServerSchedule::HandleHttpFileMessage(HttpSenderPtr sender, const std::stri
 	std::string param;
 	std::string content_type;
 	std::string content;
-	if (!CarpHttpHelper::AnalysisRequest(msg, url, method, path, &param, &content_type, &content))
+	if (!CarpHttp::AnalysisRequest(msg, url, method, path, &param, &content_type, &content))
 	{
 		CARP_WARN("error request:\n" << msg);
 		return false;
@@ -394,7 +394,7 @@ void ServerSchedule::HttpSendFile(int id, const char* file_path, int start_size)
 	m_id_map_http.erase(it);
 	if (!sender) return;
 
-	std::string content_type = CarpHttpHelper::GetContentTypeByExt(CarpFile::GetFileExtByPath(file_path));
+	std::string content_type = CarpHttp::GetContentTypeByExt(CarpFile::GetFileExtByPath(file_path));
 	std::string show_name = CarpFile::GetFileNameByPath(file_path);
 	sender->SendFile(file_path, content_type.c_str(), false, start_size, m_use_file_cache, show_name.c_str());
 }

@@ -40,6 +40,7 @@
     <ClInclude Include="..\..\Carp\carp_file_cache.hpp" />
     <ClInclude Include="..\..\Carp\carp_font.hpp" />
     <ClInclude Include="..\..\Carp\carp_http.hpp" />
+    <ClInclude Include="..\..\Carp\carp_http_client.hpp" />
     <ClInclude Include="..\..\Carp\carp_rtp_server.hpp" />
     <ClInclude Include="..\..\Carp\carp_square_jps.hpp" />
     <ClInclude Include="..\..\Carp\carp_log.hpp" />

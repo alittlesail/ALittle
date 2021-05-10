@@ -119,9 +119,9 @@ void HttpReceiver::HandleRead(const asio::error_code& ec, std::size_t actual_siz
 		if (m_http_head.substr(0, 4) == "POST")
 		{
 			// get content size from head
-			CarpHttpHelper::ResponseType response_type = CarpHttpHelper::ResponseType::RESPONSE_TYPE_CONTENT_LENGTH;
-			if (!CarpHttpHelper::CalcFileSizeFromHttp(m_http_head, m_receive_size, response_type)
-				|| response_type != CarpHttpHelper::ResponseType::RESPONSE_TYPE_CONTENT_LENGTH)
+			CarpHttp::ResponseType response_type = CarpHttp::ResponseType::RESPONSE_TYPE_CONTENT_LENGTH;
+			if (!CarpHttp::CalcFileSizeFromHttp(m_http_head, m_receive_size, response_type)
+				|| response_type != CarpHttp::ResponseType::RESPONSE_TYPE_CONTENT_LENGTH)
 			{
 				CARP_ERROR("can't find Content-Length: in http head:" << m_http_head);
 				Close();
@@ -130,7 +130,7 @@ void HttpReceiver::HandleRead(const asio::error_code& ec, std::size_t actual_siz
 
 			// get content type from head
 			std::string content_type;
-			if (!CarpHttpHelper::CalcContentTypeFromHttp(m_http_head, content_type))
+			if (!CarpHttp::CalcContentTypeFromHttp(m_http_head, content_type))
 			{
 				CARP_ERROR("can't find Content-Type: in http head:" << m_http_head);
 				Close();

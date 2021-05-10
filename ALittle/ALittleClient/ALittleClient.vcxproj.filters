@@ -66,7 +66,7 @@
     <ClInclude Include="..\..\Carp\carp_font.hpp">
       <Filter>Carp</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Carp\carp_http.hpp">
+    <ClInclude Include="..\..\Carp\carp_http_client.hpp">
       <Filter>Carp</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Carp\carp_log.hpp">
@@ -316,6 +316,9 @@
       <Filter>Carp</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Carp\carp_event_consumer.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_http.hpp">
       <Filter>Carp</Filter>
     </ClInclude>
   </ItemGroup>

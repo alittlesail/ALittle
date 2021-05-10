@@ -324,5 +324,8 @@
     <ClInclude Include="..\..\Carp\carp_http_server.hpp">
       <Filter>Carp</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_event_dispatcher.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

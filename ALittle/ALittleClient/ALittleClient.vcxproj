@@ -11,11 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Carp\carp_json_all.cpp" />
     <ClCompile Include="..\..\kcp\ikcp.c" />
     <ClCompile Include="..\..\lualib\ajson\lua_ajson.c" />
     <ClCompile Include="..\..\lualib\cjson\fpconv.c" />
     <ClCompile Include="..\..\lualib\cjson\lua_cjson.c" />
     <ClCompile Include="..\..\lualib\cjson\strbuf.c" />
+    <ClCompile Include="..\..\lualib\oop\ooplib.c" />
     <ClCompile Include="..\..\lualib\sqlite3\lsqlite3.c" />
     <ClCompile Include="..\..\lualib\sqlite3\sqlite3.c" />
     <ClCompile Include="..\..\lualib\tinyxml2\tinyxml2.cpp" />
@@ -43,6 +45,14 @@
     <ClInclude Include="..\..\Carp\carp_http.hpp" />
     <ClInclude Include="..\..\Carp\carp_http_client.hpp" />
     <ClInclude Include="..\..\Carp\carp_http_server.hpp" />
+    <ClInclude Include="..\..\Carp\carp_json.hpp" />
+    <ClInclude Include="..\..\Carp\carp_json_1.hpp" />
+    <ClInclude Include="..\..\Carp\carp_json_2.hpp" />
+    <ClInclude Include="..\..\Carp\carp_json_3.hpp" />
+    <ClInclude Include="..\..\Carp\carp_json_4.hpp" />
+    <ClInclude Include="..\..\Carp\carp_json_5.hpp" />
+    <ClInclude Include="..\..\Carp\carp_json_6.hpp" />
+    <ClInclude Include="..\..\Carp\carp_json_all.hpp" />
     <ClInclude Include="..\..\Carp\carp_rtp_server.hpp" />
     <ClInclude Include="..\..\Carp\carp_square_jps.hpp" />
     <ClInclude Include="..\..\Carp\carp_log.hpp" />
@@ -87,6 +97,7 @@
     <ClInclude Include="..\..\lualib\cjson\fpconv.h" />
     <ClInclude Include="..\..\lualib\cjson\lua_cjson.h" />
     <ClInclude Include="..\..\lualib\cjson\strbuf.h" />
+    <ClInclude Include="..\..\lualib\oop\ooplib.h" />
     <ClInclude Include="..\..\lualib\sqlite3\lsqlite3.h" />
     <ClInclude Include="..\..\lualib\sqlite3\sqlite3.h" />
     <ClInclude Include="..\..\lualib\sqlite3\sqlite3ext.h" />
@@ -116,6 +127,9 @@
     <ClInclude Include="alittle_texture.hpp" />
     <ClInclude Include="alittle_triangle.hpp" />
     <ClInclude Include="alittle_verteximage.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

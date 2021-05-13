@@ -8,6 +8,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include "Carp/carp_json_all.hpp"
 
 #include "Carp/carp_file.hpp"
 

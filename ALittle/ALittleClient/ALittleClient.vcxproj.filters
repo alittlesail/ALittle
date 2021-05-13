@@ -29,6 +29,10 @@
     <ClCompile Include="..\..\lualib\tinyxml2\tinyxml2lib.cpp">
       <Filter>lualib\tinyxml2</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\lualib\oop\ooplib.c">
+      <Filter>lualib\oop</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Carp\carp_json_all.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Carp">
@@ -54,6 +58,9 @@
     </Filter>
     <Filter Include="lualib\tinyxml2">
       <UniqueIdentifier>{78a2b52b-a85e-4c68-8542-bf32a1fc6413}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lualib\oop">
+      <UniqueIdentifier>{79b1574c-0ee0-49d6-9130-0f7c1e5680e3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -327,5 +334,35 @@
     <ClInclude Include="..\..\Carp\carp_event_dispatcher.hpp">
       <Filter>Carp</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\lualib\oop\ooplib.h">
+      <Filter>lualib\oop</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_json_4.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_json_5.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_json_6.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_json_all.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_json.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_json_1.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_json_2.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_json_3.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

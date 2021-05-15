@@ -11,7 +11,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Carp\carp_json_all.cpp" />
     <ClCompile Include="..\..\kcp\ikcp.c" />
     <ClCompile Include="..\..\lualib\ajson\lua_ajson.c" />
     <ClCompile Include="..\..\lualib\cjson\fpconv.c" />
@@ -127,9 +126,6 @@
     <ClInclude Include="alittle_texture.hpp" />
     <ClInclude Include="alittle_triangle.hpp" />
     <ClInclude Include="alittle_verteximage.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="cpp.hint" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

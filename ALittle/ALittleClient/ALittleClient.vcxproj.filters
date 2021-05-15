@@ -32,7 +32,6 @@
     <ClCompile Include="..\..\lualib\oop\ooplib.c">
       <Filter>lualib\oop</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Carp\carp_json_all.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Carp">
@@ -361,8 +360,5 @@
     <ClInclude Include="..\..\Carp\carp_json_3.hpp">
       <Filter>Carp</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

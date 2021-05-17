@@ -14,6 +14,8 @@ int luaopen_deeplearning(lua_State* l_state) {
 		.beginNamespace("sipserver")
 		.beginClass<SipServer>("SipServer")
 		.addConstructor<void(*)()>()
+	    .addCFunction("PullSendInfo", &SipServer::PullSendInfo)
+		.addFunction("PushReceiveInfo", &SipServer::PushReceiveInfo)
 	    .endClass()
 		.endNamespace();
 	lua_getglobal(l_state, "sipserver");

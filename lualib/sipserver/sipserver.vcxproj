@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="libosip2\include\osip2\internal.h" />
+    <ClInclude Include="libosip2\include\osip2\osip.h" />
+    <ClInclude Include="libosip2\include\osip2\osip_condv.h" />
+    <ClInclude Include="libosip2\include\osip2\osip_dialog.h" />
+    <ClInclude Include="libosip2\include\osip2\osip_fifo.h" />
+    <ClInclude Include="libosip2\include\osip2\osip_mt.h" />
+    <ClInclude Include="libosip2\include\osip2\osip_time.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_accept.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_accept_encoding.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_accept_language.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_alert_info.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_allow.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_authentication_info.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_authorization.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_call_id.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_call_info.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_contact.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_content_disposition.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_content_encoding.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_content_length.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_content_type.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_cseq.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_error_info.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_from.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_header.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_mime_version.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_proxy_authenticate.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_proxy_authentication_info.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_proxy_authorization.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_record_route.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_route.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_to.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_via.h" />
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_www_authenticate.h" />
+    <ClInclude Include="libosip2\include\osipparser2\internal.h" />
+    <ClInclude Include="libosip2\include\osipparser2\osip_body.h" />
+    <ClInclude Include="libosip2\include\osipparser2\osip_const.h" />
+    <ClInclude Include="libosip2\include\osipparser2\osip_headers.h" />
+    <ClInclude Include="libosip2\include\osipparser2\osip_list.h" />
+    <ClInclude Include="libosip2\include\osipparser2\osip_md5.h" />
+    <ClInclude Include="libosip2\include\osipparser2\osip_message.h" />
+    <ClInclude Include="libosip2\include\osipparser2\osip_parser.h" />
+    <ClInclude Include="libosip2\include\osipparser2\osip_port.h" />
+    <ClInclude Include="libosip2\include\osipparser2\osip_uri.h" />
+    <ClInclude Include="libosip2\include\osipparser2\sdp_message.h" />
+    <ClInclude Include="libosip2\src\osip2\fsm.h" />
+    <ClInclude Include="libosip2\src\osip2\xixt.h" />
+    <ClInclude Include="libosip2\src\osipparser2\parser.h" />
+    <ClInclude Include="sipserverlib.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="libosip2\src\osip2\fsm_misc.c" />
+    <ClCompile Include="libosip2\src\osip2\ict.c" />
+    <ClCompile Include="libosip2\src\osip2\ict_fsm.c" />
+    <ClCompile Include="libosip2\src\osip2\ist.c" />
+    <ClCompile Include="libosip2\src\osip2\ist_fsm.c" />
+    <ClCompile Include="libosip2\src\osip2\nict.c" />
+    <ClCompile Include="libosip2\src\osip2\nict_fsm.c" />
+    <ClCompile Include="libosip2\src\osip2\nist.c" />
+    <ClCompile Include="libosip2\src\osip2\nist_fsm.c" />
+    <ClCompile Include="libosip2\src\osip2\osip.c" />
+    <ClCompile Include="libosip2\src\osip2\osip_dialog.c" />
+    <ClCompile Include="libosip2\src\osip2\osip_event.c" />
+    <ClCompile Include="libosip2\src\osip2\osip_time.c" />
+    <ClCompile Include="libosip2\src\osip2\osip_transaction.c" />
+    <ClCompile Include="libosip2\src\osip2\port_condv.c" />
+    <ClCompile Include="libosip2\src\osip2\port_fifo.c" />
+    <ClCompile Include="libosip2\src\osip2\port_sema.c" />
+    <ClCompile Include="libosip2\src\osip2\port_thread.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_accept.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_accept_encoding.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_accept_language.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_alert_info.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_allow.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_authentication_info.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_authorization.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_body.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_call_id.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_call_info.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_contact.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_content_disposition.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_content_encoding.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_content_length.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_content_type.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_cseq.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_error_info.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_from.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_header.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_list.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_md5c.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_message.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_message_parse.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_message_to_str.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_mime_version.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_parser_cfg.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_port.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_proxy_authenticate.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_proxy_authentication_info.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_proxy_authorization.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_record_route.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_route.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_to.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_uri.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_via.c" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_www_authenticate.c" />
+    <ClCompile Include="libosip2\src\osipparser2\sdp_accessor.c" />
+    <ClCompile Include="libosip2\src\osipparser2\sdp_message.c" />
+    <ClCompile Include="sipserverlib.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{B42E12D4-0199-4F2D-AA6A-46C57FABF0CB}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>thirdparty</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>sipserver</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;THIRDPARTY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CRT_SECURE_NO_WARNINGS;THIRDPARTY_EXPORTS;_WINDOWS;_USRDLL;LUA_BUILD_AS_DLL;LUA_LIB;ASIO_STANDALONE;_WIN32_WINNT=0x0501;OSIP_MONOTHREAD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\lua\;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)sipserver\libosip2\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\ALittle\lib\lua\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>luad.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;THIRDPARTY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CRT_SECURE_NO_WARNINGS;THIRDPARTY_EXPORTS;_WINDOWS;_USRDLL;LUA_BUILD_AS_DLL;LUA_LIB;ASIO_STANDALONE;_WIN32_WINNT=0x0501;OSIP_MONOTHREAD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\lua;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)sipserver\libosip2\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\ALittle\lib\lua\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

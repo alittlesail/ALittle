@@ -1,0 +1,347 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="sipserverlib.h" />
+    <ClInclude Include="libosip2\include\osip2\osip_fifo.h">
+      <Filter>libosip2\include\osip2</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osip2\osip_mt.h">
+      <Filter>libosip2\include\osip2</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osip2\osip_time.h">
+      <Filter>libosip2\include\osip2</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osip2\internal.h">
+      <Filter>libosip2\include\osip2</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osip2\osip.h">
+      <Filter>libosip2\include\osip2</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osip2\osip_condv.h">
+      <Filter>libosip2\include\osip2</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osip2\osip_dialog.h">
+      <Filter>libosip2\include\osip2</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\osip_list.h">
+      <Filter>libosip2\include\osipparser2</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\osip_md5.h">
+      <Filter>libosip2\include\osipparser2</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\osip_message.h">
+      <Filter>libosip2\include\osipparser2</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\osip_parser.h">
+      <Filter>libosip2\include\osipparser2</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\osip_port.h">
+      <Filter>libosip2\include\osipparser2</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\osip_uri.h">
+      <Filter>libosip2\include\osipparser2</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\sdp_message.h">
+      <Filter>libosip2\include\osipparser2</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\internal.h">
+      <Filter>libosip2\include\osipparser2</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\osip_body.h">
+      <Filter>libosip2\include\osipparser2</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\osip_const.h">
+      <Filter>libosip2\include\osipparser2</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\osip_headers.h">
+      <Filter>libosip2\include\osipparser2</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_content_disposition.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_content_encoding.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_content_length.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_content_type.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_cseq.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_error_info.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_from.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_header.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_mime_version.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_proxy_authenticate.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_proxy_authentication_info.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_proxy_authorization.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_record_route.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_route.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_to.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_via.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_www_authenticate.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_accept.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_accept_encoding.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_accept_language.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_alert_info.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_allow.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_authentication_info.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_authorization.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_call_id.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_call_info.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\include\osipparser2\headers\osip_contact.h">
+      <Filter>libosip2\include\osipparser2\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\src\osipparser2\parser.h">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\src\osip2\xixt.h">
+      <Filter>libosip2\src\osip2</Filter>
+    </ClInclude>
+    <ClInclude Include="libosip2\src\osip2\fsm.h">
+      <Filter>libosip2\src\osip2</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="sipserverlib.cpp" />
+    <ClCompile Include="libosip2\src\osipparser2\osip_authorization.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_body.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_call_id.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_call_info.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_contact.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_content_disposition.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_content_encoding.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_content_length.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_content_type.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_cseq.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_error_info.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_from.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_header.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_list.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_md5c.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_message.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_message_parse.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_message_to_str.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_mime_version.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_parser_cfg.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_port.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_proxy_authenticate.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_proxy_authentication_info.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_proxy_authorization.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_record_route.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_route.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_to.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_uri.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_via.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_www_authenticate.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\sdp_accessor.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\sdp_message.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_accept.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_accept_encoding.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_accept_language.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_alert_info.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_allow.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osipparser2\osip_authentication_info.c">
+      <Filter>libosip2\src\osipparser2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osip2\nist.c">
+      <Filter>libosip2\src\osip2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osip2\nist_fsm.c">
+      <Filter>libosip2\src\osip2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osip2\osip.c">
+      <Filter>libosip2\src\osip2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osip2\osip_dialog.c">
+      <Filter>libosip2\src\osip2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osip2\osip_event.c">
+      <Filter>libosip2\src\osip2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osip2\osip_time.c">
+      <Filter>libosip2\src\osip2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osip2\osip_transaction.c">
+      <Filter>libosip2\src\osip2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osip2\port_condv.c">
+      <Filter>libosip2\src\osip2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osip2\port_fifo.c">
+      <Filter>libosip2\src\osip2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osip2\port_sema.c">
+      <Filter>libosip2\src\osip2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osip2\port_thread.c">
+      <Filter>libosip2\src\osip2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osip2\fsm_misc.c">
+      <Filter>libosip2\src\osip2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osip2\ict.c">
+      <Filter>libosip2\src\osip2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osip2\ict_fsm.c">
+      <Filter>libosip2\src\osip2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osip2\ist.c">
+      <Filter>libosip2\src\osip2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osip2\ist_fsm.c">
+      <Filter>libosip2\src\osip2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osip2\nict.c">
+      <Filter>libosip2\src\osip2</Filter>
+    </ClCompile>
+    <ClCompile Include="libosip2\src\osip2\nict_fsm.c">
+      <Filter>libosip2\src\osip2</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="libosip2">
+      <UniqueIdentifier>{8f0b8b9c-7f34-4413-9c43-cb6fc2c758dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libosip2\include">
+      <UniqueIdentifier>{d7a3c92f-126d-47c7-b2d6-1b5edeadc792}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libosip2\include\osip2">
+      <UniqueIdentifier>{bfd0b616-6fb6-40ec-a6b9-d8965732e85a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libosip2\include\osipparser2">
+      <UniqueIdentifier>{250d4402-6927-4d73-828d-3b7360992e54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libosip2\include\osipparser2\headers">
+      <UniqueIdentifier>{19584a06-56d8-4d74-b4aa-2127d911c9b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libosip2\src">
+      <UniqueIdentifier>{557ae4c6-da2b-4367-abee-982a5abd0ccf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libosip2\src\osipparser2">
+      <UniqueIdentifier>{52642393-c7fb-41ec-8f8d-3374ee6bd0c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libosip2\src\osip2">
+      <UniqueIdentifier>{a5449211-40a9-4730-9b4b-bfd7590e2662}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

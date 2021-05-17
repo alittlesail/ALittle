@@ -21,6 +21,10 @@
 #include <osip2/osip_time.h>
 #include <osipparser2/osip_port.h>
 
+#ifdef WIN32
+#include <Windows.h>
+#endif
+
 #ifdef __APPLE__
 #include <mach/clock.h>
 #include <mach/mach.h>

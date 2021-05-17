@@ -29,6 +29,10 @@
 #include <sys/types.h>
 #endif
 
+#ifdef WIN32
+#include <Windows.h>
+#endif
+
 #include <osipparser2/osip_parser.h>
 #include <osip2/osip_fifo.h>
 

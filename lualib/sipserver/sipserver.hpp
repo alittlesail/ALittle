@@ -21,6 +21,13 @@ public:
         osip_init(&m_osip);
         osip_set_application_context(m_osip, this);
         osip_set_cb_send_message(m_osip, cb_send_message);
+
+        osip_set_message_callback(m_osip, OSIP_NICT_STATUS_1XX_RECEIVED, &cb_rcv1xx);
+        osip_set_message_callback(m_osip, OSIP_NICT_STATUS_2XX_RECEIVED, &cb_rcv2xx);
+        osip_set_message_callback(m_osip, OSIP_NICT_STATUS_3XX_RECEIVED, &cb_rcv3456xx);
+        osip_set_message_callback(m_osip, OSIP_NICT_STATUS_4XX_RECEIVED, &cb_rcv3456xx);
+        osip_set_message_callback(m_osip, OSIP_NICT_STATUS_5XX_RECEIVED, &cb_rcv3456xx);
+        osip_set_message_callback(m_osip, OSIP_NICT_STATUS_6XX_RECEIVED, &cb_rcv3456xx);
     }
 
     ~SipServer()
@@ -58,6 +65,42 @@ public:
             osip_free(evt);
     }
 
+    int NewTransaction(const char* content, bool is_invite)
+    {
+        osip_message_t* message = nullptr;
+        if (osip_message_init(&message) != OSIP_SUCCESS) return 0;
+        if (osip_message_parse(message, content, strlen(content)) != OSIP_SUCCESS)
+        {
+            osip_message_free(message);
+            return 0;
+        }
+
+        osip_transaction_t* transaction = nullptr;
+        if (osip_transaction_init(&transaction, is_invite ? ICT : NICT, m_osip, message) != OSIP_SUCCESS)
+        {
+            osip_message_free(message);
+            return false;
+        }
+        const int transaction_id = transaction->transactionid;
+        osip_transaction_set_your_instance(transaction, this);
+
+        // 构建发送消息
+        auto* evt = osip_new_outgoing_sipmessage(message);
+        if (evt == nullptr)
+        {
+            osip_message_free(message);
+            osip_transaction_free(transaction);
+            return false;
+        }
+
+        // 关联所在的会话
+        evt->transactionid = transaction->transactionid;
+        //  添加事件
+        osip_transaction_add_event(transaction, evt);
+
+        return transaction_id;
+    }
+
 private:
     struct SendInfo
     {
@@ -69,6 +112,7 @@ private:
     static int cb_send_message(osip_transaction_t* transaction, osip_message_t* message, char* dest, int port, int sock)
     {
         auto* self = static_cast<SipServer*>(osip_transaction_get_your_instance(transaction));
+        if (self == nullptr) return OSIP_NO_NETWORK;
 
         char* str = nullptr;
         size_t len = 0;
@@ -84,6 +128,21 @@ private:
         self->m_send_list.emplace_back(info);
 
         return OSIP_SUCCESS;
+    }
+
+    static void cb_rcv1xx(int type, osip_transaction_t* transaction, osip_message_t* message)
+    {
+        
+    }
+
+    static void cb_rcv2xx(int type, osip_transaction_t* transaction, osip_message_t* message)
+    {
+
+    }
+
+    static void cb_rcv3456xx(int type, osip_transaction_t* transaction, osip_message_t* message)
+    {
+
     }
 
 private:

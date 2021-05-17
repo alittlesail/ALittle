@@ -29,9 +29,6 @@
     <ClCompile Include="..\..\lualib\tinyxml2\tinyxml2lib.cpp">
       <Filter>lualib\tinyxml2</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\lualib\oop\ooplib.c">
-      <Filter>lualib\oop</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Carp">
@@ -57,9 +54,6 @@
     </Filter>
     <Filter Include="lualib\tinyxml2">
       <UniqueIdentifier>{78a2b52b-a85e-4c68-8542-bf32a1fc6413}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="lualib\oop">
-      <UniqueIdentifier>{79b1574c-0ee0-49d6-9130-0f7c1e5680e3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -332,9 +326,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Carp\carp_event_dispatcher.hpp">
       <Filter>Carp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lualib\oop\ooplib.h">
-      <Filter>lualib\oop</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Carp\carp_json_4.hpp">
       <Filter>Carp</Filter>

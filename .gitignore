@@ -26,3 +26,5 @@
 /bin/ALittleServerd.exe
 /ALittle/lib/lua/x64
 /ALittle/lib/ALittle
+/lualib/sipserver/x64
+/.vs

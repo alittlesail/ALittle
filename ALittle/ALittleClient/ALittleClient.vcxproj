@@ -16,7 +16,6 @@
     <ClCompile Include="..\..\lualib\cjson\fpconv.c" />
     <ClCompile Include="..\..\lualib\cjson\lua_cjson.c" />
     <ClCompile Include="..\..\lualib\cjson\strbuf.c" />
-    <ClCompile Include="..\..\lualib\oop\ooplib.c" />
     <ClCompile Include="..\..\lualib\sqlite3\lsqlite3.c" />
     <ClCompile Include="..\..\lualib\sqlite3\sqlite3.c" />
     <ClCompile Include="..\..\lualib\tinyxml2\tinyxml2.cpp" />
@@ -96,7 +95,6 @@
     <ClInclude Include="..\..\lualib\cjson\fpconv.h" />
     <ClInclude Include="..\..\lualib\cjson\lua_cjson.h" />
     <ClInclude Include="..\..\lualib\cjson\strbuf.h" />
-    <ClInclude Include="..\..\lualib\oop\ooplib.h" />
     <ClInclude Include="..\..\lualib\sqlite3\lsqlite3.h" />
     <ClInclude Include="..\..\lualib\sqlite3\sqlite3.h" />
     <ClInclude Include="..\..\lualib\sqlite3\sqlite3ext.h" />

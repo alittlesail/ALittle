@@ -9,13 +9,14 @@ extern "C" {
 
 #include "sipserver.hpp"
 
-int luaopen_deeplearning(lua_State* l_state) {
+int luaopen_sipserver(lua_State* l_state) {
 	luabridge::getGlobalNamespace(l_state)
 		.beginNamespace("sipserver")
 		.beginClass<SipServer>("SipServer")
 		.addConstructor<void(*)()>()
 	    .addCFunction("PullSendInfo", &SipServer::PullSendInfo)
 		.addFunction("PushReceiveInfo", &SipServer::PushReceiveInfo)
+		.addFunction("NewTransaction", &SipServer::NewTransaction)
 	    .endClass()
 		.endNamespace();
 	lua_getglobal(l_state, "sipserver");

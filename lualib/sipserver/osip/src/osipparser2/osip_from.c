@@ -102,7 +102,7 @@ int osip_from_parse(osip_from_t *from, const char *hvalue) {
   const char *displayname = NULL;
   const char *url = NULL;
   const char *url_end = NULL;
-  const char *gen_params;
+  const char *gen_params = NULL;
   const char *ptr;
   int i;
 

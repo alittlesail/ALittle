@@ -107,7 +107,7 @@ int osip_uri_param_add(osip_list_t *url_params, char *name, char *value);
  * @param name The name of the parameter element to find.
  * @param dest A pointer on the element found.
  */
-int osip_uri_param_get_byname(osip_list_t *url_params, char *name, osip_uri_param_t **dest);
+int osip_uri_param_get_byname(osip_list_t *url_params, const char *name, osip_uri_param_t **dest);
 
 /**
  * Allocate a generic parameter element.

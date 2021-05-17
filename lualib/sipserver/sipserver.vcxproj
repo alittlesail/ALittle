@@ -173,7 +173,7 @@
       <PreprocessorDefinitions>_DEBUG;THIRDPARTY_EXPORTS;_WINDOWS;_USRDLL;LUA_BUILD_AS_DLL;LUA_LIB;ASIO_STANDALONE;_WIN32_WINNT=0x0501;_CRT_SECURE_NO_WARNINGS;OSIP_MONOTHREAD;WIN32;HAVE_STRUCT_TIMEVAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\lua\;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)sipserver\osip\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\lua\;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)sipserver\osip\include\;$(SolutionDir)..\carp\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -213,7 +213,7 @@
       <PreprocessorDefinitions>NDEBUG;THIRDPARTY_EXPORTS;_WINDOWS;_USRDLL;LUA_BUILD_AS_DLL;LUA_LIB;ASIO_STANDALONE;_WIN32_WINNT=0x0501;_CRT_SECURE_NO_WARNINGS;OSIP_MONOTHREAD;WIN32;HAVE_STRUCT_TIMEVAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\lua;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)sipserver\osip\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\lua;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)sipserver\osip\include\;$(SolutionDir)..\carp\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

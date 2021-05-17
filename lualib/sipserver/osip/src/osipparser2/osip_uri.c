@@ -921,7 +921,7 @@ void osip_uri_param_freelist(osip_list_t *params) {
   }
 }
 
-int osip_uri_param_get_byname(osip_list_t *params, char *pname, osip_uri_param_t **url_param) {
+int osip_uri_param_get_byname(osip_list_t *params, const char *pname, osip_uri_param_t **url_param) {
   size_t pname_len;
   osip_uri_param_t *u_param;
   osip_list_iterator_t it;

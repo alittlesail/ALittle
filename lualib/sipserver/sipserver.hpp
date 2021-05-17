@@ -13,6 +13,9 @@ extern "C" {
 
 #include "osip2/osip.h"
 
+#include "carp_string.hpp"
+#include "carp_crypto.hpp"
+
 class SipServer
 {
 public:
@@ -22,17 +25,40 @@ public:
         osip_set_application_context(m_osip, this);
         osip_set_cb_send_message(m_osip, cb_send_message);
 
-        osip_set_message_callback(m_osip, OSIP_NICT_STATUS_1XX_RECEIVED, &cb_rcv1xx);
-        osip_set_message_callback(m_osip, OSIP_NICT_STATUS_2XX_RECEIVED, &cb_rcv2xx);
-        osip_set_message_callback(m_osip, OSIP_NICT_STATUS_3XX_RECEIVED, &cb_rcv3456xx);
-        osip_set_message_callback(m_osip, OSIP_NICT_STATUS_4XX_RECEIVED, &cb_rcv3456xx);
-        osip_set_message_callback(m_osip, OSIP_NICT_STATUS_5XX_RECEIVED, &cb_rcv3456xx);
-        osip_set_message_callback(m_osip, OSIP_NICT_STATUS_6XX_RECEIVED, &cb_rcv3456xx);
+        osip_set_kill_transaction_callback(m_osip, OSIP_ICT_KILL_TRANSACTION, cb_kill_transaction);
+        osip_set_kill_transaction_callback(m_osip, OSIP_NIST_KILL_TRANSACTION, cb_kill_transaction);
+        osip_set_kill_transaction_callback(m_osip, OSIP_NICT_KILL_TRANSACTION, cb_kill_transaction);
+        osip_set_kill_transaction_callback(m_osip, OSIP_NIST_KILL_TRANSACTION, cb_kill_transaction);
+
+        osip_set_message_callback(m_osip, OSIP_NICT_STATUS_1XX_RECEIVED, cb_rcv1xx);
+        osip_set_message_callback(m_osip, OSIP_NICT_STATUS_2XX_RECEIVED, cb_rcv2xx);
+        osip_set_message_callback(m_osip, OSIP_NICT_STATUS_3XX_RECEIVED, cb_rcv3456xx);
+        osip_set_message_callback(m_osip, OSIP_NICT_STATUS_4XX_RECEIVED, cb_rcv3456xx);
+        osip_set_message_callback(m_osip, OSIP_NICT_STATUS_5XX_RECEIVED, cb_rcv3456xx);
+        osip_set_message_callback(m_osip, OSIP_NICT_STATUS_6XX_RECEIVED, cb_rcv3456xx);
     }
 
     ~SipServer()
     {
         osip_release(m_osip);
+    }
+
+    void SetRemoteInfo(const char* remote_sip_domain, const char* remote_sip_ip, int remote_sip_port)
+    {
+        m_remote_sip_domain = remote_sip_domain;
+        m_remote_sip_ip = remote_sip_ip;
+        m_remote_sip_port = remote_sip_port;
+    }
+
+    void SetSelfInfo(const char* self_sip_ip, int self_sip_port)
+    {
+        m_self_sip_ip = self_sip_ip;
+        m_self_sip_port = self_sip_port;
+    }
+
+    void SetRegisterInfo(int expires)
+    {
+        m_register_expires = expires;
     }
 
     int PullSendInfo(lua_State* l_state)
@@ -65,11 +91,155 @@ public:
             osip_free(evt);
     }
 
-    int NewTransaction(const char* content, bool is_invite)
+public:
+    class TransactionData
+    {
+    public:
+        TransactionData(SipServer* s) : server(s) {}
+
+        SipServer* server = nullptr;
+
+        std::string register_account;
+        std::string register_password;
+    };
+
+    void RegisterAccount(const char* account, const char* password)
+    {
+        auto* data = new TransactionData(this);
+        data->register_account = account;
+        data->register_password = password;
+
+        const auto call_id = CarpCrypto::StringMd5(CarpString::GenerateID("call_id"));
+        const auto from_tag = CarpCrypto::StringMd5(CarpString::GenerateID("from_tag"));
+        const auto via_branch = CarpCrypto::StringMd5(CarpString::GenerateID("via_branch"));
+
+        const auto sip = GenRegister(account, call_id, via_branch, from_tag, 1, "");
+        NewTransaction(sip, false, data);
+    }
+
+    void AuthorizateAccount(osip_transaction_t* transaction, osip_message_t* message)
+    {
+        auto* data = static_cast<TransactionData*>(osip_transaction_get_your_instance(transaction));
+        if (data == nullptr) return;
+
+        std::string call_id;
+        {
+            char* dest = nullptr;
+            osip_call_id_to_str(osip_message_get_call_id(message), &dest);
+            if (dest != nullptr)
+            {
+                call_id = dest;
+                osip_free(dest);
+            }
+        }
+
+        std::string from_tag;
+        {
+            auto* from = osip_message_get_from(message);
+            if (from != nullptr)
+            {
+                osip_uri_param_t* param = nullptr;
+                osip_from_get_tag(from, &param);
+                if (param != nullptr && param->gvalue)
+                    from_tag = param->gvalue;
+            }
+        }
+
+        int cseq = 0;
+        char* c_cseq = osip_cseq_get_number(osip_message_get_cseq(message));
+        if (c_cseq != nullptr) cseq = std::atoi(c_cseq);
+
+        // 定义对端域名
+        auto remote_sip_domain = m_remote_sip_domain;
+        if (remote_sip_domain.empty()) remote_sip_domain = m_remote_sip_ip + ":" + std::to_string(m_remote_sip_port);
+
+        osip_www_authenticate_t* authenticate = nullptr;
+        osip_message_get_www_authenticate(message, 0, &authenticate);
+        if (authenticate == nullptr) return;
+
+        std::string nonce;
+        const auto* c_nonce = osip_www_authenticate_get_nonce(authenticate);
+        if (c_nonce != nullptr)
+        {
+            nonce = c_nonce;
+            if (!nonce.empty() && nonce.back() == '"') nonce.pop_back();
+            if (!nonce.empty() && nonce[0] == '"') nonce = nonce.substr(1);
+        }
+
+        std::string realm;
+        const auto* c_realm = osip_www_authenticate_get_realm(authenticate);
+        if (c_realm != nullptr)
+        {
+            realm = c_realm;
+            if (!realm.empty() && realm.back() == '"') realm.pop_back();
+            if (!realm.empty() && realm[0] == '"') realm = realm.substr(1);
+        }
+
+        const auto auth = GenAuth(nonce, realm, data->register_account, data->register_password, "REGISTER", remote_sip_domain);
+        const auto via_branch = CarpCrypto::StringMd5(CarpString::GenerateID("via_branch"));
+
+        const auto sip = GenRegister(data->register_account, call_id, via_branch, from_tag, cseq + 1, auth);
+        UseTransaction(transaction, sip);
+    }
+
+    std::string GenRegister(const std::string& account, const std::string& call_id, const std::string& via_branch, const std::string& from_tag, int cseq, const std::string& auth)
+    {
+        // 计算域
+        auto remote_sip_domain = m_remote_sip_domain;
+        if (remote_sip_domain.empty()) remote_sip_domain = m_remote_sip_ip + ":" + std::to_string(m_remote_sip_port);
+        auto self_sip_domain = m_self_sip_ip + ":" + std::to_string(m_self_sip_port);
+
+        std::string sip = "REGISTER sip:" + remote_sip_domain + " SIP/2.0\r\n";
+        sip += "Via: SIP/2.0/UDP " + self_sip_domain + ";rport;branch=z9hG4bK-" + via_branch + "\r\n";
+        sip += "Max-Forwards: 70\r\n";
+        sip += "Contact: <sip:" + account + "@" + self_sip_domain + ">\r\n";
+        sip += "From: <sip:" + account + "@" + remote_sip_domain + ">;tag=" + from_tag + "\r\n";
+        sip += "To: <sip:" + account + "@" + remote_sip_domain + ">\r\n";
+        sip += "Call-ID: " + call_id + "\r\n";
+        sip += "CSeq: " + std::to_string(cseq) + " REGISTER\r\n";
+        sip += "Expires: " + std::to_string(m_register_expires) + "\r\n";
+        if (!auth.empty()) sip += "Authorization: " + auth + "\r\n";
+        sip += "Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,NOTIFY,INFO,MESSAGE,SUBSCRIBE,INFO\r\n";
+        sip += "User-Agent: ALittle\r\n";
+        sip += "Content-Length: 0\r\n";
+        sip += "\r\n";
+
+        return sip;
+    }
+
+
+    std::string GenAuth(const std::string& nonce, const std::string& realm, const std::string& account, const std::string& password, const std::string& method, const std::string& uri)
+    {
+        auto response_1 = CarpCrypto::StringMd5(account + ":" + realm + ":" + password);
+        auto response_2 = CarpCrypto::StringMd5(method + ":" + uri);
+        auto response = CarpCrypto::StringMd5(response_1 + ":" + nonce + ":" + response_2);
+
+        return "Digest username=\"" + account + "\",realm=\"" + realm + "\",nonce=\"" + nonce + "\",uri=\"" + uri + "\",response=\"" + response + "\",algorithm=MD5";
+    }
+
+    void Run()
+    {
+        osip_timers_ict_execute(m_osip);
+        osip_timers_nict_execute(m_osip);
+
+        osip_timers_ist_execute(m_osip);
+        osip_timers_nist_execute(m_osip);
+
+        osip_ict_execute(m_osip);
+        osip_nict_execute(m_osip);
+
+        osip_ist_execute(m_osip);
+        osip_nist_execute(m_osip);
+
+        osip_retransmissions_execute(m_osip);
+    }
+
+private:
+    int NewTransaction(const std::string& content, bool is_invite, TransactionData* data)
     {
         osip_message_t* message = nullptr;
         if (osip_message_init(&message) != OSIP_SUCCESS) return 0;
-        if (osip_message_parse(message, content, strlen(content)) != OSIP_SUCCESS)
+        if (osip_message_parse(message, content.c_str(), content.size()) != OSIP_SUCCESS)
         {
             osip_message_free(message);
             return 0;
@@ -79,10 +249,37 @@ public:
         if (osip_transaction_init(&transaction, is_invite ? ICT : NICT, m_osip, message) != OSIP_SUCCESS)
         {
             osip_message_free(message);
-            return false;
+            return 0;
         }
         const int transaction_id = transaction->transactionid;
-        osip_transaction_set_your_instance(transaction, this);
+        osip_transaction_set_your_instance(transaction, data);
+
+        // 构建发送消息
+        auto* evt = osip_new_outgoing_sipmessage(message);
+        if (evt == nullptr)
+        {
+            osip_message_free(message);
+            osip_transaction_free(transaction);
+            return 0;
+        }
+
+        // 关联所在的会话
+        evt->transactionid = transaction->transactionid;
+        //  添加事件
+        osip_transaction_add_event(transaction, evt);
+
+        return transaction_id;
+    }
+
+    bool UseTransaction(osip_transaction_t* transaction, const std::string& content)
+    {
+        osip_message_t* message = nullptr;
+        if (osip_message_init(&message) != OSIP_SUCCESS) return false;
+        if (osip_message_parse(message, content.c_str(), content.size()) != OSIP_SUCCESS)
+        {
+            osip_message_free(message);
+            return false;
+        }
 
         // 构建发送消息
         auto* evt = osip_new_outgoing_sipmessage(message);
@@ -98,7 +295,7 @@ public:
         //  添加事件
         osip_transaction_add_event(transaction, evt);
 
-        return transaction_id;
+        return true;
     }
 
 private:
@@ -111,7 +308,7 @@ private:
 
     static int cb_send_message(osip_transaction_t* transaction, osip_message_t* message, char* dest, int port, int sock)
     {
-        auto* self = static_cast<SipServer*>(osip_transaction_get_your_instance(transaction));
+        auto* self = static_cast<TransactionData*>(osip_transaction_get_your_instance(transaction));
         if (self == nullptr) return OSIP_NO_NETWORK;
 
         char* str = nullptr;
@@ -125,7 +322,7 @@ private:
 
         osip_free(str);
 
-        self->m_send_list.emplace_back(info);
+        self->server->m_send_list.emplace_back(info);
 
         return OSIP_SUCCESS;
     }
@@ -142,7 +339,23 @@ private:
 
     static void cb_rcv3456xx(int type, osip_transaction_t* transaction, osip_message_t* message)
     {
+        auto* data = static_cast<TransactionData*>(osip_transaction_get_your_instance(transaction));
+        if (data == nullptr) return;
 
+        // 处理注册的401
+        const auto status = osip_message_get_status_code(message);
+        if (status == 401 && MSG_IS_RESPONSE_FOR(message, "REGISTER"))
+        {
+            data->server->AuthorizateAccount(transaction, message);
+        }
+    }
+
+    static void cb_kill_transaction(int type, osip_transaction_t* transaction)
+    {
+        auto* data = static_cast<TransactionData*>(osip_transaction_get_your_instance(transaction));
+        if (data == nullptr) return;
+
+        delete data;
     }
 
 private:
@@ -150,6 +363,17 @@ private:
 
 private:
     std::list<SendInfo> m_send_list;
+
+private:
+    std::string m_remote_sip_domain;
+    std::string m_remote_sip_ip;
+    int m_remote_sip_port = 0;
+
+    std::string m_self_sip_ip;
+    int m_self_sip_port = 0;
+
+private:
+    int m_register_expires = 3600;
 };
 
 #endif

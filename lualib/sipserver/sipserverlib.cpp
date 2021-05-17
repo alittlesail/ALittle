@@ -14,9 +14,13 @@ int luaopen_sipserver(lua_State* l_state) {
 		.beginNamespace("sipserver")
 		.beginClass<SipServer>("SipServer")
 		.addConstructor<void(*)()>()
+		.addFunction("Run", &SipServer::Run)
+	    .addFunction("SetRemoteInfo", &SipServer::SetRemoteInfo)
+		.addFunction("SetSelfInfo", &SipServer::SetSelfInfo)
+		.addFunction("SetRegisterInfo", &SipServer::SetRegisterInfo)
+		.addFunction("RegisterAccount", &SipServer::RegisterAccount)
 	    .addCFunction("PullSendInfo", &SipServer::PullSendInfo)
 		.addFunction("PushReceiveInfo", &SipServer::PushReceiveInfo)
-		.addFunction("NewTransaction", &SipServer::NewTransaction)
 	    .endClass()
 		.endNamespace();
 	lua_getglobal(l_state, "sipserver");

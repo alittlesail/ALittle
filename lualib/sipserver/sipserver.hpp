@@ -179,7 +179,11 @@ public:
         const auto via_branch = CarpCrypto::StringMd5(CarpString::GenerateID("via_branch"));
 
         const auto sip = GenRegister(data->register_account, call_id, via_branch, from_tag, cseq + 1, auth);
-        UseTransaction(transaction, sip);
+
+        auto* new_data = new TransactionData(this);
+        new_data->register_account = data->register_account;
+        new_data->register_password = data->register_password;
+        NewTransaction(sip, false, new_data);
     }
 
     std::string GenRegister(const std::string& account, const std::string& call_id, const std::string& via_branch, const std::string& from_tag, int cseq, const std::string& auth)
@@ -262,9 +266,6 @@ private:
             osip_transaction_free(transaction);
             return 0;
         }
-
-        // 关联所在的会话
-        evt->transactionid = transaction->transactionid;
         //  添加事件
         osip_transaction_add_event(transaction, evt);
 
@@ -289,9 +290,6 @@ private:
             osip_transaction_free(transaction);
             return false;
         }
-
-        // 关联所在的会话
-        evt->transactionid = transaction->transactionid;
         //  添加事件
         osip_transaction_add_event(transaction, evt);
 
@@ -353,9 +351,12 @@ private:
     static void cb_kill_transaction(int type, osip_transaction_t* transaction)
     {
         auto* data = static_cast<TransactionData*>(osip_transaction_get_your_instance(transaction));
-        if (data == nullptr) return;
-
-        delete data;
+        if (data != nullptr)
+        {
+            osip_transaction_set_your_instance(transaction, nullptr);
+            osip_remove_transaction(data->server->m_osip, transaction);
+            delete data;
+        }
     }
 
 private:

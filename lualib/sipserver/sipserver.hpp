@@ -82,6 +82,27 @@ public:
         return 1;
     }
 
+    int PullResponseInfo(lua_State* l_state)
+    {
+        if (m_response_list.empty()) return 0;
+
+        auto& info = m_response_list.front();
+        lua_newtable(l_state);
+
+        if (!info.register_account.empty())
+        {
+            lua_pushstring(l_state, info.register_account.c_str());
+            lua_setfield(l_state, -2, "register_account");
+        }
+
+        lua_pushinteger(l_state, info.status);
+        lua_setfield(l_state, -2, "status");
+
+        m_response_list.pop_front();
+
+        return 1;
+    }
+
     void PushReceiveInfo(const char* message) const
     {
         auto* evt = osip_parse(message, strlen(message));
@@ -90,6 +111,8 @@ public:
         if (osip_find_transaction_and_add_event(m_osip, evt) != OSIP_SUCCESS)
             osip_free(evt);
     }
+
+    int GetTransactionCount() const { return m_transaction_count; }
 
 public:
     class TransactionData
@@ -211,12 +234,11 @@ public:
         return sip;
     }
 
-
     std::string GenAuth(const std::string& nonce, const std::string& realm, const std::string& account, const std::string& password, const std::string& method, const std::string& uri)
     {
-        auto response_1 = CarpCrypto::StringMd5(account + ":" + realm + ":" + password);
-        auto response_2 = CarpCrypto::StringMd5(method + ":" + uri);
-        auto response = CarpCrypto::StringMd5(response_1 + ":" + nonce + ":" + response_2);
+        const auto response_1 = CarpCrypto::StringMd5(account + ":" + realm + ":" + password);
+        const auto response_2 = CarpCrypto::StringMd5(method + ":" + uri);
+        const auto response = CarpCrypto::StringMd5(response_1 + ":" + nonce + ":" + response_2);
 
         return "Digest username=\"" + account + "\",realm=\"" + realm + "\",nonce=\"" + nonce + "\",uri=\"" + uri + "\",response=\"" + response + "\",algorithm=MD5";
     }
@@ -269,6 +291,7 @@ private:
         //  添加事件
         osip_transaction_add_event(transaction, evt);
 
+        ++m_transaction_count;
         return transaction_id;
     }
 
@@ -304,10 +327,17 @@ private:
         int port = 0;
     };
 
+    struct ResponseInfo
+    {
+        std::string register_account;   // 注册账号
+
+        int status = 0;
+    };
+
     static int cb_send_message(osip_transaction_t* transaction, osip_message_t* message, char* dest, int port, int sock)
     {
-        auto* self = static_cast<TransactionData*>(osip_transaction_get_your_instance(transaction));
-        if (self == nullptr) return OSIP_NO_NETWORK;
+        auto* data = static_cast<TransactionData*>(osip_transaction_get_your_instance(transaction));
+        if (data == nullptr) return OSIP_NO_NETWORK;
 
         char* str = nullptr;
         size_t len = 0;
@@ -320,7 +350,7 @@ private:
 
         osip_free(str);
 
-        self->server->m_send_list.emplace_back(info);
+        data->server->m_send_list.emplace_back(info);
 
         return OSIP_SUCCESS;
     }
@@ -332,7 +362,18 @@ private:
 
     static void cb_rcv2xx(int type, osip_transaction_t* transaction, osip_message_t* message)
     {
+        auto* data = static_cast<TransactionData*>(osip_transaction_get_your_instance(transaction));
+        if (data == nullptr) return;
 
+        // 处理注册的200
+        const auto status = osip_message_get_status_code(message);
+        if (status == 200 && MSG_IS_RESPONSE_FOR(message, "REGISTER"))
+        {
+            ResponseInfo info;
+            info.register_account = data->register_account;
+            info.status = status;
+            data->server->m_response_list.emplace_back(info);
+        }
     }
 
     static void cb_rcv3456xx(int type, osip_transaction_t* transaction, osip_message_t* message)
@@ -353,17 +394,21 @@ private:
         auto* data = static_cast<TransactionData*>(osip_transaction_get_your_instance(transaction));
         if (data != nullptr)
         {
-            osip_transaction_set_your_instance(transaction, nullptr);
-            osip_remove_transaction(data->server->m_osip, transaction);
+            osip_transaction_set_reserved2(transaction, nullptr);
+            --data->server->m_transaction_count;
             delete data;
         }
+
+        osip_remove_transaction(static_cast<osip_t*>(transaction->config), transaction);
     }
 
 private:
     osip_t* m_osip = nullptr;
+    int m_transaction_count = 0;
 
 private:
     std::list<SendInfo> m_send_list;
+    std::list<ResponseInfo> m_response_list;
 
 private:
     std::string m_remote_sip_domain;

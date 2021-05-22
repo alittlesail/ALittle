@@ -28,3 +28,6 @@
 [submodule "rapidjson"]
 	path = rapidjson
 	url = https://github.com/Tencent/rapidjson.git
+[submodule "SDL"]
+	path = SDL
+	url = https://github.com/alittlesail/SDL.git

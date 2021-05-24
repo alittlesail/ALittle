@@ -176,7 +176,7 @@ public:
 	void SetInnerRtp(int first_port, const std::string& inner_rtp_ip, int inner_rtp_port);
 
 	// 转接到客户端
-	void TransClient(int first_port, int client_id);
+	void TransferToClient(int first_port, int client_id);
 
 	// 清理空闲的rtp
 	void ClearIdleRtp(int idle_delta_time);

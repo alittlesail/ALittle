@@ -70,7 +70,7 @@ void ServerSchedule::RegisterToScript()
 		.addCFunction("UseRtp", &ServerSchedule::UseRtpForLua)
 		.addFunction("SetRemoteRtp", &ServerSchedule::SetRemoteRtp)
 		.addFunction("SetInnerRtp", &ServerSchedule::SetInnerRtp)
-		.addFunction("TransClient", &ServerSchedule::TransClient)
+		.addFunction("TransferToClient", &ServerSchedule::TransferToClient)
 		.addFunction("ClearIdleRtp", &ServerSchedule::ClearIdleRtp)
 
 		.addFunction("CreateUdpServer", &ServerSchedule::CreateUdpServer)
@@ -720,7 +720,7 @@ void ServerSchedule::SetInnerRtp(int first_port, const std::string& inner_rtp_ip
 	use_it->second->SetInnerRtp(inner_rtp_ip, inner_rtp_port);
 }
 
-void ServerSchedule::TransClient(int first_port, int client_id)
+void ServerSchedule::TransferToClient(int first_port, int client_id)
 {
 	auto use_it = m_use_map_rtp.find(first_port);
 	if (use_it == m_use_map_rtp.end()) return;

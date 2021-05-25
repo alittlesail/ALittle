@@ -97,3 +97,5 @@ int main(int argc, char* argv[])
 #include "Carp/carp_schedule.hpp"
 #define CARP_SURFACE_IMPL
 #include "Carp/carp_surface_bind.hpp"
+#define CARP_MESSAGE_IMPL
+#include "Carp/carp_message.hpp"

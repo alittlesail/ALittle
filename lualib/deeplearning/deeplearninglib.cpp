@@ -50,3 +50,5 @@ int luaopen_deeplearning(lua_State* l_state) {
 
 #define CARP_TASK_CONSUMER_IMPL
 #include "carp_task_consumer.hpp"
+#define CARP_MESSAGE_IMPL
+#include "carp_message.hpp"

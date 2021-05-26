@@ -314,6 +314,10 @@ struct primitive : public handle<dnnl_primitive_t> {
         matmul = dnnl_matmul,
         /// A resampling primitive.
         resampling = dnnl_resampling,
+        /// A pooling version 2 primitive.
+        pooling_v2 = dnnl_pooling_v2,
+        /// A reduction primitive.
+        reduction = dnnl_reduction,
     };
 
     using handle::handle;
@@ -566,10 +570,30 @@ enum class algorithm {
     binary_max = dnnl_binary_max,
     /// Binary min
     binary_min = dnnl_binary_min,
+    /// Binary div
+    binary_div = dnnl_binary_div,
     /// Nearest Neighbor resampling method
     resampling_nearest = dnnl_resampling_nearest,
     /// Linear (Bilinear, Trilinear) resampling method
     resampling_linear = dnnl_resampling_linear,
+    /// Reduction using max operation
+    reduction_max = dnnl_reduction_max,
+    /// Reduction using min operation
+    reduction_min = dnnl_reduction_min,
+    /// Reduction using sum operation
+    reduction_sum = dnnl_reduction_sum,
+    /// Reduction using mul operation
+    reduction_mul = dnnl_reduction_mul,
+    /// Reduction using mean operation
+    reduction_mean = dnnl_reduction_mean,
+    /// Reduction using norm_lp_max operation
+    reduction_norm_lp_max = dnnl_reduction_norm_lp_max,
+    /// Reduction using norm_lp_sum operation
+    reduction_norm_lp_sum = dnnl_reduction_norm_lp_sum,
+    /// Reduction using norm_lp_power_p_max operation
+    reduction_norm_lp_power_p_max = dnnl_reduction_norm_lp_power_p_max,
+    /// Reduction using norm_lp_power_p_sum operation
+    reduction_norm_lp_power_p_sum = dnnl_reduction_norm_lp_power_p_sum,
 };
 
 /// Converts algorithm kind enum value from C++ API to C API type.
@@ -784,6 +808,8 @@ enum class query {
     matmul_d = dnnl_query_matmul_d,
     /// resampling descriptor
     resampling_d = dnnl_query_resampling_d,
+    /// reduction descriptor
+    reduction_d = dnnl_query_reduction_d,
 
     /// source memory desc
     src_md = dnnl_query_src_md,
@@ -1087,7 +1113,17 @@ struct stream : public handle<dnnl_stream_t> {
                 "could not create a stream");
         reset(stream);
     }
+#endif
 
+    /// Returns the associated engine.
+    engine get_engine() const {
+        dnnl_engine_t c_engine;
+        error::wrap_c_api(dnnl_stream_get_engine(get(), &c_engine),
+                "could not get an engine from a stream object");
+        return engine(c_engine, true);
+    }
+
+#if DNNL_GPU_RUNTIME == DNNL_RUNTIME_OCL
     /// Returns the underlying OpenCL queue object.
     /// @returns OpenCL queue.
     cl_command_queue get_ocl_command_queue() const {
@@ -1145,11 +1181,11 @@ DNNL_DEFINE_BITMASK_OPS(stream::flags)
 ///     checking whether it is necessary to reorder data from the user's data
 ///     format to a primitive's format.
 ///
-/// 2. **Memory object** -- an engine-specific object that handles the data
-///     and its description (a memory descriptor). For the CPU aengine, the
-///     data handle is simply a pointer to @c void. The data handle can be
-///     queried using #dnnl::memory::get_data_handle() and set using
-///     #dnnl::memory::set_data_handle(). A memory object can also be
+/// 2. **Memory object** -- an engine-specific object that handles the memory
+///     buffer and its description (a memory descriptor). For the CPU engine,
+///     the memory buffer handle is simply a pointer to @c void. The memory
+///     buffer can be queried using #dnnl::memory::get_data_handle() and set
+///     using #dnnl::memory::set_data_handle(). A memory object can also be
 ///     queried for the underlying memory descriptor and for its engine using
 ///     #dnnl::memory::get_desc() and dnnl::memory::get_engine().
 ///
@@ -1171,14 +1207,14 @@ DNNL_DEFINE_BITMASK_OPS(stream::flags)
 ///   library because there is no clear definition of what the output values
 ///   should be.
 ///
-/// Data handle of a zero-volume memory is never accessed.
+/// Memory buffer of a zero-volume memory is never accessed.
 ///
 /// @{
 
 /// Memory object.
 ///
 /// A memory object encapsulates a handle to a memory buffer allocated on a
-/// specific aengine, tensor dimensions, data type, and memory format, which is
+/// specific engine, tensor dimensions, data type, and memory format, which is
 /// the way tensor indices map to offsets in linear memory space. Memory
 /// objects are passed to primitives during execution.
 struct memory : public handle<dnnl_memory_t> {
@@ -1204,11 +1240,12 @@ struct memory : public handle<dnnl_memory_t> {
     enum class data_type {
         /// Undefined data type (used for empty memory descriptors).
         undef = dnnl_data_type_undef,
-        /// 16-bit/half-precision floating point.
+        /// [16-bit/half-precision floating point](https://en.wikipedia.org/wiki/Half-precision_floating-point_format).
         f16 = dnnl_f16,
-        /// non-standard 16-bit floating point with 7-bit mantissa.
+        /// non-standard
+        /// [16-bit floating point with 7-bit mantissa](https://en.wikipedia.org/wiki/Bfloat16_floating-point_format).
         bf16 = dnnl_bf16,
-        /// 32-bit/single-precision floating point.
+        /// [32-bit/single-precision floating point](https://en.wikipedia.org/wiki/Single-precision_floating-point_format).
         f32 = dnnl_f32,
         /// 32-bit signed integer.
         s32 = dnnl_s32,
@@ -1241,7 +1278,7 @@ struct memory : public handle<dnnl_memory_t> {
     ///
     ///  - Domain-agnostic names, i.e. names that do not depend on the tensor
     ///    usage in the specific primitive. These names use letters from `a`
-    ///    to `l` to denote logical dimensions and form the order in which the
+    ///    to `f` to denote logical dimensions and form the order in which the
     ///    dimensions are laid in memory. For example,
     ///    #dnnl::memory::format_tag::ab is used to denote a 2D tensor where the
     ///    second logical dimension (denoted as `b`) is the innermost, i.e.
@@ -1332,12 +1369,47 @@ struct memory : public handle<dnnl_memory_t> {
         cdeba = dnnl_cdeba,
         /// permuted 5D tensor
         decab = dnnl_decab,
+        /// permuted 5D tensor
+        abced = dnnl_abced,
+
         /// plain 6D tensor
         abcdef = dnnl_abcdef,
         /// plain 6D tensor
         acbdef = dnnl_acbdef,
         /// plain 6D tensor
         defcab = dnnl_defcab,
+        /// permuted 6D tensor
+        abcdfe = dnnl_abcdfe,
+
+        /// plain 7D tensor
+        abcdefg = dnnl_abcdefg,
+        /// permuted 7D tensor
+        abcdegf = dnnl_abcdegf,
+
+        /// plain 8D tensor
+        abcdefgh = dnnl_abcdefgh,
+        /// permuted 8D tensor
+        abcdefhg = dnnl_abcdefhg,
+
+        /// plain 9D tensor
+        abcdefghi = dnnl_abcdefghi,
+        /// permuted 9D tensor
+        abcdefgih = dnnl_abcdefgih,
+
+        /// plain 10D tensor
+        abcdefghij = dnnl_abcdefghij,
+        /// permuted 10D tensor
+        abcdefghji = dnnl_abcdefghji,
+
+        /// plain 11D tensor
+        abcdefghijk = dnnl_abcdefghijk,
+        /// permuted 11D tensor
+        abcdefghikj = dnnl_abcdefghikj,
+
+        /// plain 12D tensor
+        abcdefghijkl = dnnl_abcdefghijkl,
+        /// permuted 12D tensor
+        abcdefghijlk = dnnl_abcdefghijlk,
 
         /// 1D tensor; an alias for #dnnl::memory::format_tag::a
         x = a,
@@ -1876,7 +1948,7 @@ struct memory : public handle<dnnl_memory_t> {
         ///    dimension has no padding (i.e.
         ///    `padded_dims[dim] == dims[dim] && dims[dim] == 1`).
         /// 3. Split a dimension into multiple ones. This is possible only if
-        ///    the product of all tensor diumensions stays constant and the
+        ///    the product of all tensor dimensions stays constant and the
         ///    dimension being split does not have padding (i.e.
         ///    `padded_dims[dim] = dims[dim]`).
         /// 4. Join multiple consecutive dimensions into a single one. As in
@@ -1885,9 +1957,9 @@ struct memory : public handle<dnnl_memory_t> {
         ///    memory these dimensions are dense and have the same order as
         ///    their logical counterparts. This also assumes that these
         ///    dimensions are not blocked.
-        ///    - Here, dense means:
+        ///    - Here, 'dense' means:
         ///      `stride for dim[i] == (stride for dim[i + 1]) * dim[i + 1]`;
-        ///    - And same order means:
+        ///    - And 'same order' means:
         ///      `i < j` if and only if `stride for dim[j] <= stride for dim[i]`.
         ///
         /// @warning
@@ -1917,7 +1989,8 @@ struct memory : public handle<dnnl_memory_t> {
         ///
         /// The physical memory layout representation is adjusted accordingly
         /// to maintain the consistency between the logical and physical parts
-        /// of the memory descriptor.
+        /// of the memory descriptor. The new memory descriptor inherits the
+        /// data type.
         ///
         /// The new memory descriptor inherits the data type. This operation is
         /// valid only for memory descriptors that have format_kind set to
@@ -2013,7 +2086,7 @@ struct memory : public handle<dnnl_memory_t> {
 
     /// Constructs a memory object.
     ///
-    /// Unless @p handle is equal to DNNL_MEMORY_NONE, the constructed memory
+    /// Unless @p handle is equal to #DNNL_MEMORY_NONE, the constructed memory
     /// object will have the underlying buffer set. In this case, the buffer
     /// will be initialized as if #dnnl::memory::set_data_handle() had been
     /// called.
@@ -2022,14 +2095,13 @@ struct memory : public handle<dnnl_memory_t> {
     ///
     /// @param md Memory descriptor.
     /// @param aengine Engine to store the data on.
-    /// @param handle Handle of the memory buffer to use as an underlying
-    ///     storage.
+    /// @param handle Handle of the memory buffer to use.
     ///     - A pointer to the user-allocated buffer. In this case the library
     ///       doesn't own the buffer.
-    ///     - The DNNL_MEMORY_ALLOCATE special value. Instructs the library to
+    ///     - The #DNNL_MEMORY_ALLOCATE special value. Instructs the library to
     ///       allocate the buffer for the memory object. In this case the
     ///       library owns the buffer.
-    ///     - DNNL_MEMORY_NONE to create dnnl_memory without an underlying
+    ///     - #DNNL_MEMORY_NONE to create dnnl::memory without an underlying
     ///       buffer.
     memory(const desc &md, const engine &aengine, void *handle) {
         dnnl_memory_t result;
@@ -2041,7 +2113,7 @@ struct memory : public handle<dnnl_memory_t> {
 
     /// Constructs a memory object.
     ///
-    /// The underlying storage for the memory will be allocated by the library.
+    /// The underlying buffer for the memory will be allocated by the library.
     ///
     /// @param md Memory descriptor.
     /// @param aengine Engine to store the data on.
@@ -2097,8 +2169,10 @@ struct memory : public handle<dnnl_memory_t> {
     ///     zeroes to the padding area if it exists. Hence, the @p handle
     ///     parameter cannot and does not have a const qualifier.
     ///
-    /// @param handle Data handle. For the CPU aengine, the data handle
-    ///     is a pointer to the actual data. For OpenCL it is a cl_mem.
+    /// @param handle Memory buffer to use. For the CPU engine, the memory
+    ///     buffer is a pointer to the actual data. For OpenCL it is a cl_mem.
+    ///     It must have at least #dnnl::memory::desc::get_size() bytes
+    ///     allocated.
     /// @param astream Stream to use to execute padding in.
     void set_data_handle(void *handle, const stream &astream) const {
         error::wrap_c_api(dnnl_memory_set_data_handle_v2(
@@ -2112,8 +2186,10 @@ struct memory : public handle<dnnl_memory_t> {
     /// #dnnl::memory::set_data_handle(void *, const stream &) const
     /// for more information.
     ///
-    /// @param handle Data handle. For the CPU aengine, the data handle
-    ///     is a pointer to the actual data. For OpenCL it is a cl_mem.
+    /// @param handle Memory buffer to use. For the CPU engine, the memory
+    ///     buffer is a pointer to the actual data. For OpenCL it is a cl_mem.
+    ///     It must have at least #dnnl::memory::desc::get_size() bytes
+    ///     allocated.
     void set_data_handle(void *handle) const {
         error::wrap_c_api(
                 dnnl_memory_set_data_handle_v2(get(), handle, nullptr),
@@ -2127,11 +2203,12 @@ struct memory : public handle<dnnl_memory_t> {
     /// engines that do not support direct memory access.
     ///
     /// Mapping is an exclusive operation - a memory object cannot be used in
-    /// other operations until it is unmapped via memory::unmap_data() call.
+    /// other operations until it is unmapped via #dnnl::memory::unmap_data()
+    /// call.
     ///
     /// @note
     ///     Any primitives working with the memory should be completed before
-    ///     the memory is mapped. Use stream::wait() to synchronize the
+    ///     the memory is mapped. Use #dnnl::stream::wait() to synchronize the
     ///     corresponding execution stream.
     ///
     /// @note
@@ -2149,14 +2226,15 @@ struct memory : public handle<dnnl_memory_t> {
     }
 
     /// Unmaps a memory object and writes back any changes made to the
-    /// previously mapped memory buffer. The pointer to the mapped buffer
-    /// must be obtained via the dnnl::memory::map_data() call.
+    /// previously mapped memory buffer.
     ///
     /// @note
     ///     The map_data and unmap_data functions are provided mainly for
-    ///     debug and testing purposes and their performance may be suboptimal.
+    ///     debug and testing purposes and their performance may be
+    ///     suboptimal.
     ///
-    /// @param mapped_ptr A pointer previously returned by map_data().
+    /// @param mapped_ptr A pointer previously returned by
+    ///     #dnnl::memory::map_data().
     void unmap_data(void *mapped_ptr) const {
         error::wrap_c_api(dnnl_memory_unmap_data(get(), mapped_ptr),
                 "could not unmap memory object data");
@@ -2284,13 +2362,11 @@ struct post_ops : public handle<dnnl_post_ops_t> {
     /// the computations would be `dst[:] := scale * dst[:] + op(...)`
     /// instead of `dst[:] := op(...)`.
     ///
-    /// If @p data_type is specified, original dst tensor will be reinterpreted
-    /// as a tensor with provided data type. Since it is reinterpretation,
-    /// data_type and dst data type should have same size.
-    /// As a result, computations would be:
-    ///
-    ///     dst[:] <- scale * as_data_type(dst[:]) + op(...)
-    ///                                        // instead of dst[:] <- op(...)
+    /// If @p data_type is specified, the original dst tensor will be
+    /// reinterpreted as a tensor with the provided data type. Because it is a
+    /// reinterpretation, data_type and dst data type should have the same size.
+    /// As a result, computations would be `dst[:] <- scale *
+    /// as_data_type(dst[:]) + op(...)` instead of `dst[:] <- op(...)`.
     ///
     /// @note
     ///     This post-op executes in-place and does not change the
@@ -2352,7 +2428,7 @@ struct post_ops : public handle<dnnl_post_ops_t> {
                 "could not append an elementwise post-op");
     }
 
-    /// Returns parameters of an elementwise post-up.
+    /// Returns parameters of an elementwise post-op.
     ///
     /// @param index Index of the post-op.
     /// @param scale Output scaling factor.
@@ -2531,6 +2607,42 @@ struct post_ops : public handle<dnnl_post_ops_t> {
         for (dnnl_dim_t c = 0; c < count; ++c)
             scales[c] = c_scales[c];
         return;
+    }
+
+    /// Appends a binary post-op.
+    ///
+    /// The kind of this post operation is #dnnl_binary.
+    ///
+    /// In the simplest case when the binary is the only post operation, the
+    /// computations would be:
+    ///
+    ///     dst[:] <- binary_op (dst[:], another_input[:])
+    ///
+    /// where binary_op is configured with the given parameters. binary_op
+    /// supports broadcast semantics for a second operand.
+    ///
+    /// @param aalgorithm Binary algorithm for the post-op.
+    /// @param src1_desc Memory descriptor of a second operand.
+    void append_binary(algorithm aalgorithm, const memory::desc &src1_desc) {
+        error::wrap_c_api(dnnl_post_ops_append_binary(get(),
+                                  convert_to_c(aalgorithm), &src1_desc.data),
+                "could not append a binary post-op");
+    }
+
+    /// Returns the parameters of a binary post-op.
+    ///
+    /// @param index Index of the binary post-op.
+    /// @param aalgorithm Output binary algorithm kind.
+    /// @param src1_desc Output memory descriptor of a second operand.
+    void get_params_binary(
+            int index, algorithm &aalgorithm, memory::desc &src1_desc) const {
+        dnnl_alg_kind_t c_alg;
+        const dnnl_memory_desc_t *data;
+        error::wrap_c_api(
+                dnnl_post_ops_get_params_binary(get(), index, &c_alg, &data),
+                "could not get parameters of a binary post-op");
+        aalgorithm = static_cast<dnnl::algorithm>(c_alg);
+        src1_desc.data = *data;
     }
 };
 
@@ -2745,7 +2857,7 @@ struct primitive_attr : public handle<dnnl_primitive_attr_t> {
     ///     hold: \f$zero\_points.size() = \prod\limits_{d \in mask}
     ///     argument.dims[d].\f$ If the zero points are not known at the time
     ///     of the call, this vector must contain a single
-    ///     #DNNL_RUNTIME_F32_VAL value and the zero points must be passed at
+    ///     #DNNL_RUNTIME_S32_VAL value and the zero points must be passed at
     ///     execution time as an argument with index
     ///     #DNNL_ARG_ATTR_ZERO_POINTS.
     void set_zero_points(
@@ -2789,18 +2901,14 @@ struct primitive_attr : public handle<dnnl_primitive_attr_t> {
     /// floating-point data to unsigned integer and must be passed to the RNN
     /// primitive using attributes.
     ///
-    /// The quantization formula is `scale * (data + shift)`.
-    ///
-    /// @note
-    ///     Quantization scale and shift are common for src_layer, src_iter,
-    ///     dst_iter, and dst_layer.
+    /// The quantization formula is `scale * data + shift`.
     ///
     /// Example usage:
     /// @code
     ///     // RNN parameters
     ///     int l = 2, t = 2, mb = 32, sic = 32, slc = 32, dic = 32, dlc = 32;
     ///     // Activations quantization parameters
-    ///     float scale = 2.0f, shift = 0.5f;
+    ///     float scale = 63.f, shift = 64.f;
     ///
     ///     primitive_attr attr;
     ///
@@ -2811,6 +2919,10 @@ struct primitive_attr : public handle<dnnl_primitive_attr_t> {
     ///     vanilla_rnn_forward::desc rnn_d(/* arguments */);
     ///     vanilla_rnn_forward::primitive_desc rnn_d(rnn_d, attr, engine);
     /// @endcode
+    ///
+    /// @note
+    ///     Quantization scale and shift are common for src_layer, src_iter,
+    ///     dst_iter, and dst_layer.
     ///
     /// @param scale The value to scale the data by.
     /// @param shift The value to shift the data by.
@@ -4798,8 +4910,8 @@ struct deconvolution_backward_weights : public primitive {
                     "update primitive");
         }
 
-        /// Constructs a descriptor for a deconvolution weights gradient primitive
-        /// without bias.
+        /// Constructs a descriptor for a deconvolution weights gradient
+        /// primitive without bias.
         ///
         /// @note
         ///     All the memory descriptors may be initialized with the
@@ -9858,6 +9970,364 @@ struct resampling_backward : public primitive {
 };
 
 /// @} dnnl_api_resampling
+
+/// @addtogroup dnnl_api_pooling Pooling
+///
+/// Pooling version 2 (dilated pooling).
+///
+/// A primitive to perform max or average pooling.
+///
+/// @sa @ref dev_guide_pooling in developer guide
+///
+/// @{
+
+/// Pooling v2 (dilated pooling) forward propagation primitive.
+struct pooling_v2_forward : public primitive {
+    /// Descriptor for a pooling forward propagation primitive.
+    struct desc {
+        dnnl_pooling_v2_desc_t data;
+
+        /// Constructs a descriptor for pooling v2
+        /// (dilated pooling) forward propagation primitive.
+        ///
+        /// Arrays @p strides, @p kernel, @p dilation, @p padding_l
+        /// and @p padding_r contain values for spatial dimensions only and
+        /// hence must have the same number of elements as there are spatial
+        /// dimensions. The order of values is the same as in the tensor:
+        /// depth (for 3D tensors), height (for 3D and 2D tensors), and width.
+        ///
+        /// @param aprop_kind Propagation kind. Possible values are
+        ///     #dnnl::prop_kind::forward_training, and
+        ///     #dnnl::prop_kind::forward_inference.
+        /// @param aalgorithm Pooling algorithm kind: either
+        ///     #dnnl::algorithm::pooling_max,
+        ///     #dnnl::algorithm::pooling_avg_include_padding,
+        ///     or #dnnl::algorithm::pooling_avg (same as
+        ///     #dnnl::algorithm::pooling_avg_exclude_padding).
+        /// @param src_desc Source memory descriptor.
+        /// @param dst_desc Destination memory descriptor.
+        /// @param strides Vector of strides for spatial dimension.
+        /// @param kernel Vector of kernel spatial dimensions.
+        /// @param dilation Array of dilations for spatial dimension.
+        /// @param padding_l Vector of padding values for low indices for each
+        ///     spatial dimension `([[front,] top,] left)`.
+        /// @param padding_r Vector of padding values for high indices for
+        ///     each spatial dimension `([[back,] bottom,] right)`.
+        desc(prop_kind aprop_kind, algorithm aalgorithm,
+                const memory::desc &src_desc, const memory::desc &dst_desc,
+                const memory::dims &strides, const memory::dims &kernel,
+                const memory::dims &dilation, const memory::dims &padding_l,
+                const memory::dims &padding_r) {
+            memory::validate_dims(strides, src_desc.data.ndims - 2);
+            memory::validate_dims(kernel, src_desc.data.ndims - 2);
+            memory::validate_dims(padding_l, src_desc.data.ndims - 2);
+            memory::validate_dims(padding_r, src_desc.data.ndims - 2);
+            memory::validate_dims(dilation, src_desc.data.ndims - 2);
+            error::wrap_c_api(
+                    dnnl_pooling_v2_forward_desc_init(&data,
+                            dnnl::convert_to_c(aprop_kind),
+                            convert_to_c(aalgorithm), &src_desc.data,
+                            &dst_desc.data, &strides[0], &kernel[0],
+                            &dilation[0], &padding_l[0], &padding_r[0]),
+                    "could not create a descriptor for a pooling forward "
+                    "propagation primitive");
+        }
+    };
+
+    /// Primitive descriptor for a pooling forward propagation primitive.
+    struct primitive_desc : public dnnl::primitive_desc {
+        /// Default constructor. Produces an empty object.
+        primitive_desc() = default;
+
+        /// Constructs a primitive descriptor for a pooling v2
+        /// (dilated pooling) forward
+        /// propagation primitive.
+        ///
+        /// @param adesc Descriptor for a pooling forward propagation primitive.
+        /// @param aengine Engine to use.
+        /// @param allow_empty A flag signifying whether construction is
+        ///     allowed to fail without throwing an exception. In this case an
+        ///     empty object will be produced. This flag is optional and
+        ///     defaults to false.
+        primitive_desc(const desc &adesc, const engine &aengine,
+                bool allow_empty = false)
+            : dnnl::primitive_desc(
+                    &adesc.data, nullptr, aengine, nullptr, allow_empty) {}
+
+        /// Constructs a primitive descriptor for a pooling v2
+        /// (dilated pooling) forward
+        /// propagation primitive.
+        ///
+        /// @param adesc Descriptor for a pooling forward propagation primitive.
+        /// @param aengine Engine to use.
+        /// @param attr Primitive attributes to use.
+        /// @param allow_empty A flag signifying whether construction is
+        ///     allowed to fail without throwing an exception. In this case an
+        ///     empty object will be produced. This flag is optional and
+        ///     defaults to false.
+        primitive_desc(const desc &adesc, const primitive_attr &attr,
+                const engine &aengine, bool allow_empty = false)
+            : dnnl::primitive_desc(
+                    &adesc.data, &attr, aengine, nullptr, allow_empty) {}
+
+        /// Constructs a primitive descriptor for a pooling v2
+        /// (dilated pooling) forward
+        /// propagation primitive from a C API primitive descriptor that must
+        /// have a matching kind.
+        ///
+        /// @param pd C API primitive descriptor for a pooling forward
+        ///     propagation primitive.
+        primitive_desc(dnnl_primitive_desc_t pd)
+            : dnnl::primitive_desc(pd, dnnl::primitive::kind::pooling_v2,
+                    dnnl::prop_kind::forward_training,
+                    dnnl::prop_kind::forward_inference) {}
+
+        /// @copydoc dnnl::primitive_desc_base::src_desc()const
+        memory::desc src_desc() const { return base::src_desc(0); }
+
+        /// @copydoc dnnl::primitive_desc_base::dst_desc()const
+        memory::desc dst_desc() const { return base::dst_desc(0); }
+
+        /// @copydoc dnnl::primitive_desc_base::workspace_desc()const
+        memory::desc workspace_desc() const { return base::workspace_desc(); }
+    };
+
+    /// Default constructor. Produces an empty object.
+    pooling_v2_forward() = default;
+
+    /// Constructs a pooling v2 (dilated pooling) forward
+    /// propagation primitive.
+    /// @param pd Primitive descriptor for a pooling v2
+    /// (dilated pooling) forward propagation primitive.
+    pooling_v2_forward(const primitive_desc &pd) : primitive(pd) {}
+};
+
+/// Pooling v2 (dilated pooling) backward propagation primitive.
+struct pooling_v2_backward : public primitive {
+    /// Descriptor for a pooling backward propagation primitive.
+    struct desc {
+        dnnl_pooling_v2_desc_t data;
+
+        /// Constructs a descriptor for pooling v2 (dilated pooling) backward
+        /// propagation primitive.
+        ///
+        /// Arrays @p strides, @p kernel, @p dilation, @p padding_l
+        /// and @p padding_r contain values for spatial dimensions only and
+        /// hence must have the same number of elements as there are spatial
+        /// dimensions. The order of values is the same as in the tensor:
+        /// depth (for 3D tensors), height (for 3D and 2D tensors), and width.
+        ///
+        /// @param aalgorithm Pooling algorithm kind: either
+        ///     #dnnl::algorithm::pooling_max,
+        ///     #dnnl::algorithm::pooling_avg_include_padding,
+        ///     or #dnnl::algorithm::pooling_avg (same as
+        ///     #dnnl::algorithm::pooling_avg_exclude_padding).
+        /// @param diff_src_desc Diff source memory descriptor.
+        /// @param diff_dst_desc Diff destination memory descriptor.
+        /// @param strides Vector of strides for spatial dimension.
+        /// @param kernel Vector of kernel spatial dimensions.
+        /// @param dilation Array of dilations for spatial dimension.
+        /// @param padding_l Vector of padding values for low indices for each
+        ///     spatial dimension `([[front,] top,] left)`.
+        /// @param padding_r Vector of padding values for high indices for
+        ///     each spatial dimension `([[back,] bottom,] right)`.
+        desc(algorithm aalgorithm, const memory::desc &diff_src_desc,
+                const memory::desc &diff_dst_desc, const memory::dims &strides,
+                const memory::dims &kernel, const memory::dims &dilation,
+                const memory::dims &padding_l, const memory::dims &padding_r) {
+            memory::validate_dims(strides, diff_src_desc.data.ndims - 2);
+            memory::validate_dims(kernel, diff_src_desc.data.ndims - 2);
+            memory::validate_dims(padding_l, diff_src_desc.data.ndims - 2);
+            memory::validate_dims(padding_r, diff_src_desc.data.ndims - 2);
+            memory::validate_dims(dilation, diff_src_desc.data.ndims - 2);
+            error::wrap_c_api(
+                    dnnl_pooling_v2_backward_desc_init(&data,
+                            convert_to_c(aalgorithm), &diff_src_desc.data,
+                            &diff_dst_desc.data, &strides[0], &kernel[0],
+                            &dilation[0], &padding_l[0], &padding_r[0]),
+                    "could not create a descriptor for a pooling backward "
+                    "propagation primitive");
+        }
+    };
+
+    /// Primitive descriptor for a pooling v2 (dilated pooling) backward
+    /// propagation primitive.
+    struct primitive_desc : public dnnl::primitive_desc {
+        /// Default constructor. Produces an empty object.
+        primitive_desc() = default;
+
+        /// Constructs a primitive descriptor for a pooling v2
+        /// (dilated pooling) backward
+        /// propagation primitive.
+        ///
+        /// @param adesc Descriptor for a pooling backward propagation primitive.
+        /// @param aengine Engine to use.
+        /// @param hint_fwd_pd Primitive descriptor for a pooling forward
+        ///     propagation primitive. It is used as a hint for deciding which
+        ///     memory format to use.
+        /// @param allow_empty A flag signifying whether construction is
+        ///     allowed to fail without throwing an exception. In this case an
+        ///     empty object will be produced. This flag is optional and
+        ///     defaults to false.
+        primitive_desc(const desc &adesc, const engine &aengine,
+                const pooling_v2_forward::primitive_desc &hint_fwd_pd,
+                bool allow_empty = false)
+            : dnnl::primitive_desc(&adesc.data, nullptr, aengine,
+                    hint_fwd_pd.get(), allow_empty) {}
+
+        /// Constructs a primitive descriptor for a pooling v2
+        /// (dilated pooling) backward
+        /// propagation primitive.
+        ///
+        /// @param adesc Descriptor for a pooling backward propagation primitive.
+        /// @param attr Primitive attributes to use.
+        /// @param aengine Engine to use.
+        /// @param hint_fwd_pd Primitive descriptor for a pooling forward
+        ///     propagation primitive. It is used as a hint for deciding which
+        ///     memory format to use.
+        /// @param allow_empty A flag signifying whether construction is
+        ///     allowed to fail without throwing an exception. In this case an
+        ///     empty object will be produced. This flag is optional and
+        ///     defaults to false.
+        primitive_desc(const desc &adesc, const primitive_attr &attr,
+                const engine &aengine,
+                const pooling_v2_forward::primitive_desc &hint_fwd_pd,
+                bool allow_empty = false)
+            : dnnl::primitive_desc(&adesc.data, &attr, aengine,
+                    hint_fwd_pd.get(), allow_empty) {}
+
+        /// Constructs a primitive descriptor for a pooling v2
+        /// (dilated pooling) backward
+        /// propagation primitive from a C API primitive descriptor that must
+        /// have a matching kind.
+        ///
+        /// @param pd C API primitive descriptor for a pooling backward
+        ///     propagation primitive.
+        primitive_desc(dnnl_primitive_desc_t pd)
+            : dnnl::primitive_desc(pd, dnnl::primitive::kind::pooling_v2,
+                    dnnl::prop_kind::backward_data) {}
+
+        /// @copydoc dnnl::primitive_desc_base::src_desc()const
+        memory::desc diff_src_desc() const { return base::diff_src_desc(0); }
+
+        /// @copydoc dnnl::primitive_desc_base::diff_dst_desc()const
+        memory::desc diff_dst_desc() const { return base::diff_dst_desc(0); }
+
+        /// @copydoc dnnl::primitive_desc_base::workspace_desc()const
+        memory::desc workspace_desc() const { return base::workspace_desc(); }
+    };
+
+    /// Default constructor. Produces an empty object.
+    pooling_v2_backward() = default;
+
+    /// Constructs a pooling v2 (dilated pooling) backward
+    /// propagation primitive.
+    /// @param pd Primitive descriptor for a pooling backward propagation
+    ///     primitive.
+    pooling_v2_backward(const primitive_desc &pd) : primitive(pd) {}
+};
+
+/// @} dnnl_api_pooling_v2
+
+/// @addtogroup dnnl_api_reduction Reduction
+///
+/// A primitive to compute reduction operation on data tensor
+/// using min, max, mul, sum, mean and norm_lp operations.
+///
+/// @sa @ref dev_guide_reduction in developer guide
+///
+/// @{
+
+/// Reduction.
+struct reduction : public primitive {
+    /// Descriptor for reduction.
+    struct desc {
+        dnnl_reduction_desc_t data;
+
+        /// Default constructor. Produces an empty object.
+        desc() = default;
+
+        /// Constructs a descriptor for a reduction primitive using algorithm
+        /// specific parameters, source and destination memory descriptors.
+        ///
+        /// @note
+        ///     Destination memory descriptor may be initialized with
+        ///     #dnnl::memory::format_tag::any value of @p format_tag.
+        ///
+        /// @param aalgorithm reduction algorithm kind. Possible values:
+        ///     #dnnl_reduction_max, #dnnl_reduction_min, #dnnl_reduction_sum,
+        ///     #dnnl_reduction_mul, #dnnl_reduction_mean,
+        ///     #dnnl_reduction_norm_lp_max, #dnnl_reduction_norm_lp_sum,
+        ///     #dnnl_reduction_norm_lp_power_p_max,
+        ///     #dnnl_reduction_norm_lp_power_p_sum.
+        /// @param p algorithm specific parameter.
+        /// @param eps algorithm specific parameter.
+        /// @param src_desc Source memory descriptor.
+        /// @param dst_desc Destination memory descriptor.
+        desc(algorithm aalgorithm, const memory::desc &src_desc,
+                const memory::desc &dst_desc, float p, float eps) {
+            error::wrap_c_api(
+                    dnnl_reduction_desc_init(&data, convert_to_c(aalgorithm),
+                            &src_desc.data, &dst_desc.data, p, eps),
+                    "could not create a reduction descriptor");
+        }
+    };
+
+    /// Primitive descriptor for a reduction primitive.
+    struct primitive_desc : public dnnl::primitive_desc {
+        /// Default constructor. Produces an empty object.
+        primitive_desc() = default;
+
+        /// Constructs a primitive descriptor for a reduction primitive.
+        ///
+        /// @param adesc Descriptor for a reduction primitive.
+        /// @param aengine Engine to use.
+        /// @param allow_empty A flag signifying whether construction is
+        ///     allowed to fail without throwing an exception. In this case an
+        ///     empty object will be produced. This flag is optional and
+        ///     defaults to false.
+        primitive_desc(const desc &adesc, const engine &aengine,
+                bool allow_empty = false)
+            : dnnl::primitive_desc(
+                    &adesc.data, nullptr, aengine, nullptr, allow_empty) {}
+
+        /// Constructs a primitive descriptor for a reduction primitive.
+        ///
+        /// @param adesc Descriptor for a reduction primitive.
+        /// @param aengine Engine to use.
+        /// @param attr Primitive attributes to use.
+        /// @param allow_empty A flag signifying whether construction is
+        ///     allowed to fail without throwing an exception. In this case an
+        ///     empty object will be produced. This flag is optional and
+        ///     defaults to false.
+        primitive_desc(const desc &adesc, const primitive_attr &attr,
+                const engine &aengine, bool allow_empty = false)
+            : dnnl::primitive_desc(
+                    &adesc.data, &attr, aengine, nullptr, allow_empty) {}
+
+        /// Constructs a primitive descriptor for a reduction primitive from a C
+        /// API primitive descriptor that must have a matching kind.
+        ///
+        /// @param pd C API primitive descriptor for a reduction primitive.
+        primitive_desc(dnnl_primitive_desc_t pd)
+            : dnnl::primitive_desc(pd, dnnl::primitive::kind::reduction) {}
+
+        /// @copydoc dnnl::primitive_desc_base::src_desc()const
+        memory::desc src_desc() const { return base::src_desc(0); }
+
+        /// @copydoc dnnl::primitive_desc_base::dst_desc()const
+        memory::desc dst_desc() const { return base::dst_desc(0); }
+    };
+
+    /// Default constructor. Produces an empty object.
+    reduction() = default;
+
+    /// Constructs a reduction primitive.
+    /// @param pd Primitive descriptor for a reduction primitive.
+    reduction(const primitive_desc &pd) : primitive(pd) {}
+};
+
+/// @} dnnl_api_reduction
 
 /// @} dnnl_api_primitives
 

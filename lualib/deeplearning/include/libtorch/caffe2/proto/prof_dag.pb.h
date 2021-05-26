@@ -34,7 +34,7 @@
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
-#define PROTOBUF_INTERNAL_EXPORT_caffe2_2fproto_2fprof_5fdag_2eproto CAFFE2_API
+#define PROTOBUF_INTERNAL_EXPORT_caffe2_2fproto_2fprof_5fdag_2eproto TORCH_API
 PROTOBUF_NAMESPACE_OPEN
 namespace internal {
 class AnyMetadata;
@@ -42,7 +42,7 @@ class AnyMetadata;
 PROTOBUF_NAMESPACE_CLOSE
 
 // Internal implementation detail -- do not use these members.
-struct CAFFE2_API TableStruct_caffe2_2fproto_2fprof_5fdag_2eproto {
+struct TORCH_API TableStruct_caffe2_2fproto_2fprof_5fdag_2eproto {
   static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTableField entries[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxillaryParseTableField aux[]
@@ -53,36 +53,36 @@ struct CAFFE2_API TableStruct_caffe2_2fproto_2fprof_5fdag_2eproto {
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
   static const ::PROTOBUF_NAMESPACE_ID::uint32 offsets[];
 };
-extern CAFFE2_API const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_caffe2_2fproto_2fprof_5fdag_2eproto;
+extern TORCH_API const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_caffe2_2fproto_2fprof_5fdag_2eproto;
 namespace caffe2 { const ::std::string& GetEmptyStringAlreadyInited(); 
 class BlobProfile;
 class BlobProfileDefaultTypeInternal;
-CAFFE2_API extern BlobProfileDefaultTypeInternal _BlobProfile_default_instance_;
+TORCH_API extern BlobProfileDefaultTypeInternal _BlobProfile_default_instance_;
 class OpProfile;
 class OpProfileDefaultTypeInternal;
-CAFFE2_API extern OpProfileDefaultTypeInternal _OpProfile_default_instance_;
+TORCH_API extern OpProfileDefaultTypeInternal _OpProfile_default_instance_;
 class ProfDAGProto;
 class ProfDAGProtoDefaultTypeInternal;
-CAFFE2_API extern ProfDAGProtoDefaultTypeInternal _ProfDAGProto_default_instance_;
+TORCH_API extern ProfDAGProtoDefaultTypeInternal _ProfDAGProto_default_instance_;
 class ProfDAGProtos;
 class ProfDAGProtosDefaultTypeInternal;
-CAFFE2_API extern ProfDAGProtosDefaultTypeInternal _ProfDAGProtos_default_instance_;
+TORCH_API extern ProfDAGProtosDefaultTypeInternal _ProfDAGProtos_default_instance_;
 class TwoNumberStatsProto;
 class TwoNumberStatsProtoDefaultTypeInternal;
-CAFFE2_API extern TwoNumberStatsProtoDefaultTypeInternal _TwoNumberStatsProto_default_instance_;
+TORCH_API extern TwoNumberStatsProtoDefaultTypeInternal _TwoNumberStatsProto_default_instance_;
 }  // namespace caffe2
 PROTOBUF_NAMESPACE_OPEN
-template<> CAFFE2_API ::caffe2::BlobProfile* Arena::CreateMaybeMessage<::caffe2::BlobProfile>(Arena*);
-template<> CAFFE2_API ::caffe2::OpProfile* Arena::CreateMaybeMessage<::caffe2::OpProfile>(Arena*);
-template<> CAFFE2_API ::caffe2::ProfDAGProto* Arena::CreateMaybeMessage<::caffe2::ProfDAGProto>(Arena*);
-template<> CAFFE2_API ::caffe2::ProfDAGProtos* Arena::CreateMaybeMessage<::caffe2::ProfDAGProtos>(Arena*);
-template<> CAFFE2_API ::caffe2::TwoNumberStatsProto* Arena::CreateMaybeMessage<::caffe2::TwoNumberStatsProto>(Arena*);
+template<> TORCH_API ::caffe2::BlobProfile* Arena::CreateMaybeMessage<::caffe2::BlobProfile>(Arena*);
+template<> TORCH_API ::caffe2::OpProfile* Arena::CreateMaybeMessage<::caffe2::OpProfile>(Arena*);
+template<> TORCH_API ::caffe2::ProfDAGProto* Arena::CreateMaybeMessage<::caffe2::ProfDAGProto>(Arena*);
+template<> TORCH_API ::caffe2::ProfDAGProtos* Arena::CreateMaybeMessage<::caffe2::ProfDAGProtos>(Arena*);
+template<> TORCH_API ::caffe2::TwoNumberStatsProto* Arena::CreateMaybeMessage<::caffe2::TwoNumberStatsProto>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace caffe2 {
 
 // ===================================================================
 
-class CAFFE2_API TwoNumberStatsProto :
+class TORCH_API TwoNumberStatsProto :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.TwoNumberStatsProto) */ {
  public:
   TwoNumberStatsProto();
@@ -252,7 +252,7 @@ class CAFFE2_API TwoNumberStatsProto :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API BlobProfile :
+class TORCH_API BlobProfile :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.BlobProfile) */ {
  public:
   BlobProfile();
@@ -416,7 +416,7 @@ class CAFFE2_API BlobProfile :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API ProfDAGProto :
+class TORCH_API ProfDAGProto :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.ProfDAGProto) */ {
  public:
   ProfDAGProto();
@@ -659,7 +659,7 @@ class CAFFE2_API ProfDAGProto :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API ProfDAGProtos :
+class TORCH_API ProfDAGProtos :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.ProfDAGProtos) */ {
  public:
   ProfDAGProtos();
@@ -846,7 +846,7 @@ class CAFFE2_API ProfDAGProtos :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API OpProfile :
+class TORCH_API OpProfile :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.OpProfile) */ {
  public:
   OpProfile();

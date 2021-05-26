@@ -34,7 +34,7 @@
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
-#define PROTOBUF_INTERNAL_EXPORT_caffe2_2fproto_2fhsm_2eproto CAFFE2_API
+#define PROTOBUF_INTERNAL_EXPORT_caffe2_2fproto_2fhsm_2eproto TORCH_API
 PROTOBUF_NAMESPACE_OPEN
 namespace internal {
 class AnyMetadata;
@@ -42,7 +42,7 @@ class AnyMetadata;
 PROTOBUF_NAMESPACE_CLOSE
 
 // Internal implementation detail -- do not use these members.
-struct CAFFE2_API TableStruct_caffe2_2fproto_2fhsm_2eproto {
+struct TORCH_API TableStruct_caffe2_2fproto_2fhsm_2eproto {
   static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTableField entries[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxillaryParseTableField aux[]
@@ -53,36 +53,36 @@ struct CAFFE2_API TableStruct_caffe2_2fproto_2fhsm_2eproto {
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
   static const ::PROTOBUF_NAMESPACE_ID::uint32 offsets[];
 };
-extern CAFFE2_API const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_caffe2_2fproto_2fhsm_2eproto;
+extern TORCH_API const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_caffe2_2fproto_2fhsm_2eproto;
 namespace caffe2 { const ::std::string& GetEmptyStringAlreadyInited(); 
 class HierarchyProto;
 class HierarchyProtoDefaultTypeInternal;
-CAFFE2_API extern HierarchyProtoDefaultTypeInternal _HierarchyProto_default_instance_;
+TORCH_API extern HierarchyProtoDefaultTypeInternal _HierarchyProto_default_instance_;
 class NodeProto;
 class NodeProtoDefaultTypeInternal;
-CAFFE2_API extern NodeProtoDefaultTypeInternal _NodeProto_default_instance_;
+TORCH_API extern NodeProtoDefaultTypeInternal _NodeProto_default_instance_;
 class PathNodeProto;
 class PathNodeProtoDefaultTypeInternal;
-CAFFE2_API extern PathNodeProtoDefaultTypeInternal _PathNodeProto_default_instance_;
+TORCH_API extern PathNodeProtoDefaultTypeInternal _PathNodeProto_default_instance_;
 class PathProto;
 class PathProtoDefaultTypeInternal;
-CAFFE2_API extern PathProtoDefaultTypeInternal _PathProto_default_instance_;
+TORCH_API extern PathProtoDefaultTypeInternal _PathProto_default_instance_;
 class TreeProto;
 class TreeProtoDefaultTypeInternal;
-CAFFE2_API extern TreeProtoDefaultTypeInternal _TreeProto_default_instance_;
+TORCH_API extern TreeProtoDefaultTypeInternal _TreeProto_default_instance_;
 }  // namespace caffe2
 PROTOBUF_NAMESPACE_OPEN
-template<> CAFFE2_API ::caffe2::HierarchyProto* Arena::CreateMaybeMessage<::caffe2::HierarchyProto>(Arena*);
-template<> CAFFE2_API ::caffe2::NodeProto* Arena::CreateMaybeMessage<::caffe2::NodeProto>(Arena*);
-template<> CAFFE2_API ::caffe2::PathNodeProto* Arena::CreateMaybeMessage<::caffe2::PathNodeProto>(Arena*);
-template<> CAFFE2_API ::caffe2::PathProto* Arena::CreateMaybeMessage<::caffe2::PathProto>(Arena*);
-template<> CAFFE2_API ::caffe2::TreeProto* Arena::CreateMaybeMessage<::caffe2::TreeProto>(Arena*);
+template<> TORCH_API ::caffe2::HierarchyProto* Arena::CreateMaybeMessage<::caffe2::HierarchyProto>(Arena*);
+template<> TORCH_API ::caffe2::NodeProto* Arena::CreateMaybeMessage<::caffe2::NodeProto>(Arena*);
+template<> TORCH_API ::caffe2::PathNodeProto* Arena::CreateMaybeMessage<::caffe2::PathNodeProto>(Arena*);
+template<> TORCH_API ::caffe2::PathProto* Arena::CreateMaybeMessage<::caffe2::PathProto>(Arena*);
+template<> TORCH_API ::caffe2::TreeProto* Arena::CreateMaybeMessage<::caffe2::TreeProto>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace caffe2 {
 
 // ===================================================================
 
-class CAFFE2_API NodeProto :
+class TORCH_API NodeProto :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.NodeProto) */ {
  public:
   NodeProto();
@@ -312,7 +312,7 @@ class CAFFE2_API NodeProto :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API TreeProto :
+class TORCH_API TreeProto :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.TreeProto) */ {
  public:
   TreeProto();
@@ -454,7 +454,7 @@ class CAFFE2_API TreeProto :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API HierarchyProto :
+class TORCH_API HierarchyProto :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.HierarchyProto) */ {
  public:
   HierarchyProto();
@@ -614,7 +614,7 @@ class CAFFE2_API HierarchyProto :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API PathProto :
+class TORCH_API PathProto :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.PathProto) */ {
  public:
   PathProto();
@@ -774,7 +774,7 @@ class CAFFE2_API PathProto :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API PathNodeProto :
+class TORCH_API PathNodeProto :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.PathNodeProto) */ {
  public:
   PathNodeProto();

@@ -36,7 +36,7 @@
 #include "caffe2/proto/caffe2.pb.h"
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
-#define PROTOBUF_INTERNAL_EXPORT_caffe2_2fproto_2ftorch_2eproto CAFFE2_API
+#define PROTOBUF_INTERNAL_EXPORT_caffe2_2fproto_2ftorch_2eproto TORCH_API
 PROTOBUF_NAMESPACE_OPEN
 namespace internal {
 class AnyMetadata;
@@ -44,7 +44,7 @@ class AnyMetadata;
 PROTOBUF_NAMESPACE_CLOSE
 
 // Internal implementation detail -- do not use these members.
-struct CAFFE2_API TableStruct_caffe2_2fproto_2ftorch_2eproto {
+struct TORCH_API TableStruct_caffe2_2fproto_2ftorch_2eproto {
   static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTableField entries[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxillaryParseTableField aux[]
@@ -55,50 +55,50 @@ struct CAFFE2_API TableStruct_caffe2_2fproto_2ftorch_2eproto {
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
   static const ::PROTOBUF_NAMESPACE_ID::uint32 offsets[];
 };
-extern CAFFE2_API const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_caffe2_2fproto_2ftorch_2eproto;
+extern TORCH_API const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_caffe2_2fproto_2ftorch_2eproto;
 namespace torch { const ::std::string& GetEmptyStringAlreadyInited(); 
 class AttributeDef;
 class AttributeDefDefaultTypeInternal;
-CAFFE2_API extern AttributeDefDefaultTypeInternal _AttributeDef_default_instance_;
+TORCH_API extern AttributeDefDefaultTypeInternal _AttributeDef_default_instance_;
 class LibDef;
 class LibDefDefaultTypeInternal;
-CAFFE2_API extern LibDefDefaultTypeInternal _LibDef_default_instance_;
+TORCH_API extern LibDefDefaultTypeInternal _LibDef_default_instance_;
 class ModelDef;
 class ModelDefDefaultTypeInternal;
-CAFFE2_API extern ModelDefDefaultTypeInternal _ModelDef_default_instance_;
+TORCH_API extern ModelDefDefaultTypeInternal _ModelDef_default_instance_;
 class ModuleDef;
 class ModuleDefDefaultTypeInternal;
-CAFFE2_API extern ModuleDefDefaultTypeInternal _ModuleDef_default_instance_;
+TORCH_API extern ModuleDefDefaultTypeInternal _ModuleDef_default_instance_;
 class ParameterDef;
 class ParameterDefDefaultTypeInternal;
-CAFFE2_API extern ParameterDefDefaultTypeInternal _ParameterDef_default_instance_;
+TORCH_API extern ParameterDefDefaultTypeInternal _ParameterDef_default_instance_;
 class RecordRef;
 class RecordRefDefaultTypeInternal;
-CAFFE2_API extern RecordRefDefaultTypeInternal _RecordRef_default_instance_;
+TORCH_API extern RecordRefDefaultTypeInternal _RecordRef_default_instance_;
 class TensorDef;
 class TensorDefDefaultTypeInternal;
-CAFFE2_API extern TensorDefDefaultTypeInternal _TensorDef_default_instance_;
+TORCH_API extern TensorDefDefaultTypeInternal _TensorDef_default_instance_;
 }  // namespace torch
 PROTOBUF_NAMESPACE_OPEN
-template<> CAFFE2_API ::torch::AttributeDef* Arena::CreateMaybeMessage<::torch::AttributeDef>(Arena*);
-template<> CAFFE2_API ::torch::LibDef* Arena::CreateMaybeMessage<::torch::LibDef>(Arena*);
-template<> CAFFE2_API ::torch::ModelDef* Arena::CreateMaybeMessage<::torch::ModelDef>(Arena*);
-template<> CAFFE2_API ::torch::ModuleDef* Arena::CreateMaybeMessage<::torch::ModuleDef>(Arena*);
-template<> CAFFE2_API ::torch::ParameterDef* Arena::CreateMaybeMessage<::torch::ParameterDef>(Arena*);
-template<> CAFFE2_API ::torch::RecordRef* Arena::CreateMaybeMessage<::torch::RecordRef>(Arena*);
-template<> CAFFE2_API ::torch::TensorDef* Arena::CreateMaybeMessage<::torch::TensorDef>(Arena*);
+template<> TORCH_API ::torch::AttributeDef* Arena::CreateMaybeMessage<::torch::AttributeDef>(Arena*);
+template<> TORCH_API ::torch::LibDef* Arena::CreateMaybeMessage<::torch::LibDef>(Arena*);
+template<> TORCH_API ::torch::ModelDef* Arena::CreateMaybeMessage<::torch::ModelDef>(Arena*);
+template<> TORCH_API ::torch::ModuleDef* Arena::CreateMaybeMessage<::torch::ModuleDef>(Arena*);
+template<> TORCH_API ::torch::ParameterDef* Arena::CreateMaybeMessage<::torch::ParameterDef>(Arena*);
+template<> TORCH_API ::torch::RecordRef* Arena::CreateMaybeMessage<::torch::RecordRef>(Arena*);
+template<> TORCH_API ::torch::TensorDef* Arena::CreateMaybeMessage<::torch::TensorDef>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace torch {
 
 enum ProtoVersion : int {
   PROTO_VERSION_NEWEST = 6
 };
-CAFFE2_API bool ProtoVersion_IsValid(int value);
+TORCH_API bool ProtoVersion_IsValid(int value);
 constexpr ProtoVersion ProtoVersion_MIN = PROTO_VERSION_NEWEST;
 constexpr ProtoVersion ProtoVersion_MAX = PROTO_VERSION_NEWEST;
 constexpr int ProtoVersion_ARRAYSIZE = static_cast<int>(ProtoVersion_MAX) + 1;
 
-CAFFE2_API const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ProtoVersion_descriptor();
+TORCH_API const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ProtoVersion_descriptor();
 template<typename T>
 inline const std::string& ProtoVersion_Name(T enum_t_value) {
   static_assert(::std::is_same<T, ProtoVersion>::value ||
@@ -114,7 +114,7 @@ inline bool ProtoVersion_Parse(
 }
 // ===================================================================
 
-class CAFFE2_API RecordRef :
+class TORCH_API RecordRef :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:torch.RecordRef) */ {
  public:
   RecordRef();
@@ -261,7 +261,7 @@ class CAFFE2_API RecordRef :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API TensorDef :
+class TORCH_API TensorDef :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:torch.TensorDef) */ {
  public:
   TensorDef();
@@ -563,7 +563,7 @@ class CAFFE2_API TensorDef :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API AttributeDef :
+class TORCH_API AttributeDef :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:torch.AttributeDef) */ {
  public:
   AttributeDef();
@@ -750,7 +750,7 @@ class CAFFE2_API AttributeDef :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API ParameterDef :
+class TORCH_API ParameterDef :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:torch.ParameterDef) */ {
  public:
   ParameterDef();
@@ -927,7 +927,7 @@ class CAFFE2_API ParameterDef :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API ModuleDef :
+class TORCH_API ModuleDef :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:torch.ModuleDef) */ {
  public:
   ModuleDef();
@@ -1252,7 +1252,7 @@ class CAFFE2_API ModuleDef :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API LibDef :
+class TORCH_API LibDef :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:torch.LibDef) */ {
  public:
   LibDef();
@@ -1394,7 +1394,7 @@ class CAFFE2_API LibDef :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API ModelDef :
+class TORCH_API ModelDef :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:torch.ModelDef) */ {
  public:
   ModelDef();

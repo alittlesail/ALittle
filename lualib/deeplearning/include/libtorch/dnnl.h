@@ -685,7 +685,7 @@ dnnl_status_t DNNL_API dnnl_post_ops_get_params_sum_v2(
 dnnl_status_t DNNL_API dnnl_post_ops_append_eltwise(dnnl_post_ops_t post_ops,
         float scale, dnnl_alg_kind_t alg_kind, float alpha, float beta);
 
-/// Returns the parameters of an elementwise post-up.
+/// Returns the parameters of an elementwise post-op.
 ///
 /// @param post_ops Post-ops.
 /// @param index Index of the elementwise post-op.
@@ -817,6 +817,40 @@ dnnl_status_t DNNL_API dnnl_post_ops_get_params_dw_k3s2p1(
         dnnl_data_type_t *weights_data_type, dnnl_data_type_t *bias_data_type,
         dnnl_data_type_t *dst_data_type, dnnl_dim_t *count, int *mask,
         const float **scales);
+
+/// Appends a binary post-op.
+///
+/// The kind of this post operation is #dnnl_binary.
+///
+/// In the simplest case when the binary is the only post operation, the
+/// computations would be:
+///
+///     dst[:] <- binary_op (dst[:], another_input[:])
+///
+/// where binary_op is configured with the given parameters. binary_op supports
+/// broadcast semantics for a second operand.
+///
+/// @param post_ops Post-ops.
+/// @param alg_kind Binary algorithm for the post-op.
+/// @param src1_desc Memory descriptor of a second operand.
+/// @returns #dnnl_success on success and a status describing the error
+///     otherwise.
+dnnl_status_t DNNL_API dnnl_post_ops_append_binary(dnnl_post_ops_t post_ops,
+        dnnl_alg_kind_t alg_kind, const dnnl_memory_desc_t *src1_desc);
+
+/// Returns the parameters of a binary post-op.
+///
+/// @param post_ops Post-ops.
+/// @param index Index of the binary post-op.
+/// @param alg_kind Output binary algorithm kind.
+/// @param src1_desc Output memory descriptor of a second operand.
+/// @returns #dnnl_success on success and a status describing the error
+///     otherwise.
+/// @returns #dnnl_invalid_arguments if @p index does not refer to a binary
+///     post-op.
+dnnl_status_t DNNL_API dnnl_post_ops_get_params_binary(
+        const_dnnl_post_ops_t post_ops, int index, dnnl_alg_kind_t *alg_kind,
+        const dnnl_memory_desc_t **src1_desc);
 
 /// @} dnnl_api_attributes
 
@@ -1930,6 +1964,72 @@ dnnl_status_t DNNL_API dnnl_pooling_backward_desc_init(
         const dnnl_dims_t kernel, const dnnl_dims_t padding_l,
         const dnnl_dims_t padding_r);
 
+/// Initializes a descriptor for pooling v2 (pooling with dilation support)
+/// forward propagation primitive.
+///
+/// Arrays @p strides, @p kernel, @p dilation, @p padding_l and @p padding_r
+/// contain values for spatial dimensions only and hence must have the same
+/// number of elements as there are spatial dimensions. The order of values
+/// is the same as in the tensor: depth (for 3D tensors),
+/// height (for 3D and 2D tensors), and width.
+///
+/// @param pool_desc Output descriptor for a pooling primitive.
+/// @param prop_kind Propagation kind. Possible values are
+///     #dnnl_forward_training and #dnnl_forward_inference.
+/// @param alg_kind Pooling algorithm kind: either #dnnl_pooling_max,
+///     #dnnl_pooling_avg_include_padding, or #dnnl_pooling_avg (same as
+///     #dnnl_pooling_avg_exclude_padding).
+/// @param src_desc Source memory descriptor.
+/// @param dst_desc Destination memory descriptor.
+/// @param strides Array of strides for spatial dimension.
+/// @param kernel Array of kernel spatial dimensions.
+/// @param dilation Array of dilations for spatial dimension.
+/// @param padding_l Array of padding values for low indices for each spatial
+///     dimension `([[front,] top,] left)`.
+/// @param padding_r Array of padding values for high indices for each spatial
+///     dimension `([[back,] bottom,] right)`. Can be NULL in which case
+///     padding is considered to be symmetrical.
+/// @returns #dnnl_success on success and a status describing the error
+///     otherwise.
+dnnl_status_t DNNL_API dnnl_pooling_v2_forward_desc_init(
+        dnnl_pooling_v2_desc_t *pool_desc, dnnl_prop_kind_t prop_kind,
+        dnnl_alg_kind_t alg_kind, const dnnl_memory_desc_t *src_desc,
+        const dnnl_memory_desc_t *dst_desc, const dnnl_dims_t strides,
+        const dnnl_dims_t kernel, const dnnl_dims_t dilation,
+        const dnnl_dims_t padding_l, const dnnl_dims_t padding_r);
+
+/// Initializes a descriptor for pooling v2 (pooling with dilation support)
+/// backward propagation primitive.
+///
+/// Arrays @p strides, @p kernel, @p dilation, @p padding_l and @p padding_r
+/// contain values for spatial dimensions only and hence must have the same
+/// number of elements as there are spatial dimensions. The order of values
+/// is the same as in the tensor: depth (for 3D tensors),
+/// height (for 3D and 2D tensors), and width.
+///
+/// @param pool_desc Output descriptor for a pooling primitive.
+/// @param alg_kind Pooling algorithm kind: either #dnnl_pooling_max,
+///     #dnnl_pooling_avg_include_padding, or #dnnl_pooling_avg (same as
+///     #dnnl_pooling_avg_exclude_padding).
+/// @param diff_src_desc Diff source memory descriptor.
+/// @param diff_dst_desc Diff destination memory descriptor.
+/// @param strides Array of strides for spatial dimension.
+/// @param kernel Array of kernel spatial dimensions.
+/// @param dilation Array of dilations for spatial dimension.
+/// @param padding_l Array of padding values for low indices for each spatial
+///     dimension `([[front,] top,] left)`.
+/// @param padding_r Array of padding values for high indices for each spatial
+///     dimension `([[back,] bottom,] right)`. Can be NULL in which case
+///     padding is considered to be symmetrical.
+/// @returns #dnnl_success on success and a status describing the error
+///     otherwise.
+dnnl_status_t DNNL_API dnnl_pooling_v2_backward_desc_init(
+        dnnl_pooling_v2_desc_t *pool_desc, dnnl_alg_kind_t alg_kind,
+        const dnnl_memory_desc_t *diff_src_desc,
+        const dnnl_memory_desc_t *diff_dst_desc, const dnnl_dims_t strides,
+        const dnnl_dims_t kernel, const dnnl_dims_t dilation,
+        const dnnl_dims_t padding_l, const dnnl_dims_t padding_r);
+
 /// @} dnnl_api_pooling
 
 /// @addtogroup dnnl_api_lrn
@@ -2157,7 +2257,7 @@ dnnl_status_t DNNL_API dnnl_inner_product_backward_weights_desc_init(
 /// floating-point data to unsigned integer and must be passed to the RNN
 /// primitive using attributes.
 ///
-/// The quantization formula is `scale * (data + shift)`.
+/// The quantization formula is `scale * data + shift`.
 ///
 /// @note
 ///     Quantization scale and shift are common for src_layer, src_iter,
@@ -2168,7 +2268,7 @@ dnnl_status_t DNNL_API dnnl_inner_product_backward_weights_desc_init(
 ///     // RNN parameters
 ///     int l = 2, t = 2, mb = 32, sic = 32, slc = 32, dic = 32, dlc = 32;
 ///     // Activations quantization parameters
-///     float scale = ..., shift = ..;
+///     float scale = 63.f, shift = 64.f;
 ///
 ///     dnnl_primitive_attr_t rnn_attr;
 ///     // Create default attributes
@@ -3066,6 +3166,35 @@ dnnl_status_t DNNL_API dnnl_resampling_backward_desc_init(
 
 /// @} dnnl_api_resampling
 
+/// @addtogroup dnnl_api_reduction Reduction
+/// @{
+
+/// Initializes a descriptor for a reduction primitive.
+///
+/// @note
+///     Destination memory descriptor is allowed to be initialized with
+///     #dnnl_format_tag_any or with format_kind set to #dnnl_format_kind_any.
+///
+///
+/// @param desc Output descriptor for a reduction primitive.
+/// @param alg_kind reduction algorithm kind. Possible values:
+///     #dnnl_reduction_max, #dnnl_reduction_min, #dnnl_reduction_sum,
+///     #dnnl_reduction_mul, #dnnl_reduction_mean, #dnnl_reduction_norm_lp_max,
+///     #dnnl_reduction_norm_lp_sum, #dnnl_reduction_norm_lp_power_p_max,
+///     #dnnl_reduction_norm_lp_power_p_sum.
+/// @param p Algorithm specific parameter.
+/// @param eps Algorithm specific parameter.
+/// @param src_desc Source memory descriptor.
+/// @param dst_desc Destination memory descriptor.
+/// @returns #dnnl_success on success and a status describing the error
+///     otherwise.
+///
+dnnl_status_t DNNL_API dnnl_reduction_desc_init(dnnl_reduction_desc_t *desc,
+        dnnl_alg_kind_t alg_kind, const dnnl_memory_desc_t *src_desc,
+        const dnnl_memory_desc_t *dst_desc, float p, float eps);
+
+/// @} dnnl_api_reduction
+
 /// @} dnnl_api_primitives
 
 /// @addtogroup dnnl_api_engine
@@ -3220,7 +3349,18 @@ dnnl_status_t DNNL_API dnnl_stream_create_v2(dnnl_stream_t *stream,
 ///     otherwise.
 dnnl_status_t DNNL_API dnnl_stream_create_ocl(
         dnnl_stream_t *stream, dnnl_engine_t engine, cl_command_queue queue);
+#endif
 
+/// Returns the engine of a stream object.
+///
+/// @param stream Stream object.
+/// @param engine Output engine on which the stream is created.
+/// @returns #dnnl_success on success and a status describing the error
+///     otherwise.
+dnnl_status_t DNNL_API dnnl_stream_get_engine(
+        const_dnnl_stream_t stream, dnnl_engine_t *engine);
+
+#if DNNL_GPU_RUNTIME == DNNL_RUNTIME_OCL
 /// Returns the OpenCL command queue associated with an execution stream.
 ///
 /// @param stream Execution stream to query.

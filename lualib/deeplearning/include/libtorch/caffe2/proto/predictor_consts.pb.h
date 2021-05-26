@@ -34,7 +34,7 @@
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
-#define PROTOBUF_INTERNAL_EXPORT_caffe2_2fproto_2fpredictor_5fconsts_2eproto CAFFE2_API
+#define PROTOBUF_INTERNAL_EXPORT_caffe2_2fproto_2fpredictor_5fconsts_2eproto TORCH_API
 PROTOBUF_NAMESPACE_OPEN
 namespace internal {
 class AnyMetadata;
@@ -42,7 +42,7 @@ class AnyMetadata;
 PROTOBUF_NAMESPACE_CLOSE
 
 // Internal implementation detail -- do not use these members.
-struct CAFFE2_API TableStruct_caffe2_2fproto_2fpredictor_5fconsts_2eproto {
+struct TORCH_API TableStruct_caffe2_2fproto_2fpredictor_5fconsts_2eproto {
   static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTableField entries[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxillaryParseTableField aux[]
@@ -53,20 +53,20 @@ struct CAFFE2_API TableStruct_caffe2_2fproto_2fpredictor_5fconsts_2eproto {
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
   static const ::PROTOBUF_NAMESPACE_ID::uint32 offsets[];
 };
-extern CAFFE2_API const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_caffe2_2fproto_2fpredictor_5fconsts_2eproto;
+extern TORCH_API const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_caffe2_2fproto_2fpredictor_5fconsts_2eproto;
 namespace caffe2 { const ::std::string& GetEmptyStringAlreadyInited(); 
 class PredictorConsts;
 class PredictorConstsDefaultTypeInternal;
-CAFFE2_API extern PredictorConstsDefaultTypeInternal _PredictorConsts_default_instance_;
+TORCH_API extern PredictorConstsDefaultTypeInternal _PredictorConsts_default_instance_;
 }  // namespace caffe2
 PROTOBUF_NAMESPACE_OPEN
-template<> CAFFE2_API ::caffe2::PredictorConsts* Arena::CreateMaybeMessage<::caffe2::PredictorConsts>(Arena*);
+template<> TORCH_API ::caffe2::PredictorConsts* Arena::CreateMaybeMessage<::caffe2::PredictorConsts>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace caffe2 {
 
 // ===================================================================
 
-class CAFFE2_API PredictorConsts :
+class TORCH_API PredictorConsts :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.PredictorConsts) */ {
  public:
   PredictorConsts();

@@ -10,6 +10,7 @@ extern "C" {
 #include "deeplearning_xor.hpp"
 #include "deeplearning_mnist.hpp"
 #include "deeplearning_speech.hpp"
+#include "deeplearning_dqn.hpp"
 
 int luaopen_deeplearning(lua_State* l_state) {
 	luabridge::getGlobalNamespace(l_state)
@@ -42,6 +43,12 @@ int luaopen_deeplearning(lua_State* l_state) {
 		.addFunction("Wav2MFCC", &DeeplearningSpeechModel::Wav2MFCC)
 		.addFunction("SetSpeechDataPath", &DeeplearningSpeechModel::SetSpeechDataPath)
 		.addFunction("Output", &DeeplearningSpeechModel::Output)
+		.endClass()
+		.deriveClass<DeeplearningDQNModel, DeeplearningModel>("DeeplearningDQNModel")
+		.addConstructor<void(*)(int, int, int, int)>()
+		.addCFunction("ChooseAction", &DeeplearningDQNModel::ChooseAction)
+		.addCFunction("SaveTransition", &DeeplearningDQNModel::SaveTransition)
+		.addFunction("Learn", &DeeplearningDQNModel::Learn)
 		.endClass()
 		.endNamespace();
     lua_getglobal(l_state, "deeplearning");

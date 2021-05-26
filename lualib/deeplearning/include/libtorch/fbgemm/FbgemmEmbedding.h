@@ -166,7 +166,8 @@ class SparseAdaGradSignature {
       float* h, // input/output momentums
       const IndexType* indices, // indices of each row
       float epsilon,
-      float lr)>;
+      float lr,
+      float weight_decay)>;
 };
 
 template <typename IndexType>
@@ -175,7 +176,7 @@ GenerateSparseAdaGrad(
     int block_size, // number of parameters per row
     bool rowwise = false,
     int prefetch = 16,
-    float weight_decay = 0.0f);
+    bool use_weight_decay = false);
 
 // RowWiseSparseAdaGrad fused with SLS gradient
 // Weights can be either float or float16

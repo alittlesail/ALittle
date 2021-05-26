@@ -35,7 +35,7 @@
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
-#define PROTOBUF_INTERNAL_EXPORT_caffe2_2fproto_2fcaffe2_2eproto CAFFE2_API
+#define PROTOBUF_INTERNAL_EXPORT_caffe2_2fproto_2fcaffe2_2eproto TORCH_API
 PROTOBUF_NAMESPACE_OPEN
 namespace internal {
 class AnyMetadata;
@@ -43,7 +43,7 @@ class AnyMetadata;
 PROTOBUF_NAMESPACE_CLOSE
 
 // Internal implementation detail -- do not use these members.
-struct CAFFE2_API TableStruct_caffe2_2fproto_2fcaffe2_2eproto {
+struct TORCH_API TableStruct_caffe2_2fproto_2fcaffe2_2eproto {
   static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTableField entries[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxillaryParseTableField aux[]
@@ -54,94 +54,94 @@ struct CAFFE2_API TableStruct_caffe2_2fproto_2fcaffe2_2eproto {
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
   static const ::PROTOBUF_NAMESPACE_ID::uint32 offsets[];
 };
-extern CAFFE2_API const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_caffe2_2fproto_2fcaffe2_2eproto;
+extern TORCH_API const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_caffe2_2fproto_2fcaffe2_2eproto;
 namespace caffe2 { const ::std::string& GetEmptyStringAlreadyInited(); 
 class AOTConfig;
 class AOTConfigDefaultTypeInternal;
-CAFFE2_API extern AOTConfigDefaultTypeInternal _AOTConfig_default_instance_;
+TORCH_API extern AOTConfigDefaultTypeInternal _AOTConfig_default_instance_;
 class Argument;
 class ArgumentDefaultTypeInternal;
-CAFFE2_API extern ArgumentDefaultTypeInternal _Argument_default_instance_;
+TORCH_API extern ArgumentDefaultTypeInternal _Argument_default_instance_;
 class BackendOptions;
 class BackendOptionsDefaultTypeInternal;
-CAFFE2_API extern BackendOptionsDefaultTypeInternal _BackendOptions_default_instance_;
+TORCH_API extern BackendOptionsDefaultTypeInternal _BackendOptions_default_instance_;
 class BlobProto;
 class BlobProtoDefaultTypeInternal;
-CAFFE2_API extern BlobProtoDefaultTypeInternal _BlobProto_default_instance_;
+TORCH_API extern BlobProtoDefaultTypeInternal _BlobProto_default_instance_;
 class DBReaderProto;
 class DBReaderProtoDefaultTypeInternal;
-CAFFE2_API extern DBReaderProtoDefaultTypeInternal _DBReaderProto_default_instance_;
+TORCH_API extern DBReaderProtoDefaultTypeInternal _DBReaderProto_default_instance_;
 class DeviceOption;
 class DeviceOptionDefaultTypeInternal;
-CAFFE2_API extern DeviceOptionDefaultTypeInternal _DeviceOption_default_instance_;
+TORCH_API extern DeviceOptionDefaultTypeInternal _DeviceOption_default_instance_;
 class ExecutionStep;
 class ExecutionStepDefaultTypeInternal;
-CAFFE2_API extern ExecutionStepDefaultTypeInternal _ExecutionStep_default_instance_;
+TORCH_API extern ExecutionStepDefaultTypeInternal _ExecutionStep_default_instance_;
 class ExternalDataProto;
 class ExternalDataProtoDefaultTypeInternal;
-CAFFE2_API extern ExternalDataProtoDefaultTypeInternal _ExternalDataProto_default_instance_;
+TORCH_API extern ExternalDataProtoDefaultTypeInternal _ExternalDataProto_default_instance_;
 class MapFieldEntry;
 class MapFieldEntryDefaultTypeInternal;
-CAFFE2_API extern MapFieldEntryDefaultTypeInternal _MapFieldEntry_default_instance_;
+TORCH_API extern MapFieldEntryDefaultTypeInternal _MapFieldEntry_default_instance_;
 class NetDef;
 class NetDefDefaultTypeInternal;
-CAFFE2_API extern NetDefDefaultTypeInternal _NetDef_default_instance_;
+TORCH_API extern NetDefDefaultTypeInternal _NetDef_default_instance_;
 class OperatorDef;
 class OperatorDefDefaultTypeInternal;
-CAFFE2_API extern OperatorDefDefaultTypeInternal _OperatorDef_default_instance_;
+TORCH_API extern OperatorDefDefaultTypeInternal _OperatorDef_default_instance_;
 class PartitionInfo;
 class PartitionInfoDefaultTypeInternal;
-CAFFE2_API extern PartitionInfoDefaultTypeInternal _PartitionInfo_default_instance_;
+TORCH_API extern PartitionInfoDefaultTypeInternal _PartitionInfo_default_instance_;
 class PlanDef;
 class PlanDefDefaultTypeInternal;
-CAFFE2_API extern PlanDefDefaultTypeInternal _PlanDef_default_instance_;
+TORCH_API extern PlanDefDefaultTypeInternal _PlanDef_default_instance_;
 class QTensorProto;
 class QTensorProtoDefaultTypeInternal;
-CAFFE2_API extern QTensorProtoDefaultTypeInternal _QTensorProto_default_instance_;
+TORCH_API extern QTensorProtoDefaultTypeInternal _QTensorProto_default_instance_;
 class TensorBoundShape;
 class TensorBoundShapeDefaultTypeInternal;
-CAFFE2_API extern TensorBoundShapeDefaultTypeInternal _TensorBoundShape_default_instance_;
+TORCH_API extern TensorBoundShapeDefaultTypeInternal _TensorBoundShape_default_instance_;
 class TensorBoundShapes;
 class TensorBoundShapesDefaultTypeInternal;
-CAFFE2_API extern TensorBoundShapesDefaultTypeInternal _TensorBoundShapes_default_instance_;
+TORCH_API extern TensorBoundShapesDefaultTypeInternal _TensorBoundShapes_default_instance_;
 class TensorProto;
 class TensorProtoDefaultTypeInternal;
-CAFFE2_API extern TensorProtoDefaultTypeInternal _TensorProto_default_instance_;
+TORCH_API extern TensorProtoDefaultTypeInternal _TensorProto_default_instance_;
 class TensorProto_Segment;
 class TensorProto_SegmentDefaultTypeInternal;
-CAFFE2_API extern TensorProto_SegmentDefaultTypeInternal _TensorProto_Segment_default_instance_;
+TORCH_API extern TensorProto_SegmentDefaultTypeInternal _TensorProto_Segment_default_instance_;
 class TensorProtos;
 class TensorProtosDefaultTypeInternal;
-CAFFE2_API extern TensorProtosDefaultTypeInternal _TensorProtos_default_instance_;
+TORCH_API extern TensorProtosDefaultTypeInternal _TensorProtos_default_instance_;
 class TensorShape;
 class TensorShapeDefaultTypeInternal;
-CAFFE2_API extern TensorShapeDefaultTypeInternal _TensorShape_default_instance_;
+TORCH_API extern TensorShapeDefaultTypeInternal _TensorShape_default_instance_;
 class TensorShapes;
 class TensorShapesDefaultTypeInternal;
-CAFFE2_API extern TensorShapesDefaultTypeInternal _TensorShapes_default_instance_;
+TORCH_API extern TensorShapesDefaultTypeInternal _TensorShapes_default_instance_;
 }  // namespace caffe2
 PROTOBUF_NAMESPACE_OPEN
-template<> CAFFE2_API ::caffe2::AOTConfig* Arena::CreateMaybeMessage<::caffe2::AOTConfig>(Arena*);
-template<> CAFFE2_API ::caffe2::Argument* Arena::CreateMaybeMessage<::caffe2::Argument>(Arena*);
-template<> CAFFE2_API ::caffe2::BackendOptions* Arena::CreateMaybeMessage<::caffe2::BackendOptions>(Arena*);
-template<> CAFFE2_API ::caffe2::BlobProto* Arena::CreateMaybeMessage<::caffe2::BlobProto>(Arena*);
-template<> CAFFE2_API ::caffe2::DBReaderProto* Arena::CreateMaybeMessage<::caffe2::DBReaderProto>(Arena*);
-template<> CAFFE2_API ::caffe2::DeviceOption* Arena::CreateMaybeMessage<::caffe2::DeviceOption>(Arena*);
-template<> CAFFE2_API ::caffe2::ExecutionStep* Arena::CreateMaybeMessage<::caffe2::ExecutionStep>(Arena*);
-template<> CAFFE2_API ::caffe2::ExternalDataProto* Arena::CreateMaybeMessage<::caffe2::ExternalDataProto>(Arena*);
-template<> CAFFE2_API ::caffe2::MapFieldEntry* Arena::CreateMaybeMessage<::caffe2::MapFieldEntry>(Arena*);
-template<> CAFFE2_API ::caffe2::NetDef* Arena::CreateMaybeMessage<::caffe2::NetDef>(Arena*);
-template<> CAFFE2_API ::caffe2::OperatorDef* Arena::CreateMaybeMessage<::caffe2::OperatorDef>(Arena*);
-template<> CAFFE2_API ::caffe2::PartitionInfo* Arena::CreateMaybeMessage<::caffe2::PartitionInfo>(Arena*);
-template<> CAFFE2_API ::caffe2::PlanDef* Arena::CreateMaybeMessage<::caffe2::PlanDef>(Arena*);
-template<> CAFFE2_API ::caffe2::QTensorProto* Arena::CreateMaybeMessage<::caffe2::QTensorProto>(Arena*);
-template<> CAFFE2_API ::caffe2::TensorBoundShape* Arena::CreateMaybeMessage<::caffe2::TensorBoundShape>(Arena*);
-template<> CAFFE2_API ::caffe2::TensorBoundShapes* Arena::CreateMaybeMessage<::caffe2::TensorBoundShapes>(Arena*);
-template<> CAFFE2_API ::caffe2::TensorProto* Arena::CreateMaybeMessage<::caffe2::TensorProto>(Arena*);
-template<> CAFFE2_API ::caffe2::TensorProto_Segment* Arena::CreateMaybeMessage<::caffe2::TensorProto_Segment>(Arena*);
-template<> CAFFE2_API ::caffe2::TensorProtos* Arena::CreateMaybeMessage<::caffe2::TensorProtos>(Arena*);
-template<> CAFFE2_API ::caffe2::TensorShape* Arena::CreateMaybeMessage<::caffe2::TensorShape>(Arena*);
-template<> CAFFE2_API ::caffe2::TensorShapes* Arena::CreateMaybeMessage<::caffe2::TensorShapes>(Arena*);
+template<> TORCH_API ::caffe2::AOTConfig* Arena::CreateMaybeMessage<::caffe2::AOTConfig>(Arena*);
+template<> TORCH_API ::caffe2::Argument* Arena::CreateMaybeMessage<::caffe2::Argument>(Arena*);
+template<> TORCH_API ::caffe2::BackendOptions* Arena::CreateMaybeMessage<::caffe2::BackendOptions>(Arena*);
+template<> TORCH_API ::caffe2::BlobProto* Arena::CreateMaybeMessage<::caffe2::BlobProto>(Arena*);
+template<> TORCH_API ::caffe2::DBReaderProto* Arena::CreateMaybeMessage<::caffe2::DBReaderProto>(Arena*);
+template<> TORCH_API ::caffe2::DeviceOption* Arena::CreateMaybeMessage<::caffe2::DeviceOption>(Arena*);
+template<> TORCH_API ::caffe2::ExecutionStep* Arena::CreateMaybeMessage<::caffe2::ExecutionStep>(Arena*);
+template<> TORCH_API ::caffe2::ExternalDataProto* Arena::CreateMaybeMessage<::caffe2::ExternalDataProto>(Arena*);
+template<> TORCH_API ::caffe2::MapFieldEntry* Arena::CreateMaybeMessage<::caffe2::MapFieldEntry>(Arena*);
+template<> TORCH_API ::caffe2::NetDef* Arena::CreateMaybeMessage<::caffe2::NetDef>(Arena*);
+template<> TORCH_API ::caffe2::OperatorDef* Arena::CreateMaybeMessage<::caffe2::OperatorDef>(Arena*);
+template<> TORCH_API ::caffe2::PartitionInfo* Arena::CreateMaybeMessage<::caffe2::PartitionInfo>(Arena*);
+template<> TORCH_API ::caffe2::PlanDef* Arena::CreateMaybeMessage<::caffe2::PlanDef>(Arena*);
+template<> TORCH_API ::caffe2::QTensorProto* Arena::CreateMaybeMessage<::caffe2::QTensorProto>(Arena*);
+template<> TORCH_API ::caffe2::TensorBoundShape* Arena::CreateMaybeMessage<::caffe2::TensorBoundShape>(Arena*);
+template<> TORCH_API ::caffe2::TensorBoundShapes* Arena::CreateMaybeMessage<::caffe2::TensorBoundShapes>(Arena*);
+template<> TORCH_API ::caffe2::TensorProto* Arena::CreateMaybeMessage<::caffe2::TensorProto>(Arena*);
+template<> TORCH_API ::caffe2::TensorProto_Segment* Arena::CreateMaybeMessage<::caffe2::TensorProto_Segment>(Arena*);
+template<> TORCH_API ::caffe2::TensorProtos* Arena::CreateMaybeMessage<::caffe2::TensorProtos>(Arena*);
+template<> TORCH_API ::caffe2::TensorShape* Arena::CreateMaybeMessage<::caffe2::TensorShape>(Arena*);
+template<> TORCH_API ::caffe2::TensorShapes* Arena::CreateMaybeMessage<::caffe2::TensorShapes>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace caffe2 {
 
@@ -149,12 +149,12 @@ enum ExternalDataProto_SourceType : int {
   ExternalDataProto_SourceType_INLINE_CONTAINER = 0,
   ExternalDataProto_SourceType_SIMPLE_FILE = 1
 };
-CAFFE2_API bool ExternalDataProto_SourceType_IsValid(int value);
+TORCH_API bool ExternalDataProto_SourceType_IsValid(int value);
 constexpr ExternalDataProto_SourceType ExternalDataProto_SourceType_SourceType_MIN = ExternalDataProto_SourceType_INLINE_CONTAINER;
 constexpr ExternalDataProto_SourceType ExternalDataProto_SourceType_SourceType_MAX = ExternalDataProto_SourceType_SIMPLE_FILE;
 constexpr int ExternalDataProto_SourceType_SourceType_ARRAYSIZE = static_cast<int>(ExternalDataProto_SourceType_SourceType_MAX) + 1;
 
-CAFFE2_API const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ExternalDataProto_SourceType_descriptor();
+TORCH_API const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ExternalDataProto_SourceType_descriptor();
 template<typename T>
 inline const std::string& ExternalDataProto_SourceType_Name(T enum_t_value) {
   static_assert(::std::is_same<T, ExternalDataProto_SourceType>::value ||
@@ -184,12 +184,12 @@ enum TensorProto_DataType : int {
   TensorProto_DataType_DOUBLE = 13,
   TensorProto_DataType_ZERO_COLLISION_HASH = 14
 };
-CAFFE2_API bool TensorProto_DataType_IsValid(int value);
+TORCH_API bool TensorProto_DataType_IsValid(int value);
 constexpr TensorProto_DataType TensorProto_DataType_DataType_MIN = TensorProto_DataType_UNDEFINED;
 constexpr TensorProto_DataType TensorProto_DataType_DataType_MAX = TensorProto_DataType_ZERO_COLLISION_HASH;
 constexpr int TensorProto_DataType_DataType_ARRAYSIZE = static_cast<int>(TensorProto_DataType_DataType_MAX) + 1;
 
-CAFFE2_API const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* TensorProto_DataType_descriptor();
+TORCH_API const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* TensorProto_DataType_descriptor();
 template<typename T>
 inline const std::string& TensorProto_DataType_Name(T enum_t_value) {
   static_assert(::std::is_same<T, TensorProto_DataType>::value ||
@@ -209,12 +209,12 @@ enum TensorProto_StorageType : int {
   TensorProto_StorageType_EXTERNAL = 3,
   TensorProto_StorageType_NO_CONTENT = 4
 };
-CAFFE2_API bool TensorProto_StorageType_IsValid(int value);
+TORCH_API bool TensorProto_StorageType_IsValid(int value);
 constexpr TensorProto_StorageType TensorProto_StorageType_StorageType_MIN = TensorProto_StorageType_TYPED;
 constexpr TensorProto_StorageType TensorProto_StorageType_StorageType_MAX = TensorProto_StorageType_NO_CONTENT;
 constexpr int TensorProto_StorageType_StorageType_ARRAYSIZE = static_cast<int>(TensorProto_StorageType_StorageType_MAX) + 1;
 
-CAFFE2_API const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* TensorProto_StorageType_descriptor();
+TORCH_API const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* TensorProto_StorageType_descriptor();
 template<typename T>
 inline const std::string& TensorProto_StorageType_Name(T enum_t_value) {
   static_assert(::std::is_same<T, TensorProto_StorageType>::value ||
@@ -237,12 +237,12 @@ enum TensorBoundShape_DimType : int {
   TensorBoundShape_DimType_FEATURE_MAX = 5,
   TensorBoundShape_DimType_FEATURE_MAX_DEFAULT = 6
 };
-CAFFE2_API bool TensorBoundShape_DimType_IsValid(int value);
+TORCH_API bool TensorBoundShape_DimType_IsValid(int value);
 constexpr TensorBoundShape_DimType TensorBoundShape_DimType_DimType_MIN = TensorBoundShape_DimType_UNKNOWN;
 constexpr TensorBoundShape_DimType TensorBoundShape_DimType_DimType_MAX = TensorBoundShape_DimType_FEATURE_MAX_DEFAULT;
 constexpr int TensorBoundShape_DimType_DimType_ARRAYSIZE = static_cast<int>(TensorBoundShape_DimType_DimType_MAX) + 1;
 
-CAFFE2_API const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* TensorBoundShape_DimType_descriptor();
+TORCH_API const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* TensorBoundShape_DimType_descriptor();
 template<typename T>
 inline const std::string& TensorBoundShape_DimType_Name(T enum_t_value) {
   static_assert(::std::is_same<T, TensorBoundShape_DimType>::value ||
@@ -267,15 +267,14 @@ enum DeviceTypeProto : int {
   PROTO_FPGA = 7,
   PROTO_MSNPU = 8,
   PROTO_XLA = 9,
-  PROTO_COMPILE_TIME_MAX_DEVICE_TYPES = 10,
-  PROTO_ONLY_FOR_TEST = 20901
+  PROTO_COMPILE_TIME_MAX_DEVICE_TYPES = 10
 };
-CAFFE2_API bool DeviceTypeProto_IsValid(int value);
+TORCH_API bool DeviceTypeProto_IsValid(int value);
 constexpr DeviceTypeProto DeviceTypeProto_MIN = PROTO_CPU;
-constexpr DeviceTypeProto DeviceTypeProto_MAX = PROTO_ONLY_FOR_TEST;
+constexpr DeviceTypeProto DeviceTypeProto_MAX = PROTO_COMPILE_TIME_MAX_DEVICE_TYPES;
 constexpr int DeviceTypeProto_ARRAYSIZE = static_cast<int>(DeviceTypeProto_MAX) + 1;
 
-CAFFE2_API const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* DeviceTypeProto_descriptor();
+TORCH_API const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* DeviceTypeProto_descriptor();
 template<typename T>
 inline const std::string& DeviceTypeProto_Name(T enum_t_value) {
   static_assert(::std::is_same<T, DeviceTypeProto>::value ||
@@ -291,7 +290,7 @@ inline bool DeviceTypeProto_Parse(
 }
 // ===================================================================
 
-class CAFFE2_API ExternalDataProto :
+class TORCH_API ExternalDataProto :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.ExternalDataProto) */ {
  public:
   ExternalDataProto();
@@ -537,7 +536,7 @@ class CAFFE2_API ExternalDataProto :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API TensorProto_Segment :
+class TORCH_API TensorProto_Segment :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.TensorProto.Segment) */ {
  public:
   TensorProto_Segment();
@@ -695,7 +694,7 @@ class CAFFE2_API TensorProto_Segment :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API TensorProto :
+class TORCH_API TensorProto :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.TensorProto) */ {
  public:
   TensorProto();
@@ -1207,7 +1206,7 @@ class CAFFE2_API TensorProto :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API QTensorProto :
+class TORCH_API QTensorProto :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.QTensorProto) */ {
  public:
   QTensorProto();
@@ -1559,7 +1558,7 @@ class CAFFE2_API QTensorProto :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API TensorProtos :
+class TORCH_API TensorProtos :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.TensorProtos) */ {
  public:
   TensorProtos();
@@ -1704,7 +1703,7 @@ class CAFFE2_API TensorProtos :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API TensorShape :
+class TORCH_API TensorShape :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.TensorShape) */ {
  public:
   TensorShape();
@@ -1929,7 +1928,7 @@ class CAFFE2_API TensorShape :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API TensorShapes :
+class TORCH_API TensorShapes :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.TensorShapes) */ {
  public:
   TensorShapes();
@@ -2074,7 +2073,7 @@ class CAFFE2_API TensorShapes :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API TensorBoundShape :
+class TORCH_API TensorBoundShape :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.TensorBoundShape) */ {
  public:
   TensorBoundShape();
@@ -2230,6 +2229,7 @@ class CAFFE2_API TensorBoundShape :
     kDimTypeFieldNumber = 2,
     kNameFieldNumber = 3,
     kShapeFieldNumber = 1,
+    kShapeIsFinalFieldNumber = 4,
   };
   // repeated .caffe2.TensorBoundShape.DimType dim_type = 2;
   int dim_type_size() const;
@@ -2283,6 +2283,19 @@ class CAFFE2_API TensorBoundShape :
   ::caffe2::TensorShape* _internal_mutable_shape();
   public:
 
+  // optional bool shape_is_final = 4;
+  bool has_shape_is_final() const;
+  private:
+  bool _internal_has_shape_is_final() const;
+  public:
+  void clear_shape_is_final();
+  bool shape_is_final() const;
+  void set_shape_is_final(bool value);
+  private:
+  bool _internal_shape_is_final() const;
+  void _internal_set_shape_is_final(bool value);
+  public:
+
   // @@protoc_insertion_point(class_scope:caffe2.TensorBoundShape)
  private:
   class _Internal;
@@ -2293,11 +2306,12 @@ class CAFFE2_API TensorBoundShape :
   ::PROTOBUF_NAMESPACE_ID::RepeatedField<int> dim_type_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
   ::caffe2::TensorShape* shape_;
+  bool shape_is_final_;
   friend struct ::TableStruct_caffe2_2fproto_2fcaffe2_2eproto;
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API TensorBoundShapes :
+class TORCH_API TensorBoundShapes :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.TensorBoundShapes) */ {
  public:
   TensorBoundShapes();
@@ -2472,7 +2486,7 @@ class CAFFE2_API TensorBoundShapes :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API AOTConfig :
+class TORCH_API AOTConfig :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.AOTConfig) */ {
  public:
   AOTConfig();
@@ -2645,7 +2659,7 @@ class CAFFE2_API AOTConfig :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API Argument :
+class TORCH_API Argument :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.Argument) */ {
  public:
   Argument();
@@ -3012,7 +3026,7 @@ class CAFFE2_API Argument :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API DeviceOption :
+class TORCH_API DeviceOption :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.DeviceOption) */ {
  public:
   DeviceOption();
@@ -3245,7 +3259,7 @@ class CAFFE2_API DeviceOption :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API OperatorDef :
+class TORCH_API OperatorDef :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.OperatorDef) */ {
  public:
   OperatorDef();
@@ -3625,7 +3639,7 @@ class CAFFE2_API OperatorDef :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API MapFieldEntry :
+class TORCH_API MapFieldEntry :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.MapFieldEntry) */ {
  public:
   MapFieldEntry();
@@ -3797,7 +3811,7 @@ class CAFFE2_API MapFieldEntry :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API BackendOptions :
+class TORCH_API BackendOptions :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.BackendOptions) */ {
  public:
   BackendOptions();
@@ -3964,7 +3978,7 @@ class CAFFE2_API BackendOptions :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API PartitionInfo :
+class TORCH_API PartitionInfo :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.PartitionInfo) */ {
  public:
   PartitionInfo();
@@ -4177,7 +4191,7 @@ class CAFFE2_API PartitionInfo :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API NetDef :
+class TORCH_API NetDef :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.NetDef) */ {
  public:
   NetDef();
@@ -4490,7 +4504,7 @@ class CAFFE2_API NetDef :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API ExecutionStep :
+class TORCH_API ExecutionStep :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.ExecutionStep) */ {
  public:
   ExecutionStep();
@@ -4854,7 +4868,7 @@ class CAFFE2_API ExecutionStep :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API PlanDef :
+class TORCH_API PlanDef :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.PlanDef) */ {
  public:
   PlanDef();
@@ -5041,7 +5055,7 @@ class CAFFE2_API PlanDef :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API BlobProto :
+class TORCH_API BlobProto :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.BlobProto) */ {
  public:
   BlobProto();
@@ -5296,7 +5310,7 @@ class CAFFE2_API BlobProto :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API DBReaderProto :
+class TORCH_API DBReaderProto :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.DBReaderProto) */ {
  public:
   DBReaderProto();
@@ -7495,6 +7509,34 @@ inline void TensorBoundShape::set_allocated_name(std::string* name) {
   }
   name_.SetAllocatedNoArena(&GetEmptyStringAlreadyInited(), name);
   // @@protoc_insertion_point(field_set_allocated:caffe2.TensorBoundShape.name)
+}
+
+// optional bool shape_is_final = 4;
+inline bool TensorBoundShape::_internal_has_shape_is_final() const {
+  bool value = (_has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool TensorBoundShape::has_shape_is_final() const {
+  return _internal_has_shape_is_final();
+}
+inline void TensorBoundShape::clear_shape_is_final() {
+  shape_is_final_ = false;
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline bool TensorBoundShape::_internal_shape_is_final() const {
+  return shape_is_final_;
+}
+inline bool TensorBoundShape::shape_is_final() const {
+  // @@protoc_insertion_point(field_get:caffe2.TensorBoundShape.shape_is_final)
+  return _internal_shape_is_final();
+}
+inline void TensorBoundShape::_internal_set_shape_is_final(bool value) {
+  _has_bits_[0] |= 0x00000004u;
+  shape_is_final_ = value;
+}
+inline void TensorBoundShape::set_shape_is_final(bool value) {
+  _internal_set_shape_is_final(value);
+  // @@protoc_insertion_point(field_set:caffe2.TensorBoundShape.shape_is_final)
 }
 
 // -------------------------------------------------------------------

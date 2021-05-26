@@ -35,7 +35,7 @@
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
-#define PROTOBUF_INTERNAL_EXPORT_caffe2_2fproto_2fcaffe2_5flegacy_2eproto CAFFE2_API
+#define PROTOBUF_INTERNAL_EXPORT_caffe2_2fproto_2fcaffe2_5flegacy_2eproto TORCH_API
 PROTOBUF_NAMESPACE_OPEN
 namespace internal {
 class AnyMetadata;
@@ -43,7 +43,7 @@ class AnyMetadata;
 PROTOBUF_NAMESPACE_CLOSE
 
 // Internal implementation detail -- do not use these members.
-struct CAFFE2_API TableStruct_caffe2_2fproto_2fcaffe2_5flegacy_2eproto {
+struct TORCH_API TableStruct_caffe2_2fproto_2fcaffe2_5flegacy_2eproto {
   static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTableField entries[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxillaryParseTableField aux[]
@@ -54,14 +54,14 @@ struct CAFFE2_API TableStruct_caffe2_2fproto_2fcaffe2_5flegacy_2eproto {
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
   static const ::PROTOBUF_NAMESPACE_ID::uint32 offsets[];
 };
-extern CAFFE2_API const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_caffe2_2fproto_2fcaffe2_5flegacy_2eproto;
+extern TORCH_API const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_caffe2_2fproto_2fcaffe2_5flegacy_2eproto;
 namespace caffe2 { const ::std::string& GetEmptyStringAlreadyInited(); 
 class CaffeDatum;
 class CaffeDatumDefaultTypeInternal;
-CAFFE2_API extern CaffeDatumDefaultTypeInternal _CaffeDatum_default_instance_;
+TORCH_API extern CaffeDatumDefaultTypeInternal _CaffeDatum_default_instance_;
 }  // namespace caffe2
 PROTOBUF_NAMESPACE_OPEN
-template<> CAFFE2_API ::caffe2::CaffeDatum* Arena::CreateMaybeMessage<::caffe2::CaffeDatum>(Arena*);
+template<> TORCH_API ::caffe2::CaffeDatum* Arena::CreateMaybeMessage<::caffe2::CaffeDatum>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace caffe2 {
 
@@ -71,12 +71,12 @@ enum LegacyPadding : int {
   SAME = 2,
   CAFFE_LEGACY_POOLING = 3
 };
-CAFFE2_API bool LegacyPadding_IsValid(int value);
+TORCH_API bool LegacyPadding_IsValid(int value);
 constexpr LegacyPadding LegacyPadding_MIN = NOTSET;
 constexpr LegacyPadding LegacyPadding_MAX = CAFFE_LEGACY_POOLING;
 constexpr int LegacyPadding_ARRAYSIZE = static_cast<int>(LegacyPadding_MAX) + 1;
 
-CAFFE2_API const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* LegacyPadding_descriptor();
+TORCH_API const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* LegacyPadding_descriptor();
 template<typename T>
 inline const std::string& LegacyPadding_Name(T enum_t_value) {
   static_assert(::std::is_same<T, LegacyPadding>::value ||
@@ -92,7 +92,7 @@ inline bool LegacyPadding_Parse(
 }
 // ===================================================================
 
-class CAFFE2_API CaffeDatum :
+class TORCH_API CaffeDatum :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.CaffeDatum) */ {
  public:
   CaffeDatum();

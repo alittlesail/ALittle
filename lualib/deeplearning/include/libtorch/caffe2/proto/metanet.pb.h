@@ -35,7 +35,7 @@
 #include "caffe2/proto/caffe2.pb.h"
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
-#define PROTOBUF_INTERNAL_EXPORT_caffe2_2fproto_2fmetanet_2eproto CAFFE2_API
+#define PROTOBUF_INTERNAL_EXPORT_caffe2_2fproto_2fmetanet_2eproto TORCH_API
 PROTOBUF_NAMESPACE_OPEN
 namespace internal {
 class AnyMetadata;
@@ -43,7 +43,7 @@ class AnyMetadata;
 PROTOBUF_NAMESPACE_CLOSE
 
 // Internal implementation detail -- do not use these members.
-struct CAFFE2_API TableStruct_caffe2_2fproto_2fmetanet_2eproto {
+struct TORCH_API TableStruct_caffe2_2fproto_2fmetanet_2eproto {
   static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTableField entries[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxillaryParseTableField aux[]
@@ -54,40 +54,40 @@ struct CAFFE2_API TableStruct_caffe2_2fproto_2fmetanet_2eproto {
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
   static const ::PROTOBUF_NAMESPACE_ID::uint32 offsets[];
 };
-extern CAFFE2_API const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_caffe2_2fproto_2fmetanet_2eproto;
+extern TORCH_API const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_caffe2_2fproto_2fmetanet_2eproto;
 namespace caffe2 { const ::std::string& GetEmptyStringAlreadyInited(); 
 class BlobsMap;
 class BlobsMapDefaultTypeInternal;
-CAFFE2_API extern BlobsMapDefaultTypeInternal _BlobsMap_default_instance_;
+TORCH_API extern BlobsMapDefaultTypeInternal _BlobsMap_default_instance_;
 class MetaNetDef;
 class MetaNetDefDefaultTypeInternal;
-CAFFE2_API extern MetaNetDefDefaultTypeInternal _MetaNetDef_default_instance_;
+TORCH_API extern MetaNetDefDefaultTypeInternal _MetaNetDef_default_instance_;
 class ModelInfo;
 class ModelInfoDefaultTypeInternal;
-CAFFE2_API extern ModelInfoDefaultTypeInternal _ModelInfo_default_instance_;
+TORCH_API extern ModelInfoDefaultTypeInternal _ModelInfo_default_instance_;
 class NetsMap;
 class NetsMapDefaultTypeInternal;
-CAFFE2_API extern NetsMapDefaultTypeInternal _NetsMap_default_instance_;
+TORCH_API extern NetsMapDefaultTypeInternal _NetsMap_default_instance_;
 class PlansMap;
 class PlansMapDefaultTypeInternal;
-CAFFE2_API extern PlansMapDefaultTypeInternal _PlansMap_default_instance_;
+TORCH_API extern PlansMapDefaultTypeInternal _PlansMap_default_instance_;
 class StringMap;
 class StringMapDefaultTypeInternal;
-CAFFE2_API extern StringMapDefaultTypeInternal _StringMap_default_instance_;
+TORCH_API extern StringMapDefaultTypeInternal _StringMap_default_instance_;
 }  // namespace caffe2
 PROTOBUF_NAMESPACE_OPEN
-template<> CAFFE2_API ::caffe2::BlobsMap* Arena::CreateMaybeMessage<::caffe2::BlobsMap>(Arena*);
-template<> CAFFE2_API ::caffe2::MetaNetDef* Arena::CreateMaybeMessage<::caffe2::MetaNetDef>(Arena*);
-template<> CAFFE2_API ::caffe2::ModelInfo* Arena::CreateMaybeMessage<::caffe2::ModelInfo>(Arena*);
-template<> CAFFE2_API ::caffe2::NetsMap* Arena::CreateMaybeMessage<::caffe2::NetsMap>(Arena*);
-template<> CAFFE2_API ::caffe2::PlansMap* Arena::CreateMaybeMessage<::caffe2::PlansMap>(Arena*);
-template<> CAFFE2_API ::caffe2::StringMap* Arena::CreateMaybeMessage<::caffe2::StringMap>(Arena*);
+template<> TORCH_API ::caffe2::BlobsMap* Arena::CreateMaybeMessage<::caffe2::BlobsMap>(Arena*);
+template<> TORCH_API ::caffe2::MetaNetDef* Arena::CreateMaybeMessage<::caffe2::MetaNetDef>(Arena*);
+template<> TORCH_API ::caffe2::ModelInfo* Arena::CreateMaybeMessage<::caffe2::ModelInfo>(Arena*);
+template<> TORCH_API ::caffe2::NetsMap* Arena::CreateMaybeMessage<::caffe2::NetsMap>(Arena*);
+template<> TORCH_API ::caffe2::PlansMap* Arena::CreateMaybeMessage<::caffe2::PlansMap>(Arena*);
+template<> TORCH_API ::caffe2::StringMap* Arena::CreateMaybeMessage<::caffe2::StringMap>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace caffe2 {
 
 // ===================================================================
 
-class CAFFE2_API ModelInfo :
+class TORCH_API ModelInfo :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.ModelInfo) */ {
  public:
   ModelInfo();
@@ -325,7 +325,7 @@ class CAFFE2_API ModelInfo :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API BlobsMap :
+class TORCH_API BlobsMap :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.BlobsMap) */ {
  public:
   BlobsMap();
@@ -498,7 +498,7 @@ class CAFFE2_API BlobsMap :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API NetsMap :
+class TORCH_API NetsMap :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.NetsMap) */ {
  public:
   NetsMap();
@@ -665,7 +665,7 @@ class CAFFE2_API NetsMap :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API PlansMap :
+class TORCH_API PlansMap :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.PlansMap) */ {
  public:
   PlansMap();
@@ -832,7 +832,7 @@ class CAFFE2_API PlansMap :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API StringMap :
+class TORCH_API StringMap :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.StringMap) */ {
  public:
   StringMap();
@@ -1004,7 +1004,7 @@ class CAFFE2_API StringMap :
 };
 // -------------------------------------------------------------------
 
-class CAFFE2_API MetaNetDef :
+class TORCH_API MetaNetDef :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.MetaNetDef) */ {
  public:
   MetaNetDef();

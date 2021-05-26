@@ -178,8 +178,15 @@ typedef enum {
     dnnl_ab, ///< plain 2D tensor
     dnnl_abc, ///< plain 3D tensor
     dnnl_abcd, ///< plain 4D tensor
+    dnnl_acbd, ///< plain 4D tensor
     dnnl_abcde, ///< plain 5D tensor
     dnnl_abcdef, ///< plain 6D tensor
+    dnnl_abcdefg, ///< plain 7D tensor
+    dnnl_abcdefgh, ///< plain 8D tensor
+    dnnl_abcdefghi, ///< plain 9D tensor
+    dnnl_abcdefghij, ///< plain 10D tensor
+    dnnl_abcdefghijk, ///< plain 11D tensor
+    dnnl_abcdefghijkl, ///< plain 12D tensor
 
     // Permuted plain formats
 
@@ -203,6 +210,14 @@ typedef enum {
     dnnl_cdeba, ///< permuted 5D tensor
     dnnl_decab, ///< permuted 5D tensor
     dnnl_defcab, ///< permuted 6D tensor
+    dnnl_abced, ///< permuted 5D tensor
+    dnnl_abcdfe, ///< permuted 6D tensor
+    dnnl_abcdegf, ///< permuted 7D tensor
+    dnnl_abcdefhg, ///< permuted 8D tensor
+    dnnl_abcdefgih, ///< permuted 9D tensor
+    dnnl_abcdefghji, ///< permuted 10D tensor
+    dnnl_abcdefghikj, ///< permuted 11D tensor
+    dnnl_abcdefghijlk, ///< permuted 12D tensor
 
     // Opaque blocked formats
 
@@ -376,6 +391,7 @@ typedef enum {
     dnnl_aBdefc8b,
     dnnl_Abcdef16a,
     dnnl_Abcdef32a,
+    dnnl_aBedc16b,
     dnnl_Acb16a,
     dnnl_AcB16a2b,
     dnnl_AcB16a4b,
@@ -395,6 +411,7 @@ typedef enum {
     dnnl_AcdeB16a2b,
     dnnl_Acdeb4a,
     dnnl_Acdeb8a,
+    dnnl_Adcb16a,
     dnnl_BAc16a16b,
     dnnl_BAc16b16a,
     dnnl_BAcd16a16b,
@@ -617,6 +634,7 @@ typedef enum {
     dnnl_IOhw8o16i2o = dnnl_BAcd8a16b2a,
     dnnl_OIhw8o8i = dnnl_ABcd8a8b,
     dnnl_OIhw8o4i = dnnl_ABcd8a4b,
+    dnnl_Owhi16o = dnnl_Adcb16a,
 
     // weights, 5D
     dnnl_Odhwi16o = dnnl_Acdeb16a,
@@ -644,6 +662,7 @@ typedef enum {
     // weights w/ groups, 3D
     dnnl_Goiw16g = dnnl_Abcd16a,
     dnnl_Goiw8g = dnnl_Abcd8a,
+    dnnl_Goiw4g = dnnl_Abcd4a,
     dnnl_gIOw16o16i = dnnl_aCBd16b16c,
     dnnl_gIOw16i16o = dnnl_aCBd16c16b,
     dnnl_gOIw16i16o = dnnl_aBCd16c16b,
@@ -694,6 +713,7 @@ typedef enum {
     dnnl_gOIhw4o4i = dnnl_aBCde4b4c,
     dnnl_gOihw4o = dnnl_aBcde4b,
     dnnl_Goihw8g = dnnl_Abcde8a,
+    dnnl_Goihw4g = dnnl_Abcde4a,
     dnnl_gOIhw8i16o2i = dnnl_aBCde8c16b2c,
     dnnl_gOIhw8i8o = dnnl_aBCde8c8b,
     dnnl_gOIhw8o16i2o = dnnl_aBCde8b16c2b,
@@ -701,6 +721,7 @@ typedef enum {
     dnnl_gOIhw8o8i = dnnl_aBCde8b8c,
     dnnl_gOIhw8o4i = dnnl_aBCde8b4c,
     dnnl_Goihw32g = dnnl_Abcde32a,
+    dnnl_gOwhi16o = dnnl_aBedc16b,
 
     dnnl_OIw4o8i8o4i = dnnl_ABc4a8b8a4b,
     dnnl_OIhw4o8i8o4i = dnnl_ABcd4a8b8a4b,
@@ -826,6 +847,10 @@ typedef enum {
     dnnl_matmul,
     /// A resampling primitive.
     dnnl_resampling,
+    /// A pooling version 2 primitive (pooling with dilation support).
+    dnnl_pooling_v2,
+    /// A reduction primitive.
+    dnnl_reduction,
 
     /// Parameter to allow internal only primitives without undefined behavior.
     /// This parameter is chosen to be valid for so long as sizeof(int) >= 2.
@@ -932,10 +957,30 @@ typedef enum {
     dnnl_binary_max = 0x1fff2,
     /// Binary min
     dnnl_binary_min = 0x1fff3,
+    /// Binary div
+    dnnl_binary_div = 0x1fff4,
     /// Nearest Neighbor Resampling Method
     dnnl_resampling_nearest = 0x2fff0,
     /// Linear Resampling Method
     dnnl_resampling_linear = 0x2fff1,
+    /// Reduction using max
+    dnnl_reduction_max,
+    /// Reduction using min
+    dnnl_reduction_min,
+    /// Reduction using sum
+    dnnl_reduction_sum,
+    /// Reduction using mul
+    dnnl_reduction_mul,
+    /// Reduction using mean
+    dnnl_reduction_mean,
+    /// Reduction using lp norm
+    dnnl_reduction_norm_lp_max,
+    /// Reduction using lp norm
+    dnnl_reduction_norm_lp_sum,
+    /// Reduction using lp norm without final pth-root
+    dnnl_reduction_norm_lp_power_p_max,
+    /// Reduction using lp norm without final pth-root
+    dnnl_reduction_norm_lp_power_p_sum,
 } dnnl_alg_kind_t;
 
 /// Flags for normalization primitives.
@@ -1118,6 +1163,7 @@ typedef enum {
     dnnl_memory_extra_flag_compensation_conv_s8s8 = 0x1U,
     dnnl_memory_extra_flag_scale_adjust = 0x2U,
     dnnl_memory_extra_flag_gpu_rnn_u8s8_compensation = 0x4U,
+    dnnl_memory_extra_flag_compensation_conv_asymmetric_src = 0x8U,
 } dnnl_memory_extra_flags_t;
 
 /// Description of extra information stored in memory
@@ -1129,8 +1175,10 @@ typedef struct {
     int compensation_mask;
     /// Scale applied to the data
     float scale_adjust;
+    /// Compensation mask for asymmetric quantization
+    int asymm_compensation_mask;
     /// For future backwards compatibility
-    char reserved[64];
+    char reserved[60];
 } dnnl_memory_extra_desc_t;
 
 /// Memory descriptor. The description is based on a number of dimensions,
@@ -1196,7 +1244,12 @@ typedef struct dnnl_memory *dnnl_memory_t;
 /// A constant memory handle.
 typedef const struct dnnl_memory *const_dnnl_memory_t;
 
+/// Special pointer value that indicates that a memory object should not have
+/// an underlying buffer.
 #define DNNL_MEMORY_NONE (NULL)
+
+/// Special pointer value that indicates that the library needs to allocate an
+/// underlying buffer for a memory object.
 #define DNNL_MEMORY_ALLOCATE ((void *)(size_t)-1)
 
 /// @} dnnl_api_memory
@@ -1412,6 +1465,46 @@ typedef struct {
 } dnnl_pooling_desc_t;
 
 /// @} dnnl_api_pooling
+
+/// @addtogroup dnnl_api_pooling_v2
+/// @{
+
+/// A descriptor of a pooling operation.
+typedef struct {
+    /// The kind of primitive. Used for self-identifying the primitive
+    /// descriptor. Must be #dnnl_pooling_v2.
+    dnnl_primitive_kind_t primitive_kind;
+    /// The kind of propagation. Possible values: #dnnl_forward_training,
+    /// #dnnl_forward_inference, #dnnl_backward, and #dnnl_backward_data.
+    dnnl_prop_kind_t prop_kind;
+    /// The kind of pooling algorithm.
+    /// Possible values: #dnnl_pooling_max,
+    /// #dnnl_pooling_avg_include_padding, and
+    /// #dnnl_pooling_avg_exclude_padding.
+    dnnl_alg_kind_t alg_kind;
+    /// Source memory descriptor.
+    dnnl_memory_desc_t src_desc;
+    /// Source gradient memory descriptor.
+    dnnl_memory_desc_t diff_src_desc;
+    /// Destination memory descriptor.
+    dnnl_memory_desc_t dst_desc;
+    /// Destination gradient memory descriptor.
+    dnnl_memory_desc_t diff_dst_desc;
+    /// Pooling kernel strides for spatial dimensions.
+    dnnl_dims_t strides;
+    /// Pooling kernel spatial dimensions.
+    dnnl_dims_t kernel;
+    /// Padding in each spatial dimension. padding[0] is a padding in the
+    /// beginning (@p padding_l), padding[1] is a padding in the end (@p
+    /// padding_r).
+    dnnl_dims_t padding[2];
+    /// The accumulator data type. Initialized automatically.
+    dnnl_data_type_t accum_data_type;
+    /// Pooling dilations for spatial dimensions.
+    dnnl_dims_t dilation;
+} dnnl_pooling_v2_desc_t;
+
+/// @} dnnl_api_pooling_v2
 
 /// @addtogroup dnnl_api_lrn
 /// @{
@@ -1661,8 +1754,8 @@ typedef struct {
     /// descriptor. Must be #dnnl_binary.
     dnnl_primitive_kind_t primitive_kind;
     /// The kind of the binary algorithm. Possible values:
-    /// #dnnl_binary_add, #dnnl_binary_mul, #dnnl_binary_max and
-    /// #dnnl_binary_min.
+    /// #dnnl_binary_add, #dnnl_binary_mul, #dnnl_binary_max, #dnnl_binary_min
+    /// and #dnnl_binary_div.
     dnnl_alg_kind_t alg_kind;
     /// Source memory descriptors.
     dnnl_memory_desc_t src_desc[2];
@@ -1727,6 +1820,40 @@ typedef struct {
 } dnnl_resampling_desc_t;
 
 /// @} dnnl_api_resampling
+
+/// @addtogroup dnnl_api_reduction
+/// @{
+
+/// A descriptor of reduction operation.
+typedef struct {
+    /// The kind of primitive. Used for self-identifying the primitive
+    /// descriptor. Must be #dnnl_reduction.
+    dnnl_primitive_kind_t primitive_kind;
+    /// The kind of reduction algorithm. Possible values:
+    /// #dnnl_reduction_max, #dnnl_reduction_min, #dnnl_reduction_sum,
+    /// #dnnl_reduction_mul, #dnnl_reduction_mean, #dnnl_reduction_norm_lp_max,
+    /// #dnnl_reduction_norm_lp_sum, #dnnl_reduction_norm_lp_power_p_max,
+    /// #dnnl_reduction_norm_lp_power_p_sum.
+    dnnl_alg_kind_t alg_kind;
+    /// Source memory descriptor.
+    dnnl_memory_desc_t src_desc;
+    /// Destination memory descriptor.
+    dnnl_memory_desc_t dst_desc;
+    /// Algorithm specific parameters.
+    /// Accordance table:
+    /// #dnnl_reduction_max: @p p and @p eps are ignored
+    /// #dnnl_reduction_min: @p p and @p eps are ignored
+    /// #dnnl_reduction_norm_lp_max: @p p -- power, @p eps -- epsilon
+    /// #dnnl_reduction_norm_lp_sum: @p p -- power, @p eps -- epsilon
+    /// #dnnl_reduction_norm_lp_power_p_max: @p p -- power, @p eps -- epsilon
+    /// #dnnl_reduction_norm_lp_power_p_sum: @p p -- power, @p eps -- epsilon
+    /// #dnnl_reduction_sum: @p p and @p eps are ignored
+    /// #dnnl_reduction_mul: @p p and @p eps are ignored
+    /// #dnnl_reduction_mean: @p p and @p eps are ignored
+    float p, eps;
+} dnnl_reduction_desc_t;
+
+/// @} dnnl_api_reduction
 
 /// @} dnnl_api_primitives
 
@@ -2049,6 +2176,17 @@ typedef const struct dnnl_primitive *const_dnnl_primitive_t;
 /// See @ref dev_guide_attributes_post_ops_depthwise_fusion
 #define DNNL_ARG_ATTR_POST_OP_DW 8192
 
+/// Starting point for a binary post operation.
+#define DNNL_ARG_ATTR_MULTIPLE_POST_OP_BASE 16384
+
+/// Arguments for a binary post operation. Up to 32 arguments are supported.
+/// See @ref dev_guide_attributes_post_ops_binary_fusion
+#define DNNL_ARG_ATTR_MULTIPLE_POST_OP(idx) \
+    (DNNL_ARG_ATTR_MULTIPLE_POST_OP_BASE * ((idx) + 1))
+
+// XXX: next define should have a (1 << 20) = 1048576 value to preserve 5 bits
+// for DNNL_ARG_ATTR_MULTIPLE_POST_OP argument.
+
 /// A structure that contains an index and a memory object, and is used to pass
 /// arguments to dnnl_primitive_execute().
 typedef struct {
@@ -2134,6 +2272,8 @@ typedef enum {
     dnnl_query_logsoftmax_d, ///< logsoftmax descriptor
     dnnl_query_matmul_d, ///< matrix multiplication (matmul) descriptor
     dnnl_query_resampling_d, ///< resampling descriptor
+    dnnl_query_pooling_v2_d, ///< pooling version 2 descriptor
+    dnnl_query_reduction_d, ///< reduction descriptor
 
     // memory descriptor section
     dnnl_query_some_md = 128, ///< stub

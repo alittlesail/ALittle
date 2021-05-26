@@ -8,6 +8,7 @@
 
 #define AT_MKLDNN_ENABLED() 1
 #define AT_MKL_ENABLED() 1
+#define AT_FFTW_ENABLED() 0
 #define AT_NNPACK_ENABLED() 0
 #define CAFFE2_STATIC_LINK_CUDA() 0
 #define AT_BUILD_WITH_BLAS() 1

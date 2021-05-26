@@ -1,6 +1,6 @@
 #pragma once
 
-// @generated from tools\autograd\templates\python_functions.h
+// @generated from tools\autograd\templates/python_functions.h
 
 // Python bindings for automatically generated autograd functions
 

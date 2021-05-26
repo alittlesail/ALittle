@@ -9,8 +9,8 @@
 // as a track point for bugs, until we find a proper versioning cycle.
 
 #define CAFFE2_VERSION_MAJOR 1
-#define CAFFE2_VERSION_MINOR 7
-#define CAFFE2_VERSION_PATCH 0
+#define CAFFE2_VERSION_MINOR 8
+#define CAFFE2_VERSION_PATCH 1
 
 static_assert(
     CAFFE2_VERSION_MINOR < 100,
@@ -44,20 +44,22 @@ static_assert(
 /* #undef CAFFE2_USE_NVTX */
 /* #undef CAFFE2_USE_TRT */
 
-#ifndef USE_NUMPY
-#define USE_NUMPY
-#endif
-
 #ifndef EIGEN_MPL2_ONLY
 #define EIGEN_MPL2_ONLY
 #endif
 
 // Useful build settings that are recorded in the compiled binary
 #define CAFFE2_BUILD_STRINGS { \
-  {"CXX_FLAGS", "/DWIN32 /D_WINDOWS /GR /EHsc /w /bigobj -openmp:experimental -DNDEBUG -DUSE_FBGEMM -DUSE_VULKAN_WRAPPER"}, \
+  {"TORCH_VERSION", "1.8.1"}, \
+  {"CXX_COMPILER", "C:/w/b/windows/tmp_bin/sccache-cl.exe"}, \
+  {"CXX_FLAGS", "/DWIN32 /D_WINDOWS /GR /EHsc /w /bigobj -DUSE_PTHREADPOOL -openmp:experimental -DNDEBUG -DUSE_FBGEMM -DUSE_XNNPACK"}, \
   {"BUILD_TYPE", "Release"}, \
-  {"BLAS", "MKL"}, \
+  {"BLAS_INFO", "mkl"}, \
+  {"LAPACK_INFO", "mkl"}, \
   {"USE_CUDA", "0"}, \
+  {"CUDA_VERSION", ""}, \
+  {"USE_CUDNN", "OFF"}, \
+  {"CUDNN_VERSION", ""}, \
   {"USE_NCCL", "OFF"}, \
   {"USE_MPI", "OFF"}, \
   {"USE_GFLAGS", "OFF"}, \

@@ -86,7 +86,8 @@ public:
 			// if surface small then max texture size then create single texture
 			if (m_surface.GetWidth() > s_alittle_render.GetMaxTextureWidth() || m_surface.GetHeight() > s_alittle_render.GetMaxTextureHeight())
 			{
-				CARP_ERROR("surface is too large:" << m_surface.GetWidth() << "," << m_surface.GetHeight());
+				CARP_ERROR("surface is too large:" << m_surface.GetWidth() << "," << m_surface.GetHeight()
+					<< ", max:" << s_alittle_render.GetMaxTextureWidth() << "," << s_alittle_render.GetMaxTextureHeight());
 				return;
 			}
 			
@@ -247,7 +248,8 @@ public:
 			return;
 		}
 
-		CARP_ERROR("surface is too large:" << m_surface->GetWidth() << "," << m_surface->GetHeight());
+		CARP_ERROR("surface is too large:" << m_surface->GetWidth() << "," << m_surface->GetHeight()
+			<< ", max:" << s_alittle_render.GetMaxTextureWidth() << "," << s_alittle_render.GetMaxTextureHeight());
 
 		CarpSurfaceBind::FreeCarpSurface(m_surface);
 		m_surface = nullptr;

@@ -356,7 +356,14 @@ public:
 #endif
 		// init SDL
 		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_AUDIO) == -1)
-			CARP_ERROR(SDL_GetError());
+		{
+			s_carp_log.Shutdown();
+#ifdef _WIN32
+			s_carp_dump.Shutdown();
+#endif
+			CARP_ERROR("SDL_Init failed:" << SDL_GetError());
+			return 0;
+		}	
 
 		// enable drop file
 		SDL_EventState(SDL_DROPFILE, SDL_ENABLE);

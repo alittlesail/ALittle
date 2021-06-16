@@ -2,6 +2,8 @@
 #ifndef _ALITTLE_MYSQLSYSTEM_H_
 #define _ALITTLE_MYSQLSYSTEM_H_
 
+#ifdef HAS_MYSQL
+
 #include <string>
 #include <vector>
 
@@ -74,5 +76,7 @@ private:
 };
 
 } // ALittle
+
+#endif // HAS_MYSQL
 
 #endif // _ALITTLE_MYSQLSYSTEM_H_

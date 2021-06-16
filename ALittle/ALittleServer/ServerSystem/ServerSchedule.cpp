@@ -4,7 +4,9 @@
 #include "ServerSchedule.h"
 #include "ServerSystem.h"
 
+#ifdef HAS_MYSQL
 #include "Carp/carp_mysql.hpp"
+#endif // HAS_MYSQL
 #include "Carp/carp_file.hpp"
 #include "Carp/carp_http_client.hpp"
 
@@ -42,10 +44,12 @@ void ServerSchedule::RegisterToScript()
 	luabridge::getGlobalNamespace(L)
         .beginClass<ServerSchedule>("__CPPAPIServerSchedule")
 
+#ifdef HAS_MYSQL
         .addFunction("StartMysqlQuery", &ServerSchedule::StartMysqlQuery)
         .addFunction("AddMysqlStatement", &ServerSchedule::AddMysqlStatement)
         .addFunction("AddMysqlNormal", &ServerSchedule::AddMysqlNormal)
 		.addFunction("AddMysqlEmpty", &ServerSchedule::AddMysqlEmpty)
+#endif // HAS_MYSQL
 
 		.addFunction("HttpGet", &ServerSchedule::HttpGet)
 		.addFunction("HttpPost", &ServerSchedule::HttpPost)
@@ -91,6 +95,7 @@ void ServerSchedule::RegisterToScript()
 
 	luabridge::setGlobal(L, this, "__CPPAPI_ServerSchedule");
 
+#ifdef HAS_MYSQL
 	luabridge::getGlobalNamespace(L)
 		.beginClass<MysqlStatementQuery>("__CPPAPIMysqlStatementQuery")
 		.addConstructor<void(*)()>()
@@ -112,6 +117,7 @@ void ServerSchedule::RegisterToScript()
 		.addFunction("ReadI64", &MysqlStatementQuery::ReadLongLong)
 		.addFunction("ReadString", &MysqlStatementQuery::ReadString)
 		.endClass();
+#endif // HAS_MYSQL
 }
 
 int ServerSchedule::Start()
@@ -138,25 +144,27 @@ int ServerSchedule::Start()
 	// ×èÈûÖ´ÐÐ
 	Run(false);
 
+#ifdef HAS_MYSQL
 	m_mysql_system.Shutdown();
+#endif // HAS_MYSQL
 	m_script_system.Invoke("__ALITTLEAPI_ShutdownMainModule", m_module_name.c_str());
 
 	m_script_system.Release();
 
-	for (auto it = m_http_server_set.begin(); it != m_http_server_set.end(); ++it)
-		(*it)->Close();
+	for (const auto& server : m_http_server_set)
+		server->Close();
 	m_http_server_set.clear();
 	m_id_map_http.clear();
 
-	for (auto it = m_client_server_set.begin(); it != m_client_server_set.end(); ++it)
-		(*it)->Close();
+	for (const auto& server : m_client_server_set)
+		server->Close();
 	m_client_server_set.clear();
 
 	m_id_map_client.clear();
 	m_client_map_id.clear();
 
-	for (auto it = m_rudp_server_set.begin(); it != m_rudp_server_set.end(); ++it)
-		(*it)->Close(true);
+	for (const auto& server : m_rudp_server_set)
+		server->Close(true);
 	m_rudp_server_set.clear();
 
 	m_id_map_rudp.clear();
@@ -190,6 +198,8 @@ void ServerSchedule::Update(time_t cur_time)
 	m_script_system.Invoke("__ALITTLEAPI_Update", cur_time - m_current_time);
 	m_current_time = cur_time;
 }
+
+#ifdef HAS_MYSQL
 
 void ServerSchedule::StartMysqlQuery(int thread_count, const char* ip, const char* username, const char* password, unsigned int port, const char* db_name)
 {
@@ -227,6 +237,7 @@ void ServerSchedule::HandleMysqlEmpty(int query_id, bool result, std::string rea
 		m_script_system.Invoke("__ALITTLEAPI_HandleMysqlEmptyTask", query_id, reason.c_str());
 }
 
+#endif // HAS_MYSQL
 
 bool ServerSchedule::CreateHttpServer(const char* yun_ip, const char* ip, int port, bool is_ssl)
 {
@@ -291,7 +302,7 @@ void ServerSchedule::HandleHttpMessage(CarpHttpSenderPtr sender, const std::stri
 		return;
 	}
 
-	if (path.size() && path[0] == '/')
+	if (!path.empty() && path[0] == '/')
 		path = path.substr(1);
 
 	m_script_system.Invoke("__ALITTLEAPI_HttpTask", id, url.c_str(), path.c_str(), param.c_str(), content.c_str());
@@ -315,7 +326,7 @@ bool ServerSchedule::HandleHttpFileMessage(CarpHttpSenderPtr sender, const std::
 	m_id_map_http[id] = sender;
 	sender->m_id = id;
 
-	if (path.size() && path[0] == '/')
+	if (!path.empty() && path[0] == '/')
 		path = path.substr(1);
 
 	m_script_system.Invoke("__ALITTLEAPI_HttpFileTask", id, path.c_str(), param.c_str(), content.c_str());
@@ -378,7 +389,7 @@ void ServerSchedule::HttpSendString(int id, const char* content)
 
 void ServerSchedule::HttpSendFile(int id, const char* file_path, int start_size)
 {
-	auto it = m_id_map_http.find(id);
+	const auto it = m_id_map_http.find(id);
 	if (it == m_id_map_http.end())
 		return;
 
@@ -394,7 +405,7 @@ void ServerSchedule::HttpSendFile(int id, const char* file_path, int start_size)
 
 void ServerSchedule::HttpStartReceiveFile(int id, const char* file_path, int start_size)
 {
-	auto it = m_id_map_http.find(id);
+	const auto it = m_id_map_http.find(id);
 	if (it == m_id_map_http.end()) return;
 
 	CarpHttpSenderPtr sender = it->second.lock();
@@ -419,9 +430,9 @@ void ServerSchedule::HandleHttpFileCompletedMessage(CarpHttpSenderPtr sender, co
 
 void ServerSchedule::HandleHttpFileCompletedMessageImpl(CarpHttpSenderPtr sender, const std::string& file_path, bool succeed, const std::string& reason)
 {
-	int id = sender->m_id;
+	const int id = sender->m_id;
 
-	auto it = m_id_map_http.find(id);
+	const auto it = m_id_map_http.find(id);
 	if (it == m_id_map_http.end())
 		return;
 

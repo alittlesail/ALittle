@@ -1,4 +1,6 @@
 
+#ifdef HAS_MYSQL
+
 #include "MysqlSystem.h"
 
 #include <functional>
@@ -171,3 +173,5 @@ bool MysqlSystem::AddTask(int thread_id, int query_id, ServerSchedule* schedule)
 }
 
 } // ALittle
+
+#endif // HAS_MYSQL

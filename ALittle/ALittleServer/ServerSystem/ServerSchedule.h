@@ -66,6 +66,7 @@ private:
 	AsioTimerPtr m_timer;
 	CarpMessageReadFactory m_read_factory;
 
+#ifdef HAS_MYSQL
 	//Mysql//////////////////////////////////////////////////////////////////////////////////
 public:
 	void StartMysqlQuery(int thread_count
@@ -83,6 +84,8 @@ public:
 
 private:
 	MysqlSystem m_mysql_system;
+
+#endif // HAS_MYSQL
 
 	//HttpServer//////////////////////////////////////////////////////////////////////////////////
 public:

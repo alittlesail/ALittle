@@ -1,0 +1,23 @@
+安装操作系统
+1. 使用官方的镜像烧写工具，把树莓派的操作系统写入到tf卡
+2. 把ssh和wpa_supplicant.conf拖入到tf卡根目录
+3. 把tf卡插入到树莓派，然后插入电源启动
+4. windows上运行Advanced_IP_Scanner，扫描ip，找到树莓派的ip
+5. 然后通过ssh登录控制台
+
+安装必要的软件
+1. sudo apt-get install git
+2. sudo apt-get install libreadline-dev
+3. sudo apt-get install wiringpi
+
+
+拉取代码
+1. git clone https://github.com/alittlesail/ALittle.git
+1. git clone https://github.com/alittlesail/ALittle-ALittleIDE.git
+
+
+编译lua
+cd ALittle/lua
+make
+
+编译ALittleServer

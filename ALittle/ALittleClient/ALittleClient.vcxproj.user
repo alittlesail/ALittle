@@ -4,7 +4,7 @@
     <LocalDebuggerCommandArguments>
     </LocalDebuggerCommandArguments>
     <LocalDebuggerWorkingDirectory>D:\ALittle\ALittle-ALittleIDE</LocalDebuggerWorkingDirectory>
-    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <DebuggerFlavor>WindowsRemoteDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerCommandArguments>NESEmulator</LocalDebuggerCommandArguments>

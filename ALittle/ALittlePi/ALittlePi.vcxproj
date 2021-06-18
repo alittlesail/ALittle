@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|ARM">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM">
+      <Configuration>Release</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|ARM64">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM64">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{8b33ea3c-ff92-4a8c-a6ac-2332b9bc59d5}</ProjectGuid>
+    <Keyword>Linux</Keyword>
+    <RootNamespace>ALittlePi</RootNamespace>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <ApplicationType>Linux</ApplicationType>
+    <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
+    <TargetLinuxPlatform>Raspberry</TargetLinuxPlatform>
+    <LinuxProjectType>{8748239F-558C-44D1-944B-07B09C35B330}</LinuxProjectType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <Link>
+      <LibraryDependencies>wiringPi</LibraryDependencies>
+    </Link>
+    <RemotePostBuildEvent>
+      <Command>gpio export 17 out</Command>
+      <Message>使用 gpio 实用程序导出 pin 17，以便可以在不使用 sudo 的情况下执行 blink 程序</Message>
+    </RemotePostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <Link>
+      <LibraryDependencies>wiringPi</LibraryDependencies>
+    </Link>
+    <RemotePostBuildEvent>
+      <Command>gpio export 17 out</Command>
+      <Message>使用 gpio 实用程序导出 pin 17，以便可以在不使用 sudo 的情况下执行 blink 程序</Message>
+    </RemotePostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\kcp\ikcp.c" />
+    <ClCompile Include="..\..\lualib\ajson\lua_ajson.c" />
+    <ClCompile Include="..\..\lualib\cjson\fpconv.c" />
+    <ClCompile Include="..\..\lualib\cjson\lua_cjson.c" />
+    <ClCompile Include="..\..\lualib\cjson\strbuf.c" />
+    <ClCompile Include="..\..\lualib\sqlite3\lsqlite3.c" />
+    <ClCompile Include="..\..\lualib\sqlite3\sqlite3.c" />
+    <ClCompile Include="..\..\lualib\tinyxml2\tinyxml2.cpp" />
+    <ClCompile Include="..\..\lualib\tinyxml2\tinyxml2lib.cpp" />
+    <ClCompile Include="..\ALittleServer\Main.cpp" />
+    <ClCompile Include="..\ALittleServer\MysqlSystem\MysqlSystem.cpp" />
+    <ClCompile Include="..\ALittleServer\RouteSystem\ConnectClient.cpp" />
+    <ClCompile Include="..\ALittleServer\RouteSystem\ConnectEndpoint.cpp" />
+    <ClCompile Include="..\ALittleServer\RouteSystem\ConnectReceiver.cpp" />
+    <ClCompile Include="..\ALittleServer\RouteSystem\ConnectServer.cpp" />
+    <ClCompile Include="..\ALittleServer\RouteSystem\RouteSystem.cpp" />
+    <ClCompile Include="..\ALittleServer\RouteSystem\RouteSystemConnect.cpp" />
+    <ClCompile Include="..\ALittleServer\RouteSystem\RouteSystemSearch.cpp" />
+    <ClCompile Include="..\ALittleServer\RouteSystem\SessionConnection.cpp" />
+    <ClCompile Include="..\ALittleServer\ScriptSystem\ScriptSystem.cpp" />
+    <ClCompile Include="..\ALittleServer\ServerSystem\ServerSchedule.cpp" />
+    <ClCompile Include="..\ALittleServer\ServerSystem\ServerSystem.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\kcp\ikcp.h" />
+    <ClInclude Include="..\..\lualib\ajson\lua_ajson.h" />
+    <ClInclude Include="..\..\lualib\cjson\fpconv.h" />
+    <ClInclude Include="..\..\lualib\cjson\lua_cjson.h" />
+    <ClInclude Include="..\..\lualib\cjson\strbuf.h" />
+    <ClInclude Include="..\..\lualib\sqlite3\lsqlite3.h" />
+    <ClInclude Include="..\..\lualib\sqlite3\sqlite3.h" />
+    <ClInclude Include="..\..\lualib\sqlite3\sqlite3ext.h" />
+    <ClInclude Include="..\..\lualib\tinyxml2\tinyxml2.h" />
+    <ClInclude Include="..\..\lualib\tinyxml2\tinyxml2lib.h" />
+    <ClInclude Include="..\ALittleServer\MysqlSystem\MysqlSystem.h" />
+    <ClInclude Include="..\ALittleServer\RouteSystem\ConnectClient.h" />
+    <ClInclude Include="..\ALittleServer\RouteSystem\ConnectEndpoint.h" />
+    <ClInclude Include="..\ALittleServer\RouteSystem\ConnectMessage.h" />
+    <ClInclude Include="..\ALittleServer\RouteSystem\ConnectReceiver.h" />
+    <ClInclude Include="..\ALittleServer\RouteSystem\ConnectServer.h" />
+    <ClInclude Include="..\ALittleServer\RouteSystem\RouteDefine.h" />
+    <ClInclude Include="..\ALittleServer\RouteSystem\RouteIdDefine.h" />
+    <ClInclude Include="..\ALittleServer\RouteSystem\RouteMessage.h" />
+    <ClInclude Include="..\ALittleServer\RouteSystem\RouteSystem.h" />
+    <ClInclude Include="..\ALittleServer\RouteSystem\SessionConnection.h" />
+    <ClInclude Include="..\ALittleServer\ScriptSystem\ScriptSystem.h" />
+    <ClInclude Include="..\ALittleServer\ServerSystem\ServerSchedule.h" />
+    <ClInclude Include="..\ALittleServer\ServerSystem\ServerSystem.h" />
+  </ItemGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\asio\asio\include;$(SolutionDir)..\lua;$(SolutionDir)..\LuaBridge\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

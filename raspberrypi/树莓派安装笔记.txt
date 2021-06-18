@@ -9,15 +9,13 @@
 1. sudo apt-get install git
 2. sudo apt-get install libreadline-dev
 3. sudo apt-get install wiringpi
+4. sudo apt-get install cmake
 
+使用visual studio打开ALittle.sln
+编译ALittlePi，根据提示设置远程树莓派的ssh账号密码
+然后vs会在~/projects生成对应的ALittlePi目录，内部包含了需要编译的文件
 
-拉取代码
-1. git clone https://github.com/alittlesail/ALittle.git
-1. git clone https://github.com/alittlesail/ALittle-ALittleIDE.git
+使用tfp文件工具连上树莓派，然后进入~/projects/ALittlePi
 
-
-编译lua
-cd ALittle/lua
-make
-
-编译ALittleServer
+上传lua、SDL、asio、kcp、lualib/ajson以及其他需要被包含的文件夹
+因为真正编译的环境还是在树莓派上面

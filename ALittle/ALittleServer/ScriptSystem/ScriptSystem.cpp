@@ -14,6 +14,10 @@
 #include "Carp/carp_process_bind.hpp"
 #include "Carp/carp_square_jps_bind.hpp"
 
+#ifdef HAS_WIRINGPI
+#include "Carp/carp_wiringpi_bind.hpp"
+#endif
+
 extern "C" {
 #include "lualib/ajson/lua_ajson.h"
 #include "lualib/cjson/lua_cjson.h"
@@ -47,6 +51,9 @@ void ScriptSystem::Setup()
 	CarpLuaWorker::Bind(m_L);
 	CarpProcessBind::Bind(m_L);
 	CarpSquareJPSBind::Bind(m_L);
+#ifdef HAS_WIRINGPI
+	CarpWiringPiBind::Bind(m_L);
+#endif
 }
 
 void ScriptSystem::Shutdown()

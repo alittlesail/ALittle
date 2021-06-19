@@ -65,7 +65,8 @@
       <Message>使用 gpio 实用程序导出 pin 17，以便可以在不使用 sudo 的情况下执行 blink 程序</Message>
     </RemotePostBuildEvent>
     <ClCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>HAS_WIRINGPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\asio\asio\include;$(SolutionDir)..\lua;$(SolutionDir)..\LuaBridge\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -93,6 +94,7 @@
     <ClCompile Include="..\ALittleServer\ServerSystem\ServerSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Carp\carp_wiringpi_bind.hpp" />
     <ClInclude Include="..\..\kcp\ikcp.h" />
     <ClInclude Include="..\..\lualib\ajson\lua_ajson.h" />
     <ClInclude Include="..\..\lualib\cjson\fpconv.h" />
@@ -121,7 +123,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)..;$(SolutionDir)..\asio\asio\include;$(SolutionDir)..\lua;$(SolutionDir)..\LuaBridge\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>HAS_WIRINGPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)..\lua;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

@@ -168,5 +168,8 @@
     <ClInclude Include="..\..\lualib\tinyxml2\tinyxml2.h">
       <Filter>ScriptSystem\tinyxml2</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_wiringpi_bind.hpp">
+      <Filter>MysqlSystem</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

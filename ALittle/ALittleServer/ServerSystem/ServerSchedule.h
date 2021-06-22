@@ -160,35 +160,35 @@ private:
 	//RtpServer//////////////////////////////////////////////////////////////////////////////////
 public:
 	// 释放rtp
-	void ReleaseRtp(int first_port);
+	void ReleaseRtp(const std::string& call_id);
 	void ReleaseAllRtp();
 
     int UseRtpForLua(lua_State* L);
 	// 开始使用rtp
-	bool UseRtp(int first_port
+	bool UseRtp(const std::string& call_id
 		, const std::vector<std::string>& client_rtp_ip_list, int client_rtp_port
 		, const std::string& self_rtp_ip, int self_rtp_port
 		, const std::string& inner_rtp_ip, int inner_rtp_port
 		, const std::string& remote_rtp_ip, int remote_rtp_port
-		, const std::string& call_id, int client_id, unsigned int ssrc);
+		, int client_ssrc, int server_ssrc);
 
 	// 设置线路的rtp
-	void SetRemoteRtp(int first_port, const std::string& remote_rtp_ip, int remote_rtp_port);
+	void SetRemoteRtp(const std::string& call_id, const std::string& remote_rtp_ip, int remote_rtp_port);
 
 	// 设置内部转接rtp
-	void SetInnerRtp(int first_port, const std::string& inner_rtp_ip, int inner_rtp_port);
+	void SetInnerRtp(const std::string& call_id, const std::string& inner_rtp_ip, int inner_rtp_port);
 
 	// 转接到客户端
-	void TransferToClient(int first_port, int client_id);
+	void TransferToClient(const std::string& call_id, int client_ssrc);
 
 	// 清理空闲的rtp
 	void ClearIdleRtp(int idle_delta_time);
 
 private:
 	// 所有的rtp
-	std::map<int, CarpRtpServerPtr> m_use_map_rtp;
+	std::map<std::string, CarpRtpServerPtr> m_use_map_rtp;
 	// 等待释放的rtp
-	std::map<int, CarpRtpServerPtr> m_release_map_rtp;
+	std::map<std::string, CarpRtpServerPtr> m_release_map_rtp;
 
     //SipServer//////////////////////////////////////////////////////////////////////////////////
 public:

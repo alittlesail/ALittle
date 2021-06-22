@@ -54,10 +54,8 @@ public:
 		case 8: route_name = "WEB"; break;
 		case 9: route_name = "DEPLOY"; break;
 		case 10: route_name = "MAP"; break;
-		case 11: route_name = "CALL_CENTER"; break;
-		case 12: route_name = "CALL_INTERFACE"; break;
-		case 13: route_name = "CALL_SIP"; break;
-		case 14: route_name = "CALL_RTP"; break;
+		case 11: route_name = "SIP"; break;
+		case 12: route_name = "RTP"; break;
 		}
 		return route_name + "_" + std::to_string(route_num);
 	}

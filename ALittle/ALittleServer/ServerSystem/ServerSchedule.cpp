@@ -72,9 +72,8 @@ void ServerSchedule::RegisterToScript()
 	    .addFunction("ReleaseRtp", &ServerSchedule::ReleaseRtp)
 		.addFunction("ReleaseAllRtp", &ServerSchedule::ReleaseAllRtp)
 		.addCFunction("UseRtp", &ServerSchedule::UseRtpForLua)
-		.addFunction("SetRemoteRtp", &ServerSchedule::SetRemoteRtp)
-		.addFunction("SetInnerRtp", &ServerSchedule::SetInnerRtp)
-		.addFunction("TransferToClient", &ServerSchedule::TransferToClient)
+		.addFunction("SetFromRtp", &ServerSchedule::SetFromRtp)
+		.addFunction("SetToRtp", &ServerSchedule::SetToRtp)
 		.addFunction("ClearIdleRtp", &ServerSchedule::ClearIdleRtp)
 
 		.addFunction("CreateUdpServer", &ServerSchedule::CreateUdpServer)
@@ -649,36 +648,26 @@ int ServerSchedule::UseRtpForLua(lua_State* L)
     // 读取参数
     int index = 2;
     const char* call_id = luaL_checkstring(L, index++);
-    const char* client_rtp_ip_string = luaL_checkstring(L, index++);
-    std::vector<std::string> client_rtp_ip_list;
-    CarpString::Split(client_rtp_ip_string, ";", false, client_rtp_ip_list);
-	const int client_rtp_port = static_cast<int>(luaL_checkinteger(L, index++));
-    const char* self_rtp_ip = luaL_checkstring(L, index++);
-	const int self_rtp_port = static_cast<int>(luaL_checkinteger(L, index++));
-    const char* inner_rtp_ip = luaL_checkstring(L, index++);
-	const int inner_rtp_port = static_cast<int>(luaL_checkinteger(L, index++));
-    const char* remote_rtp_ip = luaL_checkstring(L, index++);
-	const int remote_rtp_port = static_cast<int>(luaL_checkinteger(L, index++));
-	const int client_ssrc = static_cast<int>(luaL_checkinteger(L, index++));
-	const int server_ssrc = static_cast<int>(luaL_checkinteger(L, index++));
+
+    const char* from_rtp_ip = luaL_checkstring(L, index++);
+	const int from_rtp_port = static_cast<int>(luaL_checkinteger(L, index++));
+	const int from_ssrc = static_cast<int>(luaL_checkinteger(L, index++));
+	
+	const char* to_rtp_ip = luaL_checkstring(L, index++);
+	const int to_rtp_port = static_cast<int>(luaL_checkinteger(L, index++));
+	const int to_ssrc = static_cast<int>(luaL_checkinteger(L, index++));
 
     // 执行
     UseRtp(call_id
-           , client_rtp_ip_list, client_rtp_port
-           , self_rtp_ip, self_rtp_port
-           , inner_rtp_ip, inner_rtp_port
-           , remote_rtp_ip, remote_rtp_port
-           , client_ssrc, server_ssrc);
+           , from_rtp_ip, from_rtp_port, from_ssrc
+           , to_rtp_ip, to_rtp_port, to_ssrc);
 
     return 0;
 }
 
 bool ServerSchedule::UseRtp(const std::string& call_id
-                            , const std::vector<std::string>& client_rtp_ip_list, int client_rtp_port
-                            , const std::string& self_rtp_ip, int self_rtp_port
-                            , const std::string& inner_rtp_ip, int inner_rtp_port
-                            , const std::string& remote_rtp_ip, int remote_rtp_port
-                            , int client_ssrc, int server_ssrc)
+                            , const std::string& from_rtp_ip, int from_rtp_port, int from_ssrc
+							, const std::string& to_rtp_ip, int to_rtp_port, int to_ssrc)
 {
 	CarpRtpServerPtr rtp;
 	const auto release_it = m_release_map_rtp.find(call_id);
@@ -693,17 +682,12 @@ bool ServerSchedule::UseRtp(const std::string& call_id
 	}
 	
 	// 创建rtp
-	if (!rtp->Create(client_rtp_ip_list, client_rtp_port
-		, self_rtp_ip, self_rtp_port
-		, inner_rtp_ip, inner_rtp_port, this))
+	if (!rtp->Create(from_rtp_ip, from_rtp_port, to_rtp_ip, to_rtp_port, this))
 		return false;
 
 	m_use_map_rtp[call_id] = rtp;
 	// 开始使用rtp
-	rtp->Start(call_id, client_ssrc, server_ssrc);
-
-	// 如果线路的rtp已知道，那么就直接设置进去
-	if (!remote_rtp_ip.empty()) rtp->SetRemoteRtp(remote_rtp_ip, remote_rtp_port);
+	rtp->Start(call_id, from_ssrc, to_ssrc);
 
 	// 打印信息
 	CARP_INFO("release count:" << m_release_map_rtp.size());
@@ -712,30 +696,24 @@ bool ServerSchedule::UseRtp(const std::string& call_id
 	return true;
 }
 
-void ServerSchedule::SetRemoteRtp(const std::string& call_id, const std::string& remote_rtp_ip, int remote_rtp_port)
+void ServerSchedule::SetFromRtp(const std::string& call_id, const std::string& rtp_ip, int rtp_port)
 {
-	if (remote_rtp_ip.empty()) return;
+	if (rtp_ip.empty()) return;
 
 	auto use_it = m_use_map_rtp.find(call_id);
 	if (use_it == m_use_map_rtp.end()) return;
 
-	use_it->second->SetRemoteRtp(remote_rtp_ip, remote_rtp_port);
+	use_it->second->SetFromRtp(rtp_ip, rtp_port);
 }
 
-void ServerSchedule::SetInnerRtp(const std::string& call_id, const std::string& inner_rtp_ip, int inner_rtp_port)
+void ServerSchedule::SetToRtp(const std::string& call_id, const std::string& rtp_ip, int rtp_port)
 {
+	if (rtp_ip.empty()) return;
+
 	auto use_it = m_use_map_rtp.find(call_id);
 	if (use_it == m_use_map_rtp.end()) return;
 
-	use_it->second->SetInnerRtp(inner_rtp_ip, inner_rtp_port);
-}
-
-void ServerSchedule::TransferToClient(const std::string& call_id, int client_ssrc)
-{
-	auto use_it = m_use_map_rtp.find(call_id);
-	if (use_it == m_use_map_rtp.end()) return;
-
-	use_it->second->ChangeClient(client_ssrc);
+	use_it->second->SetToRtp(rtp_ip, rtp_port);
 }
 
 void ServerSchedule::ClearIdleRtp(int idle_delta_time)

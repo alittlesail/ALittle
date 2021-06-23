@@ -166,20 +166,13 @@ public:
     int UseRtpForLua(lua_State* L);
 	// 开始使用rtp
 	bool UseRtp(const std::string& call_id
-		, const std::vector<std::string>& client_rtp_ip_list, int client_rtp_port
-		, const std::string& self_rtp_ip, int self_rtp_port
-		, const std::string& inner_rtp_ip, int inner_rtp_port
-		, const std::string& remote_rtp_ip, int remote_rtp_port
-		, int client_ssrc, int server_ssrc);
+		, const std::string& from_rtp_ip, int from_rtp_port, int from_ssrc
+		, const std::string& to_rtp_ip, int to_rtp_port, int to_ssrc);
 
-	// 设置线路的rtp
-	void SetRemoteRtp(const std::string& call_id, const std::string& remote_rtp_ip, int remote_rtp_port);
-
-	// 设置内部转接rtp
-	void SetInnerRtp(const std::string& call_id, const std::string& inner_rtp_ip, int inner_rtp_port);
-
-	// 转接到客户端
-	void TransferToClient(const std::string& call_id, int client_ssrc);
+	// 设置呼叫方ip和端口
+	void SetFromRtp(const std::string& call_id, const std::string& rtp_ip, int rtp_port);
+	// 设置被呼叫方ip和端口
+	void SetToRtp(const std::string& call_id, const std::string& rtp_ip, int rtp_port);
 
 	// 清理空闲的rtp
 	void ClearIdleRtp(int idle_delta_time);

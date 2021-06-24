@@ -160,28 +160,28 @@ private:
 	//RtpServer//////////////////////////////////////////////////////////////////////////////////
 public:
 	// 释放rtp
-	void ReleaseRtp(const std::string& call_id);
+	void ReleaseRtp(int first_port);
 	void ReleaseAllRtp();
 
     int UseRtpForLua(lua_State* L);
 	// 开始使用rtp
-	bool UseRtp(const std::string& call_id
+	bool UseRtp(int first_port, const std::string& call_id
 		, const std::string& from_rtp_ip, int from_rtp_port, int from_ssrc
 		, const std::string& to_rtp_ip, int to_rtp_port, int to_ssrc);
 
 	// 设置呼叫方ip和端口
-	void SetFromRtp(const std::string& call_id, const std::string& rtp_ip, int rtp_port);
+	void SetFromRtp(int first_port, const char* rtp_ip, int rtp_port);
 	// 设置被呼叫方ip和端口
-	void SetToRtp(const std::string& call_id, const std::string& rtp_ip, int rtp_port);
+	void SetToRtp(int first_port, const char* rtp_ip, int rtp_port);
 
 	// 清理空闲的rtp
 	void ClearIdleRtp(int idle_delta_time);
 
 private:
 	// 所有的rtp
-	std::map<std::string, CarpRtpServerPtr> m_use_map_rtp;
+	std::map<int, CarpRtpServerPtr> m_use_map_rtp;
 	// 等待释放的rtp
-	std::map<std::string, CarpRtpServerPtr> m_release_map_rtp;
+	std::map<int, CarpRtpServerPtr> m_release_map_rtp;
 
     //SipServer//////////////////////////////////////////////////////////////////////////////////
 public:

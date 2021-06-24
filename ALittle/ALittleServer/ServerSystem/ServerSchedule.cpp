@@ -617,13 +617,13 @@ void ServerSchedule::HandleRudpMessage(CarpRudpReceiverPtr sender, int message_s
 	m_script_system.Invoke("__ALITTLEAPI_ClientMessage", it->second, message_id, message_rpcid, &m_read_factory);
 }
 
-void ServerSchedule::ReleaseRtp(const std::string& call_id)
+void ServerSchedule::ReleaseRtp(int first_port)
 {
-	auto use_it = m_use_map_rtp.find(call_id);
+	auto use_it = m_use_map_rtp.find(first_port);
 	if (use_it == m_use_map_rtp.end()) return;
 
 	use_it->second->Stop();
-	m_release_map_rtp[call_id] = use_it->second;
+	m_release_map_rtp[first_port] = use_it->second;
 	m_use_map_rtp.erase(use_it);
 
 	CARP_INFO("release count:" << m_release_map_rtp.size());
@@ -647,6 +647,7 @@ int ServerSchedule::UseRtpForLua(lua_State* L)
 {
     // 读取参数
     int index = 2;
+	int first_port = static_cast<int>(luaL_checkinteger(L, index++));
     const char* call_id = luaL_checkstring(L, index++);
 
     const char* from_rtp_ip = luaL_checkstring(L, index++);
@@ -658,19 +659,19 @@ int ServerSchedule::UseRtpForLua(lua_State* L)
 	const int to_ssrc = static_cast<int>(luaL_checkinteger(L, index++));
 
     // 执行
-    UseRtp(call_id
+    UseRtp(first_port, call_id
            , from_rtp_ip, from_rtp_port, from_ssrc
            , to_rtp_ip, to_rtp_port, to_ssrc);
 
     return 0;
 }
 
-bool ServerSchedule::UseRtp(const std::string& call_id
+bool ServerSchedule::UseRtp(int first_port, const std::string& call_id
                             , const std::string& from_rtp_ip, int from_rtp_port, int from_ssrc
 							, const std::string& to_rtp_ip, int to_rtp_port, int to_ssrc)
 {
 	CarpRtpServerPtr rtp;
-	const auto release_it = m_release_map_rtp.find(call_id);
+	const auto release_it = m_release_map_rtp.find(first_port);
 	if (release_it != m_release_map_rtp.end())
 	{
 		rtp = release_it->second;
@@ -680,12 +681,12 @@ bool ServerSchedule::UseRtp(const std::string& call_id
 	{
 		rtp = std::make_shared<CarpRtpServer>();
 	}
-	
+
 	// 创建rtp
 	if (!rtp->Create(from_rtp_ip, from_rtp_port, to_rtp_ip, to_rtp_port, this))
 		return false;
 
-	m_use_map_rtp[call_id] = rtp;
+	m_use_map_rtp[first_port] = rtp;
 	// 开始使用rtp
 	rtp->Start(call_id, from_ssrc, to_ssrc);
 
@@ -696,22 +697,30 @@ bool ServerSchedule::UseRtp(const std::string& call_id
 	return true;
 }
 
-void ServerSchedule::SetFromRtp(const std::string& call_id, const std::string& rtp_ip, int rtp_port)
+void ServerSchedule::SetFromRtp(int first_port, const char* rtp_ip, int rtp_port)
 {
-	if (rtp_ip.empty()) return;
+	if (rtp_ip == nullptr) return;
 
-	auto use_it = m_use_map_rtp.find(call_id);
-	if (use_it == m_use_map_rtp.end()) return;
+	auto use_it = m_use_map_rtp.find(first_port);
+	if (use_it == m_use_map_rtp.end())
+	{
+		CARP_WARN("SetFromRtp can't find rtp first_port:" << first_port);
+		return;
+	}
 
 	use_it->second->SetFromRtp(rtp_ip, rtp_port);
 }
 
-void ServerSchedule::SetToRtp(const std::string& call_id, const std::string& rtp_ip, int rtp_port)
+void ServerSchedule::SetToRtp(int first_port, const char* rtp_ip, int rtp_port)
 {
-	if (rtp_ip.empty()) return;
+	if (rtp_ip == nullptr) return;
 
-	auto use_it = m_use_map_rtp.find(call_id);
-	if (use_it == m_use_map_rtp.end()) return;
+	auto use_it = m_use_map_rtp.find(first_port);
+	if (use_it == m_use_map_rtp.end())
+	{
+		CARP_WARN("SetToRtp can't find rtp first_port:" << first_port);
+		return;
+	}
 
 	use_it->second->SetToRtp(rtp_ip, rtp_port);
 }

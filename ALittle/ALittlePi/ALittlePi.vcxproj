@@ -94,7 +94,6 @@
     <ClCompile Include="..\ALittleServer\ServerSystem\ServerSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Carp\carp_wiringpi_bind.hpp" />
     <ClInclude Include="..\..\kcp\ikcp.h" />
     <ClInclude Include="..\..\lualib\ajson\lua_ajson.h" />
     <ClInclude Include="..\..\lualib\cjson\fpconv.h" />

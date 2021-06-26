@@ -348,5 +348,8 @@
     <ClInclude Include="..\..\Carp\carp_json_3.hpp">
       <Filter>Carp</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_wiringpi_bind.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -10,6 +10,7 @@
 2. sudo apt-get install libreadline-dev
 3. sudo apt-get install wiringpi
 4. sudo apt-get install cmake
+5. sudo apt-get install libopencv-dev
 
 使用visual studio打开ALittle.sln
 编译ALittlePi，根据提示设置远程树莓派的ssh账号密码

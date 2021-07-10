@@ -10,6 +10,7 @@
 2. sudo apt-get install libreadline-dev
 3. sudo apt-get install wiringpi
 4. sudo apt-get install cmake
+5. sudo apt-get install libopencv-dev
 
 启用摄像头
 1. sudo raspi-config

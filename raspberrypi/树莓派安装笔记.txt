@@ -27,6 +27,12 @@ sudo ufw default deny
 sudo ufw allow 80
 sudo ufw allow 22
 
+升级wiringpi
+mkdir tmp
+cd tmp
+wget https://project-downloads.drogon.net/wiringpi-latest.deb
+sudo dpkg -i wiringpi-latest.deb
+
 使用visual studio打开ALittle.sln
 选择ALittlePi项目，然后重新生成，根据提示设置远程树莓派的ssh账号密码
 

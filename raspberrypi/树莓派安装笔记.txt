@@ -11,6 +11,13 @@
 3. sudo apt-get install wiringpi
 4. sudo apt-get install cmake
 
+启用摄像头
+1. sudo raspi-config
+2. 选择Interfacing Options
+3. 选择Camera
+4. 选择打开
+5. 然后重启
+
 使用visual studio打开ALittle.sln
 编译ALittlePi，根据提示设置远程树莓派的ssh账号密码
 然后vs会在~/projects生成对应的ALittlePi目录，内部包含了需要编译的文件
@@ -19,3 +26,4 @@
 
 上传lua、SDL、asio、kcp、lualib/ajson以及其他需要被包含的文件夹
 因为真正编译的环境还是在树莓派上面
+

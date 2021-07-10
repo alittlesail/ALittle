@@ -6,11 +6,13 @@
 5. 然后通过ssh登录控制台
 
 安装必要的软件
-1. sudo apt-get install git
 2. sudo apt-get install libreadline-dev
 3. sudo apt-get install wiringpi
+5. sudo apt-get install ufw
+
+1. sudo apt-get install git
+6. sudo apt-get install libopencv-dev
 4. sudo apt-get install cmake
-5. sudo apt-get install libopencv-dev
 
 启用摄像头
 1. sudo raspi-config
@@ -19,8 +21,15 @@
 4. 选择打开
 5. 然后重启
 
+启用防火墙
+sudo ufw enable
+sudo ufw default deny
+sudo ufw allow 80
+sudo ufw allow 22
+
 使用visual studio打开ALittle.sln
-编译ALittlePi，根据提示设置远程树莓派的ssh账号密码
+选择ALittlePi项目，然后重新生成，根据提示设置远程树莓派的ssh账号密码
+
 然后vs会在~/projects生成对应的ALittlePi目录，内部包含了需要编译的文件
 
 使用tfp文件工具连上树莓派，然后进入~/projects/ALittlePi

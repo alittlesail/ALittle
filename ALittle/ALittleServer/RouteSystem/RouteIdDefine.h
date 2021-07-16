@@ -55,7 +55,6 @@ public:
 		case 9: route_name = "DEPLOY"; break;
 		case 10: route_name = "MAP"; break;
 		case 11: route_name = "SIP"; break;
-		case 12: route_name = "RTP"; break;
 		}
 		return route_name + "_" + std::to_string(route_num);
 	}

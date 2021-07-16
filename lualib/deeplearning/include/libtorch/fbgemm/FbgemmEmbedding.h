@@ -74,6 +74,26 @@ FBGEMM_API
         bool use_offsets = true);
 
 /**
+ * @param output_stride If -1, output_stride is same as block_size
+ * @param input_stride If -1, input_stride is same as block_size
+ */
+template <
+    typename InType,
+    typename IndexType,
+    typename OffsetType = std::int32_t>
+FBGEMM_API
+    typename EmbeddingSpMDMKernelSignature<InType, IndexType, OffsetType>::Type
+    GenerateEmbeddingSpMDMWithStrides(
+        const std::int64_t block_size,
+        bool has_weight,
+        bool normalize_by_lengths,
+        int prefetch = 16,
+        bool is_weight_positional = false,
+        bool use_offsets = true,
+        std::int64_t output_stride = -1,
+        std::int64_t input_stride = -1);
+
+/**
  * @tparam IndexType can be int32_t or int64_t
  * @tparam OffsetType can be int32_t or int64_t
  * @param bit_rate can be 2 or 4
@@ -167,7 +187,12 @@ class SparseAdaGradSignature {
       const IndexType* indices, // indices of each row
       float epsilon,
       float lr,
-      float weight_decay)>;
+      float weight_decay,
+      const double* counter, // used for weight_decay adjusted for frequency
+                             // nullptr when frequency adjustment is not used.
+                             // ignored when the kernel is generated with
+                             // use_weight_decay = false.
+      std::int64_t counter_halflife)>; // frequency adjust happens only after
 };
 
 template <typename IndexType>
@@ -199,6 +224,9 @@ class RowWiseSparseAdaGradFusedSignature {
       float lr)>;
 };
 
+/**
+ * @param grad_stride If -1, grad_stride is same as block size
+ */
 template <
     typename IndexType,
     typename OffsetType = std::int32_t,
@@ -211,7 +239,8 @@ GenerateRowWiseSparseAdaGradFused(
     int block_size, // number of parameters per row
     int prefetch = 16,
     bool use_offsets = true,
-    bool use_stochastic_rounding = true);
+    bool use_stochastic_rounding = true,
+    int grad_stride = -1);
 
 namespace internal {
 // Specialization for block size 1 internally called by GenerateEmbeddingSpMDM

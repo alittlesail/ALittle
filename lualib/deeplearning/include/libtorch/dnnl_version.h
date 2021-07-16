@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright 2019-2020 Intel Corporation
+* Copyright 2020 Intel Corporation
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -17,20 +17,6 @@
 #ifndef DNNL_VERSION_H
 #define DNNL_VERSION_H
 
-// clang-format off
+#include "oneapi/dnnl/dnnl_version.h"
 
-/// Major version
-#define DNNL_VERSION_MAJOR 1
-
-/// Minor version
-#define DNNL_VERSION_MINOR 7
-
-/// Patch version
-#define DNNL_VERSION_PATCH 0
-
-/// Git commit hash
-#define DNNL_VERSION_HASH  "7aed236906b1f7a05c0917e5257a1af05e9ff683"
-
-// clang-format on
-
-#endif
+#endif /* DNNL_VERSION_H */

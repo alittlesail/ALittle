@@ -48,7 +48,7 @@ struct TORCH_API TableStruct_caffe2_2fproto_2fcaffe2_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxillaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[21]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[22]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -68,6 +68,9 @@ TORCH_API extern BackendOptionsDefaultTypeInternal _BackendOptions_default_insta
 class BlobProto;
 class BlobProtoDefaultTypeInternal;
 TORCH_API extern BlobProtoDefaultTypeInternal _BlobProto_default_instance_;
+class BlobSerializationOptions;
+class BlobSerializationOptionsDefaultTypeInternal;
+TORCH_API extern BlobSerializationOptionsDefaultTypeInternal _BlobSerializationOptions_default_instance_;
 class DBReaderProto;
 class DBReaderProtoDefaultTypeInternal;
 TORCH_API extern DBReaderProtoDefaultTypeInternal _DBReaderProto_default_instance_;
@@ -77,9 +80,6 @@ TORCH_API extern DeviceOptionDefaultTypeInternal _DeviceOption_default_instance_
 class ExecutionStep;
 class ExecutionStepDefaultTypeInternal;
 TORCH_API extern ExecutionStepDefaultTypeInternal _ExecutionStep_default_instance_;
-class ExternalDataProto;
-class ExternalDataProtoDefaultTypeInternal;
-TORCH_API extern ExternalDataProtoDefaultTypeInternal _ExternalDataProto_default_instance_;
 class MapFieldEntry;
 class MapFieldEntryDefaultTypeInternal;
 TORCH_API extern MapFieldEntryDefaultTypeInternal _MapFieldEntry_default_instance_;
@@ -98,6 +98,9 @@ TORCH_API extern PlanDefDefaultTypeInternal _PlanDef_default_instance_;
 class QTensorProto;
 class QTensorProtoDefaultTypeInternal;
 TORCH_API extern QTensorProtoDefaultTypeInternal _QTensorProto_default_instance_;
+class SerializationOptions;
+class SerializationOptionsDefaultTypeInternal;
+TORCH_API extern SerializationOptionsDefaultTypeInternal _SerializationOptions_default_instance_;
 class TensorBoundShape;
 class TensorBoundShapeDefaultTypeInternal;
 TORCH_API extern TensorBoundShapeDefaultTypeInternal _TensorBoundShape_default_instance_;
@@ -125,16 +128,17 @@ template<> TORCH_API ::caffe2::AOTConfig* Arena::CreateMaybeMessage<::caffe2::AO
 template<> TORCH_API ::caffe2::Argument* Arena::CreateMaybeMessage<::caffe2::Argument>(Arena*);
 template<> TORCH_API ::caffe2::BackendOptions* Arena::CreateMaybeMessage<::caffe2::BackendOptions>(Arena*);
 template<> TORCH_API ::caffe2::BlobProto* Arena::CreateMaybeMessage<::caffe2::BlobProto>(Arena*);
+template<> TORCH_API ::caffe2::BlobSerializationOptions* Arena::CreateMaybeMessage<::caffe2::BlobSerializationOptions>(Arena*);
 template<> TORCH_API ::caffe2::DBReaderProto* Arena::CreateMaybeMessage<::caffe2::DBReaderProto>(Arena*);
 template<> TORCH_API ::caffe2::DeviceOption* Arena::CreateMaybeMessage<::caffe2::DeviceOption>(Arena*);
 template<> TORCH_API ::caffe2::ExecutionStep* Arena::CreateMaybeMessage<::caffe2::ExecutionStep>(Arena*);
-template<> TORCH_API ::caffe2::ExternalDataProto* Arena::CreateMaybeMessage<::caffe2::ExternalDataProto>(Arena*);
 template<> TORCH_API ::caffe2::MapFieldEntry* Arena::CreateMaybeMessage<::caffe2::MapFieldEntry>(Arena*);
 template<> TORCH_API ::caffe2::NetDef* Arena::CreateMaybeMessage<::caffe2::NetDef>(Arena*);
 template<> TORCH_API ::caffe2::OperatorDef* Arena::CreateMaybeMessage<::caffe2::OperatorDef>(Arena*);
 template<> TORCH_API ::caffe2::PartitionInfo* Arena::CreateMaybeMessage<::caffe2::PartitionInfo>(Arena*);
 template<> TORCH_API ::caffe2::PlanDef* Arena::CreateMaybeMessage<::caffe2::PlanDef>(Arena*);
 template<> TORCH_API ::caffe2::QTensorProto* Arena::CreateMaybeMessage<::caffe2::QTensorProto>(Arena*);
+template<> TORCH_API ::caffe2::SerializationOptions* Arena::CreateMaybeMessage<::caffe2::SerializationOptions>(Arena*);
 template<> TORCH_API ::caffe2::TensorBoundShape* Arena::CreateMaybeMessage<::caffe2::TensorBoundShape>(Arena*);
 template<> TORCH_API ::caffe2::TensorBoundShapes* Arena::CreateMaybeMessage<::caffe2::TensorBoundShapes>(Arena*);
 template<> TORCH_API ::caffe2::TensorProto* Arena::CreateMaybeMessage<::caffe2::TensorProto>(Arena*);
@@ -145,29 +149,6 @@ template<> TORCH_API ::caffe2::TensorShapes* Arena::CreateMaybeMessage<::caffe2:
 PROTOBUF_NAMESPACE_CLOSE
 namespace caffe2 {
 
-enum ExternalDataProto_SourceType : int {
-  ExternalDataProto_SourceType_INLINE_CONTAINER = 0,
-  ExternalDataProto_SourceType_SIMPLE_FILE = 1
-};
-TORCH_API bool ExternalDataProto_SourceType_IsValid(int value);
-constexpr ExternalDataProto_SourceType ExternalDataProto_SourceType_SourceType_MIN = ExternalDataProto_SourceType_INLINE_CONTAINER;
-constexpr ExternalDataProto_SourceType ExternalDataProto_SourceType_SourceType_MAX = ExternalDataProto_SourceType_SIMPLE_FILE;
-constexpr int ExternalDataProto_SourceType_SourceType_ARRAYSIZE = static_cast<int>(ExternalDataProto_SourceType_SourceType_MAX) + 1;
-
-TORCH_API const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ExternalDataProto_SourceType_descriptor();
-template<typename T>
-inline const std::string& ExternalDataProto_SourceType_Name(T enum_t_value) {
-  static_assert(::std::is_same<T, ExternalDataProto_SourceType>::value ||
-    ::std::is_integral<T>::value,
-    "Incorrect type passed to function ExternalDataProto_SourceType_Name.");
-  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
-    ExternalDataProto_SourceType_descriptor(), enum_t_value);
-}
-inline bool ExternalDataProto_SourceType_Parse(
-    const std::string& name, ExternalDataProto_SourceType* value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<ExternalDataProto_SourceType>(
-    ExternalDataProto_SourceType_descriptor(), name, value);
-}
 enum TensorProto_DataType : int {
   TensorProto_DataType_UNDEFINED = 0,
   TensorProto_DataType_FLOAT = 1,
@@ -182,11 +163,12 @@ enum TensorProto_DataType : int {
   TensorProto_DataType_INT64 = 10,
   TensorProto_DataType_FLOAT16 = 12,
   TensorProto_DataType_DOUBLE = 13,
-  TensorProto_DataType_ZERO_COLLISION_HASH = 14
+  TensorProto_DataType_ZERO_COLLISION_HASH = 14,
+  TensorProto_DataType_REBATCHING_BUFFER = 15
 };
 TORCH_API bool TensorProto_DataType_IsValid(int value);
 constexpr TensorProto_DataType TensorProto_DataType_DataType_MIN = TensorProto_DataType_UNDEFINED;
-constexpr TensorProto_DataType TensorProto_DataType_DataType_MAX = TensorProto_DataType_ZERO_COLLISION_HASH;
+constexpr TensorProto_DataType TensorProto_DataType_DataType_MAX = TensorProto_DataType_REBATCHING_BUFFER;
 constexpr int TensorProto_DataType_DataType_ARRAYSIZE = static_cast<int>(TensorProto_DataType_DataType_MAX) + 1;
 
 TORCH_API const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* TensorProto_DataType_descriptor();
@@ -203,30 +185,28 @@ inline bool TensorProto_DataType_Parse(
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<TensorProto_DataType>(
     TensorProto_DataType_descriptor(), name, value);
 }
-enum TensorProto_StorageType : int {
-  TensorProto_StorageType_TYPED = 1,
-  TensorProto_StorageType_RAW = 2,
-  TensorProto_StorageType_EXTERNAL = 3,
-  TensorProto_StorageType_NO_CONTENT = 4
+enum TensorProto_SerializationFormat : int {
+  TensorProto_SerializationFormat_FMT_PROTOBUF = 0,
+  TensorProto_SerializationFormat_FMT_BFLOAT16 = 1
 };
-TORCH_API bool TensorProto_StorageType_IsValid(int value);
-constexpr TensorProto_StorageType TensorProto_StorageType_StorageType_MIN = TensorProto_StorageType_TYPED;
-constexpr TensorProto_StorageType TensorProto_StorageType_StorageType_MAX = TensorProto_StorageType_NO_CONTENT;
-constexpr int TensorProto_StorageType_StorageType_ARRAYSIZE = static_cast<int>(TensorProto_StorageType_StorageType_MAX) + 1;
+TORCH_API bool TensorProto_SerializationFormat_IsValid(int value);
+constexpr TensorProto_SerializationFormat TensorProto_SerializationFormat_SerializationFormat_MIN = TensorProto_SerializationFormat_FMT_PROTOBUF;
+constexpr TensorProto_SerializationFormat TensorProto_SerializationFormat_SerializationFormat_MAX = TensorProto_SerializationFormat_FMT_BFLOAT16;
+constexpr int TensorProto_SerializationFormat_SerializationFormat_ARRAYSIZE = static_cast<int>(TensorProto_SerializationFormat_SerializationFormat_MAX) + 1;
 
-TORCH_API const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* TensorProto_StorageType_descriptor();
+TORCH_API const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* TensorProto_SerializationFormat_descriptor();
 template<typename T>
-inline const std::string& TensorProto_StorageType_Name(T enum_t_value) {
-  static_assert(::std::is_same<T, TensorProto_StorageType>::value ||
+inline const std::string& TensorProto_SerializationFormat_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, TensorProto_SerializationFormat>::value ||
     ::std::is_integral<T>::value,
-    "Incorrect type passed to function TensorProto_StorageType_Name.");
+    "Incorrect type passed to function TensorProto_SerializationFormat_Name.");
   return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
-    TensorProto_StorageType_descriptor(), enum_t_value);
+    TensorProto_SerializationFormat_descriptor(), enum_t_value);
 }
-inline bool TensorProto_StorageType_Parse(
-    const std::string& name, TensorProto_StorageType* value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<TensorProto_StorageType>(
-    TensorProto_StorageType_descriptor(), name, value);
+inline bool TensorProto_SerializationFormat_Parse(
+    const std::string& name, TensorProto_SerializationFormat* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<TensorProto_SerializationFormat>(
+    TensorProto_SerializationFormat_descriptor(), name, value);
 }
 enum TensorBoundShape_DimType : int {
   TensorBoundShape_DimType_UNKNOWN = 0,
@@ -256,6 +236,30 @@ inline bool TensorBoundShape_DimType_Parse(
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<TensorBoundShape_DimType>(
     TensorBoundShape_DimType_descriptor(), name, value);
 }
+enum BlobSerializationOptions_FloatFormat : int {
+  BlobSerializationOptions_FloatFormat_FLOAT_DEFAULT = 0,
+  BlobSerializationOptions_FloatFormat_FLOAT_PROTOBUF = 1,
+  BlobSerializationOptions_FloatFormat_FLOAT_BFLOAT16 = 2
+};
+TORCH_API bool BlobSerializationOptions_FloatFormat_IsValid(int value);
+constexpr BlobSerializationOptions_FloatFormat BlobSerializationOptions_FloatFormat_FloatFormat_MIN = BlobSerializationOptions_FloatFormat_FLOAT_DEFAULT;
+constexpr BlobSerializationOptions_FloatFormat BlobSerializationOptions_FloatFormat_FloatFormat_MAX = BlobSerializationOptions_FloatFormat_FLOAT_BFLOAT16;
+constexpr int BlobSerializationOptions_FloatFormat_FloatFormat_ARRAYSIZE = static_cast<int>(BlobSerializationOptions_FloatFormat_FloatFormat_MAX) + 1;
+
+TORCH_API const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* BlobSerializationOptions_FloatFormat_descriptor();
+template<typename T>
+inline const std::string& BlobSerializationOptions_FloatFormat_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, BlobSerializationOptions_FloatFormat>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function BlobSerializationOptions_FloatFormat_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    BlobSerializationOptions_FloatFormat_descriptor(), enum_t_value);
+}
+inline bool BlobSerializationOptions_FloatFormat_Parse(
+    const std::string& name, BlobSerializationOptions_FloatFormat* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<BlobSerializationOptions_FloatFormat>(
+    BlobSerializationOptions_FloatFormat_descriptor(), name, value);
+}
 enum DeviceTypeProto : int {
   PROTO_CPU = 0,
   PROTO_CUDA = 1,
@@ -267,7 +271,8 @@ enum DeviceTypeProto : int {
   PROTO_FPGA = 7,
   PROTO_MSNPU = 8,
   PROTO_XLA = 9,
-  PROTO_COMPILE_TIME_MAX_DEVICE_TYPES = 10
+  PROTO_MLC = 10,
+  PROTO_COMPILE_TIME_MAX_DEVICE_TYPES = 11
 };
 TORCH_API bool DeviceTypeProto_IsValid(int value);
 constexpr DeviceTypeProto DeviceTypeProto_MIN = PROTO_CPU;
@@ -289,252 +294,6 @@ inline bool DeviceTypeProto_Parse(
     DeviceTypeProto_descriptor(), name, value);
 }
 // ===================================================================
-
-class TORCH_API ExternalDataProto :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.ExternalDataProto) */ {
- public:
-  ExternalDataProto();
-  virtual ~ExternalDataProto();
-
-  ExternalDataProto(const ExternalDataProto& from);
-  ExternalDataProto(ExternalDataProto&& from) noexcept
-    : ExternalDataProto() {
-    *this = ::std::move(from);
-  }
-
-  inline ExternalDataProto& operator=(const ExternalDataProto& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline ExternalDataProto& operator=(ExternalDataProto&& from) noexcept {
-    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
-      if (this != &from) InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields();
-  }
-  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields();
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return GetMetadataStatic().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return GetMetadataStatic().reflection;
-  }
-  static const ExternalDataProto& default_instance();
-
-  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const ExternalDataProto* internal_default_instance() {
-    return reinterpret_cast<const ExternalDataProto*>(
-               &_ExternalDataProto_default_instance_);
-  }
-  static int const kIndexInFileMessages =
-    0;
-
-  friend void swap(ExternalDataProto& a, ExternalDataProto& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(ExternalDataProto* other) {
-    if (other == this) return;
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  inline ExternalDataProto* New() const final {
-    return CreateMaybeMessage<ExternalDataProto>(nullptr);
-  }
-
-  ExternalDataProto* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
-    return CreateMaybeMessage<ExternalDataProto>(arena);
-  }
-  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void CopyFrom(const ExternalDataProto& from);
-  void MergeFrom(const ExternalDataProto& from);
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
-      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
-
-  private:
-  inline void SharedCtor();
-  inline void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(ExternalDataProto* other);
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "caffe2.ExternalDataProto";
-  }
-  private:
-  inline ::PROTOBUF_NAMESPACE_ID::Arena* GetArenaNoVirtual() const {
-    return nullptr;
-  }
-  inline void* MaybeArenaPtr() const {
-    return nullptr;
-  }
-  public:
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-  private:
-  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
-    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_caffe2_2fproto_2fcaffe2_2eproto);
-    return ::descriptor_table_caffe2_2fproto_2fcaffe2_2eproto.file_level_metadata[kIndexInFileMessages];
-  }
-
-  public:
-
-  // nested types ----------------------------------------------------
-
-  typedef ExternalDataProto_SourceType SourceType;
-  static SourceType const INLINE_CONTAINER =
-    ExternalDataProto_SourceType_INLINE_CONTAINER;
-  static SourceType const SIMPLE_FILE =
-    ExternalDataProto_SourceType_SIMPLE_FILE;
-  static inline bool SourceType_IsValid(int value) {
-    return ExternalDataProto_SourceType_IsValid(value);
-  }
-  static SourceType const SourceType_MIN =
-    ExternalDataProto_SourceType_SourceType_MIN;
-  static SourceType const SourceType_MAX =
-    ExternalDataProto_SourceType_SourceType_MAX;
-  static int const SourceType_ARRAYSIZE =
-    ExternalDataProto_SourceType_SourceType_ARRAYSIZE;
-  static inline const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
-  SourceType_descriptor() {
-    return ExternalDataProto_SourceType_descriptor();
-  }
-  template<typename T>
-  static inline const std::string& SourceType_Name(T enum_t_value) {
-    static_assert(::std::is_same<T, SourceType>::value ||
-      ::std::is_integral<T>::value,
-      "Incorrect type passed to function SourceType_Name.");
-    return ExternalDataProto_SourceType_Name(enum_t_value);
-  }
-  static inline bool SourceType_Parse(const std::string& name,
-      SourceType* value) {
-    return ExternalDataProto_SourceType_Parse(name, value);
-  }
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kStridesFieldNumber = 4,
-    kRecordIdFieldNumber = 2,
-    kOffsetFieldNumber = 3,
-    kRecordSizeFieldNumber = 5,
-    kSourceTypeFieldNumber = 1,
-  };
-  // repeated int64 strides = 4;
-  int strides_size() const;
-  private:
-  int _internal_strides_size() const;
-  public:
-  void clear_strides();
-  private:
-  ::PROTOBUF_NAMESPACE_ID::int64 _internal_strides(int index) const;
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int64 >&
-      _internal_strides() const;
-  void _internal_add_strides(::PROTOBUF_NAMESPACE_ID::int64 value);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int64 >*
-      _internal_mutable_strides();
-  public:
-  ::PROTOBUF_NAMESPACE_ID::int64 strides(int index) const;
-  void set_strides(int index, ::PROTOBUF_NAMESPACE_ID::int64 value);
-  void add_strides(::PROTOBUF_NAMESPACE_ID::int64 value);
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int64 >&
-      strides() const;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int64 >*
-      mutable_strides();
-
-  // optional string record_id = 2;
-  bool has_record_id() const;
-  private:
-  bool _internal_has_record_id() const;
-  public:
-  void clear_record_id();
-  const std::string& record_id() const;
-  void set_record_id(const std::string& value);
-  void set_record_id(std::string&& value);
-  void set_record_id(const char* value);
-  void set_record_id(const char* value, size_t size);
-  std::string* mutable_record_id();
-  std::string* release_record_id();
-  void set_allocated_record_id(std::string* record_id);
-  private:
-  const std::string& _internal_record_id() const;
-  void _internal_set_record_id(const std::string& value);
-  std::string* _internal_mutable_record_id();
-  public:
-
-  // optional int64 offset = 3 [default = 0];
-  bool has_offset() const;
-  private:
-  bool _internal_has_offset() const;
-  public:
-  void clear_offset();
-  ::PROTOBUF_NAMESPACE_ID::int64 offset() const;
-  void set_offset(::PROTOBUF_NAMESPACE_ID::int64 value);
-  private:
-  ::PROTOBUF_NAMESPACE_ID::int64 _internal_offset() const;
-  void _internal_set_offset(::PROTOBUF_NAMESPACE_ID::int64 value);
-  public:
-
-  // optional uint64 record_size = 5;
-  bool has_record_size() const;
-  private:
-  bool _internal_has_record_size() const;
-  public:
-  void clear_record_size();
-  ::PROTOBUF_NAMESPACE_ID::uint64 record_size() const;
-  void set_record_size(::PROTOBUF_NAMESPACE_ID::uint64 value);
-  private:
-  ::PROTOBUF_NAMESPACE_ID::uint64 _internal_record_size() const;
-  void _internal_set_record_size(::PROTOBUF_NAMESPACE_ID::uint64 value);
-  public:
-
-  // optional .caffe2.ExternalDataProto.SourceType source_type = 1 [default = INLINE_CONTAINER];
-  bool has_source_type() const;
-  private:
-  bool _internal_has_source_type() const;
-  public:
-  void clear_source_type();
-  ::caffe2::ExternalDataProto_SourceType source_type() const;
-  void set_source_type(::caffe2::ExternalDataProto_SourceType value);
-  private:
-  ::caffe2::ExternalDataProto_SourceType _internal_source_type() const;
-  void _internal_set_source_type(::caffe2::ExternalDataProto_SourceType value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:caffe2.ExternalDataProto)
- private:
-  class _Internal;
-
-  ::PROTOBUF_NAMESPACE_ID::internal::InternalMetadataWithArena _internal_metadata_;
-  ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
-  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int64 > strides_;
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr record_id_;
-  ::PROTOBUF_NAMESPACE_ID::int64 offset_;
-  ::PROTOBUF_NAMESPACE_ID::uint64 record_size_;
-  int source_type_;
-  friend struct ::TableStruct_caffe2_2fproto_2fcaffe2_2eproto;
-};
-// -------------------------------------------------------------------
 
 class TORCH_API TensorProto_Segment :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.TensorProto.Segment) */ {
@@ -585,7 +344,7 @@ class TORCH_API TensorProto_Segment :
                &_TensorProto_Segment_default_instance_);
   }
   static int const kIndexInFileMessages =
-    1;
+    0;
 
   friend void swap(TensorProto_Segment& a, TensorProto_Segment& b) {
     a.Swap(&b);
@@ -743,7 +502,7 @@ class TORCH_API TensorProto :
                &_TensorProto_default_instance_);
   }
   static int const kIndexInFileMessages =
-    2;
+    1;
 
   friend void swap(TensorProto& a, TensorProto& b) {
     a.Swap(&b);
@@ -835,6 +594,8 @@ class TORCH_API TensorProto :
     TensorProto_DataType_DOUBLE;
   static DataType const ZERO_COLLISION_HASH =
     TensorProto_DataType_ZERO_COLLISION_HASH;
+  static DataType const REBATCHING_BUFFER =
+    TensorProto_DataType_REBATCHING_BUFFER;
   static inline bool DataType_IsValid(int value) {
     return TensorProto_DataType_IsValid(value);
   }
@@ -860,38 +621,34 @@ class TORCH_API TensorProto :
     return TensorProto_DataType_Parse(name, value);
   }
 
-  typedef TensorProto_StorageType StorageType;
-  static StorageType const TYPED =
-    TensorProto_StorageType_TYPED;
-  static StorageType const RAW =
-    TensorProto_StorageType_RAW;
-  static StorageType const EXTERNAL =
-    TensorProto_StorageType_EXTERNAL;
-  static StorageType const NO_CONTENT =
-    TensorProto_StorageType_NO_CONTENT;
-  static inline bool StorageType_IsValid(int value) {
-    return TensorProto_StorageType_IsValid(value);
+  typedef TensorProto_SerializationFormat SerializationFormat;
+  static SerializationFormat const FMT_PROTOBUF =
+    TensorProto_SerializationFormat_FMT_PROTOBUF;
+  static SerializationFormat const FMT_BFLOAT16 =
+    TensorProto_SerializationFormat_FMT_BFLOAT16;
+  static inline bool SerializationFormat_IsValid(int value) {
+    return TensorProto_SerializationFormat_IsValid(value);
   }
-  static StorageType const StorageType_MIN =
-    TensorProto_StorageType_StorageType_MIN;
-  static StorageType const StorageType_MAX =
-    TensorProto_StorageType_StorageType_MAX;
-  static int const StorageType_ARRAYSIZE =
-    TensorProto_StorageType_StorageType_ARRAYSIZE;
+  static SerializationFormat const SerializationFormat_MIN =
+    TensorProto_SerializationFormat_SerializationFormat_MIN;
+  static SerializationFormat const SerializationFormat_MAX =
+    TensorProto_SerializationFormat_SerializationFormat_MAX;
+  static int const SerializationFormat_ARRAYSIZE =
+    TensorProto_SerializationFormat_SerializationFormat_ARRAYSIZE;
   static inline const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
-  StorageType_descriptor() {
-    return TensorProto_StorageType_descriptor();
+  SerializationFormat_descriptor() {
+    return TensorProto_SerializationFormat_descriptor();
   }
   template<typename T>
-  static inline const std::string& StorageType_Name(T enum_t_value) {
-    static_assert(::std::is_same<T, StorageType>::value ||
+  static inline const std::string& SerializationFormat_Name(T enum_t_value) {
+    static_assert(::std::is_same<T, SerializationFormat>::value ||
       ::std::is_integral<T>::value,
-      "Incorrect type passed to function StorageType_Name.");
-    return TensorProto_StorageType_Name(enum_t_value);
+      "Incorrect type passed to function SerializationFormat_Name.");
+    return TensorProto_SerializationFormat_Name(enum_t_value);
   }
-  static inline bool StorageType_Parse(const std::string& name,
-      StorageType* value) {
-    return TensorProto_StorageType_Parse(name, value);
+  static inline bool SerializationFormat_Parse(const std::string& name,
+      SerializationFormat* value) {
+    return TensorProto_SerializationFormat_Parse(name, value);
   }
 
   // accessors -------------------------------------------------------
@@ -908,9 +665,8 @@ class TORCH_API TensorProto :
     kRawDataFieldNumber = 13,
     kDeviceDetailFieldNumber = 8,
     kSegmentFieldNumber = 11,
-    kExternalDataFieldNumber = 14,
+    kDataFormatFieldNumber = 15,
     kDataTypeFieldNumber = 2,
-    kStorageTypeFieldNumber = 12,
   };
   // repeated int64 dims = 1;
   int dims_size() const;
@@ -1136,19 +892,17 @@ class TORCH_API TensorProto :
   ::caffe2::TensorProto_Segment* _internal_mutable_segment();
   public:
 
-  // optional .caffe2.ExternalDataProto external_data = 14;
-  bool has_external_data() const;
+  // optional uint32 data_format = 15 [default = 0];
+  bool has_data_format() const;
   private:
-  bool _internal_has_external_data() const;
+  bool _internal_has_data_format() const;
   public:
-  void clear_external_data();
-  const ::caffe2::ExternalDataProto& external_data() const;
-  ::caffe2::ExternalDataProto* release_external_data();
-  ::caffe2::ExternalDataProto* mutable_external_data();
-  void set_allocated_external_data(::caffe2::ExternalDataProto* external_data);
+  void clear_data_format();
+  ::PROTOBUF_NAMESPACE_ID::uint32 data_format() const;
+  void set_data_format(::PROTOBUF_NAMESPACE_ID::uint32 value);
   private:
-  const ::caffe2::ExternalDataProto& _internal_external_data() const;
-  ::caffe2::ExternalDataProto* _internal_mutable_external_data();
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_data_format() const;
+  void _internal_set_data_format(::PROTOBUF_NAMESPACE_ID::uint32 value);
   public:
 
   // optional .caffe2.TensorProto.DataType data_type = 2 [default = FLOAT];
@@ -1162,19 +916,6 @@ class TORCH_API TensorProto :
   private:
   ::caffe2::TensorProto_DataType _internal_data_type() const;
   void _internal_set_data_type(::caffe2::TensorProto_DataType value);
-  public:
-
-  // optional .caffe2.TensorProto.StorageType storage_type = 12 [default = TYPED];
-  bool has_storage_type() const;
-  private:
-  bool _internal_has_storage_type() const;
-  public:
-  void clear_storage_type();
-  ::caffe2::TensorProto_StorageType storage_type() const;
-  void set_storage_type(::caffe2::TensorProto_StorageType value);
-  private:
-  ::caffe2::TensorProto_StorageType _internal_storage_type() const;
-  void _internal_set_storage_type(::caffe2::TensorProto_StorageType value);
   public:
 
   // @@protoc_insertion_point(class_scope:caffe2.TensorProto)
@@ -1199,9 +940,8 @@ class TORCH_API TensorProto :
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr raw_data_;
   ::caffe2::DeviceOption* device_detail_;
   ::caffe2::TensorProto_Segment* segment_;
-  ::caffe2::ExternalDataProto* external_data_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 data_format_;
   int data_type_;
-  int storage_type_;
   friend struct ::TableStruct_caffe2_2fproto_2fcaffe2_2eproto;
 };
 // -------------------------------------------------------------------
@@ -1255,7 +995,7 @@ class TORCH_API QTensorProto :
                &_QTensorProto_default_instance_);
   }
   static int const kIndexInFileMessages =
-    3;
+    2;
 
   friend void swap(QTensorProto& a, QTensorProto& b) {
     a.Swap(&b);
@@ -1607,7 +1347,7 @@ class TORCH_API TensorProtos :
                &_TensorProtos_default_instance_);
   }
   static int const kIndexInFileMessages =
-    4;
+    3;
 
   friend void swap(TensorProtos& a, TensorProtos& b) {
     a.Swap(&b);
@@ -1752,7 +1492,7 @@ class TORCH_API TensorShape :
                &_TensorShape_default_instance_);
   }
   static int const kIndexInFileMessages =
-    5;
+    4;
 
   friend void swap(TensorShape& a, TensorShape& b) {
     a.Swap(&b);
@@ -1977,7 +1717,7 @@ class TORCH_API TensorShapes :
                &_TensorShapes_default_instance_);
   }
   static int const kIndexInFileMessages =
-    6;
+    5;
 
   friend void swap(TensorShapes& a, TensorShapes& b) {
     a.Swap(&b);
@@ -2122,7 +1862,7 @@ class TORCH_API TensorBoundShape :
                &_TensorBoundShape_default_instance_);
   }
   static int const kIndexInFileMessages =
-    7;
+    6;
 
   friend void swap(TensorBoundShape& a, TensorBoundShape& b) {
     a.Swap(&b);
@@ -2360,7 +2100,7 @@ class TORCH_API TensorBoundShapes :
                &_TensorBoundShapes_default_instance_);
   }
   static int const kIndexInFileMessages =
-    8;
+    7;
 
   friend void swap(TensorBoundShapes& a, TensorBoundShapes& b) {
     a.Swap(&b);
@@ -2535,7 +2275,7 @@ class TORCH_API AOTConfig :
                &_AOTConfig_default_instance_);
   }
   static int const kIndexInFileMessages =
-    9;
+    8;
 
   friend void swap(AOTConfig& a, AOTConfig& b) {
     a.Swap(&b);
@@ -2599,10 +2339,32 @@ class TORCH_API AOTConfig :
   // accessors -------------------------------------------------------
 
   enum : int {
+    kOnnxifiBlacklistOpsFieldNumber = 4,
     kMaxBatchSizeFieldNumber = 1,
     kMaxSeqSizeFieldNumber = 2,
     kInBatchBroadcastFieldNumber = 3,
+    kOnnxifiMinOpsFieldNumber = 5,
   };
+  // optional string onnxifi_blacklist_ops = 4;
+  bool has_onnxifi_blacklist_ops() const;
+  private:
+  bool _internal_has_onnxifi_blacklist_ops() const;
+  public:
+  void clear_onnxifi_blacklist_ops();
+  const std::string& onnxifi_blacklist_ops() const;
+  void set_onnxifi_blacklist_ops(const std::string& value);
+  void set_onnxifi_blacklist_ops(std::string&& value);
+  void set_onnxifi_blacklist_ops(const char* value);
+  void set_onnxifi_blacklist_ops(const char* value, size_t size);
+  std::string* mutable_onnxifi_blacklist_ops();
+  std::string* release_onnxifi_blacklist_ops();
+  void set_allocated_onnxifi_blacklist_ops(std::string* onnxifi_blacklist_ops);
+  private:
+  const std::string& _internal_onnxifi_blacklist_ops() const;
+  void _internal_set_onnxifi_blacklist_ops(const std::string& value);
+  std::string* _internal_mutable_onnxifi_blacklist_ops();
+  public:
+
   // required int64 max_batch_size = 1;
   bool has_max_batch_size() const;
   private:
@@ -2642,6 +2404,19 @@ class TORCH_API AOTConfig :
   void _internal_set_in_batch_broadcast(bool value);
   public:
 
+  // optional int32 onnxifi_min_ops = 5;
+  bool has_onnxifi_min_ops() const;
+  private:
+  bool _internal_has_onnxifi_min_ops() const;
+  public:
+  void clear_onnxifi_min_ops();
+  ::PROTOBUF_NAMESPACE_ID::int32 onnxifi_min_ops() const;
+  void set_onnxifi_min_ops(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_onnxifi_min_ops() const;
+  void _internal_set_onnxifi_min_ops(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
   // @@protoc_insertion_point(class_scope:caffe2.AOTConfig)
  private:
   class _Internal;
@@ -2652,9 +2427,11 @@ class TORCH_API AOTConfig :
   ::PROTOBUF_NAMESPACE_ID::internal::InternalMetadataWithArena _internal_metadata_;
   ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr onnxifi_blacklist_ops_;
   ::PROTOBUF_NAMESPACE_ID::int64 max_batch_size_;
   ::PROTOBUF_NAMESPACE_ID::int64 max_seq_size_;
   bool in_batch_broadcast_;
+  ::PROTOBUF_NAMESPACE_ID::int32 onnxifi_min_ops_;
   friend struct ::TableStruct_caffe2_2fproto_2fcaffe2_2eproto;
 };
 // -------------------------------------------------------------------
@@ -2708,7 +2485,7 @@ class TORCH_API Argument :
                &_Argument_default_instance_);
   }
   static int const kIndexInFileMessages =
-    10;
+    9;
 
   friend void swap(Argument& a, Argument& b) {
     a.Swap(&b);
@@ -3075,7 +2852,7 @@ class TORCH_API DeviceOption :
                &_DeviceOption_default_instance_);
   }
   static int const kIndexInFileMessages =
-    11;
+    10;
 
   friend void swap(DeviceOption& a, DeviceOption& b) {
     a.Swap(&b);
@@ -3308,7 +3085,7 @@ class TORCH_API OperatorDef :
                &_OperatorDef_default_instance_);
   }
   static int const kIndexInFileMessages =
-    12;
+    11;
 
   friend void swap(OperatorDef& a, OperatorDef& b) {
     a.Swap(&b);
@@ -3688,7 +3465,7 @@ class TORCH_API MapFieldEntry :
                &_MapFieldEntry_default_instance_);
   }
   static int const kIndexInFileMessages =
-    13;
+    12;
 
   friend void swap(MapFieldEntry& a, MapFieldEntry& b) {
     a.Swap(&b);
@@ -3860,7 +3637,7 @@ class TORCH_API BackendOptions :
                &_BackendOptions_default_instance_);
   }
   static int const kIndexInFileMessages =
-    14;
+    13;
 
   friend void swap(BackendOptions& a, BackendOptions& b) {
     a.Swap(&b);
@@ -4027,7 +3804,7 @@ class TORCH_API PartitionInfo :
                &_PartitionInfo_default_instance_);
   }
   static int const kIndexInFileMessages =
-    15;
+    14;
 
   friend void swap(PartitionInfo& a, PartitionInfo& b) {
     a.Swap(&b);
@@ -4240,7 +4017,7 @@ class TORCH_API NetDef :
                &_NetDef_default_instance_);
   }
   static int const kIndexInFileMessages =
-    16;
+    15;
 
   friend void swap(NetDef& a, NetDef& b) {
     a.Swap(&b);
@@ -4553,7 +4330,7 @@ class TORCH_API ExecutionStep :
                &_ExecutionStep_default_instance_);
   }
   static int const kIndexInFileMessages =
-    17;
+    16;
 
   friend void swap(ExecutionStep& a, ExecutionStep& b) {
     a.Swap(&b);
@@ -4917,7 +4694,7 @@ class TORCH_API PlanDef :
                &_PlanDef_default_instance_);
   }
   static int const kIndexInFileMessages =
-    18;
+    17;
 
   friend void swap(PlanDef& a, PlanDef& b) {
     a.Swap(&b);
@@ -5104,7 +4881,7 @@ class TORCH_API BlobProto :
                &_BlobProto_default_instance_);
   }
   static int const kIndexInFileMessages =
-    19;
+    18;
 
   friend void swap(BlobProto& a, BlobProto& b) {
     a.Swap(&b);
@@ -5359,7 +5136,7 @@ class TORCH_API DBReaderProto :
                &_DBReaderProto_default_instance_);
   }
   static int const kIndexInFileMessages =
-    20;
+    19;
 
   friend void swap(DBReaderProto& a, DBReaderProto& b) {
     a.Swap(&b);
@@ -5521,6 +5298,360 @@ class TORCH_API DBReaderProto :
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr key_;
   friend struct ::TableStruct_caffe2_2fproto_2fcaffe2_2eproto;
 };
+// -------------------------------------------------------------------
+
+class TORCH_API BlobSerializationOptions :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.BlobSerializationOptions) */ {
+ public:
+  BlobSerializationOptions();
+  virtual ~BlobSerializationOptions();
+
+  BlobSerializationOptions(const BlobSerializationOptions& from);
+  BlobSerializationOptions(BlobSerializationOptions&& from) noexcept
+    : BlobSerializationOptions() {
+    *this = ::std::move(from);
+  }
+
+  inline BlobSerializationOptions& operator=(const BlobSerializationOptions& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline BlobSerializationOptions& operator=(BlobSerializationOptions&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const BlobSerializationOptions& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const BlobSerializationOptions* internal_default_instance() {
+    return reinterpret_cast<const BlobSerializationOptions*>(
+               &_BlobSerializationOptions_default_instance_);
+  }
+  static int const kIndexInFileMessages =
+    20;
+
+  friend void swap(BlobSerializationOptions& a, BlobSerializationOptions& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(BlobSerializationOptions* other) {
+    if (other == this) return;
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline BlobSerializationOptions* New() const final {
+    return CreateMaybeMessage<BlobSerializationOptions>(nullptr);
+  }
+
+  BlobSerializationOptions* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<BlobSerializationOptions>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const BlobSerializationOptions& from);
+  void MergeFrom(const BlobSerializationOptions& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(BlobSerializationOptions* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "caffe2.BlobSerializationOptions";
+  }
+  private:
+  inline ::PROTOBUF_NAMESPACE_ID::Arena* GetArenaNoVirtual() const {
+    return nullptr;
+  }
+  inline void* MaybeArenaPtr() const {
+    return nullptr;
+  }
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_caffe2_2fproto_2fcaffe2_2eproto);
+    return ::descriptor_table_caffe2_2fproto_2fcaffe2_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  typedef BlobSerializationOptions_FloatFormat FloatFormat;
+  static FloatFormat const FLOAT_DEFAULT =
+    BlobSerializationOptions_FloatFormat_FLOAT_DEFAULT;
+  static FloatFormat const FLOAT_PROTOBUF =
+    BlobSerializationOptions_FloatFormat_FLOAT_PROTOBUF;
+  static FloatFormat const FLOAT_BFLOAT16 =
+    BlobSerializationOptions_FloatFormat_FLOAT_BFLOAT16;
+  static inline bool FloatFormat_IsValid(int value) {
+    return BlobSerializationOptions_FloatFormat_IsValid(value);
+  }
+  static FloatFormat const FloatFormat_MIN =
+    BlobSerializationOptions_FloatFormat_FloatFormat_MIN;
+  static FloatFormat const FloatFormat_MAX =
+    BlobSerializationOptions_FloatFormat_FloatFormat_MAX;
+  static int const FloatFormat_ARRAYSIZE =
+    BlobSerializationOptions_FloatFormat_FloatFormat_ARRAYSIZE;
+  static inline const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
+  FloatFormat_descriptor() {
+    return BlobSerializationOptions_FloatFormat_descriptor();
+  }
+  template<typename T>
+  static inline const std::string& FloatFormat_Name(T enum_t_value) {
+    static_assert(::std::is_same<T, FloatFormat>::value ||
+      ::std::is_integral<T>::value,
+      "Incorrect type passed to function FloatFormat_Name.");
+    return BlobSerializationOptions_FloatFormat_Name(enum_t_value);
+  }
+  static inline bool FloatFormat_Parse(const std::string& name,
+      FloatFormat* value) {
+    return BlobSerializationOptions_FloatFormat_Parse(name, value);
+  }
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kBlobNameRegexFieldNumber = 1,
+    kChunkSizeFieldNumber = 2,
+    kFloatFormatFieldNumber = 3,
+  };
+  // optional string blob_name_regex = 1;
+  bool has_blob_name_regex() const;
+  private:
+  bool _internal_has_blob_name_regex() const;
+  public:
+  void clear_blob_name_regex();
+  const std::string& blob_name_regex() const;
+  void set_blob_name_regex(const std::string& value);
+  void set_blob_name_regex(std::string&& value);
+  void set_blob_name_regex(const char* value);
+  void set_blob_name_regex(const char* value, size_t size);
+  std::string* mutable_blob_name_regex();
+  std::string* release_blob_name_regex();
+  void set_allocated_blob_name_regex(std::string* blob_name_regex);
+  private:
+  const std::string& _internal_blob_name_regex() const;
+  void _internal_set_blob_name_regex(const std::string& value);
+  std::string* _internal_mutable_blob_name_regex();
+  public:
+
+  // optional int64 chunk_size = 2;
+  bool has_chunk_size() const;
+  private:
+  bool _internal_has_chunk_size() const;
+  public:
+  void clear_chunk_size();
+  ::PROTOBUF_NAMESPACE_ID::int64 chunk_size() const;
+  void set_chunk_size(::PROTOBUF_NAMESPACE_ID::int64 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int64 _internal_chunk_size() const;
+  void _internal_set_chunk_size(::PROTOBUF_NAMESPACE_ID::int64 value);
+  public:
+
+  // optional .caffe2.BlobSerializationOptions.FloatFormat float_format = 3;
+  bool has_float_format() const;
+  private:
+  bool _internal_has_float_format() const;
+  public:
+  void clear_float_format();
+  ::caffe2::BlobSerializationOptions_FloatFormat float_format() const;
+  void set_float_format(::caffe2::BlobSerializationOptions_FloatFormat value);
+  private:
+  ::caffe2::BlobSerializationOptions_FloatFormat _internal_float_format() const;
+  void _internal_set_float_format(::caffe2::BlobSerializationOptions_FloatFormat value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:caffe2.BlobSerializationOptions)
+ private:
+  class _Internal;
+
+  ::PROTOBUF_NAMESPACE_ID::internal::InternalMetadataWithArena _internal_metadata_;
+  ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr blob_name_regex_;
+  ::PROTOBUF_NAMESPACE_ID::int64 chunk_size_;
+  int float_format_;
+  friend struct ::TableStruct_caffe2_2fproto_2fcaffe2_2eproto;
+};
+// -------------------------------------------------------------------
+
+class TORCH_API SerializationOptions :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:caffe2.SerializationOptions) */ {
+ public:
+  SerializationOptions();
+  virtual ~SerializationOptions();
+
+  SerializationOptions(const SerializationOptions& from);
+  SerializationOptions(SerializationOptions&& from) noexcept
+    : SerializationOptions() {
+    *this = ::std::move(from);
+  }
+
+  inline SerializationOptions& operator=(const SerializationOptions& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline SerializationOptions& operator=(SerializationOptions&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const SerializationOptions& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const SerializationOptions* internal_default_instance() {
+    return reinterpret_cast<const SerializationOptions*>(
+               &_SerializationOptions_default_instance_);
+  }
+  static int const kIndexInFileMessages =
+    21;
+
+  friend void swap(SerializationOptions& a, SerializationOptions& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(SerializationOptions* other) {
+    if (other == this) return;
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline SerializationOptions* New() const final {
+    return CreateMaybeMessage<SerializationOptions>(nullptr);
+  }
+
+  SerializationOptions* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<SerializationOptions>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const SerializationOptions& from);
+  void MergeFrom(const SerializationOptions& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(SerializationOptions* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "caffe2.SerializationOptions";
+  }
+  private:
+  inline ::PROTOBUF_NAMESPACE_ID::Arena* GetArenaNoVirtual() const {
+    return nullptr;
+  }
+  inline void* MaybeArenaPtr() const {
+    return nullptr;
+  }
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_caffe2_2fproto_2fcaffe2_2eproto);
+    return ::descriptor_table_caffe2_2fproto_2fcaffe2_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kOptionsFieldNumber = 1,
+  };
+  // repeated .caffe2.BlobSerializationOptions options = 1;
+  int options_size() const;
+  private:
+  int _internal_options_size() const;
+  public:
+  void clear_options();
+  ::caffe2::BlobSerializationOptions* mutable_options(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::caffe2::BlobSerializationOptions >*
+      mutable_options();
+  private:
+  const ::caffe2::BlobSerializationOptions& _internal_options(int index) const;
+  ::caffe2::BlobSerializationOptions* _internal_add_options();
+  public:
+  const ::caffe2::BlobSerializationOptions& options(int index) const;
+  ::caffe2::BlobSerializationOptions* add_options();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::caffe2::BlobSerializationOptions >&
+      options() const;
+
+  // @@protoc_insertion_point(class_scope:caffe2.SerializationOptions)
+ private:
+  class _Internal;
+
+  ::PROTOBUF_NAMESPACE_ID::internal::InternalMetadataWithArena _internal_metadata_;
+  ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::caffe2::BlobSerializationOptions > options_;
+  friend struct ::TableStruct_caffe2_2fproto_2fcaffe2_2eproto;
+};
 // ===================================================================
 
 
@@ -5530,213 +5661,6 @@ class TORCH_API DBReaderProto :
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
-// ExternalDataProto
-
-// optional .caffe2.ExternalDataProto.SourceType source_type = 1 [default = INLINE_CONTAINER];
-inline bool ExternalDataProto::_internal_has_source_type() const {
-  bool value = (_has_bits_[0] & 0x00000008u) != 0;
-  return value;
-}
-inline bool ExternalDataProto::has_source_type() const {
-  return _internal_has_source_type();
-}
-inline void ExternalDataProto::clear_source_type() {
-  source_type_ = 0;
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline ::caffe2::ExternalDataProto_SourceType ExternalDataProto::_internal_source_type() const {
-  return static_cast< ::caffe2::ExternalDataProto_SourceType >(source_type_);
-}
-inline ::caffe2::ExternalDataProto_SourceType ExternalDataProto::source_type() const {
-  // @@protoc_insertion_point(field_get:caffe2.ExternalDataProto.source_type)
-  return _internal_source_type();
-}
-inline void ExternalDataProto::_internal_set_source_type(::caffe2::ExternalDataProto_SourceType value) {
-  assert(::caffe2::ExternalDataProto_SourceType_IsValid(value));
-  _has_bits_[0] |= 0x00000008u;
-  source_type_ = value;
-}
-inline void ExternalDataProto::set_source_type(::caffe2::ExternalDataProto_SourceType value) {
-  _internal_set_source_type(value);
-  // @@protoc_insertion_point(field_set:caffe2.ExternalDataProto.source_type)
-}
-
-// optional string record_id = 2;
-inline bool ExternalDataProto::_internal_has_record_id() const {
-  bool value = (_has_bits_[0] & 0x00000001u) != 0;
-  return value;
-}
-inline bool ExternalDataProto::has_record_id() const {
-  return _internal_has_record_id();
-}
-inline void ExternalDataProto::clear_record_id() {
-  record_id_.ClearToEmptyNoArena(&GetEmptyStringAlreadyInited());
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline const std::string& ExternalDataProto::record_id() const {
-  // @@protoc_insertion_point(field_get:caffe2.ExternalDataProto.record_id)
-  return _internal_record_id();
-}
-inline void ExternalDataProto::set_record_id(const std::string& value) {
-  _internal_set_record_id(value);
-  // @@protoc_insertion_point(field_set:caffe2.ExternalDataProto.record_id)
-}
-inline std::string* ExternalDataProto::mutable_record_id() {
-  // @@protoc_insertion_point(field_mutable:caffe2.ExternalDataProto.record_id)
-  return _internal_mutable_record_id();
-}
-inline const std::string& ExternalDataProto::_internal_record_id() const {
-  return record_id_.GetNoArena();
-}
-inline void ExternalDataProto::_internal_set_record_id(const std::string& value) {
-  _has_bits_[0] |= 0x00000001u;
-  record_id_.SetNoArena(&GetEmptyStringAlreadyInited(), value);
-}
-inline void ExternalDataProto::set_record_id(std::string&& value) {
-  _has_bits_[0] |= 0x00000001u;
-  record_id_.SetNoArena(
-    &GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:caffe2.ExternalDataProto.record_id)
-}
-inline void ExternalDataProto::set_record_id(const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  _has_bits_[0] |= 0x00000001u;
-  record_id_.SetNoArena(&GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:caffe2.ExternalDataProto.record_id)
-}
-inline void ExternalDataProto::set_record_id(const char* value, size_t size) {
-  _has_bits_[0] |= 0x00000001u;
-  record_id_.SetNoArena(&GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:caffe2.ExternalDataProto.record_id)
-}
-inline std::string* ExternalDataProto::_internal_mutable_record_id() {
-  _has_bits_[0] |= 0x00000001u;
-  return record_id_.MutableNoArena(&GetEmptyStringAlreadyInited());
-}
-inline std::string* ExternalDataProto::release_record_id() {
-  // @@protoc_insertion_point(field_release:caffe2.ExternalDataProto.record_id)
-  if (!_internal_has_record_id()) {
-    return nullptr;
-  }
-  _has_bits_[0] &= ~0x00000001u;
-  return record_id_.ReleaseNonDefaultNoArena(&GetEmptyStringAlreadyInited());
-}
-inline void ExternalDataProto::set_allocated_record_id(std::string* record_id) {
-  if (record_id != nullptr) {
-    _has_bits_[0] |= 0x00000001u;
-  } else {
-    _has_bits_[0] &= ~0x00000001u;
-  }
-  record_id_.SetAllocatedNoArena(&GetEmptyStringAlreadyInited(), record_id);
-  // @@protoc_insertion_point(field_set_allocated:caffe2.ExternalDataProto.record_id)
-}
-
-// optional uint64 record_size = 5;
-inline bool ExternalDataProto::_internal_has_record_size() const {
-  bool value = (_has_bits_[0] & 0x00000004u) != 0;
-  return value;
-}
-inline bool ExternalDataProto::has_record_size() const {
-  return _internal_has_record_size();
-}
-inline void ExternalDataProto::clear_record_size() {
-  record_size_ = PROTOBUF_ULONGLONG(0);
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline ::PROTOBUF_NAMESPACE_ID::uint64 ExternalDataProto::_internal_record_size() const {
-  return record_size_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::uint64 ExternalDataProto::record_size() const {
-  // @@protoc_insertion_point(field_get:caffe2.ExternalDataProto.record_size)
-  return _internal_record_size();
-}
-inline void ExternalDataProto::_internal_set_record_size(::PROTOBUF_NAMESPACE_ID::uint64 value) {
-  _has_bits_[0] |= 0x00000004u;
-  record_size_ = value;
-}
-inline void ExternalDataProto::set_record_size(::PROTOBUF_NAMESPACE_ID::uint64 value) {
-  _internal_set_record_size(value);
-  // @@protoc_insertion_point(field_set:caffe2.ExternalDataProto.record_size)
-}
-
-// optional int64 offset = 3 [default = 0];
-inline bool ExternalDataProto::_internal_has_offset() const {
-  bool value = (_has_bits_[0] & 0x00000002u) != 0;
-  return value;
-}
-inline bool ExternalDataProto::has_offset() const {
-  return _internal_has_offset();
-}
-inline void ExternalDataProto::clear_offset() {
-  offset_ = PROTOBUF_LONGLONG(0);
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline ::PROTOBUF_NAMESPACE_ID::int64 ExternalDataProto::_internal_offset() const {
-  return offset_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::int64 ExternalDataProto::offset() const {
-  // @@protoc_insertion_point(field_get:caffe2.ExternalDataProto.offset)
-  return _internal_offset();
-}
-inline void ExternalDataProto::_internal_set_offset(::PROTOBUF_NAMESPACE_ID::int64 value) {
-  _has_bits_[0] |= 0x00000002u;
-  offset_ = value;
-}
-inline void ExternalDataProto::set_offset(::PROTOBUF_NAMESPACE_ID::int64 value) {
-  _internal_set_offset(value);
-  // @@protoc_insertion_point(field_set:caffe2.ExternalDataProto.offset)
-}
-
-// repeated int64 strides = 4;
-inline int ExternalDataProto::_internal_strides_size() const {
-  return strides_.size();
-}
-inline int ExternalDataProto::strides_size() const {
-  return _internal_strides_size();
-}
-inline void ExternalDataProto::clear_strides() {
-  strides_.Clear();
-}
-inline ::PROTOBUF_NAMESPACE_ID::int64 ExternalDataProto::_internal_strides(int index) const {
-  return strides_.Get(index);
-}
-inline ::PROTOBUF_NAMESPACE_ID::int64 ExternalDataProto::strides(int index) const {
-  // @@protoc_insertion_point(field_get:caffe2.ExternalDataProto.strides)
-  return _internal_strides(index);
-}
-inline void ExternalDataProto::set_strides(int index, ::PROTOBUF_NAMESPACE_ID::int64 value) {
-  strides_.Set(index, value);
-  // @@protoc_insertion_point(field_set:caffe2.ExternalDataProto.strides)
-}
-inline void ExternalDataProto::_internal_add_strides(::PROTOBUF_NAMESPACE_ID::int64 value) {
-  strides_.Add(value);
-}
-inline void ExternalDataProto::add_strides(::PROTOBUF_NAMESPACE_ID::int64 value) {
-  _internal_add_strides(value);
-  // @@protoc_insertion_point(field_add:caffe2.ExternalDataProto.strides)
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int64 >&
-ExternalDataProto::_internal_strides() const {
-  return strides_;
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int64 >&
-ExternalDataProto::strides() const {
-  // @@protoc_insertion_point(field_list:caffe2.ExternalDataProto.strides)
-  return _internal_strides();
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int64 >*
-ExternalDataProto::_internal_mutable_strides() {
-  return &strides_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int64 >*
-ExternalDataProto::mutable_strides() {
-  // @@protoc_insertion_point(field_mutable_list:caffe2.ExternalDataProto.strides)
-  return _internal_mutable_strides();
-}
-
-// -------------------------------------------------------------------
-
 // TensorProto_Segment
 
 // required int64 begin = 1;
@@ -5875,33 +5799,32 @@ inline void TensorProto::set_data_type(::caffe2::TensorProto_DataType value) {
   // @@protoc_insertion_point(field_set:caffe2.TensorProto.data_type)
 }
 
-// optional .caffe2.TensorProto.StorageType storage_type = 12 [default = TYPED];
-inline bool TensorProto::_internal_has_storage_type() const {
-  bool value = (_has_bits_[0] & 0x00000080u) != 0;
+// optional uint32 data_format = 15 [default = 0];
+inline bool TensorProto::_internal_has_data_format() const {
+  bool value = (_has_bits_[0] & 0x00000020u) != 0;
   return value;
 }
-inline bool TensorProto::has_storage_type() const {
-  return _internal_has_storage_type();
+inline bool TensorProto::has_data_format() const {
+  return _internal_has_data_format();
 }
-inline void TensorProto::clear_storage_type() {
-  storage_type_ = 1;
-  _has_bits_[0] &= ~0x00000080u;
+inline void TensorProto::clear_data_format() {
+  data_format_ = 0u;
+  _has_bits_[0] &= ~0x00000020u;
 }
-inline ::caffe2::TensorProto_StorageType TensorProto::_internal_storage_type() const {
-  return static_cast< ::caffe2::TensorProto_StorageType >(storage_type_);
+inline ::PROTOBUF_NAMESPACE_ID::uint32 TensorProto::_internal_data_format() const {
+  return data_format_;
 }
-inline ::caffe2::TensorProto_StorageType TensorProto::storage_type() const {
-  // @@protoc_insertion_point(field_get:caffe2.TensorProto.storage_type)
-  return _internal_storage_type();
+inline ::PROTOBUF_NAMESPACE_ID::uint32 TensorProto::data_format() const {
+  // @@protoc_insertion_point(field_get:caffe2.TensorProto.data_format)
+  return _internal_data_format();
 }
-inline void TensorProto::_internal_set_storage_type(::caffe2::TensorProto_StorageType value) {
-  assert(::caffe2::TensorProto_StorageType_IsValid(value));
-  _has_bits_[0] |= 0x00000080u;
-  storage_type_ = value;
+inline void TensorProto::_internal_set_data_format(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _has_bits_[0] |= 0x00000020u;
+  data_format_ = value;
 }
-inline void TensorProto::set_storage_type(::caffe2::TensorProto_StorageType value) {
-  _internal_set_storage_type(value);
-  // @@protoc_insertion_point(field_set:caffe2.TensorProto.storage_type)
+inline void TensorProto::set_data_format(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_data_format(value);
+  // @@protoc_insertion_point(field_set:caffe2.TensorProto.data_format)
 }
 
 // repeated float float_data = 3 [packed = true];
@@ -6306,66 +6229,6 @@ inline void TensorProto::set_allocated_raw_data(std::string* raw_data) {
   }
   raw_data_.SetAllocatedNoArena(&GetEmptyStringAlreadyInited(), raw_data);
   // @@protoc_insertion_point(field_set_allocated:caffe2.TensorProto.raw_data)
-}
-
-// optional .caffe2.ExternalDataProto external_data = 14;
-inline bool TensorProto::_internal_has_external_data() const {
-  bool value = (_has_bits_[0] & 0x00000020u) != 0;
-  PROTOBUF_ASSUME(!value || external_data_ != nullptr);
-  return value;
-}
-inline bool TensorProto::has_external_data() const {
-  return _internal_has_external_data();
-}
-inline void TensorProto::clear_external_data() {
-  if (external_data_ != nullptr) external_data_->Clear();
-  _has_bits_[0] &= ~0x00000020u;
-}
-inline const ::caffe2::ExternalDataProto& TensorProto::_internal_external_data() const {
-  const ::caffe2::ExternalDataProto* p = external_data_;
-  return p != nullptr ? *p : *reinterpret_cast<const ::caffe2::ExternalDataProto*>(
-      &::caffe2::_ExternalDataProto_default_instance_);
-}
-inline const ::caffe2::ExternalDataProto& TensorProto::external_data() const {
-  // @@protoc_insertion_point(field_get:caffe2.TensorProto.external_data)
-  return _internal_external_data();
-}
-inline ::caffe2::ExternalDataProto* TensorProto::release_external_data() {
-  // @@protoc_insertion_point(field_release:caffe2.TensorProto.external_data)
-  _has_bits_[0] &= ~0x00000020u;
-  ::caffe2::ExternalDataProto* temp = external_data_;
-  external_data_ = nullptr;
-  return temp;
-}
-inline ::caffe2::ExternalDataProto* TensorProto::_internal_mutable_external_data() {
-  _has_bits_[0] |= 0x00000020u;
-  if (external_data_ == nullptr) {
-    auto* p = CreateMaybeMessage<::caffe2::ExternalDataProto>(GetArenaNoVirtual());
-    external_data_ = p;
-  }
-  return external_data_;
-}
-inline ::caffe2::ExternalDataProto* TensorProto::mutable_external_data() {
-  // @@protoc_insertion_point(field_mutable:caffe2.TensorProto.external_data)
-  return _internal_mutable_external_data();
-}
-inline void TensorProto::set_allocated_external_data(::caffe2::ExternalDataProto* external_data) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaNoVirtual();
-  if (message_arena == nullptr) {
-    delete external_data_;
-  }
-  if (external_data) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena = nullptr;
-    if (message_arena != submessage_arena) {
-      external_data = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, external_data, submessage_arena);
-    }
-    _has_bits_[0] |= 0x00000020u;
-  } else {
-    _has_bits_[0] &= ~0x00000020u;
-  }
-  external_data_ = external_data;
-  // @@protoc_insertion_point(field_set_allocated:caffe2.TensorProto.external_data)
 }
 
 // optional string name = 7;
@@ -7644,7 +7507,7 @@ inline void TensorBoundShapes::set_max_feature_len(::PROTOBUF_NAMESPACE_ID::int6
 
 // required int64 max_batch_size = 1;
 inline bool AOTConfig::_internal_has_max_batch_size() const {
-  bool value = (_has_bits_[0] & 0x00000001u) != 0;
+  bool value = (_has_bits_[0] & 0x00000002u) != 0;
   return value;
 }
 inline bool AOTConfig::has_max_batch_size() const {
@@ -7652,7 +7515,7 @@ inline bool AOTConfig::has_max_batch_size() const {
 }
 inline void AOTConfig::clear_max_batch_size() {
   max_batch_size_ = PROTOBUF_LONGLONG(0);
-  _has_bits_[0] &= ~0x00000001u;
+  _has_bits_[0] &= ~0x00000002u;
 }
 inline ::PROTOBUF_NAMESPACE_ID::int64 AOTConfig::_internal_max_batch_size() const {
   return max_batch_size_;
@@ -7662,7 +7525,7 @@ inline ::PROTOBUF_NAMESPACE_ID::int64 AOTConfig::max_batch_size() const {
   return _internal_max_batch_size();
 }
 inline void AOTConfig::_internal_set_max_batch_size(::PROTOBUF_NAMESPACE_ID::int64 value) {
-  _has_bits_[0] |= 0x00000001u;
+  _has_bits_[0] |= 0x00000002u;
   max_batch_size_ = value;
 }
 inline void AOTConfig::set_max_batch_size(::PROTOBUF_NAMESPACE_ID::int64 value) {
@@ -7672,7 +7535,7 @@ inline void AOTConfig::set_max_batch_size(::PROTOBUF_NAMESPACE_ID::int64 value) 
 
 // required int64 max_seq_size = 2;
 inline bool AOTConfig::_internal_has_max_seq_size() const {
-  bool value = (_has_bits_[0] & 0x00000002u) != 0;
+  bool value = (_has_bits_[0] & 0x00000004u) != 0;
   return value;
 }
 inline bool AOTConfig::has_max_seq_size() const {
@@ -7680,7 +7543,7 @@ inline bool AOTConfig::has_max_seq_size() const {
 }
 inline void AOTConfig::clear_max_seq_size() {
   max_seq_size_ = PROTOBUF_LONGLONG(0);
-  _has_bits_[0] &= ~0x00000002u;
+  _has_bits_[0] &= ~0x00000004u;
 }
 inline ::PROTOBUF_NAMESPACE_ID::int64 AOTConfig::_internal_max_seq_size() const {
   return max_seq_size_;
@@ -7690,7 +7553,7 @@ inline ::PROTOBUF_NAMESPACE_ID::int64 AOTConfig::max_seq_size() const {
   return _internal_max_seq_size();
 }
 inline void AOTConfig::_internal_set_max_seq_size(::PROTOBUF_NAMESPACE_ID::int64 value) {
-  _has_bits_[0] |= 0x00000002u;
+  _has_bits_[0] |= 0x00000004u;
   max_seq_size_ = value;
 }
 inline void AOTConfig::set_max_seq_size(::PROTOBUF_NAMESPACE_ID::int64 value) {
@@ -7700,7 +7563,7 @@ inline void AOTConfig::set_max_seq_size(::PROTOBUF_NAMESPACE_ID::int64 value) {
 
 // required bool in_batch_broadcast = 3;
 inline bool AOTConfig::_internal_has_in_batch_broadcast() const {
-  bool value = (_has_bits_[0] & 0x00000004u) != 0;
+  bool value = (_has_bits_[0] & 0x00000008u) != 0;
   return value;
 }
 inline bool AOTConfig::has_in_batch_broadcast() const {
@@ -7708,7 +7571,7 @@ inline bool AOTConfig::has_in_batch_broadcast() const {
 }
 inline void AOTConfig::clear_in_batch_broadcast() {
   in_batch_broadcast_ = false;
-  _has_bits_[0] &= ~0x00000004u;
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline bool AOTConfig::_internal_in_batch_broadcast() const {
   return in_batch_broadcast_;
@@ -7718,12 +7581,111 @@ inline bool AOTConfig::in_batch_broadcast() const {
   return _internal_in_batch_broadcast();
 }
 inline void AOTConfig::_internal_set_in_batch_broadcast(bool value) {
-  _has_bits_[0] |= 0x00000004u;
+  _has_bits_[0] |= 0x00000008u;
   in_batch_broadcast_ = value;
 }
 inline void AOTConfig::set_in_batch_broadcast(bool value) {
   _internal_set_in_batch_broadcast(value);
   // @@protoc_insertion_point(field_set:caffe2.AOTConfig.in_batch_broadcast)
+}
+
+// optional string onnxifi_blacklist_ops = 4;
+inline bool AOTConfig::_internal_has_onnxifi_blacklist_ops() const {
+  bool value = (_has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool AOTConfig::has_onnxifi_blacklist_ops() const {
+  return _internal_has_onnxifi_blacklist_ops();
+}
+inline void AOTConfig::clear_onnxifi_blacklist_ops() {
+  onnxifi_blacklist_ops_.ClearToEmptyNoArena(&GetEmptyStringAlreadyInited());
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& AOTConfig::onnxifi_blacklist_ops() const {
+  // @@protoc_insertion_point(field_get:caffe2.AOTConfig.onnxifi_blacklist_ops)
+  return _internal_onnxifi_blacklist_ops();
+}
+inline void AOTConfig::set_onnxifi_blacklist_ops(const std::string& value) {
+  _internal_set_onnxifi_blacklist_ops(value);
+  // @@protoc_insertion_point(field_set:caffe2.AOTConfig.onnxifi_blacklist_ops)
+}
+inline std::string* AOTConfig::mutable_onnxifi_blacklist_ops() {
+  // @@protoc_insertion_point(field_mutable:caffe2.AOTConfig.onnxifi_blacklist_ops)
+  return _internal_mutable_onnxifi_blacklist_ops();
+}
+inline const std::string& AOTConfig::_internal_onnxifi_blacklist_ops() const {
+  return onnxifi_blacklist_ops_.GetNoArena();
+}
+inline void AOTConfig::_internal_set_onnxifi_blacklist_ops(const std::string& value) {
+  _has_bits_[0] |= 0x00000001u;
+  onnxifi_blacklist_ops_.SetNoArena(&GetEmptyStringAlreadyInited(), value);
+}
+inline void AOTConfig::set_onnxifi_blacklist_ops(std::string&& value) {
+  _has_bits_[0] |= 0x00000001u;
+  onnxifi_blacklist_ops_.SetNoArena(
+    &GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:caffe2.AOTConfig.onnxifi_blacklist_ops)
+}
+inline void AOTConfig::set_onnxifi_blacklist_ops(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _has_bits_[0] |= 0x00000001u;
+  onnxifi_blacklist_ops_.SetNoArena(&GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:caffe2.AOTConfig.onnxifi_blacklist_ops)
+}
+inline void AOTConfig::set_onnxifi_blacklist_ops(const char* value, size_t size) {
+  _has_bits_[0] |= 0x00000001u;
+  onnxifi_blacklist_ops_.SetNoArena(&GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:caffe2.AOTConfig.onnxifi_blacklist_ops)
+}
+inline std::string* AOTConfig::_internal_mutable_onnxifi_blacklist_ops() {
+  _has_bits_[0] |= 0x00000001u;
+  return onnxifi_blacklist_ops_.MutableNoArena(&GetEmptyStringAlreadyInited());
+}
+inline std::string* AOTConfig::release_onnxifi_blacklist_ops() {
+  // @@protoc_insertion_point(field_release:caffe2.AOTConfig.onnxifi_blacklist_ops)
+  if (!_internal_has_onnxifi_blacklist_ops()) {
+    return nullptr;
+  }
+  _has_bits_[0] &= ~0x00000001u;
+  return onnxifi_blacklist_ops_.ReleaseNonDefaultNoArena(&GetEmptyStringAlreadyInited());
+}
+inline void AOTConfig::set_allocated_onnxifi_blacklist_ops(std::string* onnxifi_blacklist_ops) {
+  if (onnxifi_blacklist_ops != nullptr) {
+    _has_bits_[0] |= 0x00000001u;
+  } else {
+    _has_bits_[0] &= ~0x00000001u;
+  }
+  onnxifi_blacklist_ops_.SetAllocatedNoArena(&GetEmptyStringAlreadyInited(), onnxifi_blacklist_ops);
+  // @@protoc_insertion_point(field_set_allocated:caffe2.AOTConfig.onnxifi_blacklist_ops)
+}
+
+// optional int32 onnxifi_min_ops = 5;
+inline bool AOTConfig::_internal_has_onnxifi_min_ops() const {
+  bool value = (_has_bits_[0] & 0x00000010u) != 0;
+  return value;
+}
+inline bool AOTConfig::has_onnxifi_min_ops() const {
+  return _internal_has_onnxifi_min_ops();
+}
+inline void AOTConfig::clear_onnxifi_min_ops() {
+  onnxifi_min_ops_ = 0;
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 AOTConfig::_internal_onnxifi_min_ops() const {
+  return onnxifi_min_ops_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 AOTConfig::onnxifi_min_ops() const {
+  // @@protoc_insertion_point(field_get:caffe2.AOTConfig.onnxifi_min_ops)
+  return _internal_onnxifi_min_ops();
+}
+inline void AOTConfig::_internal_set_onnxifi_min_ops(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _has_bits_[0] |= 0x00000010u;
+  onnxifi_min_ops_ = value;
+}
+inline void AOTConfig::set_onnxifi_min_ops(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_onnxifi_min_ops(value);
+  // @@protoc_insertion_point(field_set:caffe2.AOTConfig.onnxifi_min_ops)
 }
 
 // -------------------------------------------------------------------
@@ -11752,9 +11714,186 @@ inline void DBReaderProto::set_allocated_key(std::string* key) {
   // @@protoc_insertion_point(field_set_allocated:caffe2.DBReaderProto.key)
 }
 
+// -------------------------------------------------------------------
+
+// BlobSerializationOptions
+
+// optional string blob_name_regex = 1;
+inline bool BlobSerializationOptions::_internal_has_blob_name_regex() const {
+  bool value = (_has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool BlobSerializationOptions::has_blob_name_regex() const {
+  return _internal_has_blob_name_regex();
+}
+inline void BlobSerializationOptions::clear_blob_name_regex() {
+  blob_name_regex_.ClearToEmptyNoArena(&GetEmptyStringAlreadyInited());
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& BlobSerializationOptions::blob_name_regex() const {
+  // @@protoc_insertion_point(field_get:caffe2.BlobSerializationOptions.blob_name_regex)
+  return _internal_blob_name_regex();
+}
+inline void BlobSerializationOptions::set_blob_name_regex(const std::string& value) {
+  _internal_set_blob_name_regex(value);
+  // @@protoc_insertion_point(field_set:caffe2.BlobSerializationOptions.blob_name_regex)
+}
+inline std::string* BlobSerializationOptions::mutable_blob_name_regex() {
+  // @@protoc_insertion_point(field_mutable:caffe2.BlobSerializationOptions.blob_name_regex)
+  return _internal_mutable_blob_name_regex();
+}
+inline const std::string& BlobSerializationOptions::_internal_blob_name_regex() const {
+  return blob_name_regex_.GetNoArena();
+}
+inline void BlobSerializationOptions::_internal_set_blob_name_regex(const std::string& value) {
+  _has_bits_[0] |= 0x00000001u;
+  blob_name_regex_.SetNoArena(&GetEmptyStringAlreadyInited(), value);
+}
+inline void BlobSerializationOptions::set_blob_name_regex(std::string&& value) {
+  _has_bits_[0] |= 0x00000001u;
+  blob_name_regex_.SetNoArena(
+    &GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:caffe2.BlobSerializationOptions.blob_name_regex)
+}
+inline void BlobSerializationOptions::set_blob_name_regex(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _has_bits_[0] |= 0x00000001u;
+  blob_name_regex_.SetNoArena(&GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:caffe2.BlobSerializationOptions.blob_name_regex)
+}
+inline void BlobSerializationOptions::set_blob_name_regex(const char* value, size_t size) {
+  _has_bits_[0] |= 0x00000001u;
+  blob_name_regex_.SetNoArena(&GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:caffe2.BlobSerializationOptions.blob_name_regex)
+}
+inline std::string* BlobSerializationOptions::_internal_mutable_blob_name_regex() {
+  _has_bits_[0] |= 0x00000001u;
+  return blob_name_regex_.MutableNoArena(&GetEmptyStringAlreadyInited());
+}
+inline std::string* BlobSerializationOptions::release_blob_name_regex() {
+  // @@protoc_insertion_point(field_release:caffe2.BlobSerializationOptions.blob_name_regex)
+  if (!_internal_has_blob_name_regex()) {
+    return nullptr;
+  }
+  _has_bits_[0] &= ~0x00000001u;
+  return blob_name_regex_.ReleaseNonDefaultNoArena(&GetEmptyStringAlreadyInited());
+}
+inline void BlobSerializationOptions::set_allocated_blob_name_regex(std::string* blob_name_regex) {
+  if (blob_name_regex != nullptr) {
+    _has_bits_[0] |= 0x00000001u;
+  } else {
+    _has_bits_[0] &= ~0x00000001u;
+  }
+  blob_name_regex_.SetAllocatedNoArena(&GetEmptyStringAlreadyInited(), blob_name_regex);
+  // @@protoc_insertion_point(field_set_allocated:caffe2.BlobSerializationOptions.blob_name_regex)
+}
+
+// optional int64 chunk_size = 2;
+inline bool BlobSerializationOptions::_internal_has_chunk_size() const {
+  bool value = (_has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool BlobSerializationOptions::has_chunk_size() const {
+  return _internal_has_chunk_size();
+}
+inline void BlobSerializationOptions::clear_chunk_size() {
+  chunk_size_ = PROTOBUF_LONGLONG(0);
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int64 BlobSerializationOptions::_internal_chunk_size() const {
+  return chunk_size_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int64 BlobSerializationOptions::chunk_size() const {
+  // @@protoc_insertion_point(field_get:caffe2.BlobSerializationOptions.chunk_size)
+  return _internal_chunk_size();
+}
+inline void BlobSerializationOptions::_internal_set_chunk_size(::PROTOBUF_NAMESPACE_ID::int64 value) {
+  _has_bits_[0] |= 0x00000002u;
+  chunk_size_ = value;
+}
+inline void BlobSerializationOptions::set_chunk_size(::PROTOBUF_NAMESPACE_ID::int64 value) {
+  _internal_set_chunk_size(value);
+  // @@protoc_insertion_point(field_set:caffe2.BlobSerializationOptions.chunk_size)
+}
+
+// optional .caffe2.BlobSerializationOptions.FloatFormat float_format = 3;
+inline bool BlobSerializationOptions::_internal_has_float_format() const {
+  bool value = (_has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool BlobSerializationOptions::has_float_format() const {
+  return _internal_has_float_format();
+}
+inline void BlobSerializationOptions::clear_float_format() {
+  float_format_ = 0;
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline ::caffe2::BlobSerializationOptions_FloatFormat BlobSerializationOptions::_internal_float_format() const {
+  return static_cast< ::caffe2::BlobSerializationOptions_FloatFormat >(float_format_);
+}
+inline ::caffe2::BlobSerializationOptions_FloatFormat BlobSerializationOptions::float_format() const {
+  // @@protoc_insertion_point(field_get:caffe2.BlobSerializationOptions.float_format)
+  return _internal_float_format();
+}
+inline void BlobSerializationOptions::_internal_set_float_format(::caffe2::BlobSerializationOptions_FloatFormat value) {
+  assert(::caffe2::BlobSerializationOptions_FloatFormat_IsValid(value));
+  _has_bits_[0] |= 0x00000004u;
+  float_format_ = value;
+}
+inline void BlobSerializationOptions::set_float_format(::caffe2::BlobSerializationOptions_FloatFormat value) {
+  _internal_set_float_format(value);
+  // @@protoc_insertion_point(field_set:caffe2.BlobSerializationOptions.float_format)
+}
+
+// -------------------------------------------------------------------
+
+// SerializationOptions
+
+// repeated .caffe2.BlobSerializationOptions options = 1;
+inline int SerializationOptions::_internal_options_size() const {
+  return options_.size();
+}
+inline int SerializationOptions::options_size() const {
+  return _internal_options_size();
+}
+inline void SerializationOptions::clear_options() {
+  options_.Clear();
+}
+inline ::caffe2::BlobSerializationOptions* SerializationOptions::mutable_options(int index) {
+  // @@protoc_insertion_point(field_mutable:caffe2.SerializationOptions.options)
+  return options_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::caffe2::BlobSerializationOptions >*
+SerializationOptions::mutable_options() {
+  // @@protoc_insertion_point(field_mutable_list:caffe2.SerializationOptions.options)
+  return &options_;
+}
+inline const ::caffe2::BlobSerializationOptions& SerializationOptions::_internal_options(int index) const {
+  return options_.Get(index);
+}
+inline const ::caffe2::BlobSerializationOptions& SerializationOptions::options(int index) const {
+  // @@protoc_insertion_point(field_get:caffe2.SerializationOptions.options)
+  return _internal_options(index);
+}
+inline ::caffe2::BlobSerializationOptions* SerializationOptions::_internal_add_options() {
+  return options_.Add();
+}
+inline ::caffe2::BlobSerializationOptions* SerializationOptions::add_options() {
+  // @@protoc_insertion_point(field_add:caffe2.SerializationOptions.options)
+  return _internal_add_options();
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::caffe2::BlobSerializationOptions >&
+SerializationOptions::options() const {
+  // @@protoc_insertion_point(field_list:caffe2.SerializationOptions.options)
+  return options_;
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
@@ -11802,25 +11941,25 @@ inline void DBReaderProto::set_allocated_key(std::string* key) {
 
 PROTOBUF_NAMESPACE_OPEN
 
-template <> struct is_proto_enum< ::caffe2::ExternalDataProto_SourceType> : ::std::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::caffe2::ExternalDataProto_SourceType>() {
-  return ::caffe2::ExternalDataProto_SourceType_descriptor();
-}
 template <> struct is_proto_enum< ::caffe2::TensorProto_DataType> : ::std::true_type {};
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::caffe2::TensorProto_DataType>() {
   return ::caffe2::TensorProto_DataType_descriptor();
 }
-template <> struct is_proto_enum< ::caffe2::TensorProto_StorageType> : ::std::true_type {};
+template <> struct is_proto_enum< ::caffe2::TensorProto_SerializationFormat> : ::std::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::caffe2::TensorProto_StorageType>() {
-  return ::caffe2::TensorProto_StorageType_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::caffe2::TensorProto_SerializationFormat>() {
+  return ::caffe2::TensorProto_SerializationFormat_descriptor();
 }
 template <> struct is_proto_enum< ::caffe2::TensorBoundShape_DimType> : ::std::true_type {};
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::caffe2::TensorBoundShape_DimType>() {
   return ::caffe2::TensorBoundShape_DimType_descriptor();
+}
+template <> struct is_proto_enum< ::caffe2::BlobSerializationOptions_FloatFormat> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::caffe2::BlobSerializationOptions_FloatFormat>() {
+  return ::caffe2::BlobSerializationOptions_FloatFormat_descriptor();
 }
 template <> struct is_proto_enum< ::caffe2::DeviceTypeProto> : ::std::true_type {};
 template <>

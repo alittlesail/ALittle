@@ -9,8 +9,8 @@
 // as a track point for bugs, until we find a proper versioning cycle.
 
 #define CAFFE2_VERSION_MAJOR 1
-#define CAFFE2_VERSION_MINOR 8
-#define CAFFE2_VERSION_PATCH 1
+#define CAFFE2_VERSION_MINOR 9
+#define CAFFE2_VERSION_PATCH 0
 
 static_assert(
     CAFFE2_VERSION_MINOR < 100,
@@ -50,9 +50,9 @@ static_assert(
 
 // Useful build settings that are recorded in the compiled binary
 #define CAFFE2_BUILD_STRINGS { \
-  {"TORCH_VERSION", "1.8.1"}, \
+  {"TORCH_VERSION", "1.9.0"}, \
   {"CXX_COMPILER", "C:/w/b/windows/tmp_bin/sccache-cl.exe"}, \
-  {"CXX_FLAGS", "/DWIN32 /D_WINDOWS /GR /EHsc /w /bigobj -DUSE_PTHREADPOOL -openmp:experimental -DNDEBUG -DUSE_FBGEMM -DUSE_XNNPACK"}, \
+  {"CXX_FLAGS", "/DWIN32 /D_WINDOWS /GR /EHsc /w /bigobj -DUSE_PTHREADPOOL -openmp:experimental -IC:/w/b/windows/mkl/include -DNDEBUG -DUSE_KINETO -DLIBKINETO_NOCUPTI -DUSE_FBGEMM -DUSE_XNNPACK -DSYMBOLICATE_MOBILE_DEBUG_HANDLE"}, \
   {"BUILD_TYPE", "Release"}, \
   {"BLAS_INFO", "mkl"}, \
   {"LAPACK_INFO", "mkl"}, \

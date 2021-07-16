@@ -6,7 +6,7 @@ namespace caffe2 {
 namespace serialize {
 
 constexpr uint64_t kMinSupportedFileFormatVersion = 0x1L;
-constexpr uint64_t kMaxSupportedFileFormatVersion = 0x5L;
+constexpr uint64_t kMaxSupportedFileFormatVersion = 0x6L;
 
 // Versions (i.e. why was the version number bumped?)
 
@@ -46,6 +46,7 @@ constexpr uint64_t kMaxSupportedFileFormatVersion = 0x5L;
 //      (a versioned symbol preserves the historic behavior of versions 1--3)
 // 5. (Dynamic) Stops torch.full inferring a floating point dtype
 //      when given bool or integer fill values.
+// 6. Write version string to `./data/version` instead of `version`.
 constexpr uint64_t kProducedFileFormatVersion = 0x3L;
 
 // The version we write when the archive contains bytecode.
@@ -64,9 +65,13 @@ constexpr uint64_t kProducedFileFormatVersion = 0x3L;
 //  0x1L: Initial version
 //  0x2L: (Comment missing)
 //  0x3L: (Comment missing)
-//  0x4L: (Comment missing)
 //  0x4L: (update) Added schema to function tuple. Forward-compatible change.
-constexpr uint64_t kProducedBytecodeVersion = 0x4L;
+//  0x5L: (update) Update bytecode is sharing constant tensor files from torchscript, and only serialize
+//  extra tensors that are not in the torchscript constant table. Also update tensor storage schema adapting
+//  to the unify format, the root key of tensor storage is updated from {index} to
+//  {the_pointer_value_the_tensor.storage}, for example: `140245072983168.storage`
+//  Forward-compatibility change.
+constexpr uint64_t kProducedBytecodeVersion = 0x5L;
 
 static_assert(kProducedBytecodeVersion >= kProducedFileFormatVersion,
     "kProducedBytecodeVersion must be higher or equal to kProducedFileFormatVersion.");

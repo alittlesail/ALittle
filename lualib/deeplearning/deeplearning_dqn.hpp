@@ -118,20 +118,13 @@ public:
 			lua_pop(l_state, 1);
 		}
 
-		auto espsilon = luaL_checkinteger(l_state, 3);
-
 		if (static_cast<int>(state.size()) != m_state_count) return 0;
 
-		if (rand() % 10 < espsilon)
-		{
-			const auto x = torch::from_blob(state.data(), { 1, m_state_count });
-			const auto actions_value = m_eval_fc2(torch::relu(m_eval_fc1(x)));
-			const auto action = std::get<1>(torch::max(actions_value, 1));
-			lua_pushinteger(l_state, action.item().toInt());
-			return 1;
-		}
-
-		lua_pushinteger(l_state, rand() % m_action_count);
+		
+		const auto x = torch::from_blob(state.data(), { 1, m_state_count });
+		const auto actions_value = m_eval_fc2(torch::relu(m_eval_fc1(x)));
+		const auto action = std::get<1>(torch::max(actions_value, 1));
+		lua_pushinteger(l_state, action.item().toInt());
 		return 1;
 	}
 

@@ -166,8 +166,8 @@ public:
     int UseRtpForLua(lua_State* L);
 	// 开始使用rtp
 	bool UseRtp(int first_port, const std::string& call_id
-		, const std::string& from_rtp_ip, int from_rtp_port, int from_ssrc
-		, const std::string& to_rtp_ip, int to_rtp_port, int to_ssrc);
+		, const std::string& from_rtp_ip, int from_rtp_port
+		, const std::string& to_rtp_ip, int to_rtp_port);
 
 	// 设置呼叫方ip和端口
 	void SetFromRtp(int first_port, const char* rtp_ip, int rtp_port);

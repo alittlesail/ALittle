@@ -652,23 +652,21 @@ int ServerSchedule::UseRtpForLua(lua_State* L)
 
     const char* from_rtp_ip = luaL_checkstring(L, index++);
 	const int from_rtp_port = static_cast<int>(luaL_checkinteger(L, index++));
-	const int from_ssrc = static_cast<int>(luaL_checkinteger(L, index++));
 	
 	const char* to_rtp_ip = luaL_checkstring(L, index++);
 	const int to_rtp_port = static_cast<int>(luaL_checkinteger(L, index++));
-	const int to_ssrc = static_cast<int>(luaL_checkinteger(L, index++));
 
     // 执行
     UseRtp(first_port, call_id
-           , from_rtp_ip, from_rtp_port, from_ssrc
-           , to_rtp_ip, to_rtp_port, to_ssrc);
+           , from_rtp_ip, from_rtp_port
+           , to_rtp_ip, to_rtp_port);
 
     return 0;
 }
 
 bool ServerSchedule::UseRtp(int first_port, const std::string& call_id
-                            , const std::string& from_rtp_ip, int from_rtp_port, int from_ssrc
-							, const std::string& to_rtp_ip, int to_rtp_port, int to_ssrc)
+                            , const std::string& from_rtp_ip, int from_rtp_port
+							, const std::string& to_rtp_ip, int to_rtp_port)
 {
 	CarpRtpServerPtr rtp;
 	const auto release_it = m_release_map_rtp.find(first_port);
@@ -688,7 +686,7 @@ bool ServerSchedule::UseRtp(int first_port, const std::string& call_id
 
 	m_use_map_rtp[first_port] = rtp;
 	// 开始使用rtp
-	rtp->Start(call_id, from_ssrc, to_ssrc);
+	rtp->Start(call_id);
 
 	// 打印信息
 	CARP_INFO("release count:" << m_release_map_rtp.size());

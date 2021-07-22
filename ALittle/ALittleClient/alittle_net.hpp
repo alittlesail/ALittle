@@ -47,11 +47,10 @@ public:
 			m_client->SendRequest(m_url, m_content.empty(), "application/json", m_content.c_str(), m_content.size()
 				, [this, id](bool result, const std::string& body, const std::string& head, const std::string& error)
 				{
+					m_head = head;
+					m_response = body;
 					if (result)
-					{
-						m_response = body;
 						s_carp_event_consumer.PushEvent([id]() { s_alittle_script.Invoke("__ALITTLEAPI_HttpClientSucceed", id); });
-					}
 					else
 						s_carp_event_consumer.PushEvent([id, error]() { s_alittle_script.Invoke("__ALITTLEAPI_HttpClientFailed", id, error.c_str()); });
 				}
@@ -65,6 +64,11 @@ public:
 	void Stop() const
 	{
 		if (m_client) m_client->Stop();
+	}
+
+	const char* GetHead() const
+	{
+		return m_head.c_str();
 	}
 
 	const char* GetResponse() const
@@ -93,6 +97,7 @@ private:
 	std::string m_url;			// url
 	std::string m_content;		// if content is empty, then GET. otherwise POST
 	std::string m_response;		// response
+	std::string m_head;
 
 private:
 	CarpHttpClientTextPtr m_client;
@@ -441,6 +446,7 @@ public:
 			.addFunction("Start", &ALittleHttpClient::Start)
 			.addFunction("Stop", &ALittleHttpClient::Stop)
 			.addFunction("GetResponse", &ALittleHttpClient::GetResponse)
+			.addFunction("GetHead", &ALittleHttpClient::GetHead)
 			.addFunction("GetURL", &ALittleHttpClient::GetURL)
 			.endClass();
 

@@ -150,7 +150,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;THIRDPARTY_EXPORTS;_WINDOWS;_USRDLL;LUA_BUILD_AS_DLL;LUA_LIB;ASIO_STANDALONE;_WIN32_WINNT=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;THIRDPARTY_EXPORTS;_WINDOWS;_USRDLL;LUA_BUILD_AS_DLL;LUA_LIB;ASIO_STANDALONE;_WIN32_WINNT=0x0501;CARP_HAS_SSL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)..\lua;$(SolutionDir)..\carp\;$(SolutionDir)..\LuaBridge\Source\;$(SolutionDir)..\asio\asio\include\;$(SolutionDir)..\;$(SolutionDir)..\SDL\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -161,8 +161,9 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\ALittle\lib\lua\;$(SolutionDir)..\ALittle\lib\openssl\;$(SolutionDir)..\ALittle\lib\SDL2\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>lua.lib;SDL2.lib;libcrypto.lib;libssl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\ALittle\lib\lua\;$(SolutionDir)..\ALittle\lib\openssl\;$(SolutionDir)..\ALittle\lib\tcmalloc\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>lua.lib;libcrypto.lib;libssl.lib;libtcmalloc_minimal.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

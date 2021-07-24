@@ -12,13 +12,23 @@ extern "C" {
 #include <thread>
 #include <set>
 #include <string>
+#include <deque>
+
+class BlackSeoInterface
+{
+public:
+	virtual ~BlackSeoInterface() {}
+
+public:
+	virtual void PullUrl(std::vector<std::string>& out, size_t count) = 0;
+};
 
 class BlackSeoSchedule : public CarpSchedule
 {
 public:
-	void Start(size_t start, size_t end, const std::vector<std::string>* url_list
-		, const std::string& url_path, const std::string& match_text)
+	void Start(BlackSeoInterface* blackseo, const std::string& url_path, const std::string& match_text)
 	{
+		m_blackseo = blackseo;
 		m_url_path = url_path;
 		m_match_text = match_text;
 
@@ -26,7 +36,8 @@ public:
 		Run(true, std::bind(&BlackSeoSchedule::Setup, this), std::bind(&BlackSeoSchedule::Shutdown, this));
 
 		// 执行下一个
-		Execute(std::bind(&BlackSeoSchedule::NextOne, this, start, end, url_list));
+		for (int i = 0; i < 100; ++i)
+			Execute(std::bind(&BlackSeoSchedule::NextOne, this));
 	}
 
 	void GetMatchSet(std::set<std::string>& result)
@@ -40,33 +51,70 @@ public:
 	int GetFailedCount() const { return m_match_failed; }
 	int GetSucceedCount() const { return m_match_succeed; }
 
-private:
-	void NextOne(size_t start, size_t end, const std::vector<std::string>* url_list)
+	void HandleTimeOut()
 	{
-		if (start >= end)
+		Execute(std::bind(&BlackSeoSchedule::HandleTimeOutImpl, this));
+	}
+
+private:
+	void HandleTimeOutImpl()
+	{
+		if (m_request_map.empty()) return;
+
+		auto cur_time = time(0);
+		std::set<CarpHttpClientTextPtr> stop_set;
+		for (auto& pair : m_request_map)
+		{
+			if (cur_time - pair.second > 60 * 10)
+				stop_set.insert(pair.first);
+		}
+		
+		for (auto& value : stop_set)
+		{
+			printf("time out and try stop %s\n", value->GetUrl().c_str());
+			value->Stop();
+		}
+	}
+
+	void NextOne()
+	{
+		if (m_url_list.empty())
+			m_blackseo->PullUrl(m_url_list, 10);
+
+		if (m_url_list.empty())
 		{
 			m_completed = true;
 			return;
 		}
 
-		auto url = (*url_list)[start] + m_url_path;
+		std::string url;
+		auto& back = m_url_list.back();
+		if (back.find("http://") == 0)
+			url = back + m_url_path;
+		else
+			url = "http://" + m_url_list.back() + m_url_path;
+		m_url_list.pop_back();
 		auto client = std::make_shared<CarpHttpClientText>();
+		std::weak_ptr<CarpHttpClientText> weak_client = client;
 
+		m_request_map[client] = time(0);
 		client->SendRequest(url, true, "application/json", nullptr, 0
 			, std::bind(&BlackSeoSchedule::HandleHttpResult, this
 				, std::placeholders::_1, std::placeholders::_2
 				, std::placeholders::_3, std::placeholders::_4
-				, 0, url, start, end, url_list)
+				, 0, url, weak_client)
 			, nullptr, &GetIOService(), "", 0, "");
 	}
 
 	void HandleHttpResult(bool result, const std::string& body, const std::string& head, const std::string& error
-		, int location, const std::string& url, size_t start, size_t end, const std::vector<std::string>* url_list)
+		, int location, const std::string& url, std::weak_ptr<CarpHttpClientText> weak_client)
 	{
-		if (head.find("301 Moved Permanently") != std::string::npos)
+		m_request_map.erase(weak_client.lock());
+		
+		if (head.find("Location:") != std::string::npos)
 		{
 			// 已经重复location了5次，那么就算失败
-			if (location >= 5)
+			if (location >= 10)
 			{
 				m_match_failed += 1;
 				return;
@@ -80,13 +128,19 @@ private:
 				if (pos != std::string::npos)
 				{
 					auto new_url = value.substr(pos + strlen("Location:"));
+					CarpString::TrimLeft(new_url);
+					CarpString::TrimRight(new_url);
 
 					auto client = std::make_shared<CarpHttpClientText>();
+					std::weak_ptr<CarpHttpClientText> try_weak_client = client;
+
+					m_request_map[client] = time(0);
+
 					client->SendRequest(new_url, true, "application/json", nullptr, 0
 						, std::bind(&BlackSeoSchedule::HandleHttpResult, this
 							, std::placeholders::_1, std::placeholders::_2
 							, std::placeholders::_3, std::placeholders::_4
-							, location + 1, new_url, start, end, url_list)
+							, location + 1, new_url, try_weak_client)
 						, nullptr, &GetIOService(), "", 0, "");
 					return;
 				}
@@ -105,8 +159,7 @@ private:
 			m_match_lock.unlock();
 		}
 
-		start += 1;
-		NextOne(start, end, url_list);
+		NextOne();
 	};
 
 private:
@@ -129,9 +182,16 @@ private:
 	bool m_completed = false;
 	std::string m_url_path;
 	std::string m_match_text;
+
+private:
+	std::vector<std::string> m_url_list;
+	BlackSeoInterface* m_blackseo = nullptr;
+
+private:
+	std::map<CarpHttpClientTextPtr, time_t> m_request_map;
 };
 
-class BlackSeo
+class BlackSeo : public BlackSeoInterface
 {
 public:
 	~BlackSeo()
@@ -140,7 +200,8 @@ public:
 	}
 
 public:
-	bool Init(const char* file_path, const char* target_path, const char* url_path, const char* match_text, int thread_count)
+	bool Init(const char* file_path, int start_line, const char* target_path
+		, const char* url_path, const char* match_text, int thread_count)
 	{
 		if (file_path == nullptr || url_path == nullptr || match_text == nullptr) return false;
 
@@ -153,7 +214,6 @@ public:
 		// define buffer, read and write
 		char buff[1024];
 		std::string content;
-		m_url_list.reserve(1000000);
 		do
 		{
 			size_t read_size = SDL_RWread(file, buff, 1, sizeof(buff));
@@ -165,7 +225,10 @@ public:
 				auto pos_1 = content.find("\r\n");
 				if (pos_1 != std::string::npos)
 				{
-					m_url_list.emplace_back(content.substr(0, pos_1));
+					if (start_line <= 0)
+						m_url_list.emplace_back(content.substr(0, pos_1));
+					else
+						start_line -= 1;
 					content = content.substr(pos_1 + 2);
 				}
 				else
@@ -173,7 +236,10 @@ public:
 					auto pos_2 = content.find("\n");
 					if (pos_2 != std::string::npos)
 					{
-						m_url_list.emplace_back(content.substr(0, pos_2));
+						if (start_line <= 0)
+							m_url_list.emplace_back(content.substr(0, pos_2));
+						else
+							start_line -= 1;
 						content = content.substr(pos_2 + 1);
 					}
 					else
@@ -185,14 +251,14 @@ public:
 
 		} while (true);
 
-		if (!content.empty())
-			m_url_list.emplace_back(content);
+		if (!content.empty() && start_line <= 0) m_url_list.emplace_back(content);
 
 		// close file
 		SDL_RWclose(file);
 
 		if (m_url_list.empty()) return false;
 
+		m_total_count = m_url_list.size();
 		if (thread_count <= 0) thread_count = 1;
 
 		m_target_file = CarpRWops::OpenFile(target_path, "wb", false);
@@ -204,11 +270,8 @@ public:
 
 		for (int i = 0; i < thread_count; ++i)
 		{
-			size_t start = i * split_count;
-			size_t end = start + split_count;
-			if (end > m_url_list.size()) end = m_url_list.size();
 			auto* schedule = new BlackSeoSchedule;
-			schedule->Start(start, end, &m_url_list, url_path, match_text);
+			schedule->Start(this, url_path, match_text);
 			m_schedule_list.push_back(schedule);
 		}
 
@@ -218,6 +281,7 @@ public:
 	void Release()
 	{
 		m_url_list.resize(0);
+		m_total_count = 0;
 		for (auto& schedule : m_schedule_list)
 		{
 			schedule->Exit();
@@ -266,17 +330,19 @@ public:
 
 	size_t GetTotalCount()
 	{
-		return m_url_list.size();
+		return m_total_count;
 	}
 
 	void WriteToFile()
 	{
 		if (m_target_file == nullptr) return;
 
+
 		std::set<std::string> out;
 		bool has_content = false;
 		for (auto schedule : m_schedule_list)
 		{
+			// schedule->HandleTimeOut();
 			schedule->GetMatchSet(out);
 			for (auto& value : out)
 			{
@@ -290,8 +356,22 @@ public:
 			std::fflush(m_target_file);
 	}
 
+	void PullUrl(std::vector<std::string>& out, size_t count) override
+	{
+		m_url_lock.lock();
+		while (count > 0 && !m_url_list.empty())
+		{
+			out.emplace_back(std::move(m_url_list.front()));
+			m_url_list.pop_front();
+			--count;
+		}
+		m_url_lock.unlock();
+	}
+
 private:
-	std::vector<std::string> m_url_list;
+	std::mutex m_url_lock;
+	std::deque<std::string> m_url_list;
+	size_t m_total_count = 0;
 	FILE* m_target_file = nullptr;
 
 private:

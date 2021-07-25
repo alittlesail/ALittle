@@ -26,11 +26,13 @@ public:
 class BlackSeoSchedule : public CarpSchedule
 {
 public:
-	void Start(BlackSeoInterface* blackseo, const std::string& url_path, const std::string& match_text)
+	void Start(BlackSeoInterface* blackseo, const std::string& url_path
+		, const std::string& match_text, bool complete_match, bool collect_error)
 	{
 		m_blackseo = blackseo;
 		m_url_path = url_path;
 		m_match_text = match_text;
+		m_collect_error = collect_error;
 
 		// 启动
 		Run(true, std::bind(&BlackSeoSchedule::Setup, this), std::bind(&BlackSeoSchedule::Shutdown, this));
@@ -45,6 +47,13 @@ public:
 		m_match_lock.lock();
 		m_match_set.swap(result);
 		m_match_lock.unlock();
+	}
+
+	void GetErrorSet(std::set<std::string>& result)
+	{
+		m_error_lock.lock();
+		m_error_set.swap(result);
+		m_error_lock.unlock();
 	}
 
 	bool IsCompleted() const { return m_completed; }
@@ -102,61 +111,92 @@ private:
 			, std::bind(&BlackSeoSchedule::HandleHttpResult, this
 				, std::placeholders::_1, std::placeholders::_2
 				, std::placeholders::_3, std::placeholders::_4
-				, 0, url, weak_client)
+				, 0, url, url, weak_client)
 			, nullptr, &GetIOService(), "", 0, "");
 	}
 
 	void HandleHttpResult(bool result, const std::string& body, const std::string& head, const std::string& error
-		, int location, const std::string& url, std::weak_ptr<CarpHttpClientText> weak_client)
+		, int location, const std::string& url, const std::string& src_url, std::weak_ptr<CarpHttpClientText> weak_client)
 	{
 		m_request_map.erase(weak_client.lock());
-		
-		if (head.find("Location:") != std::string::npos)
+
+		auto copy_head = head;
+		CarpString::UpperString(copy_head);
+		auto location_pos = copy_head.find("LOCATION:");
+		if (location_pos != std::string::npos)
 		{
 			// 已经重复location了5次，那么就算失败
 			if (location >= 10)
 			{
 				m_match_failed += 1;
-				return;
+				if (m_collect_error)
+					m_error_set.insert(src_url + ", error:" + error);
 			}
-
-			std::vector<std::string> head_list;
-			CarpString::Split(head, "\r\n", true, head_list);
-			for (auto& value : head_list)
+			else
 			{
-				auto pos = value.find("Location:");
-				if (pos != std::string::npos)
+				location_pos += strlen("LOCATION:");
+
+				auto location_end = copy_head.find("\r\n", location_pos);
+				if (location_end != std::string::npos)
 				{
-					auto new_url = value.substr(pos + strlen("Location:"));
+					auto new_url = head.substr(location_pos, location_end - location_pos);
 					CarpString::TrimLeft(new_url);
 					CarpString::TrimRight(new_url);
 
 					auto client = std::make_shared<CarpHttpClientText>();
 					std::weak_ptr<CarpHttpClientText> try_weak_client = client;
-
 					m_request_map[client] = time(0);
 
 					client->SendRequest(new_url, true, "application/json", nullptr, 0
 						, std::bind(&BlackSeoSchedule::HandleHttpResult, this
 							, std::placeholders::_1, std::placeholders::_2
 							, std::placeholders::_3, std::placeholders::_4
-							, location + 1, new_url, try_weak_client)
+							, location + 1, new_url, src_url, try_weak_client)
 						, nullptr, &GetIOService(), "", 0, "");
 					return;
 				}
 			}
 		}
 
-		auto pos = body.find(m_match_text);
-		if (pos == std::string::npos)
+		if (head.empty())
+		{
 			m_match_failed += 1;
+			if (m_collect_error)
+				m_error_set.insert(src_url + ", error:" + error);
+		}
 		else
 		{
-			m_match_succeed += 1;
+			if (m_complete_match)
+			{
+				if (body == m_match_text)
+				{
+					m_match_failed += 1;
+				}
+				else
+				{
+					m_match_succeed += 1;
 
-			m_match_lock.lock();
-			m_match_set.insert(url);
-			m_match_lock.unlock();
+					m_match_lock.lock();
+					m_match_set.insert(url);
+					m_match_lock.unlock();
+				}
+			}
+			else
+			{
+				auto pos = body.find(m_match_text);
+				if (pos == std::string::npos)
+				{
+					m_match_failed += 1;
+				}
+				else
+				{
+					m_match_succeed += 1;
+
+					m_match_lock.lock();
+					m_match_set.insert(url);
+					m_match_lock.unlock();
+				}
+			}
 		}
 
 		NextOne();
@@ -177,11 +217,15 @@ private:
 
 	std::mutex m_match_lock;
 	std::set<std::string> m_match_set;
+	std::mutex m_error_lock;
+	std::set<std::string> m_error_set;
 
 private:
 	bool m_completed = false;
 	std::string m_url_path;
 	std::string m_match_text;
+	bool m_complete_match = false;
+	bool m_collect_error = false;
 
 private:
 	std::vector<std::string> m_url_list;
@@ -201,7 +245,8 @@ public:
 
 public:
 	bool Init(const char* file_path, int start_line, const char* target_path
-		, const char* url_path, const char* match_text, int thread_count)
+		, const char* url_path, const char* match_text, int thread_count
+		, bool complete_match, const char* error_path)
 	{
 		if (file_path == nullptr || url_path == nullptr || match_text == nullptr) return false;
 
@@ -262,6 +307,8 @@ public:
 		if (thread_count <= 0) thread_count = 1;
 
 		m_target_file = CarpRWops::OpenFile(target_path, "wb", false);
+		if (error_path != nullptr)
+			m_error_file = CarpRWops::OpenFile(error_path, "wb", false);
 
 		if (m_url_list.size() < thread_count)
 			thread_count = static_cast<int>(m_url_list.size());
@@ -271,7 +318,7 @@ public:
 		for (int i = 0; i < thread_count; ++i)
 		{
 			auto* schedule = new BlackSeoSchedule;
-			schedule->Start(this, url_path, match_text);
+			schedule->Start(this, url_path, match_text, complete_match, m_error_file != nullptr);
 			m_schedule_list.push_back(schedule);
 		}
 
@@ -295,6 +342,12 @@ public:
 		{
 			SDL_RWclose(m_target_file);
 			m_target_file = nullptr;
+		}
+
+		if (m_error_file)
+		{
+			SDL_RWclose(m_error_file);
+			m_error_file = nullptr;
 		}
 	}
 
@@ -335,25 +388,43 @@ public:
 
 	void WriteToFile()
 	{
-		if (m_target_file == nullptr) return;
-
-
-		std::set<std::string> out;
-		bool has_content = false;
-		for (auto schedule : m_schedule_list)
+		if (m_target_file != nullptr)
 		{
-			// schedule->HandleTimeOut();
-			schedule->GetMatchSet(out);
-			for (auto& value : out)
+			std::set<std::string> out;
+			bool has_content = false;
+			for (auto schedule : m_schedule_list)
 			{
-				SDL_RWwrite(m_target_file, value.c_str(), 1, value.size());
-				SDL_RWwrite(m_target_file, "\n", 1, 1);
-				has_content = true;
+				schedule->GetMatchSet(out);
+				for (auto& value : out)
+				{
+					SDL_RWwrite(m_target_file, value.c_str(), 1, value.size());
+					SDL_RWwrite(m_target_file, "\n", 1, 1);
+					has_content = true;
+				}
+				out.clear();
 			}
-			out.clear();
+			if (has_content)
+				std::fflush(m_target_file);
 		}
-		if (has_content)
-			std::fflush(m_target_file);
+
+		if (m_error_file != nullptr)
+		{
+			std::set<std::string> out;
+			bool has_content = false;
+			for (auto schedule : m_schedule_list)
+			{
+				schedule->GetErrorSet(out);
+				for (auto& value : out)
+				{
+					SDL_RWwrite(m_error_file, value.c_str(), 1, value.size());
+					SDL_RWwrite(m_error_file, "\n", 1, 1);
+					has_content = true;
+				}
+				out.clear();
+			}
+			if (has_content)
+				std::fflush(m_error_file);
+		}
 	}
 
 	void PullUrl(std::vector<std::string>& out, size_t count) override
@@ -373,6 +444,7 @@ private:
 	std::deque<std::string> m_url_list;
 	size_t m_total_count = 0;
 	FILE* m_target_file = nullptr;
+	FILE* m_error_file = nullptr;
 
 private:
 	std::vector<BlackSeoSchedule*> m_schedule_list;

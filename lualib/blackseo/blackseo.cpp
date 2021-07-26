@@ -355,7 +355,9 @@ public:
 	{
 		for (auto schedule : m_schedule_list)
 		{
-			if (!schedule->IsCompleted()) return false;
+			if (!schedule->IsCompleted())
+				return false;
+			schedule->Exit();
 		}
 
 		return true;

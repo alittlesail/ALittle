@@ -162,8 +162,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(SolutionDir)..\ALittle\lib\lua\;$(SolutionDir)..\ALittle\lib\openssl\;$(SolutionDir)..\ALittle\lib\tcmalloc\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>lua.lib;libcrypto.lib;libssl.lib;libtcmalloc_minimal.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
+      <AdditionalDependencies>lua.lib;libcrypto.lib;libssl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ForceSymbolReferences>
+      </ForceSymbolReferences>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

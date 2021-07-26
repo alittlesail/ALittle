@@ -357,7 +357,6 @@ public:
 		{
 			if (!schedule->IsCompleted())
 				return false;
-			schedule->Exit();
 		}
 
 		return true;

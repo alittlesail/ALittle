@@ -50,6 +50,7 @@
     <ClInclude Include="..\..\Carp\carp_json_5.hpp" />
     <ClInclude Include="..\..\Carp\carp_json_6.hpp" />
     <ClInclude Include="..\..\Carp\carp_json_all.hpp" />
+    <ClInclude Include="..\..\Carp\carp_redis.hpp" />
     <ClInclude Include="..\..\Carp\carp_rtp.hpp" />
     <ClInclude Include="..\..\Carp\carp_rtp_server.hpp" />
     <ClInclude Include="..\..\Carp\carp_square_jps.hpp" />

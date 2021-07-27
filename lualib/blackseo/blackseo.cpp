@@ -60,30 +60,7 @@ public:
 	int GetFailedCount() const { return m_match_failed; }
 	int GetSucceedCount() const { return m_match_succeed; }
 
-	void HandleTimeOut()
-	{
-		Execute(std::bind(&BlackSeoSchedule::HandleTimeOutImpl, this));
-	}
-
 private:
-	void HandleTimeOutImpl()
-	{
-		if (m_request_map.empty()) return;
-
-		auto cur_time = time(0);
-		std::set<CarpHttpClientTextPtr> stop_set;
-		for (auto& pair : m_request_map)
-		{
-			if (cur_time - pair.second > 60 * 10)
-				stop_set.insert(pair.first);
-		}
-		
-		for (auto& value : stop_set)
-		{
-			printf("time out and try stop %s\n", value->GetUrl().c_str());
-			value->Stop();
-		}
-	}
 
 	void NextOne()
 	{
@@ -106,8 +83,7 @@ private:
 		auto client = std::make_shared<CarpHttpClientText>();
 		std::weak_ptr<CarpHttpClientText> weak_client = client;
 
-		m_request_map[client] = time(0);
-		client->SendRequest(url, true, "application/json", nullptr, 0
+		client->SendRequest(url, true, "application/json", "", 0
 			, std::bind(&BlackSeoSchedule::HandleHttpResult, this
 				, std::placeholders::_1, std::placeholders::_2
 				, std::placeholders::_3, std::placeholders::_4
@@ -118,8 +94,6 @@ private:
 	void HandleHttpResult(bool result, const std::string& body, const std::string& head, const std::string& error
 		, int location, const std::string& url, const std::string& src_url, std::weak_ptr<CarpHttpClientText> weak_client)
 	{
-		m_request_map.erase(weak_client.lock());
-
 		auto copy_head = head;
 		CarpString::UpperString(copy_head);
 		auto location_pos = copy_head.find("LOCATION:");
@@ -145,9 +119,8 @@ private:
 
 					auto client = std::make_shared<CarpHttpClientText>();
 					std::weak_ptr<CarpHttpClientText> try_weak_client = client;
-					m_request_map[client] = time(0);
 
-					client->SendRequest(new_url, true, "application/json", nullptr, 0
+					client->SendRequest(new_url, true, "application/json", "", 0
 						, std::bind(&BlackSeoSchedule::HandleHttpResult, this
 							, std::placeholders::_1, std::placeholders::_2
 							, std::placeholders::_3, std::placeholders::_4
@@ -230,9 +203,6 @@ private:
 private:
 	std::vector<std::string> m_url_list;
 	BlackSeoInterface* m_blackseo = nullptr;
-
-private:
-	std::map<CarpHttpClientTextPtr, time_t> m_request_map;
 };
 
 class BlackSeo : public BlackSeoInterface

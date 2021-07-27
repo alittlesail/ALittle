@@ -31,3 +31,6 @@
 [submodule "SDL"]
 	path = SDL
 	url = https://github.com/alittlesail/SDL.git
+[submodule "hiredis"]
+	path = hiredis
+	url = https://github.com/redis/hiredis.git

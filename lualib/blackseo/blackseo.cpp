@@ -104,7 +104,12 @@ private:
 			{
 				m_match_failed += 1;
 				if (m_collect_error)
+				{
+					m_error_lock.lock();
 					m_error_set.insert(src_url + ", error:" + error);
+					m_error_lock.unlock();
+				}
+					
 			}
 			else
 			{
@@ -148,7 +153,11 @@ private:
 		{
 			m_match_failed += 1;
 			if (m_collect_error)
+			{
+				m_error_lock.lock();
 				m_error_set.insert(src_url + ", error:" + error);
+				m_error_lock.unlock();
+			}
 		}
 		else
 		{

@@ -117,6 +117,19 @@ private:
 					CarpString::TrimLeft(new_url);
 					CarpString::TrimRight(new_url);
 
+					if (new_url.find("https") == 0)
+					{
+						auto pos_443 = new_url.find(":443");
+						if (pos_443 != std::string::npos)
+							new_url = new_url.substr(0, pos_443) + new_url.substr(pos_443 + strlen(":443"));
+					}
+					else if (new_url.find("http") == 0)
+					{
+						auto pos_80 = new_url.find(":80");
+						if (pos_80 != std::string::npos)
+							new_url = new_url.substr(0, pos_80) + new_url.substr(pos_80 + strlen(":80"));
+					}
+
 					auto client = std::make_shared<CarpHttpClientText>();
 					std::weak_ptr<CarpHttpClientText> try_weak_client = client;
 

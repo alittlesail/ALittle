@@ -81,18 +81,17 @@ private:
 			url = "http://" + m_url_list.back() + m_url_path;
 		m_url_list.pop_back();
 		auto client = std::make_shared<CarpHttpClientText>();
-		std::weak_ptr<CarpHttpClientText> weak_client = client;
 
 		client->SendRequest(url, true, "application/json", "", 0
 			, std::bind(&BlackSeoSchedule::HandleHttpResult, this
 				, std::placeholders::_1, std::placeholders::_2
 				, std::placeholders::_3, std::placeholders::_4
-				, 0, url, url, weak_client)
+				, 0, url, url)
 			, nullptr, &GetIOService(), "", 0, "");
 	}
 
 	void HandleHttpResult(bool result, const std::string& body, const std::string& head, const std::string& error
-		, int location, const std::string& url, const std::string& src_url, std::weak_ptr<CarpHttpClientText> weak_client)
+		, int location, const std::string& url, const std::string& src_url)
 	{
 		auto copy_head = head;
 		CarpString::UpperString(copy_head);
@@ -136,13 +135,12 @@ private:
 					}
 
 					auto client = std::make_shared<CarpHttpClientText>();
-					std::weak_ptr<CarpHttpClientText> try_weak_client = client;
 
 					client->SendRequest(new_url, true, "application/json", "", 0
 						, std::bind(&BlackSeoSchedule::HandleHttpResult, this
 							, std::placeholders::_1, std::placeholders::_2
 							, std::placeholders::_3, std::placeholders::_4
-							, location + 1, new_url, src_url, try_weak_client)
+							, location + 1, new_url, src_url)
 						, nullptr, &GetIOService(), "", 0, "");
 					return;
 				}

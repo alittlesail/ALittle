@@ -161,7 +161,7 @@ private:
 		{
 			if (m_complete_match)
 			{
-				if (body == m_match_text)
+				if (body != m_match_text)
 				{
 					m_match_failed += 1;
 				}

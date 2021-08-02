@@ -6,7 +6,8 @@
     <ClInclude Include="deeplearning_model.hpp" />
     <ClInclude Include="deeplearning_mnist.hpp" />
     <ClInclude Include="deeplearning_speech.hpp" />
-    <ClInclude Include="deeplearning_dqn.hpp" />
+    <ClInclude Include="deeplearning_dqn_dnn.hpp" />
+    <ClInclude Include="deeplearning_dqn_cnn.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="deeplearninglib.cpp" />

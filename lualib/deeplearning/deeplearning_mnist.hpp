@@ -8,11 +8,11 @@
 class DeeplearningMnistModel : public DeeplearningModel
 {
 public:
-	DeeplearningMnistModel() :
-		m_conv1(torch::nn::Conv2dOptions(1, 64, /*kernel_size=*/5)),
-		m_conv2(torch::nn::Conv2dOptions(64, 128, /*kernel_size=*/5)),
-		m_fc1(4 * 4 * 128, 1024),
-		m_fc2(1024, 10)
+	DeeplearningMnistModel()
+		: m_conv1(torch::nn::Conv2dOptions(1, 64, 5))
+		, m_conv2(torch::nn::Conv2dOptions(64, 128, 5))
+		, m_fc1(4 * 4 * 128, 1024)
+		, m_fc2(1024, 10)
 	{
 		register_module("conv1", m_conv1);
 		register_module("conv2", m_conv2);
@@ -60,7 +60,7 @@ public:
 		
 		// 设置输入
 		torch::Tensor input = m_images[index];
-
+		
 		// 执行运算
 		auto output = forward(input, true);
 

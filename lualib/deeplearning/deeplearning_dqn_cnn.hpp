@@ -1,5 +1,5 @@
-#ifndef DEEPLEARNING_DQN_INCLUDED
-#define DEEPLEARNING_DQN_INCLUDED
+#ifndef DEEPLEARNING_DQN_CNN_INCLUDED
+#define DEEPLEARNING_DQN_CNN_INCLUDED
 
 extern "C"
 {
@@ -13,33 +13,73 @@ extern "C"
 #undef max
 #endif
 
-class DeeplearningDQNModel : public DeeplearningModel
+const int CONV_SIZE_1 = 32;
+const int CONV_SIZE_2 = 64;
+const int FC_SIZE_1 = 1024;
+const int FC_SIZE_2 = 128;
+
+struct DeeplearningDqnCnn
+{
+	DeeplearningDqnCnn(int input_len, int output_num)
+		: conv1(torch::nn::Conv2dOptions(1, CONV_SIZE_1, 3).padding(1))
+		, conv2(torch::nn::Conv2dOptions(CONV_SIZE_1, CONV_SIZE_2, 3).padding(1))
+		, fc1(CONV_SIZE_2 * input_len * input_len, FC_SIZE_1)
+		, fc2(FC_SIZE_1, FC_SIZE_2)
+		, head(FC_SIZE_2, output_num)
+	{
+	}
+
+	torch::Tensor Forward(torch::Tensor input)
+	{
+		auto x = torch::relu(conv1(input));
+		x = torch::relu(conv2(x));
+		x = x.view({ x.size(0), -1 });
+		x = torch::relu(fc1(x));
+		x = torch::relu(fc2(x));
+		return head(x);
+	}
+
+	void Copy(DeeplearningDqnCnn& value)
+	{
+		*conv1 = *value.conv1;
+		*conv2 = *value.conv2;
+		*fc1 = *value.fc1;
+		*fc2 = *value.fc2;
+		*head = *value.head;
+	}
+
+	torch::nn::Conv2d conv1;
+	torch::nn::Conv2d conv2;
+	torch::nn::Linear fc1;
+	torch::nn::Linear fc2;
+	torch::nn::Linear head;
+};
+
+class DeeplearningDqnCnnModel : public DeeplearningModel
 {
 public:
-	DeeplearningDQNModel(int state_count, int action_count, int hide_dim, int memory_capacity) :
-		m_eval_fc1(state_count, hide_dim),
-		m_eval_fc2(hide_dim, action_count),
-        m_target_fc1(state_count, hide_dim),
-		m_target_fc2(hide_dim, action_count)
+	DeeplearningDqnCnnModel(int input_len, int action_count, int memory_capacity)
+		: m_eval(input_len, action_count)
+		, m_target(input_len, action_count)
 	{
-		register_module("eval_fc1", m_eval_fc1);
-		register_module("eval_fc2", m_eval_fc2);
+		register_module("eval_conv1", m_eval.conv1);
+		register_module("eval_conv2", m_eval.conv2);
+		register_module("eval_fc1", m_eval.fc1);
+		register_module("eval_fc2", m_eval.fc2);
+		register_module("eval_head", m_eval.head);
 
-		register_module("target_fc1", m_target_fc1);
-		register_module("target_fc2", m_target_fc2);
+		register_module("target_conv1", m_target.conv1);
+		register_module("target_conv2", m_target.conv2);
+		register_module("target_fc1", m_target.fc1);
+		register_module("target_fc2", m_target.fc2);
+		register_module("target_head", m_target.head);
 
 		m_memory_capacity = memory_capacity;
 		if (m_memory_capacity < 100) m_memory_capacity = 100;
 		m_memory.reserve(m_memory_capacity);
 
-		m_state_count = state_count;
+		m_input_len = input_len;
 		m_action_count = action_count;
-
-		m_eval_fc1->weight.data().normal_(0, 0.1);
-		m_eval_fc2->weight.data().normal_(0, 0.1);
-
-		m_target_fc1->weight.data().normal_(0, 0.1);
-		m_target_fc2->weight.data().normal_(0, 0.1);
 
 		m_trainer = std::make_shared<torch::optim::Adam>(parameters(), torch::optim::AdamOptions(LR));
 	}
@@ -63,37 +103,34 @@ public:
 
 		// target net 参数更新
 		if (m_learn_step_counter % TARGET_REPLACE_ITER == 0)
-		{
-			*m_target_fc1 = *m_eval_fc1;
-			*m_target_fc2 = *m_eval_fc2;
-		}
+			m_target.Copy(m_eval);
+
 		m_learn_step_counter += 1;
 
 		const auto position = rand() % m_memory.size();
 		// 设置输入
 		auto& memory = m_memory[position];
 
-		const auto state = torch::from_blob(memory.state.data(), { 1, m_state_count });
+		const auto state = torch::from_blob(memory.state.data(), { 1, 1, m_input_len, m_input_len });
 		const auto action = torch::from_blob(&memory.action, { 1, 1 }, torch::TensorOptions(torch::kLong));
 		const auto reward = torch::from_blob(&memory.reward, { 1 });
-		const auto next_state = torch::from_blob(memory.next_state.data(), { 1, m_state_count });
+		const auto next_state = torch::from_blob(memory.next_state.data(), { 1, 1, m_input_len, m_input_len });
 
 		// 针对做过的动作action, 来选 q_eval 的值, (q_eval 原本有所有动作的值)
-		auto q_eval = torch::gather(m_eval_fc2(torch::relu(m_eval_fc1(state))), 1, action);  // shape(batch, 1)
-		// std::cout << "q_eval:" << q_eval << std::endl;
+		auto q_eval = torch::gather(m_eval.Forward(state), 1, action);	// shape(batch, 1)
 
-		auto q_next = m_target_fc2(torch::relu(m_target_fc1(next_state))).detach();     // q_next 不进行反向传递误差, 所以 detach
-		auto q_target = reward + GAMMA * std::get<0>(q_next.max(1));  // shape(batch, 1)
-		
+		auto q_next = m_target.Forward(next_state).detach();			// q_next 不进行反向传递误差, 所以 detach
+		auto q_target = reward + GAMMA * std::get<0>(q_next.max(1));	// shape(batch, 1)
+
 		// 获得损失表达式
 		auto loss_expr = torch::mse_loss(q_eval, q_target);
 		auto loss = loss_expr.item().toDouble();
-		
+
 		// 计算反向传播
 		loss_expr.backward();
 		// 更新训练
 		m_trainer->step();
-
+		
 		return loss;
 	}
 
@@ -118,11 +155,10 @@ public:
 			lua_pop(l_state, 1);
 		}
 
-		if (static_cast<int>(state.size()) != m_state_count) return 0;
+		if (static_cast<int>(state.size()) != m_input_len * m_input_len) return 0;
 
-		
-		const auto x = torch::from_blob(state.data(), { 1, m_state_count });
-		const auto actions_value = m_eval_fc2(torch::relu(m_eval_fc1(x)));
+		const auto x = torch::from_blob(state.data(), { 1, 1, m_input_len, m_input_len});
+		const auto actions_value = m_eval.Forward(x);
 		const auto action = std::get<1>(torch::max(actions_value, 1));
 		lua_pushinteger(l_state, action.item().toInt());
 		return 1;
@@ -137,8 +173,8 @@ public:
 			return 0;
 
 		MemoryInfo info;
-		info.state.reserve(m_state_count);
-		info.next_state.reserve(m_state_count);
+		info.state.reserve(m_input_len * m_input_len);
+		info.next_state.reserve(m_input_len * m_input_len);
 
 		lua_pushnil(l_state);
 		while (lua_next(l_state, 2) != 0)
@@ -179,11 +215,11 @@ private:
 	std::shared_ptr<torch::optim::Adam> m_trainer;
 
 private:
-	torch::nn::Linear m_eval_fc1;
-	torch::nn::Linear m_eval_fc2;
+	DeeplearningDqnCnn m_eval;
+	DeeplearningDqnCnn m_target;
 
-	torch::nn::Linear m_target_fc1;
-	torch::nn::Linear m_target_fc2;
+	int m_input_len = 0;
+	int m_action_count = 0;
 
 private:
 	struct MemoryInfo
@@ -197,11 +233,8 @@ private:
 	int m_memory_counter = 0;
 	int m_memory_capacity = 0;
 	std::vector<MemoryInfo> m_memory;
-	int m_state_count = 0;
-	int m_action_count = 0;
 
 private:
-	const int BATCH_SIZE = 32;
 	const float LR = 0.01f;
 	const float EPSILON = 0.9f;
 	const float GAMMA = 0.9f;

@@ -10,7 +10,8 @@ extern "C" {
 #include "deeplearning_xor.hpp"
 #include "deeplearning_mnist.hpp"
 #include "deeplearning_speech.hpp"
-#include "deeplearning_dqn.hpp"
+#include "deeplearning_dqn_dnn.hpp"
+#include "deeplearning_dqn_cnn.hpp"
 
 int luaopen_deeplearning(lua_State* l_state) {
 	luabridge::getGlobalNamespace(l_state)
@@ -44,11 +45,17 @@ int luaopen_deeplearning(lua_State* l_state) {
 		.addFunction("SetSpeechDataPath", &DeeplearningSpeechModel::SetSpeechDataPath)
 		.addFunction("Output", &DeeplearningSpeechModel::Output)
 		.endClass()
-		.deriveClass<DeeplearningDQNModel, DeeplearningModel>("DeeplearningDQNModel")
+		.deriveClass<DeeplearningDqnDnnModel, DeeplearningModel>("DeeplearningDqnDnnModel")
 		.addConstructor<void(*)(int, int, int, int)>()
-		.addCFunction("ChooseAction", &DeeplearningDQNModel::ChooseAction)
-		.addCFunction("SaveTransition", &DeeplearningDQNModel::SaveTransition)
-		.addFunction("Learn", &DeeplearningDQNModel::Learn)
+		.addCFunction("ChooseAction", &DeeplearningDqnDnnModel::ChooseAction)
+		.addCFunction("SaveTransition", &DeeplearningDqnDnnModel::SaveTransition)
+		.addFunction("Learn", &DeeplearningDqnDnnModel::Learn)
+		.endClass()
+		.deriveClass<DeeplearningDqnCnnModel, DeeplearningModel>("DeeplearningDqnCnnModel")
+		.addConstructor<void(*)(int, int, int)>()
+		.addCFunction("ChooseAction", &DeeplearningDqnCnnModel::ChooseAction)
+		.addCFunction("SaveTransition", &DeeplearningDqnCnnModel::SaveTransition)
+		.addFunction("Learn", &DeeplearningDqnCnnModel::Learn)
 		.endClass()
 		.endNamespace();
     lua_getglobal(l_state, "deeplearning");

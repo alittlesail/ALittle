@@ -34,6 +34,3 @@
 [submodule "hiredis"]
 	path = hiredis
 	url = https://github.com/redis/hiredis.git
-[submodule "breakpad"]
-	path = breakpad
-	url = https://chromium.googlesource.com/breakpad/breakpad

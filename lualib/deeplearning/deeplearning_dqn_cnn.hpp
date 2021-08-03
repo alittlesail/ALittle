@@ -15,7 +15,7 @@ extern "C"
 
 const int CONV_SIZE_1 = 32;
 const int CONV_SIZE_2 = 64;
-const int FC_SIZE_1 = 1024;
+const int FC_SIZE_1 = 512;
 const int FC_SIZE_2 = 128;
 
 struct DeeplearningDqnCnn

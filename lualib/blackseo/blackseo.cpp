@@ -27,12 +27,15 @@ class BlackSeoSchedule : public CarpSchedule
 {
 public:
 	void Start(BlackSeoInterface* blackseo, const std::string& url_path
-		, const std::string& match_text, bool complete_match, bool collect_error)
+		, const std::string& match_text, bool complete_match, bool collect_error
+		, bool output_use_src_url, bool debug_use_src_url)
 	{
 		m_blackseo = blackseo;
 		m_url_path = url_path;
 		m_match_text = match_text;
 		m_collect_error = collect_error;
+		m_output_use_src_url = output_use_src_url;
+		m_debug_use_src_url = debug_use_src_url;
 
 		// Æô¶¯
 		Run(true, std::bind(&BlackSeoSchedule::Setup, this), std::bind(&BlackSeoSchedule::Shutdown, this));
@@ -61,7 +64,6 @@ public:
 	int GetSucceedCount() const { return m_match_succeed; }
 
 private:
-
 	void NextOne()
 	{
 		if (m_url_list.empty())
@@ -105,7 +107,10 @@ private:
 				if (m_collect_error)
 				{
 					m_error_lock.lock();
-					m_error_set.insert(src_url + ", error:" + error);
+					if (m_debug_use_src_url)
+						m_error_set.insert(src_url + ", error:" + error);
+					else
+						m_error_set.insert(url + ", error:" + error);
 					m_error_lock.unlock();
 				}
 					
@@ -153,7 +158,10 @@ private:
 			if (m_collect_error)
 			{
 				m_error_lock.lock();
-				m_error_set.insert(src_url + ", error:" + error);
+				if (m_debug_use_src_url)
+					m_error_set.insert(src_url + ", error:" + error);
+				else
+					m_error_set.insert(url + ", error:" + error);
 				m_error_lock.unlock();
 			}
 		}
@@ -170,7 +178,10 @@ private:
 					m_match_succeed += 1;
 
 					m_match_lock.lock();
-					m_match_set.insert(url);
+					if (m_output_use_src_url)
+						m_match_set.insert(src_url);
+					else
+						m_match_set.insert(url);
 					m_match_lock.unlock();
 				}
 			}
@@ -186,7 +197,10 @@ private:
 					m_match_succeed += 1;
 
 					m_match_lock.lock();
-					m_match_set.insert(url);
+					if (m_output_use_src_url)
+						m_match_set.insert(src_url);
+					else
+						m_match_set.insert(url);
 					m_match_lock.unlock();
 				}
 			}
@@ -221,6 +235,10 @@ private:
 	bool m_collect_error = false;
 
 private:
+	bool m_output_use_src_url = false;
+	bool m_debug_use_src_url = true;
+
+private:
 	std::vector<std::string> m_url_list;
 	BlackSeoInterface* m_blackseo = nullptr;
 };
@@ -231,6 +249,13 @@ public:
 	~BlackSeo()
 	{
 		Release();
+	}
+
+public:
+	void UseSrcUrl(bool output_use_src_url, bool debug_use_src_url)
+	{
+		m_output_use_src_url = output_use_src_url;
+		m_debug_use_src_url = debug_use_src_url;
 	}
 
 public:
@@ -308,7 +333,8 @@ public:
 		for (int i = 0; i < thread_count; ++i)
 		{
 			auto* schedule = new BlackSeoSchedule;
-			schedule->Start(this, url_path, match_text, complete_match, m_error_file != nullptr);
+			schedule->Start(this, url_path, match_text, complete_match, m_error_file != nullptr
+				, m_output_use_src_url, m_debug_use_src_url);
 			m_schedule_list.push_back(schedule);
 		}
 
@@ -438,6 +464,10 @@ private:
 	FILE* m_error_file = nullptr;
 
 private:
+	bool m_output_use_src_url = false;
+	bool m_debug_use_src_url = true;
+
+private:
 	std::vector<BlackSeoSchedule*> m_schedule_list;
 };
 
@@ -450,6 +480,7 @@ public:
 			.beginNamespace("blackseo")
 			.beginClass<BlackSeo>("BlackSeo")
 			.addConstructor<void(*)()>()
+			.addFunction("UseSrcUrl", &BlackSeo::UseSrcUrl)
 			.addFunction("Init", &BlackSeo::Init)
 			.addFunction("Release", &BlackSeo::Release)
 			.addFunction("IsComplete", &BlackSeo::IsComplete)

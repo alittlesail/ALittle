@@ -59,6 +59,18 @@ public:
 		m_error_lock.unlock();
 	}
 
+	void Trace()
+	{
+		auto cur_time = time(0);
+		m_stat_lock.lock();
+		for (auto& pair : m_stat_info_map)
+		{
+			if (cur_time - pair.second.begin_time > 10 * 60)
+				printf("%s, %s\n", pair.second.url.c_str(), pair.second.client->m_stat.c_str());
+		}
+		m_stat_lock.unlock();
+	}
+
 	bool IsCompleted() const { return m_completed; }
 	int GetFailedCount() const { return m_match_failed; }
 	int GetSucceedCount() const { return m_match_succeed; }
@@ -76,31 +88,45 @@ private:
 		}
 
 		std::string url;
-		auto& back = m_url_list.back();
-		if (back.find("http://") == 0)
-			url = back + m_url_path;
-		else
-			url = "http://" + m_url_list.back() + m_url_path;
-		m_url_list.pop_back();
+		{
+			auto& back = m_url_list.back();
+			if (back.find("http://") == 0)
+				url = back + m_url_path;
+			else
+				url = "http://" + back + m_url_path;
+			m_url_list.pop_back();
+		}
+
 		auto client = std::make_shared<CarpHttpClientText>();
+
+		m_stat_lock.lock();
+		m_stat_id++;
+		m_stat_info_map[m_stat_id].url = url;
+		m_stat_info_map[m_stat_id].begin_time = time(0);
+		m_stat_info_map[m_stat_id].client = client;
+		m_stat_lock.unlock();
 
 		client->SendRequest(url, true, "application/json", "", 0
 			, std::bind(&BlackSeoSchedule::HandleHttpResult, this
 				, std::placeholders::_1, std::placeholders::_2
 				, std::placeholders::_3, std::placeholders::_4
-				, 0, url, url)
+				, 0, url, url, m_stat_id)
 			, nullptr, &GetIOService(), "", 0, "");
 	}
 
 	void HandleHttpResult(bool result, const std::string& body, const std::string& head, const std::string& error
-		, int location, const std::string& url, const std::string& src_url)
+		, int location, const std::string& cur_url, const std::string& src_url, int id)
 	{
+		m_stat_lock.lock();
+		m_stat_info_map.erase(id);
+		m_stat_lock.unlock();
+
 		auto copy_head = head;
 		CarpString::UpperString(copy_head);
 		auto location_pos = copy_head.find("LOCATION:");
 		if (location_pos != std::string::npos)
 		{
-			// 已经重复location了5次，那么就算失败
+			// 如果重复太多次，就算失败
 			if (location >= 10)
 			{
 				m_match_failed += 1;
@@ -110,10 +136,9 @@ private:
 					if (m_debug_use_src_url)
 						m_error_set.insert(src_url + ", error:" + error);
 					else
-						m_error_set.insert(url + ", error:" + error);
+						m_error_set.insert(cur_url + ", error:" + error);
 					m_error_lock.unlock();
-				}
-					
+				}	
 			}
 			else
 			{
@@ -141,11 +166,18 @@ private:
 
 					auto client = std::make_shared<CarpHttpClientText>();
 
+					m_stat_lock.lock();
+					m_stat_id++;
+					m_stat_info_map[m_stat_id].url = new_url;
+					m_stat_info_map[m_stat_id].begin_time = time(0);
+					m_stat_info_map[m_stat_id].client = client;
+					m_stat_lock.unlock();
+
 					client->SendRequest(new_url, true, "application/json", "", 0
 						, std::bind(&BlackSeoSchedule::HandleHttpResult, this
 							, std::placeholders::_1, std::placeholders::_2
 							, std::placeholders::_3, std::placeholders::_4
-							, location + 1, new_url, src_url)
+							, location + 1, new_url, src_url, m_stat_id)
 						, nullptr, &GetIOService(), "", 0, "");
 					return;
 				}
@@ -161,7 +193,7 @@ private:
 				if (m_debug_use_src_url)
 					m_error_set.insert(src_url + ", error:" + error);
 				else
-					m_error_set.insert(url + ", error:" + error);
+					m_error_set.insert(cur_url + ", error:" + error);
 				m_error_lock.unlock();
 			}
 		}
@@ -181,7 +213,7 @@ private:
 					if (m_output_use_src_url)
 						m_match_set.insert(src_url);
 					else
-						m_match_set.insert(url);
+						m_match_set.insert(cur_url);
 					m_match_lock.unlock();
 				}
 			}
@@ -200,7 +232,7 @@ private:
 					if (m_output_use_src_url)
 						m_match_set.insert(src_url);
 					else
-						m_match_set.insert(url);
+						m_match_set.insert(cur_url);
 					m_match_lock.unlock();
 				}
 			}
@@ -241,6 +273,17 @@ private:
 private:
 	std::vector<std::string> m_url_list;
 	BlackSeoInterface* m_blackseo = nullptr;
+
+private:
+	std::mutex m_stat_lock;
+	struct StatInfo
+	{
+		CarpHttpClientTextPtr client;
+		std::string url;
+		time_t begin_time = 0;
+	};
+	std::map<int, StatInfo> m_stat_info_map;
+	int m_stat_id = 0;
 };
 
 class BlackSeo : public BlackSeoInterface
@@ -441,6 +484,11 @@ public:
 			}
 			if (has_content)
 				std::fflush(m_error_file);
+		}
+
+		for (auto schedule : m_schedule_list)
+		{
+			schedule->Trace();
 		}
 	}
 

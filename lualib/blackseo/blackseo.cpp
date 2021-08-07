@@ -475,7 +475,7 @@ public:
 
 		for (auto schedule : m_schedule_list)
 		{
-			schedule->ClearTimeOut(60);
+			schedule->ClearTimeOut(600);
 		}
 
 		for (auto it = m_schedule_list.begin(); it != m_schedule_list.end();)

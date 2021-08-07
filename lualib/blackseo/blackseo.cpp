@@ -59,23 +59,43 @@ public:
 		m_error_lock.unlock();
 	}
 
-	void Trace()
+	void ClearTimeOut(int seconds)
 	{
-		auto cur_time = time(0);
-		m_stat_lock.lock();
-		for (auto& pair : m_stat_info_map)
-		{
-			if (cur_time - pair.second.begin_time > 10 * 60)
-				printf("%s, %s\n", pair.second.url.c_str(), pair.second.client->m_stat.c_str());
-		}
-		m_stat_lock.unlock();
+		Execute(std::bind(&BlackSeoSchedule::ClearTimeOutImpl, this, seconds));
 	}
 
-	bool IsCompleted() const { return m_completed; }
+	bool IsCompleted()
+	{
+		return m_completed && m_stat_info_map.empty();
+	}
 	int GetFailedCount() const { return m_match_failed; }
 	int GetSucceedCount() const { return m_match_succeed; }
 
+	void ExitWhileCompleted()
+	{
+		if (!IsCompleted()) return;
+		Exit();
+	}
+
 private:
+	void ClearTimeOutImpl(int seconds)
+	{
+		std::list<CarpHttpClientTextPtr> client_list;
+		auto cur_time = time(0);
+		for (auto& pair : m_stat_info_map)
+		{
+			if (cur_time - pair.second.begin_time >= seconds)
+			{
+				// printf("Stop %s\n", pair.second.url.c_str());
+				pair.second.stopped = true;
+				client_list.push_back(pair.second.client);
+			}
+		}
+
+		for (auto& client : client_list)
+			client->Stop();
+	}
+
 	void NextOne()
 	{
 		if (m_url_list.empty())
@@ -99,12 +119,10 @@ private:
 
 		auto client = std::make_shared<CarpHttpClientText>();
 
-		m_stat_lock.lock();
 		m_stat_id++;
 		m_stat_info_map[m_stat_id].url = url;
 		m_stat_info_map[m_stat_id].begin_time = time(0);
 		m_stat_info_map[m_stat_id].client = client;
-		m_stat_lock.unlock();
 
 		client->SendRequest(url, true, "application/json", "", 0
 			, std::bind(&BlackSeoSchedule::HandleHttpResult, this
@@ -117,70 +135,56 @@ private:
 	void HandleHttpResult(bool result, const std::string& body, const std::string& head, const std::string& error
 		, int location, const std::string& cur_url, const std::string& src_url, int id)
 	{
-		m_stat_lock.lock();
+		/*auto it = m_stat_info_map.find(id);
+		if (it != m_stat_info_map.end())
+		{
+			if (it->second.stopped)
+				printf("HandleHttpResult %s\n", it->second.url.c_str());
+			m_stat_info_map.erase(it);
+		}*/
 		m_stat_info_map.erase(id);
-		m_stat_lock.unlock();
 
 		auto copy_head = head;
 		CarpString::UpperString(copy_head);
 		auto location_pos = copy_head.find("LOCATION:");
-		if (location_pos != std::string::npos)
+		if (location_pos != std::string::npos && location < 10)
 		{
-			// 如果重复太多次，就算失败
-			if (location >= 10)
+			location_pos += strlen("LOCATION:");
+
+			auto location_end = copy_head.find("\r\n", location_pos);
+			if (location_end != std::string::npos)
 			{
-				m_match_failed += 1;
-				if (m_collect_error)
+				auto new_url = head.substr(location_pos, location_end - location_pos);
+				CarpString::TrimLeft(new_url);
+				CarpString::TrimRight(new_url);
+
+				if (new_url.find("https") == 0)
 				{
-					m_error_lock.lock();
-					if (m_debug_use_src_url)
-						m_error_set.insert(src_url + ", error:" + error);
-					else
-						m_error_set.insert(cur_url + ", error:" + error);
-					m_error_lock.unlock();
-				}	
-			}
-			else
-			{
-				location_pos += strlen("LOCATION:");
-
-				auto location_end = copy_head.find("\r\n", location_pos);
-				if (location_end != std::string::npos)
-				{
-					auto new_url = head.substr(location_pos, location_end - location_pos);
-					CarpString::TrimLeft(new_url);
-					CarpString::TrimRight(new_url);
-
-					if (new_url.find("https") == 0)
-					{
-						auto pos_443 = new_url.find(":443");
-						if (pos_443 != std::string::npos)
-							new_url = new_url.substr(0, pos_443) + new_url.substr(pos_443 + strlen(":443"));
-					}
-					else if (new_url.find("http") == 0)
-					{
-						auto pos_80 = new_url.find(":80");
-						if (pos_80 != std::string::npos)
-							new_url = new_url.substr(0, pos_80) + new_url.substr(pos_80 + strlen(":80"));
-					}
-
-					auto client = std::make_shared<CarpHttpClientText>();
-
-					m_stat_lock.lock();
-					m_stat_id++;
-					m_stat_info_map[m_stat_id].url = new_url;
-					m_stat_info_map[m_stat_id].begin_time = time(0);
-					m_stat_info_map[m_stat_id].client = client;
-					m_stat_lock.unlock();
-
-					client->SendRequest(new_url, true, "application/json", "", 0
-						, std::bind(&BlackSeoSchedule::HandleHttpResult, this
-							, std::placeholders::_1, std::placeholders::_2
-							, std::placeholders::_3, std::placeholders::_4
-							, location + 1, new_url, src_url, m_stat_id)
-						, nullptr, &GetIOService(), "", 0, "");
-					return;
+					auto pos_443 = new_url.find(":443");
+					if (pos_443 != std::string::npos)
+						new_url = new_url.substr(0, pos_443) + new_url.substr(pos_443 + strlen(":443"));
 				}
+				else if (new_url.find("http") == 0)
+				{
+					auto pos_80 = new_url.find(":80");
+					if (pos_80 != std::string::npos)
+						new_url = new_url.substr(0, pos_80) + new_url.substr(pos_80 + strlen(":80"));
+				}
+
+				auto client = std::make_shared<CarpHttpClientText>();
+
+				m_stat_id++;
+				m_stat_info_map[m_stat_id].url = new_url;
+				m_stat_info_map[m_stat_id].begin_time = time(0);
+				m_stat_info_map[m_stat_id].client = client;
+
+				client->SendRequest(new_url, true, "application/json", "", 0
+					, std::bind(&BlackSeoSchedule::HandleHttpResult, this
+						, std::placeholders::_1, std::placeholders::_2
+						, std::placeholders::_3, std::placeholders::_4
+						, location + 1, new_url, src_url, m_stat_id)
+					, nullptr, &GetIOService(), "", 0, "");
+				return;
 			}
 		}
 
@@ -275,12 +279,12 @@ private:
 	BlackSeoInterface* m_blackseo = nullptr;
 
 private:
-	std::mutex m_stat_lock;
 	struct StatInfo
 	{
 		CarpHttpClientTextPtr client;
 		std::string url;
 		time_t begin_time = 0;
+		bool stopped = false;
 	};
 	std::map<int, StatInfo> m_stat_info_map;
 	int m_stat_id = 0;
@@ -488,7 +492,8 @@ public:
 
 		for (auto schedule : m_schedule_list)
 		{
-			schedule->Trace();
+			schedule->ClearTimeOut(10 * 60);
+			schedule->ExitWhileCompleted();
 		}
 	}
 

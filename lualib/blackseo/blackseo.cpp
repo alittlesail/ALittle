@@ -71,25 +71,15 @@ public:
 	int GetFailedCount() const { return m_match_failed; }
 	int GetSucceedCount() const { return m_match_succeed; }
 
-	void ExitWhileCompleted()
-	{
-		if (!IsCompleted()) return;
-		Exit();
-	}
-
 private:
 	void ClearTimeOutImpl(int seconds)
 	{
-		std::list<CarpHttpClientTextPtr> client_list;
+		std::list<std::shared_ptr<CarpHttpClientText>> client_list;
 		auto cur_time = time(0);
 		for (auto& pair : m_stat_info_map)
 		{
 			if (cur_time - pair.second.begin_time >= seconds)
-			{
-				// printf("Stop %s\n", pair.second.url.c_str());
-				pair.second.stopped = true;
 				client_list.push_back(pair.second.client);
-			}
 		}
 
 		for (auto& client : client_list)
@@ -120,9 +110,9 @@ private:
 		auto client = std::make_shared<CarpHttpClientText>();
 
 		m_stat_id++;
-		m_stat_info_map[m_stat_id].url = url;
-		m_stat_info_map[m_stat_id].begin_time = time(0);
-		m_stat_info_map[m_stat_id].client = client;
+		auto& info = m_stat_info_map[m_stat_id];
+		info.begin_time = time(0);
+		info.client = client;
 
 		client->SendRequest(url, true, "application/json", "", 0
 			, std::bind(&BlackSeoSchedule::HandleHttpResult, this
@@ -135,15 +125,6 @@ private:
 	void HandleHttpResult(bool result, const std::string& body, const std::string& head, const std::string& error
 		, int location, const std::string& cur_url, const std::string& src_url, int id)
 	{
-		/*auto it = m_stat_info_map.find(id);
-		if (it != m_stat_info_map.end())
-		{
-			if (it->second.stopped)
-				printf("HandleHttpResult %s\n", it->second.url.c_str());
-			m_stat_info_map.erase(it);
-		}*/
-		m_stat_info_map.erase(id);
-
 		auto copy_head = head;
 		CarpString::UpperString(copy_head);
 		auto location_pos = copy_head.find("LOCATION:");
@@ -174,9 +155,9 @@ private:
 				auto client = std::make_shared<CarpHttpClientText>();
 
 				m_stat_id++;
-				m_stat_info_map[m_stat_id].url = new_url;
-				m_stat_info_map[m_stat_id].begin_time = time(0);
-				m_stat_info_map[m_stat_id].client = client;
+				auto& info = m_stat_info_map[m_stat_id];
+				info.begin_time = time(0);
+				info.client = client;
 
 				client->SendRequest(new_url, true, "application/json", "", 0
 					, std::bind(&BlackSeoSchedule::HandleHttpResult, this
@@ -184,6 +165,8 @@ private:
 						, std::placeholders::_3, std::placeholders::_4
 						, location + 1, new_url, src_url, m_stat_id)
 					, nullptr, &GetIOService(), "", 0, "");
+
+				m_stat_info_map.erase(id);
 				return;
 			}
 		}
@@ -243,6 +226,8 @@ private:
 		}
 
 		NextOne();
+
+		m_stat_info_map.erase(id);
 	};
 
 private:
@@ -281,10 +266,8 @@ private:
 private:
 	struct StatInfo
 	{
-		CarpHttpClientTextPtr client;
-		std::string url;
+		std::shared_ptr<CarpHttpClientText> client;
 		time_t begin_time = 0;
-		bool stopped = false;
 	};
 	std::map<int, StatInfo> m_stat_info_map;
 	int m_stat_id = 0;
@@ -427,7 +410,7 @@ public:
 
 	int GetFailedCount()
 	{
-		int count = 0;
+		int count = m_save_failed;
 
 		for (auto schedule : m_schedule_list)
 			count += schedule->GetFailedCount();
@@ -437,7 +420,7 @@ public:
 
 	int GetSucceedCount()
 	{
-		int count = 0;
+		int count = m_save_succeed;
 
 		for (auto schedule : m_schedule_list)
 			count += schedule->GetSucceedCount();
@@ -492,8 +475,21 @@ public:
 
 		for (auto schedule : m_schedule_list)
 		{
-			schedule->ClearTimeOut(10 * 60);
-			schedule->ExitWhileCompleted();
+			schedule->ClearTimeOut(60);
+		}
+
+		for (auto it = m_schedule_list.begin(); it != m_schedule_list.end();)
+		{
+			if ((*it)->IsCompleted())
+			{
+				m_save_failed += (*it)->GetFailedCount();
+				m_save_succeed += (*it)->GetSucceedCount();
+				(*it)->Exit();
+				delete* it;
+				it = m_schedule_list.erase(it);
+			}
+			else
+				++it;
 		}
 	}
 
@@ -521,7 +517,9 @@ private:
 	bool m_debug_use_src_url = true;
 
 private:
-	std::vector<BlackSeoSchedule*> m_schedule_list;
+	std::list<BlackSeoSchedule*> m_schedule_list;
+	int m_save_succeed = 0;
+	int m_save_failed = 0;
 };
 
 class BlackSeoBind

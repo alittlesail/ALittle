@@ -62,7 +62,7 @@ public:
 	}
 
 public:	
-	size_t TrainInit() override
+	int TrainInit() override
 	{
 		return 0;
 	}
@@ -84,7 +84,8 @@ public:
 
 		m_learn_step_counter += 1;
 
-		const auto position = rand() % m_memory.size();
+		if (index == (size_t)-1) index = rand();
+		const auto position = index % m_memory.size();
 		// …Ë÷√ ‰»Î
 		auto& memory = m_memory[position];
 
@@ -114,7 +115,13 @@ public:
 	double Learn()
 	{
 		bool right = false;
-		return Training(0, right);
+		return Training((size_t)-1, right);
+	}
+
+	double LearnLastTransition()
+	{
+		bool right = false;
+		return Training(m_memory.size() - 1, right);
 	}
 
 	int ChooseAction(lua_State* l_state)
@@ -185,7 +192,7 @@ public:
 			m_memory_counter++;
 		}
 
-		return 1;
+		return 0;
 	}
 
 private:

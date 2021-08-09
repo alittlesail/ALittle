@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="deeplearninglib.h" />
+    <ClInclude Include="deeplearning_2048.hpp" />
     <ClInclude Include="deeplearning_dqn_cnn.hpp" />
     <ClInclude Include="deeplearning_dqn_dnn.hpp" />
     <ClInclude Include="deeplearning_mnist.hpp" />

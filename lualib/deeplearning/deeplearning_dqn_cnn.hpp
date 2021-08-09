@@ -85,7 +85,7 @@ public:
 	}
 
 public:	
-	size_t TrainInit() override
+	int TrainInit() override
 	{
 		return 0;
 	}
@@ -107,7 +107,8 @@ public:
 
 		m_learn_step_counter += 1;
 
-		const auto position = rand() % m_memory.size();
+		if (index == (size_t)-1) index = rand();
+		const auto position = index % m_memory.size();
 		// …Ë÷√ ‰»Î
 		auto& memory = m_memory[position];
 
@@ -137,7 +138,13 @@ public:
 	double Learn()
 	{
 		bool right = false;
-		return Training(0, right);
+		return Training((size_t)-1, right);
+	}
+
+	double LearnLastTransition()
+	{
+		bool right = false;
+		return Training(m_last_memory, right);
 	}
 
 	int ChooseAction(lua_State* l_state)
@@ -162,6 +169,16 @@ public:
 		const auto action = std::get<1>(torch::max(actions_value, 1));
 		lua_pushinteger(l_state, action.item().toInt());
 		return 1;
+	}
+
+	int ChooseActionByState(std::vector<float> state)
+	{
+		if (static_cast<int>(state.size()) != m_input_len * m_input_len) return 0;
+
+		const auto x = torch::from_blob(state.data(), { 1, 1, m_input_len, m_input_len });
+		const auto actions_value = m_eval.Forward(x);
+		const auto action = std::get<1>(torch::max(actions_value, 1));
+		return action.item().toInt();
 	}
 
 	int SaveTransition(lua_State* l_state)
@@ -201,14 +218,39 @@ public:
 		if (m_memory.size() < m_memory_capacity)
 		{
 			m_memory.emplace_back(info);
+			m_last_memory = m_memory.size() - 1;
 		}
 		else
 		{
-			m_memory[m_memory_counter % m_memory_capacity]= std::move(info);
+			m_last_memory = m_memory_counter % m_memory_capacity;
+			m_memory[m_last_memory]= std::move(info);
 			m_memory_counter++;
 		}
 
-		return 1;
+		return 0;
+	}
+
+	size_t SaveTransitionByState(const std::vector<float>& state, int action, double reward, const std::vector<float>& new_state)
+	{
+		MemoryInfo info;
+		info.state = state;
+		info.next_state = new_state;
+		info.action = action;
+		info.reward = reward;
+
+		if (m_memory.size() < m_memory_capacity)
+		{
+			m_memory.emplace_back(info);
+			m_last_memory = m_memory.size() - 1;
+		}
+		else
+		{
+			m_last_memory = m_memory_counter % m_memory_capacity;
+			m_memory[m_last_memory] = std::move(info);
+			m_memory_counter++;
+		}
+
+		return m_last_memory;
 	}
 
 private:
@@ -232,6 +274,7 @@ private:
 	int m_learn_step_counter = 0;
 	int m_memory_counter = 0;
 	int m_memory_capacity = 0;
+	size_t m_last_memory = 0;
 	std::vector<MemoryInfo> m_memory;
 
 private:

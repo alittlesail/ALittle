@@ -12,6 +12,7 @@ extern "C" {
 #include "deeplearning_speech.hpp"
 #include "deeplearning_dqn_dnn.hpp"
 #include "deeplearning_dqn_cnn.hpp"
+#include "deeplearning_2048.hpp"
 
 int luaopen_deeplearning(lua_State* l_state) {
 	luabridge::getGlobalNamespace(l_state)
@@ -50,12 +51,21 @@ int luaopen_deeplearning(lua_State* l_state) {
 		.addCFunction("ChooseAction", &DeeplearningDqnDnnModel::ChooseAction)
 		.addCFunction("SaveTransition", &DeeplearningDqnDnnModel::SaveTransition)
 		.addFunction("Learn", &DeeplearningDqnDnnModel::Learn)
+		.addFunction("LearnLastTransition", &DeeplearningDqnDnnModel::LearnLastTransition)
 		.endClass()
 		.deriveClass<DeeplearningDqnCnnModel, DeeplearningModel>("DeeplearningDqnCnnModel")
 		.addConstructor<void(*)(int, int, int)>()
 		.addCFunction("ChooseAction", &DeeplearningDqnCnnModel::ChooseAction)
 		.addCFunction("SaveTransition", &DeeplearningDqnCnnModel::SaveTransition)
 		.addFunction("Learn", &DeeplearningDqnCnnModel::Learn)
+		.addFunction("LearnLastTransition", &DeeplearningDqnCnnModel::LearnLastTransition)
+		.endClass()
+		.deriveClass<Deeplearning2048Model, DeeplearningDqnCnnModel>("Deeplearning2048Model")
+		.addConstructor<void(*)(int, int, int)>()
+		.addFunction("Restart2048", &Deeplearning2048Model::Restart2048)
+		.addFunction("Play2048", &Deeplearning2048Model::Play2048)
+		.addFunction("Get2048", &Deeplearning2048Model::Get2048)
+		.addFunction("GetScore", &Deeplearning2048Model::GetScore)
 		.endClass()
 		.endNamespace();
     lua_getglobal(l_state, "deeplearning");

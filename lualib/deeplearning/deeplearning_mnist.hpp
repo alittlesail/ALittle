@@ -29,7 +29,7 @@ public:
 		if (path) m_mnist_path = path;
 	}
 	
-	size_t TrainInit() override
+	int TrainInit() override
 	{
 		auto data_loader = torch::data::make_data_loader(
 			torch::data::datasets::MNIST(m_mnist_path).map(
@@ -44,7 +44,7 @@ public:
 			m_labels.push_back(example.target);
 		}
 
-		return m_images.size();
+		return static_cast<int>(m_images.size());
 	}
 
 	void TrainRelease() override

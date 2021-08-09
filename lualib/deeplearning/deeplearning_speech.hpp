@@ -120,7 +120,7 @@ public:
 		if (mfcc_path) m_train_mfcc_path = mfcc_path;
 	}
 	
-	size_t TrainInit() override
+	int TrainInit() override
 	{
 		m_data.data_list.clear();
 
@@ -130,7 +130,7 @@ public:
 		const int result = m_data.Deserialize(out.data(), static_cast<int>(out.size()));
 		if (result < CARP_MESSAGE_DR_NO_DATA) return 0;
 
-		return m_data.data_list.size();
+		return static_cast<int>(m_data.data_list.size());
 	}
 
 	void TrainRelease() override

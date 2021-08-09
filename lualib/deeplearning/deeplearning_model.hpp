@@ -46,35 +46,51 @@ public:
 	void Run()
 	{
 		m_total_train_count = TrainInit();
-		if (m_total_train_count <= 0) return;
+		if (m_total_train_count == 0) return;
 
 		// 计算批次数量
-		m_train_order.resize(m_total_train_count);
-		for (size_t i = 0; i < m_train_order.size(); ++i) m_train_order[i] = i;
-		std::shuffle(m_train_order.begin(), m_train_order.end(), std::mt19937(std::random_device()()));
-
-		while (m_run)
+		if (m_total_train_count > 0)
 		{
-			// 计算下一轮
-			if (m_train_index >= m_train_order.size())
+			m_train_order.resize(m_total_train_count);
+			for (size_t i = 0; i < m_train_order.size(); ++i) m_train_order[i] = i;
+			std::shuffle(m_train_order.begin(), m_train_order.end(), std::mt19937(std::random_device()()));
+
+			while (m_run)
 			{
-				m_train_round += 1;
-				m_cur_train_count = 0;
-				m_cur_right_count = 0;
-				m_train_index = 0;
+				// 计算下一轮
+				if (m_train_index >= m_train_order.size())
+				{
+					m_train_round += 1;
+					m_cur_train_count = 0;
+					m_cur_right_count = 0;
+					m_train_index = 0;
+				}
+
+				// 训练获得结果
+				bool right = false;
+				auto loss = Training(m_train_order[m_train_index], right);
+
+				// 训练下标
+				m_train_index += 1;
+				m_cur_train_count += 1;
+
+				if (right) m_cur_right_count += 1;
+
+				m_consumer.PushEvent(std::bind(&DeeplearningModel::HandleTrainResult, this, loss, right));
 			}
+		}
+		else
+		{
+			while (m_run)
+			{
+				// 训练获得结果
+				bool right = false;
+				auto loss = Training(0, right);
 
-			// 训练获得结果
-			bool right = false;
-			auto loss = Training(m_train_order[m_train_index], right);
+				if (right) m_cur_right_count += 1;
 
-			// 训练下标
-			m_train_index += 1;
-			m_cur_train_count += 1;
-
-			if (right) m_cur_right_count += 1;
-			
-			m_consumer.PushEvent(std::bind(&DeeplearningModel::HandleTrainResult, this, loss, right));
+				m_consumer.PushEvent(std::bind(&DeeplearningModel::HandleTrainResult, this, loss, right));
+			}
 		}
 
 		m_train_order.clear();
@@ -133,7 +149,9 @@ public:
 		catch (...) { }
 	}
 
-	virtual size_t TrainInit() { return 0; }
+	// 返回-1，表示由无限多个
+	// 否则就是训练个数
+	virtual int TrainInit() { return 0; }
 	virtual void TrainRelease() {}
 	virtual double Training(size_t index, bool& right_count) { return 0.0; }
 
@@ -143,7 +161,7 @@ public:
 	virtual size_t GetCurRightCount() { return m_cur_right_count; }
 	
 private:
-	size_t m_total_train_count = 0;
+	int m_total_train_count = 0;
 	size_t m_cur_train_count = 0;
 	size_t m_cur_right_count = 0;	// 正确数量
 	size_t m_train_round = 0;

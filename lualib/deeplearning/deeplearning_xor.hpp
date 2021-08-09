@@ -17,7 +17,7 @@ public:
 	}
 
 public:
-	size_t TrainInit() override
+	int TrainInit() override
 	{
 		m_x_values.push_back({ 0.0f, 0.0f });
 		m_y_value.push_back(0.0f);
@@ -31,7 +31,7 @@ public:
 		m_x_values.push_back({ 1.0f, 1.0f });
 		m_y_value.push_back(0.0f);
 
-		return m_y_value.size();
+		return static_cast<int>(m_y_value.size());
 	}
 
 	void TrainRelease() override

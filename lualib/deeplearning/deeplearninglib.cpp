@@ -66,6 +66,7 @@ int luaopen_deeplearning(lua_State* l_state) {
 		.addFunction("Play2048", &Deeplearning2048Model::Play2048)
 		.addFunction("Get2048", &Deeplearning2048Model::Get2048)
 		.addFunction("GetScore", &Deeplearning2048Model::GetScore)
+		.addFunction("PlayAI", &Deeplearning2048Model::PlayAI)
 		.endClass()
 		.endNamespace();
     lua_getglobal(l_state, "deeplearning");

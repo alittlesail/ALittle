@@ -76,6 +76,13 @@ void ServerSchedule::RegisterToScript()
 		.addFunction("SetToRtp", &ServerSchedule::SetToRtp)
 		.addFunction("ClearIdleRtp", &ServerSchedule::ClearIdleRtp)
 
+		.addFunction("ReleaseNat", &ServerSchedule::ReleaseNat)
+		.addFunction("ReleaseAllNat", &ServerSchedule::ReleaseAllNat)
+		.addFunction("UseNat", &ServerSchedule::UseNat)
+		.addFunction("SetNatAuth", &ServerSchedule::SetNatAuth)
+		.addFunction("SetNatTarget", &ServerSchedule::SetNatTarget)
+		.addFunction("ClearIdleNat", &ServerSchedule::ClearIdleNat)
+
 		.addFunction("CreateUdpServer", &ServerSchedule::CreateUdpServer)
 		.addFunction("CloseUdpServer", &ServerSchedule::CloseUdpServer)
 		.addFunction("SendUdpMessage", &ServerSchedule::SendUdpMessage)
@@ -180,6 +187,11 @@ int ServerSchedule::Start()
 		pair.second->Stop();
 	m_use_map_rtp.clear();
 	m_release_map_rtp.clear();
+
+	for (auto& pair : m_use_map_nat)
+		pair.second->Stop();
+	m_use_map_nat.clear();
+	m_release_map_nat.clear();
 
 	for (auto& pair : m_udp_server_map)
 	{
@@ -626,8 +638,8 @@ void ServerSchedule::ReleaseRtp(int first_port)
 	m_release_map_rtp[first_port] = use_it->second;
 	m_use_map_rtp.erase(use_it);
 
-	CARP_INFO("release count:" << m_release_map_rtp.size());
-	CARP_INFO("use count:" << m_use_map_rtp.size());
+	CARP_INFO("rtp release count:" << m_release_map_rtp.size());
+	CARP_INFO("rtp use count:" << m_use_map_rtp.size());
 }
 
 void ServerSchedule::ReleaseAllRtp()
@@ -639,8 +651,8 @@ void ServerSchedule::ReleaseAllRtp()
 	}
 	m_use_map_rtp.clear();
 
-	CARP_INFO("release count:" << m_release_map_rtp.size());
-	CARP_INFO("use count:" << m_use_map_rtp.size());
+	CARP_INFO("rtp release count:" << m_release_map_rtp.size());
+	CARP_INFO("rtp use count:" << m_use_map_rtp.size());
 }
 
 int ServerSchedule::UseRtpForLua(lua_State* L)
@@ -689,8 +701,8 @@ bool ServerSchedule::UseRtp(int first_port, const std::string& call_id
 	rtp->Start(call_id);
 
 	// 打印信息
-	CARP_INFO("release count:" << m_release_map_rtp.size());
-	CARP_INFO("use count:" << m_use_map_rtp.size());
+	CARP_INFO("rtp release count:" << m_release_map_rtp.size());
+	CARP_INFO("rtp use count:" << m_use_map_rtp.size());
 
 	return true;
 }
@@ -709,6 +721,20 @@ void ServerSchedule::SetFromRtp(int first_port, const char* rtp_ip, int rtp_port
 	use_it->second->SetFromRtp(rtp_ip, rtp_port);
 }
 
+void ServerSchedule::SetFromAuth(int first_port, const char* password)
+{
+	if (password == nullptr) return;
+
+	auto use_it = m_use_map_rtp.find(first_port);
+	if (use_it == m_use_map_rtp.end())
+	{
+		CARP_WARN("SetFromAuth can't find rtp first_port:" << first_port);
+		return;
+	}
+
+	use_it->second->SetFromAuth(password);
+}
+
 void ServerSchedule::SetToRtp(int first_port, const char* rtp_ip, int rtp_port)
 {
 	if (rtp_ip == nullptr) return;
@@ -721,6 +747,20 @@ void ServerSchedule::SetToRtp(int first_port, const char* rtp_ip, int rtp_port)
 	}
 
 	use_it->second->SetToRtp(rtp_ip, rtp_port);
+}
+
+void ServerSchedule::SetToAuth(int first_port, const char* password)
+{
+	if (password == nullptr) return;
+
+	auto use_it = m_use_map_rtp.find(first_port);
+	if (use_it == m_use_map_rtp.end())
+	{
+		CARP_WARN("SetToAuth can't find rtp first_port:" << first_port);
+		return;
+	}
+
+	use_it->second->SetToAuth(password);
 }
 
 void ServerSchedule::ClearIdleRtp(int idle_delta_time)
@@ -745,8 +785,120 @@ void ServerSchedule::ClearIdleRtp(int idle_delta_time)
 
 	if (has_close)
 	{
-		CARP_INFO("release count:" << m_release_map_rtp.size());
-		CARP_INFO("use count:" << m_use_map_rtp.size());
+		CARP_INFO("rtp release count:" << m_release_map_rtp.size());
+		CARP_INFO("rtp use count:" << m_use_map_rtp.size());
+	}
+}
+
+void ServerSchedule::ReleaseNat(int nat_port)
+{
+	auto use_it = m_use_map_nat.find(nat_port);
+	if (use_it == m_use_map_nat.end()) return;
+
+	use_it->second->Stop();
+	m_release_map_nat[nat_port] = use_it->second;
+	m_use_map_nat.erase(use_it);
+
+	CARP_INFO("nat release count:" << m_release_map_nat.size());
+	CARP_INFO("nat use count:" << m_use_map_nat.size());
+}
+
+void ServerSchedule::ReleaseAllNat()
+{
+	for (auto& pair : m_use_map_nat)
+	{
+		pair.second->Stop();
+		m_release_map_nat[pair.first] = pair.second;
+	}
+	m_use_map_nat.clear();
+
+	CARP_INFO("nat release count:" << m_release_map_nat.size());
+	CARP_INFO("nat use count:" << m_use_map_nat.size());
+}
+
+bool ServerSchedule::UseNat(const char* nat_ip, int nat_port)
+{
+	CarpNatServerPtr nat;
+	const auto release_it = m_release_map_nat.find(nat_port);
+	if (release_it != m_release_map_nat.end())
+	{
+		nat = release_it->second;
+		m_release_map_nat.erase(release_it);
+	}
+	else
+	{
+		nat = std::make_shared<CarpNatServer>();
+	}
+
+	// 创建nat
+	if (!nat->Create(nat_ip, nat_port, this))
+		return false;
+
+	m_use_map_nat[nat_port] = nat;
+	// 开始使用nat
+	nat->Start();
+
+	// 打印信息
+	CARP_INFO("nat release count:" << m_release_map_nat.size());
+	CARP_INFO("nat use count:" << m_use_map_nat.size());
+
+	return true;
+}
+
+// 设置NAT的鉴权密码
+void ServerSchedule::SetNatAuth(int nat_port, const char* password)
+{
+	if (password == nullptr) return;
+
+	auto use_it = m_use_map_nat.find(nat_port);
+	if (use_it == m_use_map_nat.end())
+	{
+		CARP_WARN("SetNatAuth can't find nat nat_port:" << nat_port);
+		return;
+	}
+
+	use_it->second->SetAuth(password);
+}
+
+// 设置被呼叫方ip和端口
+void ServerSchedule::SetNatTarget(int nat_port, const char* target_ip, int target_port)
+{
+	if (target_ip == nullptr) return;
+
+	auto use_it = m_use_map_nat.find(nat_port);
+	if (use_it == m_use_map_nat.end())
+	{
+		CARP_WARN("SetNatTarget can't find nat nat_port:" << nat_port);
+		return;
+	}
+
+	use_it->second->SetTarget(target_ip, target_port);
+}
+
+void ServerSchedule::ClearIdleNat(int idle_delta_time)
+{
+	const time_t cur_time = time(nullptr);
+
+	bool has_close = false;
+	for (auto release_it = m_release_map_nat.begin(); release_it != m_release_map_nat.end();)
+	{
+		if (cur_time - release_it->second->GetIdleTime() > idle_delta_time)
+		{
+			release_it->second->Close();
+			release_it = m_release_map_nat.erase(release_it);
+
+			has_close = true;
+		}
+		else
+		{
+			++release_it;
+		}
+	}
+
+	if (has_close)
+	{
+		CARP_INFO("nat release count:" << m_release_map_nat.size());
+		CARP_INFO("nat use count:" << m_use_map_nat.size());
 	}
 }
 

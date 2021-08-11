@@ -12,6 +12,7 @@
 #include "Carp/carp_safe_id_creator.hpp"
 #include "Carp/carp_rtp_server.hpp"
 #include "Carp/carp_udp_server.hpp"
+#include "Carp/carp_nat_server.hpp"
 
 #include "../RouteSystem/RouteSystem.h"
 #include "../MysqlSystem/MysqlSystem.h"
@@ -171,8 +172,12 @@ public:
 
 	// 设置呼叫方ip和端口
 	void SetFromRtp(int first_port, const char* rtp_ip, int rtp_port);
+	// 设置呼叫方鉴权
+	void SetFromAuth(int first_port, const char* password);
 	// 设置被呼叫方ip和端口
 	void SetToRtp(int first_port, const char* rtp_ip, int rtp_port);
+	// 设置被叫方鉴权
+	void SetToAuth(int first_port, const char* password);
 
 	// 清理空闲的rtp
 	void ClearIdleRtp(int idle_delta_time);
@@ -183,7 +188,29 @@ private:
 	// 等待释放的rtp
 	std::map<int, CarpRtpServerPtr> m_release_map_rtp;
 
-    //SipServer//////////////////////////////////////////////////////////////////////////////////
+	//NatServer//////////////////////////////////////////////////////////////////////////////////
+public:
+	// 释放nat
+	void ReleaseNat(int nat_port);
+	void ReleaseAllNat();
+
+	// 开始使用rtp
+	bool UseNat(const char* nat_ip, int nat_port);
+	// 设置NAT的鉴权密码
+	void SetNatAuth(int first_port, const char* password);
+	// 设置被呼叫方ip和端口
+	void SetNatTarget(int first_port, const char* target_ip, int target_port);
+
+	// 清理空闲的nat
+	void ClearIdleNat(int idle_delta_time);
+
+private:
+	// 所有的nat
+	std::map<int, CarpNatServerPtr> m_use_map_nat;
+	// 等待释放的nat
+	std::map<int, CarpNatServerPtr> m_release_map_nat;
+
+    //UdpServer//////////////////////////////////////////////////////////////////////////////////
 public:
 	// 启动Udp服务器
 	bool CreateUdpServer(const char* ip, int port);

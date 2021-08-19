@@ -507,7 +507,7 @@ public:
 
 			CarpLocalFile file;
 			file.SetPath(file_path.c_str());
-			if (!file.Load(false))
+			if (!file.Load())
 			{
 				if (surface) CarpSurfaceBind::FreeCarpSurface(surface);
 				CARP_ERROR("LocalFile load failed, " << file_path);
@@ -629,7 +629,7 @@ public:
 		// load for local file
 		CarpLocalFile local_file;
 		local_file.SetPath(m_file_path.c_str());
-		if (!local_file.Load(false))
+		if (!local_file.Load())
 		{
 			CARP_ERROR("LocalFile load failed, " << m_file_path);
 			s_carp_event_consumer.PushEvent([this]() { s_alittle_script.Invoke("__ALITTLEAPI_TextureCutLoadFailed", this); });

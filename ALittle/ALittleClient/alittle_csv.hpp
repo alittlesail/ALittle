@@ -25,7 +25,7 @@ public:
 	{
 		Close();
 		if (file_path == nullptr) return false;
-		SDL_RWops* file = CarpRWops::OpenFile(file_path, "rb", false);
+		SDL_RWops* file = CarpRWops::OpenFile(file_path, "rb");
 		if (file == nullptr) return false;
 		const bool result = ReadFromCustomFile(file_path, (CarpCsv::READ_FILE)SDL_RWread, file, 0);
 		SDL_RWclose(file);

@@ -70,14 +70,14 @@ public:
 		{
 			module_name = "ALittleIDE";
 			std::vector<char> enter_content;
-			if (CarpRWops::LoadFile("Module/Enter.ali", false, enter_content))
+			if (CarpRWops::LoadFile("Module/Enter.ali", enter_content))
 				module_name.assign(enter_content.data(), enter_content.size());
 		}
 		base_path = "Module/" + module_name + "/";
 
 		// 检查模块内是否有引起代码，否则加载Core
 		std::vector<char> enter_content;
-		if (CarpRWops::LoadFile(base_path + "Core/ALittle.lua", false, enter_content))
+		if (CarpRWops::LoadFile(base_path + "Core/ALittle.lua", enter_content))
 		{
 			Require((base_path + "Core/ALittle").c_str());
 			Invoke("RequireCore", (base_path + "Core/").c_str());
@@ -88,7 +88,7 @@ public:
 			Invoke("RequireCore", "Module/ALittleIDE/Other/GameLibrary/Core/Script/");
 		}
 
-		if (CarpRWops::LoadFile(base_path + "Std/ALittle.lua", false, enter_content))
+		if (CarpRWops::LoadFile(base_path + "Std/ALittle.lua", enter_content))
 		{
 			Require((base_path + "Std/ALittle").c_str());
 			Invoke("RequireStd", (base_path + "Std/").c_str());
@@ -99,7 +99,7 @@ public:
 			Invoke("RequireStd", "Module/ALittleIDE/Other/GameLibrary/Std/Script/");
 		}
 
-		if (CarpRWops::LoadFile(base_path + "CEngine/ALittle.lua", false, enter_content))
+		if (CarpRWops::LoadFile(base_path + "CEngine/ALittle.lua", enter_content))
 		{
 			Require((base_path + "CEngine/ALittle").c_str());
 			Invoke("RequireCEngine", (base_path + "CEngine/").c_str());

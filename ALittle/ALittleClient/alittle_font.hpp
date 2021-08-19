@@ -111,7 +111,7 @@ private:
 		{
 			file = new CarpLocalFile();
 			file->SetPath(font_path.c_str());
-			if (!file->Load(false))
+			if (!file->Load())
 			{
 				delete file;
 				return nullptr;

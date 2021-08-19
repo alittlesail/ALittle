@@ -235,17 +235,14 @@ public:
 	inline const SDL_RendererInfo& GetRenderInfo() const { return m_render_info; }
 
 public:
-	inline void PushRenderQuad(SDL_Texture* texture, const CarpColor4& color, float* vertex_coord, float* texture_coord) const
+	void PushRenderQuad(SDL_Texture* texture, const CarpColor4& color, float* vertex_coord, float* texture_coord) const
 	{
-		SDL_SetTextureColorMod(texture, color.r, color.g, color.b);
-		SDL_SetTextureAlphaMod(texture, color.a);
-		SDL_RenderQuad(m_render, texture, texture_coord, vertex_coord);
+		static int indices[] = { 0, 1, 2, 0, 2, 3 };
+		SDL_RenderGeometryRaw(m_render, texture, vertex_coord, sizeof(float)*2, (int*)&color, 0, texture_coord, sizeof(float)*2, 4, indices, 6, sizeof(int));
 	}
-	inline void PushRenderTriangle(SDL_Texture* texture, const CarpColor4& color, float* vertex_coord, float* texture_coord) const
+	void PushRenderTriangle(SDL_Texture* texture, const CarpColor4& color, float* vertex_coord, float* texture_coord) const
 	{
-		SDL_SetTextureColorMod(texture, color.r, color.g, color.b);
-		SDL_SetTextureAlphaMod(texture, color.a);
-		SDL_RenderTriangle(m_render, texture, texture_coord, vertex_coord);
+		SDL_RenderGeometryRaw(m_render, texture, vertex_coord, sizeof(float) * 2, (int*)&color, 0, texture_coord, sizeof(float) * 2, 3, nullptr, 0, 0);
 	}
 	inline void FlushRender() const { SDL_RenderFlush(m_render); }
 

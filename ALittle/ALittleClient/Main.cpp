@@ -1,6 +1,8 @@
 ﻿
 #include <asio.hpp>
 
+#include "Carp/carp_robot_demo.hpp"
+
 #ifdef _WIN32
 #include <stdlib.h>
 #include <crtdbg.h>
@@ -17,6 +19,10 @@ int main(int argc, char* argv[])
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 #endif // _WIN32	
+
+	CarpRobotDemo demo;
+	demo.Demo2();
+
 	return s_alittle_schedule.Run(argc, argv);
 }
 

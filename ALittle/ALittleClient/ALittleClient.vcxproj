@@ -53,6 +53,8 @@
     <ClInclude Include="..\..\Carp\carp_nat_server.hpp" />
     <ClInclude Include="..\..\Carp\carp_redis.hpp" />
     <ClInclude Include="..\..\Carp\carp_robot.hpp" />
+    <ClInclude Include="..\..\Carp\carp_robot_demo.hpp" />
+    <ClInclude Include="..\..\Carp\carp_robot_model.hpp" />
     <ClInclude Include="..\..\Carp\carp_rtp.hpp" />
     <ClInclude Include="..\..\Carp\carp_rtp_server.hpp" />
     <ClInclude Include="..\..\Carp\carp_square_jps.hpp" />

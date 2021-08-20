@@ -363,5 +363,11 @@
     <ClInclude Include="..\..\Carp\carp_robot.hpp">
       <Filter>Carp</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_robot_model.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Carp\carp_robot_demo.hpp">
+      <Filter>Carp</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

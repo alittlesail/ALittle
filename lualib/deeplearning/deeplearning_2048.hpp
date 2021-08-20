@@ -12,11 +12,11 @@ const int G2048_ROW_COUNT = 4;
 const int G2048_COL_COUNT = 4;
 const int G2048_ACTION_COUNT = 4;
 
-class Deeplearning2048Model : public DeeplearningDqnDnnModel
+class Deeplearning2048Model : public DeeplearningDqnCnnModel
 {
 public:
 	Deeplearning2048Model(int input_len, int action_count, int memory_capacity)
-		: DeeplearningDqnDnnModel(4, 4, 128, memory_capacity)
+		: DeeplearningDqnCnnModel(4, 4, memory_capacity)
 	{
         srand(static_cast<unsigned int>(time(0)));
 	}
@@ -31,20 +31,84 @@ public:
 	void TrainRelease() override
 	{
 	}
-	
-	double Training(size_t index, bool& right) override
-	{
-        auto old_score = m_score;
 
+    double TrainingDeep()
+    {
+        // 保存信息
         int old_value_map[G2048_ROW_COUNT][G2048_COL_COUNT];
         GetValueMap(old_value_map);
+        int old_score = m_score;
 
-        std::vector<float> state;
-        CalcState(old_value_map, state);
-        
-        int action = ChooseActionByState(state);
+        // 保存状态
+        std::vector<float> old_state;
+        CalcState(old_value_map, old_state);
 
-        m_item_moved = false;
+        int max_action = -1;
+        double max_reward = -1;
+        std::map<int, double> action_map;
+        // 逐个操作
+        for (int action = 0; action <= 3; ++action)
+        {
+            // 指定操作
+            if (action == 0)
+                CalcDown();
+            else if (action == 1)
+                CalcRight();
+            else if (action == 2)
+                CalcLeft();
+            else if (action == 3)
+                CalcUp();
+
+            // 获取新数据
+            int new_value_map[G2048_ROW_COUNT][G2048_COL_COUNT];
+            GetValueMap(new_value_map);
+
+            // 获取新状态
+            std::vector<float> new_state;
+            CalcState(new_value_map, new_state);
+
+            // 获取分数
+            auto new_score = m_score;
+
+            // 判断是否结束
+            bool over = IsGameOver();
+
+            int score = 1;
+            if (!over)
+            {
+                // 如果移动了，加1分
+                if (m_item_moved) score += 2;
+
+                // 判断局面
+                score += CalcSmooth(new_value_map);
+                // if (CalcSmooth(new_value_map) > CalcSmooth(old_value_map))
+                //     score += 1;
+                // score += CalcSmooth(new_value_map); // -CalcSmooth(old_value_map);
+                // score += CalcGradient(new_value_map); // -CalcGradient(old_value_map);
+
+                // 有新分数
+                score += new_score;
+            }
+
+            if (score <= 0) score = 1;
+
+            double reward = (float)std::log2(score) / 16;
+            if (max_reward < reward)
+            {
+                max_reward = reward;
+                max_action = action;
+            }
+            action_map[action] = reward;
+            // 保存经验
+            auto index = SaveTransitionByState(old_state, action, reward, new_state);
+
+            // 重置数据
+            ResetData(old_value_map, old_score);
+        }
+
+        // 根据ai执行操作
+        // if (max_action < 0)
+        int action = ChooseActionByState(old_state);
 
         if (action == 0)
             CalcDown();
@@ -57,27 +121,23 @@ public:
 
         if (m_item_moved == false)
         {
-            action = rand() % 4;
-
-            if (action == 0)
+            printf("force action %d, reward %lf, max_action %d, max_reward %lf\n", action, action_map[action], max_action, action_map[max_action]);
+            if (max_action == 0)
                 CalcDown();
-            else if (action == 1)
+            else if (max_action == 1)
                 CalcRight();
-            else if (action == 2)
+            else if (max_action == 2)
                 CalcLeft();
-            else if (action == 3)
+            else if (max_action == 3)
                 CalcUp();
         }
-
-        bool item_moved = m_item_moved;
-
-        int new_value_map[G2048_ROW_COUNT][G2048_COL_COUNT];
-        GetValueMap(new_value_map);
-
-        std::vector<float> new_state;
-        CalcState(new_value_map, new_state);
-
-        auto new_score = m_score;
+        else
+        {
+            if (action_map[max_action] > action_map[action])
+                printf("action %d, reward %lf, max_action %d, max_reward %lf\n", action, action_map[action], max_action, action_map[max_action]);
+            else
+                printf("action %d\n", action);
+        }
 
         if (m_item_moved)
         {
@@ -85,35 +145,28 @@ public:
             Born2048();
         }
 
-        bool over = IsGameOver();
-        if (over) Restart2048();
+        if (IsGameOver()) Restart2048();
 
-        int score = 1;
-        if (!over)
+        for (int row = 0; row < G2048_ROW_COUNT; ++row)
         {
-            // 如果移动了，加1分
-            if (item_moved) score += 1;
-
-            // 判断局面
-            score += CalcSmooth(new_value_map); // -CalcSmooth(old_value_map);
-            score += CalcGradient(new_value_map); // -CalcGradient(old_value_map);
-
-            // 有新分数
-            score += new_score; // -old_score;
+            for (int col = 0; col < G2048_COL_COUNT; ++col)
+            {
+                printf("%d\t", m_2048[row][col]);
+            }
+            printf("\n");
         }
 
-        if (score <= 0) score = 1;
-
-        double reward = (float)std::log2(score);
-        index = SaveTransitionByState(state, action, reward, new_state);
-
-        auto loss = DeeplearningDqnDnnModel::Training(index, right);
-
-        int rand_learn = 100;
-        for (int i = 0; i < rand_learn; ++i)
-            loss += DeeplearningDqnDnnModel::Training((size_t)-1, right);
-
-        return loss / (rand_learn + 1);
+        // 学习经验
+        double loss = 0;
+        int learn_count = 4;
+        for (int i = 0; i < learn_count; ++i)
+            loss += LearnLastTransition(40);
+        return loss / learn_count;
+    }
+	
+	double Training(size_t index, bool& right) override
+	{
+        return TrainingDeep();
 	}
 
     int CalcSmooth(int value_map[G2048_ROW_COUNT][G2048_COL_COUNT])
@@ -132,7 +185,7 @@ public:
                     if (next_value != 0)
                     {
                         if (cur_value == next_value)
-                            score += 1;
+                            score += cur_value;
                         break;
                     }
                 }
@@ -142,7 +195,7 @@ public:
                     if (next_value != 0)
                     {
                         if (cur_value == next_value)
-                            score += 1;
+                            score += cur_value;
                         break;
                     }
                 }
@@ -216,34 +269,34 @@ public:
 
     bool IsGameOver()
     {
-        for (int row = 0; row < 4; ++row)
+        for (int row = 0; row < G2048_ROW_COUNT; ++row)
         {
-            for (int col = 0; col < 4; ++col)
+            for (int col = 0; col < G2048_COL_COUNT; ++col)
             {
                 if (m_2048[row][col] == 0) return false;
             }
         }
 
-        for (int row = 0; row < 4; ++row)
+        for (int row = 0; row < G2048_ROW_COUNT; ++row)
         {
-            for (int col = 0; col < 4; ++col)
+            for (int col = 0; col < G2048_COL_COUNT; ++col)
             {
                 auto value = m_2048[row][col];
 
                 // 检查左边
-                if (col >= 1 && m_2048[row][col - 1] == value)
+                if (col > 0 && m_2048[row][col - 1] == value)
                     return false;
 
                 // 检查右边
-                if (col <= 2 && m_2048[row][col + 1] == value)
+                if (col < G2048_COL_COUNT - 1 && m_2048[row][col + 1] == value)
                     return false;
 
                 // 检查上边
-                if (row >= 1 && m_2048[row - 1][col] == value)
+                if (row > 0 && m_2048[row - 1][col] == value)
                     return false;
 
                 // 检查下边
-                if (row <= 2 && m_2048[row + 1][col] == value)
+                if (row < G2048_ROW_COUNT - 1 && m_2048[row + 1][col] == value)
                     return false;
             }
         }
@@ -330,11 +383,11 @@ public:
 
 	void CalcDown()
 	{
-        for (int col = 0; col < 4; ++col)
+        for (int col = 0; col < G2048_COL_COUNT; ++col)
         {
             // 收集横向的
             std::vector<Cell> list;
-            for (int row = 3; row >= 0; --row)
+            for (int row = G2048_ROW_COUNT - 1; row >= 0; --row)
             {
                 if (m_2048[row][col] != 0)
                 {
@@ -415,11 +468,11 @@ public:
 
     void CalcRight()
     {
-        for (int row = 0; row < 4; ++row)
+        for (int row = 0; row < G2048_ROW_COUNT; ++row)
         {
             // 收集横向的
             std::vector<Cell> list;
-            for (int col = 3; col >= 0; --col)
+            for (int col = G2048_COL_COUNT - 1; col >= 0; --col)
             {
                 if (m_2048[row][col] != 0)
                 {
@@ -500,11 +553,11 @@ public:
 
     void CalcUp()
     {
-        for (int col = 0; col < 4; ++col)
+        for (int col = 0; col < G2048_COL_COUNT; ++col)
         {
             // 收集横向的
             std::vector<Cell> list;
-            for (int row = 0; row <= 3; ++row)
+            for (int row = 0; row < G2048_ROW_COUNT; ++row)
             {
                 if (m_2048[row][col] != 0)
                 {
@@ -585,11 +638,11 @@ public:
 
     void CalcLeft()
     {
-        for (int row = 0; row < 4; ++row)
+        for (int row = 0; row < G2048_ROW_COUNT; ++row)
         {
             // 收集横向的
             std::vector<Cell> list;
-            for (int col = 0; col <= 3; ++col)
+            for (int col = 0; col < G2048_COL_COUNT; ++col)
             {
                 if (m_2048[row][col] != 0)
                 {
@@ -717,8 +770,7 @@ public:
         for (int row = 0; row < G2048_ROW_COUNT; ++row)
             for (int col = 0; col < G2048_COL_COUNT; ++col)
             {
-                float value = (float)std::log2(value_map[row][col] + 1) / 16.0f;
-                state.push_back(value);
+                state.push_back((float)std::log2(value_map[row][col] + 2) / 16.0f);
             }
     }
 
@@ -728,6 +780,17 @@ public:
             for (int col = 0; col < G2048_COL_COUNT; ++col)
             {
                 value_map[row][col] = m_2048[row][col];
+            }
+    }
+
+    void ResetData(int value_map[G2048_ROW_COUNT][G2048_COL_COUNT], int score)
+    {
+        m_score = score;
+        m_item_moved = false;
+        for (int row = 0; row < G2048_ROW_COUNT; ++row)
+            for (int col = 0; col < G2048_COL_COUNT; ++col)
+            {
+                m_2048[row][col] = value_map[row][col];
             }
     }
 

@@ -73,6 +73,11 @@ public:
 	
 	double Training(size_t index, bool& right) override
 	{
+		return TrainingImpl(index, right);
+	}
+
+	double TrainingImpl(size_t index, bool& right)
+	{
 		if (m_memory.empty()) return 0;
 
 		// 重置误差项
@@ -86,6 +91,7 @@ public:
 
 		if (index == (size_t)-1) index = rand();
 		const auto position = index % m_memory.size();
+
 		// 设置输入
 		auto& memory = m_memory[position];
 
@@ -99,11 +105,11 @@ public:
 
 		auto q_next = m_target.Forward(next_state).detach();			// q_next 不进行反向传递误差, 所以 detach
 		auto q_target = reward + GAMMA * std::get<0>(q_next.max(1));	// shape(batch, 1)
-		
+
 		// 获得损失表达式
 		auto loss_expr = torch::mse_loss(q_eval, q_target);
 		auto loss = loss_expr.item().toDouble();
-		
+
 		// 计算反向传播
 		loss_expr.backward();
 		// 更新训练
@@ -115,13 +121,25 @@ public:
 	double Learn()
 	{
 		bool right = false;
-		return Training((size_t)-1, right);
+		return TrainingImpl((size_t)-1, right);
 	}
 
-	double LearnLastTransition()
+	double LearnLastTransition(int count)
 	{
-		bool right = false;
-		return Training(m_memory.size() - 1, right);
+		double loss = 0;
+		int index = (int)m_last_memory;
+		int total_count = count;
+		while (count > 0)
+		{
+			bool right = false;
+			loss += TrainingImpl(index, right);
+
+			--count;
+			--index;
+			if (index < 0) index = (int)m_memory.size() - 1;
+		}
+
+		return loss / total_count;
 	}
 
 	int ChooseAction(lua_State* l_state)

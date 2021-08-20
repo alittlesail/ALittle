@@ -34,6 +34,3 @@
 [submodule "eigen"]
 	path = eigen
 	url = https://gitlab.com/libeigen/eigen.git
-[submodule "SDL"]
-	path = SDL
-	url = https://github.com/libsdl-org/SDL.git

@@ -93,8 +93,31 @@ public:
 	void TrainRelease() override
 	{
 	}
-	
+
+	double LearnLastTransition(int count)
+	{
+		double loss = 0;
+		int index = (int)m_last_memory;
+		int total_count = count;
+		while (count > 0)
+		{
+			bool right = false;
+			loss += TrainingImpl(index, right);
+
+			--count;
+			--index;
+			if (index < 0) index = (int)m_memory.size() - 1;
+		}
+
+		return loss / total_count;
+	}
+
 	double Training(size_t index, bool& right) override
+	{
+		return TrainingImpl(index, right);
+	}
+	
+	double TrainingImpl(size_t index, bool& right)
 	{
 		if (m_memory.empty()) return 0;
 
@@ -138,13 +161,7 @@ public:
 	double Learn()
 	{
 		bool right = false;
-		return Training((size_t)-1, right);
-	}
-
-	double LearnLastTransition()
-	{
-		bool right = false;
-		return Training(m_last_memory, right);
+		return TrainingImpl((size_t)-1, right);
 	}
 
 	int ChooseAction(lua_State* l_state)

@@ -38,7 +38,7 @@ struct DeeplearningDqnDnn
 	torch::nn::Linear fc2;
 };
 
-class DeeplearningDqnDnnModel : public DeeplearningModel
+class DeeplearningDqnDnnModel : public TorchDeeplearningModel
 {
 public:
 	DeeplearningDqnDnnModel(int state_count, int action_count, int hide_dim, int memory_capacity)

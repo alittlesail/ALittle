@@ -5,7 +5,7 @@
 #include "deeplearning_model.hpp"
 #include "Carp/carp_surface.hpp"
 
-class DeeplearningMnistModel : public DeeplearningModel
+class DeeplearningMnistModel : public TorchDeeplearningModel
 {
 public:
 	DeeplearningMnistModel()

@@ -9,7 +9,6 @@ extern "C" {
 
 #include "deeplearning_xor.hpp"
 #include "deeplearning_mnist.hpp"
-#include "deeplearning_speech.hpp"
 #include "deeplearning_dqn_dnn.hpp"
 #include "deeplearning_dqn_cnn.hpp"
 #include "deeplearning_2048.hpp"
@@ -39,12 +38,6 @@ int luaopen_deeplearning(lua_State* l_state) {
 		.addConstructor<void(*)()>()
 		.addFunction("SetMnistRoot", &DeeplearningMnistModel::SetMnistRoot)
 		.addFunction("Output", &DeeplearningMnistModel::Output)
-		.endClass()
-		.deriveClass<DeeplearningSpeechModel, DeeplearningModel>("DeeplearningSpeechModel")
-		.addConstructor<void(*)(const char*)>()
-		.addFunction("Wav2MFCC", &DeeplearningSpeechModel::Wav2MFCC)
-		.addFunction("SetSpeechDataPath", &DeeplearningSpeechModel::SetSpeechDataPath)
-		.addFunction("Output", &DeeplearningSpeechModel::Output)
 		.endClass()
 		.deriveClass<DeeplearningDqnDnnModel, DeeplearningModel>("DeeplearningDqnDnnModel")
 		.addConstructor<void(*)(int, int, int, int)>()

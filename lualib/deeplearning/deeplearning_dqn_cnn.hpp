@@ -55,7 +55,7 @@ struct DeeplearningDqnCnn
 	torch::nn::Linear head;
 };
 
-class DeeplearningDqnCnnModel : public DeeplearningModel
+class DeeplearningDqnCnnModel : public TorchDeeplearningModel
 {
 public:
 	DeeplearningDqnCnnModel(int input_len, int action_count, int memory_capacity)

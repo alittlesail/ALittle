@@ -39,6 +39,9 @@ public:
 	
 	double Training(size_t index, bool& right) override
 	{
+		// 这里故意阻塞10毫秒，因为担心速度太快卡到界面
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+
 		CarpRobotComputationGraph graph;
 
 		m_fc1.Build(graph);

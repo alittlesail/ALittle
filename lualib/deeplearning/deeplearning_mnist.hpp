@@ -1,26 +1,20 @@
 #ifndef DEEPLEARNING_MNIST_INCLUDED
 #define DEEPLEARNING_MNIST_INCLUDED
 
-#include "torch/torch.h"
-#include "deeplearning_model.hpp"
 #include "Carp/carp_surface.hpp"
 
-class DeeplearningMnistModel : public TorchDeeplearningModel
+#include "Carp/carp_robot_model.hpp"
+#include "deeplearning_model.hpp"
+
+class DeeplearningMnistModel : public DeeplearningModel
 {
 public:
 	DeeplearningMnistModel()
-		: m_conv1(torch::nn::Conv2dOptions(1, 64, 5))
-		, m_conv2(torch::nn::Conv2dOptions(64, 128, 5))
-		, m_fc1(4 * 4 * 128, 1024)
-		, m_fc2(1024, 10)
+		: m_conv1(m_model, 1, 64, { 5, 5 }, { 1, 1 }, false)
+		, m_conv2(m_model, 64, 128, { 5, 5 }, { 1, 1 }, false)
+		, m_fc1(m_model, 4 * 4 * 128, 1024), m_fc2(m_model, 1024, 10)
+		, m_trainer(m_model)
 	{
-		register_module("conv1", m_conv1);
-		register_module("conv2", m_conv2);
-		register_module("conv2_drop", m_conv2_drop);
-		register_module("fc1", m_fc1);
-		register_module("fc2", m_fc2);
-
-		m_trainer = std::make_shared<torch::optim::SGD>(parameters(), torch::optim::SGDOptions(0.01));
 	}
 
 public:
@@ -31,17 +25,102 @@ public:
 	
 	int TrainInit() override
 	{
-		auto data_loader = torch::data::make_data_loader(
-			torch::data::datasets::MNIST(m_mnist_path).map(
-				torch::data::transforms::Stack<>()), 1);
-
 		m_images.clear();
 		m_labels.clear();
 
-		for (auto& example : *data_loader)
+		// 读取图片
 		{
-			m_images.push_back(example.data);
-			m_labels.push_back(example.target);
+			std::string file_path = m_mnist_path + "/train-images-idx3-ubyte";
+
+			FILE* file = nullptr;
+#ifdef _WIN32
+			fopen_s(&file, file_path.c_str(), "rb");
+#else
+			file = fopen(file_path.c_str(), "rb");
+#endif
+			if (file == nullptr) return 0;
+
+			struct ImageHead
+			{
+				unsigned int desc = 0;
+				unsigned int count = 0;
+				unsigned int width = 0;
+				unsigned int height = 0;
+			};
+				
+			// 读取头信息
+			ImageHead head;
+			int read = fread(&head, 1, sizeof(head), file);
+			if (read != sizeof(head) || head.desc != 0x00000803)
+			{
+				fclose(file);
+				return 0;
+			}
+
+			// 图片像素数量
+			auto pixel_count = head.width * head.height;
+				
+			m_images.resize(head.count);
+			std::vector<unsigned char> buffer;
+			buffer.resize(pixel_count);
+			for (size_t i = 0; i < m_images.size(); ++i)
+			{
+				auto& image = m_images[i];
+				image.resize(pixel_count);
+				read = fread(buffer.data(), 1, pixel_count, file);
+				if (read != pixel_count)
+				{
+					fclose(file);
+					return 0;
+				}
+				for (size_t j = 0; j < buffer.size(); ++j)
+					image[j] = buffer[j] / 255.0f;
+			}
+
+			fclose(file);
+		}
+
+		// 读取标签
+		{
+			std::string file_path = m_mnist_path + "/train-labels-idx1-ubyte";
+
+			FILE* file = nullptr;
+#ifdef _WIN32
+			fopen_s(&file, file_path.c_str(), "rb");
+#else
+			file = fopen(file_path.c_str(), "rb");
+#endif
+			if (file == nullptr) return 0;
+
+			struct LabelHead
+			{
+				unsigned int desc = 0;
+				unsigned int count = 0;
+			};
+
+			// 读取头信息
+			LabelHead head;
+			int read = fread(&head, 1, sizeof(head), file);
+			if (read != sizeof(head) || head.desc != 0x00000801)
+			{
+				fclose(file);
+				return 0;
+			}
+
+			m_labels.resize(head.count);
+			std::vector<unsigned char> buffer;
+			buffer.resize(head.count);
+			read = fread(buffer.data(), 1, head.count, file);
+			if (read != head.count)
+			{
+				fclose(file);
+				return 0;
+			}
+
+			for (size_t j = 0; j < m_labels.size(); ++j)
+				m_labels[j] = static_cast<float>(buffer[j]);
+			
+			fclose(file);
 		}
 
 		return static_cast<int>(m_images.size());
@@ -55,59 +134,61 @@ public:
 	
 	double Training(size_t index, bool& right) override
 	{
-		// 重置误差项
-		m_trainer->zero_grad();
-		
-		// 设置输入
-		torch::Tensor input = m_images[index];
+		CarpRobotComputationGraph graph;
+
+		m_conv1.Build(graph);
+		m_conv2.Build(graph);
+		m_fc1.Build(graph);
+		m_fc2.Build(graph);
+
+		auto input = graph.AddInput(CarpRobotDim({ IMAGE_SIZE, IMAGE_SIZE }), &m_images[index]);
 		
 		// 执行运算
-		auto output = forward(input, true);
+		auto output = Forward(input, true);
 
 		// 判断预测是否正确
-		right = output.argmax().item().toInt() == m_labels[index].item().toInt();
+		right = output.GetValue().AsVectorAndArgmax() == m_labels[index];
 
 		// 设置输出表达式
 		auto target = m_labels[index];
 
 		// 获得损失表达式
-		auto loss_expr = torch::nll_loss(output, target);
-		auto loss = loss_expr.item().toDouble();
+		auto loss_expr = output.PickNegLogSoftmax(m_labels[index]);
+		auto loss = loss_expr.GetValue().AsScalar();
 		
-		// 计算反向传播
-		loss_expr.backward();
+		graph.Backward();
 		// 更新训练
-		m_trainer->step();
+		m_trainer.Update();
 
 		return loss;
 	}
 
-	torch::Tensor forward(torch::Tensor x, bool training)
+	CarpRobotExpression Forward(CarpRobotExpression& input, bool training)
 	{
 		// 第一层卷积
-		x = m_conv1->forward(x);
-		x = torch::max_pool2d(x, 2);
-		x = torch::relu(x);
+		auto x = m_conv1.Forward(input);
+		x = x.MaxPooling2D({ 2, 2 }, {1, 1}, false);
+		x = x.Rectify();
 
 		// 第二层卷积
-		x = m_conv2->forward(x);
-		x = m_conv2_drop->forward(x);
-		x = torch::max_pool2d(x, 2);
-		x = torch::relu(x);
+		x = m_conv2.Forward(x);
+		x = x.MaxPooling2D({ 2, 2 }, { 1, 1 }, false);
+		x = x.Rectify();
 
 		// 将矩阵转为
-		x = x.view({ -1, 4 * 4 * 128 });
+		x = x.Reshape(CarpRobotDim({ 1, 4 * 4 * 128 }));
 
 		// 第一层全连接
-		x = m_fc1->forward(x);
-		x = torch::relu(x);
+		x = m_fc1.Forward(x);
+		x = x.Rectify();
 
 		// dropout
-		x = torch::dropout(x, /*p=*/0.5, training);
+		if (training) x = x.Dropout(0.5);
 
 		// 第二层全连接
-		x = m_fc2->forward(x);
-		return torch::log_softmax(x, /*dim=*/1);
+		x = m_fc2.Forward(x);
+
+		return x.LogSoftmax();
 	}
 
 	int Output(size_t address)
@@ -137,27 +218,34 @@ public:
 				data[i] = static_cast<float>(new_surface.GetGray(i)) / 255.0f;
 		}
 
-		torch::Tensor input = torch::from_blob(data.data(), { 1 /*批次数量*/, 1 /*通道数*/, IMAGE_SIZE /*宽*/, IMAGE_SIZE /*高*/ });
+		CarpRobotComputationGraph graph;
+
+		m_conv1.Build(graph);
+		m_conv2.Build(graph);
+		m_fc1.Build(graph);
+		m_fc2.Build(graph);
+
+		auto input = graph.AddInput(CarpRobotDim({ IMAGE_SIZE, IMAGE_SIZE }), &data);
 
 		// 执行运算
-		auto output = forward(input, false);
+		auto output = Forward(input, false);
 
-		return output.argmax().item().toInt();
+		return output.GetValue().AsVectorAndArgmax();
 	}
 
 private:
-	std::shared_ptr<torch::optim::SGD> m_trainer;
+	CarpRobotParameterCollection m_model;
+	CarpRobotAdamTrainer m_trainer;
 
 private:
-	torch::nn::Conv2d m_conv1;
-	torch::nn::Conv2d m_conv2;
-	torch::nn::Dropout2d m_conv2_drop;
-	torch::nn::Linear m_fc1;
-	torch::nn::Linear m_fc2;
+	CarpRobotConv2D m_conv1;
+	CarpRobotConv2D m_conv2;
+	CarpRobotLinear m_fc1;
+	CarpRobotLinear m_fc2;
 
 private:
-	std::vector<torch::Tensor> m_images;
-	std::vector<torch::Tensor> m_labels;
+	std::vector<std::vector<float>> m_images;
+	std::vector<float> m_labels;
 	std::string m_mnist_path;
 
 	static const unsigned IMAGE_SIZE = 28;

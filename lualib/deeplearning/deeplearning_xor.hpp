@@ -46,11 +46,12 @@ public:
 
 		m_fc1.Build(graph);
 		m_fc2.Build(graph);
+
 		auto input = graph.AddInput(CarpRobotDim({ 2 }), &m_x_values[index]);
 		auto target = graph.AddInput(&m_y_value[index]);
 
-		auto sigmod = m_fc1.Forward(input).Sigmoid();
-		auto out_expr = m_fc2.Forward(sigmod);
+		auto x = m_fc1.Forward(input).Sigmoid();
+		auto out_expr = m_fc2.Forward(x);
 		auto out = out_expr.GetValue().AsScalar();
 
 		auto loss_expr = (out_expr - target).Square();

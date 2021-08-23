@@ -5,7 +5,6 @@
 #include <vector>
 
 #include "carp_event_consumer.hpp"
-#include "torch/torch.h"
 
 class DeeplearningModel
 {
@@ -131,10 +130,16 @@ public:
 public:
 	virtual void Load(const char* file_path)
 	{
+		CarpRobotModelDeserializer file;
+		if (!file.Open(file_path)) return;
+		m_model.Deserialize(file);
 	}
-	
+
 	virtual void Save(const char* file_path)
 	{
+		CarpRobotModelSerializer file;
+		if (!file.Open(file_path)) return;
+		m_model.Serialize(file);
 	}
 
 	// 返回-1，表示由无限多个
@@ -148,6 +153,9 @@ public:
 	virtual size_t GetTrainRound() { return m_train_round; }
 	virtual size_t GetCurRightCount() { return m_cur_right_count; }
 	
+protected:
+	CarpRobotParameterCollection m_model;
+
 private:
 	int m_total_train_count = 0;
 	size_t m_cur_train_count = 0;
@@ -164,31 +172,6 @@ private:
 	std::thread* m_thread = nullptr;
 	volatile bool m_run = false;	// 支线程是否正在执行
 	CarpEventConsumer m_consumer;
-};
-
-class TorchDeeplearningModel : public DeeplearningModel, public torch::nn::Module
-{
-public:
-	void Load(const char* file_path) override
-	{
-		torch::serialize::InputArchive archive;
-		try {
-			archive.load_from(file_path);
-		}
-		catch (...) { return; }
-		load(archive);
-	}
-
-	void Save(const char* file_path) override
-	{
-		torch::serialize::OutputArchive archive(
-			std::make_shared<torch::jit::CompilationUnit>());
-		save(archive);
-		try {
-			archive.save_to(file_path);
-		}
-		catch (...) {}
-	}
 };
 
 #endif

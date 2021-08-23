@@ -6,17 +6,17 @@ extern "C"
 #include "lua.h"
 }
 
-#include "deeplearning_dqn_cnn.hpp"
+#include "deeplearning_dqn_dnn.hpp"
 
 const int G2048_ROW_COUNT = 4;
 const int G2048_COL_COUNT = 4;
 const int G2048_ACTION_COUNT = 4;
 
-class Deeplearning2048Model : public DeeplearningDqnCnnModel
+class Deeplearning2048Model : public DeeplearningDqnDnnModel
 {
 public:
 	Deeplearning2048Model(int input_len, int action_count, int memory_capacity)
-		: DeeplearningDqnCnnModel(4, 4, memory_capacity)
+		: DeeplearningDqnDnnModel(16, 4, 100, memory_capacity)
 	{
         srand(static_cast<unsigned int>(time(0)));
 	}
@@ -92,7 +92,7 @@ public:
 
             if (score <= 0) score = 1;
 
-            double reward = (float)std::log2(score) / 16;
+            float reward = (float)std::log2(score) / 16.0f;
             if (max_reward < reward)
             {
                 max_reward = reward;
@@ -121,7 +121,7 @@ public:
 
         if (m_item_moved == false)
         {
-            printf("force action %d, reward %lf, max_action %d, max_reward %lf\n", action, action_map[action], max_action, action_map[max_action]);
+            // printf("force action %d, reward %lf, max_action %d, max_reward %lf\n", action, action_map[action], max_action, action_map[max_action]);
             if (max_action == 0)
                 CalcDown();
             else if (max_action == 1)
@@ -133,10 +133,12 @@ public:
         }
         else
         {
+            /*
             if (action_map[max_action] > action_map[action])
                 printf("action %d, reward %lf, max_action %d, max_reward %lf\n", action, action_map[action], max_action, action_map[max_action]);
             else
                 printf("action %d\n", action);
+            */
         }
 
         if (m_item_moved)
@@ -147,6 +149,7 @@ public:
 
         if (IsGameOver()) Restart2048();
 
+        /*
         for (int row = 0; row < G2048_ROW_COUNT; ++row)
         {
             for (int col = 0; col < G2048_COL_COUNT; ++col)
@@ -155,6 +158,7 @@ public:
             }
             printf("\n");
         }
+        */
 
         // Ñ§Ï°¾­Ñé
         double loss = 0;

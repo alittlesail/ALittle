@@ -10,7 +10,6 @@ extern "C" {
 #include "deeplearning_xor.hpp"
 #include "deeplearning_mnist.hpp"
 #include "deeplearning_dqn_dnn.hpp"
-#include "deeplearning_dqn_cnn.hpp"
 #include "deeplearning_2048.hpp"
 
 int luaopen_deeplearning(lua_State* l_state) {
@@ -46,14 +45,7 @@ int luaopen_deeplearning(lua_State* l_state) {
 		.addFunction("Learn", &DeeplearningDqnDnnModel::Learn)
 		.addFunction("LearnLastTransition", &DeeplearningDqnDnnModel::LearnLastTransition)
 		.endClass()
-		.deriveClass<DeeplearningDqnCnnModel, DeeplearningModel>("DeeplearningDqnCnnModel")
-		.addConstructor<void(*)(int, int, int)>()
-		.addCFunction("ChooseAction", &DeeplearningDqnCnnModel::ChooseAction)
-		.addCFunction("SaveTransition", &DeeplearningDqnCnnModel::SaveTransition)
-		.addFunction("Learn", &DeeplearningDqnCnnModel::Learn)
-		.addFunction("LearnLastTransition", &DeeplearningDqnCnnModel::LearnLastTransition)
-		.endClass()
-		.deriveClass<Deeplearning2048Model, DeeplearningDqnCnnModel>("Deeplearning2048Model")
+		.deriveClass<Deeplearning2048Model, DeeplearningDqnDnnModel>("Deeplearning2048Model")
 		.addConstructor<void(*)(int, int, int)>()
 		.addFunction("Restart2048", &Deeplearning2048Model::Restart2048)
 		.addFunction("Play2048", &Deeplearning2048Model::Play2048)

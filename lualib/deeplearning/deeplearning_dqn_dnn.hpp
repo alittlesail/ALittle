@@ -6,59 +6,54 @@ extern "C"
 #include "lua.h"
 }
 
-#include "torch/torch.h"
+#include "Carp/carp_robot_model.hpp"
 #include "deeplearning_model.hpp"
-
-#ifdef max
-#undef max
-#endif
 
 struct DeeplearningDqnDnn
 {
-	DeeplearningDqnDnn(int state_count, int action_count, int hide_dim)
-		: fc1(state_count, hide_dim)
-		, fc2(hide_dim, action_count)
+	DeeplearningDqnDnn(CarpRobotParameterCollection& model, int state_count, int action_count, int hide_dim)
+		: fc1(model, state_count, hide_dim)
+		, fc2(model, hide_dim, action_count)
 	{
-		fc1->weight.data().normal_(0, 0.1);
-		fc2->weight.data().normal_(0, 0.1);
 	}
 
-	torch::Tensor Forward(torch::Tensor input)
+	void Build(CarpRobotComputationGraph& graph)
 	{
-		return fc2(torch::relu(fc1(input)));
+		fc1.Build(graph);
+		fc2.Build(graph);
+	}
+
+	CarpRobotExpression Forward(CarpRobotExpression& input)
+	{
+		auto x = fc1.Forward(input);
+		x = x.Rectify();
+		return fc2.Forward(x);
 	}
 
 	void Copy(DeeplearningDqnDnn& value)
 	{
-		*fc1 = *value.fc1;
-		*fc2 = *value.fc2;
+		fc1.Copy(value.fc1);
+		fc2.Copy(value.fc2);
 	}
 
-	torch::nn::Linear fc1;
-	torch::nn::Linear fc2;
+	CarpRobotLinear fc1;
+	CarpRobotLinear fc2;
 };
 
-class DeeplearningDqnDnnModel : public TorchDeeplearningModel
+class DeeplearningDqnDnnModel : public DeeplearningModel
 {
 public:
 	DeeplearningDqnDnnModel(int state_count, int action_count, int hide_dim, int memory_capacity)
-		: m_eval(state_count, action_count, hide_dim)
-		, m_target(state_count, action_count, hide_dim)
+		: m_eval(m_model, state_count, action_count, hide_dim)
+		, m_target(m_model, state_count, action_count, hide_dim)
+		, m_trainer(m_model)
 	{
-		register_module("eval_fc1", m_eval.fc1);
-		register_module("eval_fc2", m_eval.fc2);
-
-		register_module("target_fc1", m_target.fc1);
-		register_module("target_fc2", m_target.fc2);
-
 		m_memory_capacity = memory_capacity;
 		if (m_memory_capacity < 100) m_memory_capacity = 100;
 		m_memory.reserve(m_memory_capacity);
 
 		m_state_count = state_count;
 		m_action_count = action_count;
-
-		m_trainer = std::make_shared<torch::optim::Adam>(parameters(), torch::optim::AdamOptions(LR));
 	}
 
 public:	
@@ -80,8 +75,10 @@ public:
 	{
 		if (m_memory.empty()) return 0;
 
-		// 重置误差项
-		m_trainer->zero_grad();
+		CarpRobotComputationGraph graph;
+
+		m_eval.Build(graph);
+		m_target.Build(graph);
 
 		// target net 参数更新
 		if (m_learn_step_counter % TARGET_REPLACE_ITER == 0)
@@ -95,25 +92,25 @@ public:
 		// 设置输入
 		auto& memory = m_memory[position];
 
-		const auto state = torch::from_blob(memory.state.data(), { 1, m_state_count });
-		const auto action = torch::from_blob(&memory.action, { 1, 1 }, torch::TensorOptions(torch::kLong));
-		const auto reward = torch::from_blob(&memory.reward, { 1 });
-		const auto next_state = torch::from_blob(memory.next_state.data(), { 1, m_state_count });
+		auto state = graph.AddInput(CarpRobotDim({ m_state_count }), &memory.state);
+		auto reward = graph.AddInput(&memory.reward);
+		auto next_state = graph.AddInput(CarpRobotDim({ m_state_count }), &memory.next_state);
 
 		// 针对做过的动作action, 来选 q_eval 的值, (q_eval 原本有所有动作的值)
-		auto q_eval = torch::gather(m_eval.Forward(state), 1, action);	// shape(batch, 1)
+		auto x = m_eval.Forward(state);
+		auto q_eval = x.PickElement(memory.action, 0);
 
-		auto q_next = m_target.Forward(next_state).detach();			// q_next 不进行反向传递误差, 所以 detach
-		auto q_target = reward + GAMMA * std::get<0>(q_next.max(1));	// shape(batch, 1)
+		auto q_next = m_target.Forward(next_state);
+		auto q_target = reward + GAMMA * q_next.GetValue().AsVectorAndMaxValue();
 
 		// 获得损失表达式
-		auto loss_expr = torch::mse_loss(q_eval, q_target);
-		auto loss = loss_expr.item().toDouble();
+		auto loss_expr = (q_eval - q_target).Square();
+		auto loss = loss_expr.GetValue().AsScalar();
 
 		// 计算反向传播
-		loss_expr.backward();
+		graph.Backward();
 		// 更新训练
-		m_trainer->step();
+		m_trainer.Update();
 
 		return loss;
 	}
@@ -159,10 +156,13 @@ public:
 
 		if (static_cast<int>(state.size()) != m_state_count) return 0;
 
-		const auto x = torch::from_blob(state.data(), { 1, m_state_count });
-		const auto actions_value = m_eval.Forward(x);
-		const auto action = std::get<1>(torch::max(actions_value, 1));
-		lua_pushinteger(l_state, action.item().toInt());
+		CarpRobotComputationGraph graph;
+		m_eval.Build(graph);
+
+		auto x = graph.AddInput(CarpRobotDim({ m_state_count }), &state);
+		auto actions_value = m_eval.Forward(x);
+		auto action = actions_value.GetValue().AsVectorAndArgmax();
+		lua_pushinteger(l_state, action);
 		return 1;
 	}
 
@@ -170,10 +170,13 @@ public:
 	{
 		if (static_cast<int>(state.size()) != m_state_count) return 0;
 
-		const auto x = torch::from_blob(state.data(), { 1, m_state_count });
-		const auto actions_value = m_eval.Forward(x);
-		const auto action = std::get<1>(torch::max(actions_value, 1));
-		return action.item().toInt();
+		CarpRobotComputationGraph graph;
+		m_eval.Build(graph);
+
+		auto x = graph.AddInput(CarpRobotDim({ m_state_count }), &state);
+		auto actions_value = m_eval.Forward(x);
+		auto action = actions_value.GetValue().AsVectorAndArgmax();
+		return action;
 	}
 
 	int SaveTransition(lua_State* l_state)
@@ -207,8 +210,8 @@ public:
 			lua_pop(l_state, 1);
 		}
 
-		info.action = luaL_checkinteger(l_state, 3);
-		info.reward = luaL_checknumber(l_state, 4);
+		info.action = static_cast<int>(luaL_checkinteger(l_state, 3));
+		info.reward = static_cast<float>(luaL_checknumber(l_state, 4));
 
 		if (m_memory.size() < m_memory_capacity)
 		{
@@ -225,7 +228,7 @@ public:
 		return 0;
 	}
 
-	size_t SaveTransitionByState(const std::vector<float>& state, int action, double reward, const std::vector<float>& new_state)
+	size_t SaveTransitionByState(const std::vector<float>& state, int action, float reward, const std::vector<float>& new_state)
 	{
 		MemoryInfo info;
 		info.state = state;
@@ -248,9 +251,8 @@ public:
 		return m_last_memory;
 	}
 
-
 private:
-	std::shared_ptr<torch::optim::Adam> m_trainer;
+	CarpRobotAdamTrainer m_trainer;
 
 private:
 	DeeplearningDqnDnn m_eval;
@@ -263,7 +265,7 @@ private:
 	struct MemoryInfo
 	{
 		std::vector<float> state;
-		int64_t action = 0;
+		int action = 0;
 		float reward = 0.0;
 		std::vector<float> next_state;
 	};

@@ -10,8 +10,8 @@ class DeeplearningMnistModel : public DeeplearningModel
 {
 public:
 	DeeplearningMnistModel()
-		: m_conv1(m_model, 1, 64, { 5, 5 }, { 1, 1 }, false)
-		, m_conv2(m_model, 64, 128, { 5, 5 }, { 1, 1 }, false)
+		: m_conv1(m_model, 1, 64, { 5, 5 })
+		, m_conv2(m_model, 64, 128, { 5, 5 })
 		, m_fc1(m_model, 4 * 4 * 128, 1024), m_fc2(m_model, 1024, 10)
 		, m_trainer(m_model)
 	{
@@ -21,6 +21,14 @@ public:
 	void SetMnistRoot(const char* path)
 	{
 		if (path) m_mnist_path = path;
+	}
+
+	static unsigned int CarpRtpReadUint32(unsigned int value)
+	{
+		char* ptr = (char*)&value;
+		std::swap(ptr[0], ptr[3]);
+		std::swap(ptr[1], ptr[2]);
+		return value;
 	}
 	
 	int TrainInit() override
@@ -38,7 +46,11 @@ public:
 #else
 			file = fopen(file_path.c_str(), "rb");
 #endif
-			if (file == nullptr) return 0;
+			if (file == nullptr)
+			{
+				printf("file open failed:%s\n", file_path.c_str());
+				return 0;
+			}
 
 			struct ImageHead
 			{
@@ -50,12 +62,18 @@ public:
 				
 			// 读取头信息
 			ImageHead head;
-			int read = fread(&head, 1, sizeof(head), file);
-			if (read != sizeof(head) || head.desc != 0x00000803)
+			size_t read = fread(&head, 1, sizeof(head), file);
+			if (read != sizeof(head))
 			{
+				printf("head read failed:%s\n", file_path.c_str());
 				fclose(file);
 				return 0;
 			}
+
+			head.desc = CarpRtpReadUint32(head.desc);
+			head.width = CarpRtpReadUint32(head.width);
+			head.height = CarpRtpReadUint32(head.height);
+			head.count = CarpRtpReadUint32(head.count);
 
 			// 图片像素数量
 			auto pixel_count = head.width * head.height;
@@ -70,6 +88,7 @@ public:
 				read = fread(buffer.data(), 1, pixel_count, file);
 				if (read != pixel_count)
 				{
+					printf("buffer read failed:%s\n", file_path.c_str());
 					fclose(file);
 					return 0;
 				}
@@ -90,7 +109,11 @@ public:
 #else
 			file = fopen(file_path.c_str(), "rb");
 #endif
-			if (file == nullptr) return 0;
+			if (file == nullptr)
+			{
+				printf("file open failed:%s\n", file_path.c_str());
+				return 0;
+			}
 
 			struct LabelHead
 			{
@@ -100,12 +123,16 @@ public:
 
 			// 读取头信息
 			LabelHead head;
-			int read = fread(&head, 1, sizeof(head), file);
-			if (read != sizeof(head) || head.desc != 0x00000801)
+			size_t read = fread(&head, 1, sizeof(head), file);
+			if (read != sizeof(head))
 			{
+				printf("head read failed:%s\n", file_path.c_str());
 				fclose(file);
 				return 0;
 			}
+
+			head.desc = CarpRtpReadUint32(head.desc);
+			head.count = CarpRtpReadUint32(head.count);
 
 			m_labels.resize(head.count);
 			std::vector<unsigned char> buffer;
@@ -113,12 +140,13 @@ public:
 			read = fread(buffer.data(), 1, head.count, file);
 			if (read != head.count)
 			{
+				printf("buffer read failed:%s\n", file_path.c_str());
 				fclose(file);
 				return 0;
 			}
 
 			for (size_t j = 0; j < m_labels.size(); ++j)
-				m_labels[j] = static_cast<float>(buffer[j]);
+				m_labels[j] = buffer[j];
 			
 			fclose(file);
 		}
@@ -141,7 +169,7 @@ public:
 		m_fc1.Build(graph);
 		m_fc2.Build(graph);
 
-		auto input = graph.AddInput(CarpRobotDim({ IMAGE_SIZE, IMAGE_SIZE }), &m_images[index]);
+		auto input = graph.AddInput(CarpRobotDim({ IMAGE_SIZE, IMAGE_SIZE, 1 }), &m_images[index]);
 		
 		// 执行运算
 		auto output = Forward(input, true);
@@ -167,16 +195,16 @@ public:
 	{
 		// 第一层卷积
 		auto x = m_conv1.Forward(input);
-		x = x.MaxPooling2D({ 2, 2 }, {1, 1}, false);
+		x = x.MaxPooling2D({ 2, 2 }, { 2, 2 });
 		x = x.Rectify();
 
 		// 第二层卷积
 		x = m_conv2.Forward(x);
-		x = x.MaxPooling2D({ 2, 2 }, { 1, 1 }, false);
+		x = x.MaxPooling2D({ 2, 2 }, { 2, 2 });
 		x = x.Rectify();
 
 		// 将矩阵转为
-		x = x.Reshape(CarpRobotDim({ 1, 4 * 4 * 128 }));
+		x = x.Reshape(CarpRobotDim({ 4 * 4 * 128 }));
 
 		// 第一层全连接
 		x = m_fc1.Forward(x);
@@ -225,7 +253,7 @@ public:
 		m_fc1.Build(graph);
 		m_fc2.Build(graph);
 
-		auto input = graph.AddInput(CarpRobotDim({ IMAGE_SIZE, IMAGE_SIZE }), &data);
+		auto input = graph.AddInput(CarpRobotDim({ IMAGE_SIZE, IMAGE_SIZE, 1 }), &data);
 
 		// 执行运算
 		auto output = Forward(input, false);
@@ -234,7 +262,6 @@ public:
 	}
 
 private:
-	CarpRobotParameterCollection m_model;
 	CarpRobotAdamTrainer m_trainer;
 
 private:
@@ -245,7 +272,7 @@ private:
 
 private:
 	std::vector<std::vector<float>> m_images;
-	std::vector<float> m_labels;
+	std::vector<int> m_labels;
 	std::string m_mnist_path;
 
 	static const unsigned IMAGE_SIZE = 28;

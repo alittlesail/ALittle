@@ -83,22 +83,7 @@ public:
 		return out_2.GetValue().AsScalar();
 	}
 
-	void Load(const char* file_path) override
-	{
-		CarpRobotModelDeserializer file;
-		if (!file.Open(file_path)) return;
-		m_model.Deserialize(file);
-	}
-
-	void Save(const char* file_path) override
-	{
-		CarpRobotModelSerializer file;
-		if (!file.Open(file_path)) return;
-		m_model.Serialize(file);
-	}
-
 private:
-	CarpRobotParameterCollection m_model;
 	CarpRobotAdamTrainer m_trainer;
 
 private:

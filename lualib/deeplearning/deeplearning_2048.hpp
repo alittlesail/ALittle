@@ -259,7 +259,7 @@ public:
         m_play_count++;
         m_total_score += m_score;
         if (m_max_score < m_score) m_max_score = m_score;
-        printf("restart, score:%d, max_score:%d, average_score:%d\n", m_score,  m_max_score, m_total_score / m_play_count);
+        printf("restart, score:%d, max_score:%d, average_score:%lf\n", m_score,  m_max_score, (double)m_total_score / (double)m_play_count);
         Init2048();
         Born2048();
         Born2048();

@@ -193,29 +193,42 @@ public:
 
 	CarpRobotExpression Forward(CarpRobotExpression& input, bool training)
 	{
-		// 第一层卷积
+		// input 28 * 28 * 1
+		
+		// 第一层卷积  得到=> 24 * 24 * 64
 		auto x = m_conv1.Forward(input);
+		
+		// 得到=> 12 * 12 * 64
 		x = x.MaxPooling2D({ 2, 2 }, { 2, 2 });
+
+		// 得到=> 12 * 12 * 64
 		x = x.Rectify();
 
-		// 第二层卷积
+		// 第二层卷积 得到=> 8 * 8 * 128
 		x = m_conv2.Forward(x);
+
+		// 得到=> 4 * 4 * 128
 		x = x.MaxPooling2D({ 2, 2 }, { 2, 2 });
+
+		// 得到=> 4 * 4 * 128
 		x = x.Rectify();
 
-		// 将矩阵转为
+		// 得到=> 2048
 		x = x.Reshape(CarpRobotDim({ 4 * 4 * 128 }));
 
-		// 第一层全连接
+		// 第一层全连接 得到=> 1024
 		x = m_fc1.Forward(x);
+
+		// 得到=> 1024
 		x = x.Rectify();
 
-		// dropout
+		// dropout 得到=> 1024
 		if (training) x = x.Dropout(0.5);
 
-		// 第二层全连接
+		// 第二层全连接 得到=> 10
 		x = m_fc2.Forward(x);
 
+		// 得到 => 10
 		return x.LogSoftmax();
 	}
 

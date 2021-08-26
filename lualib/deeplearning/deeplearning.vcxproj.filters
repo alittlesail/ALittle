@@ -9,6 +9,7 @@
     <ClInclude Include="deeplearning_2048.hpp" />
     <ClInclude Include="..\..\Carp\carp_robot.hpp" />
     <ClInclude Include="..\..\Carp\carp_robot_model.hpp" />
+    <ClInclude Include="deeplearning_dqn_cnn.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="deeplearninglib.cpp" />

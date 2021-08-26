@@ -6,17 +6,17 @@ extern "C"
 #include "lua.h"
 }
 
-#include "deeplearning_dqn_dnn.hpp"
+#include "deeplearning_dqn_cnn.hpp"
 
 const int G2048_ROW_COUNT = 4;
 const int G2048_COL_COUNT = 4;
 const int G2048_ACTION_COUNT = 4;
 
-class Deeplearning2048Model : public DeeplearningDqnDnnModel
+class Deeplearning2048Model : public DeeplearningDqnCnnModel
 {
 public:
 	Deeplearning2048Model(int input_len, int action_count, int memory_capacity)
-		: DeeplearningDqnDnnModel(16, 4, 100, memory_capacity)
+		: DeeplearningDqnCnnModel(4, 4, 4, memory_capacity)
 	{
         srand(static_cast<unsigned int>(time(0)));
 	}
@@ -24,7 +24,10 @@ public:
 public:	
 	int TrainInit() override
 	{
-        Restart2048();
+        Init2048();
+        Born2048();
+        Born2048();
+
 		return -1;
 	}
 
@@ -73,26 +76,37 @@ public:
             // 判断是否结束
             bool over = IsGameOver();
 
-            int score = 1;
+            float reward = -50;
             if (!over)
             {
                 // 如果移动了，加1分
-                if (m_item_moved) score += 2;
+                if (!m_item_moved)
+                {
+                    reward = -5;
+                }
+                else
+                {
+                    reward = 1;
+                    reward += new_score - old_score;
+                }
 
                 // 判断局面
-                score += CalcSmooth(new_value_map);
+                // score += CalcSmooth(new_value_map);
                 // if (CalcSmooth(new_value_map) > CalcSmooth(old_value_map))
                 //     score += 1;
                 // score += CalcSmooth(new_value_map); // -CalcSmooth(old_value_map);
                 // score += CalcGradient(new_value_map); // -CalcGradient(old_value_map);
 
-                // 有新分数
-                score += new_score;
+                // score += CalcMax(new_value_map);
+
+                // 当前分数
             }
 
-            if (score <= 0) score = 1;
+            if (reward > 0)
+                reward = (float)std::log2(reward + 1) / 16.0f;
+            else if (reward < 0)
+                reward = -(float)std::log2(-reward + 1) / 16.0f;
 
-            float reward = (float)std::log2(score) / 16.0f;
             if (max_reward < reward)
             {
                 max_reward = reward;
@@ -121,7 +135,6 @@ public:
 
         if (m_item_moved == false)
         {
-            // printf("force action %d, reward %lf, max_action %d, max_reward %lf\n", action, action_map[action], max_action, action_map[max_action]);
             if (max_action == 0)
                 CalcDown();
             else if (max_action == 1)
@@ -130,6 +143,9 @@ public:
                 CalcLeft();
             else if (max_action == 3)
                 CalcUp();
+
+            // if (m_item_moved)
+            //    printf("step action %d, reward %lf, force_action %d, force_reward %lf\n", action, action_map[action], max_action, action_map[max_action]);
         }
         else
         {
@@ -141,30 +157,36 @@ public:
             */
         }
 
+        ++m_step;
+        // if (m_score > old_score) printf("step:%d\tscore:%d\n", m_step, m_score);
+
         if (m_item_moved)
         {
             Born2048();
             Born2048();
         }
 
-        if (IsGameOver()) Restart2048();
-
-        /*
-        for (int row = 0; row < G2048_ROW_COUNT; ++row)
+        if (IsGameOver())
         {
-            for (int col = 0; col < G2048_COL_COUNT; ++col)
+            for (int row = 0; row < G2048_ROW_COUNT; ++row)
             {
-                printf("%d\t", m_2048[row][col]);
+                for (int col = 0; col < G2048_COL_COUNT; ++col)
+                {
+                    printf("%d\t", m_2048[row][col]);
+                }
+                printf("\n");
             }
-            printf("\n");
+         
+            Restart2048();
         }
-        */
 
         // 学习经验
         double loss = 0;
-        int learn_count = 4;
+        int learn_count = GetMemorySize() / 2;
+        if (learn_count <= 0) learn_count = 1;
+        else if (learn_count >= 10) learn_count = 10;
         for (int i = 0; i < learn_count; ++i)
-            loss += LearnLastTransition(40);
+            loss += Learn();
         return loss / learn_count;
     }
 	
@@ -172,6 +194,21 @@ public:
 	{
         return TrainingDeep();
 	}
+
+    int CalcMax(int value_map[G2048_ROW_COUNT][G2048_COL_COUNT])
+    {
+        int score = 0;
+        for (int row = 0; row < G2048_ROW_COUNT; ++row)
+        {
+            for (int col = 0; col < G2048_COL_COUNT; ++col)
+            {
+                auto cur_value = value_map[row][col];
+                if (score < cur_value) score = cur_value;
+            }
+        }
+
+        return score;
+    }
 
     int CalcSmooth(int value_map[G2048_ROW_COUNT][G2048_COL_COUNT])
     {
@@ -209,42 +246,6 @@ public:
         return score;
     }
 
-    int CalcGradient(int value_map[G2048_ROW_COUNT][G2048_COL_COUNT])
-    {
-        int score = 0;
-        for (int row = 0; row < G2048_ROW_COUNT; ++row)
-        {
-            for (int col = 0; col < G2048_COL_COUNT; ++col)
-            {
-                auto cur_value = value_map[row][col];
-                if (cur_value == 0) continue;
-
-                for (int next_col = col + 1; next_col < G2048_COL_COUNT; ++next_col)
-                {
-                    auto next_value = value_map[row][next_col];
-                    if (next_value != 0)
-                    {
-                        if (cur_value <= next_value)
-                            score += 1;
-                        break;
-                    }
-                }
-                for (int next_row = row + 1; next_row < G2048_ROW_COUNT; ++next_row)
-                {
-                    auto next_value = value_map[next_row][col];
-                    if (next_value != 0)
-                    {
-                        if (cur_value <= next_value)
-                            score += 1;
-                        break;
-                    }
-                }
-            }
-        }
-
-        return score;
-    }
-
 public:
     struct Cell
     {
@@ -255,13 +256,17 @@ public:
 
     void Restart2048()
     {
-        printf("restart :%d\n", m_score);
+        m_play_count++;
+        m_total_score += m_score;
+        if (m_max_score < m_score) m_max_score = m_score;
+        printf("restart, score:%d, max_score:%d, average_score:%d\n", m_score,  m_max_score, m_total_score / m_play_count);
         Init2048();
         Born2048();
         Born2048();
 
         m_item_moved = false;
         m_score = 0;
+        m_step = 0;
     }
 
 	void Init2048()
@@ -774,7 +779,7 @@ public:
         for (int row = 0; row < G2048_ROW_COUNT; ++row)
             for (int col = 0; col < G2048_COL_COUNT; ++col)
             {
-                state.push_back((float)std::log2(value_map[row][col] + 2) / 16.0f);
+                state.push_back((float)std::log2(value_map[row][col] + 1) / 16.0f);
             }
     }
 
@@ -802,6 +807,11 @@ private:
 	int m_2048[G2048_ROW_COUNT][G2048_COL_COUNT];
     bool m_item_moved = false;
     int m_score = 0;
+    int m_step = 0;
+
+    int m_play_count = 0;
+    int m_total_score = 0;
+    int m_max_score = 0;
 };
 
 #endif

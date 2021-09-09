@@ -178,6 +178,10 @@ public:
 	void SetToRtp(int first_port, const char* rtp_ip, int rtp_port);
 	// 设置被叫方鉴权
 	void SetToAuth(int first_port, const char* password);
+	// 开始录音
+	bool StartRecordRtp(int first_port, const char* file_path);
+	// 停止录音
+	void StopRecordRtp(int first_port);
 
 	// 清理空闲的rtp
 	void ClearIdleRtp(int idle_delta_time);

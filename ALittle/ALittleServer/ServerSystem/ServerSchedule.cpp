@@ -77,6 +77,8 @@ void ServerSchedule::RegisterToScript()
 		.addFunction("SetToRtp", &ServerSchedule::SetToRtp)
 		.addFunction("SetToAuth", &ServerSchedule::SetToAuth)
 		.addFunction("ClearIdleRtp", &ServerSchedule::ClearIdleRtp)
+		.addFunction("StartRecordRtp", &ServerSchedule::StartRecordRtp)
+		.addFunction("StopRecordRtp", &ServerSchedule::StopRecordRtp)
 
 		.addFunction("ReleaseNat", &ServerSchedule::ReleaseNat)
 		.addFunction("ReleaseAllNat", &ServerSchedule::ReleaseAllNat)
@@ -763,6 +765,24 @@ void ServerSchedule::SetToAuth(int first_port, const char* password)
 	}
 
 	use_it->second->SetToAuth(password);
+}
+
+bool ServerSchedule::StartRecordRtp(int first_port, const char* file_path)
+{
+	if (file_path == nullptr) return false;
+
+	auto use_it = m_use_map_rtp.find(first_port);
+	if (use_it == m_use_map_rtp.end()) return false;
+
+	return use_it->second->StartRecord(file_path);
+}
+
+void ServerSchedule::StopRecordRtp(int first_port)
+{
+	auto use_it = m_use_map_rtp.find(first_port);
+	if (use_it == m_use_map_rtp.end()) return;
+
+	use_it->second->StopRecord();
 }
 
 void ServerSchedule::ClearIdleRtp(int idle_delta_time)

@@ -37,3 +37,6 @@
 [submodule "SDL"]
 	path = SDL
 	url = https://github.com/libsdl-org/SDL.git
+[submodule "bcg729"]
+	path = bcg729
+	url = https://gitlab.linphone.org/BC/public/bcg729.git

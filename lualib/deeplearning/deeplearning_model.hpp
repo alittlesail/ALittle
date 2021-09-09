@@ -133,12 +133,21 @@ public:
 		CarpRobotModelDeserializer file;
 		if (!file.Open(file_path)) return;
 		m_model.Deserialize(file);
+		m_file_path = file_path;
 	}
 
 	virtual void Save(const char* file_path)
 	{
 		CarpRobotModelSerializer file;
 		if (!file.Open(file_path)) return;
+		m_model.Serialize(file);
+		m_file_path = file_path;
+	}
+
+	virtual void AutoSave()
+	{
+		CarpRobotModelSerializer file;
+		if (!file.Open(m_file_path)) return;
 		m_model.Serialize(file);
 	}
 
@@ -155,6 +164,7 @@ public:
 	
 protected:
 	CarpRobotParameterCollection m_model;
+	std::string m_file_path;
 
 private:
 	int m_total_train_count = 0;

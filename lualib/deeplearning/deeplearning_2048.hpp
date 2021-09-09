@@ -182,7 +182,7 @@ public:
 
         // Ñ§Ï°¾­Ñé
         double loss = 0;
-        int learn_count = GetMemorySize() / 2;
+        int learn_count = (int)GetMemorySize() / 2;
         if (learn_count <= 0) learn_count = 1;
         else if (learn_count >= 10) learn_count = 10;
         for (int i = 0; i < learn_count; ++i)
@@ -267,6 +267,8 @@ public:
         m_item_moved = false;
         m_score = 0;
         m_step = 0;
+
+        if (m_play_count % 100 == 0) AutoSave();
     }
 
 	void Init2048()

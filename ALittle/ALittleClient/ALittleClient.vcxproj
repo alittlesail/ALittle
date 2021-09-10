@@ -26,6 +26,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Carp\carp_audio_codec.hpp" />
+    <ClInclude Include="..\..\Carp\carp_audio_conversion.hpp" />
     <ClInclude Include="..\..\Carp\carp_bit_bind.hpp" />
     <ClInclude Include="..\..\Carp\carp_connect_client.hpp" />
     <ClInclude Include="..\..\Carp\carp_console.hpp" />

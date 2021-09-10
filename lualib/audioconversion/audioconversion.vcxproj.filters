@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="..\..\bcg729\src\codebooks.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\computeAdaptativeCodebookGain.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\computeLP.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\computeWeightedSpeech.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\decodeAdaptativeCodeVector.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\decodeFixedCodeVector.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\decodeGains.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\decodeLSP.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\decoder.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\dtx.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\encoder.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\findOpenLoopPitchDelay.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\fixedCodebookSearch.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\gainQuantization.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\interpolateqLSP.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\LP2LSPConversion.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\LPSynthesisFilter.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\LSPQuantization.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\postFilter.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\postProcessing.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\preProcessing.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\qLSP2LP.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\utils.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\vad.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\adaptativeCodebookSearch.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\cng.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Carp\carp_audio_conversion.hpp" />
+    <ClInclude Include="..\..\Carp\carp_audio_codec.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="bcg729">
+      <UniqueIdentifier>{51a1ba1e-b259-4255-a7de-c5b1217000ad}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

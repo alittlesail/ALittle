@@ -40,8 +40,44 @@
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\bcg729\src\adaptativeCodebookSearch.h" />
+    <ClInclude Include="..\..\bcg729\src\basicOperationsMacros.h" />
+    <ClInclude Include="..\..\bcg729\src\cng.h" />
+    <ClInclude Include="..\..\bcg729\src\codebooks.h" />
+    <ClInclude Include="..\..\bcg729\src\codecParameters.h" />
+    <ClInclude Include="..\..\bcg729\src\computeAdaptativeCodebookGain.h" />
+    <ClInclude Include="..\..\bcg729\src\computeLP.h" />
+    <ClInclude Include="..\..\bcg729\src\computeWeightedSpeech.h" />
+    <ClInclude Include="..\..\bcg729\src\decodeAdaptativeCodeVector.h" />
+    <ClInclude Include="..\..\bcg729\src\decodeFixedCodeVector.h" />
+    <ClInclude Include="..\..\bcg729\src\decodeGains.h" />
+    <ClInclude Include="..\..\bcg729\src\decodeLSP.h" />
+    <ClInclude Include="..\..\bcg729\src\dtx.h" />
+    <ClInclude Include="..\..\bcg729\src\findOpenLoopPitchDelay.h" />
+    <ClInclude Include="..\..\bcg729\src\fixedCodebookSearch.h" />
+    <ClInclude Include="..\..\bcg729\src\fixedPointMacros.h" />
+    <ClInclude Include="..\..\bcg729\src\floatingPointMacros.h" />
+    <ClInclude Include="..\..\bcg729\src\g729FixedPointMath.h" />
+    <ClInclude Include="..\..\bcg729\src\gainQuantization.h" />
+    <ClInclude Include="..\..\bcg729\src\interpolateqLSP.h" />
+    <ClInclude Include="..\..\bcg729\src\LP2LSPConversion.h" />
+    <ClInclude Include="..\..\bcg729\src\LPSynthesisFilter.h" />
+    <ClInclude Include="..\..\bcg729\src\LSPQuantization.h" />
+    <ClInclude Include="..\..\bcg729\src\postFilter.h" />
+    <ClInclude Include="..\..\bcg729\src\postProcessing.h" />
+    <ClInclude Include="..\..\bcg729\src\preProcessing.h" />
+    <ClInclude Include="..\..\bcg729\src\qLSP2LP.h" />
+    <ClInclude Include="..\..\bcg729\src\typedef.h" />
+    <ClInclude Include="..\..\bcg729\src\utils.h" />
+    <ClInclude Include="..\..\bcg729\src\vad.h" />
     <ClInclude Include="..\..\Carp\carp_audio_codec.hpp" />
     <ClInclude Include="..\..\Carp\carp_audio_conversion.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\bcg729\src\Makefile.am" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\bcg729\src\CMakeLists.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

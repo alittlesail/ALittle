@@ -2,6 +2,36 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="..\..\bcg729\src\LPSynthesisFilter.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\LSPQuantization.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\postFilter.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\postProcessing.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\preProcessing.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\qLSP2LP.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\utils.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\vad.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\adaptativeCodebookSearch.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\bcg729\src\cng.c">
+      <Filter>bcg729</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\bcg729\src\codebooks.c">
       <Filter>bcg729</Filter>
     </ClCompile>
@@ -50,44 +80,114 @@
     <ClCompile Include="..\..\bcg729\src\LP2LSPConversion.c">
       <Filter>bcg729</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\bcg729\src\LPSynthesisFilter.c">
-      <Filter>bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\bcg729\src\LSPQuantization.c">
-      <Filter>bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\bcg729\src\postFilter.c">
-      <Filter>bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\bcg729\src\postProcessing.c">
-      <Filter>bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\bcg729\src\preProcessing.c">
-      <Filter>bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\bcg729\src\qLSP2LP.c">
-      <Filter>bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\bcg729\src\utils.c">
-      <Filter>bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\bcg729\src\vad.c">
-      <Filter>bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\bcg729\src\adaptativeCodebookSearch.c">
-      <Filter>bcg729</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\bcg729\src\cng.c">
-      <Filter>bcg729</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Carp\carp_audio_conversion.hpp" />
     <ClInclude Include="..\..\Carp\carp_audio_codec.hpp" />
+    <ClInclude Include="..\..\bcg729\src\LPSynthesisFilter.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\LSPQuantization.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\postFilter.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\postProcessing.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\preProcessing.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\qLSP2LP.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\typedef.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\utils.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\vad.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\adaptativeCodebookSearch.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\basicOperationsMacros.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\cng.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\codebooks.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\codecParameters.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\computeAdaptativeCodebookGain.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\computeLP.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\computeWeightedSpeech.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\decodeAdaptativeCodeVector.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\decodeFixedCodeVector.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\decodeGains.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\decodeLSP.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\dtx.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\findOpenLoopPitchDelay.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\fixedCodebookSearch.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\fixedPointMacros.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\floatingPointMacros.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\g729FixedPointMath.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\gainQuantization.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\interpolateqLSP.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\bcg729\src\LP2LSPConversion.h">
+      <Filter>bcg729</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="bcg729">
       <UniqueIdentifier>{51a1ba1e-b259-4255-a7de-c5b1217000ad}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\bcg729\src\Makefile.am">
+      <Filter>bcg729</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\bcg729\src\CMakeLists.txt">
+      <Filter>bcg729</Filter>
+    </Text>
   </ItemGroup>
 </Project>

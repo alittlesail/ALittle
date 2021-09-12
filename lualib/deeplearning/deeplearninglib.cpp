@@ -10,6 +10,7 @@ extern "C" {
 #include "deeplearning_xor.hpp"
 #include "deeplearning_mnist.hpp"
 #include "deeplearning_dqn_dnn.hpp"
+#include "deeplearning_dueling_dqn.hpp"
 #include "deeplearning_2048.hpp"
 
 int luaopen_deeplearning(lua_State* l_state) {
@@ -44,6 +45,13 @@ int luaopen_deeplearning(lua_State* l_state) {
 		.addCFunction("SaveTransition", &DeeplearningDqnDnnModel::SaveTransition)
 		.addFunction("Learn", &DeeplearningDqnDnnModel::Learn)
 		.addFunction("LearnLastTransition", &DeeplearningDqnDnnModel::LearnLastTransition)
+		.endClass()
+		.deriveClass<DeeplearningDuelingDqnModel, DeeplearningModel>("DeeplearningDuelingDqnModel")
+		.addConstructor<void(*)(int, int, int, int)>()
+		.addCFunction("ChooseAction", &DeeplearningDuelingDqnModel::ChooseAction)
+		.addCFunction("SaveTransition", &DeeplearningDuelingDqnModel::SaveTransition)
+		.addFunction("Learn", &DeeplearningDuelingDqnModel::Learn)
+		.addFunction("LearnLastTransition", &DeeplearningDuelingDqnModel::LearnLastTransition)
 		.endClass()
 		.deriveClass<Deeplearning2048Model, DeeplearningDqnDnnModel>("Deeplearning2048Model")
 		.addConstructor<void(*)(int, int, int)>()

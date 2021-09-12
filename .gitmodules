@@ -40,3 +40,6 @@
 [submodule "bcg729"]
 	path = bcg729
 	url = https://gitlab.linphone.org/BC/public/bcg729.git
+[submodule "tiny-dnn"]
+	path = tiny-dnn
+	url = https://github.com/tiny-dnn/tiny-dnn.git

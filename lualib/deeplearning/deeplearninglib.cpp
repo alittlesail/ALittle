@@ -7,13 +7,17 @@ extern "C" {
 }
 #include <LuaBridge/LuaBridge.h>
 
+#include "Carp/carp_robot_bind.hpp"
 #include "deeplearning_xor.hpp"
 #include "deeplearning_mnist.hpp"
 #include "deeplearning_dqn_dnn.hpp"
 #include "deeplearning_dueling_dqn.hpp"
 #include "deeplearning_2048.hpp"
 
-int luaopen_deeplearning(lua_State* l_state) {
+int luaopen_deeplearning(lua_State* l_state)
+{
+	CarpRobotBind::Bind(l_state);
+
 	luabridge::getGlobalNamespace(l_state)
 		.beginNamespace("deeplearning")
 		.beginClass<DeeplearningModel>("DeeplearningModel")

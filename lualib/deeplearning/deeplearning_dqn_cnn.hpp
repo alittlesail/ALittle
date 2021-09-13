@@ -15,57 +15,47 @@ const int FC_SIZE = 512;
 
 struct DeeplearningDqnCnn
 {
-	DeeplearningDqnCnn(CarpRobotParameterCollection& model, int input_width, int input_height, int output_num)
+	DeeplearningDqnCnn(CarpRobotParameterCollection* model, int input_width, int input_height, int output_num)
 		: conv1(model, 1, 16, { 2, 2 }, { 1, 1 }, false)
-		, conv2(model, 16, 32, { 2, 2 }, { 1, 1 }, false)
-		, fc1(model, 32 * 4 * 4, 512)
-		, fc2(model, 512, 64)
-		, fc3(model, 64, output_num)
+		, fc1(model, 16 * 4 * 4, 512)
+		, fc2(model, 512, output_num)
 	{
 	}
 
-	void Build(CarpRobotComputationGraph& graph)
+	void Build(CarpRobotComputationGraph* graph)
 	{
 		conv1.Build(graph);
-		conv2.Build(graph);
 		fc1.Build(graph);
 		fc2.Build(graph);
-		fc3.Build(graph);
 	}
 
-	CarpRobotExpression Forward(CarpRobotExpression& input)
+	CarpRobotExpression Forward(CarpRobotExpression input)
 	{
 		auto x = conv1.Forward(input).Rectify();
-		x = conv2.Forward(x).Rectify();
-		x = x.Reshape(CarpRobotDim({ 32 * 4 * 4 }));
+		x = x.Reshape(CarpRobotDim({ 16 * 4 * 4 }));
 		x = fc1.Forward(x).Rectify();
-		x = fc2.Forward(x).Rectify();
-		return fc3.Forward(x);
+		return fc2.Forward(x);
 	}
 
-	void Copy(DeeplearningDqnCnn& value)
+	void Copy(DeeplearningDqnCnn* value)
 	{
-		conv1.Copy(value.conv1);
-		conv2.Copy(value.conv2);
-		fc1.Copy(value.fc1);
-		fc2.Copy(value.fc2);
-		fc3.Copy(value.fc3);
+		conv1.Copy(&value->conv1);
+		fc1.Copy(&value->fc1);
+		fc2.Copy(&value->fc2);
 	}
 
 	CarpRobotConv2D conv1;
-	CarpRobotConv2D conv2;
 	CarpRobotLinear fc1;
 	CarpRobotLinear fc2;
-	CarpRobotLinear fc3;
 };
 
 class DeeplearningDqnCnnModel : public DeeplearningModel
 {
 public:
 	DeeplearningDqnCnnModel(int input_width, int input_height, int action_count, int memory_capacity)
-		: m_eval(m_model, input_width, input_height, action_count)
-		, m_target(m_model, input_width, input_height, action_count)
-		, m_trainer(m_model)
+		: m_eval(&m_model, input_width, input_height, action_count)
+		, m_target(&m_model, input_width, input_height, action_count)
+		, m_trainer(&m_model)
 	{
 		m_memory_capacity = memory_capacity;
 		if (m_memory_capacity < 100) m_memory_capacity = 100;
@@ -98,12 +88,12 @@ public:
 		CarpRobotComputationGraph graph;
 		graph.SetImmediateCompute(true);
 
-		m_eval.Build(graph);
-		m_target.Build(graph);
+		m_eval.Build(&graph);
+		m_target.Build(&graph);
 
 		// target net 参数更新
 		if (m_learn_step_counter % TARGET_REPLACE_ITER == 0)
-			m_target.Copy(m_eval);
+			m_target.Copy(&m_eval);
 
 		m_learn_step_counter += 1;
 
@@ -181,7 +171,7 @@ public:
 
 		CarpRobotComputationGraph graph;
 		graph.SetImmediateCompute(true);
-		m_eval.Build(graph);
+		m_eval.Build(&graph);
 
 		auto x = graph.AddInput(CarpRobotDim({ m_input_width, m_input_height, 1 }), &state);
 		auto actions_value = m_eval.Forward(x);

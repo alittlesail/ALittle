@@ -8,8 +8,8 @@ class DeeplearningXorModel : public DeeplearningModel
 {
 public:
 	DeeplearningXorModel()
-		: m_fc1(m_model, 2, 8), m_fc2(m_model, 8, 1)
-		, m_trainer(m_model)
+		: m_fc1(&m_model, 2, 8), m_fc2(&m_model, 8, 1)
+		, m_trainer(&m_model)
 	{
 	}
 
@@ -44,8 +44,8 @@ public:
 
 		CarpRobotComputationGraph graph;
 
-		m_fc1.Build(graph);
-		m_fc2.Build(graph);
+		m_fc1.Build(&graph);
+		m_fc2.Build(&graph);
 
 		auto input = graph.AddInput(CarpRobotDim({ 2 }), &m_x_values[index]);
 		auto target = graph.AddInput(&m_y_value[index]);
@@ -69,10 +69,10 @@ public:
 	{
 		CarpRobotComputationGraph graph;
 
-		m_fc1.Build(graph);
-		m_fc2.Build(graph);
+		m_fc1.Build(&graph);
+		m_fc2.Build(&graph);
 
-		std::vector<float> x_values;
+		std::vector<cr_real> x_values;
 		x_values.push_back(x1);
 		x_values.push_back(x2);
 		auto x = graph.AddInput(CarpRobotDim({ 2 }), &x_values);

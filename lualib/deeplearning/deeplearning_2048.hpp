@@ -6,17 +6,17 @@ extern "C"
 #include "lua.h"
 }
 
-#include "deeplearning_dqn_cnn.hpp"
+#include "deeplearning_dueling_dqn.hpp"
 
 const int G2048_ROW_COUNT = 4;
 const int G2048_COL_COUNT = 4;
 const int G2048_ACTION_COUNT = 4;
 
-class Deeplearning2048Model : public DeeplearningDqnCnnModel
+class Deeplearning2048Model : public DeeplearningDuelingDqnModel
 {
 public:
 	Deeplearning2048Model(int input_len, int action_count, int memory_capacity)
-		: DeeplearningDqnCnnModel(4, 4, 4, memory_capacity)
+		: DeeplearningDuelingDqnModel(4, 4, 512, memory_capacity)
 	{
         srand(static_cast<unsigned int>(time(0)));
 	}
@@ -35,7 +35,86 @@ public:
 	{
 	}
 
-    double TrainingDeep()
+    void TrainingNormal()
+    {
+        // 初始化为没有移动
+        m_item_moved = false;
+
+        // 保存信息
+        int old_value_map[G2048_ROW_COUNT][G2048_COL_COUNT];
+        GetValueMap(old_value_map);
+        int old_score = m_score;
+
+        // 保存状态
+        std::vector<float> old_state;
+        CalcState(old_value_map, old_state);
+
+        // 由ai选择操作
+        int action = 0;
+        if (rand() % 100 > 1)
+            action = ChooseActionByState(old_state);
+        else
+            action = rand() % 4;
+
+        if (action == 0)
+            CalcDown();
+        else if (action == 1)
+            CalcRight();
+        else if (action == 2)
+            CalcLeft();
+        else if (action == 3)
+            CalcUp();
+
+        // 获取新数据
+        int new_value_map[G2048_ROW_COUNT][G2048_COL_COUNT];
+        GetValueMap(new_value_map);
+        // 获取分数
+        auto new_score = m_score;
+
+        // 获取新状态
+        std::vector<float> new_state;
+        CalcState(new_value_map, new_state);
+
+        float reward = 0.0f;
+        if (m_item_moved)
+        {
+            m_invalid_step = 0;
+            reward = (float)std::log2(new_score - old_score + 1) / 16.0f;
+        }
+        else
+        {
+            m_invalid_step++;
+            reward = -1;
+        }
+        
+        SaveTransitionByState(old_state, action, reward, new_state);
+
+        // 如果移动了就生成两个格子
+        if (m_item_moved)
+        {
+            Born2048();
+            Born2048();
+        }
+
+        // 判断是否结束
+        bool over = IsGameOver();
+
+        if (over || m_invalid_step >= 10)
+        {
+            for (int row = 0; row < G2048_ROW_COUNT; ++row)
+            {
+                for (int col = 0; col < G2048_COL_COUNT; ++col)
+                {
+                    printf("%d\t", m_2048[row][col]);
+                }
+                printf("\n");
+            }
+
+            Restart2048();
+        }
+    }
+
+    void TrainingDeep()
     {
         // 保存信息
         int old_value_map[G2048_ROW_COUNT][G2048_COL_COUNT];
@@ -114,7 +193,7 @@ public:
             }
             action_map[action] = reward;
             // 保存经验
-            auto index = SaveTransitionByState(old_state, action, reward, new_state);
+            SaveTransitionByState(old_state, action, reward, new_state);
 
             // 重置数据
             ResetData(old_value_map, old_score);
@@ -166,6 +245,8 @@ public:
             Born2048();
         }
 
+        m_item_moved = false;
+
         if (IsGameOver())
         {
             for (int row = 0; row < G2048_ROW_COUNT; ++row)
@@ -179,20 +260,14 @@ public:
          
             Restart2048();
         }
-
-        // 学习经验
-        double loss = 0;
-        int learn_count = (int)GetMemorySize() / 2;
-        if (learn_count <= 0) learn_count = 1;
-        else if (learn_count >= 10) learn_count = 10;
-        for (int i = 0; i < learn_count; ++i)
-            loss += Learn();
-        return loss / learn_count;
     }
 	
 	double Training(size_t index, bool& right) override
 	{
-        return TrainingDeep();
+        // TrainingDeep();
+        TrainingNormal();
+
+        return LearnLastTransition(200);
 	}
 
     int CalcMax(int value_map[G2048_ROW_COUNT][G2048_COL_COUNT])
@@ -267,6 +342,7 @@ public:
         m_item_moved = false;
         m_score = 0;
         m_step = 0;
+        m_invalid_step = 0;
 
         if (m_play_count % 100 == 0) AutoSave();
     }
@@ -810,6 +886,7 @@ private:
     bool m_item_moved = false;
     int m_score = 0;
     int m_step = 0;
+    int m_invalid_step = 0;
 
     int m_play_count = 0;
     int m_total_score = 0;

@@ -11,29 +11,29 @@ extern "C"
 
 struct DeeplearningDqnDnn
 {
-	DeeplearningDqnDnn(CarpRobotParameterCollection& model, int state_count, int action_count, int hide_dim)
+	DeeplearningDqnDnn(CarpRobotParameterCollection* model, int state_count, int action_count, int hide_dim)
 		: fc1(model, state_count, hide_dim)
 		, fc2(model, hide_dim, action_count)
 	{
 	}
 
-	void Build(CarpRobotComputationGraph& graph)
+	void Build(CarpRobotComputationGraph* graph)
 	{
 		fc1.Build(graph);
 		fc2.Build(graph);
 	}
 
-	CarpRobotExpression Forward(CarpRobotExpression& input)
+	CarpRobotExpression Forward(CarpRobotExpression input)
 	{
 		auto x = fc1.Forward(input);
 		x = x.Rectify();
 		return fc2.Forward(x);
 	}
 
-	void Copy(DeeplearningDqnDnn& value)
+	void Copy(DeeplearningDqnDnn* value)
 	{
-		fc1.Copy(value.fc1);
-		fc2.Copy(value.fc2);
+		fc1.Copy(&value->fc1);
+		fc2.Copy(&value->fc2);
 	}
 
 	CarpRobotLinear fc1;
@@ -44,9 +44,9 @@ class DeeplearningDqnDnnModel : public DeeplearningModel
 {
 public:
 	DeeplearningDqnDnnModel(int state_count, int action_count, int hide_dim, int memory_capacity)
-		: m_eval(m_model, state_count, action_count, hide_dim)
-		, m_target(m_model, state_count, action_count, hide_dim)
-		, m_trainer(m_model)
+		: m_eval(&m_model, state_count, action_count, hide_dim)
+		, m_target(&m_model, state_count, action_count, hide_dim)
+		, m_trainer(&m_model)
 	{
 		m_memory_capacity = memory_capacity;
 		if (m_memory_capacity < 100) m_memory_capacity = 100;
@@ -77,12 +77,12 @@ public:
 
 		CarpRobotComputationGraph graph;
 
-		m_eval.Build(graph);
-		m_target.Build(graph);
+		m_eval.Build(&graph);
+		m_target.Build(&graph);
 
 		// target net 参数更新
 		if (m_learn_step_counter % TARGET_REPLACE_ITER == 0)
-			m_target.Copy(m_eval);
+			m_target.Copy(&m_eval);
 
 		m_learn_step_counter += 1;
 
@@ -121,6 +121,8 @@ public:
 		return TrainingImpl((size_t)-1, right);
 	}
 
+	size_t GetMemorySize() const { return m_memory.size(); }
+
 	double LearnLastTransition(int count)
 	{
 		double loss = 0;
@@ -157,7 +159,7 @@ public:
 		if (static_cast<int>(state.size()) != m_state_count) return 0;
 
 		CarpRobotComputationGraph graph;
-		m_eval.Build(graph);
+		m_eval.Build(&graph);
 
 		auto x = graph.AddInput(CarpRobotDim({ m_state_count }), &state);
 		auto actions_value = m_eval.Forward(x);
@@ -171,7 +173,7 @@ public:
 		if (static_cast<int>(state.size()) != m_state_count) return 0;
 
 		CarpRobotComputationGraph graph;
-		m_eval.Build(graph);
+		m_eval.Build(&graph);
 
 		auto x = graph.AddInput(CarpRobotDim({ m_state_count }), &state);
 		auto actions_value = m_eval.Forward(x);

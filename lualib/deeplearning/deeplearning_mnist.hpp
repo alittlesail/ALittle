@@ -10,10 +10,10 @@ class DeeplearningMnistModel : public DeeplearningModel
 {
 public:
 	DeeplearningMnistModel()
-		: m_conv1(m_model, 1, 64, { 5, 5 })
-		, m_conv2(m_model, 64, 128, { 5, 5 })
-		, m_fc1(m_model, 4 * 4 * 128, 1024), m_fc2(m_model, 1024, 10)
-		, m_trainer(m_model)
+		: m_conv1(&m_model, 1, 64, 5, 5)
+		, m_conv2(&m_model, 64, 128, 5, 5)
+		, m_fc1(&m_model, 4 * 4 * 128, 1024), m_fc2(&m_model, 1024, 10)
+		, m_trainer(&m_model)
 	{
 	}
 
@@ -164,10 +164,10 @@ public:
 	{
 		CarpRobotComputationGraph graph;
 
-		m_conv1.Build(graph);
-		m_conv2.Build(graph);
-		m_fc1.Build(graph);
-		m_fc2.Build(graph);
+		m_conv1.Build(&graph);
+		m_conv2.Build(&graph);
+		m_fc1.Build(&graph);
+		m_fc2.Build(&graph);
 
 		auto input = graph.AddInput(CarpRobotDim({ IMAGE_SIZE, IMAGE_SIZE, 1 }), &m_images[index]);
 		
@@ -199,7 +199,7 @@ public:
 		auto x = m_conv1.Forward(input);
 		
 		// 得到=> 12 * 12 * 64
-		x = x.MaxPooling2D({ 2, 2 }, { 2, 2 });
+		x = x.MaxPooling2D(2, 2, 2, 2);
 
 		// 得到=> 12 * 12 * 64
 		x = x.Rectify();
@@ -208,7 +208,7 @@ public:
 		x = m_conv2.Forward(x);
 
 		// 得到=> 4 * 4 * 128
-		x = x.MaxPooling2D({ 2, 2 }, { 2, 2 });
+		x = x.MaxPooling2D(2, 2, 2, 2);
 
 		// 得到=> 4 * 4 * 128
 		x = x.Rectify();
@@ -261,10 +261,10 @@ public:
 
 		CarpRobotComputationGraph graph;
 
-		m_conv1.Build(graph);
-		m_conv2.Build(graph);
-		m_fc1.Build(graph);
-		m_fc2.Build(graph);
+		m_conv1.Build(&graph);
+		m_conv2.Build(&graph);
+		m_fc1.Build(&graph);
+		m_fc2.Build(&graph);
 
 		auto input = graph.AddInput(CarpRobotDim({ IMAGE_SIZE, IMAGE_SIZE, 1 }), &data);
 

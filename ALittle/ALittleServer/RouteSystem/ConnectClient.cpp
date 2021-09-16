@@ -20,7 +20,7 @@ ConnectClient::ConnectClient(RouteSystem* route_system)
 ConnectClient::~ConnectClient()
 {
 	// 关闭
-	Close("route_id:" + ROUTE2S(m_route_id) + u8":ConnectClient调用析构函数的时候触发ClearRPC");
+	CloseImpl("route_id:" + ROUTE2S(m_route_id) + u8":ConnectClient调用析构函数的时候触发ClearRPC");
 	// 释放内存
 	if (m_memory) { free(m_memory); m_memory = 0; }
 }
@@ -143,6 +143,11 @@ bool ConnectClient::IsConnecting()
 }
 
 void ConnectClient::Close(const std::string& reason)
+{
+	CloseImpl(reason);
+}
+
+void ConnectClient::CloseImpl(const std::string& reason)
 {
 	// 释放带发送的消息包
 	auto end = m_pocket_list.end();

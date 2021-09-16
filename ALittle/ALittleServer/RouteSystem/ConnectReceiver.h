@@ -29,20 +29,21 @@ public:
 	
 public:
 	// πÿ±’¡¨Ω”
-	void Close(const std::string& reason);
-	bool IsConnected() { return m_is_connected; }
+	void Close(const std::string& reason) override;
+	bool IsConnected() override { return m_is_connected; }
 
 private:
-	void NextReadHead();
-	void HandleReadHead(const asio::error_code& ec, std::size_t actual_size);
-	void HandleReadBody(const asio::error_code& ec, std::size_t actual_size);
+	void NextReadHead() override;
+	void HandleReadHead(const asio::error_code& ec, std::size_t actual_size) override;
+	void HandleReadBody(const asio::error_code& ec, std::size_t actual_size) override;
 
 private:
+	void CloseImpl(const std::string& reason);
 	void ReadComplete();
 
 public:
-	const std::string& GetIP() const { return m_remote_ip; }
-	unsigned int GetPort() const { return m_remote_port; }
+	const std::string& GetIP() const override { return m_remote_ip; }
+	unsigned int GetPort() const override { return m_remote_port; }
 
 private:
 	SocketPtr m_socket;				// socket
@@ -61,12 +62,12 @@ private:
 ///////////////////////////////////////////////////////////////////////////////////
 
 public:
-	void Send(const CarpMessage& message);
-	void SendPocket(void* memory, int memory_size);
+	void Send(const CarpMessage& message) override;
+	void SendPocket(void* memory, int memory_size) override;
 
 private:
 	void NextSend();
-	void HandleSend(const asio::error_code& ec, std::size_t bytes_transferred, void* memory);
+	void HandleSend(const asio::error_code& ec, std::size_t bytes_transferred, void* memory) override;
 
 private:
 	struct PocketInfo { int memory_size; void* memory; };

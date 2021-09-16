@@ -85,10 +85,10 @@ void ConnectServer::Close()
 		m_heartbeat_timer = AsioTimerPtr();
 	}
 
-	// 主动关闭所有连接
-	for (auto it = m_outer_set.begin(); it != m_outer_set.end(); ++it)
+	// 因为Close内部会调用RemoveReceiver，而RemoveReceiver内部会对m_outer_set进行操作，所以这里拷贝一份
+	std::set<ConnectEndpointPtr> copy_set = m_outer_set;
+	for (auto it = copy_set.begin(); it != copy_set.end(); ++it)
 		(*it)->Close(u8"ConnectServer::Close调用");
-
 	// 清除连接集合
 	m_outer_set.clear();
 
@@ -146,6 +146,13 @@ void ConnectServer::HandleOuterDisconnected(ConnectEndpointPtr receiver)
 	receiver->HandleDisconnected();
 	// 关闭连接，清理数据
 	receiver->Close("route_id:" + ROUTE2S(m_route_id) + u8" ConnectReceiver断开连接，调用close，出发ClearRPC");
+	// 因为receiver->Close内部已经调用了ConnectServer::RemoveReceiver，所以这里不需要再调用移除
+	// 所以注释，以示说明
+	// m_outer_set.erase(receiver);
+}
+
+void ConnectServer::RemoveReceiver(ConnectEndpointPtr receiver)
+{
 	// 从集合中移除
 	m_outer_set.erase(receiver);
 }

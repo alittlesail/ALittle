@@ -14,7 +14,7 @@ CARP_MESSAGE_MACRO(QConnectRegister, 100
 
 // 向请求方注册自己，告诉请求方我是谁
 CARP_MESSAGE_MACRO(AConnectRegister, 101
-	, ROUTE_ID, route_id);
+	, ROUTE_ID, route_id, std::string, error);
 
 // 请求点对点RPC
 

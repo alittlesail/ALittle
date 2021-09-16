@@ -70,6 +70,9 @@ private:
 
 	// 处理连接断开
 	void HandleOuterDisconnected(ConnectEndpointPtr receiver);
+
+	// 主动断开连接
+	void RemoveReceiver(ConnectEndpointPtr endpoint);
 	
 private:
 	std::set<ConnectEndpointPtr> m_outer_set;	// 连接集合

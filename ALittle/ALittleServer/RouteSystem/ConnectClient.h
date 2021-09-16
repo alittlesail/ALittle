@@ -43,13 +43,13 @@ public:
 				, int heartbeat_interval, int reconnect_interval);
 
 	// 判断是否已经连接
-	bool IsConnected();
+	bool IsConnected() override;
 
 	// 是否正在连接
 	bool IsConnecting();
 
 	// 关闭连接
-	void Close(const std::string& reason);
+	void Close(const std::string& reason) override;
 
 private:
 	std::string m_ip;			// 目标服务器的IP
@@ -59,33 +59,35 @@ private:
 
 public:
 	// 获取目标服务器IP和端口
-	const std::string& GetIP() const { return m_ip; }
-	unsigned int GetPort() const { return m_port; }
+	const std::string& GetIP() const override { return m_ip; }
+	unsigned int GetPort() const override { return m_port; }
 
 private:
 	// 异步连接
-	void HandleAsyncConnect(const asio::error_code& ec);
+	void HandleAsyncConnect(const asio::error_code& ec) override;
 	bool m_is_connecting;
 
 private:
 	// 重连定时器
-	void HandleReconnectTimer(const asio::error_code& ec);
+	void HandleReconnectTimer(const asio::error_code& ec) override;
 	AsioTimerPtr m_reconnect_timer;	// reconnect timer
 	
 	// 心跳定时器
-	void HandleHeartbeatTimer(const asio::error_code& ec);
+	void HandleHeartbeatTimer(const asio::error_code& ec) override;
 	AsioTimerPtr m_heartbeat_timer;	// heatbeat timer
 
 private:
 	// 处理断开连接
 	void ExecuteDisconnectCallback();
+	// 关闭函数，使用这个封装是为了避免自己的析构函数调用虚函数
+	void CloseImpl(const std::string& reason);
 
 //读取消息包部分/////////////////////////////////////////////////////////////////////////////////
 public:
 	// 读取协议
-	void NextReadHead();
-	void HandleReadHead(const asio::error_code& ec, std::size_t actual_size);
-	void HandleReadBody(const asio::error_code& ec, std::size_t actual_size);
+	void NextReadHead() override;
+	void HandleReadHead(const asio::error_code& ec, std::size_t actual_size) override;
+	void HandleReadBody(const asio::error_code& ec, std::size_t actual_size) override;
 
 private:
 	// 处理协议
@@ -103,13 +105,13 @@ private:
 //发送消息包部分/////////////////////////////////////////////////////////////////////////////////
 public:
 	// 发送消息包
-	void Send(const CarpMessage& message);
+	void Send(const CarpMessage& message) override;
 
 private:
 	// 处理发送
-	void SendPocket(void* memory, int memory_size);
+	void SendPocket(void* memory, int memory_size) override;
 	void NextSend();
-	void HandleSend(const asio::error_code& ec, std::size_t bytes_transferred, void* memory);
+	void HandleSend(const asio::error_code& ec, std::size_t bytes_transferred, void* memory) override;
 
 private:
 	struct PocketInfo { int memory_size; void* memory; };

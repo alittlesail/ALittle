@@ -22,7 +22,7 @@ ConnectReceiver::ConnectReceiver(SocketPtr socket, ConnectServerWeakPtr server, 
 ConnectReceiver::~ConnectReceiver()
 {
 	// 关闭
-	Close("route_id:" + ROUTE2S(m_route_id) + u8" ConnectReceiver调用析构函数的时候触发ClearRPC");
+	CloseImpl("route_id:" + ROUTE2S(m_route_id) + u8" ConnectReceiver调用析构函数的时候触发ClearRPC");
 	// 释放内存
 	if (m_memory) { free(m_memory); m_memory = 0; }
 }
@@ -137,6 +137,15 @@ void ConnectReceiver::ReadComplete()
 }
 
 void ConnectReceiver::Close(const std::string& reason)
+{
+	CloseImpl(reason);
+
+	// 调用让server移除自己
+	auto server = m_server.lock();
+	if (server) server->RemoveReceiver(this->shared_from_this());
+}
+
+void ConnectReceiver::CloseImpl(const std::string& reason)
 {
 	// 释放消息包内存
 	PocketList::iterator it, end = m_pocket_list.end();

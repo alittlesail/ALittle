@@ -13,7 +13,7 @@ namespace ALittle
 
 MysqlThread::MysqlThread()
 {
-    m_conn = new MysqlConnection();
+    m_conn = new CarpMysqlConnection();
 }
 
 MysqlThread::~MysqlThread()
@@ -30,7 +30,7 @@ bool MysqlThread::Init(const char* ip, const char* username, const char* passwor
     return true;
 }
 
-void MysqlThread::AddTask(int query_id, MysqlStatementQuery* query, ServerSchedule* schedule)
+void MysqlThread::AddTask(int query_id, CarpMysqlStatementQuery* query, ServerSchedule* schedule)
 {
     MysqlTask info;
     info.query_id = query_id;
@@ -108,7 +108,7 @@ void MysqlSystem::Setup(int thread_count
     }
 
     // 尝试连接数据库，如果没有就创建一个
-    MysqlConnection conn;
+    CarpMysqlConnection conn;
     if (!conn.Open(ip, username, password, port, db_name))
     {
         if (!conn.Open(ip, username, password, port, "mysql"))
@@ -148,7 +148,7 @@ void MysqlSystem::Shutdown()
     m_threads.clear();
 }
 
-bool MysqlSystem::AddTask(int thread_id, int query_id, MysqlStatementQuery* query, ServerSchedule* schedule)
+bool MysqlSystem::AddTask(int thread_id, int query_id, CarpMysqlStatementQuery* query, ServerSchedule* schedule)
 {
     if (m_threads.empty()) return false;
     if (thread_id < 0) thread_id = 0;

@@ -76,7 +76,7 @@ public:
 		, const char* password
 		, unsigned int port
 		, const char* db_name);
-    bool AddMysqlStatement(int thread_id, int query_id, MysqlStatementQuery* query);
+    bool AddMysqlStatement(int thread_id, int query_id, CarpMysqlStatementQuery* query);
 	bool AddMysqlNormal(int thread_id, int query_id, const char* sql);
 	bool AddMysqlEmpty(int thread_id, int query_id);
 	// 因为reason是从另一个线程来的，所以不要使用const std::string&

@@ -100,7 +100,7 @@ void ServerSystem::Setup(const std::map<std::string, ModuleInfo>& modules)
 
 #ifdef HAS_MYSQL
 	// init mysql
-	MysqlConnection::Setup();
+	CarpMysqlConnection::Setup();
 #endif // HAS_MYSQL
 }
 
@@ -109,7 +109,7 @@ void ServerSystem::Shutdown()
 	s_carp_log.Shutdown();
 
 #ifdef HAS_MYSQL
-	MysqlConnection::Shutdown();
+	CarpMysqlConnection::Shutdown();
 #endif // HAS_MYSQL
 
 #ifdef _WIN32

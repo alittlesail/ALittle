@@ -9,8 +9,8 @@
 
 #include "Carp/carp_thread_consumer.hpp"
 
-class MysqlConnection;
-class MysqlStatementQuery;
+class CarpMysqlConnection;
+class CarpMysqlStatementQuery;
 
 namespace ALittle
 {
@@ -21,7 +21,7 @@ struct MysqlTask
 {
     int query_id = 0;
     bool empty = false;                 // 如果empty为true，那么就是一个空请求
-    MysqlStatementQuery* query = nullptr; // 如果query为空，那么就使用sql
+    CarpMysqlStatementQuery* query = nullptr; // 如果query为空，那么就使用sql
     std::string sql;
     ServerSchedule* schedule = nullptr;
 };
@@ -39,7 +39,7 @@ public:
         , unsigned int port
         , const char* db_name);
 
-    void AddTask(int query_id, MysqlStatementQuery* query, ServerSchedule* schedule);
+    void AddTask(int query_id, CarpMysqlStatementQuery* query, ServerSchedule* schedule);
     void AddTask(int query_id, const char* sql, ServerSchedule* schedule);
 	void AddTask(int query_id, ServerSchedule* schedule);
 
@@ -48,7 +48,7 @@ protected:
     virtual void Execute(MysqlTask& info) override;
 
 private:
-    MysqlConnection* m_conn;
+    CarpMysqlConnection* m_conn = nullptr;
 };
 
 class MysqlSystem
@@ -67,7 +67,7 @@ public:
 
     void Shutdown();
 
-    bool AddTask(int thread_id, int query_id, MysqlStatementQuery* query, ServerSchedule* schedule);
+    bool AddTask(int thread_id, int query_id, CarpMysqlStatementQuery* query, ServerSchedule* schedule);
     bool AddTask(int thread_id, int query_id, const char* sql, ServerSchedule* schedule);
 	bool AddTask(int thread_id, int query_id, ServerSchedule* schedule);
 

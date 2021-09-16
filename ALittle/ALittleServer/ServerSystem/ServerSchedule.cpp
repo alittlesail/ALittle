@@ -107,25 +107,25 @@ void ServerSchedule::RegisterToScript()
 
 #ifdef HAS_MYSQL
 	luabridge::getGlobalNamespace(L)
-		.beginClass<MysqlStatementQuery>("__CPPAPIMysqlStatementQuery")
+		.beginClass<CarpMysqlStatementQuery>("__CPPAPIMysqlStatementQuery")
 		.addConstructor<void(*)()>()
-        .addFunction("SetSQL", &MysqlStatementQuery::SetSQL)
-        .addFunction("GetSQL", &MysqlStatementQuery::GetSQL)
-		.addFunction("GetCount", &MysqlStatementQuery::GetCount)
-		.addFunction("GetAffectCount", &MysqlStatementQuery::GetAffectCount)
-		.addFunction("PushBool", &MysqlStatementQuery::PushBool)
-		.addFunction("PushInt", &MysqlStatementQuery::PushInt)
-		.addFunction("PushDouble", &MysqlStatementQuery::PushDouble)
-		.addFunction("PushI64", &MysqlStatementQuery::PushLongLong)
-		.addFunction("PushString", &MysqlStatementQuery::PushString)
-		.addFunction("HasNext", &MysqlStatementQuery::HasNext)
-		.addFunction("Next", &MysqlStatementQuery::Next)
-		.addFunction("ReadType", &MysqlStatementQuery::ReadType)
-		.addFunction("ReadBool", &MysqlStatementQuery::ReadBool)
-		.addFunction("ReadInt", &MysqlStatementQuery::ReadInt)
-		.addFunction("ReadDouble", &MysqlStatementQuery::ReadDouble)
-		.addFunction("ReadI64", &MysqlStatementQuery::ReadLongLong)
-		.addFunction("ReadString", &MysqlStatementQuery::ReadString)
+        .addFunction("SetSQL", &CarpMysqlStatementQuery::SetSQL)
+        .addFunction("GetSQL", &CarpMysqlStatementQuery::GetSQL)
+		.addFunction("GetCount", &CarpMysqlStatementQuery::GetCount)
+		.addFunction("GetAffectCount", &CarpMysqlStatementQuery::GetAffectCount)
+		.addFunction("PushBool", &CarpMysqlStatementQuery::PushBool)
+		.addFunction("PushInt", &CarpMysqlStatementQuery::PushInt)
+		.addFunction("PushDouble", &CarpMysqlStatementQuery::PushDouble)
+		.addFunction("PushI64", &CarpMysqlStatementQuery::PushLongLong)
+		.addFunction("PushString", &CarpMysqlStatementQuery::PushString)
+		.addFunction("HasNext", &CarpMysqlStatementQuery::HasNext)
+		.addFunction("Next", &CarpMysqlStatementQuery::Next)
+		.addFunction("ReadType", &CarpMysqlStatementQuery::ReadType)
+		.addFunction("ReadBool", &CarpMysqlStatementQuery::ReadBool)
+		.addFunction("ReadInt", &CarpMysqlStatementQuery::ReadInt)
+		.addFunction("ReadDouble", &CarpMysqlStatementQuery::ReadDouble)
+		.addFunction("ReadI64", &CarpMysqlStatementQuery::ReadLongLong)
+		.addFunction("ReadString", &CarpMysqlStatementQuery::ReadString)
 		.endClass();
 #endif // HAS_MYSQL
 }
@@ -221,7 +221,7 @@ void ServerSchedule::StartMysqlQuery(int thread_count, const char* ip, const cha
 	m_mysql_system.Setup(thread_count, ip, username, password, port, db_name);
 }
 
-bool ServerSchedule::AddMysqlStatement(int thread_id, int query_id, MysqlStatementQuery* query)
+bool ServerSchedule::AddMysqlStatement(int thread_id, int query_id, CarpMysqlStatementQuery* query)
 {
 	return m_mysql_system.AddTask(thread_id, query_id, query, this);
 }

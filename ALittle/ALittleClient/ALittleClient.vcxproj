@@ -59,6 +59,7 @@
     <ClInclude Include="..\..\Carp\carp_robot_model.hpp" />
     <ClInclude Include="..\..\Carp\carp_rtp.hpp" />
     <ClInclude Include="..\..\Carp\carp_rtp_server.hpp" />
+    <ClInclude Include="..\..\Carp\carp_sqlite.hpp" />
     <ClInclude Include="..\..\Carp\carp_square_jps.hpp" />
     <ClInclude Include="..\..\Carp\carp_log.hpp" />
     <ClInclude Include="..\..\Carp\carp_log_bind.hpp" />

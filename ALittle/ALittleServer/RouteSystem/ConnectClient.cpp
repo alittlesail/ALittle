@@ -132,6 +132,18 @@ void ConnectClient::HandleHeartbeatTimer(const asio::error_code& ec)
 	m_heartbeat_timer->async_wait(std::bind(&ConnectEndpoint::HandleHeartbeatTimer, this->shared_from_this(), std::placeholders::_1));
 }
 
+void ConnectClient::HandleDelayCloseTimer(const asio::error_code& ec, const std::string& reason)
+{
+	// 如果出现错误码，说明是主动取消定时器的
+	if (ec == asio::error::operation_aborted) return;
+
+	// 其他错误，一定要打印一下
+	if (ec) CARP_ERROR(u8"定时器出现未知的错误类型，一定要检查解决一下:" << ec.value());
+
+	m_delay_close_timer = AsioTimerPtr();
+	CloseImpl(reason);
+}
+
 bool ConnectClient::IsConnected()
 {
 	return m_is_connecting == false && m_socket != SocketPtr();
@@ -142,9 +154,28 @@ bool ConnectClient::IsConnecting()
 	return m_is_connecting;
 }
 
-void ConnectClient::Close(const std::string& reason)
+void ConnectClient::Close(const std::string& reason, int delay_second)
 {
-	CloseImpl(reason);
+	if (delay_second <= 0)
+	{
+		// 关闭延时关闭定时器
+		if (m_delay_close_timer)
+		{
+			asio::error_code ec;
+			m_delay_close_timer->cancel(ec);
+			m_delay_close_timer = AsioTimerPtr();
+		}
+		CloseImpl(reason);
+
+		return;
+	}
+
+	// 如果已经处于定时关闭，那么就直接返回
+	if (m_delay_close_timer) return;
+
+	// 创建心跳定时器
+	m_delay_close_timer = AsioTimerPtr(new AsioTimer(m_route_system->GetSchedule()->GetIOService(), std::chrono::seconds(delay_second)));
+	m_delay_close_timer->async_wait(std::bind(&ConnectEndpoint::HandleDelayCloseTimer, this->shared_from_this(), std::placeholders::_1, reason));
 }
 
 void ConnectClient::CloseImpl(const std::string& reason)
@@ -173,6 +204,13 @@ void ConnectClient::CloseImpl(const std::string& reason)
 		asio::error_code ec;
 		m_heartbeat_timer->cancel(ec);
 		m_heartbeat_timer = AsioTimerPtr();
+	}
+	// 关闭延时关闭定时器
+	if (m_delay_close_timer)
+	{
+		asio::error_code ec;
+		m_delay_close_timer->cancel(ec);
+		m_delay_close_timer = AsioTimerPtr();
 	}
 
 	// 释放socket

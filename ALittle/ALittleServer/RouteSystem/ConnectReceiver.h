@@ -18,6 +18,8 @@ typedef std::shared_ptr<ConnectServer> ConnectServerPtr;
 typedef std::weak_ptr<ConnectServer> ConnectServerWeakPtr;
 
 typedef std::shared_ptr<asio::ip::tcp::socket> SocketPtr;
+typedef asio::basic_waitable_timer<std::chrono::system_clock> AsioTimer;
+typedef std::shared_ptr<AsioTimer> AsioTimerPtr;
 
 class ConnectReceiver : public ConnectEndpoint
 {
@@ -29,7 +31,7 @@ public:
 	
 public:
 	// 关闭连接
-	void Close(const std::string& reason) override;
+	void Close(const std::string& reason, int delay_second=0) override;
 	bool IsConnected() override { return m_is_connected; }
 
 private:
@@ -44,6 +46,11 @@ private:
 public:
 	const std::string& GetIP() const override { return m_remote_ip; }
 	unsigned int GetPort() const override { return m_remote_port; }
+
+private:
+	// 延时close定时器
+	void HandleDelayCloseTimer(const asio::error_code& ec, const std::string& reason) override;
+	AsioTimerPtr m_delay_close_timer;	// close timer
 
 private:
 	SocketPtr m_socket;				// socket

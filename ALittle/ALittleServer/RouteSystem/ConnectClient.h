@@ -49,7 +49,7 @@ public:
 	bool IsConnecting();
 
 	// 关闭连接
-	void Close(const std::string& reason) override;
+	void Close(const std::string& reason, int delay_second=0) override;
 
 private:
 	std::string m_ip;			// 目标服务器的IP
@@ -75,6 +75,10 @@ private:
 	// 心跳定时器
 	void HandleHeartbeatTimer(const asio::error_code& ec) override;
 	AsioTimerPtr m_heartbeat_timer;	// heatbeat timer
+
+	// 延时close定时器
+	void HandleDelayCloseTimer(const asio::error_code& ec, const std::string& reason) override;
+	AsioTimerPtr m_delay_close_timer;	// close timer
 
 private:
 	// 处理断开连接

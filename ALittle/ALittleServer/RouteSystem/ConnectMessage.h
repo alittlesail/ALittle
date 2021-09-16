@@ -12,9 +12,19 @@ namespace ALittle
 CARP_MESSAGE_MACRO(QConnectRegister, 100
 	, ROUTE_ID, route_id);
 
+enum class ConnectRegisterError
+{
+	SUCCEED = 0,
+	QCONNECTREGISTER_DESERIALIZE_FAILED = 1,
+	ACONNECTREGISTER_DESERIALIZE_FAILED = 2,
+	REGISTER_REPEATED = 3,
+	ROUTE_ID_MUST_NOT_BE_ZERO = 4,
+	ROUTE_ID_ALREADY_EXIST = 5,
+};
+
 // 向请求方注册自己，告诉请求方我是谁
 CARP_MESSAGE_MACRO(AConnectRegister, 101
-	, ROUTE_ID, route_id, std::string, error);
+	, ROUTE_ID, route_id, int, error, std::string, reason);
 
 // 请求点对点RPC
 

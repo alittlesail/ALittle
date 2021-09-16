@@ -147,41 +147,51 @@ void ConnectEndpoint::HandleMessageImpl(void* memory, size_t memory_size, bool& 
 	// 处理对方注册请求
 	if (message_id == QConnectRegister::GetStaticID())
 	{
+		// 结果包定义
+		AConnectRegister response_msg;
+		response_msg.route_id = m_route_id;
+
 		QConnectRegister msg;
 		if (msg.Deserialize(body_memory, message_size) < 0)
 		{
-			CARP_ERROR(u8"QConnectRegister Deserialize 失败!");
-			Close(u8"QConnectRegister Deserialize 失败!");
+			response_msg.error = static_cast<int>(ConnectRegisterError::QCONNECTREGISTER_DESERIALIZE_FAILED);
+			response_msg.reason = u8"QConnectRegister Deserialize 失败!";
+			Send(response_msg);
+			Close(response_msg.reason, 5);
 			return;
 		}
 
 		// 如果已经收到过了，那么就直接应答
 		if (m_target_route_id != 0)
 		{
-			CARP_ERROR(u8"不能重复注册");
-			Close(u8"不能重复注册");
+			response_msg.error = static_cast<int>(ConnectRegisterError::REGISTER_REPEATED);
+			std::string reason = u8"当前已注册了:" + RouteIdDefine::CalcRouteName(m_target_route_id) + u8", 不能重复注册:" + RouteIdDefine::CalcRouteName(msg.route_id);
+			Send(response_msg);
+			Close(response_msg.reason, 5);
 			return;
 		}
 
 		// 检查发过来的路由ID
 		if (msg.route_id == 0)
 		{
-			CARP_ERROR(u8"发过来的route_id不能是0");
-			Close(u8"发过来的route_id不能是0");
+			response_msg.error = static_cast<int>(ConnectRegisterError::ROUTE_ID_MUST_NOT_BE_ZERO);
+			response_msg.reason = u8"发过来的route_id不能是0";
+			Send(response_msg);
+			Close(response_msg.reason, 5);
 			return;
 		}
 
 		// 尝试锁定
 		if (!m_route_system->AddConnectEndpoint(this->shared_from_this(), msg.route_id))
 		{
-			CARP_ERROR(std::to_string(msg.route_id) + u8"已存在");
-			Close(std::to_string(msg.route_id) + u8"已存在");
+			response_msg.error = static_cast<int>(ConnectRegisterError::ROUTE_ID_ALREADY_EXIST);
+			response_msg.reason = RouteIdDefine::CalcRouteName(msg.route_id) + u8"已存在";
+			Send(response_msg);
+			Close(response_msg.reason, 5);
 			return;
 		}
 
-		// 返回成功包
-		AConnectRegister response_msg;
-		response_msg.route_id = m_route_id;
+		// 返回结果
 		Send(response_msg);
 		return;
 	}
@@ -197,19 +207,32 @@ void ConnectEndpoint::HandleMessageImpl(void* memory, size_t memory_size, bool& 
 			return;
 		}
 
+		// 处理错误信息
+		if (msg.error != static_cast<int>(ConnectRegisterError::SUCCEED))
+		{
+			// 打印错误
+			std::string reason = u8"注册失败:" + msg.reason + u8", 并且主动关闭连接，停止重连机制，请修正参数之后再次发起连接。";
+			CARP_ERROR(reason);
+			// 因为这些错误都是用来阻止我方再次尝试去连接，所以这里停止
+			Close(reason);
+			return;
+		}
+
 		// 如果已经收到过了，那么就直接返回成功
 		if (m_target_route_id != 0)
 		{
-			CARP_ERROR(u8"不能重复注册");
-			Close(u8"不能重复注册");
+			std::string reason = u8"当前已注册了:" + RouteIdDefine::CalcRouteName(m_target_route_id) + u8", 不能重复注册:" + RouteIdDefine::CalcRouteName(msg.route_id);
+			CARP_ERROR(reason);
+			Close(reason);
 			return;
 		}
 
 		// 检查是否被其他节点锁定了
 		if (!m_route_system->AddConnectEndpoint(this->shared_from_this(), msg.route_id))
 		{
-			CARP_ERROR(std::to_string(msg.route_id) + u8"已存在");
-			Close(std::to_string(msg.route_id) + u8"已存在");
+			std::string reason = RouteIdDefine::CalcRouteName(msg.route_id) + u8"已存在";
+			CARP_ERROR(reason);
+			Close(reason);
 			return;
 		}
 		return;

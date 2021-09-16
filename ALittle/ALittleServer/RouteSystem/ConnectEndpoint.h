@@ -22,7 +22,7 @@ public:
 	virtual ~ConnectEndpoint();
 
 public:
-	virtual void Close(const std::string& reason) = 0;
+	virtual void Close(const std::string& reason, int delay_second=0) = 0;
 	virtual void Send(const CarpMessage& msg) = 0;
 	virtual void SendPocket(void* memory, int memory_size) = 0;
 	virtual void NextReadHead() = 0;
@@ -34,6 +34,7 @@ public:
 	virtual void HandleAsyncConnect(const asio::error_code& ec) {}
 	virtual void HandleReconnectTimer(const asio::error_code& ec) {}
 	virtual void HandleHeartbeatTimer(const asio::error_code& ec) {}
+	virtual void HandleDelayCloseTimer(const asio::error_code& ec, const std::string& reason) {}
 	virtual void HandleReadHead(const asio::error_code& ec, std::size_t actual_size) {}
 	virtual void HandleReadBody(const asio::error_code& ec, std::size_t actual_size) {}
 	virtual void HandleSend(const asio::error_code& ec, std::size_t bytes_transferred, void* memory) {}

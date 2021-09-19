@@ -1,7 +1,10 @@
 ﻿
 #include <iostream>
 #include <set>
+#include <unordered_set>
+#include <assert.h>
 #include "Carp/carp_number_set.hpp"
+#include "Carp/carp_time.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -20,22 +23,51 @@ int main(int argc, char* argv[])
 	std::cout << "c" << std::endl << a.sum(red_axis) << std::endl;
 	std::cout << "c" << std::endl << a.sum(red_axis2) << std::endl;
 	*/
-	std::set<std::string> number_set;
-	for (int i = 0; i < 1000; ++i)
+	auto si = sizeof CarpNumberSet::CarpNumberNode;
+
+	std::unordered_set<std::string> number_set;
+	for (size_t i = 10000000000; i < 10002000000; ++i)
 	{
 		number_set.insert(std::to_string(i));
 	}
 
+	/*
+	bool value = false;
+	auto t1 = CarpTime::GetCurMSTime();
+	for (auto& number : number_set)
+	{
+		auto it = number_set.find(number);
+		value = it != number_set.end();
+	}
+	auto t2 = CarpTime::GetCurMSTime();
+	printf("set %lld value:%d\n", t2 - t1, (int)value);
+	*/
 	CarpNumberSet set;
 	for (auto& number : number_set)
 		set.Insert(number);
-
-
+	printf("set %zu\n", set.Size());
+	/*
+	bool value = false;
+	auto t1 = CarpTime::GetCurMSTime();
 	for (auto& number : number_set)
+	{
+		value = set.Find(number);
+	}
+	auto t2 = CarpTime::GetCurMSTime();
+	printf("set %lld value:%d\n", t2 - t1, (int)value);
+	*/
+	for (auto& number : number_set)
+	{
 		auto v = set.Find(number);
-
+		if (!v)
+		printf("find %s %s\n", number.c_str(), v ? "true" : "false");
+	}
 	for (auto& number : number_set)
+	{
 		auto v = set.Erase(number);
-
+		if (!v)
+			printf("erase %s %s\n", number.c_str(), v ? "true" : "false");
+	}
+	system("pause");
 	return 0;
 }

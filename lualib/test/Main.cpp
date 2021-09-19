@@ -3,7 +3,7 @@
 #include <set>
 #include <unordered_set>
 #include <assert.h>
-#include "Carp/carp_number_set.hpp"
+#include "Carp/carp_string_set.hpp"
 #include "Carp/carp_time.hpp"
 
 int main(int argc, char* argv[])
@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
 	std::cout << "c" << std::endl << a.sum(red_axis) << std::endl;
 	std::cout << "c" << std::endl << a.sum(red_axis2) << std::endl;
 	*/
-	auto si = sizeof CarpNumberSet::CarpNumberNode;
+	auto si = sizeof CarpStringSet::CarpCharNode;
 
 	std::unordered_set<std::string> number_set;
 	for (size_t i = 10000000000; i < 10002000000; ++i)
@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
 	auto t2 = CarpTime::GetCurMSTime();
 	printf("set %lld value:%d\n", t2 - t1, (int)value);
 	*/
-	CarpNumberSet set;
+	CarpStringSet set;
 	for (auto& number : number_set)
 		set.Insert(number);
 	printf("set %zu\n", set.Size());

@@ -6,8 +6,18 @@
 #include "Carp/carp_string_set.hpp"
 #include "Carp/carp_time.hpp"
 
+#ifdef _WIN32
+#include <stdlib.h>
+#include <crtdbg.h>
+#endif // _WIN32
+
 int main(int argc, char* argv[])
 {
+#ifdef _WIN32
+#ifdef _DEBUG
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
+#endif // _WIN32	
 	/*
 	std::vector<float> m_value(4 * 3 * 2);
 	m_value = { 0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100
@@ -45,7 +55,9 @@ int main(int argc, char* argv[])
 	CarpStringSet set;
 	for (auto& number : number_set)
 		set.Insert(number);
+	set.Combine();
 	printf("set %zu\n", set.Size());
+
 	/*
 	bool value = false;
 	auto t1 = CarpTime::GetCurMSTime();
@@ -56,6 +68,7 @@ int main(int argc, char* argv[])
 	auto t2 = CarpTime::GetCurMSTime();
 	printf("set %lld value:%d\n", t2 - t1, (int)value);
 	*/
+
 	for (auto& number : number_set)
 	{
 		auto v = set.Find(number);
@@ -68,6 +81,16 @@ int main(int argc, char* argv[])
 		if (!v)
 			printf("erase %s %s\n", number.c_str(), v ? "true" : "false");
 	}
+	for (auto& number : number_set)
+		set.Insert(number);
+	set.Combine();
+	for (auto& number : number_set)
+	{
+		auto v = set.Find(number);
+		if (!v)
+			printf("find %s %s\n", number.c_str(), v ? "true" : "false");
+	}
+
 	system("pause");
 	return 0;
 }

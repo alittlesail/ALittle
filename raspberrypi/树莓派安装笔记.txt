@@ -6,13 +6,31 @@
 5. 然后通过ssh登录控制台
 
 安装必要的软件
-2. sudo apt-get install libreadline-dev
-3. sudo apt-get install wiringpi
-5. sudo apt-get install ufw
+1. sudo apt-get install libreadline-dev
+2. sudo apt-get install wiringpi
+3. sudo apt-get install ufw
 
-1. sudo apt-get install git
-6. sudo apt-get install libopencv-dev
-4. sudo apt-get install cmake
+4. sudo apt-get install git
+5. sudo apt-get install libopencv-dev
+6. sudo apt-get install cmake
+7. sudo apt-get install vim
+
+darknet编译
+1. vim CMakeLists.txt 第一行把3.18改为3.16
+2. git clone https://github.com/AlexeyAB/darknet.git
+3. 进入dartnet目录
+4. mkdir test
+5. cd test
+6. cmake -DENABLE_CUDA=OFF -DENABLE_OPENCV=OFF -DBUILD_SHARED_LIBS=OFF ..
+7. make
+
+raspicam编译
+1. wget https://jaist.dl.sourceforge.net/project/raspicam/raspicam-0.1.9.zip
+2. unzip raspicam-0.1.9.zip
+3. cd raspicam-0.1.9
+4. mkdir build
+5. cd build
+6. cmake -DBUILD_SHARED_LIBS=OFF -DBUILD_CV=OFF ..
 
 启用摄像头
 1. sudo raspi-config

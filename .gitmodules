@@ -40,3 +40,6 @@
 [submodule "bcg729"]
 	path = bcg729
 	url = https://gitlab.linphone.org/BC/public/bcg729.git
+[submodule "darknet"]
+	path = darknet
+	url = https://github.com/AlexeyAB/darknet.git

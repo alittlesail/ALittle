@@ -7,11 +7,20 @@ extern "C" {
 }
 #include <LuaBridge/LuaBridge.h>
 
-#include "Carp/carp_robot_bind.hpp"
+#include "deeplearning_darknet.hpp"
 
 int luaopen_deeplearning(lua_State* l_state)
 {
-	CarpRobotBind::Bind(l_state);
-    lua_getglobal(l_state, "carp");
+	luabridge::getGlobalNamespace(l_state)
+		.beginNamespace("deeplearning")
+		.beginClass<DeeplearningYolov3>("DeeplearningYolov3")
+		.addConstructor<void(*)()>()
+		.addFunction("Load", &DeeplearningYolov3::Load)
+		.addFunction("Predict", &DeeplearningYolov3::Predict)
+		.endClass()
+
+		.endNamespace();
+
+    lua_getglobal(l_state, "deeplearning");
     return 1;
 }

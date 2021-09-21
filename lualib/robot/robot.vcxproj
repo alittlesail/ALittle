@@ -19,19 +19,22 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="deeplearninglib.h" />
-    <ClInclude Include="deeplearning_darknet.hpp" />
+    <ClInclude Include="..\..\Carp\carp_mfcc.hpp" />
+    <ClInclude Include="..\..\Carp\carp_robot.hpp" />
+    <ClInclude Include="..\..\Carp\carp_robot_bind.hpp" />
+    <ClInclude Include="..\..\Carp\carp_robot_model.hpp" />
+    <ClInclude Include="robotlib.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="deeplearninglib.cpp" />
+    <ClCompile Include="robotlib.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{27483F3D-E98D-41A0-82A8-68EA2CC1BFB3}</ProjectGuid>
+    <ProjectGuid>{DC4D4AFE-7EF2-4C8A-8248-B3C5457D91CC}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>thirdparty</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>deeplearning</ProjectName>
+    <ProjectName>robot</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

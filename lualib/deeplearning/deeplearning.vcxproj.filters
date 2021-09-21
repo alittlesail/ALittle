@@ -2,10 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="deeplearninglib.h" />
-    <ClInclude Include="..\..\Carp\carp_robot.hpp" />
-    <ClInclude Include="..\..\Carp\carp_robot_model.hpp" />
-    <ClInclude Include="..\..\Carp\carp_robot_bind.hpp" />
-    <ClInclude Include="..\..\Carp\carp_mfcc.hpp" />
+    <ClInclude Include="deeplearning_darknet.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="deeplearninglib.cpp" />

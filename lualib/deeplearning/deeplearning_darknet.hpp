@@ -21,7 +21,12 @@ public:
             free_network_ptr(m_net);
             m_net = nullptr;
         }
-        m_net = load_network((char*)cfg, (char*)weight, 1);
+        m_net = load_network((char*)cfg, (char*)weight, 0);
+        if (m_net)
+        {
+            fuse_conv_batchnorm(*m_net);
+            calculate_binary_weights(*m_net);
+        }
         return m_net != nullptr;
     }
 
@@ -64,7 +69,7 @@ public:
 
         network_predict_ptr(m_net, sized.data);
 
-        float thresh = 0.24f;
+        float thresh = 0.25f;
         float hier_thresh = 0.5f;
         float nms = .45f;    // 0.4F
         int nboxes = 0;
@@ -78,9 +83,19 @@ public:
         lua_newtable(l_state);
         for (int i = 0; i < nboxes; ++i)
         {
-            lua_newtable(l_state);
-
             auto& det = dets[i];
+
+            int best_class = -1;
+            float best_class_prob = thresh;
+            for (int index = 0; index < det.classes; ++index)
+            {
+                if (det.prob[index] > best_class_prob)
+                {
+                    best_class = index;
+                    best_class_prob = det.prob[index];
+                }
+            }
+
             auto& b = det.bbox;
 
             int left = (int)((b.x - b.w / 2.) * im.w);
@@ -93,6 +108,7 @@ public:
             if (top < 0) top = 0;
             if (bottom > im.h - 1) bottom = im.h - 1;
 
+            lua_newtable(l_state);
             lua_pushinteger(l_state, left);
             lua_setfield(l_state, -2, "x");
             lua_pushinteger(l_state, top);
@@ -102,18 +118,10 @@ public:
             lua_pushinteger(l_state, bottom - top);
             lua_setfield(l_state, -2, "h");
 
-            int best_class = -1;
-            float best_class_prob = thresh;
-            for (int index = 0; index < dets[i].classes; ++index)
-            {
-                if (dets[i].prob[index] > best_class_prob)
-                {
-                    best_class = index;
-                    best_class_prob = dets[i].prob[index];
-                }
-            }
             lua_pushinteger(l_state, best_class);
             lua_setfield(l_state, -2, "clazz");
+            lua_pushnumber(l_state, best_class_prob);
+            lua_setfield(l_state, -2, "prob");
 
             lua_rawseti(l_state, -2, i + 1);
         }

@@ -5,10 +5,10 @@
 #include "carp_lua.hpp"
 #include "carp_surface.hpp"
 
-class DeeplearningYolov3
+class DeeplearningDarknet
 {
 public:
-    ~DeeplearningYolov3()
+    ~DeeplearningDarknet()
     {
         if (m_net) free_network_ptr(m_net);
     }

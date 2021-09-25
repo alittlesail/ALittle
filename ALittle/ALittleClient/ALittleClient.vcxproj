@@ -35,6 +35,8 @@
     <ClInclude Include="..\..\Carp\carp_crypto_bind.hpp" />
     <ClInclude Include="..\..\Carp\carp_csv.hpp" />
     <ClInclude Include="..\..\Carp\carp_csv_bind.hpp" />
+    <ClInclude Include="..\..\Carp\carp_darknet.hpp" />
+    <ClInclude Include="..\..\Carp\carp_darknet_bind.hpp" />
     <ClInclude Include="..\..\Carp\carp_dump.hpp" />
     <ClInclude Include="..\..\Carp\carp_event_consumer.hpp" />
     <ClInclude Include="..\..\Carp\carp_event_dispatcher.hpp" />

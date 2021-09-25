@@ -21,16 +21,10 @@ darknet编译
 3. 进入dartnet目录
 4. mkdir test
 5. cd test
-6. cmake -DENABLE_CUDA=OFF -DENABLE_OPENCV=OFF -DBUILD_SHARED_LIBS=OFF ..
+6. cmake -DENABLE_CUDA=OFF -DENABLE_OPENCV=OFF -DCMAKE_INSTALL_PREFIX=/usr ..
 7. make
-
-raspicam编译
-1. wget https://jaist.dl.sourceforge.net/project/raspicam/raspicam-0.1.9.zip
-2. unzip raspicam-0.1.9.zip
-3. cd raspicam-0.1.9
-4. mkdir build
-5. cd build
-6. cmake -DBUILD_SHARED_LIBS=OFF -DBUILD_CV=OFF ..
+8. make install
+9. sudo cp libdarknet.so /usr/lib/libdarknet.so
 
 启用摄像头
 1. sudo raspi-config

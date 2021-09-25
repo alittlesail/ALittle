@@ -16,6 +16,8 @@
 
 #ifdef HAS_WIRINGPI
 #include "Carp/carp_wiringpi_bind.hpp"
+#include "Carp/carp_opencv_bind.hpp"
+#include "Carp/carp_darknet_bind.hpp"
 #endif
 
 extern "C" {
@@ -53,6 +55,8 @@ void ScriptSystem::Setup()
 	CarpSquareJPSBind::Bind(m_L);
 #ifdef HAS_WIRINGPI
 	CarpWiringPiBind::Bind(m_L);
+	CarpOpenCVBind::Bind(m_L);
+	CarpDarknetBind::Bind(m_L);
 #endif
 }
 

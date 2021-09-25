@@ -13,10 +13,10 @@ int luaopen_deeplearning(lua_State* l_state)
 {
 	luabridge::getGlobalNamespace(l_state)
 		.beginNamespace("deeplearning")
-		.beginClass<DeeplearningYolov3>("DeeplearningYolov3")
+		.beginClass<DeeplearningDarknet>("DeeplearningDarknet")
 		.addConstructor<void(*)()>()
-		.addFunction("Load", &DeeplearningYolov3::Load)
-		.addFunction("Predict", &DeeplearningYolov3::Predict)
+		.addFunction("Load", &DeeplearningDarknet::Load)
+		.addFunction("Predict", &DeeplearningDarknet::Predict)
 		.endClass()
 
 		.endNamespace();

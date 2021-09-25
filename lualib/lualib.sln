@@ -37,6 +37,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "robot", "robot\robot.vcxproj", "{DC4D4AFE-7EF2-4C8A-8248-B3C5457D91CC}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opencv", "opencv\opencv.vcxproj", "{2C3F3C1C-4797-47FC-93E6-D9825439F49C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -169,6 +171,14 @@ Global
 		{DC4D4AFE-7EF2-4C8A-8248-B3C5457D91CC}.Release|x64.Build.0 = Release|x64
 		{DC4D4AFE-7EF2-4C8A-8248-B3C5457D91CC}.Release|x86.ActiveCfg = Release|Win32
 		{DC4D4AFE-7EF2-4C8A-8248-B3C5457D91CC}.Release|x86.Build.0 = Release|Win32
+		{2C3F3C1C-4797-47FC-93E6-D9825439F49C}.Debug|x64.ActiveCfg = Debug|x64
+		{2C3F3C1C-4797-47FC-93E6-D9825439F49C}.Debug|x64.Build.0 = Debug|x64
+		{2C3F3C1C-4797-47FC-93E6-D9825439F49C}.Debug|x86.ActiveCfg = Debug|Win32
+		{2C3F3C1C-4797-47FC-93E6-D9825439F49C}.Debug|x86.Build.0 = Debug|Win32
+		{2C3F3C1C-4797-47FC-93E6-D9825439F49C}.Release|x64.ActiveCfg = Release|x64
+		{2C3F3C1C-4797-47FC-93E6-D9825439F49C}.Release|x64.Build.0 = Release|x64
+		{2C3F3C1C-4797-47FC-93E6-D9825439F49C}.Release|x86.ActiveCfg = Release|Win32
+		{2C3F3C1C-4797-47FC-93E6-D9825439F49C}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

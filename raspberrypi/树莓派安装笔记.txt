@@ -33,6 +33,12 @@ darknet编译
 4. 选择打开
 5. 然后重启
 
+启用I2C
+1. sudo raspi-config
+2. 选择Interfacing Options
+3. 选择I2C
+4. 选择打开
+
 启用防火墙
 sudo ufw enable
 sudo ufw default deny

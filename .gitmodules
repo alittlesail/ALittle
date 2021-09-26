@@ -43,3 +43,6 @@
 [submodule "darknet"]
 	path = darknet
 	url = https://github.com/AlexeyAB/darknet.git
+[submodule "pca9685"]
+	path = pca9685
+	url = https://github.com/Reinbert/pca9685.git

@@ -296,7 +296,7 @@ public:
 		if (file_path == nullptr || url_path == nullptr || match_text == nullptr) return false;
 
 		// open src file
-		auto* file = CarpRWops::OpenFile(file_path, "rb", false);
+		auto* file = CarpRWops::OpenFile(file_path, "rb");
 		if (file == nullptr) return false;
 
 		Release();
@@ -351,9 +351,9 @@ public:
 		m_total_count = m_url_list.size();
 		if (thread_count <= 0) thread_count = 1;
 
-		m_target_file = CarpRWops::OpenFile(target_path, "wb", false);
+		m_target_file = CarpRWops::OpenFile(target_path, "wb");
 		if (error_path != nullptr)
-			m_error_file = CarpRWops::OpenFile(error_path, "wb", false);
+			m_error_file = CarpRWops::OpenFile(error_path, "wb");
 
 		if (m_url_list.size() < thread_count)
 			thread_count = static_cast<int>(m_url_list.size());

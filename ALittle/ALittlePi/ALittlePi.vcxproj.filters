@@ -65,6 +65,9 @@
     <ClCompile Include="..\..\lualib\tinyxml2\tinyxml2lib.cpp">
       <Filter>ScriptSystem\tinyxml2</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\pca9685\src\pca9685.c">
+      <Filter>pca9685</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="kcp">
@@ -93,6 +96,9 @@
     </Filter>
     <Filter Include="ScriptSystem\tinyxml2">
       <UniqueIdentifier>{391dfd1e-00d2-4a8a-a7f2-0aaacb30663f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pca9685">
+      <UniqueIdentifier>{753ba559-be00-4a88-9d01-26b757111f52}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -167,6 +173,9 @@
     </ClInclude>
     <ClInclude Include="..\..\lualib\tinyxml2\tinyxml2.h">
       <Filter>ScriptSystem\tinyxml2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\pca9685\src\pca9685.h">
+      <Filter>pca9685</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

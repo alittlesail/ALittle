@@ -79,6 +79,7 @@
     <ClCompile Include="..\..\lualib\sqlite3\sqlite3.c" />
     <ClCompile Include="..\..\lualib\tinyxml2\tinyxml2.cpp" />
     <ClCompile Include="..\..\lualib\tinyxml2\tinyxml2lib.cpp" />
+    <ClCompile Include="..\..\pca9685\src\pca9685.c" />
     <ClCompile Include="..\ALittleServer\Main.cpp" />
     <ClCompile Include="..\ALittleServer\MysqlSystem\MysqlSystem.cpp" />
     <ClCompile Include="..\ALittleServer\RouteSystem\ConnectClient.cpp" />
@@ -104,6 +105,7 @@
     <ClInclude Include="..\..\lualib\sqlite3\sqlite3ext.h" />
     <ClInclude Include="..\..\lualib\tinyxml2\tinyxml2.h" />
     <ClInclude Include="..\..\lualib\tinyxml2\tinyxml2lib.h" />
+    <ClInclude Include="..\..\pca9685\src\pca9685.h" />
     <ClInclude Include="..\ALittleServer\MysqlSystem\MysqlSystem.h" />
     <ClInclude Include="..\ALittleServer\RouteSystem\ConnectClient.h" />
     <ClInclude Include="..\ALittleServer\RouteSystem\ConnectEndpoint.h" />

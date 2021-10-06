@@ -5,8 +5,8 @@
 #include <memory>
 #include <regex>
 
-#include "../Model/ABnfGuess.h"
-#include "../Model/ARegex.h"
+#include "alanguage/Src/Model/ABnfGuess.h"
+#include "alanguage/Src/Model/ARegex.h"
 
 class ABnfElement;
 using ABnfElementPtr = std::shared_ptr<ABnfElement>;

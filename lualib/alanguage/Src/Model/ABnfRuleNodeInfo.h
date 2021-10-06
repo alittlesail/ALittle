@@ -2,9 +2,10 @@
 #ifndef _ALITTLE_ABNFRULENODEINFO_H_
 #define _ALITTLE_ABNFRULENODEINFO_H_
 
-#include "ABnfRuleTokenInfo.h"
 #include <vector>
 #include <unordered_map>
+
+#include "ABnfRuleTokenInfo.h"
 
 class ABnfRuleNodeInfo;
 class ABnfRule;

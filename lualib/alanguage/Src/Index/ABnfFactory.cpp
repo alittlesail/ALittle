@@ -1,12 +1,14 @@
+
 #include "ABnfFactory.h"
 #include "ABnfFile.h"
-#include "../Model/ABnfElement.h"
-#include "../Model/ABnfNodeElement.h"
-#include "../Model/ABnfKeyElement.h"
-#include "../Model/ABnfStringElement.h"
-#include "../Model/ABnfRegexElement.h"
-#include "../Model/ABnfReference.h"
-#include "../Model/ARegex.h"
+
+#include "alanguage/Src/Model/ABnfElement.h"
+#include "alanguage/Src/Model/ABnfNodeElement.h"
+#include "alanguage/Src/Model/ABnfKeyElement.h"
+#include "alanguage/Src/Model/ABnfStringElement.h"
+#include "alanguage/Src/Model/ABnfRegexElement.h"
+#include "alanguage/Src/Model/ABnfReference.h"
+#include "alanguage/Src/Model/ARegex.h"
 
 ABnfNodeElementPtr ABnfFactory::CreateNodeElement(ABnfFile* file, int line, int col, int offset, const std::string& type)
 {

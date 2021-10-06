@@ -1,3 +1,4 @@
+
 #include "ARegex.h"
 
 ARegex::ARegex(const std::string& rule) : m_rule(rule)

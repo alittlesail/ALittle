@@ -2,7 +2,8 @@
 #include "ABnfProject.h"
 #include "ABnfFactory.h"
 #include "ABnfFile.h"
-#include "../Model/ABnfRuleInfo.h"
+
+#include "alanguage/Src/Model/ABnfRuleInfo.h"
 
 std::string ABnfProject::LoadABnf(const std::string& abnf_buffer)
 {

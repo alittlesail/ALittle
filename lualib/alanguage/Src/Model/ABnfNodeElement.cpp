@@ -1,3 +1,4 @@
+
 #include "ABnfNodeElement.h"
 
 ABnfNodeElement::ABnfNodeElement(ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& type)

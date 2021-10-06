@@ -1,6 +1,7 @@
 
 #include "ABnfLeafElement.h"
-#include "../Index/ABnfFile.h"
+
+#include "alanguage/Src/Index/ABnfFile.h"
 
 ABnfLeafElement::ABnfLeafElement(ABnfFactory* factory, ABnfFile* file, int line, int col, int offset, const std::string& value)
     : ABnfElement(factory, file, line, col, offset)

@@ -21,7 +21,7 @@ using ABnfGuessPtr = std::shared_ptr<ABnfGuess>;
 class ABnfElement : public std::enable_shared_from_this<ABnfElement>
 {
 protected:
-    ABnfFactory* m_factory = nullptr;             // 对象工厂
+    ABnfFactory* m_factory = nullptr;     // 对象工厂
     ABnfFile* m_file = nullptr;           // 所在的解析
     ABnfElementWeakPtr m_parent;          // 父节点
     ABnfReference* m_reference = nullptr;         // 引用

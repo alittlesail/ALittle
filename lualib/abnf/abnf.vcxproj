@@ -19,25 +19,25 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\alanguage\Index\ABnfFactory.h" />
-    <ClInclude Include="..\alanguage\Index\ABnfFile.h" />
-    <ClInclude Include="..\alanguage\Index\ABnfProject.h" />
-    <ClInclude Include="..\alanguage\Model\ABnf.h" />
-    <ClInclude Include="..\alanguage\Model\ABnfElement.h" />
-    <ClInclude Include="..\alanguage\Model\ABnfErrorElement.h" />
-    <ClInclude Include="..\alanguage\Model\ABnfGuess.h" />
-    <ClInclude Include="..\alanguage\Model\ABnfKeyElement.h" />
-    <ClInclude Include="..\alanguage\Model\ABnfLeafElement.h" />
-    <ClInclude Include="..\alanguage\Model\ABnfNodeElement.h" />
-    <ClInclude Include="..\alanguage\Model\ABnfReference.h" />
-    <ClInclude Include="..\alanguage\Model\ABnfRegexElement.h" />
-    <ClInclude Include="..\alanguage\Model\ABnfRule.h" />
-    <ClInclude Include="..\alanguage\Model\ABnfRuleInfo.h" />
-    <ClInclude Include="..\alanguage\Model\ABnfRuleNodeInfo.h" />
-    <ClInclude Include="..\alanguage\Model\ABnfRuleTokenInfo.h" />
-    <ClInclude Include="..\alanguage\Model\ABnfStringElement.h" />
-    <ClInclude Include="..\alanguage\Model\ALanguageHelperInfo.h" />
-    <ClInclude Include="..\alanguage\Model\ARegex.h" />
+    <ClInclude Include="..\alanguage\Src\Index\ABnfFactory.h" />
+    <ClInclude Include="..\alanguage\Src\Index\ABnfFile.h" />
+    <ClInclude Include="..\alanguage\Src\Index\ABnfProject.h" />
+    <ClInclude Include="..\alanguage\Src\Model\ABnf.h" />
+    <ClInclude Include="..\alanguage\Src\Model\ABnfElement.h" />
+    <ClInclude Include="..\alanguage\Src\Model\ABnfErrorElement.h" />
+    <ClInclude Include="..\alanguage\Src\Model\ABnfGuess.h" />
+    <ClInclude Include="..\alanguage\Src\Model\ABnfKeyElement.h" />
+    <ClInclude Include="..\alanguage\Src\Model\ABnfLeafElement.h" />
+    <ClInclude Include="..\alanguage\Src\Model\ABnfNodeElement.h" />
+    <ClInclude Include="..\alanguage\Src\Model\ABnfReference.h" />
+    <ClInclude Include="..\alanguage\Src\Model\ABnfRegexElement.h" />
+    <ClInclude Include="..\alanguage\Src\Model\ABnfRule.h" />
+    <ClInclude Include="..\alanguage\Src\Model\ABnfRuleInfo.h" />
+    <ClInclude Include="..\alanguage\Src\Model\ABnfRuleNodeInfo.h" />
+    <ClInclude Include="..\alanguage\Src\Model\ABnfRuleTokenInfo.h" />
+    <ClInclude Include="..\alanguage\Src\Model\ABnfStringElement.h" />
+    <ClInclude Include="..\alanguage\Src\Model\ALanguageHelperInfo.h" />
+    <ClInclude Include="..\alanguage\Src\Model\ARegex.h" />
     <ClInclude Include="abnflib.h" />
     <ClInclude Include="abnf_c.h" />
     <ClInclude Include="Index\ABnfFactoryClass.h" />
@@ -52,17 +52,17 @@
     <ClInclude Include="Reference\ABnfStringReference.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\alanguage\Index\ABnfFactory.cpp" />
-    <ClCompile Include="..\alanguage\Index\ABnfFile.cpp" />
-    <ClCompile Include="..\alanguage\Index\ABnfProject.cpp" />
-    <ClCompile Include="..\alanguage\Model\ABnf.cpp" />
-    <ClCompile Include="..\alanguage\Model\ABnfElement.cpp" />
-    <ClCompile Include="..\alanguage\Model\ABnfLeafElement.cpp" />
-    <ClCompile Include="..\alanguage\Model\ABnfNodeElement.cpp" />
-    <ClCompile Include="..\alanguage\Model\ABnfRule.cpp" />
-    <ClCompile Include="..\alanguage\Model\ABnfRuleInfo.cpp" />
-    <ClCompile Include="..\alanguage\Model\ABnfRuleNodeInfo.cpp" />
-    <ClCompile Include="..\alanguage\Model\ARegex.cpp" />
+    <ClCompile Include="..\alanguage\Src\Index\ABnfFactory.cpp" />
+    <ClCompile Include="..\alanguage\Src\Index\ABnfFile.cpp" />
+    <ClCompile Include="..\alanguage\Src\Index\ABnfProject.cpp" />
+    <ClCompile Include="..\alanguage\Src\Model\ABnf.cpp" />
+    <ClCompile Include="..\alanguage\Src\Model\ABnfElement.cpp" />
+    <ClCompile Include="..\alanguage\Src\Model\ABnfLeafElement.cpp" />
+    <ClCompile Include="..\alanguage\Src\Model\ABnfNodeElement.cpp" />
+    <ClCompile Include="..\alanguage\Src\Model\ABnfRule.cpp" />
+    <ClCompile Include="..\alanguage\Src\Model\ABnfRuleInfo.cpp" />
+    <ClCompile Include="..\alanguage\Src\Model\ABnfRuleNodeInfo.cpp" />
+    <ClCompile Include="..\alanguage\Src\Model\ARegex.cpp" />
     <ClCompile Include="abnflib.c" />
     <ClCompile Include="abnf_c.cpp" />
     <ClCompile Include="Index\ABnfFactoryClass.cpp" />
@@ -165,7 +165,7 @@
       <PreprocessorDefinitions>_DEBUG;THIRDPARTY_EXPORTS;_WINDOWS;_USRDLL;LUA_BUILD_AS_DLL;LUA_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\lua\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\lua\;$(SolutionDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -205,7 +205,7 @@
       <PreprocessorDefinitions>NDEBUG;THIRDPARTY_EXPORTS;_WINDOWS;_USRDLL;LUA_BUILD_AS_DLL;LUA_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\lua</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\lua;$(SolutionDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

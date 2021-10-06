@@ -1,7 +1,7 @@
 ﻿
 #include "ABnfProjectExport.h"
-#include "../Model/ABnfRuleInfo.h"
-#include "../Index/ABnfFile.h"
+#include "alanguage/Src/Model/ABnfRuleInfo.h"
+#include "alanguage/Src/Index/ABnfFile.h"
 
 void ABnfProjectExport::Start(const std::string& abnf_buffer)
 {

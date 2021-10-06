@@ -10,7 +10,7 @@
 #include <mutex>
 #include <unordered_map>
 
-#include "../Model/ABnf.h"
+#include "alanguage/Src/Model/ABnf.h"
 #include "ABnfFactory.h"
 
 class ABnfProject

@@ -15,12 +15,12 @@ extern "C" {
 #include "lauxlib.h"
 #include "lualib.h"
 }
-#include "../Model/ABnf.h"
-#include "../Index/ABnfProject.h"
+
+#include "alanguage/Src/Model/ABnf.h"
+#include "alanguage/Src/Index/ABnfProject.h"
 
 class ABnfProjectExport : public ABnfProject
 {
-	// 支线程逻辑
 protected:
 	volatile bool m_run = false;
 	std::condition_variable m_cv;       // 条件变量

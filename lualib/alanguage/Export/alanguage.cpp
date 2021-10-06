@@ -7,9 +7,9 @@ extern "C" {
 #include "alanguage.h"
 }
 
-#include "../Model/ABnf.h"
-#include "../Export/ABnfProjectExport.h"
-#include "../Index/ABnfFile.h"
+#include "alanguage/Src/Model/ABnf.h"
+#include "alanguage/Export/ABnfProjectExport.h"
+#include "alanguage/Src/Index/ABnfFile.h"
 
 int alanguage_project_pollone(void* project, lua_State* L)
 {

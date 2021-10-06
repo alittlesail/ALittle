@@ -1,6 +1,4 @@
 #include "ABnf.h"
-#include "../Index/ABnfFile.h"
-#include "../Index/ABnfFactory.h"
 #include "ABnfRuleInfo.h"
 #include "ABnfRuleNodeInfo.h"
 #include "ABnfNodeElement.h"
@@ -8,6 +6,9 @@
 #include "ABnfStringElement.h"
 #include "ABnfRegexElement.h"
 #include "ABnfErrorElement.h"
+
+#include "alanguage/Src/Index/ABnfFile.h"
+#include "alanguage/Src/Index/ABnfFactory.h"
 
 // 初始化参数
 void ABnf::Clear()

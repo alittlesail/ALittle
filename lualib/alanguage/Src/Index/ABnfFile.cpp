@@ -1,16 +1,17 @@
 ﻿
 #include "ABnfFile.h"
 #include "ABnfProject.h"
-#include "../Model/ABnf.h"
-#include "../Model/ABnfElement.h"
-#include "../Model/ABnfNodeElement.h"
-#include "../Model/ABnfErrorElement.h"
-#include "../Model/ABnfReference.h"
-#include "../Model/ABnfRegexElement.h"
-#include "../Model/ABnfStringElement.h"
-#include "../Model/ALanguageHelperInfo.h"
-#include "../Model/ABnfRuleInfo.h"
-#include "../Model/ABnfRuleNodeInfo.h"
+
+#include "alanguage/Src/Model/ABnf.h"
+#include "alanguage/Src/Model/ABnfElement.h"
+#include "alanguage/Src/Model/ABnfNodeElement.h"
+#include "alanguage/Src/Model/ABnfErrorElement.h"
+#include "alanguage/Src/Model/ABnfReference.h"
+#include "alanguage/Src/Model/ABnfRegexElement.h"
+#include "alanguage/Src/Model/ABnfStringElement.h"
+#include "alanguage/Src/Model/ALanguageHelperInfo.h"
+#include "alanguage/Src/Model/ABnfRuleInfo.h"
+#include "alanguage/Src/Model/ABnfRuleNodeInfo.h"
 
 ABnfFile::ABnfFile(ABnfProject* project, const std::string& module_path, const std::string& full_path, const char* text, size_t len, bool in_ui)
 {

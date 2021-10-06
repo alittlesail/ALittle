@@ -1,9 +1,10 @@
 
 #include "ABnfElement.h"
 #include "ABnfReference.h"
-#include "../Index/ABnfFactory.h"
-#include "../Index/ABnfFile.h"
-#include "../Index/ABnfProject.h"
+
+#include "alanguage/Src/Index/ABnfFactory.h"
+#include "alanguage/Src/Index/ABnfFile.h"
+#include "alanguage/Src/Index/ABnfProject.h"
 
 ABnfElement::ABnfElement(ABnfFactory* factory, ABnfFile* file, int line, int col, int offset)
 {

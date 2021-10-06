@@ -2,7 +2,7 @@
 #ifndef _ALITTLE_ABNFCOMMONREFERENCE_H_
 #define _ALITTLE_ABNFCOMMONREFERENCE_H_
 
-#include "../../alanguage/Model/ABnfReference.h"
+#include "alanguage/Src/Model/ABnfReference.h"
 
 enum ABnfColorType
 {

@@ -1,7 +1,7 @@
 
 #include "ABnfKeyReference.h"
-#include "../../alanguage/Model/ABnfElement.h"
-#include "../../alanguage/Model/ABnf.h"
+#include "alanguage/Src/Model/ABnfElement.h"
+#include "alanguage/Src/Model/ABnf.h"
 
 ABnfKeyReference::ABnfKeyReference(const ABnfElementPtr& element) : ABnfCommonReference(element)
 {

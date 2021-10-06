@@ -7,8 +7,8 @@ extern "C" {
 #include "abnf_c.h"
 }
 
-#include "Index/ABnfProjectClass.h"
-#include "Index/ABnfFileClass.h"
+#include "ABnfProjectClass.h"
+#include "abnf/Src/Index/ABnfFileClass.h"
 
 void* create_abnf_project(const char* abnf_buffer)
 {

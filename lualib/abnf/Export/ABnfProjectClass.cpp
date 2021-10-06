@@ -1,6 +1,6 @@
 
 #include "ABnfProjectClass.h"
-#include "ABnfFileClass.h"
+#include "abnf/Src/Index/ABnfFileClass.h"
 
 void ABnfProjectClass::Generate(const std::string& full_path, int query_id, int version, const std::string& target_path, const std::string& language_name)
 {

@@ -1,7 +1,7 @@
 
 #include "ABnfRegexReference.h"
-#include "../../alanguage/Model/ABnfElement.h"
-#include "../../alanguage/Model/ABnf.h"
+#include "alanguage/Src/Model/ABnfElement.h"
+#include "alanguage/Src/Model/ABnf.h"
 
 ABnfRegexReference::ABnfRegexReference(const ABnfElementPtr& element) : ABnfCommonReference(element)
 {

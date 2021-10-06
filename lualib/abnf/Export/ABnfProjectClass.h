@@ -2,15 +2,15 @@
 #ifndef _ALITTLE_ABNFPROJECTCLASS_H_
 #define _ALITTLE_ABNFPROJECTCLASS_H_
 
-#include "../../alanguage/Index/ABnfProject.h"
-#include "ABnfFactoryClass.h"
-
 #include <unordered_map>
 #include <unordered_set>
 #include <map>
 #include <string>
 
-class ABnfProjectClass : public ABnfProject
+#include "abnf/Src/Index/ABnfFactoryClass.h"
+#include "alanguage/Export/ABnfProjectExport.h"
+
+class ABnfProjectClass : public ABnfProjectExport
 {
 private:
     ABnfFactoryClass m_factory;

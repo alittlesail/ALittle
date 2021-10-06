@@ -1,8 +1,8 @@
 
 #include "ABnfNodeReference.h"
-#include "../../alanguage/Model/ABnfElement.h"
-#include "../../alanguage/Model/ABnfNodeElement.h"
-#include "../../alanguage/Model/ABnf.h"
+#include "alanguage/Src/Model/ABnfElement.h"
+#include "alanguage/Src/Model/ABnfNodeElement.h"
+#include "alanguage/Src/Model/ABnf.h"
 
 ABnfNodeReference::ABnfNodeReference(const ABnfElementPtr& element) : ABnfCommonReference(element)
 {

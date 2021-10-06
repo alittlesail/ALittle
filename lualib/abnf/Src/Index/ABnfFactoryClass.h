@@ -2,7 +2,7 @@
 #ifndef _ALITTLE_ABNFFACTORYCLASS_H_
 #define _ALITTLE_ABNFFACTORYCLASS_H_
 
-#include "../../alanguage/Index/ABnfFactory.h"
+#include "alanguage/Src/Index/ABnfFactory.h"
 
 class ABnfFactoryClass : public ABnfFactory
 {

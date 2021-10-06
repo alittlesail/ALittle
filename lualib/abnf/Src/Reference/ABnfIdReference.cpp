@@ -1,10 +1,10 @@
 
 #include "ABnfIdReference.h"
-#include "../../alanguage/Model/ABnfElement.h"
-#include "../../alanguage/Model/ABnfNodeElement.h"
-#include "../../alanguage/Model/ABnf.h"
-#include "../../alanguage/Index/ABnfFactory.h"
-#include "../Index/ABnfFileClass.h"
+#include "alanguage/Src/Model/ABnfElement.h"
+#include "alanguage/Src/Model/ABnfNodeElement.h"
+#include "alanguage/Src/Model/ABnf.h"
+#include "alanguage/Src/Index/ABnfFactory.h"
+#include "abnf/Src/Index/ABnfFileClass.h"
 
 #include <unordered_set>
 

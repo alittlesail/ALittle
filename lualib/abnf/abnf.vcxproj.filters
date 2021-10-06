@@ -1,38 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="abnflib.h" />
-    <ClInclude Include="abnf_c.h" />
-    <ClInclude Include="Index\ABnfFileClass.h">
-      <Filter>Index</Filter>
-    </ClInclude>
-    <ClInclude Include="Index\ABnfProjectClass.h">
-      <Filter>Index</Filter>
-    </ClInclude>
-    <ClInclude Include="Index\ABnfFactoryClass.h">
-      <Filter>Index</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ABnfKeyReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ABnfNodeReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ABnfNumberReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ABnfRegexReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ABnfStringReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ABnfCommonReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ABnfIdReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
     <ClInclude Include="..\alanguage\Src\Index\ABnfFactory.h">
       <Filter>ALanguage\Index</Filter>
     </ClInclude>
@@ -90,40 +58,47 @@
     <ClInclude Include="..\alanguage\Src\Model\ABnf.h">
       <Filter>ALanguage\Model</Filter>
     </ClInclude>
+    <ClInclude Include="Export\abnf_c.h">
+      <Filter>Export</Filter>
+    </ClInclude>
+    <ClInclude Include="Export\abnflib.h">
+      <Filter>Export</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Index\ABnfFileClass.h">
+      <Filter>Src\Index</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Index\ABnfFactoryClass.h">
+      <Filter>Src\Index</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ABnfIdReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ABnfKeyReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ABnfNodeReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ABnfNumberReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ABnfRegexReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ABnfStringReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ABnfCommonReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="..\alanguage\Export\ABnfProjectExport.h">
+      <Filter>ALanguage\Export</Filter>
+    </ClInclude>
+    <ClInclude Include="Export\ABnfProjectClass.h">
+      <Filter>Export</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="abnflib.c" />
-    <ClCompile Include="abnf_c.cpp" />
-    <ClCompile Include="Index\ABnfProjectClass.cpp">
-      <Filter>Index</Filter>
-    </ClCompile>
-    <ClCompile Include="Index\ABnfFactoryClass.cpp">
-      <Filter>Index</Filter>
-    </ClCompile>
-    <ClCompile Include="Index\ABnfFileClass.cpp">
-      <Filter>Index</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ABnfNodeReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ABnfNumberReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ABnfRegexReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ABnfStringReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ABnfCommonReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ABnfIdReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ABnfKeyReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
     <ClCompile Include="..\alanguage\Src\Index\ABnfFile.cpp">
       <Filter>ALanguage\Index</Filter>
     </ClCompile>
@@ -157,14 +132,47 @@
     <ClCompile Include="..\alanguage\Src\Model\ABnfElement.cpp">
       <Filter>ALanguage\Model</Filter>
     </ClCompile>
+    <ClCompile Include="Export\abnflib.c">
+      <Filter>Export</Filter>
+    </ClCompile>
+    <ClCompile Include="Export\abnf_c.cpp">
+      <Filter>Export</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Index\ABnfFactoryClass.cpp">
+      <Filter>Src\Index</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Index\ABnfFileClass.cpp">
+      <Filter>Src\Index</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ABnfKeyReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ABnfNodeReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ABnfNumberReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ABnfRegexReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ABnfStringReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ABnfCommonReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ABnfIdReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="..\alanguage\Export\ABnfProjectExport.cpp">
+      <Filter>ALanguage\Export</Filter>
+    </ClCompile>
+    <ClCompile Include="Export\ABnfProjectClass.cpp">
+      <Filter>Export</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Index">
-      <UniqueIdentifier>{a6cfe03e-931c-418c-8e42-bb958b685937}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Reference">
-      <UniqueIdentifier>{fa293e03-802d-40b1-b744-2e4e85df4d1f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ALanguage">
       <UniqueIdentifier>{ada982e6-343c-4d24-92af-4c71afc35acc}</UniqueIdentifier>
     </Filter>
@@ -173,6 +181,21 @@
     </Filter>
     <Filter Include="ALanguage\Model">
       <UniqueIdentifier>{2aa5ef4f-75af-4dd2-bfd7-00c18080ab60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Export">
+      <UniqueIdentifier>{e7c674e8-2317-4aae-ba70-c089972ac10a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src">
+      <UniqueIdentifier>{0abb888c-72cd-4bb5-9b2c-dc72bdcb8ead}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Index">
+      <UniqueIdentifier>{7112294d-8c16-4e13-b988-b4ae237eb09c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Reference">
+      <UniqueIdentifier>{e4d81ed8-02f8-4bb1-bea6-00b333f27dda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ALanguage\Export">
+      <UniqueIdentifier>{9edc28ed-e0af-49af-b15b-a0c738bb9346}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

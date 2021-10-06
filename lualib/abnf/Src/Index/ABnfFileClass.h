@@ -2,11 +2,12 @@
 #ifndef _ALITTLE_ABNFFILECLASS_H_
 #define _ALITTLE_ABNFFILECLASS_H_
 
-#include "../../alanguage/Index/ABnfFile.h"
 #include <unordered_map>
 #include <unordered_set>
 #include <map>
 #include <string>
+
+#include "alanguage/Src/Index/ABnfFile.h"
 
 class ABnfFileClass : public ABnfFile
 {

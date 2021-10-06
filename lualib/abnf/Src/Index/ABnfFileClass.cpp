@@ -1,8 +1,8 @@
 
 #include "ABnfFileClass.h"
-#include "../../alanguage/Model/ABnf.h"
-#include "../../alanguage/Index/ABnfProject.h"
-#include "../../alanguage/Model/ABnfNodeElement.h"
+#include "alanguage/Src/Model/ABnf.h"
+#include "alanguage/Src/Index/ABnfProject.h"
+#include "alanguage/Src/Model/ABnfNodeElement.h"
 
 ABnfFileClass::ABnfFileClass(ABnfProject* project, const std::string& full_path, const char* text, size_t len, bool in_ui)
 	: ABnfFile(project, "", full_path, text, len, in_ui)

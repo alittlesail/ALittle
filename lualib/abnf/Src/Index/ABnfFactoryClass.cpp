@@ -1,13 +1,15 @@
 
 #include "ABnfFactoryClass.h"
 #include "ABnfFileClass.h"
-#include "../Reference/ABnfIdReference.h"
-#include "../Reference/ABnfRegexReference.h"
-#include "../Reference/ABnfKeyReference.h"
-#include "../Reference/ABnfStringReference.h"
-#include "../Reference/ABnfNodeReference.h"
-#include "../Reference/ABnfNumberReference.h"
-#include "../../alanguage/Model/ABnfElement.h"
+
+#include "alanguage/Src/Model/ABnfElement.h"
+
+#include "abnf/Src/Reference/ABnfIdReference.h"
+#include "abnf/Src/Reference/ABnfRegexReference.h"
+#include "abnf/Src/Reference/ABnfKeyReference.h"
+#include "abnf/Src/Reference/ABnfStringReference.h"
+#include "abnf/Src/Reference/ABnfNodeReference.h"
+#include "abnf/Src/Reference/ABnfNumberReference.h"
 
 ABnfReference* ABnfFactoryClass::CreateReference(const ABnfElementPtr& element)
 {

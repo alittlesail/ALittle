@@ -19,8 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="alanguage.cpp" />
-    <ClCompile Include="alanguagelib.c" />
+    <ClCompile Include="Export\ABnfProjectExport.cpp" />
+    <ClCompile Include="Export\alanguage.cpp" />
+    <ClCompile Include="Export\alanguagelib.c" />
     <ClCompile Include="Index\ABnfFactory.cpp" />
     <ClCompile Include="Index\ABnfFile.cpp" />
     <ClCompile Include="Index\ABnfProject.cpp" />
@@ -34,8 +35,9 @@
     <ClCompile Include="Model\ARegex.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="alanguage.h" />
-    <ClInclude Include="alanguagelib.h" />
+    <ClInclude Include="Export\ABnfProjectExport.h" />
+    <ClInclude Include="Export\alanguage.h" />
+    <ClInclude Include="Export\alanguagelib.h" />
     <ClInclude Include="Index\ABnfFactory.h" />
     <ClInclude Include="Index\ABnfFile.h" />
     <ClInclude Include="Index\ABnfProject.h" />

@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="alanguagelib.c" />
     <ClCompile Include="Index\ABnfFile.cpp">
       <Filter>Index</Filter>
     </ClCompile>
@@ -35,10 +34,17 @@
     <ClCompile Include="Model\ABnfElement.cpp">
       <Filter>Model</Filter>
     </ClCompile>
-    <ClCompile Include="alanguage.cpp" />
+    <ClCompile Include="Export\alanguagelib.c">
+      <Filter>Export</Filter>
+    </ClCompile>
+    <ClCompile Include="Export\alanguage.cpp">
+      <Filter>Export</Filter>
+    </ClCompile>
+    <ClCompile Include="Export\ABnfProjectExport.cpp">
+      <Filter>Export</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="alanguagelib.h" />
     <ClInclude Include="Index\ABnfFile.h">
       <Filter>Index</Filter>
     </ClInclude>
@@ -96,7 +102,15 @@
     <ClInclude Include="Model\ABnfKeyElement.h">
       <Filter>Model</Filter>
     </ClInclude>
-    <ClInclude Include="alanguage.h" />
+    <ClInclude Include="Export\alanguagelib.h">
+      <Filter>Export</Filter>
+    </ClInclude>
+    <ClInclude Include="Export\alanguage.h">
+      <Filter>Export</Filter>
+    </ClInclude>
+    <ClInclude Include="Export\ABnfProjectExport.h">
+      <Filter>Export</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Model">
@@ -104,6 +118,9 @@
     </Filter>
     <Filter Include="Index">
       <UniqueIdentifier>{1978d0cd-b3dd-46ad-a396-a373383366f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Export">
+      <UniqueIdentifier>{02500126-9f61-4b97-8676-dcfae6f039b1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -1,109 +1,129 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="alanguagelib.c" />
-    <ClCompile Include="Index\ABnfFile.cpp">
-      <Filter>Index</Filter>
+    <ClCompile Include="Export\alanguagelib.c">
+      <Filter>Export</Filter>
     </ClCompile>
-    <ClCompile Include="Index\ABnfProject.cpp">
-      <Filter>Index</Filter>
+    <ClCompile Include="Export\alanguage.cpp">
+      <Filter>Export</Filter>
     </ClCompile>
-    <ClCompile Include="Index\ABnfFactory.cpp">
-      <Filter>Index</Filter>
+    <ClCompile Include="Export\ABnfProjectExport.cpp">
+      <Filter>Export</Filter>
     </ClCompile>
-    <ClCompile Include="Model\ABnfLeafElement.cpp">
-      <Filter>Model</Filter>
+    <ClCompile Include="Src\Model\ABnfLeafElement.cpp">
+      <Filter>Src\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Model\ABnfNodeElement.cpp">
-      <Filter>Model</Filter>
+    <ClCompile Include="Src\Model\ABnfNodeElement.cpp">
+      <Filter>Src\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Model\ABnfRule.cpp">
-      <Filter>Model</Filter>
+    <ClCompile Include="Src\Model\ABnfRule.cpp">
+      <Filter>Src\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Model\ABnfRuleInfo.cpp">
-      <Filter>Model</Filter>
+    <ClCompile Include="Src\Model\ABnfRuleInfo.cpp">
+      <Filter>Src\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Model\ABnfRuleNodeInfo.cpp">
-      <Filter>Model</Filter>
+    <ClCompile Include="Src\Model\ABnfRuleNodeInfo.cpp">
+      <Filter>Src\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Model\ARegex.cpp">
-      <Filter>Model</Filter>
+    <ClCompile Include="Src\Model\ARegex.cpp">
+      <Filter>Src\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Model\ABnf.cpp">
-      <Filter>Model</Filter>
+    <ClCompile Include="Src\Model\ABnf.cpp">
+      <Filter>Src\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Model\ABnfElement.cpp">
-      <Filter>Model</Filter>
+    <ClCompile Include="Src\Model\ABnfElement.cpp">
+      <Filter>Src\Model</Filter>
     </ClCompile>
-    <ClCompile Include="alanguage.cpp" />
+    <ClCompile Include="Src\Index\ABnfProject.cpp">
+      <Filter>Src\Index</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Index\ABnfFactory.cpp">
+      <Filter>Src\Index</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Index\ABnfFile.cpp">
+      <Filter>Src\Index</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="alanguagelib.h" />
-    <ClInclude Include="Index\ABnfFile.h">
-      <Filter>Index</Filter>
+    <ClInclude Include="Export\alanguagelib.h">
+      <Filter>Export</Filter>
     </ClInclude>
-    <ClInclude Include="Index\ABnfProject.h">
-      <Filter>Index</Filter>
+    <ClInclude Include="Export\alanguage.h">
+      <Filter>Export</Filter>
     </ClInclude>
-    <ClInclude Include="Index\ABnfFactory.h">
-      <Filter>Index</Filter>
+    <ClInclude Include="Export\ABnfProjectExport.h">
+      <Filter>Export</Filter>
     </ClInclude>
-    <ClInclude Include="Model\ABnfLeafElement.h">
-      <Filter>Model</Filter>
+    <ClInclude Include="Src\Model\ABnfKeyElement.h">
+      <Filter>Src\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Model\ABnfNodeElement.h">
-      <Filter>Model</Filter>
+    <ClInclude Include="Src\Model\ABnfLeafElement.h">
+      <Filter>Src\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Model\ABnfReference.h">
-      <Filter>Model</Filter>
+    <ClInclude Include="Src\Model\ABnfNodeElement.h">
+      <Filter>Src\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Model\ABnfRegexElement.h">
-      <Filter>Model</Filter>
+    <ClInclude Include="Src\Model\ABnfReference.h">
+      <Filter>Src\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Model\ABnfRule.h">
-      <Filter>Model</Filter>
+    <ClInclude Include="Src\Model\ABnfRegexElement.h">
+      <Filter>Src\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Model\ABnfRuleInfo.h">
-      <Filter>Model</Filter>
+    <ClInclude Include="Src\Model\ABnfRule.h">
+      <Filter>Src\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Model\ABnfRuleNodeInfo.h">
-      <Filter>Model</Filter>
+    <ClInclude Include="Src\Model\ABnfRuleInfo.h">
+      <Filter>Src\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Model\ABnfRuleTokenInfo.h">
-      <Filter>Model</Filter>
+    <ClInclude Include="Src\Model\ABnfRuleNodeInfo.h">
+      <Filter>Src\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Model\ABnfStringElement.h">
-      <Filter>Model</Filter>
+    <ClInclude Include="Src\Model\ABnfRuleTokenInfo.h">
+      <Filter>Src\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Model\ALanguageHelperInfo.h">
-      <Filter>Model</Filter>
+    <ClInclude Include="Src\Model\ABnfStringElement.h">
+      <Filter>Src\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Model\ARegex.h">
-      <Filter>Model</Filter>
+    <ClInclude Include="Src\Model\ALanguageHelperInfo.h">
+      <Filter>Src\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Model\ABnf.h">
-      <Filter>Model</Filter>
+    <ClInclude Include="Src\Model\ARegex.h">
+      <Filter>Src\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Model\ABnfElement.h">
-      <Filter>Model</Filter>
+    <ClInclude Include="Src\Model\ABnf.h">
+      <Filter>Src\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Model\ABnfErrorElement.h">
-      <Filter>Model</Filter>
+    <ClInclude Include="Src\Model\ABnfElement.h">
+      <Filter>Src\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Model\ABnfGuess.h">
-      <Filter>Model</Filter>
+    <ClInclude Include="Src\Model\ABnfErrorElement.h">
+      <Filter>Src\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Model\ABnfKeyElement.h">
-      <Filter>Model</Filter>
+    <ClInclude Include="Src\Model\ABnfGuess.h">
+      <Filter>Src\Model</Filter>
     </ClInclude>
-    <ClInclude Include="alanguage.h" />
+    <ClInclude Include="Src\Index\ABnfProject.h">
+      <Filter>Src\Index</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Index\ABnfFactory.h">
+      <Filter>Src\Index</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Index\ABnfFile.h">
+      <Filter>Src\Index</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Model">
-      <UniqueIdentifier>{133ab231-3deb-4b3a-b376-751707227589}</UniqueIdentifier>
+    <Filter Include="Export">
+      <UniqueIdentifier>{02500126-9f61-4b97-8676-dcfae6f039b1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Index">
-      <UniqueIdentifier>{1978d0cd-b3dd-46ad-a396-a373383366f4}</UniqueIdentifier>
+    <Filter Include="Src">
+      <UniqueIdentifier>{e74e1943-d43b-46a3-b42b-63ccebe164a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Index">
+      <UniqueIdentifier>{1f48f5fd-3ae7-4e36-b30a-6e9d453fe202}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Model">
+      <UniqueIdentifier>{2dbeffe6-2c32-447f-8a0f-41bfc42fdd94}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

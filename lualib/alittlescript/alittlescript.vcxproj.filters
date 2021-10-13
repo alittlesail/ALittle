@@ -1,2098 +1,2127 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="alittlescriptlib.h" />
-    <ClInclude Include="alittlescript.h" />
-    <ClInclude Include="Generate\ALittleScriptAssertExprElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptAttributeModifierElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptBindStatElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptBlockCommentElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptClassBodyDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptClassCtorDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptClassDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptClassElementDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptClassExtendsDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptClassGetterDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptClassMethodDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptClassNameDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptClassSetterDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptClassStaticDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptClassVarDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptClassVarNameDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptClassVarValueDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptCommandBodyDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptCommandModifierElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptConstModifierElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptConstValueElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptCoroutineModifierElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptCoroutineStatElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptCustomTypeDotIdElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptCustomTypeDotIdNameElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptCustomTypeElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptCustomTypeNameElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptCustomTypeTemplateElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptDoWhileBodyElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptDoWhileConditionElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptDoWhileExprElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptElseBodyElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptElseExprElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptElseIfBodyElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptElseIfConditionElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptElseIfExprElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptEmptyExprElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptEnumBodyDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptEnumDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptEnumNameDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptEnumVarDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptEnumVarNameDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptFactory.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptFlowExprElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptForBodyElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptForConditionElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptForEndStatElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptForExprElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptForInConditionElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptForPairDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptForStartStatElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptForStepConditionElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptForStepStatElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptGenericFunctorParamOneTypeElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptGenericFunctorParamTailElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptGenericFunctorParamTypeElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptGenericFunctorReturnOneTypeElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptGenericFunctorReturnTailElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptGenericFunctorReturnTypeElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptGenericFunctorTypeElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptGenericListTypeElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptGenericMapTypeElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptGenericTypeElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptGlobalMethodDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptIdElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptIfBodyElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptIfConditionElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptIfExprElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptInstanceDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptKeyElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptLanguageBodyDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptLanguageModifierElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptLanguageNameDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptLineCommentElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptMethodBodyDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptMethodGetterParamDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptMethodNameDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptMethodParamDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptMethodParamNameDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptMethodParamOneDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptMethodParamTailDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptMethodReturnDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptMethodReturnOneDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptMethodReturnTailDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptMethodSetterParamDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptModifierElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptNamespaceDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptNamespaceElementDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptNamespaceNameDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptNativeModifierElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptNullableModifierElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptNumberElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp1Element.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp1ExprElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp2Element.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp2StatElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp2SuffixExElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp2ValueElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp3Element.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp3StatElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp3SuffixElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp3SuffixExElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp4Element.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp4StatElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp4SuffixEeElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp4SuffixElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp4SuffixExElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp5Element.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp5StatElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp5SuffixEeElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp5SuffixElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp5SuffixExElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp6Element.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp6StatElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp6SuffixEeElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp6SuffixElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp6SuffixExElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp7Element.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp7StatElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp7SuffixEeElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp7SuffixElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp7SuffixExElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp8Element.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp8StatElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp8SuffixEeElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp8SuffixElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp8SuffixExElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOpAssignElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOpAssignExprElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOpNewListStatElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOpNewStatElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptPathsValueElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptPrimitiveTypeElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptPropertyValueBracketValueElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptPropertyValueCastTypeElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptPropertyValueCustomTypeElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptPropertyValueDotIdElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptPropertyValueDotIdNameElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptPropertyValueElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptPropertyValueFirstTypeElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptPropertyValueMethodCallElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptPropertyValueMethodTemplateElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptPropertyValueSuffixElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptPropertyValueThisTypeElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptProtocolModifierElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptReflectCustomTypeElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptReflectValueElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptReflectValueStatElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptRegexElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptRegisterModifierElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptReturnExprElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptReturnYieldElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptRootElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptStringElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptStructBodyDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptStructDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptStructExtendsDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptStructNameDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptStructOptionDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptStructOptionNameDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptStructVarDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptStructVarNameDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptTcallStatElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptTemplateDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptTemplateExtendsClassDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptTemplateExtendsDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptTemplateExtendsStructDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptTemplateNameDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptTemplatePairDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptTextElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptThrowExprElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptUsingDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptUsingNameDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptValueFactorStatElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptValueOpStatElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptValueStatElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptVarAssignDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptVarAssignExprElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptVarAssignNameDecElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptWhileBodyElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptWhileConditionElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptWhileExprElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptWrapExprElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptWrapValueStatElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptAccessModifierElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptAllExprElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptAllTypeConstElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptAllTypeElement.h">
-      <Filter>Generate</Filter>
-    </ClInclude>
-    <ClInclude Include="Guess\ALittleScriptGuessConst.h">
-      <Filter>Guess</Filter>
-    </ClInclude>
-    <ClInclude Include="Guess\ALittleScriptGuessEnum.h">
-      <Filter>Guess</Filter>
-    </ClInclude>
-    <ClInclude Include="Guess\ALittleScriptGuessEnumName.h">
-      <Filter>Guess</Filter>
-    </ClInclude>
-    <ClInclude Include="Guess\ALittleScriptGuessFunctor.h">
-      <Filter>Guess</Filter>
-    </ClInclude>
-    <ClInclude Include="Guess\ALittleScriptGuessList.h">
-      <Filter>Guess</Filter>
-    </ClInclude>
-    <ClInclude Include="Guess\ALittleScriptGuessMap.h">
-      <Filter>Guess</Filter>
-    </ClInclude>
-    <ClInclude Include="Guess\ALittleScriptGuessMethodTemplate.h">
-      <Filter>Guess</Filter>
-    </ClInclude>
-    <ClInclude Include="Guess\ALittleScriptGuessNamespace.h">
-      <Filter>Guess</Filter>
-    </ClInclude>
-    <ClInclude Include="Guess\ALittleScriptGuessNamespaceName.h">
-      <Filter>Guess</Filter>
-    </ClInclude>
-    <ClInclude Include="Guess\ALittleScriptGuessParamTail.h">
-      <Filter>Guess</Filter>
-    </ClInclude>
-    <ClInclude Include="Guess\ALittleScriptGuessPrimitive.h">
-      <Filter>Guess</Filter>
-    </ClInclude>
-    <ClInclude Include="Guess\ALittleScriptGuessReturnTail.h">
-      <Filter>Guess</Filter>
-    </ClInclude>
-    <ClInclude Include="Guess\ALittleScriptGuessStruct.h">
-      <Filter>Guess</Filter>
-    </ClInclude>
-    <ClInclude Include="Guess\ALittleScriptGuessStructName.h">
-      <Filter>Guess</Filter>
-    </ClInclude>
-    <ClInclude Include="Guess\ALittleScriptGuessTemplate.h">
-      <Filter>Guess</Filter>
-    </ClInclude>
-    <ClInclude Include="Guess\ALittleScriptGuess.h">
-      <Filter>Guess</Filter>
-    </ClInclude>
-    <ClInclude Include="Guess\ALittleScriptGuessClass.h">
-      <Filter>Guess</Filter>
-    </ClInclude>
-    <ClInclude Include="Guess\ALittleScriptGuessClassName.h">
-      <Filter>Guess</Filter>
-    </ClInclude>
-    <ClInclude Include="Guess\ALittleScriptGuessClassTemplate.h">
-      <Filter>Guess</Filter>
-    </ClInclude>
-    <ClInclude Include="Index\ALittleScriptEnumData.h">
-      <Filter>Index</Filter>
-    </ClInclude>
-    <ClInclude Include="Index\ALittleScriptFactoryClass.h">
-      <Filter>Index</Filter>
-    </ClInclude>
-    <ClInclude Include="Index\ALittleScriptFileClass.h">
-      <Filter>Index</Filter>
-    </ClInclude>
-    <ClInclude Include="Index\ALittleScriptIndex.h">
-      <Filter>Index</Filter>
-    </ClInclude>
-    <ClInclude Include="Index\ALittleScriptOp.h">
-      <Filter>Index</Filter>
-    </ClInclude>
-    <ClInclude Include="Index\ALittleScriptProjectClass.h">
-      <Filter>Index</Filter>
-    </ClInclude>
-    <ClInclude Include="Index\ALittleScriptStructData.h">
-      <Filter>Index</Filter>
-    </ClInclude>
-    <ClInclude Include="Index\ALittleScriptUtility.h">
-      <Filter>Index</Filter>
-    </ClInclude>
-    <ClInclude Include="Index\ALittleScriptAccessData.h">
-      <Filter>Index</Filter>
-    </ClInclude>
-    <ClInclude Include="Index\ALittleScriptClassData.h">
-      <Filter>Index</Filter>
-    </ClInclude>
-    <ClInclude Include="Index\ALittleScriptDefine.h">
-      <Filter>Index</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptAssertExprReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptBindStatReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptBlockCommentReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptClassCtorDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptClassDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptClassElementDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptClassExtendsDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptClassGetterDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptClassMethodDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptClassNameDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptClassSetterDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptClassStaticDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptClassVarDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptClassVarNameDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptConstValueReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptCoroutineStatReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptCustomTypeCommonReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptCustomTypeDotIdNameReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptCustomTypeDotIdReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptCustomTypeNameReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptCustomTypeReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptDoWhileConditionReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptElseExprReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptElseIfConditionReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptElseIfExprReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptEnumDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptEnumNameDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptEnumVarDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptEnumVarNameDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptFactoryClassEx.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptFlowExprReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptForExprReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptForPairDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptGenericTypeReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptGlobalMethodDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptIdReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptIfConditionReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptIfExprReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptKeyReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptLanguageModifierReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptLanguageNameDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptLineCommentReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptMethodBodyDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptMethodNameDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptMethodParamNameDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptMethodParamOneDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptMethodParamTailDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptMethodReturnDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptMethodReturnTailDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptNamespaceDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptNamespaceElementDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptNamespaceNameDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptNumberReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptOp1ExprReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptOpAssignExprReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptOpNewListStatReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptOpNewStatReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptPathsValueReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptPrimitiveTypeReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptPropertyValueBracketValueReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptPropertyValueCastTypeReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptPropertyValueCustomTypeReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptPropertyValueDotIdNameReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptPropertyValueDotIdReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptPropertyValueFirstTypeReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptPropertyValueMethodCallReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptPropertyValueMethodTemplateReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptPropertyValueReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptPropertyValueSuffixReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptPropertyValueThisTypeReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptReferenceTemplate.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptReflectValueReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptRegexReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptReturnExprReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptStringReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptStructDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptStructNameDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptStructOptionNameDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptStructVarDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptStructVarNameDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptTcallStatReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptTemplateDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptTemplateNameDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptTemplatePairDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptTextReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptThrowExprReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptUsingDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptUsingNameDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptValueFactorStatReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptValueStatReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptVarAssignDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptVarAssignExprReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptVarAssignNameDecReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptWhileConditionReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptWhileExprReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptWrapValueStatReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptAllExprReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference\ALittleScriptAllTypeReference.h">
-      <Filter>Reference</Filter>
-    </ClInclude>
-    <ClInclude Include="Translation\ALittleScriptTranslationJavaScript.h">
-      <Filter>Translation</Filter>
-    </ClInclude>
-    <ClInclude Include="Translation\ALittleScriptTranslationLua.h">
-      <Filter>Translation</Filter>
-    </ClInclude>
-    <ClInclude Include="Translation\ALittleScriptTranslation.h">
-      <Filter>Translation</Filter>
-    </ClInclude>
-    <ClInclude Include="..\alanguage\Model\ABnfLeafElement.h">
-      <Filter>ALanguage\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\alanguage\Model\ABnfNodeElement.h">
-      <Filter>ALanguage\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\alanguage\Model\ABnfReference.h">
-      <Filter>ALanguage\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\alanguage\Model\ABnfRegexElement.h">
-      <Filter>ALanguage\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\alanguage\Model\ABnfRule.h">
-      <Filter>ALanguage\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\alanguage\Model\ABnfRuleInfo.h">
-      <Filter>ALanguage\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\alanguage\Model\ABnfRuleNodeInfo.h">
-      <Filter>ALanguage\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\alanguage\Model\ABnfRuleTokenInfo.h">
-      <Filter>ALanguage\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\alanguage\Model\ABnfStringElement.h">
-      <Filter>ALanguage\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\alanguage\Model\ALanguageHelperInfo.h">
-      <Filter>ALanguage\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\alanguage\Model\ARegex.h">
-      <Filter>ALanguage\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\alanguage\Model\ABnf.h">
-      <Filter>ALanguage\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\alanguage\Model\ABnfElement.h">
-      <Filter>ALanguage\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\alanguage\Model\ABnfErrorElement.h">
-      <Filter>ALanguage\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\alanguage\Model\ABnfGuess.h">
-      <Filter>ALanguage\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\alanguage\Model\ABnfKeyElement.h">
-      <Filter>ALanguage\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\alanguage\Index\ABnfFile.h">
+    <ClInclude Include="..\alanguage\Src\Index\ABnfFactory.h">
       <Filter>ALanguage\Index</Filter>
     </ClInclude>
-    <ClInclude Include="..\alanguage\Index\ABnfProject.h">
+    <ClInclude Include="..\alanguage\Src\Index\ABnfFile.h">
       <Filter>ALanguage\Index</Filter>
     </ClInclude>
-    <ClInclude Include="..\alanguage\Index\ABnfFactory.h">
+    <ClInclude Include="..\alanguage\Src\Index\ABnfProject.h">
       <Filter>ALanguage\Index</Filter>
     </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp9SuffixExElement.h">
-      <Filter>Generate</Filter>
+    <ClInclude Include="..\alanguage\Src\Model\ABnfElement.h">
+      <Filter>ALanguage\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp10Element.h">
-      <Filter>Generate</Filter>
+    <ClInclude Include="..\alanguage\Src\Model\ABnfErrorElement.h">
+      <Filter>ALanguage\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp10StatElement.h">
-      <Filter>Generate</Filter>
+    <ClInclude Include="..\alanguage\Src\Model\ABnfGuess.h">
+      <Filter>ALanguage\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp10SuffixEeElement.h">
-      <Filter>Generate</Filter>
+    <ClInclude Include="..\alanguage\Src\Model\ABnfKeyElement.h">
+      <Filter>ALanguage\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp10SuffixElement.h">
-      <Filter>Generate</Filter>
+    <ClInclude Include="..\alanguage\Src\Model\ABnfLeafElement.h">
+      <Filter>ALanguage\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp10SuffixExElement.h">
-      <Filter>Generate</Filter>
+    <ClInclude Include="..\alanguage\Src\Model\ABnfNodeElement.h">
+      <Filter>ALanguage\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp11Element.h">
-      <Filter>Generate</Filter>
+    <ClInclude Include="..\alanguage\Src\Model\ABnfReference.h">
+      <Filter>ALanguage\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp11StatElement.h">
-      <Filter>Generate</Filter>
+    <ClInclude Include="..\alanguage\Src\Model\ABnfRegexElement.h">
+      <Filter>ALanguage\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp11SuffixEeElement.h">
-      <Filter>Generate</Filter>
+    <ClInclude Include="..\alanguage\Src\Model\ABnfRule.h">
+      <Filter>ALanguage\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp11SuffixElement.h">
-      <Filter>Generate</Filter>
+    <ClInclude Include="..\alanguage\Src\Model\ABnfRuleInfo.h">
+      <Filter>ALanguage\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp11SuffixExElement.h">
-      <Filter>Generate</Filter>
+    <ClInclude Include="..\alanguage\Src\Model\ABnfRuleNodeInfo.h">
+      <Filter>ALanguage\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp12Element.h">
-      <Filter>Generate</Filter>
+    <ClInclude Include="..\alanguage\Src\Model\ABnfRuleTokenInfo.h">
+      <Filter>ALanguage\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp12StatElement.h">
-      <Filter>Generate</Filter>
+    <ClInclude Include="..\alanguage\Src\Model\ABnfStringElement.h">
+      <Filter>ALanguage\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp12SuffixEeElement.h">
-      <Filter>Generate</Filter>
+    <ClInclude Include="..\alanguage\Src\Model\ALanguageHelperInfo.h">
+      <Filter>ALanguage\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp12SuffixElement.h">
-      <Filter>Generate</Filter>
+    <ClInclude Include="..\alanguage\Src\Model\ARegex.h">
+      <Filter>ALanguage\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp12SuffixExElement.h">
-      <Filter>Generate</Filter>
+    <ClInclude Include="..\alanguage\Src\Model\ABnf.h">
+      <Filter>ALanguage\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp9Element.h">
-      <Filter>Generate</Filter>
+    <ClInclude Include="..\alanguage\Export\ABnfProjectExport.h">
+      <Filter>ALanguage\Export</Filter>
     </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp9StatElement.h">
-      <Filter>Generate</Filter>
+    <ClInclude Include="Src\Generate\ALittleScriptAllTypeConstElement.h">
+      <Filter>Src\Generate</Filter>
     </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp9SuffixEeElement.h">
-      <Filter>Generate</Filter>
+    <ClInclude Include="Src\Generate\ALittleScriptAllTypeElement.h">
+      <Filter>Src\Generate</Filter>
     </ClInclude>
-    <ClInclude Include="Generate\ALittleScriptOp9SuffixElement.h">
-      <Filter>Generate</Filter>
+    <ClInclude Include="Src\Generate\ALittleScriptAssertExprElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptAttributeModifierElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptBindStatElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptBlockCommentElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptClassBodyDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptClassCtorDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptClassDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptClassElementDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptClassExtendsDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptClassGetterDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptClassMethodDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptClassNameDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptClassSetterDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptClassStaticDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptClassVarDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptClassVarNameDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptClassVarValueDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptCommandBodyDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptCommandModifierElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptConstModifierElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptConstValueElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptCoroutineModifierElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptCoroutineStatElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptCustomTypeDotIdElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptCustomTypeDotIdNameElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptCustomTypeElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptCustomTypeNameElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptCustomTypeTemplateElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptDoWhileBodyElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptDoWhileConditionElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptDoWhileExprElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptElseBodyElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptElseExprElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptElseIfBodyElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptElseIfConditionElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptElseIfExprElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptEmptyExprElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptEnumBodyDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptEnumDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptEnumNameDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptEnumVarDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptEnumVarNameDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptFactory.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptFlowExprElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptForBodyElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptForConditionElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptForEndStatElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptForExprElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptForInConditionElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptForPairDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptForStartStatElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptForStepConditionElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptForStepStatElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptGenericFunctorParamOneTypeElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptGenericFunctorParamTailElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptGenericFunctorParamTypeElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptGenericFunctorReturnOneTypeElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptGenericFunctorReturnTailElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptGenericFunctorReturnTypeElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptGenericFunctorTypeElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptGenericListTypeElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptGenericMapTypeElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptGenericTypeElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptGlobalMethodDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptIdElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptIfBodyElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptIfConditionElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptIfExprElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptInstanceDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptKeyElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptLanguageBodyDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptLanguageModifierElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptLanguageNameDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptLineCommentElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptMethodBodyDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptMethodGetterParamDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptMethodNameDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptMethodParamDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptMethodParamNameDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptMethodParamOneDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptMethodParamTailDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptMethodReturnDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptMethodReturnOneDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptMethodReturnTailDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptMethodSetterParamDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptModifierElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptNamespaceDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptNamespaceElementDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptNamespaceNameDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptNativeModifierElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptNullableModifierElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptNumberElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp1Element.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp1ExprElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp2Element.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp2StatElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp2SuffixExElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp2ValueElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp3Element.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp3StatElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp3SuffixElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp3SuffixExElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp4Element.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp4StatElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp4SuffixEeElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp4SuffixElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp4SuffixExElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp5Element.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp5StatElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp5SuffixEeElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp5SuffixElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp5SuffixExElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp6Element.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp6StatElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp6SuffixEeElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp6SuffixElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp6SuffixExElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp7Element.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp7StatElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp7SuffixEeElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp7SuffixElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp7SuffixExElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp8Element.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp8StatElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp8SuffixEeElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp8SuffixElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp8SuffixExElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp9Element.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp9StatElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp9SuffixEeElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp9SuffixElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp9SuffixExElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp10Element.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp10StatElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp10SuffixEeElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp10SuffixElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp10SuffixExElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp11Element.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp11StatElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp11SuffixEeElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp11SuffixElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp11SuffixExElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp12Element.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp12StatElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp12SuffixEeElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp12SuffixElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOp12SuffixExElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOpAssignElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOpAssignExprElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOpNewListStatElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptOpNewStatElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptPathsValueElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptPrimitiveTypeElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptPropertyValueBracketValueElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptPropertyValueCastTypeElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptPropertyValueCustomTypeElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptPropertyValueDotIdElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptPropertyValueDotIdNameElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptPropertyValueElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptPropertyValueFirstTypeElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptPropertyValueMethodCallElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptPropertyValueMethodTemplateElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptPropertyValueSuffixElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptPropertyValueThisTypeElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptProtocolModifierElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptReflectCustomTypeElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptReflectValueElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptReflectValueStatElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptRegexElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptRegisterModifierElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptReturnExprElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptReturnYieldElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptRootElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptStringElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptStructBodyDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptStructDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptStructExtendsDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptStructNameDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptStructOptionDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptStructOptionNameDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptStructVarDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptStructVarNameDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptTcallStatElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptTemplateDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptTemplateExtendsClassDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptTemplateExtendsDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptTemplateExtendsStructDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptTemplateNameDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptTemplatePairDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptTextElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptThrowExprElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptUsingDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptUsingNameDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptValueFactorStatElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptValueOpStatElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptValueStatElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptVarAssignDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptVarAssignExprElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptVarAssignNameDecElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptWhileBodyElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptWhileConditionElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptWhileExprElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptWrapExprElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptWrapValueStatElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptAccessModifierElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Generate\ALittleScriptAllExprElement.h">
+      <Filter>Src\Generate</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Guess\ALittleScriptGuessMethodTemplate.h">
+      <Filter>Src\Guess</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Guess\ALittleScriptGuessNamespace.h">
+      <Filter>Src\Guess</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Guess\ALittleScriptGuessNamespaceName.h">
+      <Filter>Src\Guess</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Guess\ALittleScriptGuessParamTail.h">
+      <Filter>Src\Guess</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Guess\ALittleScriptGuessPrimitive.h">
+      <Filter>Src\Guess</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Guess\ALittleScriptGuessReturnTail.h">
+      <Filter>Src\Guess</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Guess\ALittleScriptGuessStruct.h">
+      <Filter>Src\Guess</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Guess\ALittleScriptGuessStructName.h">
+      <Filter>Src\Guess</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Guess\ALittleScriptGuessTemplate.h">
+      <Filter>Src\Guess</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Guess\ALittleScriptGuess.h">
+      <Filter>Src\Guess</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Guess\ALittleScriptGuessClass.h">
+      <Filter>Src\Guess</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Guess\ALittleScriptGuessClassName.h">
+      <Filter>Src\Guess</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Guess\ALittleScriptGuessClassTemplate.h">
+      <Filter>Src\Guess</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Guess\ALittleScriptGuessConst.h">
+      <Filter>Src\Guess</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Guess\ALittleScriptGuessEnum.h">
+      <Filter>Src\Guess</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Guess\ALittleScriptGuessEnumName.h">
+      <Filter>Src\Guess</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Guess\ALittleScriptGuessFunctor.h">
+      <Filter>Src\Guess</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Guess\ALittleScriptGuessList.h">
+      <Filter>Src\Guess</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Guess\ALittleScriptGuessMap.h">
+      <Filter>Src\Guess</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Index\ALittleScriptDefine.h">
+      <Filter>Src\Index</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Index\ALittleScriptEnumData.h">
+      <Filter>Src\Index</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Index\ALittleScriptFactoryClass.h">
+      <Filter>Src\Index</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Index\ALittleScriptFileClass.h">
+      <Filter>Src\Index</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Index\ALittleScriptIndex.h">
+      <Filter>Src\Index</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Index\ALittleScriptOp.h">
+      <Filter>Src\Index</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Index\ALittleScriptProjectClass.h">
+      <Filter>Src\Index</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Index\ALittleScriptStructData.h">
+      <Filter>Src\Index</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Index\ALittleScriptUtility.h">
+      <Filter>Src\Index</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Index\ALittleScriptAccessData.h">
+      <Filter>Src\Index</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Index\ALittleScriptClassData.h">
+      <Filter>Src\Index</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptAssertExprReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptBindStatReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptBlockCommentReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptClassCtorDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptClassDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptClassElementDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptClassExtendsDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptClassGetterDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptClassMethodDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptClassNameDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptClassSetterDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptClassStaticDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptClassVarDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptClassVarNameDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptConstValueReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptCoroutineStatReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptCustomTypeCommonReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptCustomTypeDotIdNameReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptCustomTypeDotIdReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptCustomTypeNameReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptCustomTypeReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptDoWhileConditionReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptElseExprReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptElseIfConditionReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptElseIfExprReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptEnumDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptEnumNameDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptEnumVarDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptEnumVarNameDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptFactoryClassEx.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptFlowExprReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptForExprReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptForPairDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptGenericTypeReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptGlobalMethodDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptIdReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptIfConditionReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptIfExprReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptKeyReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptLanguageModifierReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptLanguageNameDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptLineCommentReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptMethodBodyDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptMethodNameDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptMethodParamNameDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptMethodParamOneDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptMethodParamTailDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptMethodReturnDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptMethodReturnTailDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptNamespaceDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptNamespaceElementDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptNamespaceNameDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptNumberReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptOp1ExprReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptOpAssignExprReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptOpNewListStatReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptOpNewStatReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptPathsValueReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptPrimitiveTypeReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptPropertyValueBracketValueReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptPropertyValueCastTypeReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptPropertyValueCustomTypeReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptPropertyValueDotIdNameReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptPropertyValueDotIdReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptPropertyValueFirstTypeReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptPropertyValueMethodCallReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptPropertyValueMethodTemplateReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptPropertyValueReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptPropertyValueSuffixReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptPropertyValueThisTypeReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptReferenceTemplate.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptReflectValueReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptRegexReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptReturnExprReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptStringReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptStructDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptStructNameDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptStructOptionNameDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptStructVarDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptStructVarNameDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptTcallStatReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptTemplateDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptTemplateNameDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptTemplatePairDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptTextReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptThrowExprReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptUsingDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptUsingNameDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptValueFactorStatReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptValueStatReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptVarAssignDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptVarAssignExprReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptVarAssignNameDecReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptWhileConditionReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptWhileExprReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptWrapValueStatReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptAllExprReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Reference\ALittleScriptAllTypeReference.h">
+      <Filter>Src\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Translation\ALittleScriptTranslationJavaScript.h">
+      <Filter>Src\Translation</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Translation\ALittleScriptTranslationLua.h">
+      <Filter>Src\Translation</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Translation\ALittleScriptTranslation.h">
+      <Filter>Src\Translation</Filter>
+    </ClInclude>
+    <ClInclude Include="Export\alittlescriptlib.h">
+      <Filter>Export</Filter>
+    </ClInclude>
+    <ClInclude Include="Export\alittlescript.h">
+      <Filter>Export</Filter>
+    </ClInclude>
+    <ClInclude Include="Export\ALittleScriptProjectExport.h">
+      <Filter>Export</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="alittlescriptlib.c" />
-    <ClCompile Include="alittlescript.cpp" />
-    <ClCompile Include="Generate\ALittleScriptAttributeModifierElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptBindStatElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptBlockCommentElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptClassBodyDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptClassCtorDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptClassDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptClassElementDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptClassExtendsDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptClassGetterDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptClassMethodDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptClassNameDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptClassSetterDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptClassStaticDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptClassVarDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptClassVarNameDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptClassVarValueDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptCommandBodyDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptCommandModifierElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptConstModifierElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptConstValueElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptCoroutineModifierElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptCoroutineStatElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptCustomTypeDotIdElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptCustomTypeDotIdNameElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptCustomTypeElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptCustomTypeNameElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptCustomTypeTemplateElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptDoWhileBodyElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptDoWhileConditionElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptDoWhileExprElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptElseBodyElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptElseExprElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptElseIfBodyElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptElseIfConditionElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptElseIfExprElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptEmptyExprElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptEnumBodyDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptEnumDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptEnumNameDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptEnumVarDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptEnumVarNameDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptFlowExprElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptForBodyElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptForConditionElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptForEndStatElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptForExprElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptForInConditionElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptForPairDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptForStartStatElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptForStepConditionElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptForStepStatElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptGenericFunctorParamOneTypeElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptGenericFunctorParamTailElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptGenericFunctorParamTypeElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptGenericFunctorReturnOneTypeElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptGenericFunctorReturnTailElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptGenericFunctorReturnTypeElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptGenericFunctorTypeElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptGenericListTypeElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptGenericMapTypeElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptGenericTypeElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptGlobalMethodDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptIdElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptIfBodyElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptIfConditionElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptIfExprElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptInstanceDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptLanguageBodyDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptLanguageModifierElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptLanguageNameDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptLineCommentElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptMethodBodyDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptMethodGetterParamDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptMethodNameDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptMethodParamDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptMethodParamNameDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptMethodParamOneDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptMethodParamTailDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptMethodReturnDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptMethodReturnOneDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptMethodReturnTailDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptMethodSetterParamDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptModifierElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptNamespaceDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptNamespaceElementDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptNamespaceNameDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptNativeModifierElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptNullableModifierElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptNumberElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp1Element.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp1ExprElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp2Element.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp2StatElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp2SuffixExElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp2ValueElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp3Element.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp3StatElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp3SuffixElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp3SuffixExElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp4Element.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp4StatElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp4SuffixEeElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp4SuffixElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp4SuffixExElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp5Element.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp5StatElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp5SuffixEeElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp5SuffixElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp5SuffixExElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp6Element.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp6StatElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp6SuffixEeElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp6SuffixElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp6SuffixExElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp7Element.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp7StatElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp7SuffixEeElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp7SuffixElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp7SuffixExElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp8Element.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp8StatElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp8SuffixEeElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp8SuffixElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp8SuffixExElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOpAssignElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOpAssignExprElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOpNewListStatElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOpNewStatElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptPathsValueElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptPrimitiveTypeElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptPropertyValueBracketValueElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptPropertyValueCastTypeElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptPropertyValueCustomTypeElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptPropertyValueDotIdElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptPropertyValueDotIdNameElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptPropertyValueElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptPropertyValueFirstTypeElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptPropertyValueMethodCallElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptPropertyValueMethodTemplateElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptPropertyValueSuffixElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptPropertyValueThisTypeElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptProtocolModifierElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptReflectCustomTypeElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptReflectValueElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptReflectValueStatElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptRegisterModifierElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptReturnExprElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptReturnYieldElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptRootElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptStructBodyDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptStructDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptStructExtendsDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptStructNameDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptStructOptionDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptStructOptionNameDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptStructVarDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptStructVarNameDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptTcallStatElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptTemplateDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptTemplateExtendsClassDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptTemplateExtendsDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptTemplateExtendsStructDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptTemplateNameDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptTemplatePairDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptTextElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptThrowExprElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptUsingDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptUsingNameDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptValueFactorStatElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptValueOpStatElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptValueStatElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptVarAssignDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptVarAssignExprElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptVarAssignNameDecElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptWhileBodyElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptWhileConditionElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptWhileExprElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptWrapExprElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptWrapValueStatElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptAccessModifierElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptAllExprElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptAllTypeConstElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptAllTypeElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptAssertExprElement.cpp">
-      <Filter>Generate</Filter>
-    </ClCompile>
-    <ClCompile Include="Guess\ALittleScriptGuessConst.cpp">
-      <Filter>Guess</Filter>
-    </ClCompile>
-    <ClCompile Include="Guess\ALittleScriptGuessEnum.cpp">
-      <Filter>Guess</Filter>
-    </ClCompile>
-    <ClCompile Include="Guess\ALittleScriptGuessEnumName.cpp">
-      <Filter>Guess</Filter>
-    </ClCompile>
-    <ClCompile Include="Guess\ALittleScriptGuessFunctor.cpp">
-      <Filter>Guess</Filter>
-    </ClCompile>
-    <ClCompile Include="Guess\ALittleScriptGuessList.cpp">
-      <Filter>Guess</Filter>
-    </ClCompile>
-    <ClCompile Include="Guess\ALittleScriptGuessMap.cpp">
-      <Filter>Guess</Filter>
-    </ClCompile>
-    <ClCompile Include="Guess\ALittleScriptGuessMethodTemplate.cpp">
-      <Filter>Guess</Filter>
-    </ClCompile>
-    <ClCompile Include="Guess\ALittleScriptGuessNamespace.cpp">
-      <Filter>Guess</Filter>
-    </ClCompile>
-    <ClCompile Include="Guess\ALittleScriptGuessNamespaceName.cpp">
-      <Filter>Guess</Filter>
-    </ClCompile>
-    <ClCompile Include="Guess\ALittleScriptGuessParamTail.cpp">
-      <Filter>Guess</Filter>
-    </ClCompile>
-    <ClCompile Include="Guess\ALittleScriptGuessPrimitive.cpp">
-      <Filter>Guess</Filter>
-    </ClCompile>
-    <ClCompile Include="Guess\ALittleScriptGuessReturnTail.cpp">
-      <Filter>Guess</Filter>
-    </ClCompile>
-    <ClCompile Include="Guess\ALittleScriptGuessStruct.cpp">
-      <Filter>Guess</Filter>
-    </ClCompile>
-    <ClCompile Include="Guess\ALittleScriptGuessStructName.cpp">
-      <Filter>Guess</Filter>
-    </ClCompile>
-    <ClCompile Include="Guess\ALittleScriptGuessTemplate.cpp">
-      <Filter>Guess</Filter>
-    </ClCompile>
-    <ClCompile Include="Guess\ALittleScriptGuessClass.cpp">
-      <Filter>Guess</Filter>
-    </ClCompile>
-    <ClCompile Include="Guess\ALittleScriptGuessClassName.cpp">
-      <Filter>Guess</Filter>
-    </ClCompile>
-    <ClCompile Include="Guess\ALittleScriptGuessClassTemplate.cpp">
-      <Filter>Guess</Filter>
-    </ClCompile>
-    <ClCompile Include="Index\ALittleScriptFactoryClass.cpp">
-      <Filter>Index</Filter>
-    </ClCompile>
-    <ClCompile Include="Index\ALittleScriptFileClass.cpp">
-      <Filter>Index</Filter>
-    </ClCompile>
-    <ClCompile Include="Index\ALittleScriptIndex.cpp">
-      <Filter>Index</Filter>
-    </ClCompile>
-    <ClCompile Include="Index\ALittleScriptOp.cpp">
-      <Filter>Index</Filter>
-    </ClCompile>
-    <ClCompile Include="Index\ALittleScriptProjectClass.cpp">
-      <Filter>Index</Filter>
-    </ClCompile>
-    <ClCompile Include="Index\ALittleScriptStructData.cpp">
-      <Filter>Index</Filter>
-    </ClCompile>
-    <ClCompile Include="Index\ALittleScriptUtility.cpp">
-      <Filter>Index</Filter>
-    </ClCompile>
-    <ClCompile Include="Index\ALittleScriptAccessData.cpp">
-      <Filter>Index</Filter>
-    </ClCompile>
-    <ClCompile Include="Index\ALittleScriptClassData.cpp">
-      <Filter>Index</Filter>
-    </ClCompile>
-    <ClCompile Include="Index\ALittleScriptEnumData.cpp">
-      <Filter>Index</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptAssertExprReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptBindStatReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptClassCtorDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptClassDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptClassElementDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptClassExtendsDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptClassMethodDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptClassNameDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptClassStaticDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptClassVarDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptConstValueReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptCoroutineStatReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptCustomTypeCommonReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptCustomTypeDotIdNameReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptCustomTypeDotIdReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptCustomTypeReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptDoWhileConditionReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptElseExprReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptElseIfConditionReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptElseIfExprReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptEnumDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptEnumNameDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptEnumVarDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptFactoryClassEx.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptFlowExprReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptForExprReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptForPairDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptGenericTypeReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptGlobalMethodDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptIdReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptIfConditionReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptIfExprReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptKeyReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptLanguageModifierReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptLanguageNameDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptMethodBodyDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptMethodNameDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptMethodParamNameDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptMethodParamOneDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptMethodParamTailDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptMethodReturnTailDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptNamespaceDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptNamespaceElementDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptNamespaceNameDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptOp1ExprReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptOpAssignExprReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptOpNewListStatReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptOpNewStatReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptPathsValueReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptPrimitiveTypeReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptPropertyValueBracketValueReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptPropertyValueCastTypeReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptPropertyValueCustomTypeReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptPropertyValueDotIdNameReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptPropertyValueDotIdReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptPropertyValueFirstTypeReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptPropertyValueMethodCallReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptPropertyValueMethodTemplateReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptPropertyValueReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptPropertyValueSuffixReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptPropertyValueThisTypeReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptReferenceTemplate.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptReflectValueReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptReturnExprReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptStructDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptStructNameDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptStructVarDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptTcallStatReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptTemplateDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptTemplatePairDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptThrowExprReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptUsingDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptUsingNameDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptValueFactorStatReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptValueStatReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptVarAssignDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptVarAssignExprReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptVarAssignNameDecReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptWhileConditionReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptWhileExprReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptWrapValueStatReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptAllExprReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Reference\ALittleScriptAllTypeReference.cpp">
-      <Filter>Reference</Filter>
-    </ClCompile>
-    <ClCompile Include="Translation\ALittleScriptTranslationLua.cpp">
-      <Filter>Translation</Filter>
-    </ClCompile>
-    <ClCompile Include="Translation\ALittleScriptTranslation.cpp">
-      <Filter>Translation</Filter>
-    </ClCompile>
-    <ClCompile Include="Translation\ALittleScriptTranslationJavaScript.cpp">
-      <Filter>Translation</Filter>
-    </ClCompile>
-    <ClCompile Include="..\alanguage\Model\ABnfLeafElement.cpp">
-      <Filter>ALanguage\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="..\alanguage\Model\ABnfNodeElement.cpp">
-      <Filter>ALanguage\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="..\alanguage\Model\ABnfRule.cpp">
-      <Filter>ALanguage\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="..\alanguage\Model\ABnfRuleInfo.cpp">
-      <Filter>ALanguage\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="..\alanguage\Model\ABnfRuleNodeInfo.cpp">
-      <Filter>ALanguage\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="..\alanguage\Model\ARegex.cpp">
-      <Filter>ALanguage\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="..\alanguage\Model\ABnf.cpp">
-      <Filter>ALanguage\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="..\alanguage\Model\ABnfElement.cpp">
-      <Filter>ALanguage\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="..\alanguage\Index\ABnfFile.cpp">
+    <ClCompile Include="..\alanguage\Src\Index\ABnfFile.cpp">
       <Filter>ALanguage\Index</Filter>
     </ClCompile>
-    <ClCompile Include="..\alanguage\Index\ABnfProject.cpp">
+    <ClCompile Include="..\alanguage\Src\Index\ABnfProject.cpp">
       <Filter>ALanguage\Index</Filter>
     </ClCompile>
-    <ClCompile Include="..\alanguage\Index\ABnfFactory.cpp">
+    <ClCompile Include="..\alanguage\Src\Index\ABnfFactory.cpp">
       <Filter>ALanguage\Index</Filter>
     </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp9SuffixExElement.cpp">
-      <Filter>Generate</Filter>
+    <ClCompile Include="..\alanguage\Src\Model\ABnfLeafElement.cpp">
+      <Filter>ALanguage\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp10Element.cpp">
-      <Filter>Generate</Filter>
+    <ClCompile Include="..\alanguage\Src\Model\ABnfNodeElement.cpp">
+      <Filter>ALanguage\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp10StatElement.cpp">
-      <Filter>Generate</Filter>
+    <ClCompile Include="..\alanguage\Src\Model\ABnfRule.cpp">
+      <Filter>ALanguage\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp10SuffixEeElement.cpp">
-      <Filter>Generate</Filter>
+    <ClCompile Include="..\alanguage\Src\Model\ABnfRuleInfo.cpp">
+      <Filter>ALanguage\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp10SuffixElement.cpp">
-      <Filter>Generate</Filter>
+    <ClCompile Include="..\alanguage\Src\Model\ABnfRuleNodeInfo.cpp">
+      <Filter>ALanguage\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp10SuffixExElement.cpp">
-      <Filter>Generate</Filter>
+    <ClCompile Include="..\alanguage\Src\Model\ARegex.cpp">
+      <Filter>ALanguage\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp11Element.cpp">
-      <Filter>Generate</Filter>
+    <ClCompile Include="..\alanguage\Src\Model\ABnf.cpp">
+      <Filter>ALanguage\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp11StatElement.cpp">
-      <Filter>Generate</Filter>
+    <ClCompile Include="..\alanguage\Src\Model\ABnfElement.cpp">
+      <Filter>ALanguage\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp11SuffixEeElement.cpp">
-      <Filter>Generate</Filter>
+    <ClCompile Include="..\alanguage\Export\ABnfProjectExport.cpp">
+      <Filter>ALanguage\Export</Filter>
     </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp11SuffixElement.cpp">
-      <Filter>Generate</Filter>
+    <ClCompile Include="Src\Generate\ALittleScriptAllTypeConstElement.cpp">
+      <Filter>Src\Generate</Filter>
     </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp11SuffixExElement.cpp">
-      <Filter>Generate</Filter>
+    <ClCompile Include="Src\Generate\ALittleScriptAllTypeElement.cpp">
+      <Filter>Src\Generate</Filter>
     </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp12Element.cpp">
-      <Filter>Generate</Filter>
+    <ClCompile Include="Src\Generate\ALittleScriptAssertExprElement.cpp">
+      <Filter>Src\Generate</Filter>
     </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp12StatElement.cpp">
-      <Filter>Generate</Filter>
+    <ClCompile Include="Src\Generate\ALittleScriptAttributeModifierElement.cpp">
+      <Filter>Src\Generate</Filter>
     </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp12SuffixEeElement.cpp">
-      <Filter>Generate</Filter>
+    <ClCompile Include="Src\Generate\ALittleScriptBindStatElement.cpp">
+      <Filter>Src\Generate</Filter>
     </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp12SuffixElement.cpp">
-      <Filter>Generate</Filter>
+    <ClCompile Include="Src\Generate\ALittleScriptBlockCommentElement.cpp">
+      <Filter>Src\Generate</Filter>
     </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp12SuffixExElement.cpp">
-      <Filter>Generate</Filter>
+    <ClCompile Include="Src\Generate\ALittleScriptClassBodyDecElement.cpp">
+      <Filter>Src\Generate</Filter>
     </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp9Element.cpp">
-      <Filter>Generate</Filter>
+    <ClCompile Include="Src\Generate\ALittleScriptClassCtorDecElement.cpp">
+      <Filter>Src\Generate</Filter>
     </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp9StatElement.cpp">
-      <Filter>Generate</Filter>
+    <ClCompile Include="Src\Generate\ALittleScriptClassDecElement.cpp">
+      <Filter>Src\Generate</Filter>
     </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp9SuffixEeElement.cpp">
-      <Filter>Generate</Filter>
+    <ClCompile Include="Src\Generate\ALittleScriptClassElementDecElement.cpp">
+      <Filter>Src\Generate</Filter>
     </ClCompile>
-    <ClCompile Include="Generate\ALittleScriptOp9SuffixElement.cpp">
-      <Filter>Generate</Filter>
+    <ClCompile Include="Src\Generate\ALittleScriptClassExtendsDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptClassGetterDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptClassMethodDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptClassNameDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptClassSetterDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptClassStaticDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptClassVarDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptClassVarNameDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptClassVarValueDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptCommandBodyDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptCommandModifierElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptConstModifierElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptConstValueElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptCoroutineModifierElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptCoroutineStatElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptCustomTypeDotIdElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptCustomTypeDotIdNameElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptCustomTypeElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptCustomTypeNameElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptCustomTypeTemplateElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptDoWhileBodyElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptDoWhileConditionElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptDoWhileExprElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptElseBodyElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptElseExprElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptElseIfBodyElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptElseIfConditionElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptElseIfExprElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptEmptyExprElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptEnumBodyDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptEnumDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptEnumNameDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptEnumVarDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptEnumVarNameDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptFlowExprElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptForBodyElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptForConditionElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptForEndStatElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptForExprElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptForInConditionElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptForPairDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptForStartStatElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptForStepConditionElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptForStepStatElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptGenericFunctorParamOneTypeElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptGenericFunctorParamTailElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptGenericFunctorParamTypeElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptGenericFunctorReturnOneTypeElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptGenericFunctorReturnTailElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptGenericFunctorReturnTypeElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptGenericFunctorTypeElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptGenericListTypeElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptGenericMapTypeElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptGenericTypeElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptGlobalMethodDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptIdElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptIfBodyElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptIfConditionElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptIfExprElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptInstanceDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptLanguageBodyDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptLanguageModifierElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptLanguageNameDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptLineCommentElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptMethodBodyDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptMethodGetterParamDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptMethodNameDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptMethodParamDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptMethodParamNameDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptMethodParamOneDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptMethodParamTailDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptMethodReturnDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptMethodReturnOneDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptMethodReturnTailDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptMethodSetterParamDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptModifierElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptNamespaceDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptNamespaceElementDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptNamespaceNameDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptNativeModifierElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptNullableModifierElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptNumberElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp1Element.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp1ExprElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp2Element.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp2StatElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp2SuffixExElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp2ValueElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp3Element.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp3StatElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp3SuffixElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp3SuffixExElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp4Element.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp4StatElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp4SuffixEeElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp4SuffixElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp4SuffixExElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp5Element.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp5StatElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp5SuffixEeElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp5SuffixElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp5SuffixExElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp6Element.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp6StatElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp6SuffixEeElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp6SuffixElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp6SuffixExElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp7Element.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp7StatElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp7SuffixEeElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp7SuffixElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp7SuffixExElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp8Element.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp8StatElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp8SuffixEeElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp8SuffixElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp8SuffixExElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp9Element.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp9StatElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp9SuffixEeElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp9SuffixElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp9SuffixExElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp10Element.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp10StatElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp10SuffixEeElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp10SuffixElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp10SuffixExElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp11Element.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp11StatElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp11SuffixEeElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp11SuffixElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp11SuffixExElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp12Element.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp12StatElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp12SuffixEeElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp12SuffixElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOp12SuffixExElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOpAssignElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOpAssignExprElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOpNewListStatElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptOpNewStatElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptPathsValueElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptPrimitiveTypeElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptPropertyValueBracketValueElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptPropertyValueCastTypeElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptPropertyValueCustomTypeElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptPropertyValueDotIdElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptPropertyValueDotIdNameElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptPropertyValueElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptPropertyValueFirstTypeElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptPropertyValueMethodCallElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptPropertyValueMethodTemplateElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptPropertyValueSuffixElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptPropertyValueThisTypeElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptProtocolModifierElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptReflectCustomTypeElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptReflectValueElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptReflectValueStatElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptRegisterModifierElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptReturnExprElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptReturnYieldElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptRootElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptStructBodyDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptStructDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptStructExtendsDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptStructNameDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptStructOptionDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptStructOptionNameDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptStructVarDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptStructVarNameDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptTcallStatElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptTemplateDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptTemplateExtendsClassDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptTemplateExtendsDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptTemplateExtendsStructDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptTemplateNameDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptTemplatePairDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptTextElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptThrowExprElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptUsingDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptUsingNameDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptValueFactorStatElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptValueOpStatElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptValueStatElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptVarAssignDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptVarAssignExprElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptVarAssignNameDecElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptWhileBodyElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptWhileConditionElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptWhileExprElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptWrapExprElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptWrapValueStatElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptAccessModifierElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Generate\ALittleScriptAllExprElement.cpp">
+      <Filter>Src\Generate</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Guess\ALittleScriptGuessNamespace.cpp">
+      <Filter>Src\Guess</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Guess\ALittleScriptGuessNamespaceName.cpp">
+      <Filter>Src\Guess</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Guess\ALittleScriptGuessParamTail.cpp">
+      <Filter>Src\Guess</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Guess\ALittleScriptGuessPrimitive.cpp">
+      <Filter>Src\Guess</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Guess\ALittleScriptGuessReturnTail.cpp">
+      <Filter>Src\Guess</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Guess\ALittleScriptGuessStruct.cpp">
+      <Filter>Src\Guess</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Guess\ALittleScriptGuessStructName.cpp">
+      <Filter>Src\Guess</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Guess\ALittleScriptGuessTemplate.cpp">
+      <Filter>Src\Guess</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Guess\ALittleScriptGuessClass.cpp">
+      <Filter>Src\Guess</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Guess\ALittleScriptGuessClassName.cpp">
+      <Filter>Src\Guess</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Guess\ALittleScriptGuessClassTemplate.cpp">
+      <Filter>Src\Guess</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Guess\ALittleScriptGuessConst.cpp">
+      <Filter>Src\Guess</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Guess\ALittleScriptGuessEnum.cpp">
+      <Filter>Src\Guess</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Guess\ALittleScriptGuessEnumName.cpp">
+      <Filter>Src\Guess</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Guess\ALittleScriptGuessFunctor.cpp">
+      <Filter>Src\Guess</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Guess\ALittleScriptGuessList.cpp">
+      <Filter>Src\Guess</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Guess\ALittleScriptGuessMap.cpp">
+      <Filter>Src\Guess</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Guess\ALittleScriptGuessMethodTemplate.cpp">
+      <Filter>Src\Guess</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Index\ALittleScriptEnumData.cpp">
+      <Filter>Src\Index</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Index\ALittleScriptFactoryClass.cpp">
+      <Filter>Src\Index</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Index\ALittleScriptFileClass.cpp">
+      <Filter>Src\Index</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Index\ALittleScriptIndex.cpp">
+      <Filter>Src\Index</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Index\ALittleScriptOp.cpp">
+      <Filter>Src\Index</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Index\ALittleScriptProjectClass.cpp">
+      <Filter>Src\Index</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Index\ALittleScriptStructData.cpp">
+      <Filter>Src\Index</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Index\ALittleScriptUtility.cpp">
+      <Filter>Src\Index</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Index\ALittleScriptAccessData.cpp">
+      <Filter>Src\Index</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Index\ALittleScriptClassData.cpp">
+      <Filter>Src\Index</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptAssertExprReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptBindStatReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptClassCtorDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptClassDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptClassElementDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptClassExtendsDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptClassMethodDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptClassNameDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptClassStaticDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptClassVarDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptConstValueReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptCoroutineStatReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptCustomTypeCommonReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptCustomTypeDotIdNameReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptCustomTypeDotIdReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptCustomTypeReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptDoWhileConditionReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptElseExprReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptElseIfConditionReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptElseIfExprReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptEnumDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptEnumNameDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptEnumVarDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptFactoryClassEx.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptFlowExprReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptForExprReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptForPairDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptGenericTypeReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptGlobalMethodDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptIdReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptIfConditionReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptIfExprReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptKeyReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptLanguageModifierReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptLanguageNameDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptMethodBodyDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptMethodNameDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptMethodParamNameDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptMethodParamOneDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptMethodParamTailDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptMethodReturnTailDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptNamespaceDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptNamespaceElementDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptNamespaceNameDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptOp1ExprReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptOpAssignExprReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptOpNewListStatReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptOpNewStatReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptPathsValueReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptPrimitiveTypeReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptPropertyValueBracketValueReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptPropertyValueCastTypeReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptPropertyValueCustomTypeReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptPropertyValueDotIdNameReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptPropertyValueDotIdReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptPropertyValueFirstTypeReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptPropertyValueMethodCallReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptPropertyValueMethodTemplateReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptPropertyValueReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptPropertyValueSuffixReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptPropertyValueThisTypeReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptReferenceTemplate.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptReflectValueReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptReturnExprReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptStructDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptStructNameDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptStructVarDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptTcallStatReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptTemplateDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptTemplatePairDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptThrowExprReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptUsingDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptUsingNameDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptValueFactorStatReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptValueStatReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptVarAssignDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptVarAssignExprReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptVarAssignNameDecReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptWhileConditionReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptWhileExprReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptWrapValueStatReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptAllExprReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Reference\ALittleScriptAllTypeReference.cpp">
+      <Filter>Src\Reference</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Translation\ALittleScriptTranslationLua.cpp">
+      <Filter>Src\Translation</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Translation\ALittleScriptTranslation.cpp">
+      <Filter>Src\Translation</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Translation\ALittleScriptTranslationJavaScript.cpp">
+      <Filter>Src\Translation</Filter>
+    </ClCompile>
+    <ClCompile Include="Export\alittlescriptlib.c">
+      <Filter>Export</Filter>
+    </ClCompile>
+    <ClCompile Include="Export\alittlescript.cpp">
+      <Filter>Export</Filter>
+    </ClCompile>
+    <ClCompile Include="Export\ALittleScriptProjectExport.cpp">
+      <Filter>Export</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Generate">
-      <UniqueIdentifier>{ecefb303-650e-440a-bd4f-1c9c5c179c39}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Guess">
-      <UniqueIdentifier>{67d98966-7740-40af-84a9-dabfb3b4f4fc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Index">
-      <UniqueIdentifier>{56087cd3-3926-4f83-b302-4e8084b637a1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Reference">
-      <UniqueIdentifier>{4ec2cc20-37a7-41ec-829b-bc56c8cfbf15}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Translation">
-      <UniqueIdentifier>{8d1afe21-19fe-4621-ac13-c289ef9f1b51}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ALanguage">
-      <UniqueIdentifier>{d70ee848-1f31-451c-a8d6-08f99cf0031e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ALanguage\Model">
-      <UniqueIdentifier>{ff102fb3-a8a0-4eff-949a-15f23f2749e8}</UniqueIdentifier>
+      <UniqueIdentifier>{d92baa58-4699-4ff2-8b9f-0dc43f4f9c37}</UniqueIdentifier>
     </Filter>
     <Filter Include="ALanguage\Index">
-      <UniqueIdentifier>{374d99b7-e0d0-4593-9f2e-33d3de30db31}</UniqueIdentifier>
+      <UniqueIdentifier>{014cdf06-dbd3-4112-8766-9c6f33f18e3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ALanguage\Model">
+      <UniqueIdentifier>{56faf287-b5cb-4d48-a75e-afea54dec941}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ALanguage\Export">
+      <UniqueIdentifier>{ad9ed05a-10e1-4516-8277-56c4e9690000}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src">
+      <UniqueIdentifier>{5a6fbc6d-bd03-4308-9506-244f662288c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Export">
+      <UniqueIdentifier>{0f2cc571-5ddd-4eb5-891f-f1fbf21c2faf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Generate">
+      <UniqueIdentifier>{3f8ba864-e948-4079-a243-2dc9465ccaf4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Guess">
+      <UniqueIdentifier>{02395a8f-eca1-4ac4-9b8c-498c2c82c233}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Index">
+      <UniqueIdentifier>{9cdc8d19-cea5-4f23-83f6-f14183e7d6b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Reference">
+      <UniqueIdentifier>{b7164b5c-d0c3-422b-a7d5-4a8215363473}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Translation">
+      <UniqueIdentifier>{f8e4bce7-2149-421a-8223-daf0786bccce}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

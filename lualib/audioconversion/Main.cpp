@@ -1,15 +1,25 @@
 ﻿
 #include "Carp/carp_audio_conversion.hpp"
+#include "Carp/carp_file.hpp"
 
 int main(int argc, char* argv[])
 {
-	if (argc != 3)
+	std::string src;
+	std::string dst;
+
+	if (argc < 2)
 	{
-		printf("param: src_path, dst_path\n");
+		printf("param: src_path [option]dst_path\n");
 		return -1;
 	}
 
-	auto error = CarpAudioConversion::Conversion(argv[1], argv[2]);
+	src = argv[1];
+	if (argc >= 3)
+		dst = argv[2];
+	else
+		dst = CarpFile::ChangeFileExtByPath(src, "wav");
+
+	auto error = CarpAudioConversion::Conversion(src, dst);
 	switch (error)
 	{
 	case CarpAudioConversion::ConversionError::OK:
